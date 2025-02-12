@@ -167,7 +167,7 @@ public class BasicFindTab extends Tab {
         findPrevButton.setOnAction(action -> findPrevAction());
         deleteResultsButton.setOnAction(action -> deleteResultsAction());
         helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
-        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.find").display());
+        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.find.FindViewTopComponent").display());
 
         FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> resultsFoundLabel.setText("Results Found: " + newValue));
     }

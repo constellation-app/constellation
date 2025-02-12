@@ -73,5 +73,4 @@ public class SelectionModeWelcomePluginNGTest {
         final Button result = instance.getButton();
         assertEquals(result.getGraphic().getClass(), expResult.getClass());
     }
-
 }

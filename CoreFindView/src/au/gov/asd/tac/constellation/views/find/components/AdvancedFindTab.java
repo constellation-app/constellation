@@ -137,7 +137,7 @@ public class AdvancedFindTab extends Tab {
         findPrevButton.setOnAction(action -> findPreviousAction());
         deleteResultsButton.setOnAction(action -> deleteResultsAction());
         helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
-        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.find").display());
+        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.find.FindViewTopComponent").display());
 
         matchesFoundPane.add(matchesFoundLabel, 0, 0);
         matchesFoundPane.add(matchesFoundCountLabel, 1, 0);

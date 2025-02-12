@@ -190,8 +190,7 @@ public class FrameNGTest {
     public void testTranslateLocal() {
         final Frame f = getFrame();
         f.translateLocal(F18, F17, F16);
-        assertEquals(f.getOrigin().a, new float[]{
-            6.493639E8F, -3604703, -4.24993024E8F});
+        assertEquals(f.getOrigin().a, new float[]{6.493639E8F, -3604703, -4.24993024E8F});
     }
 
     /**
@@ -203,8 +202,7 @@ public class FrameNGTest {
         f.setOrigin(new Vector3f(V1));
         f.setForwardVector(new Vector3f(V2));
         f.moveForward(F18);
-        assertEquals(f.getOrigin().a, new float[]{
-            595197.6F, 718232.1F, 898527.3F});
+        assertEquals(f.getOrigin().a, new float[]{595197.6F, 718232.1F, 898527.3F});
     }
 
     /**
@@ -216,8 +214,7 @@ public class FrameNGTest {
         f.setOrigin(new Vector3f(V1));
         f.setUpVector(new Vector3f(V2));
         f.moveUp(F18);
-        assertEquals(f.getOrigin().a, new float[]{
-            595197.6F, 718232.1F, 898527.3F});
+        assertEquals(f.getOrigin().a, new float[]{595197.6F, 718232.1F, 898527.3F});
     }
 
     /**
@@ -227,8 +224,7 @@ public class FrameNGTest {
     public void testMoveRight() {
         final Frame f = getFrame();
         f.moveRight(F18);
-        assertEquals(f.getOrigin().a, new float[]{
-            6.4874336E8F, -4932247F, -4.25922848E8F});
+        assertEquals(f.getOrigin().a, new float[]{6.4874336E8F, -4932247F, -4.25922848E8F});
     }
 
     /**
@@ -308,10 +304,8 @@ public class FrameNGTest {
     public void testRotateLocalX() {
         final Frame f = getFrame();
         f.rotateLocalX(F18);
-        assertEquals(f.getUpVector().a, new float[]{
-            -399.67316F, 695.71515F, -616.81744F});
-        assertEquals(f.getForwardVector().a, new float[]{
-            -131.48895F, 1400.0886F, -216.49115F});
+        assertEquals(f.getUpVector().a, new float[]{-399.67316F, 695.71515F, -616.81744F});
+        assertEquals(f.getForwardVector().a, new float[]{-131.48895F, 1400.0886F, -216.49115F});
     }
 
     /**
@@ -321,8 +315,7 @@ public class FrameNGTest {
     public void testRotateLocalY() {
         final Frame f = getFrame();
         f.rotateLocalY(F18);
-        assertEquals(f.getForwardVector().a, new float[]{
-            -253.29901F, 967.5198F, 1012.00354F});
+        assertEquals(f.getForwardVector().a, new float[]{-253.29901F, 967.5198F, 1012.00354F});
     }
 
     /**
@@ -332,8 +325,7 @@ public class FrameNGTest {
     public void testRotateLocalZ() {
         final Frame f = getFrame();
         f.rotateLocalZ(F18);
-        assertEquals(f.getUpVector().a, new float[]{
-            763.08527F, 647.0276F, 152.57185F});
+        assertEquals(f.getUpVector().a, new float[]{763.08527F, 647.0276F, 152.57185F});
     }
 
     /**
@@ -343,10 +335,8 @@ public class FrameNGTest {
     public void testNormalise() {
         final Frame f = getFrame();
         f.normalize();
-        assertEquals(f.getUpVector().a, new float[]{
-            0.19268042F, 0.9396876F, 0.28259796F});
-        assertEquals(f.getForwardVector().a, new float[]{
-            0.51391613F, -0.34197506F, 0.7867295F});
+        assertEquals(f.getUpVector().a, new float[]{0.19268042F, 0.9396876F, 0.28259796F});
+        assertEquals(f.getForwardVector().a, new float[]{0.51391613F, -0.34197506F, 0.7867295F});
     }
 
     /**
@@ -356,10 +346,8 @@ public class FrameNGTest {
     public void testRotateWorld() {
         final Frame f = getFrame();
         f.rotateWorld(F10, F11, F12, F13);
-        assertEquals(f.getUpVector().a, new float[]{
-            -82.81727F, 893.46826F, 468.05743F});
-        assertEquals(f.getForwardVector().a, new float[]{
-            614.27563F, 853.1708F, 958.73413F});
+        assertEquals(f.getUpVector().a, new float[]{-82.81727F, 893.46826F, 468.05743F});
+        assertEquals(f.getForwardVector().a, new float[]{614.27563F, 853.1708F, 958.73413F});
     }
 
     /**
@@ -369,10 +357,8 @@ public class FrameNGTest {
     public void testRotateLocal() {
         final Frame f = getFrame();
         f.rotateLocal(F10, F11, F12, F13);
-        assertEquals(f.getUpVector().a, new float[]{
-            444.20593F, 614.6699F, 670.13727F});
-        assertEquals(f.getForwardVector().a, new float[]{
-            782.4481F, 26.721893F, 1188.0518F});
+        assertEquals(f.getUpVector().a, new float[]{444.20593F, 614.6699F, 670.13727F});
+        assertEquals(f.getForwardVector().a, new float[]{782.4481F, 26.721893F, 1188.0518F});
     }
 
     /**
@@ -386,20 +372,17 @@ public class FrameNGTest {
         // full vector
         final Vector3f w1 = new Vector3f(V5);
         f.localToWorld(local, w1, false);
-        assertEquals(w1.a, new float[]{
-            7.2320496E7F, -116146.19F, -4.6967168E7F});
+        assertEquals(w1.a, new float[]{7.2320496E7F, -116146.19F, -4.6967168E7F});
 
         // full vector through the convenience method
         final Vector3f w2 = new Vector3f(V6);
         f.localToWorld(local, w2);
-        assertEquals(w2.a, new float[]{
-            7.2320496E7F, -116146.19F, -4.6967168E7F});
+        assertEquals(w2.a, new float[]{7.2320496E7F, -116146.19F, -4.6967168E7F});
 
         // rotation vector only
         final Vector3f w3 = new Vector3f(V5);
         f.localToWorld(local, w3, true);
-        assertEquals(w3.a, new float[]{
-            7.2320376E7F, -116467.19F, -4.6967624E7F});
+        assertEquals(w3.a, new float[]{7.2320376E7F, -116467.19F, -4.6967624E7F});
     }
 
     /**
@@ -412,8 +395,7 @@ public class FrameNGTest {
         final Vector3f local = new Vector3f(V5);
 
         f.worldToLocal(world, local);
-        assertEquals(local.a, new float[]{
-            7.767577E-5F, -0.035130844F, -0.10769265F});
+        assertEquals(local.a, new float[]{7.767577E-5F, -0.035130844F, -0.10769265F});
     }
 
     /**
@@ -426,8 +408,7 @@ public class FrameNGTest {
         final Vector3f dst = new Vector3f(V5);
 
         f.transformPoint(src, dst);
-        assertEquals(dst.a, new float[]{
-            7.2320496E7F, -116146.19F, -4.6967168E7F});
+        assertEquals(dst.a, new float[]{7.2320496E7F, -116146.19F, -4.6967168E7F});
     }
 
     /**
@@ -439,8 +420,7 @@ public class FrameNGTest {
         final Vector3f src = new Vector3f(V4);
         final Vector3f dst = new Vector3f(V5);
         f.rotateVector(src, dst);
-        assertEquals(dst.a, new float[]{
-            7.2320376E7F, -116467.19F, -4.6967624E7F});
+        assertEquals(dst.a, new float[]{7.2320376E7F, -116467.19F, -4.6967624E7F});
     }
 
     /**

@@ -30,24 +30,25 @@ import org.testng.annotations.Test;
  * @author Atlas139mkm
  */
 public class StringParameterValueNGTest {
-
-    public StringParameterValueNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -222,7 +223,6 @@ public class StringParameterValueNGTest {
         instance = new StringParameterValue();
         result = instance.getObjectValue();
         assertEquals(result, null);
-
     }
 
     /**
@@ -377,5 +377,4 @@ public class StringParameterValueNGTest {
         result = instance.toString();
         assertEquals(result, null);
     }
-
 }

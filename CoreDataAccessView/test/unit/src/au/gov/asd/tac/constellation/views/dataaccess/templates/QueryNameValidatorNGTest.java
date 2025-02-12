@@ -34,9 +34,10 @@ public class QueryNameValidatorNGTest {
 
     /**
      * Test of validatePreQuery method, of class QueryNameValidator.
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test(expectedExceptions = PluginException.class)
-    public void testValidatePreQueryWhenBlank() throws Exception {
+    public void testValidatePreQueryWhenBlank() throws PluginException {
         System.out.println("testValidatePreQueryWhenBlank");
 
         final RecordStoreQueryPlugin plugin = mock(RecordStoreQueryPlugin.class);
@@ -52,9 +53,10 @@ public class QueryNameValidatorNGTest {
 
     /**
      * Test of validatePreQuery method, of class QueryNameValidator.
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testValidatePreQueryWhenNotBlank() throws Exception {
+    public void testValidatePreQueryWhenNotBlank() throws PluginException {
         System.out.println("testValidatePreQueryWhenNotBlank");
 
         final RecordStoreQueryPlugin plugin = mock(RecordStoreQueryPlugin.class);
@@ -69,5 +71,4 @@ public class QueryNameValidatorNGTest {
 
         verify(parameters, times(1)).getStringValue(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID);
     }
-
 }

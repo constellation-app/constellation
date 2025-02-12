@@ -61,10 +61,12 @@ public class ConversationViewTopComponentNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -73,6 +75,7 @@ public class ConversationViewTopComponentNGTest {
     @Test
     public void testCreateStyle() {
         System.out.println("createStyle");
+        
         final String expResult = "resources/conversation.css";
         topComponent = new ConversationViewTopComponent();
         final String result = topComponent.createStyle();
@@ -86,6 +89,7 @@ public class ConversationViewTopComponentNGTest {
     @Test
     public void testCreateContent() {
         System.out.println("createContent");
+        
         try (final MockedStatic<ConversationController> controllerStatic = Mockito.mockStatic(ConversationController.class)) {
             final ConversationController controller = spy(ConversationController.class);
             controllerStatic.when(ConversationController::getDefault).thenReturn(controller);
@@ -105,6 +109,7 @@ public class ConversationViewTopComponentNGTest {
     @Test
     public void testHandleNewGraph() {
         System.out.println("handleNewGraph");
+        
         try (final MockedStatic<ConversationController> controllerStatic = Mockito.mockStatic(ConversationController.class)) {
             final ConversationController controller = spy(ConversationController.class);
             controllerStatic.when(ConversationController::getDefault).thenReturn(controller);

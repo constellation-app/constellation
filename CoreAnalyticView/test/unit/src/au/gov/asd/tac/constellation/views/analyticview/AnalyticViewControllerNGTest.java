@@ -57,10 +57,7 @@ public class AnalyticViewControllerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticViewControllerNGTest.class.getName());
     private final AnalyticViewTopComponent topComponent = mock(AnalyticViewTopComponent.class);
-
-    public AnalyticViewControllerNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -79,10 +76,12 @@ public class AnalyticViewControllerNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -91,6 +90,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testInit() {
         System.out.println("init");
+        
         final AnalyticViewTopComponent parent = topComponent;
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
@@ -108,6 +108,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testGetParent() {
         System.out.println("getParent");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -124,6 +125,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testSetActiveCategory() {
         System.out.println("setActiveCategory");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -141,6 +143,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testSetCurrentQuestion() {
         System.out.println("setCurrentQuestion");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -158,6 +161,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testSetQuestion() {
         System.out.println("setQuestion");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -176,6 +180,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testSetCategoriesVisible() {
         System.out.println("setCategoriesVisible");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -193,6 +198,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testSetGraphVisualisations() {
         System.out.println("setGraphVisualisations");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -214,6 +220,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testUpdateGraphVisualisations() {
         System.out.println("updateGraphVisualisations");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -238,6 +245,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testUpdateResults() {
         System.out.println("updateResults");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -263,6 +271,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testRemoveAnalyticQuestion() {
         System.out.println("removeAnalyticQuestion");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -287,6 +296,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testRemovePluginsMatchingCategory() {
         System.out.println("removePluginsMatchingCategory");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -311,6 +321,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testAddAnalyticQuestion() {
         System.out.println("addAnalyticQuestion");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -333,6 +344,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testUpdateState() {
         System.out.println("updateState");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);

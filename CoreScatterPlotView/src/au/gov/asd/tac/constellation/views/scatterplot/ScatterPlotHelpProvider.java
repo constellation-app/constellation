@@ -45,7 +45,7 @@ public class ScatterPlotHelpProvider extends HelpPageProvider {
         final String scatterModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreScatterPlotView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP
                 + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "scatterplot" + SEP;
 
-        map.put("au.gov.asd.tac.constellation.views.scatterplot", scatterModulePath + "scatter-plot-view.md");
+        map.put("au.gov.asd.tac.constellation.views.scatterplot.ScatterPlotTopComponent", scatterModulePath + "scatter-plot-view.md");
         return map;
     }
 

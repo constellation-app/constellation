@@ -44,6 +44,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableSortTypeListenerNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(TableSortTypeListenerNGTest.class.getName());
 
     private TableSortTypeListener tableSortTypeListener;
@@ -78,6 +79,7 @@ public class TableSortTypeListenerNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test

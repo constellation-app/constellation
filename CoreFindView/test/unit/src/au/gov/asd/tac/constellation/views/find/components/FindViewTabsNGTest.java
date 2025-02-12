@@ -15,11 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.components;
 
-import au.gov.asd.tac.constellation.views.find.components.BasicFindTab;
-import au.gov.asd.tac.constellation.views.find.components.ReplaceTab;
-import au.gov.asd.tac.constellation.views.find.components.FindViewTabs;
-import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
-import au.gov.asd.tac.constellation.views.find.FindViewTopComponent;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,24 +34,17 @@ import org.testng.annotations.Test;
  * @author Atlas139mkm
  */
 public class FindViewTabsNGTest {
-
-    FindViewTopComponent findViewTopComponent;
-    FindViewTopComponent spyTopComponent;
-
-//    FindViewController findViewController;
-    BasicFindTab basicFindTab;
-    BasicFindTab spyBasicFindTab;
-    ReplaceTab replaceTab;
-    ReplaceTab spyReplaceTab;
-    FindViewPane findViewPane;
-    FindViewTabs findViewTabs;
-    FindViewTabs spyFindViewTabs;
+    
+    private BasicFindTab basicFindTab;
+    private BasicFindTab spyBasicFindTab;
+    private ReplaceTab replaceTab;
+    private ReplaceTab spyReplaceTab;
+    private FindViewPane findViewPane;
+    private FindViewTabs findViewTabs;
+    private FindViewTabs spyFindViewTabs;
 
     private static final Logger LOGGER = Logger.getLogger(FindViewTabsNGTest.class.getName());
-
-    public FindViewTabsNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -75,9 +63,6 @@ public class FindViewTabsNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        findViewTopComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(findViewTopComponent);
-
         findViewPane = mock(FindViewPane.class);
 
         findViewTabs = new FindViewTabs(findViewPane);
@@ -97,6 +82,7 @@ public class FindViewTabsNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

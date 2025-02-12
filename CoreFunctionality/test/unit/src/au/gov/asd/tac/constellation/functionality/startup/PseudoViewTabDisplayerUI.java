@@ -22,6 +22,7 @@ package au.gov.asd.tac.constellation.functionality.startup;
  * @author OrionsGuardian
  */
 public class PseudoViewTabDisplayerUI extends PseudoTabDisplayerUI {
+    
     PseudoViewTabDisplayerUI(){
         super();
     }

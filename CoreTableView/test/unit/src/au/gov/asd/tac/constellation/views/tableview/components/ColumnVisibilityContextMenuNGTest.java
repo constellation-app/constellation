@@ -72,6 +72,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ColumnVisibilityContextMenuNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(ColumnVisibilityContextMenuNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;
@@ -193,6 +194,7 @@ public class ColumnVisibilityContextMenuNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -378,9 +380,7 @@ public class ColumnVisibilityContextMenuNGTest {
         when(columnCheckBox2.getId()).thenReturn("Other Some Values");
         when(columnCheckBox3.getId()).thenReturn("Something Else");
 
-        final CustomMenuItem columnFilterMenuItem = columnVisibilityContextMenu.createColumnFilterMenu(
-                List.of(columnCheckBox1, columnCheckBox2, columnCheckBox3)
-        );
+        final CustomMenuItem columnFilterMenuItem = columnVisibilityContextMenu.createColumnFilterMenu(List.of(columnCheckBox1, columnCheckBox2, columnCheckBox3));
 
         assertFalse(columnFilterMenuItem.isHideOnClick());
 
@@ -423,11 +423,8 @@ public class ColumnVisibilityContextMenuNGTest {
      * @param expectedUpdateMethod the expected method of column visibility
      * updating when the menu item is clicked
      */
-    private void verifyColumnVisibilityCheckBox(final CustomMenuItem menuItem,
-            final boolean isSelected,
-            final String expectedText,
-            final List<Tuple<String, Attribute>> expectedColumnAttributes,
-            final UpdateMethod expectedUpdateMethod) {
+    private void verifyColumnVisibilityCheckBox(final CustomMenuItem menuItem, final boolean isSelected, final String expectedText,
+            final List<Tuple<String, Attribute>> expectedColumnAttributes, final UpdateMethod expectedUpdateMethod) {
         assertEquals(expectedText, menuItem.getId());
         assertFalse(menuItem.isHideOnClick());
 
@@ -441,11 +438,7 @@ public class ColumnVisibilityContextMenuNGTest {
 
         columnCheckBox.getOnAction().handle(actionEvent);
 
-        verify(activeTableReference).updateVisibleColumns(
-                graph,
-                tableViewState,
-                expectedColumnAttributes,
-                expectedUpdateMethod);
+        verify(activeTableReference).updateVisibleColumns(graph, tableViewState, expectedColumnAttributes, expectedUpdateMethod);
     }
 
     /**
@@ -455,8 +448,7 @@ public class ColumnVisibilityContextMenuNGTest {
      * @param customMenuItem the standard column visibility menu item
      * @param expectedColumnAttributes the expected columns to be updated
      */
-    private void verifyAllColumnsMenuClicked(final CustomMenuItem customMenuItem,
-            final List<Tuple<String, Attribute>> expectedColumnAttributes) {
+    private void verifyAllColumnsMenuClicked(final CustomMenuItem customMenuItem, final List<Tuple<String, Attribute>> expectedColumnAttributes) {
         verifyProvidedColumnVisibilityActions(customMenuItem, expectedColumnAttributes, null);
     }
 
@@ -468,19 +460,13 @@ public class ColumnVisibilityContextMenuNGTest {
      * @param expectedColumnAttributes the expected columns to be updated
      * @param extraVerifications extra custom verifications if needed
      */
-    private void verifyProvidedColumnVisibilityActions(final CustomMenuItem customMenuItem,
-            final List<Tuple<String, Attribute>> expectedColumnAttributes,
+    private void verifyProvidedColumnVisibilityActions(final CustomMenuItem customMenuItem, final List<Tuple<String, Attribute>> expectedColumnAttributes,
             final Runnable extraVerifications) {
         final ActionEvent actionEvent = mock(ActionEvent.class);
 
         customMenuItem.getOnAction().handle(actionEvent);
 
-        verify(activeTableReference).updateVisibleColumns(
-                graph,
-                tableViewState,
-                expectedColumnAttributes,
-                UpdateMethod.REPLACE
-        );
+        verify(activeTableReference).updateVisibleColumns(graph, tableViewState, expectedColumnAttributes, UpdateMethod.REPLACE);
 
         verify(actionEvent).consume();
 
@@ -497,9 +483,7 @@ public class ColumnVisibilityContextMenuNGTest {
      * @param isHideOnClick true if hideOnClick is expected to be true,
      * otherwise false
      */
-    private void verifyCustomMenu(final CustomMenuItem customMenuItem,
-            final String expectedText,
-            final boolean isHideOnClick) {
+    private void verifyCustomMenu(final CustomMenuItem customMenuItem, final String expectedText, final boolean isHideOnClick) {
         assertEquals(expectedText, ((Label) customMenuItem.getContent()).getText());
         assertEquals(isHideOnClick, customMenuItem.isHideOnClick());
     }
@@ -514,20 +498,18 @@ public class ColumnVisibilityContextMenuNGTest {
      * @param expectedColumnCheckBoxes the expected column check boxes in the
      * menu
      */
-    private void verifyDynamicColumnMenu(final CustomMenuItem customMenuItem,
-            final List<CustomMenuItem> expectedColumnCheckBoxes) {
+    private void verifyDynamicColumnMenu(final CustomMenuItem customMenuItem, final List<CustomMenuItem> expectedColumnCheckBoxes) {
         final List<CustomMenuItem> columnVisibilityMenuItems = new ArrayList<>();
 
         for (MenuItem menuItem : ((MenuButton) customMenuItem.getContent()).getItems()) {
             final CustomMenuItem columnVisibilityMenuItem = (CustomMenuItem) menuItem;
 
-            if (columnVisibilityMenuItem.getContent() instanceof HBox) {
-                final HBox box = (HBox) columnVisibilityMenuItem.getContent();
-                assertEquals(2, box.getChildren().size());
-                assertTrue(box.getChildren().get(0) instanceof Label);
-                assertTrue(box.getChildren().get(1) instanceof TextField);
+            if (columnVisibilityMenuItem.getContent() instanceof HBox columnVisibilityContent) {
+                assertEquals(2, columnVisibilityContent.getChildren().size());
+                assertTrue(columnVisibilityContent.getChildren().get(0) instanceof Label);
+                assertTrue(columnVisibilityContent.getChildren().get(1) instanceof TextField);
 
-                assertEquals("Filter:", ((Label) box.getChildren().get(0)).getText());
+                assertEquals("Filter:", ((Label) columnVisibilityContent.getChildren().get(0)).getText());
             } else {
                 columnVisibilityMenuItems.add(columnVisibilityMenuItem);
             }
@@ -537,12 +519,8 @@ public class ColumnVisibilityContextMenuNGTest {
 
         // There should only be one filter per menu. So the created columnVisibilityMenuItems
         // list should have a size one less than the original
-        assertEquals(
-                ((MenuButton) customMenuItem.getContent()).getItems().size() - 1,
-                columnVisibilityMenuItems.size()
-        );
+        assertEquals(((MenuButton) customMenuItem.getContent()).getItems().size() - 1, columnVisibilityMenuItems.size());
 
         assertEquals(expectedColumnCheckBoxes, columnVisibilityMenuItems);
     }
-
 }

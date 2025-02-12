@@ -49,16 +49,15 @@ import org.testng.annotations.Test;
 public class SupportPackageNGTest {
 
     private static MockedStatic<Places> placesStaticMock;
-
-    public SupportPackageNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -125,7 +124,7 @@ public class SupportPackageNGTest {
         final SupportPackage instance = new SupportPackage();
         instance.generateFileList(node, list, node.getPath());
 
-        assertTrue(list.size() > 0);
+        assertTrue(!list.isEmpty());
     }
 
     /**
@@ -148,9 +147,7 @@ public class SupportPackageNGTest {
 
         assertEquals(result1, expResult1);
 
-        placesStaticMock.when(()
-                -> Places.getUserDirectory())
-                .thenReturn(null);
+        placesStaticMock.when(() -> Places.getUserDirectory()).thenReturn(null);
 
         final String expResult2 = String.format("%s%svar%slog", new File(System.getProperty("user.home")).getPath(), File.separator, File.separator);
         final String result2 = SupportPackage.getUserLogDirectory();

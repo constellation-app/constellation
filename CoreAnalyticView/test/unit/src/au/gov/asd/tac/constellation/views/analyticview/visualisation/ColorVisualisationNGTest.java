@@ -47,9 +47,6 @@ public class ColorVisualisationNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(ColorVisualisationNGTest.class.getName());
     
-    public ColorVisualisationNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -68,10 +65,12 @@ public class ColorVisualisationNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -80,6 +79,7 @@ public class ColorVisualisationNGTest {
     @Test
     public void testDeactivate() {
         System.out.println("deactivate");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -100,6 +100,7 @@ public class ColorVisualisationNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
+        
         final AbstractColorTranslator translator = new ScoreToColorTranslator();
         final ColorVisualisation instance = new ColorVisualisation(translator);
         final String expResult = "Color Elements";
@@ -113,6 +114,7 @@ public class ColorVisualisationNGTest {
     @Test
     public void testGetTranslator() {
         System.out.println("getTranslator");
+        
         final AbstractColorTranslator translator = new ScoreToColorTranslator();
         final ColorVisualisation instance = new ColorVisualisation(translator);
         final AnalyticTranslator result = instance.getTranslator();
@@ -125,6 +127,7 @@ public class ColorVisualisationNGTest {
     @Test
     public void testGetAffectedAttributes() {
         System.out.println("getAffectedAttributes");
+        
         final AbstractColorTranslator translator = new ScoreToColorTranslator();
         final ColorVisualisation instance = new ColorVisualisation(translator);
         final List expResult = Arrays.asList(
@@ -142,6 +145,7 @@ public class ColorVisualisationNGTest {
     @Test
     public void testIsActive() {
         System.out.println("isActive");
+        
         final AbstractColorTranslator translator = new ScoreToColorTranslator();
         final ColorVisualisation instance = new ColorVisualisation(translator);
         final boolean expResult = false;
@@ -155,12 +159,12 @@ public class ColorVisualisationNGTest {
     @Test
     public void testSetSelected() {
         System.out.println("setSelected");
+        
         final boolean selected = false;
         final AbstractColorTranslator translator = new ScoreToColorTranslator();
         final ColorVisualisation instance = new ColorVisualisation(translator);
         instance.setSelected(selected);
         final boolean result = instance.isActive();
         assertEquals(result, selected);
-    }
-    
+    }    
 }

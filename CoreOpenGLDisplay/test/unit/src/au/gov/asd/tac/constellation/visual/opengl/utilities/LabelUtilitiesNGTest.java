@@ -34,21 +34,21 @@ public class LabelUtilitiesNGTest {
 
     @Test
     public void splitNull() {
-        final ArrayList<String> out = LabelUtilities.splitTextIntoLines(null);
+        final List<String> out = LabelUtilities.splitTextIntoLines(null);
         assertEquals(out.size(), 0);
     }
 
     @Test
     public void split0() {
         final String text = "";
-        final ArrayList<String> out = LabelUtilities.splitTextIntoLines(text);
+        final List<String> out = LabelUtilities.splitTextIntoLines(text);
         assertEquals(out.size(), 0);
     }
 
     @Test
     public void split1() {
         final String text = "This is a test.";
-        final ArrayList<String> out = LabelUtilities.splitTextIntoLines(text);
+        final List<String> out = LabelUtilities.splitTextIntoLines(text);
         assertEquals(out.size(), 1);
         assertEquals(out.get(0), text);
     }
@@ -65,7 +65,7 @@ public class LabelUtilitiesNGTest {
         String sp = "";
         for (int i = 0; i < 10; i++) {
             final String text = text0 + sp + word;
-            final ArrayList<String> out = LabelUtilities.splitTextIntoLines(text);
+            final List<String> out = LabelUtilities.splitTextIntoLines(text);
             if (text.length() <= LabelUtilities.MAX_LINE_LENGTH_PER_ATTRIBUTE) {
                 assertEquals(out.size(), 1);
                 assertEquals(out.get(0), text);
@@ -90,7 +90,7 @@ public class LabelUtilitiesNGTest {
         final String extra = "extra";
         final String text = text0 + " " + extra;
 
-        final ArrayList<String> out = LabelUtilities.splitTextIntoLines(text);
+        final List<String> out = LabelUtilities.splitTextIntoLines(text);
         assertEquals(out.size(), 2);
         assertEquals(out.get(0), text0);
         assertEquals(out.get(1), extra);
@@ -106,7 +106,7 @@ public class LabelUtilitiesNGTest {
         final String extra = "extra";
         final String text = text0 + " " + extra;
 
-        final ArrayList<String> out = LabelUtilities.splitTextIntoLines(text);
+        final List<String> out = LabelUtilities.splitTextIntoLines(text);
         assertEquals(out.size(), 2);
         assertEquals(out.get(0), text0);
         assertEquals(out.get(1), extra);
@@ -121,7 +121,7 @@ public class LabelUtilitiesNGTest {
         final String text1 = "extra";
         final String text = text0 + ofLength(10, ' ') + text1;
 
-        final ArrayList<String> out = LabelUtilities.splitTextIntoLines(text);
+        final List<String> out = LabelUtilities.splitTextIntoLines(text);
         assertEquals(out.size(), 2);
         assertEquals(out.get(0), text0);
         assertEquals(out.get(1), text1);
@@ -134,7 +134,7 @@ public class LabelUtilitiesNGTest {
             text += (char) ('A' + i) + ofLength(LabelUtilities.MAX_LINE_LENGTH_PER_ATTRIBUTE - 1, ' ');
         }
 
-        final ArrayList<String> out = LabelUtilities.splitTextIntoLines(text);
+        final List<String> out = LabelUtilities.splitTextIntoLines(text);
         assertEquals(out.size(), LabelUtilities.MAX_LINES_PER_ATTRIBUTE);
         for (int i = 0; i < out.size(); i++) {
             assertEquals(out.get(i), String.format("%c", (char) ('A' + i)));
@@ -149,7 +149,7 @@ public class LabelUtilitiesNGTest {
         final String text0 = "A" + ofLength(LabelUtilities.MAX_LINE_LENGTH_PER_ATTRIBUTE - 3, ' ') + "Z";
         final String text1 = "extra";
         final String text = text0 + "   " + text1;
-        final ArrayList<String> out = LabelUtilities.splitTextIntoLines(text);
+        final List<String> out = LabelUtilities.splitTextIntoLines(text);
         assertEquals(out.size(), 2);
         assertEquals(out.get(0), text0);
         assertEquals(out.get(1), text1);
@@ -167,7 +167,7 @@ public class LabelUtilitiesNGTest {
 
         text += "xyzzy";
 
-        final ArrayList<String> out = LabelUtilities.splitTextIntoLines(text);
+        final List<String> out = LabelUtilities.splitTextIntoLines(text);
         assertEquals(out.size(), LabelUtilities.MAX_LINES_PER_ATTRIBUTE);
         assertTrue(out.get(LabelUtilities.MAX_LINES_PER_ATTRIBUTE - 1).endsWith(LabelUtilities.ELLIPSIS));
     }
@@ -208,7 +208,7 @@ public class LabelUtilitiesNGTest {
     @Test
     public void splitExample1() {
         final String text = "Now is the time for all good men to come to the aid of the party.";
-        final ArrayList<String> out = LabelUtilities.splitTextIntoLines(text);
+        final List<String> out = LabelUtilities.splitTextIntoLines(text);
         assertEquals(out.size(), 2);
         assertEquals(out.get(0), "Now is the time for all good men to come to the");
         assertEquals(out.get(1), "aid of the party.");

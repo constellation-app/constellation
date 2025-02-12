@@ -59,10 +59,7 @@ public class DefaultPluginInteractionNGTest {
     private PluginSynchronizer synchroniser;
 
     private GraphReport graphReport;
-
-    public DefaultPluginInteractionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         FxToolkit.registerPrimaryStage();
@@ -88,6 +85,7 @@ public class DefaultPluginInteractionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

@@ -31,23 +31,24 @@ import org.testng.annotations.Test;
  */
 public class AnalyticTranslatorUtilitiesNGTest {
     
-    public AnalyticTranslatorUtilitiesNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -56,6 +57,7 @@ public class AnalyticTranslatorUtilitiesNGTest {
     @Test
     public void testAddToVertexSizeCache() {
         System.out.println("addToVertexSizeCache");
+        
         final String currentGraphKey = "vertexSize";
         final Map<Integer, Float> vertexSizes = new HashMap<>();
         AnalyticTranslatorUtilities.addToVertexSizeCache(currentGraphKey, vertexSizes);
@@ -69,6 +71,7 @@ public class AnalyticTranslatorUtilitiesNGTest {
     @Test
     public void testAddToTransactionSizeCache() {
         System.out.println("addToTransactionSizeCache");
+        
         final String currentGraphKey = "transactionSize";
         final Map<Integer, Float> transactionSizes = new HashMap<>();
         AnalyticTranslatorUtilities.addToTransactionSizeCache(currentGraphKey, transactionSizes);
@@ -82,6 +85,7 @@ public class AnalyticTranslatorUtilitiesNGTest {
     @Test
     public void testAddToVertexColorCache() {
         System.out.println("addToVertexColorCache");
+        
         final String currentGraphKey = "vertexColor";
         final Map<Integer, ConstellationColor> vertexColors = new HashMap<>();
         AnalyticTranslatorUtilities.addToVertexColorCache(currentGraphKey, vertexColors);
@@ -95,6 +99,7 @@ public class AnalyticTranslatorUtilitiesNGTest {
     @Test
     public void testAddToTransactionColorCache() {
         System.out.println("addToTransactionColorCache");
+        
         final String currentGraphKey = "transactionColor";
         final Map<Integer, ConstellationColor> transactionColors = new HashMap<>();
         AnalyticTranslatorUtilities.addToTransactionColorCache(currentGraphKey, transactionColors);
@@ -108,6 +113,7 @@ public class AnalyticTranslatorUtilitiesNGTest {
     @Test
     public void testAddToVertexHideCache() {
         System.out.println("addToVertexHideCache");
+        
         final String currentGraphKey = "vertexHide";
         final Map<Integer, Float> vertexHideValues = new HashMap<>();
         AnalyticTranslatorUtilities.addToVertexHideCache(currentGraphKey, vertexHideValues);
@@ -121,6 +127,7 @@ public class AnalyticTranslatorUtilitiesNGTest {
     @Test
     public void testAddToTransactionHideCache() {
         System.out.println("addToTransactionHideCache");
+        
         final String currentGraphKey = "transactionHide";
         final Map<Integer, Float> transactionHideValues = new HashMap<>();
         AnalyticTranslatorUtilities.addToTransactionHideCache(currentGraphKey, transactionHideValues);

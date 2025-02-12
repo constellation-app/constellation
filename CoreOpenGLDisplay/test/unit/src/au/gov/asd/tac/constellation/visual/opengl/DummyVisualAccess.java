@@ -38,6 +38,7 @@ public class DummyVisualAccess implements VisualAccess {
 
     @Override
     public void updateInternally() {
+        // Do nothing
     }
 
     @Override
@@ -47,10 +48,12 @@ public class DummyVisualAccess implements VisualAccess {
 
     @Override
     public void beginUpdate() {
+        // Do nothing
     }
 
     @Override
     public void endUpdate() {
+        // Do nothing
     }
 
     public void zoomOut() {
@@ -365,5 +368,10 @@ public class DummyVisualAccess implements VisualAccess {
     @Override
     public boolean isConnectionDirected(int connection) {
         return connection != 2;
+    }
+
+    @Override
+    public float getConnectionMotion() {
+        return -1;
     }
 }

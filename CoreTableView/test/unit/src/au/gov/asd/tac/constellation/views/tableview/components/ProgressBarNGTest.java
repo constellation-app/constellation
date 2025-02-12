@@ -31,6 +31,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ProgressBarNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(ProgressBarNGTest.class.getName());
 
     @BeforeClass

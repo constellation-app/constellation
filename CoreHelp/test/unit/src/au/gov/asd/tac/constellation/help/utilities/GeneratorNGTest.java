@@ -45,24 +45,25 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class GeneratorNGTest {
-
-    public GeneratorNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -117,7 +118,6 @@ public class GeneratorNGTest {
                 System.setProperty("java.awt.headless", previousHeadlessPorperty);
             }
         }
-
     }
     
     /**
@@ -162,6 +162,8 @@ public class GeneratorNGTest {
     /**
      * Test of getBaseDirectory method, of class Generator. Tests all available
      * file system roots, with module and class specific locations.
+     * @throws java.net.URISyntaxException
+     * @throws java.net.MalformedURLException
      */
     @Test
     public void testGetBaseDirectory() throws URISyntaxException, MalformedURLException {
@@ -173,7 +175,6 @@ public class GeneratorNGTest {
                 MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class, Mockito.CALLS_REAL_METHODS)) {
             // loop over all possible file roots on the file system
             for (final File file : File.listRoots()) {
-
                 // try within base level of help module
                 final String userDir = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep + "ext" + sep + "CoreHelp";
 

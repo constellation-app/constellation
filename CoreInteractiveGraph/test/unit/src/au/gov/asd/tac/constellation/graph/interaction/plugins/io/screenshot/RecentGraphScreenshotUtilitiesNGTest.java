@@ -66,10 +66,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     private static MockedStatic<RecentGraphScreenshotUtilities> recentGraphScreenshotUtilitiesMock;
     private static MockedStatic<RecentFiles> recentFilesMock;
     private static MockedStatic<DatatypeConverter> dataTypeConverter;
-
-    public RecentGraphScreenshotUtilitiesNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         recentGraphScreenshotUtilitiesMock = Mockito.mockStatic(RecentGraphScreenshotUtilities.class);
@@ -144,15 +141,6 @@ public class RecentGraphScreenshotUtilitiesNGTest {
             RecentGraphScreenshotUtilities.takeScreenshot(filePath);
         }
 
-    }
-
-    /**
-     * Test of resizeAndSave method, of class RecentGraphScreenshotUtilities.
-     *
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testResizeAndSave() throws Exception {
     }
 
     /**

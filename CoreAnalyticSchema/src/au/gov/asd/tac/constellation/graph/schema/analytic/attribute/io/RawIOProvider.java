@@ -55,7 +55,7 @@ public class RawIOProvider extends AbstractGraphIOProvider {
         } else {
             final JsonNode identifier = jnode.get(RAW_IDENTIFIER_TAG);
             final JsonNode type = jnode.get(RAW_TYPE_TAG);
-            final RawData attributeValue = new RawData(identifier.isNull() ? null : identifier.textValue(), type.isNull() ? null : jnode.get(RAW_TYPE_TAG).textValue());
+            final RawData attributeValue = new RawData(identifier.isNull() ? null : identifier.textValue(), type.isNull() ? null : type.textValue());
             newValue = cache.deduplicate(attributeValue);
         }
         graph.setObjectValue(attributeId, elementId, newValue);

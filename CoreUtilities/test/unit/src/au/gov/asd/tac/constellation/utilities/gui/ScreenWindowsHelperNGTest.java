@@ -42,7 +42,6 @@ public class ScreenWindowsHelperNGTest {
 
     @Test
     public void testGetMainWindowCentrePointMainWindow() {
-
         // Test method with mocked Window and dimensions
         final Window returnedWindow = mock(Window.class);
         final Dimension testDimension = new Dimension(testSizeWidthHeight,
@@ -64,7 +63,6 @@ public class ScreenWindowsHelperNGTest {
 
     @Test
     public void testGetMainWindowCentrePointNotMainWindow() {
-
         // test the case when it's not main window, should return null
         final Window returnedWindow = mock(Window.class);
         final Dimension testDimension = new Dimension(testSizeWidthHeight,
@@ -85,7 +83,6 @@ public class ScreenWindowsHelperNGTest {
 
     @Test
     public void testGetMainWindowCentrePointMockedPoint() {
-
         // Test method with mocked point
         final Point point = mock(Point.class);
         try (final MockedStatic<ScreenWindowsHelper> screenWindowsHelperStatic = Mockito.mockStatic(ScreenWindowsHelper.class)) {

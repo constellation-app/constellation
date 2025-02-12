@@ -15,13 +15,11 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.resize;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
-import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -36,57 +34,41 @@ import org.testng.annotations.Test;
  */
 public class ResizeBiggerNGTest {
 
-    private int attrX, attrY, attrZ, attrSelected;
-    private int vxId1, vxId2;
+    private int attrX;
+    private int attrY;
+    private int attrZ;
+    private int attrSelected;
+    
+    private int vxId1;
+    private int vxId2;
+    
     private StoreGraph graph;
-
-    public ResizeBiggerNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
-
-    private void generateData() throws InterruptedException {
         graph = new StoreGraph();
 
         attrX = VisualConcept.VertexAttribute.X.ensure(graph);
-        if (attrX == Graph.NOT_FOUND) {
-            fail();
-        }
-
         attrY = VisualConcept.VertexAttribute.Y.ensure(graph);
-        if (attrY == Graph.NOT_FOUND) {
-            fail();
-        }
-
         attrZ = VisualConcept.VertexAttribute.Z.ensure(graph);
-        if (attrZ == Graph.NOT_FOUND) {
-            fail();
-        }
-
         attrSelected = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        if (attrSelected == Graph.NOT_FOUND) {
-            fail();
-        }
 
         vxId1 = graph.addVertex();
         graph.setFloatValue(attrX, vxId1, 10f);
         graph.setFloatValue(attrY, vxId1, 20f);
         graph.setFloatValue(attrZ, vxId1, 30f);
         graph.setBooleanValue(attrSelected, vxId1, false);
+        
         vxId2 = graph.addVertex();
         graph.setFloatValue(attrX, vxId2, -10f);
         graph.setFloatValue(attrY, vxId2, -20f);
@@ -94,10 +76,13 @@ public class ResizeBiggerNGTest {
         graph.setBooleanValue(attrSelected, vxId2, false);
     }
 
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+        // Not currently required
+    }
+
     @Test
     public void makeBiggerTest() throws InterruptedException, PluginException {
-        generateData();
-
         assertEquals(String.format("Vertex [%d] x value", vxId1), 10f, graph.getFloatValue(attrX, vxId1));
         assertEquals(String.format("Vertex [%d] y value", vxId1), 20f, graph.getFloatValue(attrY, vxId1));
         assertEquals(String.format("Vertex [%d] z value", vxId1), 30f, graph.getFloatValue(attrZ, vxId1));
@@ -117,7 +102,6 @@ public class ResizeBiggerNGTest {
 
     @Test
     public void makeBiggerSelectedTest() throws InterruptedException, PluginException {
-        generateData();
         graph.setBooleanValue(attrSelected, vxId2, true);
 
         assertEquals(String.format("Vertex [%d] x value", vxId1), 10f, graph.getFloatValue(attrX, vxId1));

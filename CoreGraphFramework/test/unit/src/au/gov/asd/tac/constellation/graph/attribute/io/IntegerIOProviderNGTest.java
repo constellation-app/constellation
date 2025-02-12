@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.io.IOException;
 import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -52,19 +53,16 @@ public class IntegerIOProviderNGTest {
     // Test variables
     final int attributeId = 23;
     final int elementId = 41;
-    final String attribValue = "TestAttrib";
     final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
-
     
-    public IntegerIOProviderNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -74,6 +72,7 @@ public class IntegerIOProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -97,9 +96,10 @@ public class IntegerIOProviderNGTest {
 
     /**
      * Test of readObject method, of class IntegerIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testReadObject() throws Exception {
+    public void testReadObject() throws IOException {
         System.out.println("IntegerIOProviderNGTest.testReadObject");
         
         // Call method under test with JsonNode set to return isNull = true
@@ -112,9 +112,10 @@ public class IntegerIOProviderNGTest {
 
     /**
      * Test of writeObject method, of class IntegerIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteObject() throws Exception {
+    public void testWriteObject() throws IOException {
         System.out.println("IntegerIOProviderNGTest.testWriteObject");
         
         // Test not verbose and graph.IsDefaultValue is true

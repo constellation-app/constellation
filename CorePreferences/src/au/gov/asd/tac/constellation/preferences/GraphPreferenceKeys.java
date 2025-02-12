@@ -46,6 +46,9 @@ public final class GraphPreferenceKeys {
     //
     public static final String LEFT_COLOR_DEFAULT = "Green";
     public static final String RIGHT_COLOR_DEFAULT = "Magenta";
+    
+    public static final String ENABLE_ANIMATIONS = "enableAnimations";
+    public static final boolean ENABLE_ANIMATIONS_DEFAULT = true;
 
     private GraphPreferenceKeys() {
     }

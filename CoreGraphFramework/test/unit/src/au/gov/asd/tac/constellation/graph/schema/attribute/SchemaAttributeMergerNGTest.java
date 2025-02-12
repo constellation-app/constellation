@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.graph.GraphAttributeMerger;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import org.testng.annotations.Test;
 
 /**
@@ -46,7 +48,7 @@ public class SchemaAttributeMergerNGTest {
         final int noMergerId = noMergerAttribute.ensure(graph);
         final int defaultMergerId = defaultMergerAttribute.ensure(graph);
 
-        assert graph.getAttributeMerger(noMergerId) == null;
-        assert graph.getAttributeMerger(defaultMergerId) == GraphAttributeMerger.getDefault();
+        assertNull(graph.getAttributeMerger(noMergerId));
+        assertEquals(graph.getAttributeMerger(defaultMergerId), GraphAttributeMerger.getDefault());
     }
 }

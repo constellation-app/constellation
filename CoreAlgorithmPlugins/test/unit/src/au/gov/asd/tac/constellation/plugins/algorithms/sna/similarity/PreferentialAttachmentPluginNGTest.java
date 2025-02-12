@@ -37,16 +37,24 @@ import org.testng.annotations.Test;
  */
 public class PreferentialAttachmentPluginNGTest {
 
-    private int transactionPAAttribute, vertexSelectedAttribute;
-    private int vxId0, vxId1, vxId2, vxId3, vxId4;
+    private int transactionPAAttribute;
+    
+    private int vxId0;
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    
     private StoreGraph graph;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -57,7 +65,7 @@ public class PreferentialAttachmentPluginNGTest {
 
         // add attributes
         transactionPAAttribute = SnaConcept.TransactionAttribute.PREFERENTIAL_ATTACHMENT.ensure(graph);
-        vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        VisualConcept.VertexAttribute.SELECTED.ensure(graph);
 
         // add vertices
         vxId0 = graph.addVertex();

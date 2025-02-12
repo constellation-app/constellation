@@ -3,7 +3,7 @@
 <toc version="2.0">
     <tocitem text="Views" mergetype="javax.help.SortMerge">
         <tocitem text="Scatter Plot View">
-            <tocitem text="Scatter Plot" target="au.gov.asd.tac.constellation.views.scatterplot"/>
+            <tocitem text="Scatter Plot" target="au.gov.asd.tac.constellation.views.scatterplot.ScatterPlotTopComponent"/>
         </tocitem>
     </tocitem>
 </toc>

@@ -31,7 +31,6 @@ public class StoreGraphValidatorNGTest {
 
     @Test
     public void validateGraphTest() {
-
         int vCapacity = 16;
         int tCapacity = 256;
 
@@ -39,7 +38,6 @@ public class StoreGraphValidatorNGTest {
         StoreGraphValidator validator = new StoreGraphValidator();
 
         for (int trial = 0; trial < 100000; trial++) {
-
             if (VERBOSE) {
                 System.out.println("// Trial = " + trial);
             }
@@ -48,9 +46,8 @@ public class StoreGraphValidatorNGTest {
 
             int operation = (int) (Math.random() * 4);
             switch (operation) {
-
                 // Add vertex
-                case 0:
+                case 0 -> {
                     if (graph.getVertexCount() < vCapacity) {
                         int v = graph.addVertex();
                         validator.addVertex(v);
@@ -59,10 +56,9 @@ public class StoreGraphValidatorNGTest {
                             System.out.println("g.addVertex(); // " + v);
                         }
                     }
-                    break;
-
+                }
                 // Add transaction
-                case 1:
+                case 1 -> {
                     if (graph.getTransactionCount() < tCapacity) {
                         int source = (int) (Math.random() * graph.getVertexCapacity());
                         int destination = (int) (Math.random() * graph.getVertexCapacity());
@@ -77,9 +73,8 @@ public class StoreGraphValidatorNGTest {
                             }
                         }
                     }
-                    break;
-
-                case 2:
+                }
+                case 2 -> {
                     int t = (int) (Math.random() * graph.getTransactionCapacity());
                     if (graph.transactionExists(t)) {
                         graph.removeTransaction(t);
@@ -89,10 +84,9 @@ public class StoreGraphValidatorNGTest {
                             System.out.println("g.removeTransaction(" + t + ");");
                         }
                     }
-                    break;
-
+                }
                 // Remove vertex
-                case 3:
+                case 3 -> {
                     int v = (int) (Math.random() * graph.getVertexCapacity());
                     if (graph.vertexExists(v)) {
                         graph.removeVertex(v);
@@ -102,13 +96,12 @@ public class StoreGraphValidatorNGTest {
                             System.out.println("g.removeVertex(" + v + ");");
                         }
                     }
-                    break;
+                }
             }
         }
     }
 
     private void validateGraph(StoreGraphValidator validator, GraphWriteMethods graph) {
-
         assertEquals(validator.getVertexCount(), graph.getVertexCount());
         assertEquals(validator.getLinkCount(), graph.getLinkCount());
         assertEquals(validator.getTransactionCount(), graph.getTransactionCount());
@@ -250,8 +243,8 @@ public class StoreGraphValidatorNGTest {
 
         @Override
         public boolean equals(Object other) {
-            if (other instanceof IdCollector) {
-                return ids.equals(((IdCollector) other).ids);
+            if (other instanceof IdCollector idCollector) {
+                return ids.equals(idCollector.ids);
             }
             return false;
         }

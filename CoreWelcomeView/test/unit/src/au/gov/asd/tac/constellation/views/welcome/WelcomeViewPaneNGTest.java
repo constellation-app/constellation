@@ -109,5 +109,4 @@ public class WelcomeViewPaneNGTest {
         verify(button).setStyle("-fx-background-color: transparent;");
         verify(button).setAlignment(Pos.CENTER_LEFT);
     }
-
 }

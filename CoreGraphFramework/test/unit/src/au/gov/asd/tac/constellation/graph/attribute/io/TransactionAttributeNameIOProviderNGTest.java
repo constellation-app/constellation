@@ -29,23 +29,24 @@ import org.testng.annotations.Test;
  */
 public class TransactionAttributeNameIOProviderNGTest {
     
-    public TransactionAttributeNameIOProviderNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -56,6 +57,5 @@ public class TransactionAttributeNameIOProviderNGTest {
         System.out.println("TransactionAttributeNameIOProviderNGTest.testGetName");
         TransactionAttributeNameIOProvider instance = new TransactionAttributeNameIOProvider();
         assertEquals(instance.getName(), TransactionAttributeNameAttributeDescription.ATTRIBUTE_NAME);
-    }
-    
+    }   
 }

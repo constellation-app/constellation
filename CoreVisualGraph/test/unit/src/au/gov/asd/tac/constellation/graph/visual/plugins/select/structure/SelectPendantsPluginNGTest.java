@@ -45,23 +45,16 @@ public class SelectPendantsPluginNGTest {
     private int vxId7;
     private int vxId8;
     
-    private int tId1;
-    private int tId2;
-    private int tId3;
-    private int tId4;
-    private int tId5;
-    private int tId6;
-    private int tId7;
-    private int tId8;
-    
     private int selectedVertexAttribute;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -78,20 +71,21 @@ public class SelectPendantsPluginNGTest {
         vxId7 = graph.addVertex();
         vxId8 = graph.addVertex();
         
-        tId1 = graph.addTransaction(vxId1, vxId2, true);
-        tId2 = graph.addTransaction(vxId1, vxId4, true);
-        tId3 = graph.addTransaction(vxId1, vxId5, true);
-        tId4 = graph.addTransaction(vxId2, vxId2, true);
-        tId5 = graph.addTransaction(vxId6, vxId5, true);
-        tId6 = graph.addTransaction(vxId7, vxId5, true);
-        tId7 = graph.addTransaction(vxId7, vxId6, true);
-        tId8 = graph.addTransaction(vxId8, vxId8, true);
+        graph.addTransaction(vxId1, vxId2, true);
+        graph.addTransaction(vxId1, vxId4, true);
+        graph.addTransaction(vxId1, vxId5, true);
+        graph.addTransaction(vxId2, vxId2, true);
+        graph.addTransaction(vxId6, vxId5, true);
+        graph.addTransaction(vxId7, vxId5, true);
+        graph.addTransaction(vxId7, vxId6, true);
+        graph.addTransaction(vxId8, vxId8, true);
         
         selectedVertexAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
