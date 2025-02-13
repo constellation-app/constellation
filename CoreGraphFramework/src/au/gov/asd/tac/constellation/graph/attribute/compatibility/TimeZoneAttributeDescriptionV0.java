@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,15 +92,20 @@ public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescr
      * @return A TimeZone.
      */
     private static TimeZone setObject(final Object value) {
-        if (value == null) {
-            return null;
-        } else if (value instanceof TimeZone) {
-            return (TimeZone) value;
-        } else if (value instanceof String) {
-            return TimeZone.getTimeZone((String) value);
-        } else {
-            final String msg = String.format("Error converting Object '%s' to time_zone", value.getClass());
-            throw new IllegalArgumentException(msg);
+        switch (value) {
+            case TimeZone timeZone -> {
+                return timeZone;
+            }       
+            case String string -> {
+                return TimeZone.getTimeZone(string);
+            }  
+            case null -> {
+                return null;
+            }
+            default -> {
+                final String msg = String.format("Error converting Object '%s' to time_zone", value.getClass());
+                throw new IllegalArgumentException(msg);
+            }   
         }
     }
 
@@ -125,7 +130,7 @@ public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescr
     }
 
     @Override
-    public AttributeDescription copy(GraphReadMethods graph) {
+    public AttributeDescription copy(final GraphReadMethods graph) {
         final TimeZoneAttributeDescriptionV0 attribute = new TimeZoneAttributeDescriptionV0();
         attribute.data = Arrays.copyOf(data, data.length);
         attribute.defaultValue = this.defaultValue;
@@ -140,16 +145,12 @@ public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescr
 
     @Override
     public void setDefault(final Object value) {
-        if (value == null) {
-            defaultValue = DEFAULT_VALUE;
-        }
-        if (value instanceof String) {
-            defaultValue = TimeZone.getTimeZone((String) value);
-        } else if (value instanceof TimeZone) {
-            defaultValue = (TimeZone) value;
-        } else {
-            defaultValue = DEFAULT_VALUE;
-        }
+        defaultValue = switch (value) {
+            case String string -> TimeZone.getTimeZone(string);
+            case TimeZone timeZone -> timeZone;
+            case null -> DEFAULT_VALUE;
+            default -> DEFAULT_VALUE;
+        };
     }
 
     @Override
@@ -184,12 +185,12 @@ public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescr
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (ObjectReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new ObjectVariable() {
             @Override
             public Object readObject() {
@@ -197,7 +198,7 @@ public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescr
             }
 
             @Override
-            public void writeObject(Object value) {
+            public void writeObject(final Object value) {
                 graph.setObjectValue(attribute, indexReadable.readInt(), value);
             }
         };

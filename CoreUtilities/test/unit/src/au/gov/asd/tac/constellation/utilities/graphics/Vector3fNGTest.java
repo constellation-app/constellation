@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -380,8 +380,6 @@ public class Vector3fNGTest {
      */
     @Test
     public void testToString() {
-        assertEquals(
-                new Vector3f(F1, F2, F3).toString(),
-                "3f[123.000000,321.000000,456.000000]");
+        assertEquals(new Vector3f(F1, F2, F3).toString(), "3f[123.000000,321.000000,456.000000]");
     }
 }

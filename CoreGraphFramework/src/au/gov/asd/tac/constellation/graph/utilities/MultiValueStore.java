@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,55 +31,75 @@ public class MultiValueStore implements ParameterReadAccess, ParameterWriteAcces
     private float f;
     private double d;
     private Object o;
+    
+    private int getInt(){
+        return i;
+    }
+
+    private long getLong() {
+        return l;
+    }
+
+    private float getFloat() {
+        return f;
+    }
+
+    private double getDouble() {
+        return d;
+    }
+    
+    private Object getObject(){
+        return o;
+    }
 
     @Override
     public int getExecuteInt() {
-        return i;
+        return getInt();
     }
 
     @Override
     public long getExecuteLong() {
-        return l;
+        return getLong();
     }
 
     @Override
     public float getExecuteFloat() {
-        return f;
+        return getFloat();
     }
 
     @Override
     public double getExecuteDouble() {
-        return d;
+        return getDouble();
     }
 
     @Override
     public Object getExecuteObject() {
-        return o;
+        return getObject();
     }
 
     @Override
     public int getUndoInt() {
-        return i;
+        return getInt();
     }
 
     @Override
     public long getUndoLong() {
-        return l;
+        return getLong();
     }
 
     @Override
     public float getUndoFloat() {
-        return f;
+        return getFloat();
     }
 
     @Override
     public double getUndoDouble() {
-        return d;
+        return getDouble();
     }
 
     @Override
     public Object getUndoObject() {
-        return o;
+        return getObject();
     }
 
     @Override

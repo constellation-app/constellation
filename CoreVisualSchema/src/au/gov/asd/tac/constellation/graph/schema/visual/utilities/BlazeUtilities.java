@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.
 import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -83,8 +82,7 @@ public class BlazeUtilities {
      */
     public static Pair<BitSet, ConstellationColor> getSelection(final Graph graph, ConstellationColor blazeColor) {
         final BitSet vertices = new BitSet();
-        final ReadableGraph readableGraph = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
             final int vertexBlazeAttributeId = VisualConcept.VertexAttribute.BLAZE.get(readableGraph);
             final int vertexSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
             final int vertexCount = readableGraph.getVertexCount();
@@ -104,8 +102,6 @@ public class BlazeUtilities {
             if (blazeColor == null) {
                 blazeColor = BlazeUtilities.DEFAULT_BLAZE.getColor();
             }
-        } finally {
-            readableGraph.release();
         }
 
         return new Pair<>(vertices, blazeColor);
@@ -119,33 +115,34 @@ public class BlazeUtilities {
      *
      * @param blazeColor The initial value of the color.
      *
-     * @return a pair containing 1) if the user pressed OK and 2) the selected
-     * blaze color.
+     * @return the selected blaze color, or null if the user did not press OK
      */
-    public static Pair<Boolean, ConstellationColor> colorDialog(final ConstellationColor blazeColor) {
+    public static ConstellationColor colorDialog(final ConstellationColor blazeColor) {
         final PluginParameters dlgParams = new PluginParameters();
         final PluginParameter<ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
         colorParam.setName("Color");
         colorParam.setDescription("Set color for Custom Blazes");
+        if (blazeColor != null) {
+            colorParam.setColorValue(blazeColor);
+        }
         dlgParams.addParameter(colorParam);
 
         final PluginParameter<BooleanParameterValue> presetParam = BooleanParameterType.build(PRESET_PARAMETER_ID);
         presetParam.setName("Preset");
         presetParam.setDescription("Save as Preset");
-        presetParam.setBooleanValue(false);
         dlgParams.addParameter(presetParam);
 
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog("Add Custom Blazes", dlgParams);
         dialog.showAndWait();
         final boolean isOk = PluginParametersDialog.OK.equals(dialog.getResult());
-        ConstellationColor colorResult = blazeColor;
+        ConstellationColor colorResult = null;
         if (isOk) {
             colorResult = dlgParams.getColorValue(COLOR_PARAMETER_ID);
             if (dlgParams.getBooleanValue(PRESET_PARAMETER_ID)) {
-                savePreset(colorResult.getJavaColor());
+                savePreset(colorResult);
             }
         }
-        return new Pair<>(isOk, colorResult);
+        return colorResult;
     }
 
     /**
@@ -153,7 +150,7 @@ public class BlazeUtilities {
      *
      * @param newColor the new selected color to add as a preset
      */
-    public static void savePreset(final Color newColor) {
+    public static void savePreset(final ConstellationColor newColor) {
         final String colorString = getGraphPreferences().get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
         final List<String> colorsList = Arrays.asList(colorString.split(SeparatorConstants.SEMICOLON));
         final int freePosition;
@@ -219,7 +216,7 @@ public class BlazeUtilities {
      * @param newColor the new selected color to add as a preset
      * @param position
      */
-    public static void savePreset(final Color newColor, final int position) {
+    public static void savePreset(final ConstellationColor newColor, final int position) {
         if (position >= 10 || position < 0) {
             return;
         }
@@ -231,7 +228,7 @@ public class BlazeUtilities {
         for (int i = colorsList.size(); i < MAXIMUM_CUSTOM_BLAZE_COLORS; i++) {
             colorsList.add(null);
         }
-        colorsList.set(position, getHTMLColor(newColor));
+        colorsList.set(position, newColor == null ? null : newColor.getHtmlColor());
 
         final StringBuilder preferencesBuilder = new StringBuilder();
         for (int i = 0; i < MAXIMUM_CUSTOM_BLAZE_COLORS; i++) {
@@ -239,23 +236,6 @@ public class BlazeUtilities {
             preferencesBuilder.append(SeparatorConstants.SEMICOLON);
         }
         getGraphPreferences().put(GraphPreferenceKeys.BLAZE_PRESET_COLORS, preferencesBuilder.toString());
-    }
-
-    /**
-     * Get the HTML color from a java color
-     *
-     * @param color
-     * @return the string representing the color in hex
-     */
-    public static String getHTMLColor(final Color color) {
-        if (color == null) {
-            return null;
-        }
-
-        final int r = color.getRed();
-        final int g = color.getGreen();
-        final int b = color.getBlue();
-        return String.format("#%02x%02x%02x", r, g, b);
     }
 
     protected static Preferences getGraphPreferences() {

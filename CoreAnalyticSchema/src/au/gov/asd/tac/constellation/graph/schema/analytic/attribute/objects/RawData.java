@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,19 +109,13 @@ public class RawData implements Comparable<RawData> {
             return secondaryValue;
         }
 
-        final String mergedRawIdentifier;
-        if (primaryValue.hasRawIdentifier()) {
-            mergedRawIdentifier = primaryValue.getRawIdentifier();
-        } else {
-            mergedRawIdentifier = secondaryValue.getRawIdentifier();
-        }
+        final String mergedRawIdentifier = primaryValue.hasRawIdentifier() 
+                ? primaryValue.getRawIdentifier()
+                : secondaryValue.getRawIdentifier();
 
-        final String mergedRawType;
-        if (primaryValue.hasRawType()) {
-            mergedRawType = primaryValue.getRawType();
-        } else {
-            mergedRawType = secondaryValue.getRawType();
-        }
+        final String mergedRawType = primaryValue.hasRawType()
+                ? primaryValue.getRawType()
+                : secondaryValue.getRawType();
 
         return new RawData(mergedRawIdentifier, mergedRawType);
     }
@@ -148,17 +142,12 @@ public class RawData implements Comparable<RawData> {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final RawData other = (RawData) obj;
-        if (!Objects.equals(this.rawIdentifier, other.rawIdentifier)) {
-            return false;
-        }
-        return Objects.equals(this.rawType, other.rawType);
+        return Objects.equals(this.rawIdentifier, other.rawIdentifier) 
+                && Objects.equals(this.rawType, other.rawType);
     }
 
     @Override

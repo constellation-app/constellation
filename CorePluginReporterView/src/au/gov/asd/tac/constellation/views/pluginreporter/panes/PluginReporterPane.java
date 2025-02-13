@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +50,7 @@ import org.openide.util.HelpCtx;
 import org.openide.util.NbPreferences;
 
 /**
- * A PluginReporterPane provides a UI where all PluginReports for a single graph
- * are displayed.
+ * A PluginReporterPane provides a UI where all PluginReports for a single graph are displayed.
  *
  * @author sirius
  */
@@ -69,7 +68,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private final MultiChoiceInputField<String> tagFilterMultiChoiceInput = new MultiChoiceInputField<>(availableTags);
     private final Set<String> filteredTags = new HashSet<>();
     private PluginReportFilter pluginReportFilter = null;
-
 
     // The height of the report box last time we looked
     // This allows us to see if a change in the vertical scroll
@@ -89,7 +87,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private static final int MAXIMUM_REPORT_PANES = 300;
 
     public PluginReporterPane() {
-    
+
         // Update filtered tags from preferences
         final Preferences prefs = NbPreferences.forModule(PluginReporterPane.class);
         String filteredTagString = prefs.get(FILTERED_TAGS_KEY, PluginTags.LOW_LEVEL);
@@ -158,7 +156,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         filteredTags.removeAll(tagFilterMultiChoiceInput.getCheckModel().getCheckedItems());
 
         // Save the new filtered tags to preferences
-        StringBuilder prefString = new StringBuilder();
+        final StringBuilder prefString = new StringBuilder();
         String delimiter = "";
         for (String filteredTag : filteredTags) {
             prefString.append(delimiter);
@@ -183,8 +181,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     }
 
     /**
-     * Update the reports shown in the report box to reflect those recorded
-     * against the current graph.
+     * Update the reports shown in the report box to reflect those recorded against the current graph.
      *
      * @param refresh
      */
@@ -229,7 +226,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             final List<String> tags = new ArrayList<>(graphReport.getUTags());
             int[] selectedIndices = new int[tags.size()];
             int selectedIndexCount = 0;
-            int tagIndex = 0;
+            int tagIndex;
             for (String tag : tags) {
                 if (!availableTags.contains(tag)) {
                     availableTags.add(tag);

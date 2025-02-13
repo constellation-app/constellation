@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
  */
 package au.gov.asd.tac.constellation.views.layers.utilities;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.layers.context.LayerAction;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
 
 /**
@@ -32,45 +32,34 @@ import org.testng.annotations.Test;
  */
 public class UpdateElementBitmaskPluginNGTest {
 
-    private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT, selectedV, selectedT;
-    private int vxId1, vxId2, txId1, txId2;
+    private int layerMaskV;
+    private int layerMaskT;
+    private int layerVisibilityV;
+    private int layerVisibilityT;
+    private int selectedV;
+    private int selectedT;
+    
+    private int vxId1;
+    private int vxId2;
+    private int txId1;
+    private int txId2;
+    
     private StoreGraph graph;
-
-    public UpdateElementBitmaskPluginNGTest() {
-    }
-
-    public void setupGraph() {
+    
+    private void setupGraph() {
         graph = new StoreGraph();
 
         // Create LayerMask attributes
         layerMaskV = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
-        if (layerMaskV == Graph.NOT_FOUND) {
-            fail();
-        }
         layerMaskT = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
-        if (layerMaskT == Graph.NOT_FOUND) {
-            fail();
-        }
 
         // Create LayerVisilibity Attributes
         layerVisibilityV = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
-        if (layerVisibilityV == Graph.NOT_FOUND) {
-            fail();
-        }
         layerVisibilityT = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
-        if (layerVisibilityT == Graph.NOT_FOUND) {
-            fail();
-        }
 
         // Create Selected Attributes
         selectedV = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        if (selectedV == Graph.NOT_FOUND) {
-            fail();
-        }
         selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-        if (selectedT == Graph.NOT_FOUND) {
-            fail();
-        }
 
         // Adding 2 Vertices - not selected, layer 1, visible
         vxId1 = graph.addVertex();
@@ -99,64 +88,64 @@ public class UpdateElementBitmaskPluginNGTest {
     public void addNoElementsSelectedTest() throws InterruptedException, PluginException {
         setupGraph();
         // Check Vertex set correctly
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
-        assertTrue(false == graph.getBooleanValue(selectedV, vxId1));
+        assertEquals(graph.getIntValue(layerMaskV, vxId1), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityV, vxId1), 1F);
+        assertFalse(graph.getBooleanValue(selectedV, vxId1));
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
-        assertTrue(false == graph.getBooleanValue(selectedV, vxId2));
+        assertEquals(graph.getIntValue(layerMaskV, vxId2), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityV, vxId2), 1F);
+        assertFalse(graph.getBooleanValue(selectedV, vxId2));
 
         // Check Transaction set correctly
-        assertTrue(1 == graph.getIntValue(layerMaskT, txId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId1));
-        assertTrue(false == graph.getBooleanValue(selectedT, txId1));
+        assertEquals(graph.getIntValue(layerMaskT, txId1), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityT, txId1), 1F);
+        assertFalse(graph.getBooleanValue(selectedT, txId1));
 
-        assertTrue(1 == graph.getIntValue(layerMaskT, txId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId2));
-        assertTrue(false == graph.getBooleanValue(selectedT, txId2));
+        assertEquals(graph.getIntValue(layerMaskT, txId2), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityT, txId2), 1F);
+        assertFalse(graph.getBooleanValue(selectedT, txId2));
 
         PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(2, LayerAction.ADD, true)).executeNow(graph);
 
         // Check Vertex unchanged
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
-        assertTrue(false == graph.getBooleanValue(selectedV, vxId1));
+        assertEquals(graph.getIntValue(layerMaskV, vxId1), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityV, vxId1), 1F);
+        assertFalse(graph.getBooleanValue(selectedV, vxId1));
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
-        assertTrue(false == graph.getBooleanValue(selectedV, vxId2));
+        assertEquals(graph.getIntValue(layerMaskV, vxId2), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityV, vxId2), 1F);
+        assertFalse(graph.getBooleanValue(selectedV, vxId2));
 
         // Check Transaction unchanged
-        assertTrue(1 == graph.getIntValue(layerMaskT, txId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId1));
-        assertTrue(false == graph.getBooleanValue(selectedT, txId1));
+        assertEquals(graph.getIntValue(layerMaskT, txId1), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityT, txId1), 1F);
+        assertFalse(graph.getBooleanValue(selectedT, txId1));
 
-        assertTrue(1 == graph.getIntValue(layerMaskT, txId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId2));
-        assertTrue(false == graph.getBooleanValue(selectedT, txId2));
+        assertEquals(graph.getIntValue(layerMaskT, txId2), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityT, txId2), 1F);
+        assertFalse(graph.getBooleanValue(selectedT, txId2));
     }
 
     @Test
     public void addRemoveTwoElementsSelectedTest() throws InterruptedException, PluginException {
         setupGraph();
         // Check Vertex set correctly
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
-        assertTrue(false == graph.getBooleanValue(selectedV, vxId1));
+        assertEquals(graph.getIntValue(layerMaskV, vxId1), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityV, vxId1), 1F);
+        assertFalse(graph.getBooleanValue(selectedV, vxId1));
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
-        assertTrue(false == graph.getBooleanValue(selectedV, vxId2));
+        assertEquals(graph.getIntValue(layerMaskV, vxId2), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityV, vxId2), 1F);
+        assertFalse(graph.getBooleanValue(selectedV, vxId2));
 
         // Check Transaction set correctly
-        assertTrue(1 == graph.getIntValue(layerMaskT, txId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId1));
-        assertTrue(false == graph.getBooleanValue(selectedT, txId1));
+        assertEquals(graph.getIntValue(layerMaskT, txId1), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityT, txId1), 1F);
+        assertFalse(graph.getBooleanValue(selectedT, txId1));
 
-        assertTrue(1 == graph.getIntValue(layerMaskT, txId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId2));
-        assertTrue(false == graph.getBooleanValue(selectedT, txId2));
+        assertEquals(graph.getIntValue(layerMaskT, txId2), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityT, txId2), 1F);
+        assertFalse(graph.getBooleanValue(selectedT, txId2));
 
         // Setting Vertex and Transacion 2 to selected.
         graph.setBooleanValue(selectedT, txId2, true);
@@ -165,42 +154,42 @@ public class UpdateElementBitmaskPluginNGTest {
         PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(1, LayerAction.ADD, true)).executeNow(graph);
 
         // Check Vertex values
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
-        assertTrue(false == graph.getBooleanValue(selectedV, vxId1));
+        assertEquals(graph.getIntValue(layerMaskV, vxId1), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityV, vxId1), 1F);
+        assertFalse(graph.getBooleanValue(selectedV, vxId1));
 
-        assertTrue(0b11 == graph.getIntValue(layerMaskV, vxId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
-        assertTrue(true == graph.getBooleanValue(selectedV, vxId2));
+        assertEquals( graph.getIntValue(layerMaskV, vxId2), 0b11);
+        assertEquals(graph.getFloatValue(layerVisibilityV, vxId2), 1F);
+        assertTrue(graph.getBooleanValue(selectedV, vxId2));
 
         // Check Transaction values
-        assertTrue(1 == graph.getIntValue(layerMaskT, txId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId1));
-        assertTrue(false == graph.getBooleanValue(selectedT, txId1));
+        assertEquals(graph.getIntValue(layerMaskT, txId1), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityT, txId1), 1F);
+        assertFalse(graph.getBooleanValue(selectedT, txId1));
 
-        assertTrue(0b11 == graph.getIntValue(layerMaskT, txId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId2));
-        assertTrue(true == graph.getBooleanValue(selectedT, txId2));
+        assertEquals(graph.getIntValue(layerMaskT, txId2), 0b11);
+        assertEquals(graph.getFloatValue(layerVisibilityT, txId2), 1F);
+        assertTrue(graph.getBooleanValue(selectedT, txId2));
 
         // Remove from layers
         PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(1, LayerAction.REMOVE, true)).executeNow(graph);
 
         // check vertices set correctly
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
-        assertTrue(false == graph.getBooleanValue(selectedV, vxId1));
+        assertEquals(graph.getIntValue(layerMaskV, vxId1), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityV, vxId1), 1F);
+        assertFalse(graph.getBooleanValue(selectedV, vxId1));
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
-        assertTrue(true == graph.getBooleanValue(selectedV, vxId2));
+        assertEquals(graph.getIntValue(layerMaskV, vxId2), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityV, vxId2), 1F);
+        assertTrue(graph.getBooleanValue(selectedV, vxId2));
 
         // Check Transaction set correctly
-        assertTrue(1 == graph.getIntValue(layerMaskT, txId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId1));
-        assertTrue(false == graph.getBooleanValue(selectedT, txId1));
+        assertEquals( graph.getIntValue(layerMaskT, txId1), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityT, txId1), 1F);
+        assertFalse(graph.getBooleanValue(selectedT, txId1));
 
-        assertTrue(1 == graph.getIntValue(layerMaskT, txId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId2));
-        assertTrue(true == graph.getBooleanValue(selectedT, txId2));
+        assertEquals(graph.getIntValue(layerMaskT, txId2), 1);
+        assertEquals(graph.getFloatValue(layerVisibilityT, txId2), 1F);
+        assertTrue(graph.getBooleanValue(selectedT, txId2));
     }
 }

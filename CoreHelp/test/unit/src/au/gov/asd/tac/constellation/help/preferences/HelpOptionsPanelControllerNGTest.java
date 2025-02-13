@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,24 +42,25 @@ import org.testng.annotations.Test;
 public class HelpOptionsPanelControllerNGTest {
 
     Preferences prefs;
-
-    public HelpOptionsPanelControllerNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -92,9 +93,7 @@ public class HelpOptionsPanelControllerNGTest {
             // verify that the panel was set with the proper value
             verify(panel, times(1)).setOnlineHelpOption(Mockito.eq(returnValue));
             verify(panel, times(1)).setOfflineHelpPort(Mockito.eq(port));
-
         }
-
     }
 
     /**
@@ -127,9 +126,7 @@ public class HelpOptionsPanelControllerNGTest {
             // verify that the panel was set with the proper value
             verify(panel, times(1)).setOnlineHelpOption(Mockito.eq(returnValue));
             verify(panel, times(1)).setOfflineHelpPort(Mockito.eq(port));
-
         }
-
     }
 
     /**
@@ -232,7 +229,6 @@ public class HelpOptionsPanelControllerNGTest {
             verify(prefs, times(1)).putBoolean(Mockito.eq(key), Mockito.eq(returnValue));
             // verify that the panel method was not called again
             verify(panel, times(2)).isOnlineHelpSelected();
-
         }
     }
 

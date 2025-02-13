@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A PluginReport is created each time a plugin is executed. It stores
@@ -179,7 +178,20 @@ public class PluginReport {
             return this.runningStateLog.isEmpty() ? "" : this.runningStateLog.get(this.runningStateLog.size()-1);
         }
     }
-
+    
+    /**
+     * Returns the all messages from this plugin.
+     *
+     * @return the completed messages from this plugin.
+     */
+    public String getAllMessages() {
+        if ((executionStage.equals(PluginExecutionStageConstants.COMPLETE) || executionStage.equals(PluginExecutionStageConstants.STOPPED)) && !this.messageLog.isEmpty()){
+            return String.join(System.lineSeparator(), this.messageLog);
+        } else {
+            return this.runningStateLog.isEmpty() ? "" : String.join(System.lineSeparator(), this.runningStateLog);
+        }
+    }
+    
     /**
      * Sets the current message from this plugin.
      *
@@ -307,7 +319,7 @@ public class PluginReport {
      * @return true if the specified collection of tags contains all tags of
      * this plugin.
      */
-    public boolean containsAllTags(final Set<String> filteredTags) {
+    public boolean containsAllTags(final Collection<String> filteredTags) {
         for (String tag : tags) {
             if (!filteredTags.contains(tag)) {
                 return false;
@@ -325,7 +337,7 @@ public class PluginReport {
      * @return true if the specified collection of tags contains at least one of
      * the tags of this plugin.
      */
-    public boolean containsAnyTag(final Set<String> allowedTags) {
+    public boolean containsAnyTag(final Collection<String> allowedTags) {
         for (String tag : tags) {
             if (allowedTags.contains(tag)) {
                 return true;

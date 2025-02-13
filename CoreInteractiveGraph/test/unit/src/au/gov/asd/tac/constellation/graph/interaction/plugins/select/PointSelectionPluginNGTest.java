@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
 import static org.testng.Assert.assertEquals;
@@ -50,11 +51,17 @@ public class PointSelectionPluginNGTest {
     private StoreGraph storeGraph;
 
     // Vertex and transaction attribute IDs respectively.
-    private int vAttrId, tAttrId;
+    private int vAttrId;
+    private int tAttrId;
 
     // Vertex and transaction IDs respectively.
-    private int vxId1, vxId2, vxId3;
-    private int txId1, txId2, txId3;
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    
+    private int txId1;
+    private int txId2;
+    private int txId3;
 
     // Arrays used by the PointSelectionPlugin that contain the selected graph elements during plugin execution.
     private IntArray vxIds;
@@ -67,10 +74,12 @@ public class PointSelectionPluginNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -81,7 +90,6 @@ public class PointSelectionPluginNGTest {
      */
     @BeforeMethod
     public void setUpMethod() throws Exception {
-
         storeGraph = new StoreGraph();
 
         vAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(storeGraph);
@@ -104,17 +112,18 @@ public class PointSelectionPluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Tests selections with both the toggleSelection and clearSelection options
      * on a graph that begins with no elements selected.
      *
-     * @throws Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testNoElementsSelectedOnGraph() throws Exception {
-
+    public void testNoElementsSelectedOnGraph() throws InterruptedException, PluginException {
         // Select vertex vxId1 with clearSelection. All other elements should remain deselected.
         vxIds.add(vxId1);
 
@@ -181,11 +190,11 @@ public class PointSelectionPluginNGTest {
      * Tests selections with both the toggleSelection and clearSelection options
      * on a graph that begins with all elements selected.
      *
-     * @throws Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testAllElementsSelectedOnGraph() throws Exception {
-
+    public void testAllElementsSelectedOnGraph() throws InterruptedException, PluginException {
         selectAllAndAssert(null, true);
 
         // Select vertex vxId1 with toggleSelection. All other elements should remain selected.
@@ -252,11 +261,11 @@ public class PointSelectionPluginNGTest {
      * Tests when a vertex is selected and; all vertices and transaction are
      * unselected, toggle selection is true, and clear selection is true.
      *
-     * @throws Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testNoElementsSelectedAndVertexSelected() throws Exception {
-
+    public void testNoElementsSelectedAndVertexSelected() throws InterruptedException, PluginException {
         vxIds.add(vxId1);
 
         Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, true, true);
@@ -274,11 +283,11 @@ public class PointSelectionPluginNGTest {
      * Tests when a transaction is selected and; all vertices and transaction
      * are unselected, toggle selection is true, and clear selection is true.
      *
-     * @throws Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testNoElementsSelectedAndTransactionSelected() throws Exception {
-
+    public void testNoElementsSelectedAndTransactionSelected() throws InterruptedException, PluginException {
         txIds.add(txId1);
 
         Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, true, true);
@@ -296,11 +305,11 @@ public class PointSelectionPluginNGTest {
      * Tests when a vertex is selected and; all vertices and transactions are
      * selected, toggle selection is true, and clear selection is true.
      *
-     * @throws Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testAllElementsSelectedAndVertexSelected() throws Exception {
-
+    public void testAllElementsSelectedAndVertexSelected() throws InterruptedException, PluginException {
         selectAllAndAssert(null, true);
 
         vxIds.add(vxId1);
@@ -320,11 +329,11 @@ public class PointSelectionPluginNGTest {
      * Tests when a transaction is selected and; all vertices and transactions
      * are selected, toggle selection is true, and clear selection is true.
      *
-     * @throws Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testAllElementsSelectedAndTransactionSelected() throws Exception {
-
+    public void testAllElementsSelectedAndTransactionSelected() throws InterruptedException, PluginException {
         selectAllAndAssert(null, true);
 
         txIds.add(txId1);
@@ -344,11 +353,11 @@ public class PointSelectionPluginNGTest {
      * Tests when a vertex is selected and; only vertices are selected, toggle
      * selection is true, and clear selection is true.
      *
-     * @throws Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testOnlyVerticesSelectedAndVertexSelected() throws Exception {
-
+    public void testOnlyVerticesSelectedAndVertexSelected() throws InterruptedException, PluginException {
         selectAllAndAssert(GraphElementType.VERTEX, true);
 
         vxIds.add(vxId1);
@@ -368,10 +377,11 @@ public class PointSelectionPluginNGTest {
      * Tests when a transaction is selected and; only vertices are selected,
      * toggle selection is true, and clear selection is true.
      *
-     * @throws Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testOnlyVerticesSelectedAndTransactionSelected() throws Exception {
+    public void testOnlyVerticesSelectedAndTransactionSelected() throws InterruptedException, PluginException {
 
         selectAllAndAssert(GraphElementType.VERTEX, true);
 
@@ -392,11 +402,11 @@ public class PointSelectionPluginNGTest {
      * Tests when a vertex is selected and; only transactions are selected,
      * toggle selection is true, and clear selection is true.
      *
-     * @throws Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testOnlyTransactionsSelectedAndVertexSelected() throws Exception {
-
+    public void testOnlyTransactionsSelectedAndVertexSelected() throws InterruptedException, PluginException {
         selectAllAndAssert(GraphElementType.TRANSACTION, true);
 
         vxIds.add(vxId1);
@@ -416,11 +426,11 @@ public class PointSelectionPluginNGTest {
      * Tests when a transaction is selected and; only transactions are selected,
      * toggle selection is true, and clear selection is true.
      *
-     * @throws Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testOnlyTransactionsSelectedAndTransactionSelected() throws Exception {
-
+    public void testOnlyTransactionsSelectedAndTransactionSelected() throws InterruptedException, PluginException {
         selectAllAndAssert(GraphElementType.TRANSACTION, true);
 
         txIds.add(txId1);
@@ -446,8 +456,7 @@ public class PointSelectionPluginNGTest {
      * be set to true; selected, or false; unselected.
      */
     private void selectAllAndAssert(final GraphElementType type, final boolean selectAll) {
-
-        if (null == type) {
+        if (type == null) {
             storeGraph.setBooleanValue(vAttrId, vxId1, selectAll);
             storeGraph.setBooleanValue(vAttrId, vxId2, selectAll);
             storeGraph.setBooleanValue(vAttrId, vxId3, selectAll);
@@ -465,7 +474,7 @@ public class PointSelectionPluginNGTest {
             assertEquals(storeGraph.getBooleanValue(tAttrId, txId3), selectAll);
         } else {
             switch (type) {
-                case VERTEX:
+                case VERTEX -> {
                     storeGraph.setBooleanValue(vAttrId, vxId1, selectAll);
                     storeGraph.setBooleanValue(vAttrId, vxId2, selectAll);
                     storeGraph.setBooleanValue(vAttrId, vxId3, selectAll);
@@ -481,8 +490,8 @@ public class PointSelectionPluginNGTest {
                     assertEquals(storeGraph.getBooleanValue(tAttrId, txId1), !selectAll);
                     assertEquals(storeGraph.getBooleanValue(tAttrId, txId2), !selectAll);
                     assertEquals(storeGraph.getBooleanValue(tAttrId, txId3), !selectAll);
-                    break;
-                case TRANSACTION:
+                }
+                case TRANSACTION -> {
                     storeGraph.setBooleanValue(vAttrId, vxId1, !selectAll);
                     storeGraph.setBooleanValue(vAttrId, vxId2, !selectAll);
                     storeGraph.setBooleanValue(vAttrId, vxId3, !selectAll);
@@ -498,9 +507,10 @@ public class PointSelectionPluginNGTest {
                     assertEquals(storeGraph.getBooleanValue(tAttrId, txId1), selectAll);
                     assertEquals(storeGraph.getBooleanValue(tAttrId, txId2), selectAll);
                     assertEquals(storeGraph.getBooleanValue(tAttrId, txId3), selectAll);
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                    //Do Nothing
+                }
             }
         }
     }

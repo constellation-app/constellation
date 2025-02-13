@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,17 +124,16 @@ public class GaussianBlur {
         final int[] boxes = boxesForGauss(radius, passes);
         for (int i = 0; i < passes; i++) {
             switch (type) {
-                case STANDARD:
+                case STANDARD ->
                     boxBlur(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                    break;
-                case FAST:
+                case FAST -> {
                     boxBlurFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                     boxBlurFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                    break;
-                case FASTEST:
+                }
+                case FASTEST -> {
                     boxBlurFFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                     boxBlurFFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                    break;
+                }
             }
             tempChannel = targetChannel;
         }
@@ -215,31 +214,32 @@ public class GaussianBlur {
             final float lv = sourceChannel[ti + width - 1];
             float val = (radius + 1) * fv;
             for (int j = 0; j < radius; j++) {
-                if (ti + j < sourceChannel.length) {
+                if (sourceChannel.length > 0 && isValidElement(ti + j, sourceChannel)) {
                     val += sourceChannel[ti + j];
                 }
             }
             for (int j = 0; j <= radius; j++) {
-                if (ri < sourceChannel.length) {
+
+                if (sourceChannel.length > 0 && isValidElement(ri, sourceChannel)) {
                     val += sourceChannel[ri++] - fv;
                 }
-                if (ti < targetChannel.length) {
+                if (ti < targetChannel.length && targetChannel.length > 0) {
                     targetChannel[ti++] = val * iarr;
                 }
             }
             for (int j = radius + 1; j < width - radius; j++) {
-                if (ri < sourceChannel.length && li < sourceChannel.length) {
+                if (sourceChannel.length > 0 && isValidElement(ri, sourceChannel) && isValidElement(li, sourceChannel)) {
                     val += sourceChannel[ri++] - sourceChannel[li++];
                 }
-                if (ti < targetChannel.length) {
+                if (targetChannel.length > 0 && isValidElement(ti, targetChannel)) {
                     targetChannel[ti++] = val * iarr;
                 }
             }
             for (int j = width - radius; j < width; j++) {
-                if (li < sourceChannel.length) {
+                if (sourceChannel.length > 0 && isValidElement(li, sourceChannel)) {
                     val += lv - sourceChannel[li++];
                 }
-                if (ti < targetChannel.length) {
+                if (targetChannel.length > 0 && isValidElement(ti, targetChannel)) {
                     targetChannel[ti++] = val * iarr;
                 }
             }
@@ -257,25 +257,25 @@ public class GaussianBlur {
             final float lv = sourceChannel[ti + width * (height - 1)];
             float val = (radius + 1) * fv;
             for (int j = 0; j < radius; j++) {
-                if ((ti + j * width) < sourceChannel.length) {
+                if (sourceChannel.length > 0 && isValidElement((ti + j * width), sourceChannel)) {
                     val += sourceChannel[ti + j * width];
                 }
             }
             for (int j = 0; j <= radius; j++) {
-                if (ri < sourceChannel.length) {
+                if (sourceChannel.length > 0 && isValidElement(ri, sourceChannel)) {
                     val += sourceChannel[ri] - fv;
                 }
-                if (ti < targetChannel.length) {
+                if (targetChannel.length > 0 && isValidElement(ti, targetChannel)) {
                     targetChannel[ti] = val * iarr;
                 }
                 ri += width;
                 ti += width;
             }
             for (int j = radius + 1; j < height - radius; j++) {
-                if (ri < sourceChannel.length) {
+                if (sourceChannel.length > 0 && isValidElement(ri, sourceChannel) && isValidElement(li, sourceChannel)) {
                     val += sourceChannel[ri] - sourceChannel[li];
                 }
-                if (ti < targetChannel.length) {
+                if (targetChannel.length > 0 && isValidElement(ti, targetChannel)) {
                     targetChannel[ti] = val * iarr;
                 }
                 li += width;
@@ -283,10 +283,10 @@ public class GaussianBlur {
                 ti += width;
             }
             for (int j = height - radius; j < height; j++) {
-                if (li < sourceChannel.length) {
+                if (sourceChannel.length > 0 && isValidElement(li, sourceChannel)) {
                     val += lv - sourceChannel[li];
                 }
-                if (ti < targetChannel.length) {
+                if (targetChannel.length > 0 && isValidElement(ti, targetChannel)) {
                     targetChannel[ti] = val * iarr;
                 }
                 li += width;
@@ -324,5 +324,9 @@ public class GaussianBlur {
         } else {
             throw new IllegalArgumentException("Threshold must be a value between 0 and 255");
         }
+    }
+
+    private static boolean isValidElement(final int index, final float[] array) {
+        return (index >= 0) && (index < array.length);
     }
 }

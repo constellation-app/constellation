@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -36,11 +37,7 @@ import org.testng.annotations.Test;
 public class DateTimePickerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(DateTimePickerNGTest.class.getName());
-
-
-    public DateTimePickerNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -59,10 +56,12 @@ public class DateTimePickerNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
 
@@ -77,9 +76,9 @@ public class DateTimePickerNGTest {
         final DateTimePicker instance = new DateTimePicker(true);
         instance.setCurrentDateTime(zone);
 
-        assertEquals(currentTime.getSecond() == instance.getCurrentDateTime().getSecond(), true);
-        assertEquals(currentTime.getMinute() == instance.getCurrentDateTime().getMinute(), true);
-        assertEquals(currentTime.getHour() == instance.getCurrentDateTime().getHour(), true);
+        assertTrue(currentTime.getSecond() == instance.getCurrentDateTime().getSecond());
+        assertTrue(currentTime.getMinute() == instance.getCurrentDateTime().getMinute());
+        assertTrue(currentTime.getHour() == instance.getCurrentDateTime().getHour());
     }
 
     /**
@@ -98,9 +97,9 @@ public class DateTimePickerNGTest {
 
         ZonedDateTime currentTime = ZonedDateTime.now(convertTo);
 
-        assertEquals(currentTime.getSecond() == instance.getCurrentDateTime().getSecond(), true);
-        assertEquals(currentTime.getMinute() == instance.getCurrentDateTime().getMinute(), true);
-        assertEquals(currentTime.getHour() == instance.getCurrentDateTime().getHour(), true);
+        assertTrue(currentTime.getSecond() == instance.getCurrentDateTime().getSecond());
+        assertTrue(currentTime.getMinute() == instance.getCurrentDateTime().getMinute());
+        assertTrue(currentTime.getHour() == instance.getCurrentDateTime().getHour());
     }
 
     /**
@@ -114,22 +113,9 @@ public class DateTimePickerNGTest {
         final boolean result = instance.isActive();
         assertEquals(result, expResult);
         instance.setActive(true);
-        assertEquals(instance.isActive(), true);
+        assertTrue(instance.isActive());
     }
-
-    /**
-     * Test of setActive method, of class DateTimePicker.
-     */
-    @Test
-    public void testSetActive() {
-        System.out.println("setActive");
-        final boolean active = true;
-        final DateTimePicker instance = new DateTimePicker(true);
-        instance.setActive(active);
-
-        assertEquals(instance.isActive(), true);
-    }
-
+    
     /**
      * Test of getCurrentDateTime method, of class DateTimePicker.
      */
@@ -141,9 +127,9 @@ public class DateTimePickerNGTest {
         final ZonedDateTime expResult = ZonedDateTime.now(ZoneId.of("Australia/Adelaide"));
         final ZonedDateTime result = instance.getCurrentDateTime();
 
-        assertEquals(expResult.getSecond() == result.getSecond(), true);
-        assertEquals(expResult.getMinute() == result.getMinute(), true);
-        assertEquals(expResult.getHour() == result.getHour(), true);
+        assertTrue(expResult.getSecond() == result.getSecond());
+        assertTrue(expResult.getMinute() == result.getMinute());
+        assertTrue(expResult.getHour() == result.getHour());
     }
 
     /**
@@ -158,7 +144,5 @@ public class DateTimePickerNGTest {
 
         final ZoneId result = instance.getZoneId();
         assertEquals(result, zone);
-
     }
-
 }

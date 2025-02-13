@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -38,41 +37,37 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class TOCGeneratorNGTest {
-
-    public TOCGeneratorNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
-    public void testCreateTOCFile() {
+    public void testCreateTOCFile() throws IOException {
         System.out.println("createTOCFile");
 
         File tempFileTOC = null;
         String validPath = "";
         try {
-            try {
-                // Create a temp file to grab a valid path on the filesystem
-                tempFileTOC = File.createTempFile("tempFileTOC", ".md");
-                validPath = tempFileTOC.getAbsolutePath();
-
-            } catch (final IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+            // Create a temp file to grab a valid path on the filesystem
+            tempFileTOC = File.createTempFile("tempFileTOC", ".md");
+            validPath = tempFileTOC.getAbsolutePath();
         } finally {
             if (tempFileTOC != null && tempFileTOC.exists()) {
                 tempFileTOC.delete();
@@ -95,40 +90,35 @@ public class TOCGeneratorNGTest {
     }
 
     @Test
-    public void testCreateTOCFileExists() {
+    public void testCreateTOCFileExists() throws IOException {
         System.out.println("createTOCFile");
 
         File tempFileTOC = null;
         File tempFileAtValidPath = null;
         try {
-            try {
-                // Create a temp file to grab a valid path on the filesystem
-                tempFileTOC = File.createTempFile("tempFileTOC", ".md");
-                // assert file is empty beforehand
-                assertTrue(tempFileTOC.length() == 0);
+            // Create a temp file to grab a valid path on the filesystem
+            tempFileTOC = File.createTempFile("tempFileTOC", ".md");
+            // assert file is empty beforehand
+            assertTrue(tempFileTOC.length() == 0);
 
-                // write into file, assert it has content
-                FileWriter fw = new FileWriter(tempFileTOC);
+            // write into file, assert it has content
+            try (final FileWriter fw = new FileWriter(tempFileTOC)) {
                 fw.write("this file now has content");
-                fw.close();
-                assertTrue(tempFileTOC.length() != 0);
-
-                final String validPath = tempFileTOC.getAbsolutePath();
-
-                // make a POJO at the path, check if a real file exists. There should be.
-                tempFileAtValidPath = new File(validPath);
-                assertTrue(tempFileAtValidPath.exists());
-
-                // run the method, assert that it returns true for success, and that there is now a file at that location.
-                assertTrue(TOCGenerator.createTOCFile(validPath));
-                assertTrue(tempFileAtValidPath.exists());
-
-                // assert file is empty
-                assertTrue(tempFileTOC.length() == 0);
-
-            } catch (final IOException ex) {
-                Exceptions.printStackTrace(ex);
             }
+            assertTrue(tempFileTOC.length() != 0);
+
+            final String validPath = tempFileTOC.getAbsolutePath();
+
+            // make a POJO at the path, check if a real file exists. There should be.
+            tempFileAtValidPath = new File(validPath);
+            assertTrue(tempFileAtValidPath.exists());
+
+            // run the method, assert that it returns true for success, and that there is now a file at that location.
+            assertTrue(TOCGenerator.createTOCFile(validPath));
+            assertTrue(tempFileAtValidPath.exists());
+
+            // assert file is empty
+            assertTrue(tempFileTOC.length() == 0);
         } finally {
             if (tempFileTOC != null && tempFileTOC.exists()) {
                 tempFileTOC.delete();
@@ -142,27 +132,23 @@ public class TOCGeneratorNGTest {
 
     /**
      * Test of convertXMLMappings method, of class TOCGenerator.
+     * @throws java.io.IOException
      */
     @Test
-    public void testConvertXMLMappings_List_TreeNode() {
+    public void testConvertXMLMappings_List_TreeNode() throws IOException {
         System.out.println("convertXMLMappings");
         List<File> xmlsFromFile = new ArrayList<>();
 
         final TreeNode root = new TreeNode(new TOCItem("root", ""));
         File tempFileTOC = null;
         try {
-            try {
-                tempFileTOC = File.createTempFile("tempFileTOC", ".md");
-                TOCGenerator.createTOCFile(tempFileTOC.getPath());
-                assertFalse(tempFileTOC.length() != 0);
-                TOCGenerator.convertXMLMappings(xmlsFromFile, root);
+            tempFileTOC = File.createTempFile("tempFileTOC", ".md");
+            TOCGenerator.createTOCFile(tempFileTOC.getPath());
+            assertFalse(tempFileTOC.length() != 0);
+            TOCGenerator.convertXMLMappings(xmlsFromFile, root);
 
-                // Assert file is not empty, meaning a TOC file has been created
-                assertTrue(tempFileTOC.length() != 0);
-
-            } catch (final IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+            // Assert file is not empty, meaning a TOC file has been created
+            assertTrue(tempFileTOC.length() != 0);
         } finally {
             if (tempFileTOC != null && tempFileTOC.exists()) {
                 tempFileTOC.delete();
@@ -186,45 +172,43 @@ public class TOCGeneratorNGTest {
 
     /**
      * Test of convertXMLMappings method, of class TOCGenerator.
+     * @throws java.io.IOException
      */
     @Test
-    public void testConvertXMLMappings_3args() {
+    public void testConvertXMLMappings_3args() throws IOException {
         System.out.println("convertXMLMappings");
 
-        final String fileContents = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN\" \"http://java.sun.com/products/javahelp/toc_2_0.dtd\">\n"
-                + "<toc version=\"2.0\">\n"
-                + "    <tocitem text=\"Views\" mergetype=\"javax.help.SortMerge\">\n"
-                + "        <tocitem text=\"Layers View\" mergetype=\"javax.help.SortMerge\">\n"
-                + "            <tocitem text=\"Layers View\" target=\"au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent\" />\n"
-                + "        </tocitem>\n"
-                + "    </tocitem>\n"
-                + "</toc>\n"
-                + "";
-        final String fileContents2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN\" \"http://java.sun.com/products/javahelp/toc_2_0.dtd\">\n"
-                + "<toc version=\"2.0\">\n"
-                + "    <tocitem text=\"Views\" mergetype=\"javax.help.SortMerge\">\n"
-                + "        <tocitem text=\"Notes View\" mergetype=\"javax.help.SortMerge\">\n"
-                + "            <tocitem text=\"Notes View\" target=\"au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent\" />\n"
-                + "        </tocitem>\n"
-                + "    </tocitem>\n"
-                + "</toc>\n"
-                + "";
+        final String fileContents = """
+                                    <?xml version="1.0" encoding="UTF-8"?>
+                                    <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+                                    <toc version="2.0">
+                                        <tocitem text="Views" mergetype="javax.help.SortMerge">
+                                            <tocitem text="Layers View" mergetype="javax.help.SortMerge">
+                                                <tocitem text="Layers View" target="au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent" />
+                                            </tocitem>
+                                        </tocitem>
+                                    </toc>
+                                    """;
+        final String fileContents2 = """
+                                     <?xml version="1.0" encoding="UTF-8"?>
+                                     <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+                                     <toc version="2.0">
+                                         <tocitem text="Views" mergetype="javax.help.SortMerge">
+                                             <tocitem text="Notes View" mergetype="javax.help.SortMerge">
+                                                 <tocitem text="Notes View" target="au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent" />
+                                             </tocitem>
+                                         </tocitem>
+                                     </toc>
+                                     """;
 
         File tempFile = null;
         File tempFile2 = null;
         File tempFileTOC = null;
 
         try {
-            try {
-                tempFile = File.createTempFile("testfile", ".xml");
-                tempFile2 = File.createTempFile("testfile2", ".xml");
-                tempFileTOC = File.createTempFile("tempFileTOC", ".md");
-
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+            tempFile = File.createTempFile("testfile", ".xml");
+            tempFile2 = File.createTempFile("testfile2", ".xml");
+            tempFileTOC = File.createTempFile("tempFileTOC", ".md");
 
             // try with resources
             try (final FileWriter fw = new FileWriter(tempFile)) {
@@ -283,8 +267,6 @@ public class TOCGeneratorNGTest {
             assertNotNull(reader.readLine());
             assertNotNull(reader.readLine());
 
-        } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
@@ -353,9 +335,10 @@ public class TOCGeneratorNGTest {
 
     /**
      * Test of writeText method, of class TOCGenerator.
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteText() {
+    public void testWriteText() throws IOException {
         System.out.println("writeText");
         File tempFile = null;
         try {
@@ -385,8 +368,6 @@ public class TOCGeneratorNGTest {
             while ((line = reader.readLine()) != null) {
                 assertEquals(line, fileContents.get(linecount++).replace("\n", ""));
             }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
@@ -408,9 +389,10 @@ public class TOCGeneratorNGTest {
 
     /**
      * Test of writeItem method, of class TOCGenerator.
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteItem() {
+    public void testWriteItem() throws IOException {
         System.out.println("writeItem");
         File tempFile = null;
         try {
@@ -440,8 +422,6 @@ public class TOCGeneratorNGTest {
             while ((line = reader.readLine()) != null) {
                 assertEquals(line, "" + fileContents.get(linecount++).replace("\n", ""));
             }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
@@ -452,9 +432,10 @@ public class TOCGeneratorNGTest {
 
     /**
      * Test of writeItem method, of class TOCGenerator.
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteItemMultipleIndents() {
+    public void testWriteItemMultipleIndents() throws IOException {
         System.out.println("writeItem");
         File tempFile = null;
         try {
@@ -484,8 +465,6 @@ public class TOCGeneratorNGTest {
             while ((line = reader.readLine()) != null) {
                 assertEquals(line, "    " + fileContents.get(linecount++).replace("\n", ""));
             }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
@@ -496,6 +475,7 @@ public class TOCGeneratorNGTest {
 
     /**
      * Test of writeItem method, of class TOCGenerator.
+     * @throws java.io.IOException
      */
     @Test(expectedExceptions = IOException.class)
     public void testWriteItemFail() throws IOException {
@@ -507,5 +487,4 @@ public class TOCGeneratorNGTest {
             TOCGenerator.writeItem(fw, "text", 0);
         }
     }
-
 }

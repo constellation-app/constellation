@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class PluginReporterHelpProvider extends HelpPageProvider {
 
     private static final String CODEBASE_NAME = "constellation";
+    private static final String SEP = File.separator;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,9 +42,8 @@ public class PluginReporterHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String pluginModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CorePluginReporterView" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "pluginreporter" + sep;
+        final String pluginModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CorePluginReporterView" + SEP + "src" + SEP + "au" + SEP + "gov"
+                + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "pluginreporter" + SEP;
 
         map.put("au.gov.asd.tac.constellation.views.pluginreporter.panes", pluginModulePath + "plugin-reporter-view.md");
         return map;
@@ -56,10 +56,9 @@ public class PluginReporterHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
         final String pluginReporterPath;
-        pluginReporterPath = "ext" + sep + "docs" + sep + "CorePluginReporterView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "views" + sep + "pluginreporter" + sep + "pluginreporter-toc.xml";
+        pluginReporterPath = "ext" + SEP + "docs" + SEP + "CorePluginReporterView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac"
+                + SEP + CODEBASE_NAME + SEP + "views" + SEP + "pluginreporter" + SEP + "pluginreporter-toc.xml";
         return pluginReporterPath;
     }
 }

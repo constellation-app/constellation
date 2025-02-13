@@ -55,3 +55,11 @@
     -fx-mark-color: black;
 }
 
+.table-row-cell Text {
+    -fx-fill: white;
+}
+
+.table-row-cell:selected Text{
+    -fx-fill: -fx-selection-bar-text;
+}
+

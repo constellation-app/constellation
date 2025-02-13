@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import au.gov.asd.tac.constellation.graph.mergers.IgnoreMergedGraphElementMerger
 import au.gov.asd.tac.constellation.graph.mergers.IgnoreSurvivingGraphElementMerger;
 import au.gov.asd.tac.constellation.graph.mergers.PriorityMergedGraphElementMerger;
 import au.gov.asd.tac.constellation.graph.mergers.PrioritySurvivingGraphElementMerger;
+import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
+import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -210,7 +212,13 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         //Local process-tracking varables (Process is indeteminate until quantity of merged nodes is known)
         int currentProcessStep = 0;
         int totalProcessSteps = -1; 
-        interaction.setProgress(currentProcessStep, totalProcessSteps, "Merging nodes...", true);
+        interaction.setProgressTimestamp(true);
+        if (selectedOnly) {
+            final GraphRecordStore allSelectedNodes = GraphRecordStoreUtilities.getSelectedVertices(graph);
+            interaction.setProgress(currentProcessStep, totalProcessSteps, "Merging nodes...", true, parameters, allSelectedNodes.size());
+        } else {
+            interaction.setProgress(currentProcessStep, totalProcessSteps, "Merging nodes...", true, parameters);
+        }
 
         //Determine which nodes need to be merged
         final Comparator<String> leadNodeChooser = VERTEX_CHOOSER.get(leadNodeChooserName);

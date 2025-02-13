@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,16 +28,15 @@ import org.testng.annotations.Test;
  * @author algol
  */
 public class CopyNGTest {
-
-    public CopyNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -105,5 +104,4 @@ public class CopyNGTest {
 
         assertNotSame(graph.getStringValue(nameAttribute, vx0), writableCopy.getStringValue(nameAttribute, vx0));
     }
-
 }

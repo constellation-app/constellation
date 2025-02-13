@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,7 +101,6 @@ public class ExpandedCompositeNodeState {
     }
 
     private void contractSingleVertex(final GraphWriteMethods wg, final int vxId, final RecordStore constituentNodeStore, final List<String> expandedIds, final List<String> affectedExpandedIds, final Map<Integer, String> idToCopiedId) {
-
         // Copy this vertex into the expansion record store inside the contracted composite state.
         final String[] copiedId = new String[1];
         GraphRecordStoreUtilities.copySpecifiedVertex(wg, constituentNodeStore, vxId, copiedId);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,12 +57,25 @@ public interface PluginInteraction {
      * @param message a message describing the step the plugin is currently
      * performing.
      * @param cancellable is the plugin able to be canceled at this time?
+     * @param parameters set of parameters for this plugin if any.
+     * @param selected total number of selected items on graph.
      * @throws InterruptedException if the plugin has been canceled.
      */
-    void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException;
-    
-    /**
-     * Signals to the user the current progress of the plugin.
+    void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable, final PluginParameters parameters, final int selected) throws InterruptedException;
+      /**
+     * Signals to the user the current progress of the plugin with a message that persists after the plugin has completed.
+     *
+     * @param currentStep the current step the plugin is currently performing.
+     * @param totalSteps the total number of steps the plugin must perform
+     * before completion.
+     * @param message
+     * @param cancellable is the plugin able to be canceled at this time?
+     * @param parameters set of parameters for this plugin if any.
+     * @throws InterruptedException if the plugin has been canceled.
+     */
+    void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable, final PluginParameters parameters) throws InterruptedException;
+      /**
+     * Signals to the user the current progress of the plugin with a message that persists after the plugin has completed.
      *
      * @param currentStep the current step the plugin is currently performing.
      * @param totalSteps the total number of steps the plugin must perform
@@ -73,6 +86,25 @@ public interface PluginInteraction {
     void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException;
     
     /**
+     * Signals to the user the current progress of the plugin with a message that persists after the plugin has completed.
+     *
+     * @param currentStep the current step the plugin is currently performing.
+     * @param totalSteps the total number of steps the plugin must perform
+     * before completion.
+     * @param cancellable is the plugin able to be canceled at this time?
+     * @param message
+     * @throws InterruptedException if the plugin has been canceled.
+     */
+    void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException;
+    
+    /**
+     * To add a timestamp in the current progress message.
+     * @param addTimestamp flag to add timestamp or not.
+     * @throws java.lang.InterruptedException
+     */
+    void setProgressTimestamp(final boolean addTimestamp) throws InterruptedException;
+    
+       /**
      * Signals to the user the current execution stage of the plugin
      * providing a message that does not persist after the plugin has completed.
      * Should be used to represent the high level execution of the plugin.

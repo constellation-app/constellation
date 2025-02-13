@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class TemporalAxisBuilder implements AxisBuilder<Date> {
     }
 
     @Override
-    public Date getValue(GraphReadMethods graph, GraphElementType elementType, int attributeId, int elementId) {
+    public Date getValue(final GraphReadMethods graph, final GraphElementType elementType, final int attributeId, final int elementId) {
         return graph.getLongValue(attributeId, elementId) == 0L
                 ? Date.from(Instant.EPOCH) : Date.from(Instant.ofEpochMilli(graph.getLongValue(attributeId, elementId)));
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -262,10 +262,11 @@ public class FindViewController {
      *
      * @param selectAll true if finding all graph elements
      * @param getNext true if finding the next element, false if the previous
+     * @param zoomToSelection true if zoomToSelection checkbox is checked
      */
-    public void retriveMatchingElements(final boolean selectAll, final boolean getNext) {
+    public void retriveMatchingElements(final boolean selectAll, final boolean getNext, final boolean zoomToSelection) {
         final BasicFindPlugin basicFindPlugin = new BasicFindPlugin(currentBasicFindParameters, selectAll, getNext);
-        final BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(currentBasicFindParameters, selectAll);
+        final BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(currentBasicFindParameters, selectAll, zoomToSelection);
         setGraphsSearched(0);
 
         /**
@@ -273,16 +274,6 @@ public class FindViewController {
          */
         try {
             if (currentBasicFindParameters.isSearchAllGraphs()) {
-
-                /**
-                 * If there are a different number of graphs in this search than the previous one
-                 * then reset the list of results 
-                 */
-                final int numberOfUniqueGraphs = GraphManager.getDefault().getAllGraphs().values().size();
-                if (numberOfUniqueGraphs != ActiveFindResultsList.getUniqueGraphCount(ActiveFindResultsList.getBasicResultsList())) {
-                    ActiveFindResultsList.setBasicResultsList(null);
-                }
-
                 for (final Graph currentGraph : GraphManager.getDefault().getAllGraphs().values()) {
                     // check to see the graph is not null
                     if (currentGraph != null) {
@@ -323,6 +314,18 @@ public class FindViewController {
         } 
     }
 
+    public void clearResultsLists() {
+        if (ActiveFindResultsList.getBasicResultsList() != null) {
+            ActiveFindResultsList.getBasicResultsList().clear();
+            ActiveFindResultsList.getBasicResultsList().setCurrentIndex(-1);
+        }
+
+        if (ActiveFindResultsList.getAdvancedResultsList() != null) {
+            ActiveFindResultsList.getAdvancedResultsList().clear();
+            ActiveFindResultsList.getAdvancedResultsList().setCurrentIndex(-1);
+        }
+    }
+
     /**
      * This function calls the basic replace plugin, passing the
      * currentBasicReplaceParameters, whether to replace all matching element or
@@ -331,8 +334,8 @@ public class FindViewController {
      * @param replaceAll true if replacing all matching elements
      * @param replaceNext true if replacing just the next element
      */
-    public void replaceMatchingElements(final boolean replaceAll, final boolean replaceNext) {
-        final ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, replaceAll, replaceNext);
+    public void replaceMatchingElements(final boolean replaceAll, final boolean replaceNext, final boolean zoomToSelection) {
+        final ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, replaceAll, replaceNext, zoomToSelection);
 
         /**
          * If search all graphs is true, execute the replace plugin on all open
@@ -354,9 +357,9 @@ public class FindViewController {
         }
     }
 
-    public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext) {
+    public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext, final boolean zoomToSelection) {
         final AdvancedSearchPlugin advancedSearchPlugin = new AdvancedSearchPlugin(currentAdvancedSearchParameters, findAll, findNext);
-        final AdvancedFindGraphSelectionPlugin findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(currentAdvancedSearchParameters, findAll, findNext);
+        final AdvancedFindGraphSelectionPlugin findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(currentAdvancedSearchParameters, findAll, findNext, zoomToSelection);
         setGraphsSearched(0);
 
         /**
@@ -365,16 +368,6 @@ public class FindViewController {
          */
         try {
             if (currentAdvancedSearchParameters.getSearchInLocation().equals(ALL_OPEN_GRAPHS)) {
-
-                /**
-                 * If there are a different number of graphs in this search than the previous one
-                 * then reset the list of results
-                 */
-                final int numberOfUniqueGraphs = GraphManager.getDefault().getAllGraphs().values().size();
-                if (numberOfUniqueGraphs != ActiveFindResultsList.getUniqueGraphCount(ActiveFindResultsList.getAdvancedResultsList())) {
-                    ActiveFindResultsList.setAdvancedResultsList(null);
-                }
-
                 for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
                     // check to see the graph is not null
                     if (graph != null && currentAdvancedSearchParameters.getSearchInLocation().equals(ALL_OPEN_GRAPHS)) {

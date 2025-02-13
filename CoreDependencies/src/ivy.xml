@@ -31,14 +31,12 @@
         </dependency> -->
 
         <!-- Geotools -->
-        <!--<dependency org="org.geotools" name="gt-coverage" rev="26.4"/>-->
         <dependency org="org.geotools" name="gt-cql" rev="26.4"/>
         <dependency org="org.geotools" name="gt-jdbc" rev="26.4"/>
         <dependency org="org.geotools" name="gt-main" rev="26.4"/>
         <dependency org="org.geotools" name="gt-metadata" rev="26.4"/>
         <dependency org="org.geotools" name="gt-opengis" rev="26.4"/>
         <dependency org="org.geotools" name="gt-referencing" rev="26.4"/>
-        <!--<dependency org="org.geotools" name="gt-render" rev="26.4"/>-->
         <dependency org="org.geotools" name="gt-xml" rev="26.4"/>
         <dependency org="org.geotools" name="gt-epsg-hsql" rev="26.4"/>
         <dependency org="org.geotools" name="gt-geopkg" rev="26.4"/>
@@ -57,7 +55,7 @@
         <dependency org="org.apache.poi" name="poi-ooxml" rev="5.2.5"/>
 
         <!-- Other -->
-        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.16.1"/> 
+        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.16.1"/>
         <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.16.1"/>
         <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.16.1"/>
         <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.4.0"/>
@@ -82,11 +80,7 @@
         <dependency org="org.testfx" name="openjfx-monocle" rev="21.0.2" transitive="false" />
         <dependency org="org.testfx" name="testfx-core" rev="4.0.18" />
         
-        <!-- Downloaded Manually -->
-        <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
-        <!--<dependency org="org.processing" name="core" rev="3.3.7"/>-->
-        
-        <dependency org="com.github.rjeschke" name="txtmark" rev="0.13"/>
+        <dependency org="org.commonmark" name="commonmark" rev="0.22.0"/>
 
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>

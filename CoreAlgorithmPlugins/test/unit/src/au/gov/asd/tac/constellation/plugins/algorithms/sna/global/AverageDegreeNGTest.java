@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,16 +37,22 @@ import org.testng.annotations.Test;
 public class AverageDegreeNGTest {
 
     private int graphAttribute;
-    private int vxId0, vxId1, vxId2, vxId3, vxId4;
-    private int txId0, txId1, txId2, txId3, txId4, txId5, txId6, txId7, txId8, txId9, txId10, txId11, txId12, txId13;
+    
+    private int vxId0;
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    
     private StoreGraph graph;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -59,16 +65,16 @@ public class AverageDegreeNGTest {
         graphAttribute = SnaConcept.GraphAttribute.AVERAGE_DEGREE.ensure(graph);
 
         // add vertices
-        vxId0 = graph.addVertex(); // singleton
-        vxId1 = graph.addVertex(); // loop
+        vxId0 = graph.addVertex(); // loop
+        vxId1 = graph.addVertex(); // 3 - 2 - 4 
         vxId2 = graph.addVertex(); // 3 - 2 - 4 
         vxId3 = graph.addVertex(); // 3 - 2 - 4 
-        vxId4 = graph.addVertex(); // 3 - 2 - 4 
+        graph.addVertex(); // singleton
 
         // add transactions
-        txId1 = graph.addTransaction(vxId1, vxId1, true);
-        txId2 = graph.addTransaction(vxId2, vxId3, true);
-        txId3 = graph.addTransaction(vxId2, vxId4, true);
+        graph.addTransaction(vxId0, vxId0, true);
+        graph.addTransaction(vxId1, vxId2, true);
+        graph.addTransaction(vxId1, vxId3, true);
 
     }
 

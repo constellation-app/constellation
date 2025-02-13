@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -122,13 +121,14 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
         // Local process-tracking varables (Process is indeteminate until quantity of nodes to be removed is known)
         int removedCount = 0;
         int totalProcessSteps = -1;
-        interaction.setProgress(removedCount, totalProcessSteps, "Removing nodes...", true);
-
+        interaction.setProgressTimestamp(true);
+        interaction.setProgress(removedCount, totalProcessSteps, "Removing nodes...", true, parameters);
+        final List<Integer> verticesToRemove = new ArrayList<>();       
+            
         if (removeType.equals(REMOVE_TYPE_LENGTH)) {   
             
             //Determine which nodes need to be removed
             final int vertexCount = wg.getVertexCount();
-            final List<Integer> verticesToRemove = new ArrayList<>();       
             for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                 final int vxId = wg.getVertex(vertexPosition);
                 if (wg.getBooleanValue(selectedAttribute, vxId)) {

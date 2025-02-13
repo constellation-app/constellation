@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author sirius
  */
 /**
- * The FileParameterType defines {@link PluginParameter} objects that hold one
- * or more {@link File} values.
+ * The FileParameterType defines {@link PluginParameter} objects that hold one or more {@link File} values.
  *
  * @author sirius
  */
@@ -49,19 +48,16 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     /**
      * Constructs a new instance of this type.
      * <p>
-     * Note: This constructor should not be called directly; it is public for
-     * the purposes of lookup (which may be removed for types in the future). To
-     * buildId parameters from the type, the static method
-     * {@link #build buildId()} should be used, or the singleton
-     * {@link #INSTANCE INSTANCE}.
+     * Note: This constructor should not be called directly; it is public for the purposes of lookup (which may be
+     * removed for types in the future). To buildId parameters from the type, the static method {@link #build buildId()}
+     * should be used, or the singleton {@link #INSTANCE INSTANCE}.
      */
     public FileParameterType() {
         super(ID);
     }
 
     /**
-     * The singleton instance of the type that should be used to construct all
-     * parameters that have this type.
+     * The singleton instance of the type that should be used to construct all parameters that have this type.
      */
     public static final FileParameterType INSTANCE = new FileParameterType();
 
@@ -76,12 +72,11 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     }
 
     /**
-     * Construct a new {@link PluginParameter} of this type with initial value
-     * represented by the given {@link FileParameterValue}.
+     * Construct a new {@link PluginParameter} of this type with initial value represented by the given
+     * {@link FileParameterValue}.
      *
      * @param id The String id of the parameter to construct.
-     * @param pv A {@link FileParameterValue} describing the initial value of
-     * the parameter being constructed.
+     * @param pv A {@link FileParameterValue} describing the initial value of the parameter being constructed.
      * @return A {@link PluginParameter} of FileParameterType.
      */
     public static PluginParameter<FileParameterValue> build(final String id, final FileParameterValue pv) {
@@ -89,11 +84,25 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     }
 
     /**
+     * Construct a new {@link PluginParameter} of this type with initial value represented by the given
+     * {@link FileParameterValue}.
+     *
+     * @param id The String id of the parameter to construct.
+     * @param pv A {@link FileParameterValue} describing the initial value of
+     * @param filter the file extension to filter by the parameter being constructed.
+     * @return A {@link PluginParameter} of FileParameterType.
+     */
+    public static PluginParameter<FileParameterValue> build(final String id, final ExtensionFilter filter) {
+        final PluginParameter<FileParameterValue> p = build(id);
+        setFileFilters(p, filter);
+        return p;
+    }
+
+    /**
      * Set the kind of file selection for the given parameter.
      *
      * @param parameter A {@link PluginParameter} of this type.
-     * @param kind A {@link FileParameterKind} constant to set for the given
-     * parameter.
+     * @param kind A {@link FileParameterKind} constant to set for the given parameter.
      */
     public static void setKind(final PluginParameter<FileParameterValue> parameter, final FileParameterKind kind) {
         parameter.getParameterValue().setKind(kind);
@@ -110,34 +119,31 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     }
 
     /**
-     * Set the file selection filter for the given parameter. This indicates
-     * that only files with certain extensions should be selectable when
-     * performing file selection for this parameter.
+     * Set the file selection filter for the given parameter. This indicates that only files with certain extensions
+     * should be selectable when performing file selection for this parameter.
      *
      * @param parameter A {@link PluginParameter} of this type.
-     * @param fileFilter An {@link ExtensionFilter} object that describes how
-     * files should be filtered by extension.
+     * @param fileFilter An {@link ExtensionFilter} object that describes how files should be filtered by extension.
      */
     public static void setFileFilters(final PluginParameter<FileParameterValue> parameter, final ExtensionFilter fileFilter) {
         parameter.getParameterValue().setFilter(fileFilter);
     }
 
     /**
-     * Get the file selection filter for the given parameter. This indicates
-     * that only files with certain extensions should be selectable when
-     * performing file selection for this parameter.
+     * Get the file selection filter for the given parameter. This indicates that only files with certain extensions
+     * should be selectable when performing file selection for this parameter.
      *
      * @param parameter A {@link PluginParameter} of this type.
-     * @return The {@link ExtensionFilter} object that describes how files
-     * should be filtered by extension for the given parameter.
+     * @return The {@link ExtensionFilter} object that describes how files should be filtered by extension for the given
+     * parameter.
      */
     public static ExtensionFilter getFileFilters(final PluginParameter<FileParameterValue> parameter) {
         return parameter.getParameterValue().getFilter();
     }
-    
+
     /**
-     * Determine if the "All Files" selection filter should be enabled for the given parameter. 
-     * This will be active by default when the user is presented with a file selection window. 
+     * Determine if the "All Files" selection filter should be enabled for the given parameter. This will be active by
+     * default when the user is presented with a file selection window.
      *
      * @param parameter A {@link PluginParameter} of this type.
      * @return boolean that indicates is the accept all file selection filter is enabled.
@@ -145,17 +151,37 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     public static boolean isAcceptAllFileFilterUsed(final PluginParameter<FileParameterValue> parameter) {
         return parameter.getParameterValue().isAcceptAllFileFilterUsed();
     }
-    
+
     /**
-     * Enable the "All Files" selection filter for the given parameter. 
-     * This will be active by default when the user is presented with a file selection window. 
+     * Enable the "All Files" selection filter for the given parameter. This will be active by default when the user is
+     * presented with a file selection window.
      *
      * @param parameter A {@link PluginParameter} of this type.
      */
     public static void enableAcceptAllFileFilter(final PluginParameter<FileParameterValue> parameter) {
         parameter.getParameterValue().enableAcceptAllFileFilter();
     }
-    
+
+    /**
+     * Set whether user should be warned about overwriting file of same name or not
+     *
+     * @param parameter A {@link PluginParameter} of this type.
+     * @param warn whether the user should be warned about overwriting file of same name
+     */
+    public static void setWarnOverwrite(final PluginParameter<FileParameterValue> parameter, final boolean warn) {
+        parameter.getParameterValue().setWarningOverwrite(warn);
+    }
+
+    /**
+     * Get whether user should be warned about overwriting file of same name or not
+     *
+     * @param parameter A {@link PluginParameter} of this type.
+     * @return boolean that indicates if user will be warned of overwriting file.
+     */
+    public static boolean isWarnOverwriteUsed(final PluginParameter<FileParameterValue> parameter) {
+        return parameter.getParameterValue().isWarningOverwriteUsed();
+    }
+
     @Override
     public String validateString(final PluginParameter<FileParameterValue> param, final String stringValue) {
         final FileParameterValue v = param.getParameterValue();
@@ -184,34 +210,29 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
          */
         OPEN_OBSCURED("..."),
         /**
-         * Allows selection of a file, or entry of a non-existing but valid file
-         * path. Displays "Save" on the button.
+         * Allows selection of a file, or entry of a non-existing but valid file path. Displays "Save" on the button.
          */
         SAVE("Save"),
-                /**
-         * Allows selection of a file, or entry of a non-existing but valid file
-         * path. Displays "..." on the button.
+        /**
+         * Allows selection of a file, or entry of a non-existing but valid file path. Displays "..." on the button.
          */
         SAVE_OBSCURED("..."),;
 
-        
         private final String text;
-        
-        private FileParameterKind(final String text){
+
+        private FileParameterKind(final String text) {
             this.text = text;
         }
-        
+
         @Override
-        public String toString(){
+        public String toString() {
             return text;
         }
     }
 
     /**
-     * An implementation of {@link ParameterValue} corresponding to this type.
-     * It holds one or more {@link File} values, as well as a
-     * {@link FileParameterKind} and an {@link ExtensionFilter} which describe
-     * file selection.
+     * An implementation of {@link ParameterValue} corresponding to this type. It holds one or more {@link File} values,
+     * as well as a {@link FileParameterKind} and an {@link ExtensionFilter} which describe file selection.
      */
     public static class FileParameterValue extends ParameterValue {
 
@@ -219,7 +240,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         private FileParameterKind kind;
         private ExtensionFilter filter;
         private boolean acceptAllFileFilterUsed;
-        
+        private boolean warnOverwrite;
 
         /**
          * Constructs a new FileParameterValue
@@ -229,14 +250,13 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             kind = FileParameterKind.OPEN_MULTIPLE; // backward-compatible default.
             filter = null;
             acceptAllFileFilterUsed = false;
+            warnOverwrite = false;
         }
 
         /**
-         * Constructs a new FileParameterValue holding files corresponding to
-         * the specified list of string paths.
+         * Constructs a new FileParameterValue holding files corresponding to the specified list of string paths.
          *
-         * @param files A list of strings representing the file paths that this
-         * parameter value should hold.
+         * @param files A list of strings representing the file paths that this parameter value should hold.
          */
         public FileParameterValue(final List<String> files) {
             this.files = new ArrayList<>();
@@ -244,11 +264,11 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             kind = FileParameterKind.OPEN_MULTIPLE; // backward-compatible default.
             filter = null;
             acceptAllFileFilterUsed = false;
+            warnOverwrite = false;
         }
 
         /**
-         * Constructs a new FileParameterValue with the same values as the
-         * specified FileParameterValue.
+         * Constructs a new FileParameterValue with the same values as the specified FileParameterValue.
          *
          * @param fpv The {@link FileParameterValue} to copy.
          */
@@ -257,15 +277,14 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             kind = fpv.kind;
             filter = fpv.filter;
             acceptAllFileFilterUsed = fpv.acceptAllFileFilterUsed;
+            warnOverwrite = fpv.warnOverwrite;
         }
 
         /**
          * Set the current value
          *
-         * @param newFiles The list of {@link File} objects for this parameter
-         * value to hold.
-         * @return True if the new value was different to the current value,
-         * false otherwise.
+         * @param newFiles The list of {@link File} objects for this parameter value to hold.
+         * @return True if the new value was different to the current value, false otherwise.
          */
         public boolean set(final List<File> newFiles) {
             // TODO: determine a better if condition
@@ -283,8 +302,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         /**
          * Get the current value from this parameter value.
          *
-         * @return The list of {@link File} objects that this parameter value is
-         * holding.
+         * @return The list of {@link File} objects that this parameter value is holding.
          */
         public List<File> get() {
             final List<File> fileObjects = new ArrayList<>();
@@ -295,8 +313,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         /**
          * Get the {@link FileParameterKind}.
          *
-         * @return A {@link FileParameterKind} constant indicating the kind of
-         * file selection.
+         * @return A {@link FileParameterKind} constant indicating the kind of file selection.
          */
         public FileParameterKind getKind() {
             return kind;
@@ -305,8 +322,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         /**
          * Set the {@link FileParameterKind}.
          *
-         * @param kind The {@link FileParameterKind} constant indicating the
-         * kind of file selection.
+         * @param kind The {@link FileParameterKind} constant indicating the kind of file selection.
          */
         public void setKind(final FileParameterKind kind) {
             this.kind = kind;
@@ -315,8 +331,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         /**
          * Get the {@link ExtensionFilter}.
          *
-         * @return An {@link ExtensionFilter} indicating the filtering of file
-         * selection.
+         * @return An {@link ExtensionFilter} indicating the filtering of file selection.
          */
         public ExtensionFilter getFilter() {
             return filter;
@@ -325,13 +340,12 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         /**
          * Set the {@link ExtensionFilter}.
          *
-         * @param filter The {@link ExtensionFilter} indicating the filtering of
-         * file selection.
+         * @param filter The {@link ExtensionFilter} indicating the filtering of file selection.
          */
         public void setFilter(final ExtensionFilter filter) {
             this.filter = filter;
         }
-        
+
         /**
          * Determine if the "All Files" selection filter is used.
          *
@@ -340,7 +354,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         public boolean isAcceptAllFileFilterUsed() {
             return acceptAllFileFilterUsed;
         }
-        
+
         /**
          * Ensure the "All Files" selection filter is used.
          */
@@ -348,10 +362,37 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             acceptAllFileFilterUsed = true;
         }
 
+        /**
+         * Set if user should be warning when overwriting file
+         * 
+         * @param b whether the user should be warning when overwriting file
+         */
+        public void setWarningOverwrite(final boolean b) {
+            this.warnOverwrite = b;
+        }
+
+        /**
+         * Get if user should be warning when overwriting file
+         *
+         * @return boolean indicating if user will be warned.
+         */
+        public boolean isWarningOverwriteUsed() {
+            return warnOverwrite;
+        }
+
         @Override
         public String validateString(final String s) {
             final File validationFile = new File(s);
-            return (validationFile.isDirectory() || (validationFile.getParentFile() != null && validationFile.getParentFile().exists())) ? null : "The specified file path doe not contain valid directories";
+            final String[] names = s.split(SeparatorConstants.SEMICOLON);
+            if (names.length > 1) {
+                if ((this.kind.equals(FileParameterKind.OPEN_MULTIPLE) && files.size() != names.length)) {
+                    return "Wrong number of files";
+                } else {
+                    return null;
+                }
+            } else {
+                return (validationFile.isDirectory() || (validationFile.getParentFile() != null && validationFile.getParentFile().exists())) ? null : "The specified file path does not contain valid directories";
+            }
         }
 
         @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,24 +27,25 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class TOCItemNGTest {
-
-    public TOCItemNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -125,7 +126,7 @@ public class TOCItemNGTest {
 
         final String text5 = "text";
         final String target5 = "target";
-        final Object comparedInstance5 = new Integer("555");
+        final Object comparedInstance5 = 555;
         final TOCItem instance5 = new TOCItem(text5, target5);
         final boolean expResult5 = false;
         final boolean result5 = instance5.equals(comparedInstance5);

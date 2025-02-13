@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayList;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -54,16 +54,19 @@ public class QuadTreeNGTest {
         graphWithTwoTwins.setFloatValue(attrX, twoTwinsSubject, 0.0f);
         graphWithTwoTwins.setFloatValue(attrY, twoTwinsSubject, 0.0f);
         graphWithTwoTwins.setFloatValue(attrR, twoTwinsSubject, 1.0f);
+        
         // First twin
         twin1 = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, twin1, 0.1f);
         graphWithTwoTwins.setFloatValue(attrY, twin1, 0.1f);
         graphWithTwoTwins.setFloatValue(attrR, twin1, 1.0f);
+        
         // Second twin
         twin2 = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, twin2, -0.1f);
         graphWithTwoTwins.setFloatValue(attrY, twin2, -0.1f);
         graphWithTwoTwins.setFloatValue(attrR, twin2, 1.0f);
+        
         // Non-twin collider
         int collider = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, collider, 1.0f);
@@ -83,21 +86,25 @@ public class QuadTreeNGTest {
         graphWithNoCollisions.setFloatValue(attrX, noCollisionSubject, 0.0f);
         graphWithNoCollisions.setFloatValue(attrY, noCollisionSubject, 0.0f);
         graphWithNoCollisions.setFloatValue(attrR, noCollisionSubject, 1.0f);
+        
         // distant vertex
         distantTR = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantTR, 1000f);
         graphWithNoCollisions.setFloatValue(attrY, distantTR, 1000f);
         graphWithNoCollisions.setFloatValue(attrR, distantTR, 1.0f);
+        
         // second distant vertex
         distantBL = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantBL, -1000f);
         graphWithNoCollisions.setFloatValue(attrY, distantBL, -1000f);
         graphWithNoCollisions.setFloatValue(attrR, distantBL, 1.0f);
+        
         // second distant vertex
         distantTL = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantTL, -1000f);
         graphWithNoCollisions.setFloatValue(attrY, distantTL, 1000f);
         graphWithNoCollisions.setFloatValue(attrR, distantTL, 1.0f);
+        
         // second distant vertex
         distantBR = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantBR, 1000f);
@@ -176,5 +183,4 @@ public class QuadTreeNGTest {
         assertEquals(twoTwinsQT.nodeCollides(twoTwinsSubject), true);
         assertEquals(noCollisionsQT.nodeCollides(noCollisionSubject), false);
     }
-
 }

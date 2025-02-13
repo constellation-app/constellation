@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,8 +96,7 @@ public class FrustumNGTest {
      */
     @Test
     public void testConstructorSymmetricPerspective() {
-        assertSymmetricPerspective(new Frustum(SYM_PERS_FOV, SYM_PERS_ASPECT, 
-                SYM_PERS_NEAR, SYM_PERS_FAR));
+        assertSymmetricPerspective(new Frustum(SYM_PERS_FOV, SYM_PERS_ASPECT, SYM_PERS_NEAR, SYM_PERS_FAR));
     }
     
     /**
@@ -108,8 +107,7 @@ public class FrustumNGTest {
     @Test
     public void testSetSymmetricPerspective() {
         final Frustum frustum = new Frustum();
-        frustum.setPerspective(SYM_PERS_FOV, SYM_PERS_ASPECT, SYM_PERS_NEAR, 
-                SYM_PERS_FAR);
+        frustum.setPerspective(SYM_PERS_FOV, SYM_PERS_ASPECT, SYM_PERS_NEAR, SYM_PERS_FAR);
         assertSymmetricPerspective(frustum);
     }
     
@@ -168,8 +166,7 @@ public class FrustumNGTest {
      */
     @Test
     public void testConstructorPerspective() {
-        assertPerspective(new Frustum(PERS_FOV, PERS_ASPECT, PERS_XMIN, 
-                PERS_XMAX, PERS_YMIN, PERS_YMAX, PERS_NEAR, PERS_FAR));
+        assertPerspective(new Frustum(PERS_FOV, PERS_ASPECT, PERS_XMIN, PERS_XMAX, PERS_YMIN, PERS_YMAX, PERS_NEAR, PERS_FAR));
     }
     
     /**
@@ -180,8 +177,7 @@ public class FrustumNGTest {
     @Test
     public void testSetPerspective() {
         final Frustum frustum = new Frustum();
-        frustum.setPerspective(PERS_FOV, PERS_ASPECT, PERS_XMIN, PERS_XMAX, 
-                PERS_YMIN, PERS_YMAX, PERS_NEAR, PERS_FAR);
+        frustum.setPerspective(PERS_FOV, PERS_ASPECT, PERS_XMIN, PERS_XMAX, PERS_YMIN, PERS_YMAX, PERS_NEAR, PERS_FAR);
         assertPerspective(frustum);
     }
     
@@ -230,4 +226,14 @@ public class FrustumNGTest {
         assertOrthographic(new Frustum(-10F, 20F, -30F, 40F, -50F, 40F));
     }
     
+    /**
+     * Makes a copy of a Frustum.
+     */
+    @Test 
+    public void testCopy() {
+        Frustum original = new Frustum(PERS_FOV, PERS_ASPECT, PERS_XMIN, PERS_XMAX, PERS_YMIN, PERS_YMAX, PERS_NEAR, PERS_FAR);
+        Frustum copy = original.getCopy();
+        
+        assertPerspective(copy);
+    }   
 }

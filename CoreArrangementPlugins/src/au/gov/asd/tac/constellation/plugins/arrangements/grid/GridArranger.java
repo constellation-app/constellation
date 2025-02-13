@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -263,27 +263,17 @@ public class GridArranger implements Arranger {
         if (gc == null) {
             return new Dimension(0, 0);
         } else {
-            switch (gc) {
-                case HORIZONTAL_LINE:
-                    return new Dimension(0, 1);
-                case VERTICAL_LINE:
-                    return new Dimension(1, 0);
-                case TWO_ROWS:
-                    return new Dimension(0, 2);
-                case THREE_ROWS:
-                    return new Dimension(0, 3);
-                case FOUR_ROWS:
-                    return new Dimension(0, 4);
-                case TWO_COLUMNS:
-                    return new Dimension(2, 0);
-                case THREE_COLUMNS:
-                    return new Dimension(3, 0);
-                case FOUR_COLUMNS:
-                    return new Dimension(4, 0);
-                default:
-                    // Return a SQUARE
-                    return new Dimension(0, 0);
-            }
+            return switch (gc) {
+                case HORIZONTAL_LINE -> new Dimension(0, 1);
+                case VERTICAL_LINE -> new Dimension(1, 0);
+                case TWO_ROWS -> new Dimension(0, 2);
+                case THREE_ROWS -> new Dimension(0, 3);
+                case FOUR_ROWS -> new Dimension(0, 4);
+                case TWO_COLUMNS -> new Dimension(2, 0);
+                case THREE_COLUMNS -> new Dimension(3, 0);
+                case FOUR_COLUMNS -> new Dimension(4, 0);
+                default -> new Dimension(0, 0);
+            };
         }
     }
 }

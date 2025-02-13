@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,6 +72,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableViewPageFactoryNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(TableViewPageFactoryNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;
@@ -170,6 +171,7 @@ public class TableViewPageFactoryNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -190,8 +192,7 @@ public class TableViewPageFactoryNGTest {
         when(sortCol.getSortType()).thenReturn(TableColumn.SortType.DESCENDING);
         when(sortCol.sortTypeProperty()).thenReturn(sortTypeProperty);
 
-        final Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> expectedSort
-                = ImmutablePair.of(sortCol, TableColumn.SortType.DESCENDING);
+        final Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> expectedSort = ImmutablePair.of(sortCol, TableColumn.SortType.DESCENDING);
 
         assertEquals(expectedSort, tableViewPageFactory.getCurrentSort());
 
@@ -202,8 +203,7 @@ public class TableViewPageFactoryNGTest {
     public void getCurrentSortNoSort() {
         doReturn(FXCollections.observableArrayList()).when(tableView).getSortOrder();
 
-        final Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> expectedSort
-                = ImmutablePair.of(null, null);
+        final Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> expectedSort = ImmutablePair.of(null, null);
 
         assertEquals(expectedSort, tableViewPageFactory.getCurrentSort());
     }
@@ -218,8 +218,7 @@ public class TableViewPageFactoryNGTest {
         when(sortCol.getSortType()).thenReturn(TableColumn.SortType.DESCENDING);
         when(sortCol.sortTypeProperty()).thenReturn(sortTypeProperty);
 
-        final Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> currentSort
-                = ImmutablePair.of(sortCol, TableColumn.SortType.DESCENDING);
+        final Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> currentSort = ImmutablePair.of(sortCol, TableColumn.SortType.DESCENDING);
 
         tableViewPageFactory.restoreSort(currentSort);
 
@@ -274,8 +273,7 @@ public class TableViewPageFactoryNGTest {
 
         final TableColumn<ObservableList<String>, String> sortCol = mock(TableColumn.class);
 
-        final Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> currentSort
-                = ImmutablePair.of(sortCol, TableColumn.SortType.DESCENDING);
+        final Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> currentSort = ImmutablePair.of(sortCol, TableColumn.SortType.DESCENDING);
         doReturn(currentSort).when(tableViewPageFactory).getCurrentSort();
         doNothing().when(tableViewPageFactory).restoreSort(any(Pair.class));
 
@@ -329,8 +327,7 @@ public class TableViewPageFactoryNGTest {
         final int maxRowsPerPage = 2;
         final int pageIndex = 0;
 
-        final ObservableList<TableColumn<ObservableList<String>, String>> sortOrder
-                = FXCollections.observableArrayList();
+        final ObservableList<TableColumn<ObservableList<String>, String>> sortOrder = FXCollections.observableArrayList();
         doReturn(sortOrder).when(tableView).getSortOrder();
 
         final TableViewState tableViewState = new TableViewState();
@@ -432,29 +429,19 @@ public class TableViewPageFactoryNGTest {
         doReturn(List.of(100, 102)).when(tableViewPageFactory)
                 .getSelectedIds(any(Graph.class), any(TableViewState.class));
 
-        final ObservableList<String> vertex1 = FXCollections.observableList(
-                List.of("Vertex1Attr1", "Vertex1Attr2"));
-        final ObservableList<String> vertex2 = FXCollections.observableList(
-                List.of("Vertex2Attr1", "Vertex2Attr2"));
-        final ObservableList<String> vertex3 = FXCollections.observableList(
-                List.of("Vertex3Attr1", "Vertex3Attr2"));
+        final ObservableList<String> vertex1 = FXCollections.observableList(List.of("Vertex1Attr1", "Vertex1Attr2"));
+        final ObservableList<String> vertex2 = FXCollections.observableList(List.of("Vertex2Attr1", "Vertex2Attr2"));
+        final ObservableList<String> vertex3 = FXCollections.observableList(List.of("Vertex3Attr1", "Vertex3Attr2"));
 
-        final Map<Integer, ObservableList<String>> elementIdToRowIndex = Map.of(
-                100, vertex1,
-                102, vertex2,
-                103, vertex3
-        );
+        final Map<Integer, ObservableList<String>> elementIdToRowIndex = Map.of(100, vertex1, 102, vertex2, 103, vertex3);
 
         // Order is important here. Should match on vertex 1 and 2, so indicies 0 and 2.
-        when(tableView.getItems()).thenReturn(
-                FXCollections.observableList(List.of(vertex1, vertex3, vertex2))
-        );
+        when(tableView.getItems()).thenReturn(FXCollections.observableList(List.of(vertex1, vertex3, vertex2)));
 
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
             platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(true);
 
-            tableViewPageFactory
-                    .restoreSelectionFromGraph(graph, tableViewState, elementIdToRowIndex);
+            tableViewPageFactory.restoreSelectionFromGraph(graph, tableViewState, elementIdToRowIndex);
         }
 
         verify(tableViewPageFactory).getSelectedIds(graph, tableViewState);

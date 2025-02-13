@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,24 +30,25 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class LayerNameAttributeDescriptionNGTest {
-
-    public LayerNameAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -78,7 +79,7 @@ public class LayerNameAttributeDescriptionNGTest {
     /**
      * Test of convertFromString method, of class LayerNameAttributeDescription. Don't supply a layer number
      */
-    @Test(expectedExceptions = {IllegalArgumentException.class}, 
+    @Test(expectedExceptions = IllegalArgumentException.class, 
             expectedExceptionsMessageRegExp = "Error converting String 'Bad Number,Test Layer' to layer_name")
     public void testConvertFromStringBadLayerNumber() {
         System.out.println("convertFromStringBadLayerNumber");
@@ -121,5 +122,4 @@ public class LayerNameAttributeDescriptionNGTest {
 
         assertEquals(instance.getString(0), "3,Test Layer");
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.find.components.advanced;
 
-import au.gov.asd.tac.constellation.views.find.components.advanced.ColorCriteriaPanel;
-import au.gov.asd.tac.constellation.views.find.components.advanced.AdvancedCriteriaBorderPane;
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
@@ -28,7 +25,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttribute
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.find.FindViewController;
-import au.gov.asd.tac.constellation.views.find.FindViewTopComponent;
 import au.gov.asd.tac.constellation.views.find.components.AdvancedFindTab;
 import au.gov.asd.tac.constellation.views.find.components.BasicFindTab;
 import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
@@ -63,28 +59,27 @@ import org.testng.annotations.Test;
  */
 public class ColorCriteriaPanelNGTest {
 
-    private Map<String, Graph> graphMap = new HashMap<>();
+    private Map<String, Graph> graphMap;
+    
     private Graph graph;
     private Graph graph2;
-    private GraphAttribute labelAttributeV, identifierAttributeV, xAtrributeV, labelAttributeT, identifierAttributeT;
 
-    private int selectedV, selectedT;
-    private int labelV, identifierV, xV, dimV, colorV, iconV, dateTimeT, labelT, identiferT, widthT;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
+    private int selectedV;
+    private int labelV;
+    private int identifierV;
+    private int xV;
+    private int colorV;
+    
+    private int vxId1;
 
-    FindViewTopComponent findViewTopComponent;
-    FindViewTopComponent spyTopComponent;
-
-    BasicFindTab basicFindTab;
-    ReplaceTab replaceTab;
-    AdvancedFindTab advancedTab;
-    FindViewPane findViewPane;
-    FindViewTabs findViewTabs;
+    private BasicFindTab basicFindTab;
+    private ReplaceTab replaceTab;
+    private AdvancedFindTab advancedTab;
+    private FindViewPane findViewPane;
+    private FindViewTabs findViewTabs;
+    
     private static final Logger LOGGER = Logger.getLogger(FloatCriteriaPanelNGTest.class.getName());
-
-    public ColorCriteriaPanelNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -103,20 +98,12 @@ public class ColorCriteriaPanelNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        findViewTopComponent = mock(FindViewTopComponent.class
-        );
-        spyTopComponent = spy(findViewTopComponent);
-
-        findViewPane = mock(FindViewPane.class
-        );
-        findViewTabs = mock(FindViewTabs.class
-        );
+        findViewPane = mock(FindViewPane.class);
+        findViewTabs = mock(FindViewTabs.class);
         FindViewController.getDefault();
 
-        basicFindTab = mock(BasicFindTab.class
-        );
-        replaceTab = mock(ReplaceTab.class
-        );
+        basicFindTab = mock(BasicFindTab.class);
+        replaceTab = mock(ReplaceTab.class);
 
         when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
         when(findViewPane.getTabs()).thenReturn(findViewTabs);
@@ -129,6 +116,7 @@ public class ColorCriteriaPanelNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -185,10 +173,10 @@ public class ColorCriteriaPanelNGTest {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         graph2 = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
 
+        graphMap = new HashMap<>();
         graphMap.put(graph.getId(), graph);
         graphMap.put(graph2.getId(), graph2);
         try {
-
             WritableGraph wg = graph.getWritableGraph("", true);
 
             // Create Selected Attributes
@@ -198,11 +186,6 @@ public class ColorCriteriaPanelNGTest {
             xV = VisualConcept.VertexAttribute.X.ensure(wg);
             colorV = VisualConcept.VertexAttribute.COLOR.ensure(wg);
 
-            selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-            labelT = VisualConcept.TransactionAttribute.LABEL.ensure(wg);
-            identiferT = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(wg);
-            widthT = VisualConcept.TransactionAttribute.WIDTH.ensure(wg);
-
             vxId1 = wg.addVertex();
             wg.setBooleanValue(selectedV, vxId1, false);
             wg.setStringValue(labelV, vxId1, "label name");
@@ -211,11 +194,9 @@ public class ColorCriteriaPanelNGTest {
             wg.setObjectValue(colorV, vxId1, ConstellationColor.BLUE);
 
             wg.commit();
-
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
         }
     }
-
 }

@@ -124,7 +124,7 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                                     final List<ConstellationAbstractFeature> shapes = new ArrayList<>();
                                     try {
                                         final List<ConstellationAbstractFeature> features = GeoJSONReader.loadDataFromJSON(null, elementShape).stream()
-                                                .map(FeatureUtilities::convert).collect(Collectors.toList());
+                                                .map(FeatureUtilities::convert).toList();
                                         shapes.addAll(features);
                                         shapeAdded = true;
                                         markerFactory.createMarkers(shapes).forEach(marker -> {
@@ -196,7 +196,7 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                     final List<ConstellationAbstractMarker> markersInCluster = cluster.getPoints().stream()
                             .map(markerPoints::get)
                             .flatMap(List::stream)
-                            .collect(Collectors.toList());
+                            .toList();
                     final ConstellationClusterMarker clusterMarker = new ConstellationClusterMarker();
                     clusterMarker.setColor(MarkerUtilities.DEFAULT_CLUSTER_COLOR);
                     clusterMarker.setMarkers(markersInCluster);
@@ -302,6 +302,7 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                                             }
                                         }
                                         default -> {
+                                            // do nothing
                                         }
                                     }
                                 }

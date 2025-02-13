@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 
@@ -32,6 +33,8 @@ import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
  * @author algol
  */
 public final class VisualGraphDefaults {
+    
+    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
 
     private VisualGraphDefaults() {
     }
@@ -39,9 +42,9 @@ public final class VisualGraphDefaults {
     /*
      * Graph defaults
      */
-    public static final ConstellationColor DEFAULT_BACKGROUND_COLOR = ConstellationColor.NIGHT_SKY;
+    public static final ConstellationColor DEFAULT_BACKGROUND_COLOR = DARK_MODE ? ConstellationColor.NIGHT_SKY : ConstellationColor.LIGHT_SKY;
     public static final ConstellationColor DEFAULT_HIGHLIGHT_COLOR = ConstellationColor.CHERRY;
-    public static final ConstellationColor DEFAULT_MIX_COLOR = ConstellationColor.CLOUDS;
+    public static final ConstellationColor DEFAULT_MIX_COLOR = DARK_MODE ? ConstellationColor.CLOUDS : ConstellationColor.AZURE;
     public static final ConnectionMode DEFAULT_CONNECTION_MODE = ConnectionMode.EDGE;
     public static final float DEFAULT_CONNECTION_OPACITY = 1;
     public static final DrawFlags DEFAULT_DRAW_FLAGS = DrawFlags.ALL;
@@ -52,6 +55,7 @@ public final class VisualGraphDefaults {
     public static final int DEFAULT_MAX_TRANSACTION_TO_DRAW = 8;
     public static final boolean DEFAULT_GRAPH_VISIBILITY = true;
     public static final int DEFAULT_GRAPH_VISIBILITY_VERTEX_THRESHOLD = 15000;
+    public static final float DEFAULT_CONNECTION_MOTION = -1.0F;
 
     /*
      * Vertex defaults

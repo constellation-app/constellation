@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +52,7 @@ public interface DataAccessPluginType {
         return Collections.unmodifiableList(
                 getTypesOrderedByPosition().stream()
                         .map(PositionalDataAccessPluginType::getType)
-                        .collect(Collectors.toList())
-        );
+                        .toList());
     }
 
     /**
@@ -81,7 +80,7 @@ public interface DataAccessPluginType {
                 .map(DataAccessPluginType::getPluginTypeList)
                 .flatMap(Collection::stream)
                 .sorted((pt1, pt2) -> Integer.compare(pt1.getPosition(), pt2.getPosition()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

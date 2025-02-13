@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,29 +43,36 @@ import org.testng.annotations.Test;
  */
 public class QualityControlStateUpdaterNGTest {
 
-    private int attrX, attrY, attrZ;
-    private int vxId1, vxId2;
-    private int txId1;
-    private int vSelectedAttrId, tSelectedAttrId, vxIdentifierAttrId, typeAttrId;
+    private int attrX;
+    private int attrY;
+    
+    private int vxId1;
+    private int vxId2;
+    
+    private int vSelectedAttrId;
+    private int vxIdentifierAttrId;
+    private int typeAttrId;
+    
     private Graph graph;
-
-    public QualityControlStateUpdaterNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -78,7 +85,6 @@ public class QualityControlStateUpdaterNGTest {
             // Add X,Y,Z vertex attributes
             attrX = VisualConcept.VertexAttribute.X.ensure(wg);
             attrY = VisualConcept.VertexAttribute.Y.ensure(wg);
-            attrZ = VisualConcept.VertexAttribute.Z.ensure(wg);
         } finally {
             wg.commit();
         }
@@ -108,14 +114,12 @@ public class QualityControlStateUpdaterNGTest {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         WritableGraph wg = graph.getWritableGraph("Add Elements", true);
         try {
-            // Add X,Y,Z vertex attributes
+            // Add X,Y vertex attributes
             attrX = VisualConcept.VertexAttribute.X.ensure(wg);
             attrY = VisualConcept.VertexAttribute.Y.ensure(wg);
-            attrZ = VisualConcept.VertexAttribute.Z.ensure(wg);
 
-            // Add vertex and transaction SELECTED attributes
+            // Add vertex SELECTED attribute
             vSelectedAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            tSelectedAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
 
             // Add vertex IDENTIFIER attribute and label each vertice.
             vxIdentifierAttrId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
@@ -151,21 +155,16 @@ public class QualityControlStateUpdaterNGTest {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         WritableGraph wg = graph.getWritableGraph("Add Elements", true);
         try {
-            // Add X,Y,Z vertex attributes
+            // Add X,Y vertex attributes
             attrX = VisualConcept.VertexAttribute.X.ensure(wg);
             attrY = VisualConcept.VertexAttribute.Y.ensure(wg);
-            attrZ = VisualConcept.VertexAttribute.Z.ensure(wg);
 
-            // Add vertex and transaction SELECTED attributes
+            // Add vertex SELECTED attribute
             vSelectedAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            tSelectedAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
 
             // Add two vertices
             vxId1 = wg.addVertex();
             vxId2 = wg.addVertex();
-
-            // Add one transaction between the two vertices
-            txId1 = wg.addTransaction(vxId1, vxId2, false);
 
             wg.setFloatValue(attrX, vxId1, 1.0f);
             wg.setFloatValue(attrY, vxId1, 1.0f);
@@ -238,21 +237,16 @@ public class QualityControlStateUpdaterNGTest {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         WritableGraph wg = graph.getWritableGraph("Add Elements", true);
         try {
-            // Add X,Y,Z vertex attributes
+            // Add X,Y vertex attributes
             attrX = VisualConcept.VertexAttribute.X.ensure(wg);
             attrY = VisualConcept.VertexAttribute.Y.ensure(wg);
-            attrZ = VisualConcept.VertexAttribute.Z.ensure(wg);
 
-            // Add vertex and transaction SELECTED attributes
+            // Add vertex SELECTED attribute
             vSelectedAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            tSelectedAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
 
             // Add two vertices
             vxId1 = wg.addVertex();
             vxId2 = wg.addVertex();
-
-            // Add one transaction between the two vertices
-            txId1 = wg.addTransaction(vxId1, vxId2, false);
 
             wg.setFloatValue(attrX, vxId1, 1.0f);
             wg.setFloatValue(attrY, vxId1, 1.0f);
@@ -328,5 +322,4 @@ public class QualityControlStateUpdaterNGTest {
         final QualityControlStateUpdater instance = new QualityControlStateUpdater();
         assertEquals(instance.getName(), QualityControlStateUpdater.PLUGIN_NAME);
     }
-
 }

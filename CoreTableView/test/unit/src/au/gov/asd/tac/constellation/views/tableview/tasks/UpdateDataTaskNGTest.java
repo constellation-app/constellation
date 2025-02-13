@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class UpdateDataTaskNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(UpdateDataTaskNGTest.class.getName());
 
     private TablePane tablePane;
@@ -160,14 +161,12 @@ public class UpdateDataTaskNGTest {
         final TableFilter<ObservableList<String>> filter = mock(TableFilter.class);
 
         final FilteredList<ObservableList<String>> filteredList = mock(FilteredList.class);
-        final ObjectProperty<Predicate<? super ObservableList<String>>> filterPredicateProperty
-                = mock(ObjectProperty.class);
+        final ObjectProperty<Predicate<? super ObservableList<String>>> filterPredicateProperty = mock(ObjectProperty.class);
 
         when(filter.getFilteredList()).thenReturn(filteredList);
         when(filteredList.predicateProperty()).thenReturn(filterPredicateProperty);
 
-        try (final MockedStatic<TableFilter> tableFilterMockedStatic
-                = Mockito.mockStatic(TableFilter.class)) {
+        try (final MockedStatic<TableFilter> tableFilterMockedStatic = Mockito.mockStatic(TableFilter.class)) {
             tableFilterMockedStatic.when(() -> TableFilter.forTableView(tableView))
                     .thenReturn(filterBuilder);
 
@@ -186,8 +185,7 @@ public class UpdateDataTaskNGTest {
         verify(selectedItemProperty).removeListener(tableSelectionListener);
         verify(selectedItems).removeListener(selectedOnlySelectionListener);
 
-        final SortedList<ObservableList<String>> newRowList
-                = new SortedList<>(FXCollections.observableList(rows));
+        final SortedList<ObservableList<String>> newRowList = new SortedList<>(FXCollections.observableList(rows));
 
         assertEquals(newRowList, activeTableReference.getSortedRowList());
 
@@ -210,8 +208,7 @@ public class UpdateDataTaskNGTest {
         assertEquals(0, updateDataTask.getUpdateDataLatch().getCount());
 
         // Extract the filter listener and verify its behaviour
-        final ArgumentCaptor<ChangeListener<? super Predicate<? super ObservableList<String>>>> filterListenerCaptor
-                = ArgumentCaptor.forClass(ChangeListener.class);
+        final ArgumentCaptor<ChangeListener<? super Predicate<? super ObservableList<String>>>> filterListenerCaptor = ArgumentCaptor.forClass(ChangeListener.class);
         verify(filterPredicateProperty).addListener(filterListenerCaptor.capture());
 
         // Clear the mock invocation counts for clarity and simplicity
@@ -257,8 +254,7 @@ public class UpdateDataTaskNGTest {
         final TableFilter<ObservableList<String>> filter = mock(TableFilter.class);
 
         final FilteredList<ObservableList<String>> filteredList = mock(FilteredList.class);
-        final ObjectProperty<Predicate<? super ObservableList<String>>> filterPredicateProperty
-                = mock(ObjectProperty.class);
+        final ObjectProperty<Predicate<? super ObservableList<String>>> filterPredicateProperty = mock(ObjectProperty.class);
 
         when(filter.getFilteredList()).thenReturn(filteredList);
         when(filteredList.predicateProperty()).thenAnswer(mock -> {
@@ -269,10 +265,8 @@ public class UpdateDataTaskNGTest {
             return filterPredicateProperty;
         });
 
-        try (final MockedStatic<TableFilter> tableFilterMockedStatic
-                = Mockito.mockStatic(TableFilter.class)) {
-            tableFilterMockedStatic.when(() -> TableFilter.forTableView(tableView))
-                    .thenReturn(filterBuilder);
+        try (final MockedStatic<TableFilter> tableFilterMockedStatic = Mockito.mockStatic(TableFilter.class)) {
+            tableFilterMockedStatic.when(() -> TableFilter.forTableView(tableView)).thenReturn(filterBuilder);
 
             when(filterBuilder.lazy(true)).thenReturn(filterBuilder);
             when(filterBuilder.apply()).thenReturn(filter);
@@ -281,8 +275,7 @@ public class UpdateDataTaskNGTest {
 
             // Because the task is now 'interrupted' it should not run the update
             // pagination
-            verify(activeTableReference, times(0))
-                    .updatePagination(anyInt(), any(List.class), any(TablePane.class));
+            verify(activeTableReference, times(0)).updatePagination(anyInt(), any(List.class), any(TablePane.class));
         }
     }
 }

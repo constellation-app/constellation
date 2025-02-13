@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,9 +143,9 @@ public class FourTuple<A, B, C, D> implements Serializable, Comparable<FourTuple
     public int compareTo(final FourTuple<A, B, C, D> o) {
         int compare;
 
-        if (first instanceof Comparable && o.first instanceof Comparable) {
+        if (first instanceof Comparable compFirst && o.first instanceof Comparable compOFirst) {
             // compare the first using Comparable
-            compare = ((Comparable) first).compareTo((Comparable) o.first);
+            compare = compFirst.compareTo(compOFirst);
             if (compare != 0) {
                 return compare;
             }
@@ -157,9 +157,9 @@ public class FourTuple<A, B, C, D> implements Serializable, Comparable<FourTuple
             }
         }
 
-        if (second instanceof Comparable && o.second instanceof Comparable) {
+        if (second instanceof Comparable compSecond && o.second instanceof Comparable compOSecond) {
             // compare the second using Comparable
-            compare = ((Comparable) second).compareTo((Comparable) o.second);
+            compare = compSecond.compareTo(compOSecond);
             if (compare != 0) {
                 return compare;
             }
@@ -171,9 +171,9 @@ public class FourTuple<A, B, C, D> implements Serializable, Comparable<FourTuple
             }
         }
 
-        if (third instanceof Comparable && o.third instanceof Comparable) {
+        if (third instanceof Comparable compThird && o.third instanceof Comparable compOThird) {
             // compare the third using Comparable
-            compare = ((Comparable) third).compareTo((Comparable) o.third);
+            compare = compThird.compareTo(compOThird);
             if (compare != 0) {
                 return compare;
             }
@@ -185,9 +185,9 @@ public class FourTuple<A, B, C, D> implements Serializable, Comparable<FourTuple
             }
         }
 
-        if (fourth instanceof Comparable && o.fourth instanceof Comparable) {
+        if (fourth instanceof Comparable compFourth && o.fourth instanceof Comparable compOFourth) {
             // compare the fourth using Comparable
-            compare = ((Comparable) fourth).compareTo((Comparable) o.fourth);
+            compare = compFourth.compareTo(compOFourth);
             if (compare != 0) {
                 return compare;
             }

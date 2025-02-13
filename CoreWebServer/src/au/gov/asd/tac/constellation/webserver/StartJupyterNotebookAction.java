@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ public class StartJupyterNotebookAction implements ActionListener {
 
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String dir = prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
+
         try {
             // Start the jupyter-notebook process with its stderr redirected to
             // its stdout, and stdout being fed into an InputOutput window.

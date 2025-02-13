@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,11 +75,11 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
         initContent();
     }
 
-    void writeProperties(final java.util.Properties p) {
+    public void writeProperties(final java.util.Properties p) {
         //Required for @ConvertAsProperties
     }
 
-    void readProperties(final java.util.Properties p) {
+    public void readProperties(final java.util.Properties p) {
         //Required for @ConvertAsProperties
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,11 +40,12 @@ import org.openide.util.NbPreferences;
 public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, List<DataAccessPlugin>>>> {
 
     private static final Preferences PREFERENCES = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
-    private static final String VISIBLE_CATEGORIES = PREFERENCES.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
-    private static final String HIDDEN_CATEGORIES = PREFERENCES.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
 
     @Override
     public Map<String, Pair<Integer, List<DataAccessPlugin>>> get() {
+        final String visibleCategories = PREFERENCES.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
+        final String hiddenCategories = PREFERENCES.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
+
         final Map<String, List<DataAccessPlugin>> allPlugins = DataAccessUtilities.getAllPlugins();
         final Map<String, Pair<Integer, List<DataAccessPlugin>>> orderedPlugins = new LinkedHashMap<>();
 
@@ -56,21 +57,21 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
                 .keySet());
 
         // Remove hidden categories if any exist in the preferences.
-        if (StringUtils.isNotBlank(HIDDEN_CATEGORIES)) {
-            final String[] hiddenCategories = (HIDDEN_CATEGORIES.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
+        if (StringUtils.isNotBlank(hiddenCategories)) {
+            final String[] hiddenCategoriesArray = (hiddenCategories.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
 
-            for (final String hiddenCategory : hiddenCategories) {
+            for (final String hiddenCategory : hiddenCategoriesArray) {
                 availableCategories.remove(hiddenCategory.trim());
             }
         }
 
         // Add visible categories if any exist in the preferences.
-        if (StringUtils.isNotBlank(VISIBLE_CATEGORIES)) {
-            final String[] visibleCategories = (VISIBLE_CATEGORIES.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
+        if (StringUtils.isNotBlank(visibleCategories)) {
+            final String[] visibleCategoriesArray = (visibleCategories.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
 
-            if (visibleCategories.length > 0) {
-                for (int i = 0; i < visibleCategories.length; i++) {
-                    orderedPlugins.put(visibleCategories[i].trim(), new Pair<>(i, allPlugins.get(visibleCategories[i].trim())));
+            if (visibleCategoriesArray.length > 0) {
+                for (int i = 0; i < visibleCategoriesArray.length; i++) {
+                    orderedPlugins.put(visibleCategoriesArray[i].trim(), new Pair<>(i, allPlugins.get(visibleCategoriesArray[i].trim())));
                 }
             }
         } else { // Add available categories if no visible categories exist in the preferences.
@@ -82,7 +83,11 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
                 orderedPlugins.put(category, new Pair<>(position, allPlugins.get(category)));
             });
         }
-
         return orderedPlugins;
+    }
+
+    // Only used in testing
+    protected static Preferences getPreferences() {
+        return PREFERENCES;
     }
 }

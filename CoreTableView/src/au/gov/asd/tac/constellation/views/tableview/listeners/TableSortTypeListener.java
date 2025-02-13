@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,7 @@ public class TableSortTypeListener implements ChangeListener<TableColumn.SortTyp
      */
     @Override
     public void changed(final ObservableValue<? extends TableColumn.SortType> observable,
-            final TableColumn.SortType oldValue,
-            final TableColumn.SortType newValue) {
+            final TableColumn.SortType oldValue, final TableColumn.SortType newValue) {
         if (!tablePane.getActiveTableReference().isSortingListenerActive()) {
             tablePane.getActiveTableReference().setSortingListenerActive(true);
             tablePane.getActiveTableReference().updatePagination(
@@ -67,5 +66,4 @@ public class TableSortTypeListener implements ChangeListener<TableColumn.SortTyp
             tablePane.getActiveTableReference().setSortingListenerActive(false);
         }
     }
-
 }

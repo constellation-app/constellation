@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,12 +86,12 @@ public class ScatterOptionsPane extends BorderPane {
     private Callback<ListView<Attribute>, ListCell<Attribute>> cellFactory;
     private boolean isUpdating = false;
 
-    public ScatterOptionsPane(ScatterPlotPane parent) {
+    public ScatterOptionsPane(final ScatterPlotPane parent) {
         this.scatterPlot = parent;
 
         this.cellFactory = (ListView<Attribute> p) -> new ListCell<Attribute>() {
             @Override
-            public void updateItem(Attribute item, boolean empty) {
+            public void updateItem(final Attribute item, final boolean empty) {
                 super.updateItem(item, empty);
                 if (item != null) {
                     this.setText(item.getName());
@@ -108,7 +108,7 @@ public class ScatterOptionsPane extends BorderPane {
             }
 
             try {
-                ScatterPlotState state = new ScatterPlotState(scatterPlot.getScatterPlot().getState());
+                final ScatterPlotState state = new ScatterPlotState(scatterPlot.getScatterPlot().getState());
 
                 if (newValue.equals(GraphElementType.VERTEX.getShortLabel())) {
                     state.setElementType(GraphElementType.VERTEX);
@@ -122,7 +122,8 @@ public class ScatterOptionsPane extends BorderPane {
                 state.setYAttribute(null);
 
                 PluginExecution.withPlugin(new ScatterPlotStateWriter(state)).executeLater(scatterPlot.getScatterPlot().getCurrentGraph());
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
                 ScatterPlotErrorDialog.create("Error updating element type: " + e.getMessage());
             }
         });
@@ -136,10 +137,11 @@ public class ScatterOptionsPane extends BorderPane {
             }
 
             try {
-                ScatterPlotState state = new ScatterPlotState(scatterPlot.getScatterPlot().getState());
+                final ScatterPlotState state = new ScatterPlotState(scatterPlot.getScatterPlot().getState());
                 state.setXAttribute(newValue);
                 PluginExecution.withPlugin(new ScatterPlotStateWriter(state)).executeLater(scatterPlot.getScatterPlot().getCurrentGraph());
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
                 ScatterPlotErrorDialog.create("Error updating x attribute: " + e.getMessage());
             }
         });
@@ -153,31 +155,30 @@ public class ScatterOptionsPane extends BorderPane {
             }
 
             try {
-                ScatterPlotState state = new ScatterPlotState(scatterPlot.getScatterPlot().getState());
+                final ScatterPlotState state = new ScatterPlotState(scatterPlot.getScatterPlot().getState());
                 state.setYAttribute(newValue);
                 PluginExecution.withPlugin(new ScatterPlotStateWriter(state)).executeLater(scatterPlot.getScatterPlot().getCurrentGraph());
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
                 ScatterPlotErrorDialog.create("Error updating y attribute: " + e.getMessage());
             }
         });
 
         this.selectedOnlyButton = new ToggleButton("Selected Only");
-        selectedOnlyButton.selectedProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (isUpdating) {
-                        return;
-                    }
+        selectedOnlyButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (isUpdating) {
+                return;
+            }
 
-                    try {
-                        ScatterPlotState state = new ScatterPlotState(scatterPlot.getScatterPlot().getState());
-
-                        state.setSelectedOnly(newValue);
-
-                        PluginExecution.withPlugin(new ScatterPlotStateWriter(state)).executeLater(scatterPlot.getScatterPlot().getCurrentGraph());
-                    } catch (InterruptedException e) {
-                        ScatterPlotErrorDialog.create("Error updating selected only: " + e.getMessage());
-                    }
-                });
+            try {
+                final ScatterPlotState state = new ScatterPlotState(scatterPlot.getScatterPlot().getState());
+                state.setSelectedOnly(newValue);
+                PluginExecution.withPlugin(new ScatterPlotStateWriter(state)).executeLater(scatterPlot.getScatterPlot().getCurrentGraph());
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+                ScatterPlotErrorDialog.create("Error updating selected only: " + e.getMessage());
+            }
+        });
 
         this.logarithmicAxisX = new ToggleButton("Log Scale X-Axis");
         logarithmicAxisX.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -186,20 +187,19 @@ public class ScatterOptionsPane extends BorderPane {
             }
 
             if (newValue) {
-                for (String numberType : NUMBER_TYPE_STRINGS) {
+                for (final String numberType : NUMBER_TYPE_STRINGS) {
                     VALID_TYPES_X.put(numberType, new LogarithmicAxisBuilder());
                 }
             } else { // oldValue will be true
-                for (String numberType : NUMBER_TYPE_STRINGS) {
+                for (final String numberType : NUMBER_TYPE_STRINGS) {
                     VALID_TYPES_X.put(numberType, new NumberAxisBuilder());
                 }
             }
 
             try {
                 final ScatterPlotState state = scatterPlot.getScatterPlot().getState();
-
                 PluginExecution.withPlugin(new ScatterPlotStateWriter(state)).executeLater(scatterPlot.getScatterPlot().getCurrentGraph());
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 ScatterPlotErrorDialog.create("Error updating number axis scale change: " + e.getMessage());
                 Thread.currentThread().interrupt();
             }
@@ -212,20 +212,19 @@ public class ScatterOptionsPane extends BorderPane {
             }
 
             if (newValue) {
-                for (String numberType : NUMBER_TYPE_STRINGS) {
+                for (final String numberType : NUMBER_TYPE_STRINGS) {
                     VALID_TYPES_Y.put(numberType, new LogarithmicAxisBuilder());
                 }
             } else { // oldValue will be true
-                for (String numberType : NUMBER_TYPE_STRINGS) {
+                for (final String numberType : NUMBER_TYPE_STRINGS) {
                     VALID_TYPES_Y.put(numberType, new NumberAxisBuilder());
                 }
             }
 
             try {
                 final ScatterPlotState state = scatterPlot.getScatterPlot().getState();
-
                 PluginExecution.withPlugin(new ScatterPlotStateWriter(state)).executeLater(scatterPlot.getScatterPlot().getCurrentGraph());
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 ScatterPlotErrorDialog.create("Error updating number axis scale change: " + e.getMessage());
                 Thread.currentThread().interrupt();
             }
@@ -233,12 +232,12 @@ public class ScatterOptionsPane extends BorderPane {
 
         final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
         helpButton = new Button("", helpImage);
-        helpButton.setOnAction(event
-                -> new HelpCtx(this.getClass().getPackage().getName()).display());
+        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.scatterplot.ScatterPlotTopComponent").display());
         helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
 
         this.optionsToolBar = new ToolBar();
-        optionsToolBar.getItems().addAll(elementTypeComboBox, xAttributeComboBox, yAttributeComboBox, selectedOnlyButton, logarithmicAxisX, logarithmicAxisY, helpButton);
+        optionsToolBar.getItems().addAll(elementTypeComboBox, xAttributeComboBox, yAttributeComboBox, selectedOnlyButton, 
+                logarithmicAxisX, logarithmicAxisY, helpButton);
 
         this.optionsPane = new FlowPane();
         optionsPane.setAlignment(Pos.CENTER);
@@ -256,7 +255,7 @@ public class ScatterOptionsPane extends BorderPane {
      *
      * @param state the ScatterPlotState.
      */
-    protected void refreshOptions(ScatterPlotState state) {
+    protected void refreshOptions(final ScatterPlotState state) {
         if (scatterPlot.getScatterPlot().getCurrentGraph() == null || state == null) {
             return;
         }
@@ -266,16 +265,13 @@ public class ScatterOptionsPane extends BorderPane {
 
             final ObservableList<Attribute> attributes = FXCollections.observableArrayList();
 
-            ReadableGraph readableGraph = scatterPlot.getScatterPlot().getCurrentGraph().getReadableGraph();
-            try {
+            try (final ReadableGraph readableGraph = scatterPlot.getScatterPlot().getCurrentGraph().getReadableGraph()) {
                 final int attributeCount = readableGraph.getAttributeCount(state.getElementType());
                 for (int attributePosition = 0; attributePosition < attributeCount; attributePosition++) {
                     final int attributeId = readableGraph.getAttribute(state.getElementType(), attributePosition);
                     final Attribute attribute = new GraphAttribute(readableGraph, attributeId);
                     attributes.add(attribute);
                 }
-            } finally {
-                readableGraph.release();
             }
 
             FXCollections.sort(attributes, (attribute1, attribute2) -> attribute1.getName().compareTo(attribute2.getName()));

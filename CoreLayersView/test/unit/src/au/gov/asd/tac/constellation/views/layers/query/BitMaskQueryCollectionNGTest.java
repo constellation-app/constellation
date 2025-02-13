@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,30 @@
  */
 package au.gov.asd.tac.constellation.views.layers.query;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
+import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.value.values.IntValue;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.views.layers.LayersViewController;
+import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
+import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
+import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
+import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -30,23 +52,121 @@ import org.testng.annotations.Test;
  */
 public class BitMaskQueryCollectionNGTest {
 
-    public BitMaskQueryCollectionNGTest() {
-    }
-
+    private int layerMaskV;
+    private int layerMaskT;
+    private int layerVisibilityV;
+    private int layerVisibilityT;
+    private int selectedV;
+    private int selectedT;
+    private int vertexLabelAttribute;
+    private int txnLabelAttribute;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    
+    private int txId1;
+    private int txId2;
+    private int txId3;
+    
+    private Graph graph;
+    private final BitMaskQueryCollection vxBitMaskCollection = new BitMaskQueryCollection(GraphElementType.VERTEX);
+    private final BitMaskQueryCollection txBitMaskCollection = new BitMaskQueryCollection(GraphElementType.TRANSACTION);
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
+    }
+
+        /**
+     * Set up a graph with four vertices and three transactions
+     */
+    private void setupGraph() throws InterruptedException {
+        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
+        
+        vxBitMaskCollection.setQueries(BitMaskQueryCollection.getDefaultVxQueries());
+        txBitMaskCollection.setQueries(BitMaskQueryCollection.getDefaultTxQueries());
+
+        WritableGraph wg = graph.getWritableGraph("", true);
+        try {    
+            // add attributes
+            int vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
+            vertexLabelAttribute = VisualConcept.VertexAttribute.LABEL.ensure(wg);
+            txnLabelAttribute = VisualConcept.TransactionAttribute.LABEL.ensure(wg);
+
+            // Create LayerMask attributes
+            layerMaskV = LayersConcept.VertexAttribute.LAYER_MASK.ensure(wg);
+            layerMaskT = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(wg);
+
+            // Create LayerVisilibity Attributes
+            layerVisibilityV = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(wg);
+            layerVisibilityT = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(wg);
+
+            // Create Selected Attributes
+            selectedV = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
+            selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+
+            // add vertices
+            vxId1 = wg.addVertex();
+            vxId2 = wg.addVertex();
+            vxId3 = wg.addVertex();
+            vxId4 = wg.addVertex();
+
+            // set the identifier of each vertex to something unique
+            wg.setStringValue(vertexIdentifierAttribute, vxId1, "V1");
+            wg.setStringValue(vertexIdentifierAttribute, vxId2, "V2");
+            wg.setStringValue(vertexIdentifierAttribute, vxId3, "V3");
+            wg.setStringValue(vertexIdentifierAttribute, vxId4, "V4");
+
+            wg.setFloatValue(layerVisibilityV, vxId1, 1.0f);
+            wg.setFloatValue(layerVisibilityV, vxId2, 1.0f);
+            wg.setFloatValue(layerVisibilityV, vxId3, 1.0f);
+            wg.setFloatValue(layerVisibilityV, vxId4, 1.0f);
+
+            wg.setIntValue(layerMaskV, vxId1, 1); // no layer
+            wg.setIntValue(layerMaskV, vxId2, 1); // no layer
+            wg.setIntValue(layerMaskV, vxId3, 1); // no layer
+            wg.setIntValue(layerMaskV, vxId4, 1); // no layer
+
+            wg.setBooleanValue(selectedV, vxId1, false);
+            wg.setBooleanValue(selectedV, vxId2, false);
+            wg.setBooleanValue(selectedV, vxId3, false);
+            wg.setBooleanValue(selectedV, vxId4, false);
+            
+            // Adding 3 Transactions - not selected, layer 1, visible
+            txId1 = wg.addTransaction(vxId1, vxId2, true);
+            wg.setIntValue(layerMaskT, txId1, 1);
+            wg.setFloatValue(layerVisibilityT, txId1, 1.0f);
+            wg.setBooleanValue(selectedT, txId1, false);
+
+            txId2 = wg.addTransaction(vxId2, vxId3, false);
+            wg.setIntValue(layerMaskT, txId2, 1);
+            wg.setFloatValue(layerVisibilityT, vxId2, 1.0f);
+            wg.setBooleanValue(selectedT, txId2, false);
+
+            txId3 = wg.addTransaction(vxId3, vxId4, true);
+            wg.setIntValue(layerMaskT, txId3, 1);
+            wg.setFloatValue(layerVisibilityT, txId3, 1.0f);
+            wg.setBooleanValue(selectedT, txId3, false);           
+        } finally {
+            wg.commit();
+        }
     }
 
     /**
@@ -122,6 +242,266 @@ public class BitMaskQueryCollectionNGTest {
     }
 
     /**
+     * Test of updateBitMask method, of class BitMaskQueryCollection.
+     * @throws java.lang.InterruptedException
+     */
+    @Test
+    public void testCombineBitmap() throws InterruptedException {
+        setupGraph();
+        final GraphManager gm = Mockito.mock(GraphManager.class);
+        when(gm.getActiveGraph()).thenReturn(graph);
+
+        try (MockedStatic<GraphManager> mockedStatic = Mockito.mockStatic(GraphManager.class)) {
+            mockedStatic.when(() -> GraphManager.getDefault()).thenReturn(gm);
+
+            WritableGraph wg = graph.getWritableGraph("", true);
+            try {               
+                Query selQuery1 = new Query(GraphElementType.VERTEX, "Label contains '.5'");
+                Query selQuery2 = new Query(GraphElementType.VERTEX, "Label contains \"1\"");
+                Query selQuery3 = new Query(GraphElementType.TRANSACTION, "Label contains '.'");
+                
+                createLayer(wg, selQuery1, null, 1, "Point5");
+                createLayer(wg, null, null, 2, null);
+                createLayer(wg, null, null, 3, null);
+                createLayer(wg, selQuery2, selQuery3, 4, "One");
+                
+                changeLayerVisibility(wg, 1, true); // query: v id .5
+                changeLayerVisibility(wg, 2, true);
+                changeLayerVisibility(wg, 3, true);
+                changeLayerVisibility(wg, 4, true); // query: V Label 1 , T label .
+
+                // test union and intersection modes based only on allocated layers to each vertex
+                wg.setIntValue(layerMaskV, vxId1, 1); // base layer only
+                wg.setIntValue(layerMaskV, vxId2, 3); // layer 1
+                wg.setIntValue(layerMaskV, vxId3, 5); // layer 2
+                wg.setIntValue(layerMaskV, vxId4, 11); // layers 1 and 3
+                wg.setIntValue(layerMaskT, txId1, 7); // layers 1 and 2
+                wg.setIntValue(layerMaskT, txId2, 9); // layer 3
+                wg.setIntValue(layerMaskT, txId3, 17); // layer 4
+                
+                System.out.println("\n==== UNION ELEMENT TEST ====");
+
+                sessionEdit(true, 10); // layers 1,3 selected, union mode
+                
+                // direct allocation matches for any element on either layer 1 or 3 will be visible.
+                // union of results for visible vertices: vtx2, vtx4 , and txn1 txn2
+                
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityV, vxId1));
+                assertEquals(1.0f, wg.getFloatValue(layerVisibilityV, vxId2));
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityV, vxId3));
+                assertEquals(1.0f, wg.getFloatValue(layerVisibilityV, vxId4));
+                assertEquals(1.0f, wg.getFloatValue(layerVisibilityT, txId1));
+                assertEquals(1.0f, wg.getFloatValue(layerVisibilityT, txId2));
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityT, txId3));
+                
+                System.out.println("\n==== INTERSECTION ELEMENT TEST ====");
+
+                sessionEdit(false, 10); // layers 1,3 selected, intersection mode
+                
+                // direct allocation matches for any element on both layers (1 and 3) will be visible.
+                // intersection of results for visible elements:  vtx4
+                
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityV, vxId1));
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityV, vxId2));
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityV, vxId3));
+                assertEquals(1.0f, wg.getFloatValue(layerVisibilityV, vxId4));
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityT, txId1));
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityT, txId2));
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityT, txId3));
+                
+                // set the label of each vertex to something testable
+                wg.setStringValue(vertexLabelAttribute, vxId1, "Label_1");
+                wg.setStringValue(vertexLabelAttribute, vxId2, "Label_2.5");
+                wg.setStringValue(vertexLabelAttribute, vxId3, "Label_3");
+                wg.setStringValue(vertexLabelAttribute, vxId4, "Label_14.5");
+                
+                // set the label of each txn to something testable
+                wg.setStringValue(txnLabelAttribute, txId1, "TxLabel_1");
+                wg.setStringValue(txnLabelAttribute, txId2, "TxLabel_2.25");
+                wg.setStringValue(txnLabelAttribute, txId3, "TxLabel_3.5");
+                
+                wg.setIntValue(layerMaskV, vxId1, 1); // base layer only
+                wg.setIntValue(layerMaskV, vxId2, 1); // base layer only
+                wg.setIntValue(layerMaskV, vxId3, 1); // base layer only
+                wg.setIntValue(layerMaskV, vxId4, 1); // base layer only         
+                wg.setIntValue(layerMaskT, txId1, 1); // base layer only
+                wg.setIntValue(layerMaskT, txId2, 1); // base layer only
+                wg.setIntValue(layerMaskT, txId3, 1); // base layer only
+                
+                changeLayerVisibility(wg, 1, true); // query: v id .5
+                changeLayerVisibility(wg, 2, true);
+                changeLayerVisibility(wg, 3, true);
+                changeLayerVisibility(wg, 4, true); // query: V Label 1 , T label .
+
+                System.out.println("\n==== UNION QUERY TEST ====");
+                
+                sessionEdit(true, 30); // layers 1,2,3,4 selected, union mode
+                
+                // Only the query matches for any layer will be visible.
+                // vertex 1 matches layer 4 query, vertices 2 and 4 match layer 1 query
+                // transactions txn2 and txn3 match layer 4 query 
+                // union of results for visible vertices: vtx1, vtx2, vtx4 , and txn2, txn3
+                
+                assertEquals(1.0f, wg.getFloatValue(layerVisibilityV, vxId1));
+                assertEquals(1.0f, wg.getFloatValue(layerVisibilityV, vxId2));
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityV, vxId3));
+                assertEquals(1.0f, wg.getFloatValue(layerVisibilityV, vxId4));
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityT, txId1));
+                assertEquals(1.0f, wg.getFloatValue(layerVisibilityT, txId2));
+                assertEquals(1.0f, wg.getFloatValue(layerVisibilityT, txId3));
+                
+                wg.setIntValue(layerMaskV, vxId1, 3); // assign ro layer 1
+                wg.setIntValue(layerMaskV, vxId3, 3); // assign ro layer 1
+                wg.setIntValue(layerMaskT, txId1, 3); // assign to layer 1
+                wg.setIntValue(layerMaskT, txId3, 3); // assign to layer 1
+                
+                System.out.println("\n==== INTERSECTION QUERY TEST ====");
+
+                sessionEdit(false, 18); // layers 1 and 4 selected, intersection mode
+                
+                // vertex 1 and txn 3 should be visible ... they are both assigned to layer 2, and both match a layer 5 query
+                // vertx 4 should also be visible as it passes the query for layer 2, and also the query for layer 5
+                // intersection of results: vtx1 , vtx4,  txn3
+
+                assertEquals(1.0f, wg.getFloatValue(layerVisibilityV, vxId1));
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityV, vxId2));
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityV, vxId3));
+                assertEquals(1.0f, wg.getFloatValue(layerVisibilityV, vxId4));
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityT, txId1));
+                assertEquals(0.0f, wg.getFloatValue(layerVisibilityT, txId2));
+                assertEquals(1.0f, wg.getFloatValue(layerVisibilityT, txId3));
+                
+                wg.setBooleanValue(selectedV, vxId1, true);
+                wg.setBooleanValue(selectedT, txId1, true);
+
+                LayersUtilities.directAllocateElementsForLayer(16, true, true);
+                assertEquals(wg.getIntValue(layerMaskV, vxId1) & 16, 16);
+
+                LayersUtilities.directSelectLayerElements(16, false, true);
+                assertFalse(wg.getBooleanValue(selectedV, vxId1));
+
+                LayersUtilities.directSelectLayerElements(16, true, true);
+                assertTrue(wg.getBooleanValue(selectedV, vxId1));
+                
+                LayersUtilities.directAllocateElementsForLayer(16, false, true);
+                assertEquals(wg.getIntValue(layerMaskV, vxId1) & 16, 0);
+                
+                LayersUtilities.directAllocateElementsForLayer(16, true, false);
+                assertEquals(wg.getIntValue(layerMaskT, txId1) & 16, 0);
+                
+                LayersUtilities.directSelectLayerElements(16, false, false);
+                assertTrue(wg.getBooleanValue(selectedT, txId1));
+                
+                wg.setBooleanValue(selectedT, txId1, false);
+                LayersUtilities.directSelectLayerElements(16, true, false);
+                assertFalse(wg.getBooleanValue(selectedT, txId1));
+                
+                LayersUtilities.directAllocateElementsForLayer(16, false, false);
+                assertEquals(wg.getIntValue(layerMaskT, txId1) & 16, 0);
+            } finally {
+                wg.commit();
+            }
+        }
+    }
+    
+    private void sessionEdit(boolean mode, long graphMask) throws InterruptedException {
+        WritableGraph wg = graph.getWritableGraph(" sess ed ", mode);
+        try {           
+            final int graphCurrentBitMaskAttrId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(wg);
+            wg.setLongValue(graphCurrentBitMaskAttrId, 0, graphMask);
+            final long currentBitmask = wg.getLongValue(graphCurrentBitMaskAttrId, 0);
+
+            final int vxbitmaskAttrId = LayersConcept.VertexAttribute.LAYER_MASK.get(wg);
+            final int vxbitmaskVisibilityAttrId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(wg);
+
+            final int txbitmaskAttrId = LayersConcept.TransactionAttribute.LAYER_MASK.get(wg);
+            final int txbitmaskVisibilityAttrId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(wg);
+
+            final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(wg);
+            final LayersViewState currentState = wg.getObjectValue(stateAttributeId, 0);
+            if (currentState != null) {
+                currentState.getVxQueriesCollection().setActiveQueries(currentBitmask);
+                currentState.getVxQueriesCollection().updateBitMasks(wg, vxbitmaskAttrId, vxbitmaskVisibilityAttrId, mode);
+                currentState.getTxQueriesCollection().setActiveQueries(currentBitmask);
+                currentState.getTxQueriesCollection().updateBitMasks(wg, txbitmaskAttrId, txbitmaskVisibilityAttrId, mode);
+                currentState.extractLayerAttributes(wg);
+                LayersViewController.getDefault().updateListenedAttributes();
+            }
+        } finally {
+            wg.commit();
+        }
+    }
+
+    private void changeLayerVisibility(GraphWriteMethods gwm, final int index, final boolean isVisible) throws InterruptedException {
+        final BitMaskQuery vxQuery = vxBitMaskCollection.getQuery(index);
+        final BitMaskQuery txQuery = txBitMaskCollection.getQuery(index);
+        
+        if (vxQuery != null) {
+            vxQuery.setVisibility(isVisible);
+        }
+        if (txQuery != null) {
+            txQuery.setVisibility(isVisible);
+        }
+        if (isVisible) {
+            IntValue iv = new IntValue();
+            iv.writeInt(index);        
+            vxQuery.update(gwm, iv);
+        }
+        execute();
+        writeState();
+    }
+
+    public void execute() {
+        final int newBitmask = LayersUtilities.calculateCurrentLayerSelectionBitMask(vxBitMaskCollection, txBitMaskCollection);
+        PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
+                .executeLater(GraphManager.getDefault().getActiveGraph());
+    }
+    
+    private void createLayer(GraphWriteMethods gwm, Query predefQuery, Query newTxQuery, int layerNumber, String desc) {
+        if (layerNumber <= BitMaskQueryCollection.MAX_QUERY_AMT) {
+            final Query vxQuery = new Query(GraphElementType.VERTEX, "");
+            vxBitMaskCollection.add(predefQuery != null ? predefQuery : vxQuery, layerNumber, desc);
+            if (predefQuery != null) {
+                IntValue iv = new IntValue();
+                iv.writeInt(layerNumber);
+                vxBitMaskCollection.getQuery(layerNumber).getQuery().compile(gwm, iv);
+            }
+            final Query txQuery = new Query(GraphElementType.TRANSACTION, "");
+            txBitMaskCollection.add(newTxQuery != null ? newTxQuery : txQuery, layerNumber, null);
+            if (newTxQuery != null) {
+                IntValue iv = new IntValue();
+                iv.writeInt(layerNumber);
+                txBitMaskCollection.getQuery(layerNumber).getQuery().compile(gwm, iv);
+            }
+        }
+    }
+    
+    private void writeState() throws InterruptedException {
+        WritableGraph wg = graph.getWritableGraph(" sess ed ", false);
+        try {            
+            final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(wg);
+            LayersViewState currentState = wg.getObjectValue(stateAttributeId, 0);
+            if (currentState == null) {
+                currentState = new LayersViewState();
+                currentState.setVxLayers(BitMaskQueryCollection.getDefaultVxQueries());
+                currentState.setTxLayers(BitMaskQueryCollection.getDefaultTxQueries());
+            } else {
+                currentState = new LayersViewState(currentState);
+            }
+            currentState.setVxLayers(vxBitMaskCollection.getQueries());
+            currentState.setTxLayers(txBitMaskCollection.getQueries());
+            if (currentState.getVxQueriesCollection().getHighestQueryIndex() == 0 && currentState.getTxQueriesCollection().getHighestQueryIndex() == 0) {
+                currentState.setVxLayers(BitMaskQueryCollection.getDefaultVxQueries());
+                currentState.setTxLayers(BitMaskQueryCollection.getDefaultTxQueries());
+            }
+
+            wg.setObjectValue(stateAttributeId, 0, currentState);
+        } finally {
+            wg.commit();
+        }
+    }
+    
+    /**
      * Test of add method, of class BitMaskQueryCollection.
      */
     @Test
@@ -192,5 +572,4 @@ public class BitMaskQueryCollectionNGTest {
         instance.removeQueryAndSort(bitIndex);
         assertEquals(instance.getQuery(bitIndex), null);
     }
-
 }

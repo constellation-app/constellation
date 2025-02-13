@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public class SleepReadPlugin extends SimpleReadPlugin {
     }
 
     @Override
-    protected void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final int nSecs = parameters.getIntegerValue(SECONDS_PARAMETER_ID);
         interaction.setProgress(0, 0, String.format("Sleeping (read) for %d second%s...", nSecs, nSecs == 1 ? "" : "s"), true);
 

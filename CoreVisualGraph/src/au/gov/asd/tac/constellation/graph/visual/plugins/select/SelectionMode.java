@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,28 +23,28 @@ public enum SelectionMode {
 
     REPLACE() {
         @Override
-        public boolean calculateSelection(boolean currentSelection, boolean newSelection) {
+        public boolean calculateSelection(final boolean currentSelection, final boolean newSelection) {
             return newSelection;
         }
     },
     ADD() {
         @Override
-        public boolean calculateSelection(boolean currentSelection, boolean newSelection) {
+        public boolean calculateSelection(final boolean currentSelection, final boolean newSelection) {
             return currentSelection || newSelection;
         }
     },
     INVERT() {
         @Override
-        public boolean calculateSelection(boolean currentSelection, boolean newSelection) {
+        public boolean calculateSelection(final boolean currentSelection, final boolean newSelection) {
             return currentSelection ^ newSelection;
         }
     },
     REMOVE() {
         @Override
-        public boolean calculateSelection(boolean currentSelection, boolean newSelection) {
+        public boolean calculateSelection(final boolean currentSelection, final boolean newSelection) {
             return currentSelection && !newSelection;
         }
     };
 
-    public abstract boolean calculateSelection(boolean currentSelection, boolean newSelection);
+    public abstract boolean calculateSelection(final boolean currentSelection, final boolean newSelection);
 }

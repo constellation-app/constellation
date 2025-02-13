@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
@@ -40,16 +41,15 @@ public class ZoomInPluginNGTest {
 
     private int cameraAttribute;
     private StoreGraph graph;
-
-    public ZoomInPluginNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -64,13 +64,16 @@ public class ZoomInPluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Test of edit method, of class ZoomInPlugin.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testEdit() throws Exception {
+    public void testEdit() throws InterruptedException, PluginException {
         System.out.println("Zoom In");
 
         final PluginInteraction interaction = null;
@@ -91,5 +94,4 @@ public class ZoomInPluginNGTest {
         // Compare coords, as float arrays
         assertEquals(c.lookAtCentre.a, expectedVec.a);
     }
-
 }

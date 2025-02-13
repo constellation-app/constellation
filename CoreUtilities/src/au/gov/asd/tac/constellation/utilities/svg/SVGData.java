@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -94,6 +94,17 @@ public class SVGData {
             }
         }
         return child;
+    }
+    
+    /**
+     * Adds a list of child SVGObjects to the current SVG element.
+     * Use depth first search.
+     * @param nodes
+     */
+    public void setChildren(final List<SVGObject> nodes) {
+        for (final SVGObject node : nodes){
+            this.setChild(node.toSVGData());
+        }
     }
     
     /**
@@ -226,10 +237,9 @@ public class SVGData {
      * Generates a string representation of SVG data captured within this object.
      * will be formatted with indentations and line breaks to be written 
      * directly to an output file.
-     * @return String in an SVG format.
+     * @return an ArrayList<String> of lines in an SVG format.
      */
-    @Override
-    public final String toString() {
+    public final List<String> toLines() {
         cleanAttributes();
         return toString(null);
     }
@@ -247,22 +257,22 @@ public class SVGData {
      * Recursive function to generate a string equivalent of complex SVG data 
      * captured within this object.
      * @param prefix
-     * @return String representation of the current element and all of it's child elements.
+     * @return List<String> representation of the current element and all of it's child elements.
      */
-    private String toString(final String prefix) {
-        final StringBuilder svgString = new StringBuilder();
+    private List<String> toString(final String prefix) {
+        final List<String> svgString = new ArrayList<>();
         if (this.children.isEmpty() && this.content == null) {
-            svgString.append(elementToSVG(prefix));
+            svgString.add(elementToSVG(prefix));
         } else {
-            svgString.append(elementHeaderToSVG(prefix));
+            svgString.add(elementHeaderToSVG(prefix));
             if (this.children.isEmpty()) {
-                svgString.append(content);
+                svgString.add(content);
             } else {
-                svgString.append(elementChildrenToSVG(prefix));
+                svgString.addAll(elementChildrenToSVG(prefix));
             }
-            svgString.append(elementFooterToSVG(prefix));
+            svgString.add(elementFooterToSVG(prefix));
         }
-        return svgString.toString();
+        return svgString;
     }
     /**
      * Generates an "inline" SVG element.
@@ -318,18 +328,18 @@ public class SVGData {
      * manages the indented of child elements
      * 
      * @param prefix
-     * @return 
+     * @return List<String>
      */
-    private String elementChildrenToSVG (final String prefix) {
-        final StringBuilder childSVGString = new StringBuilder();
+    private List<String> elementChildrenToSVG (final String prefix) {
+        final List<String> childSVGString = new ArrayList<>();
         final StringBuilder childPrefix = new StringBuilder(SeparatorConstants.TAB); 
         if (prefix != null) {
             childPrefix.append(prefix);
         }
         for (final SVGData child : this.getAllChildren()) {
-            childSVGString.append(child.toString(childPrefix.toString()));
+            childSVGString.addAll(child.toString(childPrefix.toString()));
         }
-        return childSVGString.toString();
+        return childSVGString;
     }
     
     /**

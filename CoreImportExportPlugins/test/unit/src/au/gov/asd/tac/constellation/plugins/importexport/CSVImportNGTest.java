@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,29 +37,28 @@ public class CSVImportNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
-    public void checkCSVLoadTest() throws InterruptedException {
+    public void checkCSVLoadTest() throws InterruptedException, IOException {
         final CSVImportFileParser parser = new CSVImportFileParser();
-        try {
-            final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/large.csv").getFile())), null);
-            assertEquals(53000, data.size());
-        } catch (IOException ex) {
-            fail("IO Exception : " + ex.getLocalizedMessage());
-        }
-
+        final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/large.csv").getFile())), null);
+        assertEquals(53000, data.size());
     }
 }

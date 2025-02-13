@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,17 +36,27 @@ import org.testng.annotations.Test;
  */
 public class GraphDistanceNGTest {
 
-    private int dAttribute, rAttribute, aAttribute;
-    private int vxId0, vxId1, vxId2, vxId3, vxId4, vxId5;
-    private int txId0, txId1, txId2, txId3, txId4, txId5;
+    private int dAttribute;
+    private int rAttribute;
+    private int aAttribute;
+    
+    private int vxId0;
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    private int vxId5;
+    
     private StoreGraph graph;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -69,12 +79,12 @@ public class GraphDistanceNGTest {
         vxId5 = graph.addVertex();
 
         // add transactions
-        txId0 = graph.addTransaction(vxId0, vxId1, true);
-        txId1 = graph.addTransaction(vxId2, vxId1, true);
-        txId2 = graph.addTransaction(vxId1, vxId3, true);
-        txId3 = graph.addTransaction(vxId1, vxId4, true);
-        txId4 = graph.addTransaction(vxId3, vxId5, true);
-        txId5 = graph.addTransaction(vxId4, vxId5, true);
+        graph.addTransaction(vxId0, vxId1, true);
+        graph.addTransaction(vxId2, vxId1, true);
+        graph.addTransaction(vxId1, vxId3, true);
+        graph.addTransaction(vxId1, vxId4, true);
+        graph.addTransaction(vxId3, vxId5, true);
+        graph.addTransaction(vxId4, vxId5, true);
 
     }
 

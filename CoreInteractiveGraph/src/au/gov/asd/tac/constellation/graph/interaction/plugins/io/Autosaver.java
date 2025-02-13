@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbPreferences;
@@ -39,6 +41,8 @@ import org.openide.util.RequestProcessor;
  */
 public final class Autosaver implements Runnable {
 
+    private static final Logger LOGGER = Logger.getLogger(Autosaver.class.getName());
+    
     private static final String AUTOSAVE_THREAD_NAME = "Autosave";
     private static final RequestProcessor REQUEST_PROCESSOR = new RequestProcessor(Autosaver.class);
 
@@ -111,9 +115,11 @@ public final class Autosaver implements Runnable {
 
                         try {
                             PluginExecution.withPlugin(InteractiveGraphPluginRegistry.AUTOSAVE_GRAPH).executeNow(graph);
-                        } catch (InterruptedException ex) {
+                        } catch (final InterruptedException ex) {
                             Thread.currentThread().interrupt();
-                        } catch (PluginException ex) {
+                            LOGGER.log(Level.WARNING, "Autosave was interrupted");
+                        } catch (final PluginException ex) {
+                            LOGGER.log(Level.WARNING, "Error occurred during autosave");
                         }
                     }
                 }

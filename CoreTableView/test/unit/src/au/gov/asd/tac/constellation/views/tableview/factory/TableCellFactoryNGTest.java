@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ContextMenu;
@@ -30,7 +31,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import static org.mockito.ArgumentMatchers.anyString;
+import javafx.scene.text.Text;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -53,6 +54,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableCellFactoryNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(TableCellFactoryNGTest.class.getName());
 
     private Table table;
@@ -86,21 +88,47 @@ public class TableCellFactoryNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
     public void updateItemIsEmpty() {
-        tableCellFactory.updateItem("Hello World", true);
-
-        verify(tableCellFactory, times(0)).setText(anyString());
+        Text t = mock(Text.class);
+        t.setText("Hello World");
+        doReturn(t).when(tableCellFactory).getWrappingText("Hello World");
+        tableCellFactory.updateItem("Hello World", true);        
+        verify(tableCellFactory, times(0)).setGraphic(t);
     }
 
     @Test
     public void updateItemIsNotEmpty() {
-        verifyStyle("Test Value", "source.", "Test Value", List.of("element-source"));
-        verifyStyle("Test Value", "destination.", "Test Value", List.of("element-destination"));
-        verifyStyle("Test Value", "transaction.", "Test Value", List.of("element-transaction"));
-        verifyStyle(null, "transaction.", "<No Value>", List.of("null-value", "element-transaction"));
+        final String test_value = "Test Value";
+        verifyStyle(test_value, "source.", List.of("element-source"));
+        verifyStyle(test_value, "destination.", List.of("element-destination"));
+        verifyStyle(test_value, "transaction.", List.of("element-transaction"));
+        verifyStyle(null, "transaction.", List.of("null-value", "element-transaction"));
+    }
+    
+    @Test
+    public void getWrappingTextItemIsNotEmpty() {
+        final String test_value = "Test Value";
+        ReadOnlyDoubleProperty mockWidthProperty = mock(ReadOnlyDoubleProperty.class);
+        doReturn(mockWidthProperty).when(cellColumn).widthProperty();
+        
+        Text test_text = tableCellFactory.getWrappingText(test_value);
+        verify(tableCellFactory, times(1)).getWrappingText(test_value);
+        assertEquals(test_text.getText(), test_value);      
+    }
+    
+    @Test
+    public void getWrappingTextItemIsEmpty() {
+        final String test_value = null;
+        ReadOnlyDoubleProperty mockWidthProperty = mock(ReadOnlyDoubleProperty.class);
+        doReturn(mockWidthProperty).when(cellColumn).widthProperty();
+        
+        Text test_text = tableCellFactory.getWrappingText(test_value);
+        verify(tableCellFactory, times(1)).getWrappingText(test_value);
+        assertEquals(test_text.getText(), "");      
     }
 
     @Test
@@ -112,6 +140,9 @@ public class TableCellFactoryNGTest {
 
         when(table.getColumnIndex()).thenReturn(columnIndex);
 
+        Text t = mock(Text.class);
+        t.setText("Test Value");
+        doReturn(t).when(tableCellFactory).getWrappingText("Test Value");
         tableCellFactory.updateItem("Test Value", false);
 
         final TableView<ObservableList<String>> tableView = mock(TableView.class);
@@ -143,6 +174,9 @@ public class TableCellFactoryNGTest {
 
         when(table.getColumnIndex()).thenReturn(columnIndex);
 
+        Text t = mock(Text.class);
+        t.setText("Test Value");
+        doReturn(t).when(tableCellFactory).getWrappingText("Test Value");
         tableCellFactory.updateItem("Test Value", false);
 
         final MouseEvent mouseEvent = mock(MouseEvent.class);
@@ -170,30 +204,32 @@ public class TableCellFactoryNGTest {
      *
      * @param item the string passed in to be set in the table cell
      * @param columnPrefix the column prefix for this cells column
-     * @param expectedText the expected string that will be set to the cell
      * @param expectedStyles the expected styles that should be present in the
      * style class list
      */
-    private void verifyStyle(final String item,
-            final String columnPrefix,
-            final String expectedText,
-            final List<String> expectedStyles) {
+    private void verifyStyle(final String item, final String columnPrefix, final List<String> expectedStyles) {
         clearInvocations(tableCellFactory, table);
 
         final ObservableList<String> styleClass = spy(FXCollections.observableArrayList());
         doReturn(styleClass).when(tableCellFactory).getStyleClass();
 
-        final CopyOnWriteArrayList<Column> columnIndex
-                = new CopyOnWriteArrayList<>();
+        final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
         columnIndex.add(new Column("source.", null, mock(TableColumn.class)));
         columnIndex.add(new Column(columnPrefix, null, cellColumn));
         columnIndex.add(new Column("transaction.", null, mock(TableColumn.class)));
 
         when(table.getColumnIndex()).thenReturn(columnIndex);
+        Text t = mock(Text.class);
+        t.setText(item);
+        doReturn(t).when(tableCellFactory).getWrappingText(item);
 
         tableCellFactory.updateItem(item, false);
-
-        verify(tableCellFactory).setText(expectedText);
+        verify(tableCellFactory).updateItem(item, false);
+        if (item != null) {
+            verify(tableCellFactory).setGraphic(t);
+        } else {
+            verify(tableCellFactory).setText("<No Value>");
+        }
 
         verify(styleClass).remove("null-value");
         verify(styleClass).remove("element-source");

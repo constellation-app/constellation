@@ -133,7 +133,7 @@ public class PointMarkerErrorLayer extends MapLayer {
                     final List<Location> errorRegionLocations = MarkerUtilities.generateCircle(marker.getLocation(), errorRegionRadiusLocation);
                     final List<MapPosition> errorRegionPositions = errorRegionLocations.stream()
                             .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
-                            .collect(Collectors.toList());
+                            .toList();
                     errorRegionImage.beginShape();
                     errorRegionPositions.forEach(position -> errorRegionImage.vertex(position.x, position.y));
                     errorRegionImage.endShape(PConstants.CLOSE);

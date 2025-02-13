@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.util.Pair;
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Emulate an HTML form post.
@@ -150,7 +150,7 @@ public class MultiPart {
      *
      * @throws IOException if the thread is interrupted during the connection.
      */
-    public Pair<String, String> post(final HttpsURLConnection conn) throws IOException {
+    public Pair<String, String> post(final HttpURLConnection conn) throws IOException {
         conn.setDoInput(true);
         conn.setDoOutput(true);
         conn.setUseCaches(false);
@@ -167,18 +167,13 @@ public class MultiPart {
 
         final int code = conn.getResponseCode();
 
-        final String location;
         final int responseClass = code / 100;
-        if (responseClass == 2) {
-            location = conn.getHeaderField("Location");
-        } else {
-            location = null;
-        }
-
+        final String location = responseClass == 2 ? conn.getHeaderField("Location") : null;
+        
         return new Pair<>(conn.getResponseMessage(), location);
     }
 
-    public static byte[] getBody(final HttpsURLConnection conn, final int code) throws IOException {
+    public static byte[] getBody(final HttpURLConnection conn, final int code) throws IOException {
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         final byte[] buf = new byte[256 * 1024];
         try (final InputStream in = code / 100 == 2 ? conn.getInputStream() : conn.getErrorStream()) {
@@ -187,11 +182,9 @@ public class MultiPart {
                 if (len == -1) {
                     break;
                 }
-
                 os.write(buf, 0, len);
             }
         }
-
         return os.toByteArray();
     }
 

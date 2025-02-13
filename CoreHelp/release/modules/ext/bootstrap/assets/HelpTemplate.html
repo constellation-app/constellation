@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<!--
+Copyright 2010-2025 Australian Signals Directorate
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    SCRIPTS
+
+        <div class="row">
+            <div class="col-4 col-sm-3">
+                <div id="table_of_contents">
+                    <!--- Table of Contents -->
+                    TABLE_OF_CONTENTS
+                </div>
+            </div>
+            <div class="col-8 col-sm-9" id="app">
+                <!-- Main part of the page -->
+                <div class="App">
+                    <!-- Search bar -->
+                    <div class="SearchBox">
+                        <div class="Search">
+                            <button class="icon">&#x1F50D</button>
+                            <input type="text" placeholder="Search help documentation" />
+                            <button class="clear">&times;</button>
+                        </div>
+
+                        <ul class="SuggestionList"></ul>
+                    </div>
+                    <ul class="ResultsList"></ul>
+                </div>
+                <!-- Body of the page -->
+                MAIN_PAGE
+            </div>
+        </div>
+
+    <script>
+        // Script for TOC to remember which fields are collapsed
+        // when a group is shown, save it as active
+        $(".collapse").on('shown.bs.collapse', function (e) {
+            e.stopPropagation();
+            var active = $(this).attr('id');
+            Cookies.set(active, "true");
+            $("#" + active).addClass('show');
+        });
+        // when a group is hidden, save it as inactive
+        $(".collapse").on('hidden.bs.collapse', function (e) {
+            e.stopPropagation();
+            var active = $(this).attr('id');
+            Cookies.set(active, "false");
+            $("#" + active).removeClass('show');
+            $("#" + active).collapse("hide");
+        });
+
+        $(document).ready(function () {
+            var allCookies = Cookies.get();
+            for (var cookie in allCookies) {
+                if (cookie !== null) {
+                    //remove default collapse settings
+                    $("#" + cookie).removeClass('show');
+                    //show the group if the value is true 
+                    var cookieValue = Cookies.get(cookie);
+                    if (cookieValue === ("true")) {
+                        $("#" + cookie).collapse("show");
+                    } else {
+                        $("#" + cookie).collapse("hide");
+                        $("#" + cookie + " .collapse").removeClass('show');
+                    }
+                }
+            }
+        });
+    </script>
+    
+    <script>
+        // Script for the search
+        let pages = [
+            HELP_PAGES
+        ];
+        
+        const miniSearch = new MiniSearch({
+            fields: ['title', 'category'],
+            storeFields: ['title', 'category', 'link']
+        });
+        
+        miniSearch.addAll(pages);
+        
+        const app = document.querySelector('.App');
+        const search = document.querySelector('.Search');
+        const searchInput = document.querySelector('.Search input');
+        const clearButton = document.querySelector('.Search button.clear');
+        const suggestionList = document.querySelector('.SuggestionList');
+        const resultsList = document.querySelector(".ResultsList");
+        
+        const capitalize = (string) => string.replace(/(\b\w)/gi, (char) => char.toUpperCase());
+
+        // Typing into search bar updates search results and suggestions
+        searchInput.addEventListener('input', (event) => {
+            const query = searchInput.value;
+
+            const results = (query.length > 1) ? getSearchResults(query) : [];
+            renderSearchResults(results);
+  
+            const suggestions = (query.length > 1) ? getSuggestions(query) : [];
+            renderSuggestions(suggestions);
+        });
+        
+        // Clicking on clear button clears search and suggestions
+        clearButton.addEventListener('click', () => {
+            searchInput.value = '';
+            searchInput.focus();
+
+            renderSearchResults([]);
+            renderSuggestions([]);
+        });
+
+        // Clicking on a suggestion selects it
+        suggestionList.addEventListener('click', (event) => {
+            const suggestion = event.target;
+
+            if (suggestion.classList.contains('Suggestion')) {
+                const query = suggestion.innerText.trim();
+                searchInput.value = query;
+                searchInput.focus();
+
+                const results = getSearchResults(query);
+                renderSearchResults(results);
+                renderSuggestions([]);
+            }
+        });
+
+        // Clicking outside of search bar clears suggestions
+        app.addEventListener('click', (event) => {
+            renderSuggestions([]);
+        });
+        
+        // Pressing up/down/enter key while on search bar navigates through suggestions
+        search.addEventListener('keydown', (event) => {
+            const key = event.key;
+
+            if (key === 'ArrowDown') {
+                selectSuggestion(+1);
+            } else if (key === 'ArrowUp') {
+                selectSuggestion(-1);
+            } else if (key === 'Enter' || key === 'Escape') {
+                searchInput.blur();
+                renderSuggestions([]);
+            } else {
+                return;
+            }
+            const query = searchInput.value;
+            const results = getSearchResults(query);
+            renderSearchResults(results);
+        });
+
+        // Get the search results
+        const getSearchResults = (query) => {
+            return miniSearch.search(query).map(({ id }) => pages[id]);
+        };
+
+        // Get possible suggestions for what has been typed
+        const getSuggestions = (query) => {
+            return miniSearch.autoSuggest(query);
+        };
+
+        // Display the search results on the page
+        const renderSearchResults = (results) => {
+            resultsList.innerHTML = results.map(({title, link}) => {
+                return `<li class="Result">
+                    <a href=\ ${link}> ${capitalize(title)}</a>
+                    </li>`;
+                }).join('\n');
+
+            if (results.length > 0) {
+                app.classList.add('hasResults');
+            } else {
+                app.classList.remove('hasResults');
+            }
+        };
+
+        // Display the suggestions
+        const renderSuggestions = (suggestions) => {
+            suggestionList.innerHTML = suggestions.map(({ suggestion }) => {
+                return `<li class="Suggestion">${suggestion}</li>`;
+            }).join('\n');
+
+            if (suggestions.length > 0) {
+                app.classList.add('hasSuggestions');
+            } else {
+                app.classList.remove('hasSuggestions');
+            }
+        };
+
+        // Select a suggestion and set the text input text to match 
+        const selectSuggestion = (direction) => {
+            const suggestions = document.querySelectorAll('.Suggestion');
+            const selected = document.querySelector('.Suggestion.selected');
+            const index = Array.from(suggestions).indexOf(selected);
+
+            if (index > -1) {
+                suggestions[index].classList.remove('selected');
+            }
+
+            const nextIndex = Math.max(Math.min(index + direction, suggestions.length - 1), 0);
+            suggestions[nextIndex].classList.add('selected');
+            searchInput.value = suggestions[nextIndex].innerText;
+        };     
+        
+        /**
+         * Code for MiniSearch is based on the demo provided at:
+         * https://github.com/lucaong/minisearch/blob/master/examples/plain_js
+         */
+    </script>
+
+</html>

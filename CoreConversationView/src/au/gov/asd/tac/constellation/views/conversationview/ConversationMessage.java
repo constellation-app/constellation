@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -63,7 +64,7 @@ public class ConversationMessage {
      * @param conversationSide a ConversationSide constant indicating which
      * 'side' of a conversation this message should appear on.
      */
-    public ConversationMessage(int transaction, int sender, ConversationSide conversationSide) {
+    public ConversationMessage(final int transaction, final int sender, final ConversationSide conversationSide) {
         this.transaction = transaction;
         this.sender = sender;
         this.conversationSide = conversationSide;
@@ -77,7 +78,7 @@ public class ConversationMessage {
      * @param hiddenProviders A set of the names of the contribution providers
      * whose created contributions should be hidden.
      */
-    public void filterContributions(Set<String> hiddenProviders) {
+    public void filterContributions(final Set<String> hiddenProviders) {
         visibleContributions.clear();
 
         if (hiddenProviders == null) {
@@ -140,7 +141,7 @@ public class ConversationMessage {
      * @param datetime A ConversationDatetime object representing when this
      * message occurred.
      */
-    public void setDatetime(ConversationDatetime datetime) {
+    public void setDatetime(final ConversationDatetime datetime) {
         this.datetime = datetime;
     }
 
@@ -160,7 +161,7 @@ public class ConversationMessage {
      * @param senderContent a ConversationSender object from which a javafx
      * Region can be created to display the sender information for this message.
      */
-    public void setSenderContent(ConversationSender senderContent) {
+    public void setSenderContent(final ConversationSender senderContent) {
         this.senderContent = senderContent;
     }
 
@@ -180,7 +181,7 @@ public class ConversationMessage {
      *
      * @param color A Color for this message.
      */
-    public void setColor(Color color) {
+    public void setColor(final Color color) {
         this.color = color;
     }
 
@@ -200,7 +201,7 @@ public class ConversationMessage {
      *
      * @param background A Background for this message.
      */
-    public void setBackground(Background background) {
+    public void setBackground(final Background background) {
         this.background = background;
     }
 
@@ -220,7 +221,7 @@ public class ConversationMessage {
      *
      * @param backgroundColor A Color for the background of this message.
      */
-    public void setBackgroundColor(String backgroundColor) {
+    public void setBackgroundColor(final String backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 
@@ -244,7 +245,7 @@ public class ConversationMessage {
      * @return The list of all visible contributions.
      */
     public List<ConversationContribution> getVisibleContributions() {
-        return visibleContributions;
+        return Collections.unmodifiableList(visibleContributions);
     }
 
     @Override
@@ -262,7 +263,7 @@ public class ConversationMessage {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }

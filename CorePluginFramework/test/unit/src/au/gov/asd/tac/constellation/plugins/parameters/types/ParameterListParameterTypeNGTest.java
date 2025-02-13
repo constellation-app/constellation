@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,10 +68,12 @@ public class ParameterListParameterTypeNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -385,7 +387,6 @@ public class ParameterListParameterTypeNGTest {
         // fails as it matches the cached value (even though it is different to actual values) 
         assertFalse(parameterListParam.getParameterValue().setStringValue("2::test;;a string;;test2;;true;;::test;;b string;;test2;;false;;"));
         assertEquals(parameterListParam.getParameterValue().getListOfPluginParameters().size(), 1);
-        assertEquals(parameterListParam.getParameterValue().getPanes().size(), 1);
-        
+        assertEquals(parameterListParam.getParameterValue().getPanes().size(), 1);       
     }
 }

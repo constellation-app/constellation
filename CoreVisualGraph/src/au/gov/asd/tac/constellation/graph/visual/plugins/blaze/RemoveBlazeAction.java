@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.visual.plugins.blaze;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -57,22 +56,17 @@ public final class RemoveBlazeAction extends AbstractAction {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-
         final BitSet vertices = new BitSet();
-        final ReadableGraph rg = context.getGraph().getReadableGraph();
-        try {
-            final int selectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+        try (final ReadableGraph rg = context.getGraph().getReadableGraph()) {
+            final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(rg);
             final int vxCount = rg.getVertexCount();
             for (int position = 0; position < vxCount; position++) {
                 final int vxId = rg.getVertex(position);
-
                 final boolean selected = rg.getBooleanValue(selectedAttr, vxId);
                 if (selected) {
                     vertices.set(vxId);
                 }
             }
-        } finally {
-            rg.release();
         }
 
         PluginExecution.withPlugin(VisualGraphPluginRegistry.REMOVE_BLAZE)

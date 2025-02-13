@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -46,6 +46,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.nodes.Node;
+import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -138,6 +139,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         interactiveButton = new javax.swing.JToggleButton();
         colorNestedTrussesCheckBox = new javax.swing.JCheckBox();
         nestedTrussPane = new javax.swing.JScrollPane();
+        helpButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(0, 255, 204));
         setMaximumSize(new java.awt.Dimension(800, 580));
@@ -234,6 +236,13 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         nestedTrussPane.setBorder(null);
         nestedTrussPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
+        org.openide.awt.Mnemonics.setLocalizedText(helpButton, org.openide.util.NbBundle.getMessage(KTrussControllerTopComponent.class, "KTrussControllerTopComponent.helpButton.text")); // NOI18N
+        helpButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                helpButtonMousePressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -241,24 +250,6 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(reclusterButton, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(interactiveButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(selectButton))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(downButton)
-                                    .addComponent(nestedTrussButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(stepSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(nestedTrussPane))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(upButton))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(excludedElementsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2)
@@ -267,7 +258,24 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                         .addComponent(dimmedRadioButton)
                         .addGap(18, 18, 18)
                         .addComponent(colorNestedTrussesCheckBox)
-                        .addGap(0, 774, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 665, Short.MAX_VALUE)
+                        .addComponent(helpButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(reclusterButton, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(interactiveButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(selectButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(downButton)
+                            .addComponent(nestedTrussButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(stepSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(nestedTrussPane))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(upButton)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -287,12 +295,14 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                     .addComponent(reclusterButton)
                     .addComponent(interactiveButton)
                     .addComponent(selectButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(excludedElementsLabel)
-                    .addComponent(hiddenRadioButton)
-                    .addComponent(dimmedRadioButton)
-                    .addComponent(colorNestedTrussesCheckBox))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(excludedElementsLabel)
+                        .addComponent(hiddenRadioButton)
+                        .addComponent(dimmedRadioButton)
+                        .addComponent(colorNestedTrussesCheckBox))
+                    .addComponent(helpButton))
                 .addContainerGap())
         );
 
@@ -369,6 +379,11 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         setColoring();
     }//GEN-LAST:event_colorNestedTrussesCheckBoxActionPerformed
 
+    private void helpButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_helpButtonMousePressed
+        final HelpCtx help = new HelpCtx("au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss");
+        help.display();
+    }//GEN-LAST:event_helpButtonMousePressed
+
     private void updateInteractivity() {
         state.setInteractive(!state.isInteractive());
         if (!state.isInteractive()) {
@@ -399,6 +414,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     private javax.swing.JRadioButton dimmedRadioButton;
     private javax.swing.JButton downButton;
     private javax.swing.JLabel excludedElementsLabel;
+    private javax.swing.JButton helpButton;
     private javax.swing.JRadioButton hiddenRadioButton;
     private javax.swing.JToggleButton interactiveButton;
     private javax.swing.JButton nestedTrussButton;
@@ -416,7 +432,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         super.setEnabled(enabled);
         revalidateParents(this);
     }

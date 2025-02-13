@@ -116,8 +116,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
      * <code>-1</code> to ignore
      * @param waiter double-callback or <code>null</code>
      */
-    private DefaultOpenFileImpl(final FileObject fileObject,
-            final int line) {
+    private DefaultOpenFileImpl(final FileObject fileObject, final int line) {
         this.fileObject = fileObject;
         this.line = line;
     }
@@ -153,9 +152,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         assert EventQueue.isDispatchThread();
 
         DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message(
-                NbBundle.getMessage(DefaultOpenFileImpl.class,
-                        "MSG_cannotOpenWillClose", //NOI18N
-                        fileName)));
+                NbBundle.getMessage(DefaultOpenFileImpl.class, "MSG_cannotOpenWillClose", fileName))); //NOI18N
     }
 
     /**
@@ -198,12 +195,8 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         try {
             doc = editorCookie.openDocument();
         } catch (final IOException ex) {
-            final String msg = NbBundle.getMessage(
-                    DefaultOpenFileImpl.class,
-                    "MSG_cannotOpenWillClose");                     //NOI18N
-            ErrorManager.getDefault().notify(
-                    ErrorManager.EXCEPTION,
-                    ErrorManager.getDefault().annotate(ex, msg));
+            final String msg = NbBundle.getMessage(DefaultOpenFileImpl.class,"MSG_cannotOpenWillClose"); //NOI18N
+            ErrorManager.getDefault().notify(ErrorManager.EXCEPTION, ErrorManager.getDefault().annotate(ex, msg));
             return false;
         }
 
@@ -332,8 +325,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
 
         private void trySeveralTimes() {
             LOGGER.finest("SetCursorTask: trySeveralTimes()");             //NOI18N
-            RequestProcessor.getDefault().post(new ScheduledOpenTask(),
-                    OPEN_EDITOR_WAIT_PERIOD_MS);
+            RequestProcessor.getDefault().post(new ScheduledOpenTask(), OPEN_EDITOR_WAIT_PERIOD_MS);
         }
 
         class ScheduledOpenTask implements Runnable {
@@ -386,10 +378,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
 
         private void notifyCouldNotOpen() {
             DialogDisplayer.getDefault().notifyLater(
-                    new NotifyDescriptor.Message(
-                            NbBundle.getMessage(
-                                    DefaultOpenFileImpl.class,
-                                    "MSG_couldNotOpenAt"), //NOI18N
+                    new NotifyDescriptor.Message(NbBundle.getMessage(DefaultOpenFileImpl.class, "MSG_couldNotOpenAt"), //NOI18N
                             NotifyDescriptor.INFORMATION_MESSAGE));
         }
     }
@@ -441,13 +430,10 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
      * @exception java.lang.ClassCastException if the <code>cookie</code> is not
      * an instance of the specified cookie class
      */
-    protected boolean openByCookie(final Node.Cookie cookie,
-            final Class<?> cookieClass,
-            final int line) {
+    protected boolean openByCookie(final Node.Cookie cookie, final Class<?> cookieClass, final int line) {
         assert EventQueue.isDispatchThread();
 
-        if ((cookieClass == EditorCookie.Observable.class)
-                || (cookieClass == EditorCookie.class)) {
+        if ((cookieClass == EditorCookie.Observable.class) || (cookieClass == EditorCookie.class)) {
             return openEditor((EditorCookie) cookie, line);
         } else if (cookieClass == OpenCookie.class) {
             ((OpenCookie) cookie).open();
@@ -473,8 +459,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
      * @return  <code>true</code> if the file was successfully open,
      * <code>false</code> otherwise
      */
-    private boolean openDataObjectByCookie(final DataObject dataObject,
-            final int line) {
+    private boolean openDataObjectByCookie(final DataObject dataObject, final int line) {
         if (dataObject.getCookie(OpenCookie.class) != null) {
             return openByCookie(dataObject.getCookie(OpenCookie.class), OpenCookie.class, line);
         } else if (dataObject.getCookie(EditCookie.class) != null) {
@@ -506,15 +491,13 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
     public boolean open(final FileObject fileObject, final int line) {
         if (LOGGER.isLoggable(FINER)) {
             LOGGER.log(FINER, "open({0}, line={1}) called from thread {2}",//NOI18N
-                    new Object[]{fileObject.getNameExt(),
-                        line, Thread.currentThread().getName()});
+                    new Object[]{fileObject.getNameExt(), line, Thread.currentThread().getName()});
         }
 
         /* Ensure file opening happens on the EDT */
         if (!EventQueue.isDispatchThread()) {
             LOGGER.finest(" - rescheduling to EDT using invokeLater(...)");//NOI18N
-            EventQueue.invokeLater(
-                    new DefaultOpenFileImpl(fileObject, line));
+            EventQueue.invokeLater(new DefaultOpenFileImpl(fileObject, line));
             return true;
         }
 
@@ -533,12 +516,10 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         /* Set a status to notify of file opening */
         final String fileName = fileObject.getNameExt();
         StatusDisplayer.getDefault().setStatusText(
-                NbBundle.getMessage(DefaultOpenFileImpl.class,
-                        "MSG_opening", //NOI18N
-                        fileName));
+                NbBundle.getMessage(DefaultOpenFileImpl.class, "MSG_opening", fileName)); //NOI18N
 
         /* Look for an EditorCookie indicating a text file */
-        if ((line != -1) && dataObject.getCookie(EditorCookie.Observable.class) != null) {
+        if (line != -1 && dataObject.getCookie(EditorCookie.Observable.class) != null) {
             return openByCookie(dataObject.getCookie(EditorCookie.Observable.class), EditorCookie.Observable.class, line);
         }
 
@@ -549,29 +530,22 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         /* Attempt to open the DataObject using its default action */
         final Node dataNode = dataObject.getNodeDelegate();
         Action action = dataNode.getPreferredAction();
-        if ((action != null)
-                && !(action instanceof FileSystemAction)
-                && !(action instanceof ToolsAction)) {
+        if (action != null && !(action instanceof FileSystemAction) && !(action instanceof ToolsAction)) {
             if (LOGGER.isLoggable(FINEST)) {
-                LOGGER.log(FINEST, " - using preferred action " //NOI18N
-                        + "(\"{0}\" - {1}) for opening the file", //NOI18N
-                        new Object[]{action.getValue(Action.NAME),
-                            action.getClass().getName()});
+                LOGGER.log(FINEST, " - using preferred action (\"{0}\" - {1}) for opening the file", //NOI18N
+                        new Object[]{action.getValue(Action.NAME), action.getClass().getName()});
             }
 
-            if (action instanceof ContextAwareAction) {
-                action = ((ContextAwareAction) action)
-                        .createContextAwareInstance(dataNode.getLookup());
+            if (action instanceof ContextAwareAction caAction) {
+                action = caAction.createContextAwareInstance(dataNode.getLookup());
                 if (LOGGER.isLoggable(FINEST)) {
-                    LOGGER.finest("    - it is a ContextAwareAction");     //NOI18N
-                    LOGGER.log(FINEST, "    - using a context-aware " //NOI18N
-                            + "instance instead (\"{0}\" - {1})", //NOI18N
-                            new Object[]{action.getValue(Action.NAME),
-                                action.getClass().getName()});
+                    LOGGER.finest("    - it is a ContextAwareAction"); //NOI18N
+                    LOGGER.log(FINEST, "    - using a context-aware instance instead (\"{0}\" - {1})", //NOI18N
+                            new Object[]{action.getValue(Action.NAME), action.getClass().getName()});
                 }
             }
 
-            LOGGER.finest("   - will call action.actionPerformed(...)");   //NOI18N
+            LOGGER.finest("   - will call action.actionPerformed(...)"); //NOI18N
             final Action a = action;
             final Node n = dataNode;
             WindowManager.getDefault().invokeWhenUIReady(() -> a.actionPerformed(new ActionEvent(n, 0, "")));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,8 +103,9 @@ public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implement
         
         // Local process-tracking varables (Process is indeteminate until quantity of entities is known)
         int currentProcessStep = 0;
-        int totalProcessSteps = -1; 
-        interaction.setProgress(currentProcessStep, totalProcessSteps, "Extracting entities...", true);
+        int totalProcessSteps = -1;
+        interaction.setProgressTimestamp(true);
+        interaction.setProgress(currentProcessStep, totalProcessSteps, "Extracting entities...", true, parameters);
  
         // Determine number of entity types 
         final List<ExtractedVertexType> extractedTypes = SchemaVertexTypeUtilities.extractVertexTypes(text);  

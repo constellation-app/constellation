@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -220,12 +220,12 @@ public final class AttrListAttributeDescriptionV0 extends AbstractAttributeDescr
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (StringReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new StringVariable() {
             @Override
             public String readString() {
@@ -233,7 +233,7 @@ public final class AttrListAttributeDescriptionV0 extends AbstractAttributeDescr
             }
 
             @Override
-            public void writeString(String value) {
+            public void writeString(final String value) {
                 graph.setObjectValue(attribute, indexReadable.readInt(), value);
             }
         };

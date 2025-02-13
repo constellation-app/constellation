@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,10 +47,6 @@ public class RawAttributeDescription extends AbstractObjectAttributeDescription<
 
     @Override
     protected RawData convertFromString(final String originalString) {
-        if (StringUtils.isBlank(originalString)) {
-            return getDefault();
-        } else {
-            return new RawData(originalString);
-        }
+        return StringUtils.isBlank(originalString) ? getDefault() : new RawData(originalString);
     }
 }

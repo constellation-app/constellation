@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,24 +38,25 @@ import org.testng.annotations.Test;
  * @author algol
  */
 public class InfoMapMainNGTest {
-
-    public InfoMapMainNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     private static void runInfoMap(final Config config, final GraphReadMethods rg) throws FileNotFoundException {
@@ -102,13 +103,10 @@ public class InfoMapMainNGTest {
 
         conf.setConnectionType(Config.ConnectionType.TRANSACTIONS);
 
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             System.out.printf("vertices=%d, Transactions=%d edges=%d links=%d\n",
                     rg.getVertexCount(), rg.getTransactionCount(), rg.getEdgeCount(), rg.getLinkCount());
             runInfoMap(conf, rg);
-        } finally {
-            rg.release();
         }
     }
 }

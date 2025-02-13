@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -137,8 +137,7 @@ public class ActiveTableReference {
      * @return the newly created {@link Pagination}
      * @see #updatePagination(int, java.util.List)
      */
-    public Pagination updatePagination(final int maxRowsPerPage,
-            final TablePane tablePane) {
+    public Pagination updatePagination(final int maxRowsPerPage, final TablePane tablePane) {
         return updatePagination(maxRowsPerPage, getSortedRowList(), tablePane);
     }
 
@@ -160,11 +159,9 @@ public class ActiveTableReference {
      * @param tablePane the pane that the table is rendered on
      * @return the newly created {@link Pagination}
      */
-    public Pagination updatePagination(final int maxRowsPerPage,
-            final List<ObservableList<String>> newRowList,
+    public Pagination updatePagination(final int maxRowsPerPage, final List<ObservableList<String>> newRowList, 
             final TablePane tablePane) {
-        Objects.requireNonNull(getPageFactory(), "The page factory must be set before "
-                + "the pagination can be updated");
+        Objects.requireNonNull(getPageFactory(), "The page factory must be set before the pagination can be updated");
 
         final int numberOfPages = newRowList == null || newRowList.isEmpty()
                 ? 1 : (int) Math.ceil(newRowList.size() / (double) maxRowsPerPage);
@@ -205,36 +202,30 @@ public class ActiveTableReference {
      * column attributes
      * @return a {@link Future<?>} object of the plugin execution.
      */
-    public Future<?> updateVisibleColumns(final Graph graph,
-            final TableViewState state,
-            final List<Tuple<String, Attribute>> columnAttributes,
-            final UpdateMethod updateState) {
+    public Future<?> updateVisibleColumns(final Graph graph, final TableViewState state, 
+            final List<Tuple<String, Attribute>> columnAttributes, final UpdateMethod updateState) {
         if (graph != null && state != null) {
             final TableViewState newState = new TableViewState(state);
 
             final List<Tuple<String, Attribute>> newColumnAttributes = new ArrayList<>();
             switch (updateState) {
-                case ADD:
+                case ADD -> {
                     if (newState.getColumnAttributes() != null) {
                         newColumnAttributes.addAll(newState.getColumnAttributes());
                     }
                     newColumnAttributes.addAll(columnAttributes);
-                    break;
-                case REMOVE:
+                }
+                case REMOVE -> {
                     if (newState.getColumnAttributes() != null) {
                         newColumnAttributes.addAll(newState.getColumnAttributes());
                     }
                     newColumnAttributes.removeAll(columnAttributes);
-                    break;
-                case REPLACE:
-                    newColumnAttributes.addAll(columnAttributes);
-                    break;
+                }
+                case REPLACE -> newColumnAttributes.addAll(columnAttributes);
             }
 
             newState.setColumnAttributes(newColumnAttributes);
-            return PluginExecution.withPlugin(
-                    new UpdateStatePlugin(newState)
-            ).executeLater(graph);
+            return PluginExecution.withPlugin(new UpdateStatePlugin(newState)).executeLater(graph);
         }
         return CompletableFuture.completedFuture(null);
     }
@@ -252,8 +243,7 @@ public class ActiveTableReference {
      * @param columnName The name of the column sorting is being done on
      * @param sortType Direction of sorting
      */
-    public void saveSortDetails(final String columnName,
-            final TableColumn.SortType sortType) {
+    public void saveSortDetails(final String columnName, final TableColumn.SortType sortType) {
         getUserTablePreferences().setSortByColumn(ImmutablePair.of(columnName, sortType));
     }
 

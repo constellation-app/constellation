@@ -1,28 +1,22 @@
-<div>
-
-JavaScript is disabled on your browser.
-
-</div>
-
 <div class="topNav">
 
 <span id="navbar.top"></span>
 
 <div class="skipNav">
 
-[Skip navigation links](#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
--   [Package](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)
+-   [Overview](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/overview-summary.md)
+-   [Package](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/package-summary.md)
 -   Class
--   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-tree.md)
--   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
--   [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
--   [Help../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
+-   [Tree](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/package-tree.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -34,18 +28,14 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <div class="subNav">
 
--   [<span
-    class="typeNameLink">Prev Class</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexLinkIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")
+-   [<span class="typeNameLink">Prev Class</span>](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SVertexLinkIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")
 -   Next Class
 
 <!-- -->
 
--   [Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md)
--   [No Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md)
+-   [All Classes](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/allclasses-noframe.md)
 
 <!-- -->
-
--   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -56,15 +46,15 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 -   Summary: 
 -   Nested | 
 -   Field | 
--   [Constr](#constructor.summary) | 
--   [Method](#method.summary)
+-   [Constructor](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md#constructor.summary) | 
+-   [Method](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md#method.summary)
 
 <!-- -->
 
 -   Detail: 
 -   Field | 
--   [Constr](#constructor.detail) | 
--   [Method](#method.detail)
+-   [Constructor](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md#constructor.detail) | 
+-   [Method](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md#method.detail)
 
 </div>
 
@@ -93,7 +83,7 @@ au.gov.asd.tac.constellation.views.scripting.graph.iterators
 <div class="description">
 
 -   All Implemented Interfaces:  
-    java.util.Iterator\<[STransaction](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")\>
+    java.util.Iterator\<[STransaction](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")\>
 
     ------------------------------------------------------------------------
 
@@ -144,7 +134,6 @@ au.gov.asd.tac.constellation.views.scripting.graph.iterators
         ### Method Summary
 
         <table class="memberSummary" data-border="0" data-cellpadding="3" data-cellspacing="0" data-summary="Method Summary table, listing methods, and an explanation">
-        <caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd"> </span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd"> </span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd"> </span></span></caption>
         <thead>
         <tr class="header">
         <th class="colFirst" scope="col">Modifier and Type</th>
@@ -162,13 +151,6 @@ au.gov.asd.tac.constellation.views.scripting.graph.iterators
         </tr>
         </tbody>
         </table>
-
-        <span id="t0" class="activeTableTab">All Methods<span
-        class="tabEnd"> </span></span><span id="t2"
-        class="tableTab">[Instance Methods](javascript:show(2);)<span
-        class="tabEnd"> </span></span><span id="t4"
-        class="tableTab">[Concrete Methods](javascript:show(8);)<span
-        class="tabEnd"> </span></span>
 
         -   <span
             id="methods.inherited.from.class.java.lang.Object"></span>
@@ -227,73 +209,5 @@ au.gov.asd.tac.constellation.views.scripting.graph.iterators
             `next` in interface `java.util.Iterator<STransaction>`
 
 </div>
-
-</div>
-
-<div class="bottomNav">
-
-<span id="navbar.bottom"></span>
-
-<div class="skipNav">
-
-[Skip navigation links](#skip.navbar.bottom "Skip navigation links")
-
-</div>
-
-<span id="navbar.bottom.firstrow"></span>
-
--   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
--   [Package](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)
--   Class
--   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-tree.md)
--   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
--   [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
--   [Help](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
-
-<div class="aboutLanguage">
-
-au.gov.asd.tac.constellation.views.scripting 1.0
-
-</div>
-
-</div>
-
-<div class="subNav">
-
--   [<span
-    class="typeNameLink">Prev Class</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexLinkIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")
--   Next Class
-
-<!-- -->
-
--   [Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md)
--   [No Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md)
-
-<!-- -->
-
--   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
-
-<div>
-
-</div>
-
-<div>
-
--   Summary: 
--   Nested | 
--   Field | 
--   [Constr](#constructor.summary) | 
--   [Method](#method.summary)
-
-<!-- -->
-
--   Detail: 
--   Field | 
--   [Constr](#constructor.detail) | 
--   [Method](#method.detail)
-
-</div>
-
-<span id="skip.navbar.bottom"></span>
 
 </div>

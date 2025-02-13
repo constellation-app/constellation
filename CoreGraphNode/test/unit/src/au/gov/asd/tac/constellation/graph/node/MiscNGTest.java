@@ -1,7 +1,5 @@
-package au.gov.asd.tac.constellation.graph.node;
-
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +13,8 @@ package au.gov.asd.tac.constellation.graph.node;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package au.gov.asd.tac.constellation.graph.node;
+
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
@@ -41,22 +41,26 @@ public class MiscNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
-    public void testCreateTransactionToNonexistentDestinationInPluginTest() {
+    public void testCreateTransactionToNonexistentDestinationInPluginTest() throws InterruptedException, PluginException {
         try {
             final DualGraph graph = new DualGraph(null);
             graph.setUndoManager(new UndoRedo.Manager());
@@ -85,10 +89,6 @@ public class MiscNGTest {
                     return "Build graph + tx failure test";
                 }
             }).executeNow(graph);
-        } catch (InterruptedException ex) {
-            Assert.fail("Nothing was interrupted.");
-        } catch (PluginException ex) {
-            Assert.fail("There shouldn't be a plugin exception.");
         } catch (RuntimeException ex) {
             final boolean containsIllegalArgumentException = ex.getLocalizedMessage().contains("Attempt to create transaction to destination vertex that does not exist");
             Assert.assertTrue(containsIllegalArgumentException);

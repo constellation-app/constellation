@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.utilities.log.ConnectionLogging;
 import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,7 +35,9 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -46,33 +50,35 @@ import org.testng.annotations.Test;
  */
 public class RestClientNGTest {
     
-    StringBuilder outputStreamString;  // This value is manipulated by the test
-                                        // rest interface implementation
+    private StringBuilder outputStreamString;  // This value is manipulated by the test rest interface implementation
     
-    public RestClientNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Test of generateUrl method, of class RestClient.
+     * @throws java.io.UnsupportedEncodingException
+     * @throws java.net.MalformedURLException
      */
     @Test
-    public void testGenerateUrl_NullParams() throws Exception {
+    public void testGenerateUrl_NullParams() throws UnsupportedEncodingException, MalformedURLException {
         System.out.println("testGenerateUrl");
         String url = "https://testurl.tst/testEndpoint";
         List<Tuple<String, String>> params = null;
@@ -82,10 +88,11 @@ public class RestClientNGTest {
 
     /**
      * Test of generateUrl method, of class RestClient.
-     * @throws java.lang.Exception
+     * @throws java.io.UnsupportedEncodingException
+     * @throws java.net.MalformedURLException
      */
     @Test
-    public void testGenerateUrl_Empty() throws Exception {
+    public void testGenerateUrl_Empty() throws UnsupportedEncodingException, MalformedURLException  {
         System.out.println("testGenerateUrl");
         String url = "https://testurl.tst/testEndpoint";
         List<Tuple<String, String>> params = new ArrayList<>();
@@ -95,9 +102,11 @@ public class RestClientNGTest {
 
     /**
      * Test of generateUrl method, of class RestClient.
+     * @throws java.io.UnsupportedEncodingException
+     * @throws java.net.MalformedURLException
      */
     @Test
-    public void testGenerateUrl_InvalidParamName() throws Exception {
+    public void testGenerateUrl_InvalidParamName() throws UnsupportedEncodingException, MalformedURLException {
         System.out.println("testGenerateUrl");
         String url = "https://testurl.tst/testEndpoint";
         List<Tuple<String, String>> params = new ArrayList<>();
@@ -108,9 +117,11 @@ public class RestClientNGTest {
 
     /**
      * Test of generateUrl method, of class RestClient.
+     * @throws java.io.UnsupportedEncodingException
+     * @throws java.net.MalformedURLException
      */
     @Test
-    public void testGenerateUrl_ValidParams() throws Exception {
+    public void testGenerateUrl_ValidParams() throws UnsupportedEncodingException, MalformedURLException {
         System.out.println("testGenerateUrl");
         String url = "https://testurl.tst/testEndpoint";
         List<Tuple<String, String>> params = new ArrayList<>();
@@ -136,9 +147,10 @@ public class RestClientNGTest {
 
     /**
      * Test of get method, of class RestClient.
+     * @throws java.io.IOException
      */
     @Test
-    public void testGetInvalidResponseCode() throws Exception {
+    public void testGetInvalidResponseCode() throws IOException {
         System.out.println("testGet");
         String url = "";
         // Stubbed RestClientImpl uses params to provide class params
@@ -185,9 +197,10 @@ public class RestClientNGTest {
 
     /**
      * Test of post method, of class RestClient.
+     * @throws java.io.IOException
      */
     @Test
-    public void testPostInvalidResponseCode() throws Exception {
+    public void testPostInvalidResponseCode() throws IOException {
         System.out.println("testPostInvalidResponseCode");
         String url = "";
         List<Tuple<String, String>> params = new ArrayList<>();
@@ -209,9 +222,10 @@ public class RestClientNGTest {
 
     /**
      * Test of postWithJson method, of class RestClient.
+     * @throws java.io.IOException
      */
     @Test
-    public void testPostWithJson() throws Exception {
+    public void testPostWithJson() throws IOException {
         System.out.println("testPostWithJson");
         String url = "";
         List<Tuple<String, String>> params = new ArrayList<>();
@@ -234,17 +248,10 @@ public class RestClientNGTest {
 
     /**
      * Test of postWithBytes method, of class RestClient.
+     * @throws java.io.IOException
      */
     @Test
-    public void testPostWithBytes_String_Map() throws Exception {
-        System.out.println("testPostWithBytes_String_Map - not testing deprecated function");
-    }
-
-    /**
-     * Test of postWithBytes method, of class RestClient.
-     */
-    @Test
-    public void testPostWithBytes() throws Exception {
+    public void testPostWithBytes() throws IOException {
         System.out.println("testPostWithBytes");
         String url = "";
         List<Tuple<String, String>> params = new ArrayList<>();
@@ -284,10 +291,10 @@ public class RestClientNGTest {
      * Test to confirm that the request and response data is sent to 
      * the Logger when the Connection Logging option has been enabled.
      * 
-     * @throws java.lang.Exception
+     * @throws java.io.IOException
      */
     @Test
-    public void testConnectionLogging() throws Exception {
+    public void testConnectionLogging() throws IOException {
         System.out.println("testConnectionLogging");
 
         final MockedStatic<LogPreferences> logPrefs = Mockito.mockStatic(LogPreferences.class);
@@ -296,12 +303,9 @@ public class RestClientNGTest {
         final ConnectionLogging conLogging = Mockito.mock(ConnectionLogging.class);
         conLoggingStatic.when(ConnectionLogging::getInstance).thenReturn(conLogging);
         final StringBuilder outputLog = new StringBuilder();
-        final Answer testAnswer = new Answer(){
-            @Override
-            public Object answer(final InvocationOnMock iom) throws Throwable {
-                outputLog.append(iom.getArgument(1).toString()).append("\n");
-                return null;
-            }            
+        final Answer testAnswer = (Answer) (final InvocationOnMock iom) -> {
+            outputLog.append(iom.getArgument(1).toString()).append("\n");
+            return null;            
         };
         doAnswer(testAnswer).when(conLogging).log(Mockito.any(), Mockito.anyString(), Mockito.any());
         

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import org.testng.Assert;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
@@ -34,111 +33,83 @@ import org.testng.annotations.Test;
  * @author algol
  */
 public class RecordStoreUtilitiesNGTest {
+    
+    @Test
+    public void testToCsvEmpty() throws FileNotFoundException {
+        final File file = new File("test1.csv");
+        final RecordStore recordStore = new GraphRecordStore();
 
-    public RecordStoreUtilitiesNGTest() {
+        RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
+
+        assertTrue(file.isFile());
     }
 
     @Test
-    public void testToCsvEmpty() {
-        try {
-            final File file = new File("test1.csv");
-            final RecordStore recordStore = new GraphRecordStore();
+    public void testToCsvEmptyRow() throws FileNotFoundException {
+        final File file = new File("test2.csv");
 
-            RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
+        final RecordStore recordStore = new GraphRecordStore();
+        recordStore.add();
+        RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
 
-            assertTrue(file.isFile());
-        } catch (FileNotFoundException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        assertTrue(file.isFile());
     }
 
     @Test
-    public void testToCsvEmptyRow() {
-        try {
-            final File file = new File("test2.csv");
+    public void testToCsvWithOneResult() throws IOException {
+        final File file = new File("test3.csv");
+        final RecordStore recordStore = new GraphRecordStore();
+        recordStore.add();
+        recordStore.set("key", "value");
+        RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
 
-            final RecordStore recordStore = new GraphRecordStore();
-            recordStore.add();
-            RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
-
-            assertTrue(file.isFile());
-        } catch (FileNotFoundException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        final BufferedReader in = new BufferedReader(new FileReader(file));
+        String line = in.readLine();
+        assertEquals(line, "key");
+        line = in.readLine();
+        assertEquals(line, "value");
     }
 
     @Test
-    public void testToCsvWithOneResult() {
-        try {
-            final File file = new File("test3.csv");
-            final RecordStore recordStore = new GraphRecordStore();
-            recordStore.add();
-            recordStore.set("key", "value");
-            RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
+    public void testToCsvWithManyResult() throws IOException {
+        final File file = new File("test4.csv");
+        final RecordStore recordStore = new GraphRecordStore();
+        recordStore.add();
+        recordStore.set("key1", "value1");
+        recordStore.set("key2", "value2");
+        RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
 
-            final BufferedReader in = new BufferedReader(new FileReader(file));
-            String line = in.readLine();
-            assertEquals(line, "key");
-            line = in.readLine();
-            assertEquals(line, "value");
-        } catch (FileNotFoundException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        } catch (IOException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        final BufferedReader in = new BufferedReader(new FileReader(file));
+        String line = in.readLine();
+        assertEquals(line, "key1,key2");
+        line = in.readLine();
+        assertEquals(line, "value1,value2");
     }
 
     @Test
-    public void testToCsvWithManyResult() {
-        try {
-            final File file = new File("test4.csv");
-            final RecordStore recordStore = new GraphRecordStore();
-            recordStore.add();
-            recordStore.set("key1", "value1");
-            recordStore.set("key2", "value2");
-            RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
+    public void testFromCsv() throws IOException {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("source.identifier,source.type,destination.identifier,destination.type\n");
+        sb.append("foo,Person,bar,Person\n");
+        sb.append("foo2,Person,bar2,Person\n");
 
-            final BufferedReader in = new BufferedReader(new FileReader(file));
-            String line = in.readLine();
-            assertEquals(line, "key1,key2");
-            line = in.readLine();
-            assertEquals(line, "value1,value2");
-        } catch (FileNotFoundException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        } catch (IOException ex) {
-            Assert.fail(ex.getLocalizedMessage());
+        RecordStore actualRecordStore;
+        try (final InputStream is = new ByteArrayInputStream(sb.toString().getBytes())) {
+            actualRecordStore = RecordStoreUtilities.fromCsv(is);
         }
+
+        final RecordStore expectedRecordStore = new GraphRecordStore();
+        expectedRecordStore.add();
+        expectedRecordStore.set("source.identifier", "foo");
+        expectedRecordStore.set("source.type", "Person");
+        expectedRecordStore.set("destination.identifier", "bar");
+        expectedRecordStore.set("destination.type", "Person");
+        expectedRecordStore.add();
+        expectedRecordStore.set("source.identifier", "foo2");
+        expectedRecordStore.set("source.type", "Person");
+        expectedRecordStore.set("destination.identifier", "bar2");
+        expectedRecordStore.set("destination.type", "Person");
+
+        assertEquals(actualRecordStore, expectedRecordStore);
     }
-
-    @Test
-    public void testFromCsv() {
-        try {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("source.identifier,source.type,destination.identifier,destination.type\n");
-            sb.append("foo,Person,bar,Person\n");
-            sb.append("foo2,Person,bar2,Person\n");
-
-            RecordStore actualRecordStore;
-            try (final InputStream is = new ByteArrayInputStream(sb.toString().getBytes())) {
-                actualRecordStore = RecordStoreUtilities.fromCsv(is);
-            }
-
-            final RecordStore expectedRecordStore = new GraphRecordStore();
-            expectedRecordStore.add();
-            expectedRecordStore.set("source.identifier", "foo");
-            expectedRecordStore.set("source.type", "Person");
-            expectedRecordStore.set("destination.identifier", "bar");
-            expectedRecordStore.set("destination.type", "Person");
-            expectedRecordStore.add();
-            expectedRecordStore.set("source.identifier", "foo2");
-            expectedRecordStore.set("source.type", "Person");
-            expectedRecordStore.set("destination.identifier", "bar2");
-            expectedRecordStore.set("destination.type", "Person");
-
-            assertEquals(actualRecordStore, expectedRecordStore);
-        } catch (IOException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
-    }
-
 }

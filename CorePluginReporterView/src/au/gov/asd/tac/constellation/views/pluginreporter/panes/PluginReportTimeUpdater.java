@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,8 @@ import java.util.Set;
 import javafx.application.Platform;
 
 /**
- * The PluginReportTimeUpdater is responsible for updating the timer on each
- * plugin report to accurately reflect the amount of time that plugin has been
- * running.
+ * The PluginReportTimeUpdater is responsible for updating the timer on each plugin report to accurately reflect the
+ * amount of time that plugin has been running.
  *
  * @author sirius
  */
@@ -73,8 +72,8 @@ public class PluginReportTimeUpdater {
     }
 
     /**
-     * Add a plugin report to the set of plugin reports that will have their
-     * timers updated by this PluginReportTimeUpdater.
+     * Add a plugin report to the set of plugin reports that will have their timers updated by this
+     * PluginReportTimeUpdater.
      *
      * @param pane the PluginReportPane to add.
      */
@@ -88,8 +87,8 @@ public class PluginReportTimeUpdater {
     }
 
     /**
-     * Remove a plugin report from the set of plugin reports that will have
-     * their timers updated by this PluginReportTimeUpdater.
+     * Remove a plugin report from the set of plugin reports that will have their timers updated by this
+     * PluginReportTimeUpdater.
      *
      * @param pane the PluginReportPane to remove.
      */

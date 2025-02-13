@@ -36,7 +36,8 @@ import org.openide.util.NbBundle;
 @ActionReferences({
     @ActionReference(path = "Menu/Display", position = 201, separatorBefore = 199),
     @ActionReference(path = "Toolbars/Display", position = 101),
-    @ActionReference(path = "Shortcuts", name = "CA-Down")
+    @ActionReference(path = "Shortcuts", name = "D-MINUS"),
+    @ActionReference(path = "Shortcuts", name = "D-SUBTRACT")
 })
 @NbBundle.Messages("CTL_ZoomOut=Zoom Out")
 public final class ZoomOutAction implements ActionListener {

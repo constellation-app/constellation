@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,8 +45,8 @@ public class BooleanValue implements Copyable, BooleanReadable, BooleanWritable,
     }
 
     @Override
-    public void writeString(String value) {
-        this.value = Boolean.valueOf(value);
+    public void writeString(final String value) {
+        this.value = Boolean.parseBoolean(value);
     }
 
     @Override
@@ -55,19 +55,13 @@ public class BooleanValue implements Copyable, BooleanReadable, BooleanWritable,
     }
 
     @Override
-    public void writeBoolean(boolean value) {
+    public void writeBoolean(final boolean value) {
         this.value = value;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == null) {
-            return false;
-        }
-        if (this.getClass() == other.getClass()) {
-            return value == ((BooleanValue) other).value;
-        }
-        return false;
+    public boolean equals(final Object other) {
+        return other != null && this.getClass() == other.getClass() && value == ((BooleanValue) other).value;
     }
 
     @Override
@@ -76,7 +70,7 @@ public class BooleanValue implements Copyable, BooleanReadable, BooleanWritable,
     }
 
     @Override
-    public int compareTo(BooleanValue value) {
+    public int compareTo(final BooleanValue value) {
         return Boolean.compare(this.value, value.value);
     }
 

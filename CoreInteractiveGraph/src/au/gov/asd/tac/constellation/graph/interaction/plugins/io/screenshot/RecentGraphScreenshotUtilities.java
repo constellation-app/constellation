@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,22 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
+import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.AlphaComposite;
+import java.awt.EventQueue;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,13 +44,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 import org.openide.util.NbPreferences;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * Recent Graph Screenshot Utilities
@@ -61,13 +70,14 @@ public class RecentGraphScreenshotUtilities {
     // width and height of tile image
     public static final int IMAGE_SIZE = 145;
 
+    private static final int LATCH_WAIT_SECONDS = 5;
+
     private RecentGraphScreenshotUtilities() {
         throw new IllegalArgumentException("Utility class");
     }
 
     /**
-     * Retrieve the screenshots user directory that is used to save a screenshot
-     * of the graph
+     * Retrieve the screenshots user directory that is used to save a screenshot of the graph
      *
      * @return The screenshot directory location
      */
@@ -129,43 +139,90 @@ public class RecentGraphScreenshotUtilities {
     }
 
     /**
-     * Take a screenshot of the graph and save it to the screenshots directory
-     * so that it can be used by the Welcome View.
+     * Take a screenshot of the current active graph and save it to the screenshots directory so that it can be used by
+     * the Welcome View.
      *
      * @param filepath The filepath of the graph
      */
-    public static void takeScreenshot(final String filepath) {
+    public static synchronized void takeScreenshot(final String filepath) {
+        takeScreenshot(filepath, GraphManager.getDefault().getActiveGraph());
+    }
+
+    /**
+     * Take a screenshot of the given graph and save it to the screenshots directory so that it can be used by the
+     * Welcome View.
+     *
+     * @param filepath The filepath of the graph
+     * @param graph The graph to take a screenshot of
+     */
+    public static synchronized void takeScreenshot(final String filepath, final Graph graph) {
         final String pathHash = hashFilePath(filepath);
         final String imageFile = getScreenshotsDir() + File.separator + pathHash + FileExtensionConstants.PNG;
-
         final Path source = Paths.get(imageFile);
-        final GraphNode graphNode = GraphNode.getGraphNode(GraphManager.getDefault().getActiveGraph());
-        if (graphNode != null) {
-            final VisualManager visualManager = graphNode.getVisualManager();
+        final GraphNode graphNode = GraphNode.getGraphNode(graph);
 
-            final BufferedImage[] originalImage = new BufferedImage[1];
-            originalImage[0] = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB);
-
-            if (visualManager != null) {
-                final Semaphore waiter = new Semaphore(0);
-                visualManager.exportToBufferedImage(originalImage, waiter);
-                waiter.acquireUninterruptibly();
-            }
-            try {
-                // resizeAndSave the buffered image in memory and write the image to disk
-                resizeAndSave(originalImage[0], source, IMAGE_SIZE, IMAGE_SIZE);
-                refreshScreenshotsDir();
-            } catch (final IOException ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            }
+        if (graphNode == null) {
+            return;
         }
+
+        final VisualManager visualManager = graphNode.getVisualManager();
+        if (visualManager == null) {
+            return;
+        }
+
+        final BufferedImage[] originalImage = new BufferedImage[1];
+        originalImage[0] = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB);
+
+        final Semaphore waiter = new Semaphore(0);
+
+        requestGraphActive(graph, waiter);
+
+        // Wait for requested graph to become active
+        waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+        visualManager.exportToBufferedImage(originalImage, waiter); // Requires 0 permits, becomes 1 when done
+
+        // Wait for exporting to finish before moving on
+        waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+        try {
+            // resizeAndSave the buffered image in memory and write the image to disk
+            resizeAndSave(originalImage[0], source, IMAGE_SIZE, IMAGE_SIZE);
+            refreshScreenshotsDir();
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+        }
+    }
+
+    protected static void requestGraphActive(final Graph graph, final Semaphore semaphore) {
+        final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
+
+        if (topComponents == null || graph == null) {
+            return;
+        }
+
+        topComponents.forEach(component -> {
+            final CountDownLatch latch = new CountDownLatch(1);
+
+            if ((component instanceof VisualGraphTopComponent vgComponent) && vgComponent.getGraphNode().getGraph().getId().equals(graph.getId())) {
+                try {
+                    // Request graph to be active
+                    EventQueue.invokeAndWait(() -> vgComponent.requestActiveWithLatch(latch));
+
+                    latch.await(LATCH_WAIT_SECONDS, TimeUnit.SECONDS);
+                    semaphore.release();
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                    Thread.currentThread().interrupt();
+                } catch (final InvocationTargetException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                }
+            }
+        });
     }
 
     /**
      * Resize the {@code BufferedImage} and write it to disk
      * <p>
-     * Referenced from
-     * https://mkyong.com/java/how-to-resizeAndSave-an-image-in-java/
+     * Referenced from https://mkyong.com/java/how-to-resizeAndSave-an-image-in-java/
      * </p>
      *
      * @param originalImage
@@ -174,7 +231,7 @@ public class RecentGraphScreenshotUtilities {
      * @param width the new width of the resized image
      * @throws IOException
      */
-    public static void resizeAndSave(final BufferedImage originalImage, final Path target, final int height, final int width) throws IOException {
+    public static synchronized void resizeAndSave(final BufferedImage originalImage, final Path target, final int height, final int width) throws IOException {
         // create a new BufferedImage for drawing
         final BufferedImage newResizedImage
                 = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -202,10 +259,9 @@ public class RecentGraphScreenshotUtilities {
     }
 
     /**
-     * Refresh stored screenshots of recent files to match the recent files
-     * stored in history.
+     * Refresh stored screenshots of recent files to match the recent files stored in history.
      */
-    public static void refreshScreenshotsDir() {
+    public static synchronized void refreshScreenshotsDir() {
 
         final List<String> filesInHistory = new ArrayList<>();
         final List<File> filesInDirectory = new ArrayList<>();

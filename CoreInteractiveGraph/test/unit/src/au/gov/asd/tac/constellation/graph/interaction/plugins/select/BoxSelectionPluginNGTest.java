@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.select;
 
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -43,10 +44,20 @@ public class BoxSelectionPluginNGTest {
     float top = (float) 0.1;
     float bottom = (float) -0.1;
 
-    private int attrX, attrY;
-    private int vxId1, vxId2, vxId3, vxId4;
-    private int txId1, txId2;
-    private int vSelectedAttrId, tSelectedAttrId;
+    private int attrX;
+    private int attrY;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    
+    private int txId1;
+    private int txId2;
+    
+    private int vSelectedAttrId;
+    private int tSelectedAttrId;
+    
     private StoreGraph graph;
 
     public BoxSelectionPluginNGTest() {
@@ -65,10 +76,12 @@ public class BoxSelectionPluginNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -81,16 +94,22 @@ public class BoxSelectionPluginNGTest {
 
         vSelectedAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         tSelectedAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
+        LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
+        LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
 
         VisualConcept.VertexAttribute.NODE_RADIUS.ensure(graph);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Test of edit method, of class BoxSelectionPlugin.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
+     * @throws java.io.IOException
      */
     @Test
     public void testEdit() throws InterruptedException, PluginException, IOException {

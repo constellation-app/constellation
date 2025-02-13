@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ActiveTableReferenceNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(ActiveTableReferenceNGTest.class.getName());
 
     private SortedList<ObservableList<String>> sortedRowList;
@@ -111,6 +112,7 @@ public class ActiveTableReferenceNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -137,15 +139,11 @@ public class ActiveTableReferenceNGTest {
      */
     @Test
     public void saveSortDetails() {
-        assertEquals(ImmutablePair.of("", TableColumn.SortType.ASCENDING),
-                activeTableReference.getUserTablePreferences().getSortByColumn()
-        );
+        assertEquals(ImmutablePair.of("", TableColumn.SortType.ASCENDING), activeTableReference.getUserTablePreferences().getSortByColumn());
 
         activeTableReference.saveSortDetails("ABC", TableColumn.SortType.DESCENDING);
 
-        assertEquals(ImmutablePair.of("ABC", TableColumn.SortType.DESCENDING),
-                activeTableReference.getUserTablePreferences().getSortByColumn()
-        );
+        assertEquals(ImmutablePair.of("ABC", TableColumn.SortType.DESCENDING), activeTableReference.getUserTablePreferences().getSortByColumn());
     }
 
     @Test
@@ -155,31 +153,19 @@ public class ActiveTableReferenceNGTest {
             final Attribute attribute = mock(Attribute.class);
             final PluginExecution pluginExecution = mock(PluginExecution.class);
 
-            final List<Tuple<String, Attribute>> paramColumnAttributes = List.of(
-                    Tuple.create("paramAttr", attribute)
-            );
+            final List<Tuple<String, Attribute>> paramColumnAttributes = List.of(Tuple.create("paramAttr", attribute));
 
-            final List<Tuple<String, Attribute>> stateColumnAttributes = List.of(
-                    Tuple.create("stateAttr", attribute),
-                    Tuple.create("paramAttr", attribute)
-            );
+            final List<Tuple<String, Attribute>> stateColumnAttributes = List.of(Tuple.create("stateAttr", attribute), Tuple.create("paramAttr", attribute));
 
             final TableViewState tableViewState = new TableViewState();
             tableViewState.setColumnAttributes(stateColumnAttributes);
 
             pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(any(Plugin.class)))
-                    .thenAnswer(executeUpdateStatePlugin(
-                            pluginExecution,
-                            tableViewState,
-                            List.of(
-                                    Tuple.create("stateAttr", attribute),
-                                    Tuple.create("paramAttr", attribute),
-                                    Tuple.create("paramAttr", attribute)
-                            )
+                    .thenAnswer(executeUpdateStatePlugin(pluginExecution, tableViewState, 
+                            List.of(Tuple.create("stateAttr", attribute), Tuple.create("paramAttr", attribute), Tuple.create("paramAttr", attribute))
                     ));
 
-            activeTableReference.updateVisibleColumns(graph, tableViewState, paramColumnAttributes,
-                    UpdateMethod.ADD);
+            activeTableReference.updateVisibleColumns(graph, tableViewState, paramColumnAttributes, UpdateMethod.ADD);
 
             verify(pluginExecution).executeLater(graph);
         }
@@ -192,27 +178,17 @@ public class ActiveTableReferenceNGTest {
             final Attribute attribute = mock(Attribute.class);
             final PluginExecution pluginExecution = mock(PluginExecution.class);
 
-            final List<Tuple<String, Attribute>> paramColumnAttributes = List.of(
-                    Tuple.create("paramAttr", attribute)
-            );
+            final List<Tuple<String, Attribute>> paramColumnAttributes = List.of(Tuple.create("paramAttr", attribute));
 
-            final List<Tuple<String, Attribute>> stateColumnAttributes = List.of(
-                    Tuple.create("stateAttr", attribute),
-                    Tuple.create("paramAttr", attribute)
-            );
+            final List<Tuple<String, Attribute>> stateColumnAttributes = List.of(Tuple.create("stateAttr", attribute), Tuple.create("paramAttr", attribute));
 
             final TableViewState tableViewState = new TableViewState();
             tableViewState.setColumnAttributes(stateColumnAttributes);
 
             pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(any(Plugin.class)))
-                    .thenAnswer(executeUpdateStatePlugin(
-                            pluginExecution,
-                            tableViewState,
-                            List.of(Tuple.create("stateAttr", attribute))
-                    ));
+                    .thenAnswer(executeUpdateStatePlugin(pluginExecution, tableViewState,List.of(Tuple.create("stateAttr", attribute))));
 
-            activeTableReference.updateVisibleColumns(graph, tableViewState, paramColumnAttributes,
-                    UpdateMethod.REMOVE);
+            activeTableReference.updateVisibleColumns(graph, tableViewState, paramColumnAttributes, UpdateMethod.REMOVE);
 
             verify(pluginExecution).executeLater(graph);
         }
@@ -225,27 +201,17 @@ public class ActiveTableReferenceNGTest {
             final Attribute attribute = mock(Attribute.class);
             final PluginExecution pluginExecution = mock(PluginExecution.class);
 
-            final List<Tuple<String, Attribute>> paramColumnAttributes = List.of(
-                    Tuple.create("paramAttr", attribute)
-            );
+            final List<Tuple<String, Attribute>> paramColumnAttributes = List.of(Tuple.create("paramAttr", attribute));
 
-            final List<Tuple<String, Attribute>> stateColumnAttributes = List.of(
-                    Tuple.create("stateAttr1", attribute),
-                    Tuple.create("stateAttr2", attribute)
-            );
+            final List<Tuple<String, Attribute>> stateColumnAttributes = List.of(Tuple.create("stateAttr1", attribute), Tuple.create("stateAttr2", attribute));
 
             final TableViewState tableViewState = new TableViewState();
             tableViewState.setColumnAttributes(stateColumnAttributes);
 
             pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(any(Plugin.class)))
-                    .thenAnswer(executeUpdateStatePlugin(
-                            pluginExecution,
-                            tableViewState,
-                            List.of(Tuple.create("paramAttr", attribute))
-                    ));
+                    .thenAnswer(executeUpdateStatePlugin(pluginExecution, tableViewState, List.of(Tuple.create("paramAttr", attribute))));
 
-            activeTableReference.updateVisibleColumns(graph, tableViewState, paramColumnAttributes,
-                    UpdateMethod.REPLACE);
+            activeTableReference.updateVisibleColumns(graph, tableViewState, paramColumnAttributes, UpdateMethod.REPLACE);
 
             verify(pluginExecution).executeLater(graph);
         }
@@ -345,21 +311,17 @@ public class ActiveTableReferenceNGTest {
      * @return a mockito answer that can be executed when the plugin is passed
      * to the plugin executor
      */
-    private Answer<PluginExecution> executeUpdateStatePlugin(final PluginExecution pluginExecution,
-            final TableViewState originalTableViewState,
+    private Answer<PluginExecution> executeUpdateStatePlugin(final PluginExecution pluginExecution, final TableViewState originalTableViewState,
             final List<Tuple<String, Attribute>> expectedColumnAttributes) {
         return (InvocationOnMock mockInvocation) -> {
-            final UpdateStatePlugin updateStatePlugin
-                    = (UpdateStatePlugin) mockInvocation.getArgument(0);
+            final UpdateStatePlugin updateStatePlugin = (UpdateStatePlugin) mockInvocation.getArgument(0);
 
             // This table state should be a copy
             assertNotSame(originalTableViewState, updateStatePlugin.getTableViewState());
 
-            assertEquals(expectedColumnAttributes,
-                    updateStatePlugin.getTableViewState().getColumnAttributes());
+            assertEquals(expectedColumnAttributes, updateStatePlugin.getTableViewState().getColumnAttributes());
 
             return pluginExecution;
         };
     }
-
 }

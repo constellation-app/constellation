@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -33,23 +33,24 @@ import org.testng.annotations.Test;
  */
 public class SVGAttributeConstantsNGTest {
     
-    public SVGAttributeConstantsNGTest() {
-    }
-    
     @BeforeClass
     public static void setUpClass() {
+        // Not currently required
     }
     
     @AfterClass
     public static void tearDownClass() {
+        // Not currently required
     }
     
     @BeforeMethod
-    public void setUp() {
+    public void setUpMethod() {
+        // Not currently required
     }
     
     @AfterMethod
-    public void tearDown() {
+    public void tearDownMethod() {
+        // Not currently required
     }
 
     /**
@@ -65,7 +66,7 @@ public class SVGAttributeConstantsNGTest {
         assertEquals(SVGAttributeConstants.DESTINATION_X.getName(),"x2");
         assertEquals(SVGAttributeConstants.DESTINATION_Y.getName(),"y2");
         assertEquals(SVGAttributeConstants.DASH_ARRAY.getName(),"stroke-dasharray");
-        assertEquals(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE.getName(),"xlink:href");
+        assertEquals(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE.getName(),"href");
         assertEquals(SVGAttributeConstants.FILL_COLOR.getName(),"fill");
         assertEquals(SVGAttributeConstants.FILTER.getName(),"filter");
         assertEquals(SVGAttributeConstants.FONT_SIZE.getName(),"font-size");
@@ -110,8 +111,5 @@ public class SVGAttributeConstantsNGTest {
         attributes.keySet().forEach(key -> {
             assertNull(attributes.get(key));
         });
-       
-
-    }
-    
+    } 
 }

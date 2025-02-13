@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.plugins;
 
-import au.gov.asd.tac.constellation.views.find.plugins.BasicFindPlugin;
-import au.gov.asd.tac.constellation.views.find.plugins.BasicFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -28,6 +26,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find.FindViewController;
 import au.gov.asd.tac.constellation.views.find.FindViewTopComponent;
@@ -37,7 +36,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -56,69 +54,99 @@ import org.testng.annotations.Test;
  */
 public class BasicFindPluginNGTest {
 
-    private Map<String, Graph> graphMap = new HashMap<>();
+    private Map<String, Graph> graphMap;
+    
     private Graph graph;
     private Graph graph2;
-    private int selectedV, selectedT;
-    private int labelV, identifierV, xV, labelT, identiferT, widthT;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
+    
+    private int selectedV;
+    private int labelV;
+    private int identifierV;
+    private int xV;
+    private int selectedT;
+    private int labelT;
+    private int identiferT;
+    private int widthT;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    private int vxId5UpperCase;
+    private int vxId6;
+    private int vxId7;
+    private int vxId8;
+    
+    private int txId1;
+    private int txId2;
+    private int txId3;
+    private int txId4;
+    
     private List<Attribute> attributeList = new ArrayList<>();
-    private BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
-    private BasicFindReplaceParameters parametersTransactionType = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.TRANSACTION, attributeList, true, false, false, false, true, false, false, false, false, true, false);
-    private BasicFindReplaceParameters parametersRegEx = new BasicFindReplaceParameters("la*", "", GraphElementType.GRAPH.VERTEX, attributeList, false, true, false, false, true, false, false, false, false, true, false);
-    private BasicFindReplaceParameters parametersIgnoreCase = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, true, false, true, false, false, false, false, true, false);
-    private BasicFindReplaceParameters parametersExactMatch = new BasicFindReplaceParameters("label", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, true, true, false, false, false, false, true, false);
-    private BasicFindReplaceParameters parametersFindIn = new BasicFindReplaceParameters("test", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, true, false, false);
-    private BasicFindReplaceParameters parametersAddTo = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, true, false, false, false, true, false);
-    private BasicFindReplaceParameters parametersRemoveFrom = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, true, false, false, true, false);
-
-    private BasicFindReplaceParameters parameters1 = new BasicFindReplaceParameters("equal", "replace", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
-    private BasicFindReplaceParameters parameters2 = new BasicFindReplaceParameters("notEqual", "replace", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
-    private BasicFindReplaceParameters parametersClearSelections = new BasicFindReplaceParameters("clear", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
-    private static final Logger LOGGER = Logger.getLogger(BasicFindPluginNGTest.class.getName());
-
-    public BasicFindPluginNGTest() {
-    }
-
+    private BasicFindReplaceParameters parameters;
+    private BasicFindReplaceParameters parametersTransactionType;
+    private BasicFindReplaceParameters parametersRegEx;
+    private BasicFindReplaceParameters parametersIgnoreCase;
+    private BasicFindReplaceParameters parametersExactMatch;
+    private BasicFindReplaceParameters parametersFindIn;
+    private BasicFindReplaceParameters parametersAddTo;
+    private BasicFindReplaceParameters parametersRemoveFrom;
+    private BasicFindReplaceParameters parametersClearSelections;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
-
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
 
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        attributeList = new ArrayList<>();
+        
+        parameters = new BasicFindReplaceParameters("label name", "", GraphElementType.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
+        parametersTransactionType = new BasicFindReplaceParameters("label name", "", GraphElementType.TRANSACTION, attributeList, true, false, false, false, true, false, false, false, false, true, false);
+        parametersRegEx = new BasicFindReplaceParameters("la*", "", GraphElementType.VERTEX, attributeList, false, true, false, false, true, false, false, false, false, true, false);
+        parametersIgnoreCase = new BasicFindReplaceParameters("label name", "", GraphElementType.VERTEX, attributeList, true, false, true, false, true, false, false, false, false, true, false);
+        parametersExactMatch = new BasicFindReplaceParameters("label", "", GraphElementType.VERTEX, attributeList, true, false, false, true, true, false, false, false, false, true, false);
+        parametersFindIn = new BasicFindReplaceParameters("test", "", GraphElementType.VERTEX, attributeList, true, false, false, false, true, false, false, false, true, false, false);
+        parametersAddTo = new BasicFindReplaceParameters("label name", "", GraphElementType.VERTEX, attributeList, true, false, false, false, false, true, false, false, false, true, false);
+        parametersRemoveFrom = new BasicFindReplaceParameters("label name", "", GraphElementType.VERTEX, attributeList, true, false, false, false, false, false, true, false, false, true, false);
+        parametersClearSelections = new BasicFindReplaceParameters("clear", "", GraphElementType.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Test of edit method, of class BasicFindPlugin.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testEdit() throws Exception {
+    public void testEdit() throws InterruptedException, PluginException {
         System.out.println("edit");
         setupGraph();
         attributeList.addAll(getAttributes());
 
         BasicFindPlugin basicFindPlugin = new BasicFindPlugin(parameters, true, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        ReadableGraph rg = graph.getReadableGraph();
-        /**
-         * Testing finding all elements with "label name", Should select
-         * vxId1,2,3,4
-         */
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            /**
+             * Testing finding all elements with "label name", Should select
+             * vxId1,2,3,4
+             */
+            assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
+        }
 
         /**
          * Testing finding all elements with "clear", should deselect all
@@ -126,45 +154,42 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parametersClearSelections, true, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        }
 
         /**
          * Testing finding next element with "label name", Should select vxId1
          */
         basicFindPlugin = new BasicFindPlugin(parameters, false, true);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false);
+        BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, false);
         ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        }
 
         /**
          * Testing finding next element with "label name", Should select vxId2
          * and deselect vxId1
          */
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false);
+        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, false);
         ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        }
 
         /**
          * Testing finding previous element with "label name", Should select
@@ -172,16 +197,15 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parameters, false, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false);
+        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, false);
         ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        }
 
         /**
          * Testing finding all transaction elements with "label name", Should
@@ -189,13 +213,12 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parametersTransactionType, true, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getBooleanValue(selectedT, txId1), true);
-        assertEquals(rg.getBooleanValue(selectedT, txId2), true);
-        assertEquals(rg.getBooleanValue(selectedT, txId3), true);
-        assertEquals(rg.getBooleanValue(selectedT, txId4), true);
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getBooleanValue(selectedT, txId1), true);
+            assertEquals(rg.getBooleanValue(selectedT, txId2), true);
+            assertEquals(rg.getBooleanValue(selectedT, txId3), true);
+            assertEquals(rg.getBooleanValue(selectedT, txId4), true);
+        }
 
         /**
          * clear selection
@@ -209,13 +232,12 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parametersRegEx, true, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
+        }
 
         /**
          * clear selection
@@ -229,14 +251,13 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parametersIgnoreCase, true, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId5UpperCase), true);
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId5UpperCase), true);
+        }
 
         /**
          * clear selection
@@ -250,14 +271,13 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parameters, true, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId5UpperCase), false);
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId5UpperCase), false);
+        }
 
         /**
          * clear selection
@@ -271,13 +291,12 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parametersExactMatch, true, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        }
 
         /**
          * Testing finding all elements within the current selection that
@@ -297,16 +316,15 @@ public class BasicFindPluginNGTest {
         wg.commit();
 
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
+        }
 
         /**
          * Testing finding all elements with "label name" and adding them to the
@@ -314,16 +332,15 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parametersAddTo, true, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
+        }
 
         /**
          * Testing removing all elements "label name" from the currently
@@ -331,16 +348,15 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parametersRemoveFrom, true, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
+            assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
+            assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
+        }
 
     }
 
@@ -361,10 +377,10 @@ public class BasicFindPluginNGTest {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         graph2 = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
 
+        graphMap = new HashMap<>();
         graphMap.put(graph.getId(), graph);
         graphMap.put(graph2.getId(), graph2);
         try {
-
             WritableGraph wg = graph.getWritableGraph("", true);
 
             // Create Selected Attributes
@@ -451,7 +467,6 @@ public class BasicFindPluginNGTest {
             wg.setIntValue(widthT, txId4, 1);
 
             wg.commit();
-
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
@@ -463,7 +478,7 @@ public class BasicFindPluginNGTest {
      *
      * @return the list of Attribute objects
      */
-    private ArrayList<Attribute> getAttributes() {
+    private List<Attribute> getAttributes() {
         final FindViewTopComponent findViewTopComponent = mock(FindViewTopComponent.class
         );
         FindViewController instance = FindViewController.getDefault().init(findViewTopComponent);
@@ -471,7 +486,7 @@ public class BasicFindPluginNGTest {
         );
         when(gm.getAllGraphs()).thenReturn(graphMap);
 
-        ArrayList<Attribute> attributes = new ArrayList<>();
+        List<Attribute> attributes = new ArrayList<>();
 
         try (MockedStatic<GraphManager> mockedStatic = Mockito.mockStatic(GraphManager.class)) {
             mockedStatic.when(
@@ -480,22 +495,19 @@ public class BasicFindPluginNGTest {
             GraphElementType type = GraphElementType.VERTEX;
             List<String> result = instance.populateAttributes(type, attributes, Long.MIN_VALUE);
 
-            ReadableGraph rg = graph.getReadableGraph();
-
-            for (int i = 0;
-                    i < result.size();
-                    i++) {
-                int attributeInt = rg.getAttribute(type, result.get(i));
-                GraphAttribute ga = new GraphAttribute(rg, attributeInt);
-                if (ga.getAttributeType().equals("string")) {
-                    attributes.add(new GraphAttribute(rg, attributeInt));
-                    System.out.println(attributes.get(i).getName() + " = attribute name");
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
+                for (int i = 0;
+                        i < result.size();
+                        i++) {
+                    int attributeInt = rg.getAttribute(type, result.get(i));
+                    GraphAttribute ga = new GraphAttribute(rg, attributeInt);
+                    if (ga.getAttributeType().equals("string")) {
+                        attributes.add(new GraphAttribute(rg, attributeInt));
+                        System.out.println(attributes.get(i).getName() + " = attribute name");
+                    }
                 }
             }
-
-            rg.close();
         }
         return attributes;
-
     }
 }

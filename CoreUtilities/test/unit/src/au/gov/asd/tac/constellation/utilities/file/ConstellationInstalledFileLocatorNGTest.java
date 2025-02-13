@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,9 +68,8 @@ public class ConstellationInstalledFileLocatorNGTest {
      */
     @Test
     public void testFileExists() throws IOException {
-        try (
-                final MockedStatic<InstalledFileLocator> locatorMockedStatic = mockStatic(InstalledFileLocator.class);
-                final MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class);) {
+        try (final MockedStatic<InstalledFileLocator> locatorMockedStatic = mockStatic(InstalledFileLocator.class);
+                final MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class)) {
             // mock the file locator to return null
             final InstalledFileLocator locator = mock(InstalledFileLocator.class);
             locatorMockedStatic.when(() -> InstalledFileLocator.getDefault()).thenReturn(locator);
@@ -101,9 +100,8 @@ public class ConstellationInstalledFileLocatorNGTest {
      */
     @Test(expectedExceptions = {RuntimeException.class}, expectedExceptionsMessageRegExp = "Couldn't find file.*")
     public void testFileNotExist() throws IOException {
-        try (
-                final MockedStatic<InstalledFileLocator> locatorMockedStatic = mockStatic(InstalledFileLocator.class);
-                final MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class);) {
+        try (final MockedStatic<InstalledFileLocator> locatorMockedStatic = mockStatic(InstalledFileLocator.class);
+                final MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class)) {
             // mock the file locator to return null
             final InstalledFileLocator locator = mock(InstalledFileLocator.class);
             locatorMockedStatic.when(() -> InstalledFileLocator.getDefault()).thenReturn(locator);

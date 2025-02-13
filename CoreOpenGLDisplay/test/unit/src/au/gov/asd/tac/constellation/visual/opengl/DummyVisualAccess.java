@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ public class DummyVisualAccess implements VisualAccess {
 
     @Override
     public void updateInternally() {
+        // Do nothing
     }
 
     @Override
@@ -47,10 +48,12 @@ public class DummyVisualAccess implements VisualAccess {
 
     @Override
     public void beginUpdate() {
+        // Do nothing
     }
 
     @Override
     public void endUpdate() {
+        // Do nothing
     }
 
     public void zoomOut() {
@@ -365,5 +368,10 @@ public class DummyVisualAccess implements VisualAccess {
     @Override
     public boolean isConnectionDirected(int connection) {
         return connection != 2;
+    }
+
+    @Override
+    public float getConnectionMotion() {
+        return -1;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,9 @@ package au.gov.asd.tac.constellation.testing;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javafx.application.Platform;
@@ -64,13 +63,9 @@ public final class TestNotificationsAction implements ActionListener {
     public void actionPerformed(final ActionEvent e) {
         // plugin notifications
         final Plugin plugin = new TestNotificationsPlugin();
-        final PluginParameters pp = plugin.createParameters();
+        PluginExecution.withPlugin(plugin).executeLater(context.getGraph());
 
-        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_TestNotificationsAction(), pp);
-        dialog.showAndWait();
-        if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-            PluginExecution.withPlugin(plugin).withParameters(pp).executeLater(context.getGraph());
-        }
+        Point newPoint = ScreenWindowsHelper.getMainWindowCentrePoint();
 
         // NetBeans NotifyDisplayer options
         NotifyDisplayer.display(PLAIN_MESSAGE, NotifyDescriptor.PLAIN_MESSAGE);
@@ -81,15 +76,15 @@ public final class TestNotificationsAction implements ActionListener {
 
         // Constellation Utility options
         Platform.runLater(() -> {
-            NotifyDisplayer.displayAlert(DISPLAY_ALERT, PLAIN, PLAIN_MESSAGE, Alert.AlertType.NONE);
-            NotifyDisplayer.displayAlert(DISPLAY_ALERT, INFORMATION, INFORMATION_MESSAGE, Alert.AlertType.INFORMATION);
-            NotifyDisplayer.displayAlert(DISPLAY_ALERT, WARNING, WARNING_MESSAGE, Alert.AlertType.WARNING);
-            NotifyDisplayer.displayAlert(DISPLAY_ALERT, ERROR, ERROR_MESSAGE, Alert.AlertType.ERROR);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, PLAIN, PLAIN_MESSAGE, Alert.AlertType.NONE, newPoint);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, INFORMATION, INFORMATION_MESSAGE, Alert.AlertType.INFORMATION, newPoint);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, WARNING, WARNING_MESSAGE, Alert.AlertType.WARNING, newPoint);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, ERROR, ERROR_MESSAGE, Alert.AlertType.ERROR, newPoint);
 
-            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, PLAIN, PLAIN_MESSAGE, Alert.AlertType.NONE);
-            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, INFORMATION, INFORMATION_MESSAGE, Alert.AlertType.INFORMATION);
-            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, WARNING, WARNING_MESSAGE, Alert.AlertType.WARNING);
-            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, ERROR, ERROR_MESSAGE, Alert.AlertType.ERROR);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, PLAIN, PLAIN_MESSAGE, Alert.AlertType.NONE, newPoint);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, INFORMATION, INFORMATION_MESSAGE, Alert.AlertType.INFORMATION, newPoint);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, WARNING, WARNING_MESSAGE, Alert.AlertType.WARNING, newPoint);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, ERROR, ERROR_MESSAGE, Alert.AlertType.ERROR, newPoint);
         });
     }
 }

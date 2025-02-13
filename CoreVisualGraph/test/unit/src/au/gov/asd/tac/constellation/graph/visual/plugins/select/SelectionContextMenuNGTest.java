@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,35 +37,29 @@ import org.testng.annotations.Test;
 public class SelectionContextMenuNGTest {
 
     private StoreGraph graph;
-    private DualGraph dgraph;
-
-    public SelectionContextMenuNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        graph = new StoreGraph();
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-    }
-
-    private void generateData() throws InterruptedException {
-        graph = new StoreGraph();
+        // Not currently required
     }
 
     @Test
     public void simulateSelectionContextMenuTest() throws InterruptedException, PluginException {
-        generateData();
-
         final SelectionContextMenu menu = new SelectionContextMenu();
 
         assertEquals(graph.getVertexCount(), 0);

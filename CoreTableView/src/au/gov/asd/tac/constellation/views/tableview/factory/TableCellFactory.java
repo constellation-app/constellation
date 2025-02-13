@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.input.MouseButton;
+import javafx.scene.text.Text;
 
 /**
  * A {@link TableCell} that updates the cells text and style classes on change.
@@ -49,8 +50,7 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
      * @param cellColumn the column that the cells belong to
      * @param table the table that the cells belong to
      */
-    public TableCellFactory(final TableColumn<ObservableList<String>, String> cellColumn,
-            final Table table) {
+    public TableCellFactory(final TableColumn<ObservableList<String>, String> cellColumn, final Table table) {
         this.cellColumn = cellColumn;
         this.table = table;
     }
@@ -69,8 +69,9 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
         if (!empty) {
             // set text in cell and style if it is null
             this.getStyleClass().remove(NULL_VALUE_CLASS);
-            if (item != null) {
-                this.setText(item);
+            if (item != null) {           
+                final Text text = getWrappingText(item);                
+                this.setGraphic(text);               
             } else {
                 this.setText(NO_VALUE_TEXT);
                 this.getStyleClass().add(NULL_VALUE_CLASS);
@@ -88,18 +89,12 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
                     .map(column -> column.getAttributeNamePrefix())
                     .findFirst().orElse("");
             switch (columnPrefix) {
-                case GraphRecordStoreUtilities.SOURCE:
-                    this.getStyleClass().add(ELEMENT_SOURCE_CLASS);
-                    break;
-                case GraphRecordStoreUtilities.TRANSACTION:
-                    this.getStyleClass().add(ELEMENT_TRANSACTION_CLASS);
-                    break;
-                case GraphRecordStoreUtilities.DESTINATION:
-                    this.getStyleClass().add(ELEMENT_DESTINATION_CLASS);
-                    break;
-                default:
-                    // Code can't make it to here
-                    break;
+                case GraphRecordStoreUtilities.SOURCE -> this.getStyleClass().add(ELEMENT_SOURCE_CLASS);
+                case GraphRecordStoreUtilities.TRANSACTION -> this.getStyleClass().add(ELEMENT_TRANSACTION_CLASS);
+                case GraphRecordStoreUtilities.DESTINATION -> this.getStyleClass().add(ELEMENT_DESTINATION_CLASS);
+                default -> {
+                    // do nothing
+                }
             }
 
             // enable context menu on right-click
@@ -108,11 +103,21 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
                     final RightClickContextMenu rightClickContextMenu = getRightClickContextMenu();
 
                     // open the context menu at the mouses current location
-                    rightClickContextMenu.getContextMenu()
-                            .show(table.getTableView(), me.getScreenX(), me.getScreenY());
+                    rightClickContextMenu.getContextMenu().show(table.getTableView(), me.getScreenX(), me.getScreenY());
                 }
             });
         }
+    }
+
+    /**
+     * Create a new Text object to wrap item in and set text wrapping.
+     * @param item string to set in Text object.
+     * @return Text object
+     */
+    protected final Text getWrappingText(final String item) {
+        final Text text = new Text(item);
+        text.wrappingWidthProperty().bind(cellColumn.widthProperty());
+        return text;
     }
 
     /**

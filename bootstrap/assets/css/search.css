@@ -1,0 +1,130 @@
+.SearchBox {
+    position: relative;
+}
+
+.Search {
+    position: relative;
+}
+
+.Search button.clear {
+    position: absolute;
+    top: 0;
+    bottom: 0.2em;
+    right: 0.5em;
+    font-size: 1.5em;
+    line-height: 1;
+    z-index: 20;
+    border: none;
+    background: none;
+    outline: none;
+    margin: 0;
+    padding: 0;
+    color: black;
+}
+
+.Search input {
+    position: relative;
+    width: 100%;
+    padding: 0.5em;
+    left: 40px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    outline: none;
+    color: #555;
+    box-shadow: none;
+}
+
+.Search button.icon {
+    position: absolute;
+    top: 0;
+    bottom: 0.2em;
+    left: 0;
+    font-size: 1.5em;
+    line-height: 1;
+    z-index: 20;
+    border: none;
+    background: none;
+    outline: none;
+    margin: 0;
+    padding: 0;
+}
+
+.hasResults .Explanation {
+    display: none;
+}
+
+.ResultList {
+    margin: 1em 0 0 0;
+    padding: 0;
+    list-style: none;
+    flex-grow: 1;
+    position: relative;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+.ResultList:before {
+    content: '';
+    display: block;
+    position: sticky;
+    z-index: 10;
+    left: 0;
+    right: 0;
+    top: -1px;
+    width: 100%;
+    height: 0.7em;
+    margin-bottom: -0.7em;
+    background: linear-gradient(white, rgba(255, 255, 255, 0));
+}
+
+.ResultList:after {
+    content: '';
+    display: block;
+    position: sticky;
+    z-index: 10;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 0.7em;
+    margin-bottom: -0.7em;
+    background: linear-gradient(rgba(255, 255, 255, 0), white);
+}
+
+.SuggestionList {
+    display: none;
+    list-style: none;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-top: 0;
+    margin: 0 0 0.2em 0;
+    border-radius: 3px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.93);
+    position: absolute;
+    z-index: 20;
+    left: 0;
+    right: 0;
+}
+
+.hasSuggestions .SuggestionList {
+    display: block;
+}
+
+.Suggestion {
+    padding: 0.5em 1em;
+    border-bottom: 1px solid #eee;
+}
+
+.Suggestion:last-child {
+    border: none;
+}
+
+.Suggestion.selected {
+    background: rgba(240, 240, 240, 0.95);
+}
+
+.Suggestion:hover:not(.selected) {
+    background: rgba(250, 250, 250, 0.95);
+}

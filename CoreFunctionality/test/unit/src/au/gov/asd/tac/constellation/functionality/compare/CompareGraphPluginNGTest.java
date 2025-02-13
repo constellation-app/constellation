@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,48 +67,47 @@ public class CompareGraphPluginNGTest {
     public static final ConstellationColor REMOVED_COLOR = ConstellationColor.RED;
     public static final ConstellationColor CHANGED_COLOR = ConstellationColor.YELLOW;
     public static final ConstellationColor UNCHANGED_COLOR = ConstellationColor.GREY;
-
-    public CompareGraphPluginNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
-    public void testReadWithMultipleChangesToVerticies() {
-        int vx0, vx1, vx2, vx3, vx4, vx5, tx0, tx1, tx2;
-        int labelAttribute, fooAttribute, lineStyleAttribute;
-
+    public void testReadWithMultipleChangesToVertices() throws PluginException, InterruptedException, IOException {
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
 
         final StoreGraph originalGraph = new StoreGraph(schema);
-        labelAttribute = originalGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Label", "", "", null);
-        lineStyleAttribute = VisualConcept.TransactionAttribute.LINE_STYLE.ensure(originalGraph);
-        fooAttribute = originalGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "foo", "", "", null);
+        int labelAttribute = originalGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Label", "", "", null);
+        int lineStyleAttribute = VisualConcept.TransactionAttribute.LINE_STYLE.ensure(originalGraph);
+        originalGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "foo", "", "", null);
         originalGraph.setPrimaryKey(GraphElementType.VERTEX, labelAttribute);
         originalGraph.setPrimaryKey(GraphElementType.TRANSACTION, lineStyleAttribute);
 
-        vx0 = originalGraph.addVertex();
-        vx1 = originalGraph.addVertex();
-        vx2 = originalGraph.addVertex();
-        vx3 = originalGraph.addVertex();
-        vx4 = originalGraph.addVertex();
-        tx0 = originalGraph.addTransaction(vx0, vx1, true);
-        tx1 = originalGraph.addTransaction(vx0, vx4, true);
+        int vx0 = originalGraph.addVertex();
+        int vx1 = originalGraph.addVertex();
+        int vx2 = originalGraph.addVertex();
+        int vx3 = originalGraph.addVertex();
+        int vx4 = originalGraph.addVertex();
+        
+        originalGraph.addTransaction(vx0, vx1, true);
+        originalGraph.addTransaction(vx0, vx4, true);
+        
         originalGraph.setStringValue(labelAttribute, vx0, "vx0");
         originalGraph.setStringValue(labelAttribute, vx1, "vx1");
         originalGraph.setStringValue(labelAttribute, vx2, "vx2");
@@ -117,7 +116,7 @@ public class CompareGraphPluginNGTest {
 
         final StoreGraph compareGraph = new StoreGraph(schema);
         labelAttribute = compareGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Label", "", "", null);
-        fooAttribute = compareGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "foo", "", "", null);
+        final int fooAttribute = compareGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "foo", "", "", null);
         lineStyleAttribute = VisualConcept.TransactionAttribute.LINE_STYLE.ensure(compareGraph);
         compareGraph.setPrimaryKey(GraphElementType.VERTEX, labelAttribute);
         compareGraph.setPrimaryKey(GraphElementType.TRANSACTION, lineStyleAttribute);
@@ -125,16 +124,15 @@ public class CompareGraphPluginNGTest {
         vx0 = compareGraph.addVertex();
         vx1 = compareGraph.addVertex();
         vx2 = compareGraph.addVertex();
-//        vx3 = compareGraph.addVertex();
         vx4 = compareGraph.addVertex();
-        vx5 = compareGraph.addVertex();
-        tx0 = compareGraph.addTransaction(vx0, vx1, true);
-//        tx1 = originalGraph.addTransaction(vx0, vx4, true); // # change is REMOVE
-        tx2 = compareGraph.addTransaction(vx0, vx5, true); // # change is ADDED
+        int vx5 = compareGraph.addVertex();
+        
+        compareGraph.addTransaction(vx0, vx1, true);
+        compareGraph.addTransaction(vx0, vx5, true); // # change is ADDED
+        
         compareGraph.setStringValue(labelAttribute, vx0, "vx0");
         compareGraph.setStringValue(labelAttribute, vx1, "vx1");
         compareGraph.setStringValue(labelAttribute, vx2, "vx2");
-//        compareGraph.setStringValue(labelAttribute, vx3, "vx3"); // # change is REMOVE
         compareGraph.setStringValue(labelAttribute, vx4, "vx4");
         compareGraph.setStringValue(fooAttribute, vx4, "bar"); // # change is CHANGE
         compareGraph.setStringValue(labelAttribute, vx5, "vx5"); // # change is ADDED
@@ -150,22 +148,11 @@ public class CompareGraphPluginNGTest {
         final List<String> ignoreTransactionAttributes = new ArrayList<>();
         ignoreTransactionAttributes.add("[id]");
 
-        // debug
-        System.out.println("originalAll ==>\n" + originalAll.toStringVerbose());
-        System.out.println("compareAll ==>\n" + compareAll.toStringVerbose());
-
         final CompareGraphPlugin instance = new CompareGraphPlugin();
-        Graph finalGraph = null;
-        GraphRecordStore changes = new GraphRecordStore();
-        try {
-            changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
-            System.out.println("changes ==>\n" + changes.toStringVerbose());
-            assertEquals(changes.size(), 9);
+        final GraphRecordStore changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
+        assertEquals(changes.size(), 9);
 
-            finalGraph = instance.createComparisonGraph(new DualGraph(originalGraph, true), changes);
-        } catch (InterruptedException | PluginException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        final Graph finalGraph = instance.createComparisonGraph(new DualGraph(originalGraph, true), changes);
 
         changes.reset();
         changes.next();
@@ -199,62 +186,45 @@ public class CompareGraphPluginNGTest {
         assertEquals(changes.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.LABEL), "vx5");
         assertEquals(changes.get(GraphRecordStoreUtilities.TRANSACTION + CompareGraphPlugin.COMPARE_ATTRIBUTE), CompareGraphPlugin.ADDED);
 
-        final ReadableGraph rg = finalGraph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = finalGraph.getReadableGraph()) {
             int vxCount = rg.getVertexCount();
             int txCount = rg.getTransactionCount();
 
             assertEquals(vxCount, 6);
             assertEquals(txCount, 3);
-        } finally {
-            rg.release();
         }
 
-        try {
-            SaveGraphUtilities.saveGraphToTemporaryDirectory(originalGraph, "originalGraph");
-            SaveGraphUtilities.saveGraphToTemporaryDirectory(compareGraph, "compareGraph");
-            SaveGraphUtilities.saveGraphToTemporaryDirectory(finalGraph, "finalGraph", true);
-        } catch (IOException | InterruptedException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        SaveGraphUtilities.saveGraphToTemporaryDirectory(originalGraph, "originalGraph");
+        SaveGraphUtilities.saveGraphToTemporaryDirectory(compareGraph, "compareGraph");
+        SaveGraphUtilities.saveGraphToTemporaryDirectory(finalGraph, "finalGraph", true);
     }
 
     @Test
-    public void testReadWithDuplicateGraphScenario() throws InterruptedException {
-        int vx0, vx1, vx2, tx0, tx1;
-        int identifierAttribute, typeAttribute, uniqueIdAttribute;
-
+    public void testReadWithDuplicateGraphScenario() throws InterruptedException, PluginException, IOException {
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
 
         final StoreGraph originalGraph = new StoreGraph(schema);
-        identifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(originalGraph);
-//        typeAttribute = AnalyticConcept.VertexAttribute.TYPE.ensure(originalGraph);
-        uniqueIdAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(originalGraph);
+        final int identifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(originalGraph);
+        final int uniqueIdAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(originalGraph);
         originalGraph.setPrimaryKey(GraphElementType.VERTEX, identifierAttribute);
         originalGraph.setPrimaryKey(GraphElementType.TRANSACTION, uniqueIdAttribute);
 
-        vx0 = originalGraph.addVertex();
-        vx1 = originalGraph.addVertex();
-        vx2 = originalGraph.addVertex();
-        tx0 = originalGraph.addTransaction(vx0, vx1, true);
-        tx1 = originalGraph.addTransaction(vx1, vx2, true);
+        int vx0 = originalGraph.addVertex();
+        int vx1 = originalGraph.addVertex();
+        int vx2 = originalGraph.addVertex();
+        
+        originalGraph.addTransaction(vx0, vx1, true);
+        originalGraph.addTransaction(vx1, vx2, true);
+        
         originalGraph.setStringValue(identifierAttribute, vx0, "vx0");
         originalGraph.setStringValue(identifierAttribute, vx1, "vx1");
         originalGraph.setStringValue(identifierAttribute, vx2, "vx2");
 
-        Graph compareGraph;
-        GraphRecordStore compareAll;
-
-        try {
-            final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
-            final PluginParameters copyParams = copyGraphPlugin.createParameters();
-            copyParams.getParameters().get(CopyToNewGraphPlugin.COPY_ALL_PARAMETER_ID).setBooleanValue(true);
-            PluginExecution.withPlugin(copyGraphPlugin).withParameters(copyParams).executeNow((GraphReadMethods) originalGraph);
-            compareGraph = (Graph) copyParams.getParameters().get(CopyToNewGraphPlugin.NEW_GRAPH_OUTPUT_PARAMETER_ID).getObjectValue();
-        } catch (PluginException ex) {
-            compareGraph = null;
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
+        final PluginParameters copyParams = copyGraphPlugin.createParameters();
+        copyParams.getParameters().get(CopyToNewGraphPlugin.COPY_ALL_PARAMETER_ID).setBooleanValue(true);
+        PluginExecution.withPlugin(copyGraphPlugin).withParameters(copyParams).executeNow((GraphReadMethods) originalGraph);
+        Graph compareGraph = (Graph) copyParams.getParameters().get(CopyToNewGraphPlugin.NEW_GRAPH_OUTPUT_PARAMETER_ID).getObjectValue();
 
         final WritableGraph wg = compareGraph.getWritableGraph("remove a node", true);
         try {
@@ -267,11 +237,9 @@ public class CompareGraphPluginNGTest {
             wg.commit();
         }
 
-        ReadableGraph rg = compareGraph.getReadableGraph();
-        try {
+        GraphRecordStore compareAll;
+        try (final ReadableGraph rg = compareGraph.getReadableGraph()) {
             compareAll = GraphRecordStoreUtilities.getAll(rg, false, true);
-        } finally {
-            rg.release();
         }
 
         final GraphRecordStore originalAll = GraphRecordStoreUtilities.getAll(originalGraph, false, true);
@@ -284,22 +252,11 @@ public class CompareGraphPluginNGTest {
         ignoreVertexAttributes.add("[id]");
         ignoreTransactionAttributes.add("[id]");
 
-        // debug
-        System.out.println("originalAll ==>\n" + originalAll.toStringVerbose());
-        System.out.println("compareAll ==>\n" + compareAll.toStringVerbose());
-
         final CompareGraphPlugin instance = new CompareGraphPlugin();
-        Graph finalGraph = null;
-        GraphRecordStore changes = new GraphRecordStore();
-        try {
-            changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
-            System.out.println("changes ==>\n" + changes.toStringVerbose());
-            assertEquals(changes.size(), 5);
+        GraphRecordStore changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
+        assertEquals(changes.size(), 5);
 
-            finalGraph = instance.createComparisonGraph(new DualGraph(originalGraph, true), changes);
-        } catch (InterruptedException | PluginException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        Graph finalGraph = instance.createComparisonGraph(new DualGraph(originalGraph, true), changes);
 
         changes.reset();
         changes.next();
@@ -320,68 +277,51 @@ public class CompareGraphPluginNGTest {
         assertEquals(changes.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER), "vx2");
         assertEquals(changes.get(GraphRecordStoreUtilities.TRANSACTION + CompareGraphPlugin.COMPARE_ATTRIBUTE), CompareGraphPlugin.REMOVED);
 
-        rg = finalGraph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = finalGraph.getReadableGraph()) {
             int vxCount = rg.getVertexCount();
             int txCount = rg.getTransactionCount();
 
             assertEquals(vxCount, 3);
             assertEquals(txCount, 2);
-        } finally {
-            rg.release();
         }
 
-        try {
-            SaveGraphUtilities.saveGraphToTemporaryDirectory(originalGraph, "originalGraph");
-            SaveGraphUtilities.saveGraphToTemporaryDirectory(compareGraph, "compareGraph", true);
-            SaveGraphUtilities.saveGraphToTemporaryDirectory(finalGraph, "finalGraph", true);
-        } catch (IOException | InterruptedException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        SaveGraphUtilities.saveGraphToTemporaryDirectory(originalGraph, "originalGraph");
+        SaveGraphUtilities.saveGraphToTemporaryDirectory(compareGraph, "compareGraph", true);
+        SaveGraphUtilities.saveGraphToTemporaryDirectory(finalGraph, "finalGraph", true);
     }
-
-//    @Test(expectedExceptions = DuplicateKeyException.class)
+    
     @Test
-    public void testReadWithDuplicateGraphScenarioInReverse() throws InterruptedException {
-        int vx0, vx1, vx2, tx0, tx1;
-        int identifierAttribute, vertexTypeAttribute, uniqueIdAttribute, transactionTypeAttribute, transactionDateTimeAttribute;
-
+    public void testReadWithDuplicateGraphScenarioInReverse() throws InterruptedException, PluginException, IOException {
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
 
         final StoreGraph originalGraph = new StoreGraph(schema);
-        identifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(originalGraph);
-        vertexTypeAttribute = AnalyticConcept.VertexAttribute.TYPE.ensure(originalGraph);
-        uniqueIdAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(originalGraph);
-        transactionTypeAttribute = AnalyticConcept.TransactionAttribute.TYPE.ensure(originalGraph);
-        transactionDateTimeAttribute = TemporalConcept.TransactionAttribute.DATETIME.ensure(originalGraph);
+        final int identifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(originalGraph);
+        final int vertexTypeAttribute = AnalyticConcept.VertexAttribute.TYPE.ensure(originalGraph);
+        final int uniqueIdAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(originalGraph);
+        final int transactionTypeAttribute = AnalyticConcept.TransactionAttribute.TYPE.ensure(originalGraph);
+        final int transactionDateTimeAttribute = TemporalConcept.TransactionAttribute.DATETIME.ensure(originalGraph);
         originalGraph.setPrimaryKey(GraphElementType.VERTEX, identifierAttribute, vertexTypeAttribute);
         originalGraph.setPrimaryKey(GraphElementType.TRANSACTION, uniqueIdAttribute, transactionTypeAttribute, transactionDateTimeAttribute);
         originalGraph.validateKeys();
 
-        vx0 = originalGraph.addVertex();
-        vx1 = originalGraph.addVertex();
-        vx2 = originalGraph.addVertex();
-        tx0 = originalGraph.addTransaction(vx0, vx1, true);
-        tx1 = originalGraph.addTransaction(vx1, vx2, true);
+        int vx0 = originalGraph.addVertex();
+        int vx1 = originalGraph.addVertex();
+        int vx2 = originalGraph.addVertex();
+        
+        originalGraph.addTransaction(vx0, vx1, true);
+        originalGraph.addTransaction(vx1, vx2, true);
+        
         originalGraph.setStringValue(identifierAttribute, vx0, "Vertex #0");
         originalGraph.setStringValue(identifierAttribute, vx1, "Vertex #1");
         originalGraph.setStringValue(identifierAttribute, vx2, "Vertex #2"); // mimic creating nodes on visual schema which will create a DuplicateKeyException - i.e. this is a known issue
         originalGraph.setStringValue(vertexTypeAttribute, vx0, "Unknown");
         originalGraph.setStringValue(vertexTypeAttribute, vx1, "Unknown");
-        originalGraph.setStringValue(vertexTypeAttribute, vx2, "Unknown");
+        originalGraph.setStringValue(vertexTypeAttribute, vx2, "Unknown");     
 
-        Graph compareGraph;
-        GraphRecordStore compareAll;
-
-        try {
-            final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
-            final PluginParameters copyGraphParams = copyGraphPlugin.createParameters();
-            PluginExecution.withPlugin(copyGraphPlugin).withParameters(copyGraphParams).executeNow((GraphReadMethods) originalGraph);
-            compareGraph = (Graph) copyGraphParams.getParameters().get(CopyToNewGraphPlugin.NEW_GRAPH_OUTPUT_PARAMETER_ID).getObjectValue();
-        } catch (PluginException ex) {
-            compareGraph = null;
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
+        final PluginParameters copyGraphParams = copyGraphPlugin.createParameters();
+        PluginExecution.withPlugin(copyGraphPlugin).withParameters(copyGraphParams).executeNow((GraphReadMethods) originalGraph);
+        final Graph compareGraph = (Graph) copyGraphParams.getParameters().get(CopyToNewGraphPlugin.NEW_GRAPH_OUTPUT_PARAMETER_ID).getObjectValue();
 
         final WritableGraph wg = compareGraph.getWritableGraph("remove a node", true);
         try {
@@ -392,23 +332,18 @@ public class CompareGraphPluginNGTest {
             wg.commit();
         }
 
-        final ReadableGraph rg = compareGraph.getReadableGraph();
-        try {
+        GraphRecordStore compareAll;
+        try (final ReadableGraph rg = compareGraph.getReadableGraph()) {
             compareAll = GraphRecordStoreUtilities.getAll(rg, false, true);
-        } finally {
-            rg.release();
         }
 
         final GraphRecordStore originalAll = GraphRecordStoreUtilities.getAll(originalGraph, false, true);
 
-        Set<String> vertexPrimaryKeys = null;
-        Set<String> transactionPrimaryKeys = null;
-        final ReadableGraph rg2 = compareGraph.getReadableGraph();
-        try {
-            vertexPrimaryKeys = PrimaryKeyUtilities.getPrimaryKeyNames(rg2, GraphElementType.VERTEX);
-            transactionPrimaryKeys = PrimaryKeyUtilities.getPrimaryKeyNames(rg2, GraphElementType.TRANSACTION);
-        } finally {
-            rg2.release();
+        Set<String> vertexPrimaryKeys;
+        Set<String> transactionPrimaryKeys;
+        try (final ReadableGraph rg = compareGraph.getReadableGraph()) {
+            vertexPrimaryKeys = PrimaryKeyUtilities.getPrimaryKeyNames(rg, GraphElementType.VERTEX);
+            transactionPrimaryKeys = PrimaryKeyUtilities.getPrimaryKeyNames(rg, GraphElementType.TRANSACTION);
         }
 
         final List<String> ignoreVertexAttributes = new ArrayList<>();
@@ -416,78 +351,31 @@ public class CompareGraphPluginNGTest {
         ignoreVertexAttributes.add("[id]");
         ignoreTransactionAttributes.add("[id]");
 
-        // debug
-        System.out.println("originalAll ==>\n" + originalAll.toStringVerbose());
-        System.out.println("compareAll ==>\n" + compareAll.toStringVerbose());
-
         final CompareGraphPlugin instance = new CompareGraphPlugin();
-        Graph finalGraph = null;
-        GraphRecordStore changes = new GraphRecordStore();
-        try {
-            changes = instance.compareGraphs("", compareAll, originalAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
-            System.out.println("changes ==>\n" + changes.toStringVerbose());
-//            assertEquals(changes.size(), 3);
+        GraphRecordStore changes = instance.compareGraphs("", compareAll, originalAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
-            finalGraph = instance.createComparisonGraph(compareGraph, changes);
-        } catch (InterruptedException | PluginException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        final Graph finalGraph = instance.createComparisonGraph(compareGraph, changes);
 
-//        changes.reset();
-//        changes.next();
-//        assertEquals(changes.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL), "vx3");
-//        assertEquals(changes.get(GraphRecordStoreUtilities.SOURCE + CompareGraphPlugin.COMPARE_ATTRIBUTE), CompareGraphPlugin.REMOVED);
-//        changes.next();
-//        assertEquals(changes.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL), "vx4");
-//        assertEquals(changes.get(GraphRecordStoreUtilities.SOURCE + CompareGraphPlugin.COMPARE_ATTRIBUTE), CompareGraphPlugin.CHANGED);
-//        changes.next();
-//        assertEquals(changes.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL), "vx0");
-//        assertEquals(changes.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.LABEL), "vx4");
-//        assertEquals(changes.get(GraphRecordStoreUtilities.TRANSACTION + CompareGraphPlugin.COMPARE_ATTRIBUTE), CompareGraphPlugin.REMOVED);
-//        changes.next();
-//        assertEquals(changes.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL), "vx5");
-//        assertEquals(changes.get(GraphRecordStoreUtilities.SOURCE + CompareGraphPlugin.COMPARE_ATTRIBUTE), CompareGraphPlugin.ADDED);
-//        changes.next();
-//        assertEquals(changes.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL), "vx0");
-//        assertEquals(changes.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.LABEL), "vx5");
-//        assertEquals(changes.get(GraphRecordStoreUtilities.TRANSACTION + CompareGraphPlugin.COMPARE_ATTRIBUTE), CompareGraphPlugin.ADDED);
-//
-//
-//        final ReadableGraph rg = finalGraph.getReadableGraph();
-//        try {
-//            int vxCount = rg.getVertexCount();
-//            int txCount = rg.getTransactionCount();
-//
-//            assertEquals(vxCount, 6);
-//            assertEquals(txCount, 3);
-//        } finally {
-//            rg.release();
-//        }
-        try {
-            SaveGraphUtilities.saveGraphToTemporaryDirectory(originalGraph, "originalGraph");
-            SaveGraphUtilities.saveGraphToTemporaryDirectory(compareGraph, "compareGraph", true);
-            SaveGraphUtilities.saveGraphToTemporaryDirectory(finalGraph, "finalGraph", true);
-        } catch (IOException | InterruptedException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        SaveGraphUtilities.saveGraphToTemporaryDirectory(originalGraph, "originalGraph");
+        SaveGraphUtilities.saveGraphToTemporaryDirectory(compareGraph, "compareGraph", true);
+        SaveGraphUtilities.saveGraphToTemporaryDirectory(finalGraph, "finalGraph", true);
     }
 
     @Test
-    public void testReadWithNodesInDifferentOrder() {
-        int vx0, vx1, vx2, vx3, tx0;
-        int labelAttribute;
-
+    public void testReadWithNodesInDifferentOrder() throws PluginException, InterruptedException {
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
 
         final StoreGraph originalGraph = new StoreGraph(schema);
-        labelAttribute = originalGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Name", "", "", null);
+        int labelAttribute = originalGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Name", "", "", null);
         originalGraph.setPrimaryKey(GraphElementType.VERTEX, labelAttribute);
 
-        vx0 = originalGraph.addVertex();
-        vx1 = originalGraph.addVertex();
-        vx2 = originalGraph.addVertex();
-        vx3 = originalGraph.addVertex();
-        tx0 = originalGraph.addTransaction(vx0, vx1, true);
+        int vx0 = originalGraph.addVertex();
+        int vx1 = originalGraph.addVertex();
+        int vx2 = originalGraph.addVertex();
+        int vx3 = originalGraph.addVertex();
+        
+        originalGraph.addTransaction(vx0, vx1, true);
+        
         originalGraph.setStringValue(labelAttribute, vx0, "vx0");
         originalGraph.setStringValue(labelAttribute, vx1, "vx1");
         originalGraph.setStringValue(labelAttribute, vx2, "vx2");
@@ -501,7 +389,9 @@ public class CompareGraphPluginNGTest {
         vx1 = compareGraph.addVertex();
         vx2 = compareGraph.addVertex();
         vx3 = compareGraph.addVertex();
-        tx0 = compareGraph.addTransaction(vx3, vx2, true);
+        
+        compareGraph.addTransaction(vx3, vx2, true);
+        
         compareGraph.setStringValue(labelAttribute, vx0, "vx3");
         compareGraph.setStringValue(labelAttribute, vx1, "vx2");
         compareGraph.setStringValue(labelAttribute, vx2, "vx1");
@@ -518,45 +408,30 @@ public class CompareGraphPluginNGTest {
         ignoreVertexAttributes.add("[id]");
         ignoreTransactionAttributes.add("[id]");
 
-        // debug
-        System.out.println("originalAll ==>\n" + originalAll.toStringVerbose());
-        System.out.println("compareAll ==>\n" + compareAll.toStringVerbose());
-
         final CompareGraphPlugin instance = new CompareGraphPlugin();
 
-        GraphRecordStore changes = new GraphRecordStore();
-        try {
-            changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
-            System.out.println("changes ==>\n" + changes.toStringVerbose());
-            assertEquals(changes.size(), 5);
-        } catch (PluginException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        GraphRecordStore changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
+        assertEquals(changes.size(), 5);
 
-        try {
-            final Graph finalGraph = instance.createComparisonGraph(new DualGraph(originalGraph, true), changes);
-        } catch (InterruptedException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        instance.createComparisonGraph(new DualGraph(originalGraph, true), changes);
     }
 
     @Test
-    public void testReadWithTransactionsInBothDirections() {
-        int vx0, vx1, vx2, vx3, tx0, tx1;
-        int labelAttribute;
-
+    public void testReadWithTransactionsInBothDirections() throws PluginException, InterruptedException, IOException {
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
 
         final StoreGraph originalGraph = new StoreGraph(schema);
-        labelAttribute = VisualConcept.VertexAttribute.LABEL.ensure(originalGraph);
+        int labelAttribute = VisualConcept.VertexAttribute.LABEL.ensure(originalGraph);
         originalGraph.setPrimaryKey(GraphElementType.VERTEX, labelAttribute);
 
-        vx0 = originalGraph.addVertex();
-        vx1 = originalGraph.addVertex();
-        vx2 = originalGraph.addVertex();
-        vx3 = originalGraph.addVertex();
-        tx0 = originalGraph.addTransaction(vx0, vx1, true);
-        tx1 = originalGraph.addTransaction(vx1, vx2, true);
+        int vx0 = originalGraph.addVertex();
+        int vx1 = originalGraph.addVertex();
+        int vx2 = originalGraph.addVertex();
+        int vx3 = originalGraph.addVertex();
+        
+        originalGraph.addTransaction(vx0, vx1, true);
+        originalGraph.addTransaction(vx1, vx2, true);
+        
         originalGraph.setStringValue(labelAttribute, vx0, "vx0");
         originalGraph.setStringValue(labelAttribute, vx1, "vx1");
         originalGraph.setStringValue(labelAttribute, vx2, "vx2");
@@ -570,8 +445,10 @@ public class CompareGraphPluginNGTest {
         vx1 = compareGraph.addVertex();
         vx2 = compareGraph.addVertex();
         vx3 = compareGraph.addVertex();
-        tx0 = compareGraph.addTransaction(vx0, vx1, true);
-        tx1 = compareGraph.addTransaction(vx2, vx1, true); // this is the change
+        
+        compareGraph.addTransaction(vx0, vx1, true);
+        compareGraph.addTransaction(vx2, vx1, true); // this is the change
+        
         compareGraph.setStringValue(labelAttribute, vx0, "vx0");
         compareGraph.setStringValue(labelAttribute, vx1, "vx1");
         compareGraph.setStringValue(labelAttribute, vx2, "vx2");
@@ -588,19 +465,9 @@ public class CompareGraphPluginNGTest {
         ignoreVertexAttributes.add("[id]");
         ignoreTransactionAttributes.add("[id]");
 
-        // debug
-        System.out.println("originalAll ==>\n" + originalAll.toStringVerbose());
-        System.out.println("compareAll ==>\n" + compareAll.toStringVerbose());
-
         final CompareGraphPlugin instance = new CompareGraphPlugin();
-        GraphRecordStore changes = new GraphRecordStore();
-        try {
-            changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
-            System.out.println("changes ==>\n" + changes.toStringVerbose());
-            assertEquals(changes.size(), 7);
-        } catch (PluginException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        GraphRecordStore changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
+        assertEquals(changes.size(), 7);
 
         changes.reset();
         changes.next();
@@ -627,13 +494,9 @@ public class CompareGraphPluginNGTest {
         assertEquals(changes.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL), "vx2");
         assertEquals(changes.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.LABEL), "vx1");
         assertEquals(changes.get(GraphRecordStoreUtilities.TRANSACTION + CompareGraphPlugin.COMPARE_ATTRIBUTE), CompareGraphPlugin.ADDED);
-
-        try {
-            final Graph finalGraph = instance.createComparisonGraph(new DualGraph(originalGraph, true), changes);
-            SaveGraphUtilities.saveGraphToTemporaryDirectory(finalGraph, "testReadWithTransactionsInBothDirections", true);
-        } catch (InterruptedException | IOException ex) {
-            Assert.fail(ex.getLocalizedMessage());
-        }
+        
+        final Graph finalGraph = instance.createComparisonGraph(new DualGraph(originalGraph, true), changes);
+        SaveGraphUtilities.saveGraphToTemporaryDirectory(finalGraph, "testReadWithTransactionsInBothDirections", true);
     }
 
     /**
@@ -663,9 +526,6 @@ public class CompareGraphPluginNGTest {
         expResult.set(GraphRecordStoreUtilities.SOURCE + CompareGraphPlugin.COMPARE_ATTRIBUTE, CompareGraphPlugin.UNCHANGED);
         expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, UNCHANGED_COLOR);
         expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "vx0");
-
-        System.out.println(expResult.toStringVerbose());
-        System.out.println(changes.toStringVerbose());
 
         assertEquals(changes, expResult);
     }
@@ -704,8 +564,7 @@ public class CompareGraphPluginNGTest {
 
         final CompareGraphPlugin instance = new CompareGraphPlugin();
         final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
-
-        System.out.println(changes.toStringVerbose());
+        
         assertEquals(changes.size(), 4);
 
         changes.reset();
@@ -750,10 +609,6 @@ public class CompareGraphPluginNGTest {
         final CompareGraphPlugin instance = new CompareGraphPlugin();
         final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
-        System.out.println("original=>" + original.toStringVerbose());
-        System.out.println("compare=>" + compare.toStringVerbose());
-        System.out.println("changes=>" + changes.toStringVerbose());
-
         assertEquals(changes.size(), 3);
 
         changes.reset();
@@ -796,8 +651,7 @@ public class CompareGraphPluginNGTest {
 
         final CompareGraphPlugin instance = new CompareGraphPlugin();
         final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
-
-        System.out.println("changes=>" + changes.toStringVerbose());
+        
         assertEquals(changes.size(), 3);
 
         changes.reset();
@@ -847,10 +701,6 @@ public class CompareGraphPluginNGTest {
         final CompareGraphPlugin instance = new CompareGraphPlugin();
         final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
-        System.out.println("original ==>\n" + original.toStringVerbose());
-        System.out.println("compare ==>\n" + compare.toStringVerbose());
-        System.out.println("changes ==>\n" + changes.toStringVerbose());
-
         assertEquals(changes.size(), 3);
 
         changes.reset();
@@ -883,10 +733,6 @@ public class CompareGraphPluginNGTest {
 
         final CompareGraphPlugin instance = new CompareGraphPlugin();
         final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
-
-        System.out.println("original ==>\n" + original.toStringVerbose());
-        System.out.println("compare ==>\n" + compare.toStringVerbose());
-        System.out.println("changes ==>\n" + changes.toStringVerbose());
 
         assertEquals(changes.size(), 2);
 
@@ -933,10 +779,6 @@ public class CompareGraphPluginNGTest {
 
         final CompareGraphPlugin instance = new CompareGraphPlugin();
         final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
-
-        System.out.println("original ==>\n" + original.toStringVerbose());
-        System.out.println("compare ==>\n" + compare.toStringVerbose());
-        System.out.println("changes ==>\n" + changes.toStringVerbose());
 
         assertEquals(changes.size(), 3);
 
@@ -998,10 +840,6 @@ public class CompareGraphPluginNGTest {
         final CompareGraphPlugin instance = new CompareGraphPlugin();
         final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
-        System.out.println("original ==>\n" + original.toStringVerbose());
-        System.out.println("compare ==>\n" + compare.toStringVerbose());
-        System.out.println("changes ==>\n" + changes.toStringVerbose());
-
         assertEquals(changes.size(), 5);
 
         changes.reset();
@@ -1033,19 +871,19 @@ public class CompareGraphPluginNGTest {
      */
     @Test
     public void testCreateComparisonGraphWithAddedTransactionInReverse() throws Exception {
-        int vx0, vx1, tx0, tx1;
-        int labelAttribute, uniqueIdAttribute;
-
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
 
         final StoreGraph originalGraph = new StoreGraph(schema);
-        labelAttribute = VisualConcept.VertexAttribute.LABEL.ensure(originalGraph);
-        uniqueIdAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(originalGraph);
+        int labelAttribute = VisualConcept.VertexAttribute.LABEL.ensure(originalGraph);
+        int uniqueIdAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(originalGraph);
         originalGraph.setPrimaryKey(GraphElementType.VERTEX, labelAttribute);
         originalGraph.setPrimaryKey(GraphElementType.TRANSACTION, uniqueIdAttribute);
-        vx0 = originalGraph.addVertex();
-        vx1 = originalGraph.addVertex();
-        tx0 = originalGraph.addTransaction(vx0, vx1, true);
+        
+        int vx0 = originalGraph.addVertex();
+        int vx1 = originalGraph.addVertex();
+        
+        int tx0 = originalGraph.addTransaction(vx0, vx1, true);
+        
         originalGraph.setStringValue(labelAttribute, vx0, "vx0");
         originalGraph.setStringValue(labelAttribute, vx1, "vx1");
         originalGraph.setStringValue(uniqueIdAttribute, tx0, "1");
@@ -1055,9 +893,12 @@ public class CompareGraphPluginNGTest {
         uniqueIdAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(compareGraph);
         compareGraph.setPrimaryKey(GraphElementType.VERTEX, labelAttribute);
         compareGraph.setPrimaryKey(GraphElementType.TRANSACTION, uniqueIdAttribute);
+        
         vx0 = compareGraph.addVertex();
         vx1 = compareGraph.addVertex();
+        
         tx0 = compareGraph.addTransaction(vx1, vx0, true);
+        
         compareGraph.setStringValue(labelAttribute, vx0, "vx0");
         compareGraph.setStringValue(labelAttribute, vx1, "vx1");
         originalGraph.setStringValue(uniqueIdAttribute, tx0, "2");
@@ -1076,29 +917,22 @@ public class CompareGraphPluginNGTest {
         final CompareGraphPlugin instance = new CompareGraphPlugin();
         final GraphRecordStore changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
-        final boolean initializeWithSchema = true;
-        final boolean completeWithSchema = false;
-
         final Graph finalGraph = instance.createComparisonGraph(new DualGraph(originalGraph, true), changes);
-        System.out.println("changes ==>\n" + changes.toStringVerbose());
-
-        final ReadableGraph rg = finalGraph.getReadableGraph();
-        try {
+        
+        try (final ReadableGraph rg = finalGraph.getReadableGraph()) {
             assertEquals(rg.getVertexCount(), 2);
             assertEquals(rg.getTransactionCount(), 2);
 
             vx0 = rg.getVertex(0);
             vx1 = rg.getVertex(1);
             tx0 = rg.getTransaction(0);
-            tx1 = rg.getTransaction(1);
+            int tx1 = rg.getTransaction(1);
 
             labelAttribute = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.LABEL.getName());
             assertEquals(rg.getStringValue(labelAttribute, vx0), "vx0");
             assertEquals(rg.getStringValue(labelAttribute, vx1), "vx1");
             assertEquals(rg.getTransactionSourceVertex(tx0), vx0);
             assertEquals(rg.getTransactionSourceVertex(tx1), vx1);
-        } finally {
-            rg.release();
         }
 
         SaveGraphUtilities.saveGraphToTemporaryDirectory(originalGraph, "originalGraph");
@@ -1111,12 +945,14 @@ public class CompareGraphPluginNGTest {
      */
     @Test
     public void testCollectStatisticsFromGraph() {
-        final int vx0, vx1, tx0;
         final StoreGraph graph = new StoreGraph();
         final int labelAttribute = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Name", "", "", null);
-        vx0 = graph.addVertex();
-        vx1 = graph.addVertex();
-        tx0 = graph.addTransaction(vx0, vx1, true);
+        
+        final int vx0 = graph.addVertex();
+        final int vx1 = graph.addVertex();
+        
+        graph.addTransaction(vx0, vx1, true);
+        
         graph.setStringValue(labelAttribute, vx0, "vx0");
         graph.setStringValue(labelAttribute, vx1, "vx1");
 
@@ -1164,24 +1000,4 @@ public class CompareGraphPluginNGTest {
         final Map<String, Integer> result = instance.calculateStatisticalDifferences(originalStatistics, compareStatistics);
         assertEquals(expResult, result);
     }
-
-//    /**
-//     * Test of getVertexKeysToRecordstoreIndex method, of class
-// CompareGraphPlugin.
-//     */
-//    @Test
-//    public void testGetLabelToIndexMapping() {
-//        final GraphRecordStore recordstore = new GraphRecordStore();
-//        recordstore.add();
-//        recordstore.set(GraphRecordStoreUtilities.SOURCE + "foo", "bar");
-//        recordstore.add();
-//        recordstore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "baz");
-//
-//        CompareGraphPlugin instance = new CompareGraphPlugin();
-//        final Map<String, Integer> expResult = new HashMap<>();
-//        expResult.put("baz", 1);
-//
-//        final Map<String, Integer> result = instance.getVertexLabelToRecordstoreIndexMapping(recordstore);
-//        assertEquals(expResult, result);
-//    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,13 +58,11 @@ public class RestUtilities {
      */
     public static void addData(final ArrayNode row, final String type, final String value) {
         switch (type) {
-            case BooleanAttributeDescription.ATTRIBUTE_NAME:
-            case BooleanObjectAttributeDescription.ATTRIBUTE_NAME:
+            case BooleanAttributeDescription.ATTRIBUTE_NAME, BooleanObjectAttributeDescription.ATTRIBUTE_NAME -> 
                 // A DataFrame will parse [True, False, None] to [1.0, 0.0, Nan],
                 // so implicitly convert null to False so the result is all booleans.
                 row.add(Boolean.parseBoolean(value));
-                break;
-            case ColorAttributeDescription.ATTRIBUTE_NAME:
+            case ColorAttributeDescription.ATTRIBUTE_NAME -> {
                 if (value == null) {
                     row.addNull();
                 } else {
@@ -75,8 +73,8 @@ public class RestUtilities {
                     rgb.add(cv.getBlue());
                     rgb.add(cv.getAlpha());
                 }
-                break;
-            case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME:
+            }
+            case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME -> {
                 // A DataFrame will parse null as NaT.
                 if (value == null) {
                     row.addNull();
@@ -85,18 +83,16 @@ public class RestUtilities {
                     final int ix = value.lastIndexOf(" [");
                     row.add(ix == -1 ? value : value.substring(0, ix));
                 }
-                break;
-            case FloatAttributeDescription.ATTRIBUTE_NAME:
-            case FloatObjectAttributeDescription.ATTRIBUTE_NAME:
+            }
+            case FloatAttributeDescription.ATTRIBUTE_NAME, FloatObjectAttributeDescription.ATTRIBUTE_NAME -> {
                 // A DataFrame will parse null as NaN.
                 if (value == null) {
                     row.addNull();
                 } else {
                     row.add(Float.parseFloat(value));
                 }
-                break;
-            case IntegerAttributeDescription.ATTRIBUTE_NAME:
-            case IntegerObjectAttributeDescription.ATTRIBUTE_NAME:
+            }
+            case IntegerAttributeDescription.ATTRIBUTE_NAME, IntegerObjectAttributeDescription.ATTRIBUTE_NAME -> {
                 // A DataFrame will parse null as NaN, but the column will be
                 // converted to a float column.
                 if (value == null) {
@@ -104,11 +100,10 @@ public class RestUtilities {
                 } else {
                     row.add(Integer.parseInt(value));
                 }
-                break;
-            default:
+            }
+            default -> 
                 // Everything else we leave as a string; nulls are fine.
                 row.add(value);
-                break;
         }
     }
 }

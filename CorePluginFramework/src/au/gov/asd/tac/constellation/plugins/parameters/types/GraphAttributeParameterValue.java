@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,8 +53,7 @@ public class GraphAttributeParameterValue extends ParameterValue implements Comp
 
     @Override
     public boolean setObjectValue(final Object o) {
-        if (o instanceof GraphAttribute) {
-            final GraphAttribute objectAttribute = (GraphAttribute) o;
+        if (o instanceof GraphAttribute objectAttribute) {
             final boolean equal = Objects.equals(objectAttribute, attribute);
             if (!equal) {
                 attribute = objectAttribute;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ScriptingViewHelpProvider extends HelpPageProvider {
 
     private static final String CODEBASE_NAME = "constellation";
+    private static final String SEP = File.separator;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,11 +42,11 @@ public class ScriptingViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String scriptingModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "scripting" + sep;
+        final String scriptingModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreScriptingView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP
+                + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "scripting" + SEP;
 
-        map.put("au.gov.asd.tac.constellation.views.scripting", scriptingModulePath + "scripting-view.md");
+        map.put("au.gov.asd.tac.constellation.views.scripting.javadocs", scriptingModulePath + "docs" + SEP + "javadoc" + SEP + "help-doc.md");
+        map.put("au.gov.asd.tac.constellation.views.scripting.ScriptingViewTopComponent", scriptingModulePath + "scripting-view.md");
         return map;
     }
 
@@ -56,10 +57,7 @@ public class ScriptingViewHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String scriptingViewPath;
-        scriptingViewPath = "ext" + sep + "docs" + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "scripting" + sep + "scripting-toc.xml";
-        return scriptingViewPath;
+        return "ext" + SEP + "docs" + SEP + "CoreScriptingView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
+                + CODEBASE_NAME + SEP + "views" + SEP + "scripting" + SEP + "scripting-toc.xml";
     }
 }

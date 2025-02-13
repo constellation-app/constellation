@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class FindViewHelpProvider extends HelpPageProvider {
         final String findModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreFindView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
                 + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "find" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.find", findModulePath + "find-view.md");
+        map.put("au.gov.asd.tac.constellation.views.find.FindViewTopComponent", findModulePath + "find-view.md");
         return map;
     }
 

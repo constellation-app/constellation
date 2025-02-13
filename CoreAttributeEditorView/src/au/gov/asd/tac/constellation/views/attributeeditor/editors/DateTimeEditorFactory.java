@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.util.Comparator;
 import java.util.TimeZone;
@@ -47,7 +46,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import javafx.util.converter.LocalDateStringConverter;
-import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -115,16 +113,6 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
         protected ZonedDateTime getValueFromControls() throws ControlsInvalidException {
             if (hourSpinner.getValue() == null || minSpinner.getValue() == null || secSpinner.getValue() == null || milliSpinner.getValue() == null) {
                 throw new ControlsInvalidException("Time spinners must have numeric values");
-            }
-            final String dateString = datePicker.getEditor().getText();
-            // The converter is being used here to try and determine if the entered date is a LocalDate
-            // It will throw an exception and won't convert it if its invalid
-            try {
-                if (!StringUtils.isBlank(dateString)) {
-                    datePicker.setValue(datePicker.getConverter().fromString(dateString));
-                }
-            } catch (final DateTimeParseException ex) {
-                throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
             }
 
             return ZonedDateTime.of(datePicker.getValue(), LocalTime.of(
@@ -195,12 +183,6 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
                 updateTimeZoneList();
             });
 
-            datePicker.setValue(LocalDate.now());
-            datePicker.valueProperty().addListener((v, o, n) -> {
-                update();
-                updateTimeZoneList();
-            });
-
             hourSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23));
             minSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59));
             secSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59));
@@ -209,6 +191,12 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             minSpinner.getValueFactory().setValue(LocalTime.now(ZoneOffset.UTC).getMinute());
             secSpinner.getValueFactory().setValue(LocalTime.now(ZoneOffset.UTC).getSecond());
             milliSpinner.getValueFactory().setValue(0);
+
+            datePicker.setValue(LocalDate.now());
+            datePicker.valueProperty().addListener((v, o, n) -> {
+                update();
+                updateTimeZoneList();
+            });
 
             final HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
 

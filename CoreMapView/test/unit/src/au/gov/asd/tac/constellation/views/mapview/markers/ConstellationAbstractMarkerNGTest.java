@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.views.mapview.markers;
 
 import de.fhpotsdam.unfolding.geo.Location;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -29,8 +29,6 @@ import org.testng.annotations.Test;
  * @author cygnus_x-1
  */
 public class ConstellationAbstractMarkerNGTest {
-
-    private static final Logger LOGGER = Logger.getLogger(ConstellationAbstractMarkerNGTest.class.getName());
 
     private Location locationA;
     private Location locationB;
@@ -44,7 +42,7 @@ public class ConstellationAbstractMarkerNGTest {
         this.locationB = new Location(-2.345f, 678.901f);
         this.locationC = new Location(-3.456f, 789.012f);
         this.point = new ConstellationPointMarker(locationA);
-        this.line = new ConstellationLineMarker(Arrays.asList(locationA, locationB));
+        this.line = new ConstellationLineMarker(new ArrayList<>(Arrays.asList(locationA, locationB)));
     }
 
     /**
@@ -109,15 +107,15 @@ public class ConstellationAbstractMarkerNGTest {
         assertEquals(result, expResult);
     }
 
-//    /**
-//     * Test of setLocations method, of class ConstellationAbstractMarker.
-//     */
-//    @Test
-//    public void testSetLocations() {
-//        final List<Location> locations = new ArrayList<>(Arrays.asList(locationB, locationC));
-//        line.setLocations(locations);
-//        final List<Location> expResult = locations;
-//        final List<Location> result = line.locations;
-//        assertEquals(result, expResult);
-//    }
+    /**
+     * Test of setLocations method, of class ConstellationAbstractMarker.
+     */
+    @Test
+    public void testSetLocations() {
+        final List<Location> locations = new ArrayList<>(Arrays.asList(locationB, locationC));
+        line.setLocations(locations);
+        final List<Location> expResult = locations;
+        final List<Location> result = line.locations;
+        assertEquals(result, expResult);
+    }
 }

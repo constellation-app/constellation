@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
 
     private GraphOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
+    
     @Override
     public void update() {
         final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
@@ -65,9 +65,9 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
         final List<Color> colors = new ArrayList<>();
         for (final String currentColor : presetColorsString.split(";")) {
             if (StringUtils.isNotBlank(currentColor) && !"null".equals(currentColor)) {
-                final int r = Integer.valueOf(currentColor.substring(1, 3), 16);
-                final int g = Integer.valueOf(currentColor.substring(3, 5), 16);
-                final int b = Integer.valueOf(currentColor.substring(5, 7), 16);
+                final int r = Integer.parseInt(currentColor.substring(1, 3), 16);
+                final int g = Integer.parseInt(currentColor.substring(3, 5), 16);
+                final int b = Integer.parseInt(currentColor.substring(5, 7), 16);
                 colors.add(new Color(r, g, b));
             } else {
                 colors.add(null);
@@ -76,6 +76,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
         graphOptionsPanel.setPresetColors(colors);
         graphOptionsPanel.setLeftColor(prefs.get(GraphPreferenceKeys.LEFT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT));
         graphOptionsPanel.setRightColor(prefs.get(GraphPreferenceKeys.RIGHT_COLOR, GraphPreferenceKeys.RIGHT_COLOR_DEFAULT));
+        graphOptionsPanel.setAnimationsEnabled(prefs.getBoolean(GraphPreferenceKeys.ENABLE_ANIMATIONS, GraphPreferenceKeys.ENABLE_ANIMATIONS_DEFAULT));
     }
 
     @Override
@@ -93,6 +94,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
                 prefs.putInt(GraphPreferenceKeys.BLAZE_OPACITY, graphOptionsPanel.getBlazeOpacity());
                 prefs.put(GraphPreferenceKeys.LEFT_COLOR, graphOptionsPanel.getLeftColor());
                 prefs.put(GraphPreferenceKeys.RIGHT_COLOR, graphOptionsPanel.getRightColor());
+                prefs.putBoolean(GraphPreferenceKeys.ENABLE_ANIMATIONS, graphOptionsPanel.getAnimationsEnabled());
             }
         }
     }
@@ -120,7 +122,8 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
         return !(graphOptionsPanel.getBlazeSize() == prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)
                 && graphOptionsPanel.getBlazeOpacity() == prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)
                 && graphOptionsPanel.getLeftColor().equals(prefs.get(GraphPreferenceKeys.LEFT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT))
-                && graphOptionsPanel.getRightColor().equals(prefs.get(GraphPreferenceKeys.RIGHT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT)));
+                && graphOptionsPanel.getRightColor().equals(prefs.get(GraphPreferenceKeys.RIGHT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT))
+                && graphOptionsPanel.getAnimationsEnabled() == prefs.getBoolean(GraphPreferenceKeys.ENABLE_ANIMATIONS, GraphPreferenceKeys.ENABLE_ANIMATIONS_DEFAULT));
     }
 
     @Override
@@ -135,7 +138,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
 
     private GraphOptionsPanel getPanel() {
         if (panel == null) {
-            panel = new GraphOptionsPanel(this);
+            panel = new GraphOptionsPanel();
         }
         return panel;
     }

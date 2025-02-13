@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph;
 
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import java.util.ArrayList;
+import java.util.List;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -29,16 +30,15 @@ import org.testng.annotations.Test;
  * @author algol
  */
 public class ElementCreationandConnectivityNGTest {
-
-    public ElementCreationandConnectivityNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -135,9 +135,10 @@ public class ElementCreationandConnectivityNGTest {
         final int id0 = graph.addVertex();
         final int id1 = graph.addVertex();
         final int id2 = graph.addVertex();
-        final int tx0 = graph.addTransaction(id0, id1, false);
-        final int tx1 = graph.addTransaction(id1, id2, false);
-        final int tx2 = graph.addTransaction(id2, id1, false);
+        
+        graph.addTransaction(id0, id1, false);
+        graph.addTransaction(id1, id2, false);
+        graph.addTransaction(id2, id1, false);
 
         assertEquals("Number of vertices", 3, graph.getVertexCount());
         assertEquals("Number of transactions", 3, graph.getTransactionCount());
@@ -189,7 +190,7 @@ public class ElementCreationandConnectivityNGTest {
         final int numNodes = 20;
 
         // Add N nodes, remember half of them.
-        ArrayList<Integer> otherNodes = new ArrayList<>();
+        List<Integer> otherNodes = new ArrayList<>();
         for (int i = 0; i < numNodes; i++) {
             final int node = graph.addVertex();
             if (node % 2 == 0) {
@@ -203,9 +204,9 @@ public class ElementCreationandConnectivityNGTest {
         // For extra fun, there are two outgoing edges to each neighbour and only one incoming edge.
         for (int i = 0; i < otherNodes.size(); i++) {
             if (i % 2 == 0) {
-                final int edge = graph.addTransaction(otherNodes.get(i), origin, true);
+                graph.addTransaction(otherNodes.get(i), origin, true);
             } else {
-                final int edge = graph.addTransaction(origin, otherNodes.get(i), true);
+                graph.addTransaction(origin, otherNodes.get(i), true);
             }
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
     /**
      * A thread pool to create parameters in.
      */
-    private static final ExecutorService PARAM_CREATOR = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
+    private static final ExecutorService PARAM_CREATOR = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("Param-Thread", 1);
 
     private static final Label DUMMY_LABEL = new Label("Waiting...");
     private static final String DAV_CREATOR_THREAD_NAME = "DAV Pane Creator";

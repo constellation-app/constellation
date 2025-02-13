@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
     private final FloatArray currentFloats;
     private final IntArray currentInts;
     private float currentWidth;
-    private Object addLock = new Object();
+    private final Object addLock = new Object();
 
     public ConnectionGlyphStream() {
         this.currentFloats = new FloatArray();
@@ -39,8 +39,7 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
 
     @Override
     public void addGlyph(int glyphPosition, float x, float y, final GlyphStreamContext streamContext) {
-        if (streamContext instanceof ConnectionGlyphStreamContext) {
-            final ConnectionGlyphStreamContext context = (ConnectionGlyphStreamContext) streamContext;
+        if (streamContext instanceof ConnectionGlyphStreamContext context) {
             synchronized (addLock) {
                 currentFloats.add(currentWidth, x, y, context.visibility);
                 currentInts.add(context.currentLowNodeId, context.currentHighNodeId, (context.currentOffset << 16) + (context.totalScale << 2) + context.labelNumber, (glyphPosition << 8) + context.currentStagger * 256 / (Math.min(context.currentLinkLabelCount, ConnectionLabelBatcher.MAX_STAGGERS) + 1));
@@ -50,8 +49,7 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
 
     @Override
     public void newLine(float width, final GlyphStreamContext streamContext) {
-        if (streamContext instanceof ConnectionGlyphStreamContext) {
-            final ConnectionGlyphStreamContext context = (ConnectionGlyphStreamContext) streamContext;
+        if (streamContext instanceof ConnectionGlyphStreamContext context) {
             synchronized (addLock) {
                 currentWidth = -width / 2.0F - 0.2F;
                 currentFloats.add(currentWidth, currentWidth, 0.0F, context.visibility);

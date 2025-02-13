@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -114,11 +115,11 @@ public class PartitionQueue {
     }
 
     public List<NodeBase> getQueue() {
-        return queue;
+        return Collections.unmodifiableList(queue);
     }
 
     public void setQueue(final List<NodeBase> queue) {
-        this.queue = queue;
+        this.queue = new ArrayList<>(queue);
     }
 
     public void swap(final PartitionQueue other) {

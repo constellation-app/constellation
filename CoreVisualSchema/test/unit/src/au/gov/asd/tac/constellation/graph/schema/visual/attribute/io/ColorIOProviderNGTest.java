@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.FloatNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import java.io.IOException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -65,15 +66,14 @@ public final class ColorIOProviderNGTest {
     final ConstellationColor tealAttribValue = ConstellationColor.getColorValue("Teal");
     final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
     
-    public ColorIOProviderNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -83,6 +83,7 @@ public final class ColorIOProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -107,9 +108,10 @@ public final class ColorIOProviderNGTest {
 
     /**
      * Test of readObject method, of class ColorIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testReadObject() throws Exception {
+    public void testReadObject() throws IOException {
         System.out.println("ColorIOProviderNGTest.testReadObject");
 
         // Call method under test with JsonNode.isNull=false and JsonNode.isObject=true, use both types of color definition
@@ -164,9 +166,10 @@ public final class ColorIOProviderNGTest {
 
     /**
      * Test of writeObject method, of class ColorIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteObject() throws Exception {
+    public void testWriteObject() throws IOException {
         System.out.println("ColorIOProviderNGTest.testWriteObject");
 
         // Test not verbose and graph.IsDefaultValue is true skips all processing

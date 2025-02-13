@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -501,9 +501,9 @@ public interface AttributeDescription {
      */
     public void setObject(final int id, final Object value);
 
-    public Object createReadObject(IntReadable indexReadable);
+    public Object createReadObject(final IntReadable indexReadable);
 
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable);
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable);
 
     /**
      * Convert an attribute value from its object representation to its native

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,16 +36,38 @@ import org.testng.annotations.Test;
 public class WeightActionNGTest {
 
     private int transactionWeightAttribute;
-    private int vxId0, vxId1, vxId2, vxId3, vxId4;
-    private int txId0, txId1, txId2, txId3, txId4, txId5, txId6, txId7, txId8, txId9, txId10, txId11, txId12, txId13;
+    
+    private int vxId0;
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    
+    private int txId0;
+    private int txId1;
+    private int txId2;
+    private int txId3;
+    private int txId4;
+    private int txId5;
+    private int txId6;
+    private int txId7;
+    private int txId8;
+    private int txId9;
+    private int txId10;
+    private int txId11;
+    private int txId12;
+    private int txId13;
+    
     private StoreGraph graph;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -89,7 +111,7 @@ public class WeightActionNGTest {
     }
 
     @Test
-    public void testRatioOfReciprocity() throws Exception {
+    public void testWeight() throws Exception {
         final WeightPlugin instance = new WeightPlugin();
         final PluginParameters parameters = instance.createParameters();
         parameters.setBooleanValue(WeightPlugin.NORMALISE_AVAILABLE_PARAMETER_ID, false);
@@ -112,7 +134,7 @@ public class WeightActionNGTest {
     }
 
     @Test
-    public void testNormalisedRatioOfReciprocity() throws Exception {
+    public void testNormalisedWeight() throws Exception {
         final WeightPlugin instance = new WeightPlugin();
         final PluginParameters parameters = instance.createParameters();
         parameters.setBooleanValue(WeightPlugin.NORMALISE_AVAILABLE_PARAMETER_ID, true);

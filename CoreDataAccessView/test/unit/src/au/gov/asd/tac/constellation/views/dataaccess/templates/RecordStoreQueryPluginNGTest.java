@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,8 @@ public class RecordStoreQueryPluginNGTest {
 
     /**
      * Test of getResult method, of class RecordStoreQueryPlugin.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
     public void testGetResult() throws InterruptedException, PluginException {
@@ -65,6 +67,8 @@ public class RecordStoreQueryPluginNGTest {
 
     /**
      * Test of edit method, of class RecordStoreQueryPlugin.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
     public void testEdit() throws InterruptedException, PluginException {
@@ -76,21 +80,12 @@ public class RecordStoreQueryPluginNGTest {
         final PluginInteraction interaction = null;
         final PluginParameters parameters = null;
 
-        ReadableGraph rg = graph.getReadableGraph();
-        try {
+        GraphRecordStore query;
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             instance.read(rg, interaction, parameters);
             instance.query(interaction, parameters);
-        } finally {
-            rg.release();
-        }
-
-        GraphRecordStore query;
-
-        rg = graph.getReadableGraph();
-        try {
+            
             query = GraphRecordStoreUtilities.getAll(rg, false, false);
-        } finally {
-            rg.release();
         }
 
         final WritableGraph wg = graph.getWritableGraph("", true);
@@ -105,11 +100,8 @@ public class RecordStoreQueryPluginNGTest {
             wg.commit();
         }
 
-        rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             query = GraphRecordStoreUtilities.getTransactions(rg, false, false);
-        } finally {
-            rg.release();
         }
 
         // verify nothing has moved
@@ -230,7 +222,6 @@ public class RecordStoreQueryPluginNGTest {
         public String getName() {
             return "Record Store Query Plugin Test";
         }
-
     }
 
     private class RecordStoreValidator1MockImpl extends RecordStoreValidator {

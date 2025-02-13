@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,24 +33,25 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class BooleanParameterTypeNGTest {
-
-    public BooleanParameterTypeNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -91,7 +92,7 @@ public class BooleanParameterTypeNGTest {
         System.out.println("construction");
         BooleanParameterValue result = new BooleanParameterValue();
         assertNotNull(result);
-        assertFalse(result.get());
+        assertFalse(result.getValue());
     }
 
     @Test
@@ -99,22 +100,22 @@ public class BooleanParameterTypeNGTest {
         System.out.println("getSet");
         BooleanParameterValue instance = new BooleanParameterValue();
 
-        boolean expected = instance.get();
-        assertEquals(instance.get(), expected);
+        boolean expected = instance.getValue();
+        assertEquals(instance.getValue(), expected);
 
         expected = true;
         instance.set(expected);
-        assertEquals(instance.get(), expected);
+        assertEquals(instance.getValue(), expected);
 
         // Return true when value is different
         expected = false;
         assertTrue(instance.set(expected));
-        assertEquals(instance.get(), expected);
+        assertEquals(instance.getValue(), expected);
 
         // Return false when value is set the same
         expected = false;
         assertFalse(instance.set(expected));
-        assertEquals(instance.get(), expected);
+        assertEquals(instance.getValue(), expected);
     }
 
     /**
@@ -222,7 +223,7 @@ public class BooleanParameterTypeNGTest {
         // Ensure initial setup is correct
         BooleanParameterValue instance = new BooleanParameterValue();
         instance.set(true);
-        assertTrue(instance.get());
+        assertTrue(instance.getValue());
 
         assertFalse(instance.setObjectValue(1));
     }
@@ -236,15 +237,15 @@ public class BooleanParameterTypeNGTest {
         // Ensure initial setup is correct
         BooleanParameterValue instance = new BooleanParameterValue();
         instance.set(true);
-        assertTrue(instance.get());
+        assertTrue(instance.getValue());
 
         // Copy and verify correct value in copy
         BooleanParameterValue instanceCopy = instance.createCopy();
-        assertTrue(instanceCopy.get());
+        assertTrue(instanceCopy.getValue());
 
         // Ensure deep copy and not shallow
         assertTrue(instance.set(false));
-        assertTrue(instanceCopy.get());
+        assertTrue(instanceCopy.getValue());
     }
     
     /**

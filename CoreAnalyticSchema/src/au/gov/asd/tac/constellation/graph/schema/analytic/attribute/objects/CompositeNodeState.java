@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -216,7 +216,6 @@ public class CompositeNodeState {
      * JSON.
      */
     public static CompositeNodeState createFromString(final String s) {
-
         if (StringUtils.isBlank(s)) {
             return null;
         }
@@ -265,6 +264,5 @@ public class CompositeNodeState {
         } catch (final IOException ex) {
             throw new IllegalArgumentException("Error converting this string to a composite node state");
         }
-
     }
 }

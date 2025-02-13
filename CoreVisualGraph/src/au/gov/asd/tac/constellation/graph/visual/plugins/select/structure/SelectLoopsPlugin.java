@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,19 +40,19 @@ public class SelectLoopsPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        int txSelected = VisualConcept.TransactionAttribute.SELECTED.get(graph);
+        final int txSelected = VisualConcept.TransactionAttribute.SELECTED.get(graph);
         if (txSelected != Graph.NOT_FOUND) {
-            int transactionCount = graph.getTransactionCount();
+            final int transactionCount = graph.getTransactionCount();
             /*
              * All transactions are listed in a table, loop through all of them
              * on the graph and select those that have the same source and
              * destination
              */
             for (int position = 0; position < transactionCount; position++) {
-                int transaction = graph.getTransaction(position);
+                final int transaction = graph.getTransaction(position);
                 //Find out what the source and destination of each transaction is
-                int sourceVertex = graph.getTransactionSourceVertex(transaction);
-                int destinationVertex = graph.getTransactionDestinationVertex(transaction);
+                final int sourceVertex = graph.getTransactionSourceVertex(transaction);
+                final int destinationVertex = graph.getTransactionDestinationVertex(transaction);
                 //Set "Selected" as true if source == destination
                 if (sourceVertex == destinationVertex) {
                     graph.setBooleanValue(txSelected, transaction, true);

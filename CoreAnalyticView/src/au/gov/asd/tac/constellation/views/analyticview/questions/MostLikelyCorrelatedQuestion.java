@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.views.analyticview.analytics.ScoreAnalyticPl
 import au.gov.asd.tac.constellation.views.analyticview.analytics.ScoreAnalyticPlugin.TransactionTypeParameterValue;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
+import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,6 +52,11 @@ public class MostLikelyCorrelatedQuestion implements AnalyticQuestionDescription
     @Override
     public String getDescription() {
         return "";
+    }
+    
+    @Override 
+    public String getDocumentationUrl() {
+        return AnalyticUtilities.getHelpPath() + "question-most-likely-correlated.md";
     }
 
     @Override

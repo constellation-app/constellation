@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,23 +45,22 @@ import org.testng.annotations.Test;
  */
 public class GraphVisualAccessNGTest {
 
-    DualGraph graph;
-    StoreGraph sGraph;
+    private DualGraph graph;
+    private StoreGraph sGraph;
 
-    int vxId1;
-    int vxId2;
+    private int vxId1;
+    private int vxId2;
 
-    int tId1;
-
-    public GraphVisualAccessNGTest() {
-    }
-
+    private int tId1;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -80,6 +79,7 @@ public class GraphVisualAccessNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -95,13 +95,12 @@ public class GraphVisualAccessNGTest {
         final List<VisualChange> changes = instance.getIndigenousChanges();
         instance.endUpdate();
 
-        assertEquals(changes.size(), 37);
+        assertEquals(changes.size(), 38);
     }
 
     /**
-     * Test of the following methods when the attributes are not found, of class
-     * GraphVisualAccess: getBackgroundColor, getHighlightColor, getBlazeSize,
-     * getBlazeOpacity, getConnectionOpacity
+     * Test of the following methods when the attributes are not found, of class GraphVisualAccess: getBackgroundColor,
+     * getHighlightColor, getBlazeSize, getBlazeOpacity, getConnectionOpacity
      *
      * @throws InterruptedException
      */
@@ -127,9 +126,8 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of the following methods when attributes are added, of class
-     * GraphVisualAccess: getBackgroundColor, getHighlightColor, getBlazeSize,
-     * getBlazeOpacity, getConnectionOpacity
+     * Test of the following methods when attributes are added, of class GraphVisualAccess: getBackgroundColor,
+     * getHighlightColor, getBlazeSize, getBlazeOpacity, getConnectionOpacity
      *
      * @throws InterruptedException
      */
@@ -173,8 +171,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getDrawFlags method when attribute is not found, of class
-     * GraphVisualAccess.
+     * Test of getDrawFlags method when attribute is not found, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -192,8 +189,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getDrawFlags method when attribute is added, of class
-     * GraphVisualAccess.
+     * Test of getDrawFlags method when attribute is added, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -219,8 +215,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getCamera method when attribute is not found, of class
-     * GraphVisualAccess.
+     * Test of getCamera method when attribute is not found, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -239,8 +234,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getCamera method when attribute is added, of class
-     * GraphVisualAccess.
+     * Test of getCamera method when attribute is added, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -340,8 +334,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getConnectionDirected method when attribute is not found, of
-     * class GraphVisualAccess.
+     * Test of getConnectionDirected method when attribute is not found, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -364,9 +357,34 @@ public class GraphVisualAccessNGTest {
         assertEquals(directed, true);
     }
 
+    @Test
+    public void testGetConnectionVisibility() {
+        System.out.println("getConnectionVisibility");
+        final float visibility = 1.5F;
+        final ConnectionMode[] connectionModeArray = {ConnectionMode.LINK, ConnectionMode.EDGE, ConnectionMode.TRANSACTION};
+
+        final int transactionVisibilityAttribute = VisualConcept.TransactionAttribute.VISIBILITY.ensure(sGraph);
+        final int transactionLayerVisibilityAttribute = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(sGraph);
+        final int connectionModeAttr = VisualConcept.GraphAttribute.CONNECTION_MODE.ensure(sGraph);
+
+        for (ConnectionMode mode : connectionModeArray) {
+            sGraph.setFloatValue(transactionVisibilityAttribute, 0, visibility);
+            sGraph.setFloatValue(transactionLayerVisibilityAttribute, 0, 1);
+            sGraph.setObjectValue(connectionModeAttr, 0, mode);
+
+            final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+            final DualGraph localGraph = new DualGraph(schema, sGraph);
+
+            final GraphVisualAccess instance = new GraphVisualAccess(localGraph);
+            instance.updateModCounts(localGraph.getReadableGraph());
+            instance.beginUpdate();
+
+            assertEquals(instance.getConnectionVisibility(0), visibility);
+        }
+    }
+
     /**
-     * Test of getConnectionDirected method when attribute is added, of class
-     * GraphVisualAccess.
+     * Test of getConnectionDirected method when attribute is added, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -395,10 +413,9 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of the following methods when attributes are not found, of class
-     * GraphVisualAccess: getX, getY, getZ, getX2, getY2, getZ2,
-     * getBackgroundIcon, getForegroundIcon, getVertexSelected, getVertexDimmed,
-     * getRadius, getNWDecorator, getNEDecorator, getSEDecorator, getSWDecorator
+     * Test of the following methods when attributes are not found, of class GraphVisualAccess: getX, getY, getZ, getX2,
+     * getY2, getZ2, getBackgroundIcon, getForegroundIcon, getVertexSelected, getVertexDimmed, getRadius,
+     * getNWDecorator, getNEDecorator, getSEDecorator, getSWDecorator
      *
      * @throws InterruptedException
      */
@@ -448,10 +465,9 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of the following methods when attributes are added, of class
-     * GraphVisualAccess: getX, getY, getZ, getX2, getY2, getZ2,
-     * getBackgroundIcon, getForegroundIcon, getVertexSelected, getVertexDimmed,
-     * getRadius, getNWDecorator, getNEDecorator, getSEDecorator, getSWDecorator
+     * Test of the following methods when attributes are added, of class GraphVisualAccess: getX, getY, getZ, getX2,
+     * getY2, getZ2, getBackgroundIcon, getForegroundIcon, getVertexSelected, getVertexDimmed, getRadius,
+     * getNWDecorator, getNEDecorator, getSEDecorator, getSWDecorator
      *
      * @throws InterruptedException
      */
@@ -542,8 +558,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getVertexColor method when attributes are not found, of class
-     * GraphVisualAccess.
+     * Test of getVertexColor method when attributes are not found, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -563,8 +578,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getVertexColor method when attributes are added, of class
-     * GraphVisualAccess.
+     * Test of getVertexColor method when attributes are added, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -596,8 +610,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getVertexVisibility method when attributes are not found, of
-     * class GraphVisualAccess.
+     * Test of getVertexVisibility method when attributes are not found, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -617,8 +630,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getVertexVisibility method when attributes are added, of class
-     * GraphVisualAccess.
+     * Test of getVertexVisibility method when attributes are added, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -663,145 +675,4 @@ public class GraphVisualAccessNGTest {
         assertEquals(visibility1, 0.2f);
         assertEquals(visibility2, 0.15f);
     }
-
-    /**
-     * Test of getBlazed method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetBlazed() {
-//        System.out.println("getBlazed");
-//    }
-    /**
-     * Test of getBlazeAngle method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetBlazeAngle() {
-//        System.out.println("getBlazeAngle");
-//    }
-    /**
-     * Test of getBlazeColor method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetBlazeColor() {
-//        System.out.println("getBlazeColor");
-//    }
-    /**
-     * Test of getConnectionColor method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetConnectionColor() {
-//        System.out.println("getConnectionColor");
-//    }
-    /**
-     * Test of getConnectionSelected method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetConnectionSelected() {
-//        System.out.println("getConnectionSelected");
-//    }
-    /**
-     * Test of getConnectionVisibility method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetConnectionVisibility() {
-//        System.out.println("getConnectionVisibility");
-//    }
-    /**
-     * Test of getConnectionDimmed method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetConnectionDimmed() {
-//        System.out.println("getConnectionDimmed");
-//    }
-    /**
-     * Test of getConnectionLineStyle method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetConnectionLineStyle() {
-//        System.out.println("getConnectionLineStyle");
-//    }
-    /**
-     * Test of getConnectionWidth method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetConnectionWidth() {
-//        System.out.println("getConnectionWidth");
-//    }
-    /**
-     * Test of getConnectionLowVertex method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetConnectionLowVertex() {
-//        System.out.println("getConnectionLowVertex");
-//    }
-    /**
-     * Test of getConnectionHighVertex method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetConnectionHighVertex() {
-//        System.out.println("getConnectionHighVertex");
-//    }
-    /**
-     * Test of getLinkLowVertex method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetLinkLowVertex() {
-//        System.out.println("getLinkLowVertex");
-//    }
-    /**
-     * Test of getLinkHighVertex method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetLinkHighVertex() {
-//        System.out.println("getLinkHighVertex");
-//    }
-    /**
-     * Test of getLinkSource method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetLinkSource() {
-//        System.out.println("getLinkSource");
-//    }
-    /**
-     * Test of getLinkDestination method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetLinkDestination() {
-//        System.out.println("getLinkDestination");
-//    }
-    /**
-     * Test of getLinkConnectionCount method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetLinkConnectionCount() {
-//        System.out.println("getLinkConnectionCount");
-//    }
-    /**
-     * Test of getVertexTopLabelText method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetVertexTopLabelText() {
-//        System.out.println("getVertexTopLabelText");
-//    }
-    /**
-     * Test of getVertexBottomLabelText method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetVertexBottomLabelText() {
-//        System.out.println("getVertexBottomLabelText");
-//    }
-    /**
-     * Test of getConnectionLabelText method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetConnectionLabelText() {
-//        System.out.println("getConnectionLabelText");
-//    }
-    /**
-     * Test of updateModCounts method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testUpdateModCounts() {
-//        System.out.println("updateModCounts");
-//    }
 }

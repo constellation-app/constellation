@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,17 @@ public final class HierarchicalState {
     private int[] clusterNumbers;
     private int[] clusterSeenBefore;
     private int redrawCount = 0;
-    private transient long modificationCounter = -1;
-    private transient long strucModificationCount = -1;
+    private long modificationCounter = -1;
+    private long strucModificationCount = -1;
     private boolean interactive = true;
     private boolean colored = true;
+
+    public enum ExcludedState {
+        SHOW,
+        HIDDEN,
+        DIMMED
+    }
+    private ExcludedState excludedElementsState = ExcludedState.SHOW;
 
     /**
      * Required for AbstractGraphIOProvider.
@@ -87,6 +94,14 @@ public final class HierarchicalState {
 
     public void setExcludedElementsDimmed(final boolean excludedElementsDimmed) {
         this.excludedElementsDimmed = excludedElementsDimmed;
+    }
+
+    public ExcludedState getExcludedElementsState() {
+        return this.excludedElementsState;
+    }
+
+    public void setExcludedElementsState(final ExcludedState newState) {
+        this.excludedElementsState = newState;
     }
 
     public int[] getClusterNumbers() {
@@ -145,12 +160,17 @@ public final class HierarchicalState {
         this.steps = steps;
     }
 
+    /**
+     * These groups cannot be cloned as the state uses this call to update the list of groups by index
+     *
+     * @return groups
+     */
     public FastNewman.Group[] getGroups() {
-        return groups.clone();
+        return groups;
     }
 
     public void setGroups(final FastNewman.Group[] groups) {
-        this.groups = groups.clone();
+        this.groups = groups;
     }
 
     public boolean isColored() {
@@ -163,9 +183,11 @@ public final class HierarchicalState {
 
     public int getCurrentNumOfClusters() {
         int numClusters = 0;
-        for (final FastNewman.Group group : groups) {
-            if (group != null && group.getMergeStep() > currentStep) {
-                numClusters++;
+        if (groups != null) {
+            for (final FastNewman.Group group : groups) {
+                if (group != null && group.getMergeStep() > currentStep) {
+                    numClusters++;
+                }
             }
         }
         return numClusters;

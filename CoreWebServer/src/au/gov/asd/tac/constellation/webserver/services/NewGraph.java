@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -138,7 +138,7 @@ public class NewGraph extends RestService {
         String newId = "";
 
         try {
-            newId = RestServiceUtilities.waitForGraphChange(existingId).get(10, TimeUnit.SECONDS);
+            newId = RestServiceUtilities.waitForGraphChange(existingId).get();
             if (!newId.isBlank()) {
                 final ObjectMapper mapper = new ObjectMapper();
                 final ObjectNode root = mapper.createObjectNode();
@@ -150,7 +150,7 @@ public class NewGraph extends RestService {
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             LOGGER.log(Level.SEVERE, "Thread interrupted", ex);
-        } catch (final ExecutionException | TimeoutException ex) {
+        } catch (final ExecutionException ex) {
             throw new RestServiceException(ex);
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -191,8 +191,8 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
             final LocalDate newld;
             if (o == null) {
                 newld = null;
-            } else if (o instanceof LocalDate) {
-                newld = (LocalDate) o;
+            } else if (o instanceof LocalDate localDate) {
+                newld = localDate;
             } else {
                 throw new IllegalArgumentException(String.format("Unexpected class %s", o.getClass()));
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,8 +89,6 @@ public final class GraphRenderable implements GLRenderable {
     private float[] graphBackgroundColor = new float[]{ConstellationColor.BLACK.getRed(), ConstellationColor.BLACK.getGreen(), ConstellationColor.BLACK.getBlue(), 1};
     private DrawFlags drawFlags = DrawFlags.NONE;
     private Camera camera;
-    private float motion = -1;
-    private long initialMotion;
     // How many pixels per world unit exist at distance 1
     // = height / 2 / tan(FOV/2)
     private float pixelDensity;
@@ -228,6 +226,8 @@ public final class GraphRenderable implements GLRenderable {
                 return (change, access) -> addTask(blazeBatcher.updateSizeAndOpacity(access));
             case CONNECTIONS_OPACITY:
                 return (change, access) -> addTask(lineBatcher.updateOpacity(access));
+            case CONNECTIONS_MOTION:
+                return (change, access) -> addTask(lineBatcher.updateMotion(access));
             case BOTTOM_LABEL_COLOR:
                 return (change, access) -> addTask(nodeLabelBatcher.setBottomLabelColors(access));
             case BOTTOM_LABELS_REBUILD:
@@ -252,9 +252,8 @@ public final class GraphRenderable implements GLRenderable {
                     });
                 };
             case CONNECTION_LABEL_COLOR:
-                return (change, access) -> {
+                return (change, access) -> 
                     addTask(connectionLabelBatcher.setLabelColors(access));
-                };
             case CONNECTION_LABELS_REBUILD:
                 return (change, access) -> {
                     addTask(connectionLabelBatcher.setLabelColors(access));
@@ -360,9 +359,13 @@ public final class GraphRenderable implements GLRenderable {
             // there will be subsequent NullPointerExceptions, but there's nothing we can do about that.
             // Without shaders, we're dead in the water anyway.
             final String msg
-                    = "This error may have occurred because your video card and/or driver is\n"
-                    + "incompatible with CONSTELLATION.\n\n"
-                    + "Please inform CONSTELLATION support, including the text of this message.\n\n"
+                    = """
+                      This error may have occurred because your video card and/or driver is
+                      incompatible with CONSTELLATION.
+                      
+                      Please inform CONSTELLATION support, including the text of this message.
+                      
+                      """
                     + ex.getMessage();
             LOGGER.log(Level.SEVERE, msg, ex);
             final InfoTextPanel itp = new InfoTextPanel(msg);
@@ -418,18 +421,6 @@ public final class GraphRenderable implements GLRenderable {
         graphDisplayer.bindDisplayer(gl);
 
         if (!skipRedraw) {
-
-            // Direction Indicators.
-            if (motion == -1) {
-                if (DirectionIndicatorsAction.isShowIndicators()) {
-                    initialMotion = System.currentTimeMillis();
-                    motion = 0;
-                }
-            } else if (DirectionIndicatorsAction.isShowIndicators()) {
-                motion = (System.currentTimeMillis() - initialMotion) / 100F;
-            } else {
-                motion = -1;
-            }
 
             gl.glEnable(GL.GL_LINE_SMOOTH);
             gl.glEnable(GL.GL_POLYGON_OFFSET_FILL);
@@ -564,7 +555,6 @@ public final class GraphRenderable implements GLRenderable {
         gl.glPolygonOffset(FURTHER_F, FURTHER_U);
 
         if (drawFlags.drawConnections()) {
-            lineBatcher.setMotion(motion);
             lineBatcher.drawBatch(gl, camera, mvMatrix, pMatrix, greyscale);
             loopBatcher.drawBatch(gl, camera, mvMatrix, pMatrix, greyscale);
         }

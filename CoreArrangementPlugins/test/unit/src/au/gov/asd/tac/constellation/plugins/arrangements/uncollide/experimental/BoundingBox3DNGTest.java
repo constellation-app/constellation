@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -35,55 +34,51 @@ public class BoundingBox3DNGTest {
         baseGraph = new StoreGraph();
 
         int attrX = VisualConcept.VertexAttribute.X.ensure(baseGraph);
-        if (attrX == Graph.NOT_FOUND) {
-            fail();
-        }
-
         int attrY = VisualConcept.VertexAttribute.Y.ensure(baseGraph);
-        if (attrY == Graph.NOT_FOUND) {
-            fail();
-        }
-
         int attrZ = VisualConcept.VertexAttribute.Z.ensure(baseGraph);
-        if (attrZ == Graph.NOT_FOUND) {
-            fail();
-        }
 
         // Top left front
         int vxId1 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId1, -1.0f);
         baseGraph.setFloatValue(attrY, vxId1, 1.0f);
         baseGraph.setFloatValue(attrZ, vxId1, 1.0f);
+        
         // Top right front
         int vxId2 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId2, 1.0f);
         baseGraph.setFloatValue(attrY, vxId2, 1.0f);
         baseGraph.setFloatValue(attrZ, vxId2, 1.0f);
+        
         // Bottom right front
         int vxId3 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId3, 1.0f);
         baseGraph.setFloatValue(attrY, vxId3, -1.0f);
         baseGraph.setFloatValue(attrZ, vxId3, 1.0f);
+        
         // Bottom left front
         int vxId4 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId4, -1.0f);
         baseGraph.setFloatValue(attrY, vxId4, -1.0f);
         baseGraph.setFloatValue(attrZ, vxId4, 1.0f);
+        
         // Top left back
         int vxId5 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId5, -1.0f);
         baseGraph.setFloatValue(attrY, vxId5, 1.0f);
         baseGraph.setFloatValue(attrZ, vxId5, -1.0f);
+        
         // Top right back
         int vxId6 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId6, 1.0f);
         baseGraph.setFloatValue(attrY, vxId6, 1.0f);
         baseGraph.setFloatValue(attrZ, vxId6, -1.0f);
+        
         // Bottom right back
         int vxId7 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId7, 1.0f);
         baseGraph.setFloatValue(attrY, vxId7, -1.0f);
         baseGraph.setFloatValue(attrZ, vxId7, -1.0f);
+        
         // Bottom left back
         int vxId8 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId8, -1.0f);
@@ -92,7 +87,7 @@ public class BoundingBox3DNGTest {
     }
 
     /**
-     * Test the constructor works when given a graph with verticies
+     * Test the constructor works when given a graph with vertices
      */
     @Test
     public void testConstructor() {
@@ -119,7 +114,7 @@ public class BoundingBox3DNGTest {
         VisualConcept.VertexAttribute.Y.ensure(emptyGraph);
         VisualConcept.VertexAttribute.Z.ensure(emptyGraph);
 
-        new BoundingBox3D(emptyGraph); // This should fail as the graph has no verticies.
+        new BoundingBox3D(emptyGraph); // This should fail as the graph has no vertices.
     }
 
     /**
@@ -273,5 +268,4 @@ public class BoundingBox3DNGTest {
         assertEquals(actualResult.midZ, -0.5f);
         assertEquals(actualResult.maxZ, 0.0f);
     }
-
 }

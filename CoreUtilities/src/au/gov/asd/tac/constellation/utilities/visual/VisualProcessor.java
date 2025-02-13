@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -206,9 +206,9 @@ public abstract class VisualProcessor {
                 processChangeSet(changes, access);
             } finally {
                 access.endUpdate();
+                performVisualUpdate();
             }
             updateOccuring.release();
-            performVisualUpdate();
         });
         updateThread.setName("Visual Processor");
         updateThread.start();
@@ -296,7 +296,7 @@ public abstract class VisualProcessor {
         });
     }
 
-    private Map<VisualProperty, List<VisualChange>> calculatePertinentChanges(Collection<VisualChange> changes) {
+    private Map<VisualProperty, List<VisualChange>> calculatePertinentChanges(final Collection<VisualChange> changes) {
         final Map<VisualProperty, List<VisualChange>> masterChangeMap = new HashMap<>();
         changes.forEach(change -> {
             if (!masterChangeMap.containsKey(getMasterProperty(change.property))) {

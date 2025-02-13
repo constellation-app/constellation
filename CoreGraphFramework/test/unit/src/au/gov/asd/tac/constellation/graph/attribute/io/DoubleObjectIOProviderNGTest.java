@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.DoubleObjectAttributeDescription;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.io.IOException;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -54,18 +55,16 @@ public class DoubleObjectIOProviderNGTest {
     // Test variables
     final int attributeId = 23;
     final int elementId = 41;
-    final String attribValue = "TestAttrib";
     final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
     
-    public DoubleObjectIOProviderNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -75,6 +74,7 @@ public class DoubleObjectIOProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -98,9 +98,10 @@ public class DoubleObjectIOProviderNGTest {
 
     /**
      * Test of readObject method, of class DoubleObjectIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testReadObject() throws Exception {
+    public void testReadObject() throws IOException {
         System.out.println("DoubleObjectIOProvider.testReadObject");
         
         // Call method under test with JsonNode set to return isNull = true
@@ -121,9 +122,10 @@ public class DoubleObjectIOProviderNGTest {
 
     /**
      * Test of writeObject method, of class DoubleObjectIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteObject() throws Exception {
+    public void testWriteObject() throws IOException {
         System.out.println("DoubleObjectIOProvider.testWriteObject");
         
         // Test not verbose and graph.IsDefaultValue is true

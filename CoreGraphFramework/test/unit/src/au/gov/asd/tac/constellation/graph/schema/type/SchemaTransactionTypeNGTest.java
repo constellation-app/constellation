@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,179 +30,27 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class SchemaTransactionTypeNGTest {
-
-    public SchemaTransactionTypeNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
-//    /**
-//     * Test of unknownType method, of class SchemaTransactionType.
-//     */
-//    @Test
-//    public void testUnknownType() {
-//        System.out.println("unknownType");
-//        SchemaTransactionType expResult = null;
-//        SchemaTransactionType result = SchemaTransactionType.unknownType();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getStyle method, of class SchemaTransactionType.
-//     */
-//    @Test
-//    public void testGetStyle() {
-//        System.out.println("getStyle");
-//        SchemaTransactionType instance = null;
-//        LineStyle expResult = null;
-//        LineStyle result = instance.getStyle();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of isDirected method, of class SchemaTransactionType.
-//     */
-//    @Test
-//    public void testIsDirected() {
-//        System.out.println("isDirected");
-//        SchemaTransactionType instance = null;
-//        Boolean expResult = null;
-//        Boolean result = instance.isDirected();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getOverridenType method, of class SchemaTransactionType.
-//     */
-//    @Test
-//    public void testGetOverridenType() {
-//        System.out.println("getOverridenType");
-//        SchemaTransactionType instance = null;
-//        SchemaTransactionType expResult = null;
-//        SchemaTransactionType result = instance.getOverridenType();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of buildHierarchy method, of class SchemaTransactionType.
-//     */
-//    @Test
-//    public void testBuildHierarchy() {
-//        System.out.println("buildHierarchy");
-//        SchemaTransactionType instance = null;
-//        instance.buildHierarchy();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of hashCode method, of class SchemaTransactionType.
-//     */
-//    @Test
-//    public void testHashCode() {
-//        System.out.println("hashCode");
-//        SchemaTransactionType instance = null;
-//        int expResult = 0;
-//        int result = instance.hashCode();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of equals method, of class SchemaTransactionType.
-//     */
-//    @Test
-//    public void testEquals() {
-//        System.out.println("equals");
-//        Object obj = null;
-//        SchemaTransactionType instance = null;
-//        boolean expResult = false;
-//        boolean result = instance.equals(obj);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of compareTo method, of class SchemaTransactionType.
-//     */
-//    @Test
-//    public void testCompareTo() {
-//        System.out.println("compareTo");
-//        SchemaTransactionType type = null;
-//        SchemaTransactionType instance = null;
-//        int expResult = 0;
-//        int result = instance.compareTo(type);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getUnknownType method, of class SchemaTransactionType.
-//     */
-//    @Test
-//    public void testGetUnknownType() {
-//        System.out.println("getUnknownType");
-//        SchemaTransactionType instance = null;
-//        SchemaTransactionType expResult = null;
-//        SchemaTransactionType result = instance.getUnknownType();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of copy method, of class SchemaTransactionType.
-//     */
-//    @Test
-//    public void testCopy() {
-//        System.out.println("copy");
-//        SchemaTransactionType instance = null;
-//        SchemaTransactionType expResult = null;
-//        SchemaTransactionType result = instance.copy();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of rename method, of class SchemaTransactionType.
-//     */
-//    @Test
-//    public void testRename() {
-//        System.out.println("rename");
-//        String name = "";
-//        SchemaTransactionType instance = null;
-//        SchemaTransactionType expResult = null;
-//        SchemaTransactionType result = instance.rename(name);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     @Test
     public void testBuildTypeObjectWithNothingSet() {
         final SchemaTransactionType type = new SchemaTransactionType.Builder(null).build();

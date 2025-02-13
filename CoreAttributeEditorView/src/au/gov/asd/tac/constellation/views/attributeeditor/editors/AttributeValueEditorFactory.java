@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,13 +44,8 @@ public abstract class AttributeValueEditorFactory<V> extends AbstractEditorFacto
         typeHandlers = new HashMap<>();
         handlers.forEach(handler -> {
             final String type = handler.getAttributeType();
-            if (!typeHandlers.containsKey(type)) {
+            if (!typeHandlers.containsKey(type) || (typeHandlers.get(type).getPriority() < handler.getPriority())) {
                 typeHandlers.put(type, handler);
-            } else {
-                if (typeHandlers.get(type).getPriority() >= handler.getPriority()) {
-                } else {
-                    typeHandlers.put(type, handler);
-                }
             }
         });
     }

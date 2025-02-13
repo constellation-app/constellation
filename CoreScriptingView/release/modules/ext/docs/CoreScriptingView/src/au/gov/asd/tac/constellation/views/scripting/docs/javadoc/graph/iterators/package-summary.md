@@ -1,28 +1,22 @@
-<div>
-
-JavaScript is disabled on your browser.
-
-</div>
-
 <div class="topNav">
 
 <span id="navbar.top"></span>
 
 <div class="skipNav">
 
-[Skip navigation links](#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/package-summary.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
+-   [Overview](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/overview-summary.md)
 -   Package
 -   Class
--   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-tree.md)
--   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
--   [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
--   [Help](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
+-   [Tree](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/package-tree.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -34,17 +28,12 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <div class="subNav">
 
--   [Prev Package](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)
--   [Next Package](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/package-summary.md)
+-   [Prev Package](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/package-summary.md)
+-   [Next Package](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/utilities/package-summary.md)
 
 <!-- -->
 
--   [Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)
--   [No Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)
-
-<!-- -->
-
--   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -76,67 +65,67 @@ au.gov.asd.tac.constellation.views.scripting 1.0
     </thead>
     <tbody>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SAttributeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SAttributeIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SAttributeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SAttributeIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing attributes via scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SEdgeIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SEdgeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SEdgeIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing edges via scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SEdgeTransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SEdgeTransactionIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SEdgeTransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SEdgeTransactionIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing transactions from the context of edges via scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkEdgeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SLinkEdgeIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SLinkEdgeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SLinkEdgeIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing edges from the context of links via scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SLinkIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SLinkIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SLinkIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing links via scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SLinkTransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SLinkTransactionIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SLinkTransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SLinkTransactionIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing transactions from the context of links via scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/STransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">STransactionIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/STransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">STransactionIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing transactions via scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexEdgeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexEdgeIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SVertexEdgeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexEdgeIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing edges from the context of vertices via scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SVertexIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing vertices via scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexLinkIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexLinkIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SVertexLinkIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexLinkIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing links from the context of vertices via scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexTransactionIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SVertexTransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexTransactionIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing transactions from the context of vertices via scripting.
     </div></td>
@@ -145,55 +134,5 @@ au.gov.asd.tac.constellation.views.scripting 1.0
     </table>
 
     Class Summary<span class="tabEnd"> </span>
-
-</div>
-
-<div class="bottomNav">
-
-<span id="navbar.bottom"></span>
-
-<div class="skipNav">
-
-[Skip navigation links](#skip.navbar.bottom "Skip navigation links")
-
-</div>
-
-<span id="navbar.bottom.firstrow"></span>
-
--   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
--   Package
--   Class
--   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-tree.md)
--   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
--   [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
--   [Help](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
-
-<div class="aboutLanguage">
-
-au.gov.asd.tac.constellation.views.scripting 1.0
-
-</div>
-
-</div>
-
-<div class="subNav">
-
--   [Prev Package](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)
--   [Next Package](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/package-summary.md)
-
-<!-- -->
-
--   [Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)
--   [No Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md)
-
-<!-- -->
-
--   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
-
-<div>
-
-</div>
-
-<span id="skip.navbar.bottom"></span>
 
 </div>

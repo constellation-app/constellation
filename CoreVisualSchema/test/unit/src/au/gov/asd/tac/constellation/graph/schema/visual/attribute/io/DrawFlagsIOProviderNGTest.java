@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DrawFlagsAttri
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.io.IOException;
 import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -54,27 +55,26 @@ public class DrawFlagsIOProviderNGTest {
     final int attributeId = 23;
     final int elementId = 41;
     final int flagId = 13;
-    final String attribValue = "TestAttrib";
-    final String decoratorStr = "TestDecorator";
     final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
     
-    public DrawFlagsIOProviderNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -98,9 +98,10 @@ public class DrawFlagsIOProviderNGTest {
 
     /**
      * Test of readObject method, of class DrawFlagsIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testReadObject() throws Exception {
+    public void testReadObject() throws IOException {
         System.out.println("DrawFlagsIOProviderNGTest.testReadObject");
 
         // isNull returns true, default flags returned
@@ -122,9 +123,10 @@ public class DrawFlagsIOProviderNGTest {
 
     /**
      * Test of writeObject method, of class DrawFlagsIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteObject() throws Exception {
+    public void testWriteObject() throws IOException {
         System.out.println("DrawFlagsIOProviderNGTest.testWriteObject");
 
         // Test not verbose and graph.IsDefaultValue is true skips all processing

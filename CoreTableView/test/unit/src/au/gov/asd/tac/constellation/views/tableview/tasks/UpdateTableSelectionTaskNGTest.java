@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class UpdateTableSelectionTaskNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(UpdateTableSelectionTaskNGTest.class.getName());
 
     @BeforeClass
@@ -67,8 +68,7 @@ public class UpdateTableSelectionTaskNGTest {
         when(tablePane.getTable()).thenReturn(table);
         when(tablePane.getProgressBar()).thenReturn(progressBar);
 
-        final TriggerSelectionUpdateTask updateTableSelectionTask
-                = new TriggerSelectionUpdateTask(tablePane, graph, tableViewState);
+        final TriggerSelectionUpdateTask updateTableSelectionTask = new TriggerSelectionUpdateTask(tablePane, graph, tableViewState);
 
         updateTableSelectionTask.run();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,19 @@ package au.gov.asd.tac.constellation.graph.node.plugins;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -41,8 +44,14 @@ import org.openide.util.Cancellable;
 
 /**
  * Interface for plugins that work in an interactive mode.
- * <p>
- * The following is a summary:</p>
+ * 
+ * This class allows for plugins to interact with constellations reporting mechanisms, the {@link NotifyDisplayer} and the {@link PluginReporter}.
+ * Capabilities for terminating plugins are also available in the class due to the need from the relevant reporting mechanism.
+ * 
+ * <p>{@link PluginReporter} interactions can be facilitated using {@code setProgressTimestamp()}, {@code setProgress()} and {@code setExecutionStage()}.</p> 
+ * 
+ * <p>{@link NotifyDisplayer} interactions can be facilitated using {@code confirm()} and {@code notify()}.</p> 
+ * <p>The following is a summary of the various visual presentations based on the supplied {@link PluginNotificationLevel}:</p>
  * <ul>
  * <li>{@code PluginNotificationLevel.FATAL} and
  * {@code PluginNotificationLevel.ERROR} type messages will have a dialog
@@ -54,7 +63,8 @@ import org.openide.util.Cancellable;
  * <li>{@code PluginNotificationLevel.DEBUG} messages will be logged if the FINE
  * log to this class in enabled</li>
  * </ul>
- *
+ * 
+ * @author capricornunicorn123
  * @author sirius
  */
 public class DefaultPluginInteraction implements PluginInteraction, Cancellable {
@@ -122,14 +132,50 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public String getCurrentMessage() {
         return currentMessage;
     }
+    
+    @Override
+    public void setProgressTimestamp(final boolean addTimestamp) throws InterruptedException {
+
+        if (pluginReport != null && addTimestamp) {
+            final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ",  Locale.getDefault());
+            final Date date = new Date(pluginReport.getStartTime());
+            pluginReport.addMessage("Time: " + format.format(date));
+        }
+    }
+    
+    @Override
+    public void setProgress(final int currentStep, final int totalSteps,
+            final String message, final boolean cancellable) throws InterruptedException {       
+        setProgress(currentStep, totalSteps, message, cancellable, null, -1);
+    }
 
     @Override
-    public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException {
+    public void setProgress(final int currentStep, final int totalSteps,
+            final String message, final boolean cancellable,
+            final PluginParameters params) throws InterruptedException {
+        setProgress(currentStep, totalSteps, message, cancellable, params, -1);
+    }
+    
+    @Override
+    public void setProgress(final int currentStep, final int totalSteps,
+            final String message, final boolean cancellable,
+            final PluginParameters params, final int selected) throws InterruptedException {
 
         if (pluginReport != null) {
+            final StringBuilder builder = new StringBuilder();            
+
+            if (params != null) {
+                final Map<String, PluginParameter<?>> parameters = params.getParameters();
+                for (final String key : parameters.keySet()) {
+                    builder.append(String.format("%s : %s \n", parameters.get(key).getName(), parameters.get(key).getStringValue()));
+                }
+                pluginReport.addMessage('\n' + builder.toString());
+            }
+            if (selected > -1) {
+                pluginReport.addMessage("Selected count: " + selected);
+            }
             pluginReport.addMessage(message);
         }
-
         currentMessage = message;
         
         this.setProgress(currentStep, totalSteps, cancellable);
@@ -188,6 +234,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         }
     }
     
+    
     @Override
     public void setExecutionStage(final int currentStep, final int totalSteps, final String executionStage, final String message, final boolean cancellable) throws InterruptedException {
         if (pluginReport != null) {
@@ -202,7 +249,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public void notify(final PluginNotificationLevel level, final String message) {
         final String title = pluginManager.getPlugin().getName();
         switch (level) {
-            case FATAL:
+            case FATAL -> {
                 NotifyDisplayer.display(new NotifyDescriptor(
                         "Fatal Error:\n" + message,
                         title,
@@ -212,9 +259,9 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                         NotifyDescriptor.OK_OPTION
                 ));
                 LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case ERROR:
+            case ERROR -> {
                 NotifyDisplayer.display(new NotifyDescriptor(
                         "Error:\n" + message,
                         title,
@@ -224,30 +271,29 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                         NotifyDescriptor.OK_OPTION
                 ));
                 LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case WARNING:
+            case WARNING -> {
                 NotificationDisplayer.getDefault().notify(title,
                         UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()),
                         message,
                         null
                 );
                 LOGGER.log(Level.WARNING, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case INFO:
+            case INFO -> {
                 final String statusText = String.format(STRING_FORMAT, title, message);
                 final Message statusMessage = StatusDisplayer.getDefault().setStatusText(statusText, 10);
                 statusMessage.clear(5000);
                 LOGGER.log(Level.INFO, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case DEBUG:
-                LOGGER.log(Level.FINE, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            case DEBUG -> LOGGER.log(Level.FINE, LOGGING_FORMAT, new Object[]{title, message});
 
-            default:
-                break;
+            default -> {
+                // Do Nothing
+            }
         }
     }
 

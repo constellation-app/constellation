@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.timeline;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -52,30 +50,8 @@ public class TimelineSelectionPlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction,
             final PluginParameters parameters) throws InterruptedException {
-        int selectedVertexAttrID = graph.getAttribute(GraphElementType.VERTEX,
-                VisualConcept.VertexAttribute.SELECTED.getName());
-        int selectedTransactionAttrID = graph.getAttribute(GraphElementType.TRANSACTION,
-                VisualConcept.TransactionAttribute.SELECTED.getName());
-
-        // Add attribute and any values if 'selected' attribute doesn't exist on vertices.
-        if (selectedVertexAttrID == Graph.NOT_FOUND) {
-            selectedVertexAttrID = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-
-            for (int vxID : vertices) {
-                graph.setBooleanValue(selectedVertexAttrID, vxID, true);
-
-                vertices.remove(vxID);
-            }
-        }
-        // Add attribute and any values if 'selected' attribute doesn't exist on transactions.
-        if (selectedTransactionAttrID == Graph.NOT_FOUND) {
-            selectedTransactionAttrID = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-            for (int txID : transactions) {
-                graph.setBooleanValue(selectedTransactionAttrID, txID, true);
-
-                transactions.remove(txID);
-            }
-        }
+        final int selectedVertexAttrID = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int selectedTransactionAttrID = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
         if (isClearingSelection) {
             for (int pos = 0; pos < graph.getVertexCount(); pos++) {
@@ -94,23 +70,23 @@ public class TimelineSelectionPlugin extends SimpleEditPlugin {
                 graph.setBooleanValue(selectedVertexAttrID, vxID, true);
             }
         } else {
-            Set<Integer> toSelectVerts = new HashSet<>();
-            Set<Integer> toDeselectVerts = new HashSet<>();
-            for (int txID : transactions) {
-                boolean shouldSelect = !graph.getBooleanValue(selectedTransactionAttrID, txID);
-                Set<Integer> set = shouldSelect ? toSelectVerts : toDeselectVerts;
+            final Set<Integer> toSelectVerts = new HashSet<>();
+            final Set<Integer> toDeselectVerts = new HashSet<>();
+            for (final int txID : transactions) {
+                final boolean shouldSelect = !graph.getBooleanValue(selectedTransactionAttrID, txID);
+                final Set<Integer> set = shouldSelect ? toSelectVerts : toDeselectVerts;
                 graph.setBooleanValue(selectedTransactionAttrID, txID, shouldSelect);
                 set.add(graph.getTransactionSourceVertex(txID));
                 set.add(graph.getTransactionDestinationVertex(txID));
             }
-            for (int vxID : toSelectVerts) {
+            for (final int vxID : toSelectVerts) {
                 graph.setBooleanValue(selectedVertexAttrID, vxID, true);
                 toDeselectVerts.remove(vxID);
             }
-            for (int vxID : toDeselectVerts) {
+            for (final int vxID : toDeselectVerts) {
                 boolean shouldDeselect = true;
                 for (int i = 0; i < graph.getVertexTransactionCount(vxID); i++) {
-                    int txID = graph.getVertexTransaction(vxID, i);
+                    final int txID = graph.getVertexTransaction(vxID, i);
                     if (graph.getBooleanValue(selectedTransactionAttrID, txID)) {
                         shouldDeselect = false;
                     }

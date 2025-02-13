@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import processing.core.PGraphics;
 import processing.core.PVector;
 
@@ -222,7 +221,7 @@ public abstract class ConstellationAbstractMarker implements Marker {
         final PGraphics graphics = map.mapDisplay.getOuterPG();
         final List<MapPosition> positions = locations.stream()
                 .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
-                .collect(Collectors.toList());
+                .toList();
 
         final boolean validMarker = draw(graphics, positions, map);
 

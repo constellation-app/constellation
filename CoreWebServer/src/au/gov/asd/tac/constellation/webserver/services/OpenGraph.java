@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,9 +96,7 @@ public class OpenGraph extends RestService {
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String filePath = parameters.getStringValue(FILE_PARAMETER_ID);
-
         final String existingId = RestServiceUtilities.activeGraphId();
-
         final File fnam = new File(filePath).getAbsoluteFile();
         String name = fnam.getName();
         if (StringUtils.endsWithIgnoreCase(name, GraphDataObject.FILE_EXTENSION)) {
@@ -109,7 +107,7 @@ public class OpenGraph extends RestService {
             final Graph g = new GraphJsonReader().readGraphZip(fnam, new HandleIoProgress(String.format("Loading graph %s...", fnam)));
             GraphOpener.getDefault().openGraph(g, name, false);
 
-            final String newId = RestServiceUtilities.waitForGraphChange(existingId).get(10, TimeUnit.SECONDS);
+            final String newId = RestServiceUtilities.waitForGraphChange(existingId).get();
             final Graph graph = GraphNode.getGraphNode(newId).getGraph();
 
             final ObjectMapper mapper = new ObjectMapper();
@@ -123,7 +121,7 @@ public class OpenGraph extends RestService {
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             LOGGER.log(Level.SEVERE, "This thread has been interrupted", ex);
-        } catch (final ExecutionException | TimeoutException ex) {
+        } catch (final ExecutionException ex) {
             throw new RestServiceException(ex);
         }
     }

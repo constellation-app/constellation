@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,9 @@ public class SAttribute {
     private final Object defaultValue;
     private final String mergerId;
 
-    public SAttribute(final GraphReadMethods readableGraph, final int id,
-            final GraphElementType elementType, final String attributeType,
-            final String name, final String description,
-            final Object defaultValue, final String mergerId) {
+    public SAttribute(final GraphReadMethods readableGraph, final int id, final GraphElementType elementType,
+            final String attributeType, final String name, final String description, final Object defaultValue,
+            final String mergerId) {
         this.readableGraph = readableGraph;
         this.id = id;
         this.elementType = elementType;
@@ -55,12 +54,17 @@ public class SAttribute {
                 readableGraph.getAttributeMerger(id) == null ? null : readableGraph.getAttributeMerger(id).getId());
     }
 
-    public SAttribute(final GraphReadMethods readableGraph,
-            final GraphElementType elementType, final String name) {
+    public SAttribute(final GraphReadMethods readableGraph, final GraphElementType elementType, final String name) {
         this(readableGraph, readableGraph.getAttribute(elementType, name));
     }
 
-    private GraphWriteMethods writableGraph() {
+    
+    /**
+     * Get the readableGraph of this attribute.
+     *
+     * @return the readableGraph of this attribute.
+     */
+    public GraphWriteMethods getreadableGraph() {
         return (GraphWriteMethods) readableGraph;
     }
 

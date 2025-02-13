@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,9 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import java.io.Serializable;
+import java.lang.ref.Cleaner;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -36,35 +38,27 @@ import javax.swing.undo.UndoManager;
  * <p>
  * In its resting state, both graphs will be in an identical state.
  * <p>
- * One graph is designated the reading graph and may have one or more threads
- * currently holding a read lock on this graph. These threads have permission to
- * read from the reading graph while they hold the read lock. There should be no
+ * One graph is designated the reading graph and may have one or more threads currently holding a read lock on this
+ * graph. These threads have permission to read from the reading graph while they hold the read lock. There should be no
  * threads holding a write lock on the reading graph.
  * <p>
- * The other graph is designated the writing graph and may have a single thread
- * holding the write lock on this graph. This thread has permission to modify
- * the writing graph. While this thread is modifying the writing graph, none of
- * the reading threads will see any changes as they are all accessing the
- * reading graph. When the writing thread is finished modifying the writing
- * graph, it can choose to either commit its changes, or rollback.
+ * The other graph is designated the writing graph and may have a single thread holding the write lock on this graph.
+ * This thread has permission to modify the writing graph. While this thread is modifying the writing graph, none of the
+ * reading threads will see any changes as they are all accessing the reading graph. When the writing thread is finished
+ * modifying the writing graph, it can choose to either commit its changes, or rollback.
  * <p>
- * If the writing thread chooses to commit its changes, a sequence of events
- * occurs which results in both graphs arriving at an identical state.
+ * If the writing thread chooses to commit its changes, a sequence of events occurs which results in both graphs
+ * arriving at an identical state.
  * <ol>
- * <li>The dual graph stops granting read locks on the reading graph and instead
- * grants read locks on the writing graph. This means that new read locks see
- * the changes made by the writing thread.
- * <li>The dual graph waits until all existing read locks on the reading graph
- * have been released.
- * <li>The dual graph swaps the graphs so that the reading graph is now the
- * writing graph and vice versa.
- * <li>The dual graph now grants a write lock on the new writing graph to the
- * next waiting thread.
+ * <li>The dual graph stops granting read locks on the reading graph and instead grants read locks on the writing graph.
+ * This means that new read locks see the changes made by the writing thread.
+ * <li>The dual graph waits until all existing read locks on the reading graph have been released.
+ * <li>The dual graph swaps the graphs so that the reading graph is now the writing graph and vice versa.
+ * <li>The dual graph now grants a write lock on the new writing graph to the next waiting thread.
  * </ol>
  * <p>
- * If the writing thread chooses to roll back its changes then the writing graph
- * is reverted back to the state of the reading graph. In this case the graphs
- * do not need to be swapped and a new write lock can be granted on the original
+ * If the writing thread chooses to roll back its changes then the writing graph is reverted back to the state of the
+ * reading graph. In this case the graphs do not need to be swapped and a new write lock can be granted on the original
  * writing graph.
  *
  * @author sirius
@@ -73,13 +67,17 @@ public class DualGraph implements Graph, Serializable {
 
     private static final Logger LOGGER = Logger.getLogger(DualGraph.class.getName());
 
-    private final ArrayList<GraphChangeListener> graphChangeListeners = new ArrayList<>();
+    private final List<GraphChangeListener> graphChangeListeners = new ArrayList<>();
     private final LockingStoreGraph a;
     private final LockingStoreGraph b;
     private final LockingManager<LockingStoreGraph> lockingManager;
     private final String id;
     private GraphChangeEvent previousEvent = null;
     private final Schema schema;
+
+    // For cleaning up object for garbage collection. Replaced finalize
+    private static final Cleaner cleaner = Cleaner.create();
+    private static final Runnable cleanupAction = () -> MemoryManager.finalizeObject(DualGraph.class);
 
     private LockingManager<LockingStoreGraph> createLockingManager() {
         return new LockingManager<LockingStoreGraph>() {
@@ -99,7 +97,6 @@ public class DualGraph implements Graph, Serializable {
     }
 
     public DualGraph(final Schema schema) {
-
         lockingManager = createLockingManager();
 
         a = new LockingStoreGraph(lockingManager, 0, schema);
@@ -108,10 +105,11 @@ public class DualGraph implements Graph, Serializable {
         lockingManager.setTargets(a, b);
 
         this.id = a.getId();
-
         this.schema = schema;
 
         MemoryManager.newObject(DualGraph.class);
+        // Setup cleaner
+        cleaner.register(this, cleanupAction);
     }
 
     public DualGraph(final Schema schema, final StoreGraph target) {
@@ -119,20 +117,16 @@ public class DualGraph implements Graph, Serializable {
     }
 
     /**
-     * Creates a new DualGraph from a target StoreGraph. The new DualGraph gets
-     * a copy of the target's schema.
+     * Creates a new DualGraph from a target StoreGraph. The new DualGraph gets a copy of the target's schema.
      *
-     * @param target the StoreGraph representing the initial state of the
-     * DualGraph.
-     * @param newId if true then the DualGraph gets a new id, otherwise it is
-     * copied from the target.
+     * @param target the StoreGraph representing the initial state of the DualGraph.
+     * @param newId if true then the DualGraph gets a new id, otherwise it is copied from the target.
      */
     public DualGraph(final StoreGraph target, final boolean newId) {
         this(target.getSchema(), target, newId);
     }
 
     public DualGraph(final Schema schema, final StoreGraph target, final boolean newId) {
-
         target.validateKeys();
 
         lockingManager = createLockingManager();
@@ -143,19 +137,11 @@ public class DualGraph implements Graph, Serializable {
         lockingManager.setTargets(a, b);
 
         this.id = a.getId();
-
         this.schema = schema == null ? null : schema.getFactory().createSchema();
 
         MemoryManager.newObject(DualGraph.class);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            MemoryManager.finalizeObject(DualGraph.class);
-        } finally {
-            super.finalize();
-        }
+        // Setup cleaner
+        cleaner.register(this, cleanupAction);
     }
 
     @Override

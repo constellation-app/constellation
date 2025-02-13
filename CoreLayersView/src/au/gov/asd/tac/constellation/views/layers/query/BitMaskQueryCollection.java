@@ -20,9 +20,12 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.value.values.IntValue;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -67,7 +70,7 @@ public class BitMaskQueryCollection {
     }
 
     protected List<BitMaskQuery> getActiveQueries() {
-        return activeQueries;
+        return Collections.unmodifiableList(activeQueries);
     }
 
     /**
@@ -83,6 +86,33 @@ public class BitMaskQueryCollection {
         queries[bitMaskIndex] = new BitMaskQuery(new Query(elementType, query), bitMaskIndex, StringUtils.EMPTY);
     }
 
+    
+    public long getActiveQueriesBitmask(){
+        return activeQueriesBitMask;
+    }
+    
+    public List<Boolean> getVisibilityList() {
+        final List<Boolean> results = new ArrayList<>();
+        for (final BitMaskQuery query : queries) {
+            if (query != null) {
+                results.add(query.isVisible());
+            } else {
+                results.add(false);
+            }
+        }
+        return results;
+    }
+    
+    public void setVisibilities(final List<Boolean> revisedVis) {
+        int visPos = 0;
+        for (final BitMaskQuery query : queries) {
+            if (query != null) {
+                query.setVisibility(revisedVis.get(visPos));
+            }
+            visPos++;
+        }
+    }
+    
     /**
      * Determine which queries are currently active on the graph
      * 
@@ -104,6 +134,9 @@ public class BitMaskQueryCollection {
                     activeQueries.add(query);
                 }
             }
+        } else {
+            // compile active querires ?
+            
         }
     }
 
@@ -148,7 +181,7 @@ public class BitMaskQueryCollection {
         }
         return !updateQueries.isEmpty();
     }
-
+    
     /**
      * Update the bit mask depending on the current queries
      *
@@ -162,6 +195,14 @@ public class BitMaskQueryCollection {
         return bitMask;
     }
 
+    public long updateQueryBitmap(final long bitMask) {
+        long resultingBitmap = bitMask;
+        for (final BitMaskQuery updateQuery : updateQueries) {
+            resultingBitmap = updateQuery.combineBitmap(resultingBitmap);
+        }
+        return resultingBitmap;        
+    }
+    
     /**
      * Update the overall bit mask attribute and the attribute for which queries are currently active
      * 
@@ -169,19 +210,48 @@ public class BitMaskQueryCollection {
      * @param bitMaskAttributeId
      * @param visibleAttributeId
      */
-    public void updateBitMasks(final GraphWriteMethods graph, final int bitMaskAttributeId, final int visibleAttributeId) {
+    public void updateBitMasks(final GraphWriteMethods graph, final int bitMaskAttributeId, final int visibleAttributeId, final boolean unionMode) {
         if (this.update(graph)) {
             final int elementCount = elementType.getElementCount(graph);
             for (int position = 0; position < elementCount; position++) {
                 final int elementId = elementType.getElement(graph, position);
                 index.writeInt(elementId);
                 final long bitMask = graph.getLongValue(bitMaskAttributeId, elementId);
-                final long updatedBitMask = updateBitMask(bitMask);
-                graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0.0F : 1.0F);
+                final long queryCombinedBitMask = updateQueryBitmap(bitMask) & activeQueriesBitMask;
+                final long unionResult = bitMask & activeQueriesBitMask;
+                if (unionMode) {
+                    graph.setFloatValue(visibleAttributeId, elementId, (unionResult == 0 && queryCombinedBitMask == 0)? 0.0F : 1.0F); // union logic - accepts any match
+                } else {
+                    graph.setFloatValue(visibleAttributeId, elementId, (unionResult | queryCombinedBitMask) != activeQueriesBitMask ? 0.0F : 1.0F); // intersection logic - must match with all
+                }
             }
         }
     }
 
+    /**
+     * Select or De-Select elements that match the query on a layer
+     * 
+     * @param graph
+     * @param isVertex      -   true = vertex, false = transaction
+     * @param isSelected    -   true = select the element, false = de-select the element
+     */
+    public void selectMatchingElements(final GraphWriteMethods graph, final boolean isVertex, final boolean isSelected) {
+        if (this.update(graph)) {
+            final int selectedElementID = isVertex ? VisualConcept.VertexAttribute.SELECTED.get(graph) : VisualConcept.TransactionAttribute.SELECTED.get(graph);
+
+            final int elementCount = elementType.getElementCount(graph);
+            for (int position = 0; position < elementCount; position++) {
+                final int elementId = elementType.getElement(graph, position);
+                index.writeInt(elementId);
+                final long queryCombinedBitMask = updateQueryBitmap(0);
+                if (queryCombinedBitMask > 0) {
+                    graph.setBooleanValue(selectedElementID, elementId, isSelected); 
+                }
+            }
+        }
+    }
+    
+    
     /**
      * Set the default layers
      */
@@ -262,7 +332,7 @@ public class BitMaskQueryCollection {
                 }
             }
         }
-        attributes.removeIf(item -> item == null);
+        attributes.removeIf(Objects::isNull);
         
         return attributes;
     }

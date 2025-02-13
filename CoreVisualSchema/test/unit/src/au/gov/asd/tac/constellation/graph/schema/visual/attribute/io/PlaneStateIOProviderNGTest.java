@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Arrays;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
@@ -65,16 +66,15 @@ public class PlaneStateIOProviderNGTest {
     final int attributeId = 23;
     final int elementId = 41;
     GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
-
-    public PlaneStateIOProviderNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -84,6 +84,7 @@ public class PlaneStateIOProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -108,9 +109,10 @@ public class PlaneStateIOProviderNGTest {
 
     /**
      * Test of readObject method, of class PlaneStateIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testReadObject() throws Exception {
+    public void testReadObject() throws IOException {
         System.out.println("PlaneStateIOProviderNGTest.testReadObject");
         
 //        // Create argument captors
@@ -154,7 +156,7 @@ public class PlaneStateIOProviderNGTest {
         when(mockJsonNode.get(anyString())).thenReturn(arrayNode);
 
         try (MockedStatic<Plane> mockPlane = Mockito.mockStatic(Plane.class)) {
-            mockPlane.when(() -> Plane.readNode(any(), any(), any()))
+            mockPlane.when(() -> Plane.readNode(any(), any()))
                    .thenReturn(new Plane("plane", 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, new BufferedImage(1,2,3), 5, 6));
 
             instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, mockByteReader, null);
@@ -170,7 +172,7 @@ public class PlaneStateIOProviderNGTest {
      * Test of writeObject method, of class PlaneStateIOProvider.
      */
     @Test
-    public void testWriteObject() throws Exception {
+    public void testWriteObject() throws IOException {
         System.out.println("PlaneStateIOProviderNGTest.testWriteOption");
         
         // Test not verbose and graph.IsDefaultValue is true skips all processing

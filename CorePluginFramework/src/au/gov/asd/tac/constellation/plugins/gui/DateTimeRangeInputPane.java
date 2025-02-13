@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -66,9 +67,12 @@ import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * A pane that allows the entry of a relative or absolute date-time range, along with a time-zone, which is the GUI element corresponding to a {@link PluginParameter} of {@link au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType}.
+ * A pane that allows the entry of a relative or absolute date-time range, along with a time-zone, which is the GUI
+ * element corresponding to a {@link PluginParameter} of
+ * {@link au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType}.
  * <p>
- * Selecting a relative range, altering the absolute range, or changing the time-zone will all update the object value of the underlying {@link PluginParameter}.
+ * Selecting a relative range, altering the absolute range, or changing the time-zone will all update the object value
+ * of the underlying {@link PluginParameter}.
  *
  * @see au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType
  *
@@ -82,7 +86,7 @@ public final class DateTimeRangeInputPane extends Pane {
 
     private static final double CONTROLPANE_SPACING = 2;
 
-    private final String FONT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: #FFFFFF;" : "-fx-text-fill: #111111;";
+    private static final String FONT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: #FFFFFF;" : "-fx-text-fill: #111111;";
 
     private final ToggleGroup dateRangeGroup = new ToggleGroup();
 
@@ -119,19 +123,21 @@ public final class DateTimeRangeInputPane extends Pane {
         // The change listener for the absolute range controls.
         // This called (directly or indirectly) when anything in the absolute range area is clicked or changed.
         final ChangeListener<String> changed = (final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
-            if (!isAdjusting) {
-                try {
-                    final ZonedDateTime[] zdt = getAbsoluteRange(getZoneId());
-                    if (zdt != null) {
-                        isAdjusting = true;
-                        parameter.setObjectValue(new DateTimeRange(zdt[0], zdt[1]));
-                    }
-                } catch (DateTimeException e) {
-                    // chew up and throw away date time exception, this results in datetime reverting back into
-                    // allowable range, ie if you enter 33 for hours, this will be thrown out and revert to 23.
-                } finally {
-                    Platform.runLater(() -> isAdjusting = false);
+            if (isAdjusting) {
+                return;
+            }
+
+            try {
+                final ZonedDateTime[] zdt = getAbsoluteRange(getZoneId());
+                isAdjusting = true;
+                if (zdt.length > 0) {
+                    parameter.setObjectValue(new DateTimeRange(zdt[0], zdt[1]));
                 }
+            } catch (final DateTimeException e) {
+                // chew up and throw away date time exception, this results in datetime reverting back into
+                // allowable range, ie if you enter 33 for hours, this will be thrown out and revert to 23.
+            } finally {
+                Platform.runLater(() -> isAdjusting = false);
             }
         };
 
@@ -290,7 +296,7 @@ public final class DateTimeRangeInputPane extends Pane {
         // Set up the parameter listener.
         parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> Platform.runLater(() -> {
             switch (change) {
-                case VALUE:
+                case VALUE -> {
                     if (!isAdjusting) {
                         // don't change the value if it isn't necessary.
                         final DateTimeRange param = pluginParameter.getDateTimeRangeValue();
@@ -303,17 +309,15 @@ public final class DateTimeRangeInputPane extends Pane {
                             absPane.setExpanded(true);
                         }
                     }
-                    break;
-                case ENABLED:
+                }
+                case ENABLED ->
                     setDisable(!pluginParameter.isEnabled());
-                    break;
-                case VISIBLE:
+                case VISIBLE -> {
                     setManaged(parameter.isVisible());
                     setVisible(parameter.isVisible());
-                    break;
-                default:
+                }
+                default ->
                     LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-                    break;
             }
         }));
     }
@@ -394,24 +398,32 @@ public final class DateTimeRangeInputPane extends Pane {
      * @return A two-element array containing the start and end datetimes, or null if data entry is incomplete.
      */
     public ZonedDateTime[] getAbsoluteRange(final ZoneId zi) {
-        // This gets called with values and throws exceptions depending on spinner values which must be handled
-        // Check for nulls in case the values haven't been set yet.
+        // By default set range to be invalid (lower bound to MAX, upper bound to MIN)
+        ZonedDateTime zdt0 = ZonedDateTime.of(LocalDate.MAX, LocalTime.MAX, zi);
+        ZonedDateTime zdt1 = ZonedDateTime.of(LocalDate.MIN, LocalTime.MIN, zi);
+
         if (zi != null) {
-            final LocalDate ld0 = datePickers.get(0).getValue();
+            final DatePicker dp0 = datePickers.get(0);
+            final LocalDate dp0Localdate = dp0.getConverter().fromString(dp0.getEditor().getText());
+            final LocalDate ld0 = dp0Localdate != null ? dp0Localdate : dp0.getValue();
+
             if (ld0 != null) {
                 final LocalTime lt0 = LocalTime.of(getSpinnerValue(0), getSpinnerValue(1), getSpinnerValue(2));
-                final ZonedDateTime zdt0 = ZonedDateTime.of(ld0, lt0, zi);
+                zdt0 = ZonedDateTime.of(ld0, lt0, zi);
+            }
 
-                final LocalDate ld1 = datePickers.get(1).getValue();
-                if (ld1 != null) {
-                    final LocalTime lt1 = LocalTime.of(getSpinnerValue(3), getSpinnerValue(4), getSpinnerValue(5));
-                    final ZonedDateTime zdt1 = ZonedDateTime.of(ld1, lt1, zi);
+            final DatePicker dp1 = datePickers.get(1);
+            final LocalDate dp1Localdate = dp1.getConverter().fromString(dp1.getEditor().getText());
+            final LocalDate ld1 = dp1Localdate != null ? dp1Localdate : dp1.getValue();
 
-                    return new ZonedDateTime[]{zdt0, zdt1};
-                }
+            if (ld1 != null) {
+                final LocalTime lt1 = LocalTime.of(getSpinnerValue(3), getSpinnerValue(4), getSpinnerValue(5));
+                zdt1 = ZonedDateTime.of(ld1, lt1, zi);
             }
         }
-        return new ZonedDateTime[]{};
+
+        return new ZonedDateTime[]{zdt0, zdt1};
+
     }
 
     /**
@@ -447,7 +459,8 @@ public final class DateTimeRangeInputPane extends Pane {
     /**
      * Get the selected ZoneId from the timezone ComboBox.
      * <p>
-     * The ComboBox holds a list of strings in a human-readable form. We need to extract the zoneid part and turn it into a ZoneId.
+     * The ComboBox holds a list of strings in a human-readable form. We need to extract the zoneid part and turn it
+     * into a ZoneId.
      *
      * @return The selected ZoneId, or null if nothing is selected.
      */
@@ -458,7 +471,8 @@ public final class DateTimeRangeInputPane extends Pane {
     /**
      * Get the selected ZoneId from the timezone ComboBox.
      * <p>
-     * The ComboBox holds a list of strings in a human-readable form. We need to extract the zoneid part and turn it into a ZoneId.
+     * The ComboBox holds a list of strings in a human-readable form. We need to extract the zoneid part and turn it
+     * into a ZoneId.
      *
      * @param tz a string value as used by the timezone ComboBox.
      *
@@ -476,7 +490,8 @@ public final class DateTimeRangeInputPane extends Pane {
     /**
      * Set the highlighting of the TitlePane's title.
      * <p>
-     * Highlighting is done by adding/removing our own style class. We attempt to make sure that we don't add it more than once.
+     * Highlighting is done by adding/removing our own style class. We attempt to make sure that we don't add it more
+     * than once.
      *
      * @param highlight True to be highlighted, false to be unhighlighted.
      */
@@ -518,9 +533,17 @@ public final class DateTimeRangeInputPane extends Pane {
 
             @Override
             public LocalDate fromString(final String s) {
-                return StringUtils.isNotBlank(s) ? LocalDate.parse(s, DATE_FORMATTER) : null;
+                if (StringUtils.isBlank(s)) {
+                    return null;
+                }
+                try {
+                    return LocalDate.parse(s, DATE_FORMATTER);
+                } catch (final DateTimeException e) {
+                    return null;
+                }
             }
         });
+
         dpLabel.setLabelFor(dp);
         final HBox dpBox = new HBox(dpLabel, dp);
         final HBox spinnerBox = new HBox(CONTROLPANE_SPACING / 2);
@@ -529,13 +552,22 @@ public final class DateTimeRangeInputPane extends Pane {
         final VBox picker = new VBox(dpBox, spinnerBox);
         picker.setStyle("-fx-padding:4; -fx-border-radius:4; -fx-border-color: grey;");
 
-        dp.getEditor().textProperty().addListener(changed);
+        dp.getEditor().textProperty().addListener((final ObservableValue<? extends String> v, final String o, final String n) -> {
+            if (StringUtils.isEmpty(n)) {
+                dp.getEditor().setText(o);
+            }
 
-        // The DatePicker has the horrible problem that you can type in the text field, but the value won't change,
-        // so if you type a new date and click Go, the old date will be used, not the new date that you can see.
-        // The simplest way to avoid this is to disable the text field. :-(
-        dp.getEditor().setDisable(true);
+            changed.changed(v, o, n);
+        });
 
+        dp.valueProperty().addListener((v, o, n) -> {
+            dp.getStyleClass().remove("invalid-input");
+            dp.valueProperty().setValue(n);
+
+            if (n == null) {
+                dp.getStyleClass().add("invalid-input");
+            }
+        });
         datePickers.add(dp);
 
         return picker;
@@ -580,6 +612,9 @@ public final class DateTimeRangeInputPane extends Pane {
         final TextFormatter<Integer> timeFormatter = new TextFormatter<>(new IntegerStringConverter(), 0, filter);
         spinner.getEditor().setTextFormatter(timeFormatter);
 
+        // Set spinner to enable value wrapping
+        spinner.getValueFactory().setWrapAround(true);
+
         final Label spinnerLabel = new Label(label);
         spinnerLabel.setLabelFor(spinner);
         spinnerLabel.setStyle(small);
@@ -595,6 +630,16 @@ public final class DateTimeRangeInputPane extends Pane {
         return vbox;
     }
 
+    // For testing
+    public List<DatePicker> getDatePickers() {
+        return datePickers;
+    }
+
+    // For testing
+    public ToggleGroup getDateRangeGroup() {
+        return dateRangeGroup;
+    }
+
     /**
      * Build a list of human readable ZoneId strings to display in the ComboBox.
      *
@@ -604,8 +649,7 @@ public final class DateTimeRangeInputPane extends Pane {
         final DateTimeFormatter zf = DateTimeFormatter.ofPattern("Z");
         final Instant instant = Instant.now();
         final Set<String> zoneSet = ZoneId.getAvailableZoneIds();
-        final List<ZoneId> zoned = new ArrayList<>();
-        zoneSet.stream().map(ZoneId::of).forEach(zoned::add);
+        List<ZoneId> zoned = zoneSet.stream().map(ZoneId::of).collect(Collectors.toList());
 
         Collections.sort(zoned, (final ZoneId zi1, final ZoneId zi2) -> {
             final ZonedDateTime z1 = ZonedDateTime.ofInstant(instant, zi1);
@@ -634,7 +678,8 @@ public final class DateTimeRangeInputPane extends Pane {
     private static class NonToggleButton extends ToggleButton {
 
         /**
-         * Toggles the state of the radio button if and only if the RadioButton has not already selected or is not part of a {@link ToggleGroup}.
+         * Toggles the state of the radio button if and only if the RadioButton has not already selected or is not part
+         * of a {@link ToggleGroup}.
          */
         @Override
         public void fire() {

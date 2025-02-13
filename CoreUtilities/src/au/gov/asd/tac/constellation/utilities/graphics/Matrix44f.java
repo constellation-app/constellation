@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,21 +133,21 @@ public final class Matrix44f {
         final float xs = x * s;
         final float ys = y * s;
         final float zs = z * s;
-        final float one_c = 1.0F - c;
+        final float oneC = 1.0F - c;
 
-        a[index44(0, 0)] = (one_c * xx) + c;
-        a[index44(0, 1)] = (one_c * xy) - zs;
-        a[index44(0, 2)] = (one_c * zx) + ys;
+        a[index44(0, 0)] = (oneC * xx) + c;
+        a[index44(0, 1)] = (oneC * xy) - zs;
+        a[index44(0, 2)] = (oneC * zx) + ys;
         a[index44(0, 3)] = 0.0F;
 
-        a[index44(1, 0)] = (one_c * xy) + zs;
-        a[index44(1, 1)] = (one_c * yy) + c;
-        a[index44(1, 2)] = (one_c * yz) - xs;
+        a[index44(1, 0)] = (oneC * xy) + zs;
+        a[index44(1, 1)] = (oneC * yy) + c;
+        a[index44(1, 2)] = (oneC * yz) - xs;
         a[index44(1, 3)] = 0.0F;
 
-        a[index44(2, 0)] = (one_c * zx) - ys;
-        a[index44(2, 1)] = (one_c * yz) + xs;
-        a[index44(2, 2)] = (one_c * zz) + c;
+        a[index44(2, 0)] = (oneC * zx) - ys;
+        a[index44(2, 1)] = (oneC * yz) + xs;
+        a[index44(2, 2)] = (oneC * zz) + c;
         a[index44(2, 3)] = 0.0F;
 
         a[index44(3, 0)] = 0.0F;
@@ -295,20 +295,15 @@ public final class Matrix44f {
      * @return the determinant.
      */
     private static float detIJ(final Matrix44f m, final int i, final int j) {
-        int x;
-        int y;
-        int ii;
-        int jj;
-        float ret;
-        float[][] mat = new float[3][3];
+        final float[][] mat = new float[3][3];
 
-        x = 0;
-        for (ii = 0; ii < 4; ii++) {
+        int x = 0;
+        for (int ii = 0; ii < 4; ii++) {
             if (ii == i) {
                 continue;
             }
-            y = 0;
-            for (jj = 0; jj < 4; jj++) {
+            int y = 0;
+            for (int jj = 0; jj < 4; jj++) {
                 if (jj == j) {
                     continue;
                 }
@@ -318,7 +313,7 @@ public final class Matrix44f {
             x++;
         }
 
-        ret = mat[0][0] * (mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2]);
+        float ret = mat[0][0] * (mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2]);
         ret -= mat[0][1] * (mat[1][0] * mat[2][2] - mat[2][0] * mat[1][2]);
         ret += mat[0][2] * (mat[1][0] * mat[2][1] - mat[2][0] * mat[1][1]);
 
@@ -392,7 +387,7 @@ public final class Matrix44f {
     }
 
     public static Matrix44f[] createArray(final int length) {
-        Matrix44f[] array = new Matrix44f[length];
+        final Matrix44f[] array = new Matrix44f[length];
         for (int i = 0; i < length; i++) {
             array[i] = new Matrix44f();
         }
@@ -402,7 +397,7 @@ public final class Matrix44f {
 
     @Override
     public String toString() {
-        StringBuilder b = new StringBuilder();
+        final StringBuilder b = new StringBuilder();
         b.append("[");
         for (int i = 0; i < a.length; i++) {
             if (i > 0) {

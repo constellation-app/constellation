@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -194,23 +194,23 @@ public enum ConnectionMode {
         }
     };
 
-    public abstract int getConnection(GraphReadMethods graph, int position);
+    public abstract int getConnection(final GraphReadMethods graph, final int position);
 
-    public abstract int getConnectionCount(GraphReadMethods reader);
+    public abstract int getConnectionCount(final GraphReadMethods reader);
 
-    public abstract int getConnectionCapacity(GraphReadMethods reader);
+    public abstract int getConnectionCapacity(final GraphReadMethods reader);
 
-    public abstract int getConnectionSourceVertex(GraphReadMethods reader, int connectionId);
+    public abstract int getConnectionSourceVertex(final GraphReadMethods reader, final int connectionId);
 
-    public abstract int getConnectionDestinationVertex(GraphReadMethods reader, int connectionId);
+    public abstract int getConnectionDestinationVertex(final GraphReadMethods reader, final int connectionId);
 
-    public abstract int getConnectionCountPerLink(GraphReadMethods reader, int linkId);
+    public abstract int getConnectionCountPerLink(final GraphReadMethods reader, final int linkId);
 
-    public abstract int getConnectionLink(GraphReadMethods reader, int connectionId);
+    public abstract int getConnectionLink(final GraphReadMethods reader, final int connectionId);
 
-    public abstract int getFirstTransaction(GraphReadMethods reader, int connectionId);
+    public abstract int getFirstTransaction(final GraphReadMethods reader, final int connectionId);
 
-    public abstract int getVertexConnectionCount(GraphReadMethods graph, int vertexId);
+    public abstract int getVertexConnectionCount(final GraphReadMethods graph, final int vertexId);
 
-    public abstract int getVertexConnection(GraphReadMethods graph, int vertexId, int position);
+    public abstract int getVertexConnection(final GraphReadMethods graph, final int vertexId, final int position);
 }

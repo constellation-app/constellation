@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.views.analyticview.analytics.RatioOfReciproc
 import au.gov.asd.tac.constellation.views.analyticview.analytics.WeightAnalytic;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
+import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import java.util.Arrays;
 import java.util.List;
 import org.openide.util.lookup.ServiceProvider;
@@ -46,6 +47,11 @@ public class HasClosestRelationshipQuestion implements AnalyticQuestionDescripti
     @Override
     public String getDescription() {
         return "";
+    }
+    
+    @Override 
+    public String getDocumentationUrl() {
+        return AnalyticUtilities.getHelpPath() + "question-has-closest-relationship.md";
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,8 @@ public class WelcomeViewPaneNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        System.setProperty("java.awt.headless", "true");
+        final WelcomeStartup ws = new WelcomeStartup();
+        ws.run();
         RecentFiles.init();
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
@@ -57,8 +58,6 @@ public class WelcomeViewPaneNGTest {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-        } finally {
-            System.clearProperty("java.awt.headless");
         }
     }
 
@@ -110,5 +109,4 @@ public class WelcomeViewPaneNGTest {
         verify(button).setStyle("-fx-background-color: transparent;");
         verify(button).setAlignment(Pos.CENTER_LEFT);
     }
-
 }

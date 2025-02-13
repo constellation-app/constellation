@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,10 +30,8 @@ public class CameraNGTest {
 
     private static final Vector3f ZERO_VECTOR = new Vector3f(0F, 0F, 0F);
 
-    private static final Vector3f MIN_EXTREME = new Vector3f(Float.MAX_VALUE,
-            Float.MAX_VALUE, Float.MAX_VALUE);
-    private static final Vector3f MAX_EXTREME = new Vector3f(-Float.MAX_VALUE,
-            -Float.MAX_VALUE, -Float.MAX_VALUE);
+    private static final Vector3f MIN_EXTREME = new Vector3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
+    private static final Vector3f MAX_EXTREME = new Vector3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE);
 
     // helper to assert a Camera object with no other initialise
     private void assertNewCamera(final Camera c) {
@@ -57,10 +55,8 @@ public class CameraNGTest {
 
         final Frame objectFrame = c.getObjectFrame();
         assertEquals(objectFrame.getOrigin().toString(), ZERO_VECTOR.toString());
-        assertEquals(objectFrame.getUpVector().toString(),
-                new Vector3f(0F, 1F, 0F).toString());
-        assertEquals(objectFrame.getForwardVector().toString(),
-                new Vector3f(0F, 0F, 1F).toString());
+        assertEquals(objectFrame.getUpVector().toString(), new Vector3f(0F, 1F, 0F).toString());
+        assertEquals(objectFrame.getForwardVector().toString(), new Vector3f(0F, 0F, 1F).toString());
     }
 
     /**
@@ -268,5 +264,4 @@ public class CameraNGTest {
                 + "centre: 3f[2.100000,2.200000,2.300000]; "
                 + "up: 3f[3.100000,3.200000,3.300000]]");
     }
-
 }

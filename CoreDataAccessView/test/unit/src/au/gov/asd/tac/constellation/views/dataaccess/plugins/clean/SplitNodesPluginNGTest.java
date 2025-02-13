@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -42,10 +43,25 @@ import org.testng.annotations.Test;
  */
 public class SplitNodesPluginNGTest {
 
-    private int vertexIdentifierAttribute, vertexTypeAttribute, vertexLatitudeAttribute, vertexLongitudeAttribute, vertexSelectedAttribute,
-            vertexAttributeX, vertexAttributeY, vertexAttributeZ;
-    private int vxId1, vxId2, vxId3, vxId4, txId1, txId2, txId3;
+    private int vertexIdentifierAttribute;
+    private int vertexTypeAttribute;
+    private int vertexLatitudeAttribute;
+    private int vertexLongitudeAttribute;
+    private int vertexSelectedAttribute;
+    private int vertexAttributeX;
+    private int vertexAttributeY;
+    private int vertexAttributeZ;
     private int transactionTypeAttributeId;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    
+    private int txId1;
+    private int txId2;
+    private int txId3;
+    
     private StoreGraph graph;
 
     @BeforeMethod
@@ -165,10 +181,11 @@ public class SplitNodesPluginNGTest {
     /**
      * Test of query method, of class SplitNodesPlugin.
      *
-     * @throws Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testQueryWithNoTypes_WithoutDuplicateTransactions() throws Exception {
+    public void testQueryWithNoTypes_WithoutDuplicateTransactions() throws InterruptedException, PluginException {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
 
@@ -185,7 +202,7 @@ public class SplitNodesPluginNGTest {
     }
 
     @Test
-    public void testQueryWithNoTypes_WithDuplicateTransactions() throws Exception {
+    public void testQueryWithNoTypes_WithDuplicateTransactions() throws InterruptedException, PluginException {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
 
@@ -204,7 +221,7 @@ public class SplitNodesPluginNGTest {
     }
 
     @Test
-    public void testQueryWithTypes_WithoutDuplicateTransactions() throws Exception {
+    public void testQueryWithTypes_WithoutDuplicateTransactions() throws InterruptedException, PluginException {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
 
@@ -223,7 +240,7 @@ public class SplitNodesPluginNGTest {
     }
 
     @Test
-    public void testQueryWithTypes_WithDuplicateTransactions() throws Exception {
+    public void testQueryWithTypes_WithDuplicateTransactions() throws InterruptedException, PluginException {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
 
@@ -243,7 +260,7 @@ public class SplitNodesPluginNGTest {
     }
 
     @Test
-    public void testQueryAllOccurancesSelected_WithoutDuplicateTransactions() throws Exception {
+    public void testQueryAllOccurancesSelected_WithoutDuplicateTransactions() throws InterruptedException, PluginException {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
 
@@ -263,7 +280,7 @@ public class SplitNodesPluginNGTest {
     }
 
     @Test
-    public void testQueryAllOccurancesSelected_WithDuplicateTransactions() throws Exception {
+    public void testQueryAllOccurancesSelected_WithDuplicateTransactions() throws InterruptedException, PluginException {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
 
@@ -286,7 +303,7 @@ public class SplitNodesPluginNGTest {
     }
 
     @Test
-    public void testQueryWithMultipleNodes_WithoutDuplicateTransactions() throws Exception {
+    public void testQueryWithMultipleNodes_WithoutDuplicateTransactions() throws InterruptedException, PluginException {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
 
@@ -307,7 +324,7 @@ public class SplitNodesPluginNGTest {
     }
 
     @Test
-    public void testQueryWithMultipleNodes_WithDuplicateTransactions() throws Exception {
+    public void testQueryWithMultipleNodes_WithDuplicateTransactions() throws InterruptedException, PluginException {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
 
@@ -330,7 +347,7 @@ public class SplitNodesPluginNGTest {
     }
 
     @Test
-    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesNotSelected_WithoutDuplicateTransactions() throws Exception {
+    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesNotSelected_WithoutDuplicateTransactions() throws InterruptedException, PluginException {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
 
@@ -344,7 +361,7 @@ public class SplitNodesPluginNGTest {
     }
 
     @Test
-    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesSelected_WithoutDuplicateTransactions() throws Exception {
+    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesSelected_WithoutDuplicateTransactions() throws InterruptedException, PluginException {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
 
@@ -359,7 +376,7 @@ public class SplitNodesPluginNGTest {
     }
 
     @Test
-    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesNotSelected_WithDuplicateTransactions() throws Exception {
+    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesNotSelected_WithDuplicateTransactions() throws InterruptedException, PluginException {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
 
@@ -374,7 +391,7 @@ public class SplitNodesPluginNGTest {
     }
 
     @Test
-    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesSelected_WithDuplicateTransactions() throws Exception {
+    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesSelected_WithDuplicateTransactions() throws InterruptedException, PluginException {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
 

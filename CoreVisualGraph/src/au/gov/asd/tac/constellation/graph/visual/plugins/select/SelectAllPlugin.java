@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.visual.plugins.select;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.operations.SetBooleanValuesOperation;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import static au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectUtilities.selectTransactions;
+import static au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectUtilities.selectVertices;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -44,35 +42,10 @@ public class SelectAllPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        Properties properties = new Properties();
-
-        int vxSelected = VisualConcept.VertexAttribute.SELECTED.get(graph);
-        if (vxSelected != Graph.NOT_FOUND) {
-            SetBooleanValuesOperation selectVerticesOperation = new SetBooleanValuesOperation(graph, GraphElementType.VERTEX, vxSelected);
-            int vertexCount = graph.getVertexCount();
-            for (int position = 0; position < vertexCount; position++) {
-                int vertex = graph.getVertex(position);
-                selectVerticesOperation.setValue(vertex, true);
-            }
-            graph.executeGraphOperation(selectVerticesOperation);
-
-            properties.setProperty("vsize", String.valueOf(selectVerticesOperation.size()));
-        }
-
-        int txSelected = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-        if (txSelected != Graph.NOT_FOUND) {
-            SetBooleanValuesOperation selectTransactionsOperation = new SetBooleanValuesOperation(graph, GraphElementType.TRANSACTION, txSelected);
-            int transactionCount = graph.getTransactionCount();
-            for (int position = 0; position < transactionCount; position++) {
-                int transaction = graph.getTransaction(position);
-                selectTransactionsOperation.setValue(transaction, true);
-            }
-            graph.executeGraphOperation(selectTransactionsOperation);
-
-            properties.setProperty("tsize", String.valueOf(selectTransactionsOperation.size()));
-        }
+        final Properties properties = new Properties();
+        selectVertices(graph, properties);
+        selectTransactions(graph, properties);
 
         ConstellationLogger.getDefault().pluginProperties(this, properties);
-
     }
 }

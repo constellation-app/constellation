@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ public class WhatsNewViewPane extends BorderPane {
 
     private static final Logger LOGGER = Logger.getLogger(WhatsNewViewPane.class.getName());
 
-    private final BorderPane whatsNewViewPane;
+    private final BorderPane pane;
 
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
     public static final String WELCOME_TEXT = "Welcome to Constellation";
@@ -85,12 +85,12 @@ public class WhatsNewViewPane extends BorderPane {
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     public WhatsNewViewPane() {
-        whatsNewViewPane = new BorderPane();
+        pane = new BorderPane();
         ConstellationSecurityManager.startSecurityLaterFX(() -> {
             Platform.setImplicitExit(false);
 
             final VBox contentVBox = new VBox();
-            whatsNewViewPane.setCenter(contentVBox);
+            pane.setCenter(contentVBox);
 
             // Create a checkbox to change users preference regarding showing the Whats New Page on startup
             final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
@@ -159,7 +159,7 @@ public class WhatsNewViewPane extends BorderPane {
             contentVBox.getChildren().add(whatsNewView);
 
             //Finally, insert the tutorialViewPane object into the BorderPane
-            this.setCenter(whatsNewViewPane);
+            this.setCenter(pane);
         });
     }
 

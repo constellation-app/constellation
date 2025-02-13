@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,6 +65,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class UpdateColumnsTaskNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(UpdateColumnsTaskNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;
@@ -179,6 +180,7 @@ public class UpdateColumnsTaskNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test(expectedExceptions = RuntimeException.class)
@@ -249,7 +251,6 @@ public class UpdateColumnsTaskNGTest {
 
     @Test
     public void saveSortDetails() {
-
         // Null sort order
         when(tableView.getSortOrder()).thenReturn(null);
 
@@ -286,11 +287,9 @@ public class UpdateColumnsTaskNGTest {
      * @param listener the listener to be tested
      */
     private void verifyColumnChangeListenerAvoidsDuplicateActions(final ListChangeListener<TableColumn<ObservableList<String>, ?>> listener) {
-        final ListChangeListener.Change<TableColumn<ObservableList<String>, String>> change
-                = mock(ListChangeListener.Change.class);
+        final ListChangeListener.Change<TableColumn<ObservableList<String>, String>> change = mock(ListChangeListener.Change.class);
 
-        when(change.next())
-                .thenReturn(false);
+        when(change.next()).thenReturn(false);
 
         listener.onChanged(change);
         listener.onChanged(change);
@@ -307,8 +306,7 @@ public class UpdateColumnsTaskNGTest {
      * @param listener the listener to be tested
      */
     private void verifyColumnChangeListenerAction(final ListChangeListener<TableColumn<ObservableList<String>, ?>> listener) {
-        final ListChangeListener.Change<TableColumn<ObservableList<String>, String>> change
-                = mock(ListChangeListener.Change.class);
+        final ListChangeListener.Change<TableColumn<ObservableList<String>, String>> change = mock(ListChangeListener.Change.class);
 
         // It will iterate 3 times. But only get past the if statement once
         when(change.next())
@@ -354,10 +352,7 @@ public class UpdateColumnsTaskNGTest {
         verify(activeTableReference).updateVisibleColumns(
                 graph,
                 tableViewState,
-                List.of(
-                        Tuple.create(columnType2, attribute2),
-                        Tuple.create(columnType5, attribute5)
-                ),
+                List.of(Tuple.create(columnType2, attribute2), Tuple.create(columnType5, attribute5)),
                 UpdateMethod.REPLACE
         );
         verify(updateColumnsTask).saveSortDetails();

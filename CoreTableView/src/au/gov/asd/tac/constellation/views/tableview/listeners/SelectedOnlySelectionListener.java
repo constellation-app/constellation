@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public class SelectedOnlySelectionListener implements ListChangeListener {
      */
     @Override
     public void onChanged(final Change change) {
-        if (getTableViewTopComponent().getCurrentState() != null
+        if (getTableViewTopComponent().getCurrentState() != null 
                 && getTableViewTopComponent().getCurrentState().isSelectedOnly()) {
             final ObservableList<ObservableList<String>> rows = table.getTableView().getItems();
             rows.forEach(row -> {
@@ -67,8 +67,6 @@ public class SelectedOnlySelectionListener implements ListChangeListener {
                 } else if (getActiveTableReference().getSelectedOnlySelectedRows().contains(row)) {
                     // remove the row from selected items as it's no longer selected in the table
                     getActiveTableReference().getSelectedOnlySelectedRows().remove(row);
-                } else {
-                    // Do nothing
                 }
             });
         }
@@ -91,5 +89,4 @@ public class SelectedOnlySelectionListener implements ListChangeListener {
     private ActiveTableReference getActiveTableReference() {
         return table.getParentComponent().getActiveTableReference();
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,10 +83,9 @@ public final class PasteGraphPlugin extends SimpleEditPlugin {
     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
         final Object paramPaster = parameters.getParameters().get(RECORDSTORE_PARAMETER_ID).getObjectValue();
-        if (!(paramPaster instanceof RecordStore)) {
+        if (!(paramPaster instanceof RecordStore paster)) {
             throw new IllegalArgumentException(Bundle.MSG_Param(RECORDSTORE_PARAMETER_ID));
         }
-        final RecordStore paster = ((RecordStore) paramPaster);
 
         synchronized (paster) {
             GraphRecordStoreUtilities.addRecordStoreToGraph(wg, paster, false, false, null);

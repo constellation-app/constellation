@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.wordcloud.content.ContentAnalysisOptio
 import au.gov.asd.tac.constellation.views.wordcloud.content.ContentAnalysisOptions.FollowUpScope;
 import au.gov.asd.tac.constellation.views.wordcloud.content.ContentAnalysisOptions.TokenThresholdMethod;
 import au.gov.asd.tac.constellation.views.wordcloud.content.ContentAnalysisOptions.TokenizingMethod;
+import java.util.Arrays;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -38,18 +39,22 @@ public class ClusterDocumentsParametersNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -78,7 +83,7 @@ public class ClusterDocumentsParametersNGTest {
                 delimiter, tokenLength, binarySpace, threshold, thresholdMethod, significantAboveThreshold, weightingExponent, 
                 numberOfMeans, followUpChoice, followUpScope, elementType);
         final String expResult = String.format("ContentAnalysisParameters[onAttributeID:%d, caseSensitive:%b, toFilter:%b, tokenizingMethod:%s, delimiter:%s, tokenLength:%d, binarySpace:%b, threshold:%f, thresholdMethod:%s, weightingExponent:%f, numberOfMeans:%d, followUpChoice:%s, followUpScope:%s]",
-                onAttributeID, caseSensitive, toFilter, tokenizingMethod, delimiter, tokenLength, binarySpace, threshold, thresholdMethod, weightingExponent, numberOfMeans, followUpChoice, followUpScope);
+                onAttributeID, caseSensitive, Arrays.toString(toFilter), tokenizingMethod, delimiter, tokenLength, binarySpace, threshold, thresholdMethod, weightingExponent, numberOfMeans, followUpChoice, followUpScope);
         final String result = instance.toString();
         assertEquals(result, expResult);
     }
@@ -277,5 +282,4 @@ public class ClusterDocumentsParametersNGTest {
         final String result = instance.getElementType().getLabel();
         assertTrue(result.equals(value));
     }
-    
 }

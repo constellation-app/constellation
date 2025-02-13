@@ -110,7 +110,6 @@
                 <package>com.jhlabs.math</package>
                 <package>com.jhlabs.vecmath</package>
                 <package>com.jogamp.common</package>
-                <package>com.jogamp.common.av</package>
                 <package>com.jogamp.common.jvm</package>
                 <package>com.jogamp.common.net</package>
                 <package>com.jogamp.common.net.asset</package>
@@ -128,10 +127,6 @@
                 <package>com.jogamp.graph.curve.tess</package>
                 <package>com.jogamp.graph.font</package>
                 <package>com.jogamp.graph.geom</package>
-                <package>com.jogamp.graph.geom.plane</package>
-                <package>com.jogamp.graph.ui</package>
-                <package>com.jogamp.graph.ui.layout</package>
-                <package>com.jogamp.graph.ui.shapes</package>
                 <package>com.jogamp.nativewindow</package>
                 <package>com.jogamp.nativewindow.awt</package>
                 <package>com.jogamp.nativewindow.egl</package>
@@ -175,7 +170,6 @@
                 <package>com.jogamp.opengl.util</package>
                 <package>com.jogamp.opengl.util.av</package>
                 <package>com.jogamp.opengl.util.awt</package>
-                <package>com.jogamp.opengl.util.caps</package>
                 <package>com.jogamp.opengl.util.gl2</package>
                 <package>com.jogamp.opengl.util.glsl</package>
                 <package>com.jogamp.opengl.util.glsl.fixedfunc</package>
@@ -579,7 +573,6 @@
                 <package>jnr.posix.util</package>
                 <package>jnr.posix.windows</package>
                 <package>jogamp.common</package>
-                <package>jogamp.common.av</package>
                 <package>jogamp.common.jvm</package>
                 <package>jogamp.common.os</package>
                 <package>jogamp.common.os.elf</package>
@@ -590,25 +583,16 @@
                 <package>jogamp.graph.curve.tess</package>
                 <package>jogamp.graph.font</package>
                 <package>jogamp.graph.font.typecast</package>
-                <package>jogamp.graph.font.typecast.cff</package>
                 <package>jogamp.graph.font.typecast.ot</package>
                 <package>jogamp.graph.font.typecast.ot.mac</package>
                 <package>jogamp.graph.font.typecast.ot.table</package>
                 <package>jogamp.graph.font.typecast.t2</package>
                 <package>jogamp.graph.font.typecast.tt.engine</package>
                 <package>jogamp.graph.geom.plane</package>
-                <package>jogamp.graph.ui</package>
-                <package>jogamp.graph.ui.shapes</package>
                 <package>jogamp.nativetag.common.linux.amd64</package>
                 <package>jogamp.nativetag.common.macosx.universal</package>
                 <package>jogamp.nativetag.common.windows.amd64</package>
-                <package>jogamp.nativetag.nativewindow.linux.amd64</package>
-                <package>jogamp.nativetag.nativewindow.macosx.universal</package>
-                <package>jogamp.nativetag.nativewindow.windows.amd64</package>
                 <package>jogamp.nativetag.nativewindow.windows.i586</package>
-                <package>jogamp.nativetag.newt.linux.amd64</package>
-                <package>jogamp.nativetag.newt.macosx.universal</package>
-                <package>jogamp.nativetag.newt.windows.amd64</package>
                 <package>jogamp.nativetag.newt.windows.i586</package>
                 <package>jogamp.nativetag.opencl.linux.amd64</package>
                 <package>jogamp.nativetag.opencl.macosx.universal</package>
@@ -1197,6 +1181,22 @@
                 <package>org.codehaus.jackson.sym</package>
                 <package>org.codehaus.jackson.type</package>
                 <package>org.codehaus.jackson.util</package>
+                <package>org.commonmark</package>
+                <package>org.commonmark.internal</package>
+                <package>org.commonmark.internal.inline</package>
+                <package>org.commonmark.internal.renderer</package>
+                <package>org.commonmark.internal.renderer.text</package>
+                <package>org.commonmark.internal.util</package>
+                <package>org.commonmark.node</package>
+                <package>org.commonmark.parser</package>
+                <package>org.commonmark.parser.beta</package>
+                <package>org.commonmark.parser.block</package>
+                <package>org.commonmark.parser.delimiter</package>
+                <package>org.commonmark.renderer</package>
+                <package>org.commonmark.renderer.html</package>
+                <package>org.commonmark.renderer.markdown</package>
+                <package>org.commonmark.renderer.text</package>
+                <package>org.commonmark.text</package>
                 <package>org.controlsfx.control</package>
                 <package>org.controlsfx.control.action</package>
                 <package>org.controlsfx.control.cell</package>
@@ -2480,6 +2480,10 @@
                 <binary-origin>release/modules/ext/checker-qual-3.41.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/commonmark-0.22.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commonmark-0.22.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/commons-codec-1.16.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-codec-1.16.0.jar</binary-origin>
             </class-path-extension>
@@ -3138,10 +3142,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/testfx-core-4.0.18.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/testfx-core-4.0.18.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/txtmark-0.13.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/txtmark-0.13.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/txw2-2.4.0-b180830.0438.jar</runtime-relative-path>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public class ProxyUtilities implements PreferenceChangeListener {
             if (general != null) {
                 try {
                     general.delete();
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     LOGGER.log(Level.WARNING, "Error deleting option {0}", unwanted);
                 }
             }
@@ -200,6 +200,7 @@ public class ProxyUtilities implements PreferenceChangeListener {
                 return new Pair<>(host, port);
             }
         } catch (final NumberFormatException ex) {
+            LOGGER.log(Level.WARNING, "Port couldn't be parsed");
         }
 
         return null;

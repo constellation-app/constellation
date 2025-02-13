@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -32,11 +32,13 @@ public enum SVGAttributeConstants {
     DESTINATION_X("x2"),
     DESTINATION_Y("y2"),
     DASH_ARRAY("stroke-dasharray"),
-    EXTERNAL_RESOURCE_REFERENCE("xlink:href"),
+    EXTERNAL_RESOURCE_REFERENCE("href"),
+    EXTERNAL_NAME_SPACE_REFERENCE("xmlns:href"),
     FILL_COLOR("fill"),
     FILTER("filter"),
     FONT_SIZE("font-size"),
     HEIGHT("height"),
+    HREF("xlink:href"),
     ID("id"),
     NAME_SPACE("xmlns"),
     OPACITY("opacity"),
@@ -46,6 +48,7 @@ public enum SVGAttributeConstants {
     SOURCE_Y("y1"),
     STROKE_COLOR("stroke"),
     TRANSFORM("transform"),
+    VALUES("values"),
     VIEW_BOX("viewBox"),
     WIDTH("width"),
     X("x"),

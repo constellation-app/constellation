@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,6 @@ public class StartupNGTest {
                 final MockedStatic<ConstellationSecurityManager> constellationSecurityManagerMockedStatic = Mockito.mockStatic(ConstellationSecurityManager.class);
                 final MockedStatic<FontUtilities> fontUtilitiesMockedStatic = Mockito.mockStatic(FontUtilities.class);
                 final MockedStatic<ProxyUtilities> proxyUtilitiesMockedStatic = Mockito.mockStatic(ProxyUtilities.class);) {
-            System.setProperty("java.awt.headless", "true");
 
             new Startup().run();
 
@@ -52,9 +51,7 @@ public class StartupNGTest {
             fontUtilitiesMockedStatic.verify(FontUtilities::initialiseApplicationFontPreferenceOnFirstUse);
 
             proxyUtilitiesMockedStatic.verify(() -> ProxyUtilities.setProxySelector(isNull()));
-        } finally {
-            System.clearProperty("java.awt.headless");
-        }
+        } 
     }
 
     @Test

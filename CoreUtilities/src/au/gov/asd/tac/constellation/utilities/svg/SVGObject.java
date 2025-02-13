@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.svg;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
+import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -220,8 +221,7 @@ public class SVGObject {
      * Sets the width of the SVGObject.
      * @param width 
      */
-    private void setWidth(final float width) {
-        
+    private void setWidth(final float width) {       
         // Get the current width wihtout the local reference. 
         final float currentWidth = getPositionalData(null, SVGAttributeConstants.WIDTH);
         
@@ -411,15 +411,9 @@ public class SVGObject {
      */
     public void setStrokeStyle(final LineStyle style) {
         switch (style) {
-            case DOTTED:
-                this.setStrokeArray(35, 35);
-                break;
-            case DASHED:
-                this.setStrokeArray(70, 35);
-                break;
-            default:
-                this.svgDataReference.setAttribute(SVGAttributeConstants.DASH_ARRAY, null);
-                break;
+            case DOTTED -> this.setStrokeArray(35, 35);
+            case DASHED -> this.setStrokeArray(70, 35);
+            default -> this.svgDataReference.setAttribute(SVGAttributeConstants.DASH_ARRAY, null);
         }
     }
     
@@ -462,7 +456,7 @@ public class SVGObject {
     }
 
     public void applyGrayScaleFilter() {
-        this.setAttribute(SVGAttributeConstants.FILTER, "grayscale(1)");
+        this.setFilter("grayscale(1)");
     }
 
     public void setBaseline(final String baseline) {
@@ -490,6 +484,34 @@ public class SVGObject {
     }
     
     /**
+     * Creates a color matrix to apply to SVG objects.
+     * @param color 
+     */
+    public void setFeColor(final Color color) {
+        final float red = color.getRed() / 255F;
+        final float green = color.getGreen() / 255F;
+        final float blue = color.getBlue() / 255F;
+        final String matrix = String.format("%s 0 0 0 0 0 %s 0 0 0 0 0 %s 0 0 0 0 0 1 0", red, green, blue);
+        setAttribute(SVGAttributeConstants.VALUES, matrix);
+    }
+    
+    /** 
+     * Sets a reference to an external file as an attribute.
+     * @param reference 
+     */
+    public void setExternalReference(final String reference) {
+        this.setAttribute(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE, reference);
+    }
+
+    /**
+     * Sets a filter attribute that references a filter object elsewhere in the SVG File. 
+     * @param filterReference 
+     */
+    public void setFilter(final String filterReference) {
+        this.setAttribute(SVGAttributeConstants.FILTER, filterReference);
+    }
+    
+    /**
      * Removes the SVGObject wrapper class from the SVGData.
      * Preserves all relevant SVG elements for generating svgText
      * @return svgData
@@ -512,10 +534,16 @@ public class SVGObject {
     } 
     
     public static SVGObject loadFromInputStream(final InputStream is) {
-        try{
+        try {
             return new SVGObject(SVGParser.parse(is));
         } catch (final IOException e) {
             return null;
+        }
+    }
+
+    public void setChildren(final List<SVGObject> children) {
+        if (children != null && !children.isEmpty()){
+            svgDataReference.setChildren(children);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,8 @@ public class ArrangeInHierarchyPlugin extends SimpleEditPlugin {
             radiusSetter.setRadii();
 
             final GridChoiceParameters innerGcParams = GridChoiceParameters.getDefaultParameters();
-            final Arranger inner = new HierarchicalArranger(roots);
+            final HierarchicalArranger inner = new HierarchicalArranger(roots);
+            HierarchicalArranger.setInteraction(interaction);
             final GridChoiceParameters outerGcParams = GridChoiceParameters.getDefaultParameters();
             outerGcParams.setRowOffsets(false);
             final Arranger outer = new GridArranger(outerGcParams);

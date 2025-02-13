@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,15 +28,15 @@ import au.gov.asd.tac.constellation.graph.value.readables.StringReadable;
  */
 public interface ArithmeticOperation {
 
-    double execute(double p1, double p2);
+    double execute(final double p1, final double p2);
 
-    float execute(float p1, float p2);
+    float execute(final float p1, final float p2);
 
-    long execute(long p1, long p2);
+    long execute(final long p1, final long p2);
 
-    int execute(int p1, int p2);
+    int execute(final int p1, final int p2);
 
-    default void register(OperatorRegistry registry) {
+    default void register(final OperatorRegistry registry) {
         registry.register(DoubleReadable.class, DoubleReadable.class, DoubleReadable.class, (p1, p2)
                 -> () -> execute(p1.readDouble(), p2.readDouble()));
         registry.register(FloatReadable.class, FloatReadable.class, FloatReadable.class, (p1, p2) -> () -> execute(p1.readFloat(), p2.readFloat()));

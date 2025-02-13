@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,23 +40,24 @@ public class PlaneStateNGTest {
     final Plane plane3 = new Plane("label3", 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, bufferedImage, 7, 8);
     final PlaneState instance = new PlaneState();
     
-    public PlaneStateNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -102,6 +103,5 @@ public class PlaneStateNGTest {
 
         PlaneState newPlaneState = new PlaneState(instance);
         assertEquals(newPlaneState.toString(), instance.toString());   
-
     }
 }

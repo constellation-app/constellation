@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import java.util.ArrayList;
-import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotEquals;
@@ -43,24 +42,25 @@ import org.testng.annotations.Test;
 public class QualityControlAutoVetterNGTest {
 
     private Graph graph;
-
-    public QualityControlAutoVetterNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -109,7 +109,7 @@ public class QualityControlAutoVetterNGTest {
 
     // Test the adding and removing of observers and their behaviour to trigger the methods of the interface.
     @Test
-    public void testAddRemoveObserver() {
+    public void testAddRemoveObserver() throws InterruptedException {
         // add observer of the button state
         final TestObserver observer = new TestObserver();
         QualityControlAutoVetter.getInstance().addObserver(observer);
@@ -119,12 +119,8 @@ public class QualityControlAutoVetterNGTest {
 
         QualityControlAutoVetter.updateQualityControlState(null);
 
-        try {
-            // Sleep until after pluginExecution thread has returned
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        // Sleep until after pluginExecution thread has returned
+        Thread.sleep(1000);
 
         // Check observer status
         assertTrue(observer.getCanRunStatus());
@@ -139,12 +135,8 @@ public class QualityControlAutoVetterNGTest {
         // Run update state
         QualityControlAutoVetter.updateQualityControlState(null);
 
-        try {
-            // Sleep until after pluginExecution thread has returned
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        // Sleep until after pluginExecution thread has returned
+        Thread.sleep(1000);
 
         // As it's not an observer it should remain false.
         assertFalse(observer.getCanRunStatus());
@@ -182,7 +174,7 @@ public class QualityControlAutoVetterNGTest {
 
     // Test if multiple buttonlisteners get fired correctly within the update state.
     @Test
-    public void testUpdateQualityControlState() {
+    public void testUpdateQualityControlState() throws InterruptedException {
         graph = null;
 
         // add observer1 of the button state
@@ -200,12 +192,8 @@ public class QualityControlAutoVetterNGTest {
 
         QualityControlAutoVetter.updateQualityControlState(graph);
 
-        try {
-            // Sleep until after pluginExecution thread has returned
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        // Sleep until after pluginExecution thread has returned
+        Thread.sleep(1000);
 
         // Check updated status
         assertTrue(observer1.getCanRunStatus());
@@ -231,7 +219,7 @@ public class QualityControlAutoVetterNGTest {
 
     // Test commented out as TopComponent launches GUI panels which don't execute in the test environment
     @Test
-    public void testGraphChangedWithGraph() throws Exception {
+    public void testGraphChangedWithGraph() throws InterruptedException {
         QualityControlAutoVetter.destroyInstance();
         QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
 
@@ -253,12 +241,8 @@ public class QualityControlAutoVetterNGTest {
             wg.commit();
         }
 
-        try {
-            // Sleep until after pluginExecution thread has returned
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        // Sleep until after pluginExecution thread has returned
+        Thread.sleep(1000);
 
         // Set the current graph
         instance.newActiveGraph(graph);

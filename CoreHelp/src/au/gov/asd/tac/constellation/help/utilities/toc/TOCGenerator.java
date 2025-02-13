@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class TOCGenerator {
                 LOGGER.log(Level.FINE, "Previous Table of Contents file was replaced at: {0}", filePath);
             }
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, "Path to Table of Contents file was invalid.", ex);
+            LOGGER.log(Level.SEVERE, "Path to Table of Contents file was invalid: %s".formatted(filePath), ex);
         }
 
         // initialise file with path
@@ -77,7 +77,7 @@ public class TOCGenerator {
             LOGGER.log(Level.FINE, "Table of Contents file was created at: {0}", filePath);
 
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, "Unable to create table of contents file", ex);
+            LOGGER.log(Level.SEVERE, "Unable to create table of contents file. FilePath: %s".formatted(filePath), ex);
             success = false;
         }
         return success;
@@ -89,7 +89,7 @@ public class TOCGenerator {
      *
      * @param xmlFromFile File of XML mappings
      */
-    public static void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode root) throws IOException {
+    public static void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode<?> root) throws IOException {
         final FileWriter writer;
         writer = new FileWriter(toc);
         convertXMLMappings(xmlsFromFile, writer, root);
@@ -99,7 +99,7 @@ public class TOCGenerator {
     /**
      * Generate a table of contents from the XML mapping file
      */
-    public static void convertXMLMappings(final List<File> xmlsFromFile, final FileWriter markdownOutput, final TreeNode root) {
+    public static void convertXMLMappings(final List<File> xmlsFromFile, final FileWriter markdownOutput, final TreeNode<?> root) {
         writeText(markdownOutput, String.format("<div class=\"%s\">", "container"));
         writeText(markdownOutput, Platform.getNewline());
         writeText(markdownOutput, String.format("<div id=\"%s\">", "accordion"));

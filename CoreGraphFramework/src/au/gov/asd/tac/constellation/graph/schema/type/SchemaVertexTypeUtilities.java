@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ public class SchemaVertexTypeUtilities {
             });
 
             // add custom types if no concept is specified
-            if (fromConcepts == GET_ALL_TYPES) {
+            if (fromConcepts == null) {
                 vertexTypes.addAll(CUSTOM_VERTEX_TYPES);
             }
 
@@ -168,8 +168,7 @@ public class SchemaVertexTypeUtilities {
         }
 
         for (final SchemaVertexType schemaVertexType : getTypes(fromConcept)) {
-            if (schemaVertexType.getName().equals(name)
-                    || schemaVertexType.toString().equals(name)) {
+            if (schemaVertexType.getName().equals(name) || schemaVertexType.toString().equals(name)) {
                 return schemaVertexType;
             }
         }
@@ -271,9 +270,9 @@ public class SchemaVertexTypeUtilities {
         final List<SchemaVertexType> candidateTypes = new ArrayList<>();
 
         getTypes(fromConcept).forEach(schemaVertexType -> {
-            Pattern regex = schemaVertexType.getDetectionRegex();
+            final Pattern regex = schemaVertexType.getDetectionRegex();
             if (regex != null) {
-                Matcher matcher = regex.matcher(identifier).useAnchoringBounds(true);
+                final Matcher matcher = regex.matcher(identifier).useAnchoringBounds(true);
                 if (matcher.matches()) {
                     candidateTypes.add(schemaVertexType);
                 }
@@ -347,8 +346,6 @@ public class SchemaVertexTypeUtilities {
                                 break;
                             } else if (currentExtractedType.compareTo(extractedType) > 0) {
                                 deficientResults.add(extractedType);
-                            } else {
-                                // Do nothing
                             }
                         }
                         if (!isDeficientResult) {

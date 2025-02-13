@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,12 +30,15 @@ import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 import au.gov.asd.tac.constellation.utilities.datastructure.IntHashSet;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import java.io.Serializable;
+import java.lang.ref.Cleaner;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
@@ -50,13 +53,15 @@ enum Operator {
 }
 
 /**
- * A StoreGraph is an array-based implementation of GraphWriteMethods designed
- * for performance and memory efficiency. It is currently the default
- * implementation used in Constellation.
+ * A StoreGraph is an array-based implementation of GraphWriteMethods designed for performance and memory efficiency. It
+ * is currently the default implementation used in Constellation.
  *
  * @author sirius
  */
 public class StoreGraph extends LockingTarget implements GraphWriteMethods, Serializable {
+
+    private static final Logger LOGGER = Logger.getLogger(StoreGraph.class.getName());
+    
 
     private static final int HIGH_BIT = 0x80000000;
     private static final int LOW_BITS = 0x7FFFFFFF;
@@ -103,16 +108,18 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private NativeValue oldValue = new NativeValue();
     private GraphEdit graphEdit;
 
+    // For cleaning up object for garbage collection. Replaced finalize
+    private static final Cleaner cleaner = Cleaner.create();
+    private static final Runnable cleanupAction = () -> MemoryManager.finalizeObject(StoreGraph.class);
+
     /**
      * Creates a new StoreGraph with the specified capacities.
      *
      * @param vertexCapacity the initial number of vertices the graph can hold.
      * @param linkCapacity the initial number of links the graph can hold.
      * @param edgeCapacity the initial number of edges the graph can hold.
-     * @param transactionCapacity the initial number of transactions the graph
-     * can hold.
-     * @param attributeCapacity the initial number of attributes the graph can
-     * hold.
+     * @param transactionCapacity the initial number of transactions the graph can hold.
+     * @param attributeCapacity the initial number of attributes the graph can hold.
      */
     public StoreGraph(final int vertexCapacity, final int linkCapacity, final int edgeCapacity, final int transactionCapacity, final int attributeCapacity) {
         this(UUID.randomUUID().toString(), null, vertexCapacity, linkCapacity, edgeCapacity, transactionCapacity, attributeCapacity);
@@ -131,8 +138,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     /**
      * Construct a new StoreGraph.
      * <p>
-     * The capacity of each store will be adjusted up automatically when
-     * necessary.
+     * The capacity of each store will be adjusted up automatically when necessary.
      *
      * @param id the id for this StoreGraph.
      * @param schema the schema for this StoreGraph.
@@ -198,15 +204,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         graphElementMerger = schema == null ? null : schema.getFactory().getGraphElementMerger();
 
         MemoryManager.newObject(StoreGraph.class);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            MemoryManager.finalizeObject(StoreGraph.class);
-        } finally {
-            super.finalize();
-        }
+        cleaner.register(this, cleanupAction);
     }
 
     private static int powerOf2(final int capacity) {
@@ -234,8 +232,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * Creates a new StoreGraph with default capacities, and a specified id and
-     * schema.
+     * Creates a new StoreGraph with default capacities, and a specified id and schema.
      *
      * @param schema the schema for the new StoreGraph.
      * @param graphId the id for the new StoreGraph.
@@ -245,8 +242,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * Creates a new StoreGraph with a random, unique id, a specified schema and
-     * specified capacities.
+     * Creates a new StoreGraph with a random, unique id, a specified schema and specified capacities.
      *
      * @param schema the schema for this graph.
      */
@@ -264,8 +260,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * Creates a new StoreGraph that is a copy of the original StoreGraph with
-     * the option of creating a new id.
+     * Creates a new StoreGraph that is a copy of the original StoreGraph with the option of creating a new id.
      *
      * @param original the original StoreGraph to be copied.
      * @param useNewId should a new id be created for this StoreGraph.
@@ -275,20 +270,17 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * Creates a new StoreGraph this is a copy of the original StoreGraph with
-     * the option of creating a new id.
+     * Creates a new StoreGraph this is a copy of the original StoreGraph with the option of creating a new id.
      *
      * @param original the original StoreGraph to be copied.
-     * @param graphId the id for the new StoreGraph (if null then the id is
-     * copied from the original StoreGraph)
+     * @param graphId the id for the new StoreGraph (if null then the id is copied from the original StoreGraph)
      */
     public StoreGraph(final StoreGraph original, final String graphId) {
         this(graphId == null ? original.getId() : graphId, original.getSchema() == null ? null : original.getSchema().getFactory().createSchema(), original);
     }
 
     /**
-     * Creates a new StoreGraph that is a copy of the original StoreGraph but
-     * with the specified id and schema.
+     * Creates a new StoreGraph that is a copy of the original StoreGraph but with the specified id and schema.
      *
      * @param id the id of this StoreGraph.
      * @param schema the Schema for this StoreGraph.
@@ -354,8 +346,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         for (int i = 0; i < this.primaryKeyIndices.length; i++) {
             final ElementKeySet ks = original.primaryKeyIndices[i];
             if (ks != null) {
-                if (ks instanceof TransactionKeySet) {
-                    this.primaryKeyIndices[i] = new TransactionKeySet((TransactionKeySet) ks);
+                if (ks instanceof TransactionKeySet tks) {
+                    this.primaryKeyIndices[i] = new TransactionKeySet(tks);
                 } else {
                     this.primaryKeyIndices[i] = new ElementKeySet(ks);
                 }
@@ -380,6 +372,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         }
 
         MemoryManager.newObject(StoreGraph.class);
+        cleaner.register(this, cleanupAction);
     }
 
     public void setModificationCounters(final long globalModificationCounter, final long structureModificationCounter, final long attributeModificationCounter) {
@@ -394,7 +387,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public long getModificationCounter() {
-        return globalModificationCounter;
+        return getGlobalModificationCounter();
     }
 
     @Override
@@ -423,7 +416,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public void validateKey(final GraphElementType elementType, final boolean allowMerging) throws DuplicateKeyException {
-        IntHashSet index = primaryKeyIndices[elementType.ordinal()];
+        final IntHashSet index = primaryKeyIndices[elementType.ordinal()];
         if (index != null) {
             final ElementList removed = removedFromKeys[elementType.ordinal()];
             while (removed.getSize() > 0) {
@@ -440,17 +433,14 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
                     // If the element was not unique then attempt a merge
                 } else {
-                    if (allowMerging && graphElementMerger != null) {
-                        if (graphElementMerger.mergeElement(this, elementType, existingElement, element)) {
-                            continue;
-                        }
+                    if (allowMerging && graphElementMerger != null && graphElementMerger.mergeElement(this, elementType, existingElement, element)) {
+                        continue;
                     }
 
                     final StringBuilder elementValues = new StringBuilder("New[" + element + "]: ");
                     final StringBuilder existingElementValues = new StringBuilder("Existing[" + existingElement + "]: ");
                     String separator = "";
                     for (final int attribute : primaryKeys[elementType.ordinal()]) {
-
                         elementValues.append(separator);
                         existingElementValues.append(separator);
                         separator = ", ";
@@ -494,14 +484,14 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                             return;
                         }
                     } catch (final Exception ex) {
-                        // TODO: throw exception or log error?
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     }
                 }
 
                 final StringBuilder elementValues = new StringBuilder("New[" + element + "]: ");
                 final StringBuilder existingElementValues = new StringBuilder("Existing[" + existingElement + "]: ");
                 String separator = "";
-                for (int attribute : primaryKeys[elementType.ordinal()]) {
+                for (final int attribute : primaryKeys[elementType.ordinal()]) {
                     elementValues.append(separator);
                     existingElementValues.append(separator);
                     separator = ", ";
@@ -677,7 +667,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public int addVertex(int vertex) {
-
         if (vertex < 0) {
             ensureVertexCapacity(vStore.getCount() + 1);
             vertex = vStore.add();
@@ -711,7 +700,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private void addElementToIndices(final GraphElementType elementType, final int element) {
         final int attributeCount = getAttributeCount(elementType);
         for (int i = 0; i < attributeCount; i++) {
-            int attribute = getAttribute(elementType, i);
+            final int attribute = getAttribute(elementType, i);
             attributeIndices[attribute].addElement(element);
         }
     }
@@ -719,20 +708,18 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private void removeElementFromIndices(final GraphElementType elementType, final int element) {
         final int attributeCount = getAttributeCount(elementType);
         for (int i = 0; i < attributeCount; i++) {
-            int attribute = getAttribute(elementType, i);
+            final int attribute = getAttribute(elementType, i);
             attributeIndices[attribute].removeElement(element);
         }
     }
 
     @Override
     public void removeVertex(final int vertex) {
-
         if (!vStore.elementExists(vertex)) {
             throw new IllegalArgumentException("Attempt to remove vertex that does not exist: " + vertex);
         }
 
         if (operationMode == GraphOperationMode.EXECUTE) {
-
             // Remove all the transactions that connect to the vertex - needs optimising
             while (vertexTransactions.getElementCount(vertex) > 0) {
                 removeTransaction(vertexTransactions.getElement(vertex, 0) >>> 1);
@@ -741,7 +728,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             // Clear all attribute values so that ths vertex starts with a clean slate
             final int attributeCount = getAttributeCount(GraphElementType.VERTEX);
             for (int i = 0; i < attributeCount; i++) {
-                int attribute = getAttribute(GraphElementType.VERTEX, i);
+                final int attribute = getAttribute(GraphElementType.VERTEX, i);
                 if (!isDefaultValue(attribute, vertex)) {
                     clearValue(attribute, vertex);
                 }
@@ -798,7 +785,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public int addTransaction(int transaction, int sourceVertex, int destinationVertex, final boolean directed) {
-
         // Ensure that the source vertex exists
         if (!vStore.elementExists(sourceVertex)) {
             throw new IllegalArgumentException("Attempt to create transaction from source vertex that does not exist: " + sourceVertex);
@@ -869,9 +855,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         int link = linkHash[hash];
 
         while (true) {
-
             if (link < 0) {
-
                 link = lStore.add();
                 lStore.setUID(link, structureModificationCounter);
 
@@ -895,16 +879,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 vertexEdges.addElement(destinationVertex, (edge << 1) + 1, destinationDirection);
 
                 addElementToIndices(GraphElementType.LINK, link);
-
                 break;
             }
 
             if (vertexLinks.getElementList(link << 1) == lowVertex && vertexLinks.getElementList((link << 1) + 1) == highVertex) {
-
                 final int currentLowCategory = CATEGORY_TO_STATE[vertexLinks.getElementCategory(link << 1)];
                 final int newLowCategory = currentLowCategory | (1 << lowDirection);
                 if (newLowCategory > currentLowCategory) {
-
                     vertexLinks.removeElement(link << 1);
                     vertexLinks.addElement(lowVertex, link << 1, STATE_TO_CATEGORY[newLowCategory]);
 
@@ -946,14 +927,12 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public void removeTransaction(final int transaction) {
-
         // Ensure that the transaction exists
         if (!tStore.elementExists(transaction)) {
             throw new IllegalArgumentException("Attempt to remove a transaction that does not exist: " + transaction);
         }
 
         if (operationMode == GraphOperationMode.EXECUTE) {
-
             // Clear all attribute values so the current values are saved to the undo stack
             final int attributeCount = getAttributeCount(GraphElementType.TRANSACTION);
             for (int i = 0; i < attributeCount; i++) {
@@ -991,7 +970,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
         // If there are no more transaction of this edge
         if (linkTransactions.getElementCount(link, direction) == 0) {
-
             // Remove the edge
             final int edge = linkEdges.getElement(link, direction, 0);
 
@@ -1015,7 +993,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
             // If there are no more transaction of this link
             if (linkTransactions.getElementCount(link) == 0) {
-
                 removeElementFromIndices(GraphElementType.LINK, link);
 
                 // Remove the link from the graph
@@ -1036,20 +1013,21 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             } else {
 
                 switch (direction) {
-                    case UPHILL:
+                    case UPHILL -> {
                         lowState ^= (1 << OUTGOING);
                         highState ^= (1 << INCOMING);
-                        break;
-                    case DOWNHILL:
+                    }
+                    case DOWNHILL -> {
                         lowState ^= (1 << INCOMING);
                         highState ^= (1 << OUTGOING);
-                        break;
-                    case FLAT:
+                    }
+                    case FLAT -> {
                         lowState ^= (1 << UNDIRECTED);
                         highState ^= (1 << UNDIRECTED);
-                        break;
-                    default:
-                        break;
+                    }
+                    default -> {
+                        // do nothing
+                    }
                 }
 
                 vertexLinks.addElement(lowVertex, link << 1, STATE_TO_CATEGORY[lowState]);
@@ -1067,7 +1045,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public void setTransactionSourceVertex(final int transaction, final int newSourceVertex) {
-
         // Ensure that the transaction exists
         if (!tStore.elementExists(transaction)) {
             throw new IllegalArgumentException("Attempt to set the source vertex of a transaction that does not exist: " + transaction);
@@ -1105,7 +1082,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public void setTransactionDestinationVertex(final int transaction, final int newDestinationVertex) {
-
         // Ensure that the transaction exists
         if (!tStore.elementExists(transaction)) {
             throw new IllegalArgumentException("Attempt to set the destination vertex of a transaction that does not exist: " + transaction);
@@ -1368,7 +1344,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             }
 
             expandAttributeElementCapacity(GraphElementType.LINK.ordinal(), lStore.getCapacity());
-
             return true;
         }
 
@@ -1414,7 +1389,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     private void expandAttributeElementCapacity(final int elementTypeIndex, final int capacity) {
-
         final int count = typeAttributes.getElementCount(elementTypeIndex);
         for (int i = 0; i < count; i++) {
             final int attributeId = typeAttributes.getElement(elementTypeIndex, i);
@@ -1492,36 +1466,37 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
         // Clear all the unused attribute values
         switch (entry.getElementType()) {
-            case VERTEX:
+            case VERTEX -> {
                 for (int id = 0; id < vStore.getCapacity(); id++) {
                     if (!vStore.elementExists(id)) {
                         description.clear(id);
                     }
                 }
-                break;
-            case LINK:
+            }
+            case LINK -> {
                 for (int id = 0; id < lStore.getCapacity(); id++) {
                     if (!lStore.elementExists(id)) {
                         description.clear(id);
                     }
                 }
-                break;
-            case EDGE:
+            }
+            case EDGE -> {
                 for (int id = 0; id < eStore.getCapacity(); id++) {
                     if (!eStore.elementExists(id)) {
                         description.clear(id);
                     }
                 }
-                break;
-            case TRANSACTION:
+            }
+            case TRANSACTION -> {
                 for (int id = 0; id < tStore.getCapacity(); id++) {
                     if (!tStore.elementExists(id)) {
                         description.clear(id);
                     }
                 }
-                break;
-            default:
-                break;
+            }
+            default -> {
+                // do nothing
+            }
         }
 
         globalModificationCounter += operationMode.getModificationIncrement();
@@ -1535,7 +1510,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     @Override
     public int addAttribute(final GraphElementType elementType, final String attributeType, final String label,
             final String description, final Object defaultValue, final String attributeMergerId) {
-
         final Class<? extends AttributeDescription> dataType = attributeRegistry.getAttributes().get(attributeType);
         if (dataType == null) {
             throw new IllegalArgumentException("No attribute description found for attribute type: " + attributeType);
@@ -1551,8 +1525,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
         int[] existingAttributes = attributeNames.get(label);
         if (existingAttributes != null && existingAttributes[elementType.ordinal()] >= 0) {
-
-            int attribute = existingAttributes[elementType.ordinal()];
+            final int attribute = existingAttributes[elementType.ordinal()];
             if (attributes[attribute].getAttributeType().equals(attributeType)) {
                 return attribute;
             }
@@ -1567,28 +1540,15 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeDescription.setDefault(defaultValue);
 
             switch (elementType) {
-                case META:
-                case GRAPH:
-                    attributeDescription.setCapacity(1);
-                    break;
-                case VERTEX:
-                    attributeDescription.setCapacity(vStore.getCapacity());
-                    break;
-                case LINK:
-                    attributeDescription.setCapacity(lStore.getCapacity());
-                    break;
-                case EDGE:
-                    attributeDescription.setCapacity(eStore.getCapacity());
-                    break;
-                case TRANSACTION:
-                    attributeDescription.setCapacity(tStore.getCapacity());
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unrecognised element type " + elementType);
+                case META, GRAPH -> attributeDescription.setCapacity(1);
+                case VERTEX -> attributeDescription.setCapacity(vStore.getCapacity());
+                case LINK -> attributeDescription.setCapacity(lStore.getCapacity());
+                case EDGE -> attributeDescription.setCapacity(eStore.getCapacity());
+                case TRANSACTION -> attributeDescription.setCapacity(tStore.getCapacity());
+                default -> throw new IllegalArgumentException("Unrecognised element type " + elementType);
             }
-        } catch (final IllegalAccessException | IllegalArgumentException
-                | InstantiationException | NoSuchMethodException
-                | SecurityException | InvocationTargetException ex) {
+        } catch (final IllegalAccessException | IllegalArgumentException | InstantiationException
+                | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
             final String msg = String.format("Error creating data type for new %s attribute '%s'", elementType, label);
             throw new IllegalStateException(msg, ex);
         }
@@ -1628,7 +1588,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public void removeAttribute(final int attribute) {
-
         if (!aStore.elementExists(attribute)) {
             throw new IllegalArgumentException("Attempt to remove attribute that does not exist: " + attribute);
         }
@@ -1637,13 +1596,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             throw new IllegalArgumentException("Attempt to remove an attribute that is part of the primary key: " + attribute);
         }
 
-        GraphAttribute attributeObject = attributes[attribute];
+        final GraphAttribute attributeObject = attributes[attribute];
 
         if (operationMode == GraphOperationMode.EXECUTE) {
-            GraphElementType elementType = attributeObject.getElementType();
-            int elementCount = elementType.getElementCount(this);
+            final GraphElementType elementType = attributeObject.getElementType();
+            final int elementCount = elementType.getElementCount(this);
             for (int i = 0; i < elementCount; i++) {
-                int element = elementType.getElement(this, i);
+                final int element = elementType.getElement(this, i);
                 if (!isDefaultValue(attribute, element)) {
                     clearValue(attribute, element);
                 }
@@ -1689,7 +1648,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public int getAttribute(final GraphElementType elementType, final String name) {
-        int[] labelAttributes = attributeNames.get(name);
+        final int[] labelAttributes = attributeNames.get(name);
         return labelAttributes == null ? NOT_FOUND : labelAttributes[elementType.ordinal()];
     }
 
@@ -1739,12 +1698,12 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public Object createReadAttributeObject(final int attribute, IntReadable indexReadable) {
+    public Object createReadAttributeObject(final int attribute, final IntReadable indexReadable) {
         return attributeDescriptions[attribute].createReadObject(indexReadable);
     }
 
     @Override
-    public Object createWriteAttributeObject(final int attribute, IntReadable indexReadable) {
+    public Object createWriteAttributeObject(final int attribute, final IntReadable indexReadable) {
         return attributeDescriptions[attribute].createWriteObject(this, attribute, indexReadable);
     }
 
@@ -1826,13 +1785,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeIndices[attribute].updateElement(id);
             attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
             globalModificationCounter += operationMode.getModificationIncrement();
-            int keyType = primaryKeyLookup[attribute];
+            final int keyType = primaryKeyLookup[attribute];
             if (keyType >= 0) {
                 removeFromIndex(keyType, id);
             }
         } else {
-            AttributeDescription description = attributeDescriptions[attribute];
-            NativeAttributeType nativeType = description.getNativeType();
+            final AttributeDescription description = attributeDescriptions[attribute];
+            final NativeAttributeType nativeType = description.getNativeType();
             nativeType.get(this, attribute, id, oldValue);
 
             description.clear(id);
@@ -1841,7 +1800,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 attributeIndices[attribute].updateElement(id);
                 attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
                 globalModificationCounter += operationMode.getModificationIncrement();
-                int keyType = primaryKeyLookup[attribute];
+                final int keyType = primaryKeyLookup[attribute];
                 if (keyType >= 0) {
                     removeFromIndex(keyType, id);
                 }
@@ -1856,13 +1815,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeIndices[attribute].updateElement(id);
             attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
             globalModificationCounter += operationMode.getModificationIncrement();
-            int keyType = primaryKeyLookup[attribute];
+            final int keyType = primaryKeyLookup[attribute];
             if (keyType >= 0) {
                 removeFromIndex(keyType, id);
             }
         } else {
-            AttributeDescription description = attributeDescriptions[attribute];
-            NativeAttributeType nativeType = description.getNativeType();
+            final AttributeDescription description = attributeDescriptions[attribute];
+            final NativeAttributeType nativeType = description.getNativeType();
             nativeType.get(this, attribute, id, oldValue);
 
             description.setByte(id, value);
@@ -1871,7 +1830,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 attributeIndices[attribute].updateElement(id);
                 attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
                 globalModificationCounter += operationMode.getModificationIncrement();
-                int keyType = primaryKeyLookup[attribute];
+                final int keyType = primaryKeyLookup[attribute];
                 if (keyType >= 0) {
                     removeFromIndex(keyType, id);
                 }
@@ -1886,13 +1845,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeIndices[attribute].updateElement(id);
             attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
             globalModificationCounter += operationMode.getModificationIncrement();
-            int keyType = primaryKeyLookup[attribute];
+            final int keyType = primaryKeyLookup[attribute];
             if (keyType >= 0) {
                 removeFromIndex(keyType, id);
             }
         } else {
-            AttributeDescription description = attributeDescriptions[attribute];
-            NativeAttributeType nativeType = description.getNativeType();
+            final AttributeDescription description = attributeDescriptions[attribute];
+            final NativeAttributeType nativeType = description.getNativeType();
             nativeType.get(this, attribute, id, oldValue);
 
             description.setShort(id, value);
@@ -1901,7 +1860,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 attributeIndices[attribute].updateElement(id);
                 attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
                 globalModificationCounter += operationMode.getModificationIncrement();
-                int keyType = primaryKeyLookup[attribute];
+                final int keyType = primaryKeyLookup[attribute];
                 if (keyType >= 0) {
                     removeFromIndex(keyType, id);
                 }
@@ -1916,13 +1875,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeIndices[attribute].updateElement(id);
             attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
             globalModificationCounter += operationMode.getModificationIncrement();
-            int keyType = primaryKeyLookup[attribute];
+            final int keyType = primaryKeyLookup[attribute];
             if (keyType >= 0) {
                 removeFromIndex(keyType, id);
             }
         } else {
-            AttributeDescription description = attributeDescriptions[attribute];
-            NativeAttributeType nativeType = description.getNativeType();
+            final AttributeDescription description = attributeDescriptions[attribute];
+            final NativeAttributeType nativeType = description.getNativeType();
             nativeType.get(this, attribute, id, oldValue);
 
             description.setInt(id, value);
@@ -1931,7 +1890,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 attributeIndices[attribute].updateElement(id);
                 attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
                 globalModificationCounter += operationMode.getModificationIncrement();
-                int keyType = primaryKeyLookup[attribute];
+                final int keyType = primaryKeyLookup[attribute];
                 if (keyType >= 0) {
                     removeFromIndex(keyType, id);
                 }
@@ -1946,13 +1905,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeIndices[attribute].updateElement(id);
             attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
             globalModificationCounter += operationMode.getModificationIncrement();
-            int keyType = primaryKeyLookup[attribute];
+            final int keyType = primaryKeyLookup[attribute];
             if (keyType >= 0) {
                 removeFromIndex(keyType, id);
             }
         } else {
-            AttributeDescription description = attributeDescriptions[attribute];
-            NativeAttributeType nativeType = description.getNativeType();
+            final AttributeDescription description = attributeDescriptions[attribute];
+            final NativeAttributeType nativeType = description.getNativeType();
             nativeType.get(this, attribute, id, oldValue);
 
             description.setLong(id, value);
@@ -1961,7 +1920,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 attributeIndices[attribute].updateElement(id);
                 attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
                 globalModificationCounter += operationMode.getModificationIncrement();
-                int keyType = primaryKeyLookup[attribute];
+                final int keyType = primaryKeyLookup[attribute];
                 if (keyType >= 0) {
                     removeFromIndex(keyType, id);
                 }
@@ -1976,13 +1935,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeIndices[attribute].updateElement(id);
             attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
             globalModificationCounter += operationMode.getModificationIncrement();
-            int keyType = primaryKeyLookup[attribute];
+            final int keyType = primaryKeyLookup[attribute];
             if (keyType >= 0) {
                 removeFromIndex(keyType, id);
             }
         } else {
-            AttributeDescription description = attributeDescriptions[attribute];
-            NativeAttributeType nativeType = description.getNativeType();
+            final AttributeDescription description = attributeDescriptions[attribute];
+            final NativeAttributeType nativeType = description.getNativeType();
             nativeType.get(this, attribute, id, oldValue);
 
             description.setFloat(id, value);
@@ -1991,7 +1950,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 attributeIndices[attribute].updateElement(id);
                 attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
                 globalModificationCounter += operationMode.getModificationIncrement();
-                int keyType = primaryKeyLookup[attribute];
+                final int keyType = primaryKeyLookup[attribute];
                 if (keyType >= 0) {
                     removeFromIndex(keyType, id);
                 }
@@ -2006,13 +1965,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeIndices[attribute].updateElement(id);
             attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
             globalModificationCounter += operationMode.getModificationIncrement();
-            int keyType = primaryKeyLookup[attribute];
+            final int keyType = primaryKeyLookup[attribute];
             if (keyType >= 0) {
                 removeFromIndex(keyType, id);
             }
         } else {
-            AttributeDescription description = attributeDescriptions[attribute];
-            NativeAttributeType nativeType = description.getNativeType();
+            final AttributeDescription description = attributeDescriptions[attribute];
+            final NativeAttributeType nativeType = description.getNativeType();
             nativeType.get(this, attribute, id, oldValue);
 
             description.setDouble(id, value);
@@ -2021,7 +1980,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 attributeIndices[attribute].updateElement(id);
                 attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
                 globalModificationCounter += operationMode.getModificationIncrement();
-                int keyType = primaryKeyLookup[attribute];
+                final int keyType = primaryKeyLookup[attribute];
                 if (keyType >= 0) {
                     removeFromIndex(keyType, id);
                 }
@@ -2036,13 +1995,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeIndices[attribute].updateElement(id);
             attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
             globalModificationCounter += operationMode.getModificationIncrement();
-            int keyType = primaryKeyLookup[attribute];
+            final int keyType = primaryKeyLookup[attribute];
             if (keyType >= 0) {
                 removeFromIndex(keyType, id);
             }
         } else {
-            AttributeDescription description = attributeDescriptions[attribute];
-            NativeAttributeType nativeType = description.getNativeType();
+            final AttributeDescription description = attributeDescriptions[attribute];
+            final NativeAttributeType nativeType = description.getNativeType();
             nativeType.get(this, attribute, id, oldValue);
 
             description.setBoolean(id, value);
@@ -2051,7 +2010,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 attributeIndices[attribute].updateElement(id);
                 attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
                 globalModificationCounter += operationMode.getModificationIncrement();
-                int keyType = primaryKeyLookup[attribute];
+                final int keyType = primaryKeyLookup[attribute];
                 if (keyType >= 0) {
                     removeFromIndex(keyType, id);
                 }
@@ -2067,13 +2026,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeIndices[attribute].updateElement(id);
             attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
             globalModificationCounter += operationMode.getModificationIncrement();
-            int keyType = primaryKeyLookup[attribute];
+            final int keyType = primaryKeyLookup[attribute];
             if (keyType >= 0) {
                 removeFromIndex(keyType, id);
             }
         } else {
-            AttributeDescription description = attributeDescriptions[attribute];
-            NativeAttributeType nativeType = description.getNativeType();
+            final AttributeDescription description = attributeDescriptions[attribute];
+            final NativeAttributeType nativeType = description.getNativeType();
             nativeType.get(this, attribute, id, oldValue);
 
             description.setChar(id, value);
@@ -2082,7 +2041,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 attributeIndices[attribute].updateElement(id);
                 attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
                 globalModificationCounter += operationMode.getModificationIncrement();
-                int keyType = primaryKeyLookup[attribute];
+                final int keyType = primaryKeyLookup[attribute];
                 if (keyType >= 0) {
                     removeFromIndex(keyType, id);
                 }
@@ -2097,13 +2056,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeIndices[attribute].updateElement(id);
             attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
             globalModificationCounter += operationMode.getModificationIncrement();
-            int keyType = primaryKeyLookup[attribute];
+            final int keyType = primaryKeyLookup[attribute];
             if (keyType >= 0) {
                 removeFromIndex(keyType, id);
             }
         } else {
-            AttributeDescription description = attributeDescriptions[attribute];
-            NativeAttributeType nativeType = description.getNativeType();
+            final AttributeDescription description = attributeDescriptions[attribute];
+            final NativeAttributeType nativeType = description.getNativeType();
             nativeType.get(this, attribute, id, oldValue);
 
             description.setString(id, value);
@@ -2112,7 +2071,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 attributeIndices[attribute].updateElement(id);
                 attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
                 globalModificationCounter += operationMode.getModificationIncrement();
-                int keyType = primaryKeyLookup[attribute];
+                final int keyType = primaryKeyLookup[attribute];
                 if (keyType >= 0) {
                     removeFromIndex(keyType, id);
                 }
@@ -2127,13 +2086,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeIndices[attribute].updateElement(id);
             attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
             globalModificationCounter += operationMode.getModificationIncrement();
-            int keyType = primaryKeyLookup[attribute];
+            final int keyType = primaryKeyLookup[attribute];
             if (keyType >= 0) {
                 removeFromIndex(keyType, id);
             }
         } else {
-            AttributeDescription description = attributeDescriptions[attribute];
-            NativeAttributeType nativeType = description.getNativeType();
+            final AttributeDescription description = attributeDescriptions[attribute];
+            final NativeAttributeType nativeType = description.getNativeType();
             nativeType.get(this, attribute, id, oldValue);
 
             description.setObject(id, value);
@@ -2142,7 +2101,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 attributeIndices[attribute].updateElement(id);
                 attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
                 globalModificationCounter += operationMode.getModificationIncrement();
-                int keyType = primaryKeyLookup[attribute];
+                final int keyType = primaryKeyLookup[attribute];
                 if (keyType >= 0) {
                     removeFromIndex(keyType, id);
                 }
@@ -2152,14 +2111,14 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public void setPrimaryKey(final GraphElementType elementType, final int... newPrimaryKeys) {
-        for (int newKey : newPrimaryKeys) {
+        for (final int newKey : newPrimaryKeys) {
             if (getAttributeElementType(newKey) != elementType) {
                 throw new IllegalArgumentException("Key attribute has the wrong element type");
             }
         }
 
-        int[] oldPrimaryKeys = primaryKeys[elementType.ordinal()];
-        for (int oldPrimaryKey : oldPrimaryKeys) {
+        final int[] oldPrimaryKeys = primaryKeys[elementType.ordinal()];
+        for (final int oldPrimaryKey : oldPrimaryKeys) {
             primaryKeyLookup[oldPrimaryKey] = -1;
             attributeModificationCounters[oldPrimaryKey]++;
             attributeModificationCounter++;
@@ -2167,14 +2126,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
         primaryKeys[elementType.ordinal()] = Arrays.copyOf(newPrimaryKeys, newPrimaryKeys.length);
 
-        for (int attribute : newPrimaryKeys) {
+        for (final int attribute : newPrimaryKeys) {
             primaryKeyLookup[attribute] = elementType.ordinal();
             attributeModificationCounters[attribute]++;
             attributeModificationCounter++;
         }
 
         if (newPrimaryKeys.length > 0) {
-
             if (elementType == GraphElementType.VERTEX) {
                 primaryKeyIndices[elementType.ordinal()] = new ElementKeySet(getVertexCapacity(), elementType);
             } else {
@@ -2182,23 +2140,17 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             }
 
             switch (elementType) {
-                case VERTEX:
+                case VERTEX ->
                     removedFromKeys[elementType.ordinal()] = new ElementList(vStore);
-                    break;
-
-                case LINK:
+                case LINK ->
                     removedFromKeys[elementType.ordinal()] = new ElementList(lStore);
-                    break;
-
-                case EDGE:
+                case EDGE ->
                     removedFromKeys[elementType.ordinal()] = new ElementList(eStore);
-                    break;
-
-                case TRANSACTION:
+                case TRANSACTION ->
                     removedFromKeys[elementType.ordinal()] = new ElementList(tStore);
-                    break;
-                default:
-                    break;
+                default -> {
+                    // do nothing
+                }
             }
 
         } else {
@@ -2215,7 +2167,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public int[] getPrimaryKey(final GraphElementType elementType) {
-        int[] keys = primaryKeys[elementType.ordinal()];
+        final int[] keys = primaryKeys[elementType.ordinal()];
         return Arrays.copyOf(keys, keys.length);
     }
 
@@ -2244,7 +2196,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
         @Override
         protected boolean equals(final int element1, final int element2) {
-            for (int attribute : primaryKeys[elementType.ordinal()]) {
+            for (final int attribute : primaryKeys[elementType.ordinal()]) {
                 if (!attributeDescriptions[attribute].equals(element1, element2)) {
                     return false;
                 }
@@ -2273,29 +2225,23 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
         @Override
         protected boolean equals(final int element1, final int element2) {
-            if (!super.equals(element1, element2)) {
-                return false;
-            }
-            if (getTransactionDirection(element1) != getTransactionDirection(element2)) {
-                return false;
-            }
-            if (getTransactionSourceVertex(element1) != getTransactionSourceVertex(element2)) {
-                return false;
-            }
-            return getTransactionDestinationVertex(element1) == getTransactionDestinationVertex(element2);
+            return super.equals(element1, element2)
+                    && getTransactionDirection(element1) == getTransactionDirection(element2)
+                    && getTransactionSourceVertex(element1) == getTransactionSourceVertex(element2)
+                    && getTransactionDestinationVertex(element1) == getTransactionDestinationVertex(element2);
         }
     }
 
     @Override
     public GraphKey getPrimaryKeyValue(final GraphElementType elementType, final int id) {
-        int[] primaryKeyAttributes = primaryKeys[elementType.ordinal()];
+        final int[] primaryKeyAttributes = primaryKeys[elementType.ordinal()];
 
         if (primaryKeyAttributes.length == 0) {
             return null;
         }
 
         if (elementType == GraphElementType.VERTEX) {
-            Object[] elements = new Object[primaryKeyAttributes.length];
+            final Object[] elements = new Object[primaryKeyAttributes.length];
             for (int i = 0; i < elements.length; i++) {
                 elements[i] = getObjectValue(primaryKeyAttributes[i], id);
             }
@@ -2303,16 +2249,16 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             return new GraphKey(elements);
 
         } else {
-            Object[] elements = new Object[primaryKeyAttributes.length];
+            final Object[] elements = new Object[primaryKeyAttributes.length];
             for (int i = 0; i < elements.length; i++) {
                 elements[i] = getObjectValue(primaryKeyAttributes[i], id);
             }
 
-            int sourceVertex = getTransactionSourceVertex(id);
-            GraphKey sourceKey = getPrimaryKeyValue(GraphElementType.VERTEX, sourceVertex);
+            final int sourceVertex = getTransactionSourceVertex(id);
+            final GraphKey sourceKey = getPrimaryKeyValue(GraphElementType.VERTEX, sourceVertex);
 
-            int destinationVertex = getTransactionDestinationVertex(id);
-            GraphKey destinationKey = getPrimaryKeyValue(GraphElementType.VERTEX, destinationVertex);
+            final int destinationVertex = getTransactionDestinationVertex(id);
+            final GraphKey destinationKey = getPrimaryKeyValue(GraphElementType.VERTEX, destinationVertex);
 
             return new GraphKey(sourceKey, destinationKey, getTransactionDirection(id) == Graph.UNDIRECTED, elements);
         }
@@ -2344,7 +2290,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     private void removeFromIndex(final int elementType, final int id) {
-        IntHashSet index = primaryKeyIndices[elementType];
+        final IntHashSet index = primaryKeyIndices[elementType];
         if (index != null && removedFromKeys[elementType].addToBack(id)) {
             index.remove(id);
         }
@@ -2372,17 +2318,17 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public void setAttributeIndexType(final int attribute, final GraphIndexType indexType) {
-        GraphIndexType oldIndexType = attributeIndexTypes[attribute];
+        final GraphIndexType oldIndexType = attributeIndexTypes[attribute];
         if (indexType != oldIndexType) {
-            AttributeDescription attributeDescription = attributeDescriptions[attribute];
+            final AttributeDescription attributeDescription = attributeDescriptions[attribute];
             if (attributeDescription.supportsIndexType(indexType)) {
                 attributeIndexTypes[attribute] = indexType;
-                GraphIndex index = attributeIndices[attribute] = attributeDescription.createIndex(indexType);
+                final GraphIndex index = attributeIndices[attribute] = attributeDescription.createIndex(indexType);
 
-                GraphElementType elementType = attributes[attribute].getElementType();
-                int elementCount = elementType.getElementCount(this);
+                final GraphElementType elementType = attributes[attribute].getElementType();
+                final int elementCount = elementType.getElementCount(this);
                 for (int i = 0; i < elementCount; i++) {
-                    int element = elementType.getElement(this, i);
+                    final int element = elementType.getElement(this, i);
                     index.addElement(element);
                 }
 

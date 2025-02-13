@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -310,7 +310,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     @Override
     public void read(final GraphReadMethods rg, final PluginInteraction interaction, final PluginParameters parameters) throws PluginException, InterruptedException {
-
         // We have the dtAttr from the original wg: we should have been passed the label, but never mind.
         // We need to get the label from the original, so we can get the dtAttr for the copy.
         final String dtAttrOrig = parameters.getParameters().get(DATETIME_ATTRIBUTE_PARAMETER_ID).getStringValue();
@@ -669,22 +668,23 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     private void copyAttributes(final GraphWriteMethods graph, final int fromId, final int toId, final GraphElementType type) {
         switch (type) {
-            case TRANSACTION:
+            case TRANSACTION -> {
                 for (int i = 0; i < graph.getAttributeCount(GraphElementType.TRANSACTION); i++) {
                     final int attr = graph.getAttribute(GraphElementType.TRANSACTION, i);
                     final Object value = graph.getObjectValue(attr, fromId);
                     graph.setObjectValue(attr, toId, value);
                 }   
-                break;
-            case VERTEX:
+            }
+            case VERTEX -> {
                 for (int i = 0; i < graph.getAttributeCount(GraphElementType.VERTEX); i++) {
                     final int attr = graph.getAttribute(GraphElementType.VERTEX, i);
                     final Object value = graph.getObjectValue(attr, fromId);
                     graph.setObjectValue(attr, toId, value);
                 }   
-                break;
-            default:
-                break;
+            }
+            default -> {
+                // Do nothing 
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -130,8 +130,8 @@ public class FlowNetwork {
             if (config.isOutdirdir()) {
                 LOGGER.log(Level.INFO, "counting only ingoing links... done!");
             } else {
-                LOGGER.log(Level.INFO, "using undirected links%s\n", config.isUndirdir() ? ", switching to directed after steady state... done!"
-                        : "... done!");
+                LOGGER.log(Level.INFO, String.format("using undirected links%s\n", config.isUndirdir() ? ", switching to directed after steady state... done!"
+                        : "... done!"));
             }
 
             return;
@@ -203,7 +203,7 @@ public class FlowNetwork {
             }
 
             // Normalize if needed.
-            final double adjustedSum =  sum - 1.0;
+            final double adjustedSum = sum - 1.0;
             if (sum != 0 && Math.abs(adjustedSum) > 1.0e-10) {
                 final String logMsg = String.format("Normalizing ranks after %d power iterations with error %e ", numIterations, adjustedSum);
                 LOGGER.log(Level.INFO, logMsg);
@@ -243,11 +243,11 @@ public class FlowNetwork {
     }
 
     public double[] getNodeFlow() {
-        return nodeFlow;
+        return nodeFlow.clone();
     }
 
     public double[] getNodeTeleportRates() {
-        return nodeTeleportRates;
+        return nodeTeleportRates.clone();
     }
 
     public Connection[] getFlowConnections() {

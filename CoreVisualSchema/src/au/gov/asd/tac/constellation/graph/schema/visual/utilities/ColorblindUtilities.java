@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.utilities;
 
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.prefs.Preferences;
@@ -32,75 +30,34 @@ public class ColorblindUtilities {
         throw new IllegalStateException("Utility class");
     }
 
-    public static void colorNodes(final GraphWriteMethods wg, final int vxColorblindAttr, final int txColorblindAttr) {
-        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
-
-        final int vxColorAttr = VisualConcept.VertexAttribute.COLOR.ensure(wg);
-        final int txColorAttr = VisualConcept.TransactionAttribute.COLOR.ensure(wg);
-
-        final int vertexCount = wg.getVertexCount();
-        final int transactionCount = wg.getTransactionCount();
-
-        if (!"None".equals(colorMode)) {
-            //Iterate through graph vertices. If vertexType is a defined schemaType color will be adjusted if applicable.
-            for (int vertex = 0; vertex < vertexCount; vertex++) {
-                final int vxId = wg.getVertex(vertex);
-                final ConstellationColor vertexColor = wg.getObjectValue(vxColorAttr, vxId);
-                final ConstellationColor vxColorblindAlpha = wg.getObjectValue(vxColorblindAttr, vxId);
-
-                if (vxColorblindAlpha == null || vxColorblindAlpha.getAlpha() == 0.99F) {
-                    ConstellationColor newColor = calcColorBrightness(vertexColor);
-                    wg.setObjectValue(vxColorblindAttr, vxId, newColor);
-                }
-            }
-            //Iterate through graph transactions. If transcationType is a defined schemaType color will be adjusted if applicable.
-            for (int transaction = 0; transaction < transactionCount; transaction++) {
-                final int transactionId = wg.getTransaction(transaction);
-                final ConstellationColor transactionColor = wg.getObjectValue(txColorAttr, transactionId);
-                final ConstellationColor txColorblindAlpha = wg.getObjectValue(txColorblindAttr, transactionId);
-
-                if (txColorblindAlpha == null || txColorblindAlpha.getAlpha() == 0.99F) {
-                    ConstellationColor newColor = calcColorBrightness(transactionColor);
-                    wg.setObjectValue(txColorblindAttr, transactionId, newColor);
-                }
-            }
-            setColorRef(wg, wg.getAttributeName(vxColorblindAttr), wg.getAttributeName(txColorblindAttr));
-        } else {
-            wg.removeAttribute(vxColorblindAttr);
-            wg.removeAttribute(txColorblindAttr);
-        }
-    }
-
-    public static void setColorRef(final GraphWriteMethods wg, final String vxColorAttrName, final String txColorAttrName) {
-        final int vxColorRef = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(wg);
-        final int txColorRef = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(wg);
-
-        wg.setStringValue(vxColorRef, 0, vxColorAttrName);
-        wg.setStringValue(txColorRef, 0, txColorAttrName);
-    }
-
-    /*Adjust RGB values using the to-be removed RGB value as a proportion of the calculation, acting as contrast booster for brightness adjustments.  
-        Evaluate the selected colorblind mode and adjust contrast if RGB value is high enough; prevents new color from being too dark, then remove imperceivable colors. 
-        Primary colors for the modes are then adjusted at different strengths to improve contrast. I.E. remove 50% red in deut, remove 18% blue for prot.*/
-    public static final ConstellationColor calcColorBrightness(final ConstellationColor vertexColor) {
-        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+    /**
+     * Adjust RGB values using the to-be removed RGB value as a proportion of the calculation, 
+     * acting as contrast booster for brightness adjustments. 
+     * Evaluate the selected colorblind mode and adjust contrast if RGB value is high enough; 
+     * prevents new color from being too dark, then remove imperceivable colors. 
+     * Primary colors for the modes are then adjusted at different strengths to improve contrast. 
+     * i.e. remove 50% red in Deuteranopia, remove 18% blue for Protanopia.
+     * 
+     * @param vertexColor the color to adjust
+     * @return The adjusted color for colorblind filter
+     */
+    public static final ConstellationColor calculateColorBrightness(final ConstellationColor vertexColor) {
+        final String colorMode = getApplicationPreferences().get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
         float adjustedRed = vertexColor.getRed();
         float adjustedGreen = vertexColor.getGreen();
         float adjustedBlue = vertexColor.getBlue();
-        final float minPrimaryRGBVal = 0.15f;
-        final float minimumRGBVal = 0.25f;
-        final float minimumAdjustedVal = 0.35f;
-        final float minimumCombinedRGB = 0.70f;
-        final float brightenRGB = 0.1f;
+        final float minPrimaryRGBVal = 0.15F;
+        final float minimumRGBVal = 0.25F;
+        final float minimumAdjustedVal = 0.35F;
+        final float minimumCombinedRGB = 0.70F;
+        final float brightenRGB = 0.1F;
 
         switch (colorMode) {
-            case "None":
-                //do nothing
-                break;
-            case "Deuteranopia":
+            case "None" -> {
+                // Do nothing
+            }
+            case "Deuteranopia" -> {
                 //If the constellation color is primarily composed of a single rgb shade (e.g. Blue) do not adjust the value
                 if (vertexColor.getRed() + vertexColor.getBlue() <= minimumCombinedRGB || vertexColor.getBlue() <= minPrimaryRGBVal) {
                     break;
@@ -109,10 +66,10 @@ public class ColorblindUtilities {
                 if (vertexColor.getRed() >= minimumRGBVal) {
                     adjustedRed = vertexColor.getRed() * vertexColor.getGreen();
                     adjustedRed = adjustedRed <= minimumAdjustedVal ? adjustedRed + brightenRGB : adjustedRed;
-                    adjustedBlue = vertexColor.getBlue() / 1.2f;
+                    adjustedBlue = vertexColor.getBlue() / 1.2F;
                 }
-                break;
-            case "Protanopia":
+            }
+            case "Protanopia" -> {
                 if (vertexColor.getGreen() + vertexColor.getBlue() < minimumCombinedRGB || vertexColor.getRed() <= minPrimaryRGBVal) {
                     break;
                 }
@@ -120,10 +77,10 @@ public class ColorblindUtilities {
                 if (vertexColor.getGreen() >= minimumRGBVal) {
                     adjustedGreen = vertexColor.getGreen() * vertexColor.getRed();
                     adjustedGreen = adjustedGreen <= minimumAdjustedVal ? adjustedGreen + brightenRGB : adjustedGreen;
-                    adjustedRed = vertexColor.getRed() / 1.8f;
+                    adjustedRed = vertexColor.getRed() / 1.8F;
                 }
-                break;
-            case "Tritanopia":
+            }
+            case "Tritanopia" -> {
                 if (vertexColor.getBlue() + vertexColor.getRed() <= minimumCombinedRGB || vertexColor.getGreen() <= minPrimaryRGBVal) {
                     break;
                 }
@@ -131,16 +88,18 @@ public class ColorblindUtilities {
                 if (vertexColor.getBlue() >= minimumRGBVal) {
                     adjustedBlue = vertexColor.getBlue() * vertexColor.getRed();
                     adjustedBlue = adjustedBlue <= minimumAdjustedVal ? adjustedBlue + brightenRGB : adjustedBlue;
-                    adjustedGreen = vertexColor.getGreen() / 1.05f;
+                    adjustedGreen = vertexColor.getGreen() / 1.05F;
                 }
-                break;
-            default:
-                //do nothing
-                break;
+            }
+            default -> {
+                // Do nothing
+            }
         }
 
-        final ConstellationColor newColor = ConstellationColor.getColorValue(adjustedRed, adjustedGreen, adjustedBlue, 0.99F);
-        return newColor;
+        return ConstellationColor.getColorValue(adjustedRed, adjustedGreen, adjustedBlue, vertexColor.getAlpha());
     }
-
+    
+    protected static Preferences getApplicationPreferences() {
+        return NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    }
 }

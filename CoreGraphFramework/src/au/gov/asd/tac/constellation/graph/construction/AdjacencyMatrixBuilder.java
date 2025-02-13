@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,6 @@ public class AdjacencyMatrixBuilder extends GraphBuilder {
     }
 
     public static AdjacencyMatrixBuilder addGraphWithMatrix(final GraphWriteMethods graph, final int[][] adjacencyMatrix, final boolean directed) {
-
         final int size = adjacencyMatrix.length;
         final int[] nodes = new int[size];
 
@@ -57,7 +56,7 @@ public class AdjacencyMatrixBuilder extends GraphBuilder {
 
         final int[] transactions = new int[transactionList.size()];
         int currentTras = 0;
-        for (int transID : transactionList) {
+        for (final int transID : transactionList) {
             transactions[currentTras++] = transID;
         }
 
@@ -72,5 +71,4 @@ public class AdjacencyMatrixBuilder extends GraphBuilder {
         this.nodes = nodes;
         this.transactions = transactions;
     }
-
 }

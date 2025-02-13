@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,10 @@ import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -58,20 +60,16 @@ public class CameraIOProviderNGTest {
     // Test variables
     final int attributeId = 23;
     final int elementId = 41;
-    final String attribValue = "TestAttrib";
     final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.VERTEX, "attrType", "attrName", "attrDesc",  null, null);
-
     
-    public CameraIOProviderNGTest() {
-        
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -81,6 +79,7 @@ public class CameraIOProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -104,9 +103,10 @@ public class CameraIOProviderNGTest {
 
     /**
      * Test of readObject method, of class CameraIOProvider.
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testReadObject() throws Exception {
+    public void testReadObject() throws JsonProcessingException {
         System.out.println("CameraIOProviderNGTest.testReadObject");
 
         // Create argument captors
@@ -153,9 +153,10 @@ public class CameraIOProviderNGTest {
 
     /**
      * Test of writeObject method, of class CameraIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteObject() throws Exception {
+    public void testWriteObject() throws IOException {
         System.out.println("CameraIOProviderNGTest.testWriteObject");
         
         // Test case where not verbose and default graph value

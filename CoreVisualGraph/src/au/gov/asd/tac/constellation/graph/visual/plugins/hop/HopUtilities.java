@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,10 +42,9 @@ final class HopUtilities {
      *
      * @return True if any hopping was done, false otherwise.
      */
-    static boolean hopOutHalf(final GraphWriteMethods graph, boolean outgoing, boolean incoming, boolean undirected) {
+    public static boolean hopOutHalf(final GraphWriteMethods graph, final boolean outgoing, final boolean incoming, final boolean undirected) {
         final int txSelectedAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
         final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-
         final BitSet vxToSelect = new BitSet(graph.getVertexCapacity());
         final BitSet txToSelect = new BitSet(graph.getTransactionCapacity());
 
@@ -84,8 +83,6 @@ final class HopUtilities {
                     if (!dstsel) {
                         vxToSelect.set(txDestId);
                     }
-                } else {
-                    // Do nothing
                 }
             } else {
                 final boolean txSourceIsSelected = graph.getBooleanValue(vxSelectedAttr, txSourceId);
@@ -94,10 +91,8 @@ final class HopUtilities {
                     if ((outgoing && txSourceIsSelected) || (incoming && txDestIsSelected)) {
                         txToSelect.set(txId);
                     }
-                } else {
-                    if (undirected && (txSourceIsSelected || txDestIsSelected)) {
-                        txToSelect.set(txId);
-                    }
+                } else if (undirected && (txSourceIsSelected || txDestIsSelected)) {
+                    txToSelect.set(txId);
                 }
             }
         }
@@ -118,7 +113,7 @@ final class HopUtilities {
      *
      * @param graph
      */
-    static void hopOutOne(final GraphWriteMethods graph, boolean outgoing, boolean incoming, boolean undirected) {
+    public static void hopOutOne(final GraphWriteMethods graph, final boolean outgoing, final boolean incoming, final boolean undirected) {
         hopOutHalf(graph, outgoing, incoming, undirected);
         hopOutHalf(graph, outgoing, incoming, undirected);
     }
@@ -128,7 +123,7 @@ final class HopUtilities {
      *
      * @param graph
      */
-    static void hopOutFull(final GraphWriteMethods graph, boolean outgoing, boolean incoming, boolean undirected) {
+    public static void hopOutFull(final GraphWriteMethods graph, final boolean outgoing, final boolean incoming, final boolean undirected) {
         while (hopOutHalf(graph, outgoing, incoming, undirected)) {
             // do nothing
         }

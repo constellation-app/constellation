@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,16 +37,24 @@ import org.testng.annotations.Test;
  */
 public class CommonNeighboursPluginNGTest {
 
-    private int transactionCNAttribute, vertexSelectedAttribute;
-    private int vxId0, vxId1, vxId2, vxId3, vxId4;
+    private int transactionCNAttribute;
+    
+    private int vxId0;
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    
     private StoreGraph graph;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -57,7 +65,7 @@ public class CommonNeighboursPluginNGTest {
 
         // add attributes
         transactionCNAttribute = SnaConcept.TransactionAttribute.COMMON_NEIGHBOURS.ensure(graph);
-        vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        VisualConcept.VertexAttribute.SELECTED.ensure(graph);
 
         // add vertices
         vxId0 = graph.addVertex();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,8 @@ public class FloatArithmeticConverters {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
-    public static <P1 extends FloatReadable, P2 extends FloatReadable> void register(ConverterRegistry r, Class<P1> parameterClass1, Class<P2> parameterClass2) {
+    public static <P1 extends FloatReadable, P2 extends FloatReadable> void register(final ConverterRegistry r, 
+            final Class<P1> parameterClass1, final Class<P2> parameterClass2) {
         r.register(parameterClass1, parameterClass2, Product.class, new ProductConverter());
         r.register(parameterClass1, parameterClass2, Quotient.class, new QuotientConverter());
         r.register(parameterClass1, parameterClass2, Modulus.class, new ModulusConverter());
@@ -60,7 +61,7 @@ public class FloatArithmeticConverters {
         r.register(parameterClass1, parameterClass2, LessThanOrEquals.class, new LessThanOrEqualsConverter());
     }
 
-    public static <P extends FloatReadable> void register(ConverterRegistry r, Class<P> parameterClass) {
+    public static <P extends FloatReadable> void register(final ConverterRegistry r, final Class<P> parameterClass) {
         r.register(parameterClass, Negative.class, new NegativeConverter());
         r.register(parameterClass, Positive.class, new PositiveConverter());
     }
@@ -68,7 +69,7 @@ public class FloatArithmeticConverters {
     public static class NegativeConverter implements Converter<FloatReadable, Negative<FloatValue>> {
 
         @Override
-        public Negative<FloatValue> convert(FloatReadable source) {
+        public Negative<FloatValue> convert(final FloatReadable source) {
             return new Negative<>() {
                 @Override
                 public FloatValue createValue() {
@@ -76,7 +77,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(FloatValue value) {
+                public void read(final FloatValue value) {
                     value.writeFloat(-source.readFloat());
                 }
             };
@@ -86,7 +87,7 @@ public class FloatArithmeticConverters {
     public static class PositiveConverter implements Converter<FloatReadable, Positive<FloatValue>> {
 
         @Override
-        public Positive<FloatValue> convert(FloatReadable source) {
+        public Positive<FloatValue> convert(final FloatReadable source) {
             return new Positive<>() {
                 @Override
                 public FloatValue createValue() {
@@ -94,7 +95,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(FloatValue value) {
+                public void read(final FloatValue value) {
                     value.writeFloat(source.readFloat());
                 }
             };
@@ -104,7 +105,7 @@ public class FloatArithmeticConverters {
     public static class ComparisonConverter implements Biconverter<FloatReadable, FloatReadable, Comparison> {
 
         @Override
-        public Comparison convert(FloatReadable source1, FloatReadable source2) {
+        public Comparison convert(final FloatReadable source1, final FloatReadable source2) {
             return new Comparison() {
                 @Override
                 public IntValue createValue() {
@@ -112,7 +113,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(IntValue value) {
+                public void read(final IntValue value) {
                     value.writeInt(Float.compare(source1.readFloat(), source2.readFloat()));
                 }
             };
@@ -122,7 +123,7 @@ public class FloatArithmeticConverters {
     public static class EqualsConverter implements Biconverter<FloatReadable, FloatReadable, Equals> {
 
         @Override
-        public Equals convert(FloatReadable source1, FloatReadable source2) {
+        public Equals convert(final FloatReadable source1, final FloatReadable source2) {
             return new Equals() {
                 @Override
                 public BooleanValue createValue() {
@@ -130,7 +131,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readFloat() == source2.readFloat());
                 }
             };
@@ -140,7 +141,7 @@ public class FloatArithmeticConverters {
     public static class NotEqualsConverter implements Biconverter<FloatReadable, FloatReadable, NotEquals> {
 
         @Override
-        public NotEquals convert(FloatReadable source1, FloatReadable source2) {
+        public NotEquals convert(final FloatReadable source1, final FloatReadable source2) {
             return new NotEquals() {
                 @Override
                 public BooleanValue createValue() {
@@ -148,7 +149,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readFloat() != source2.readFloat());
                 }
             };
@@ -158,7 +159,7 @@ public class FloatArithmeticConverters {
     public static class GreaterThanConverter implements Biconverter<FloatReadable, FloatReadable, GreaterThan> {
 
         @Override
-        public GreaterThan convert(FloatReadable source1, FloatReadable source2) {
+        public GreaterThan convert(final FloatReadable source1, final FloatReadable source2) {
             return new GreaterThan() {
                 @Override
                 public BooleanValue createValue() {
@@ -166,7 +167,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readFloat() > source2.readFloat());
                 }
             };
@@ -176,7 +177,7 @@ public class FloatArithmeticConverters {
     public static class GreaterThanOrEqualsConverter implements Biconverter<FloatReadable, FloatReadable, GreaterThanOrEquals> {
 
         @Override
-        public GreaterThanOrEquals convert(FloatReadable source1, FloatReadable source2) {
+        public GreaterThanOrEquals convert(final FloatReadable source1, final FloatReadable source2) {
             return new GreaterThanOrEquals() {
                 @Override
                 public BooleanValue createValue() {
@@ -184,7 +185,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readFloat() >= source2.readFloat());
                 }
             };
@@ -194,7 +195,7 @@ public class FloatArithmeticConverters {
     public static class LessThanConverter implements Biconverter<FloatReadable, FloatReadable, LessThan> {
 
         @Override
-        public LessThan convert(FloatReadable source1, FloatReadable source2) {
+        public LessThan convert(final FloatReadable source1, final FloatReadable source2) {
             return new LessThan() {
                 @Override
                 public BooleanValue createValue() {
@@ -202,7 +203,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readFloat() < source2.readFloat());
                 }
             };
@@ -212,7 +213,7 @@ public class FloatArithmeticConverters {
     public static class LessThanOrEqualsConverter implements Biconverter<FloatReadable, FloatReadable, LessThanOrEquals> {
 
         @Override
-        public LessThanOrEquals convert(FloatReadable source1, FloatReadable source2) {
+        public LessThanOrEquals convert(final FloatReadable source1, final FloatReadable source2) {
             return new LessThanOrEquals() {
                 @Override
                 public BooleanValue createValue() {
@@ -220,7 +221,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readFloat() <= source2.readFloat());
                 }
             };
@@ -230,7 +231,7 @@ public class FloatArithmeticConverters {
     public static class ProductConverter implements Biconverter<FloatReadable, FloatReadable, Product<FloatValue>> {
 
         @Override
-        public Product<FloatValue> convert(FloatReadable source1, FloatReadable source2) {
+        public Product<FloatValue> convert(final FloatReadable source1, final FloatReadable source2) {
             return new Product<>() {
                 @Override
                 public FloatValue createValue() {
@@ -238,7 +239,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(FloatValue value) {
+                public void read(final FloatValue value) {
                     value.writeFloat(source1.readFloat() * source2.readFloat());
                 }
             };
@@ -248,7 +249,7 @@ public class FloatArithmeticConverters {
     public static class QuotientConverter implements Biconverter<FloatReadable, FloatReadable, Quotient<FloatValue>> {
 
         @Override
-        public Quotient<FloatValue> convert(FloatReadable source1, FloatReadable source2) {
+        public Quotient<FloatValue> convert(final FloatReadable source1, final FloatReadable source2) {
             return new Quotient<>() {
                 @Override
                 public FloatValue createValue() {
@@ -256,7 +257,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(FloatValue value) {
+                public void read(final FloatValue value) {
                     value.writeFloat(source1.readFloat() / source2.readFloat());
                 }
             };
@@ -266,7 +267,7 @@ public class FloatArithmeticConverters {
     public static class ModulusConverter implements Biconverter<FloatReadable, FloatReadable, Modulus<FloatValue>> {
 
         @Override
-        public Modulus<FloatValue> convert(FloatReadable source1, FloatReadable source2) {
+        public Modulus<FloatValue> convert(final FloatReadable source1, final FloatReadable source2) {
             return new Modulus<>() {
                 @Override
                 public FloatValue createValue() {
@@ -274,7 +275,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(FloatValue value) {
+                public void read(final FloatValue value) {
                     value.writeFloat(source1.readFloat() % source2.readFloat());
                 }
             };
@@ -284,7 +285,7 @@ public class FloatArithmeticConverters {
     public static class DifferenceConverter implements Biconverter<FloatReadable, FloatReadable, Difference<FloatValue>> {
 
         @Override
-        public Difference<FloatValue> convert(FloatReadable source1, FloatReadable source2) {
+        public Difference<FloatValue> convert(final FloatReadable source1, final FloatReadable source2) {
             return new Difference<>() {
                 @Override
                 public FloatValue createValue() {
@@ -292,7 +293,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(FloatValue value) {
+                public void read(final FloatValue value) {
                     value.writeFloat(source1.readFloat() - source2.readFloat());
                 }
             };
@@ -302,7 +303,7 @@ public class FloatArithmeticConverters {
     public static class SumConverter implements Biconverter<FloatReadable, FloatReadable, Sum<FloatValue>> {
 
         @Override
-        public Sum<FloatValue> convert(FloatReadable source1, FloatReadable source2) {
+        public Sum<FloatValue> convert(final FloatReadable source1, final FloatReadable source2) {
             return new Sum<>() {
                 @Override
                 public FloatValue createValue() {
@@ -310,7 +311,7 @@ public class FloatArithmeticConverters {
                 }
 
                 @Override
-                public void read(FloatValue value) {
+                public void read(final FloatValue value) {
                     value.writeFloat(source1.readFloat() + source2.readFloat());
                 }
             };

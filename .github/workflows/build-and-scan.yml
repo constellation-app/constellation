@@ -14,7 +14,7 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     env:
-      RUNNER_IMAGE: "constellationapplication/netbeans-runner:21.0.1"
+      RUNNER_IMAGE: "constellationapplication/netbeans-runner:21.0.2"
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       TRAVIS_REPO_SLUG: "${{ github.repository }}"
@@ -26,12 +26,12 @@ jobs:
     steps:
       # Checkout this commit
     - name: Checkout Branch
-      uses: actions/checkout@v1
+      uses: actions/checkout@v4
       
       # Set the verbose flag as a variable
     - name: Set Verbosity
       run: |
-        if [[ ${{ contains(github.event.pull_request.labels.*.name, 'verbose-logging') }} = 'true' ]]; then echo '::set-output name=VERBOSITY::-v -verbose' && echo 'Verbose Logging Enabled'; else echo '::set-output name=VERBOSITY::-v " "' && echo 'Verbose Logging Disabled'; fi
+        if [[ ${{ contains(github.event.pull_request.labels.*.name, 'verbose-logging') }} = 'true' ]]; then echo "{name}={value}" >> $GITHUB_OUTPUT name=VERBOSITY::-v -verbose' && echo 'Verbose Logging Enabled'; else echo "{name}={value}" >> $GITHUB_OUTPUT name=VERBOSITY::-v " "' && echo 'Verbose Logging Disabled'; fi
       id: verbosity
 
     - name: Create Cache Folder
@@ -40,7 +40,7 @@ jobs:
       # Cache the ivy dependencies to the home directory.
     - name: Initialise Cache
       id: cache-dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       env:
         cache-name: cache-dependencies
       with:

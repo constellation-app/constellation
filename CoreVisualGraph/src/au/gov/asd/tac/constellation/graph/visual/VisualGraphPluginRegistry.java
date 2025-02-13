@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.visual;
 
-import au.gov.asd.tac.constellation.graph.visual.plugins.blaze.AddBlazePlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.blaze.AddCustomBlazePlugin;
-import au.gov.asd.tac.constellation.graph.visual.plugins.blaze.DeSelectBlazesPlugin;
+import au.gov.asd.tac.constellation.graph.visual.plugins.blaze.DeselectBlazesPlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.blaze.RemoveBlazePlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.blaze.SelectBlazesPlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.blaze.UpdateBlazeSizeOpacityPlugin;
@@ -37,6 +36,8 @@ import au.gov.asd.tac.constellation.graph.visual.plugins.select.DeselectTransact
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.DeselectVerticesPlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.InvertSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectAllPlugin;
+import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectTransactionsPlugin;
+import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectVerticesPlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.structure.SelectBackbonePlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.structure.SelectHalfHopInducedSubgraphPlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.structure.SelectLoopsPlugin;
@@ -53,11 +54,10 @@ import au.gov.asd.tac.constellation.graph.visual.plugins.select.structure.Select
  */
 public class VisualGraphPluginRegistry {
 
-    public static final String ADD_BLAZE = AddBlazePlugin.class.getName();
     public static final String ADD_CUSTOM_BLAZE = AddCustomBlazePlugin.class.getName();
     public static final String CHANGE_SELECTION = ChangeSelectionPlugin.class.getName();
     public static final String DESELECT_ALL = DeselectAllPlugin.class.getName();
-    public static final String DESELECT_BLAZES = DeSelectBlazesPlugin.class.getName();
+    public static final String DESELECT_BLAZES = DeselectBlazesPlugin.class.getName();
     public static final String DESELECT_TRANSACTIONS = DeselectTransactionsPlugin.class.getName();
     public static final String DESELECT_VERTICES = DeselectVerticesPlugin.class.getName();
     public static final String DIM_ALL = DimAllPlugin.class.getName();
@@ -68,6 +68,8 @@ public class VisualGraphPluginRegistry {
     public static final String PERMANENT_MERGE = PermanentMergePlugin.class.getName();
     public static final String REMOVE_BLAZE = RemoveBlazePlugin.class.getName();
     public static final String SELECT_ALL = SelectAllPlugin.class.getName();
+    public static final String SELECT_VERTICES = SelectVerticesPlugin.class.getName();
+    public static final String SELECT_TRANSACTIONS = SelectTransactionsPlugin.class.getName();
     public static final String SELECT_BACKBONE = SelectBackbonePlugin.class.getName();
     public static final String SELECT_BLAZES = SelectBlazesPlugin.class.getName();
     public static final String SELECT_DIMMED = SelectDimmedPlugin.class.getName();

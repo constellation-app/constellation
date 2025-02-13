@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This is a quick and dirty LCG RNG to enable reproducibility between this code
- * and the original C++.
+ * This is a quick and dirty LCG RNG to enable reproducibility between this code and the original C++.
  * <p>
  * When complete, revert to Random.
  *
@@ -28,6 +27,7 @@ import java.util.logging.Logger;
  */
 public class Lcg {
 
+    protected static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(Lcg.class.getName());
 
     private static final long M = 4294967296L;
@@ -42,7 +42,9 @@ public class Lcg {
 
     public void seed(final long newSeed) {
         s = newSeed;
-        LOGGER.log(Level.INFO, "Seed: {0}", newSeed);
+        if (DEBUG) {
+            LOGGER.log(Level.INFO, "Seed: {0}", newSeed);
+        }
     }
 
     public int nextInt() {

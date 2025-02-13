@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -514,6 +514,13 @@ public interface VisualAccess {
      * @return
      */
     public float getConnectionWidth(final int connection);
+
+    /**
+     * Get the motion of the connections
+     *
+     * @return
+     */
+    public float getConnectionMotion();
 
     /**
      * The options for the 'directedness' of connections.

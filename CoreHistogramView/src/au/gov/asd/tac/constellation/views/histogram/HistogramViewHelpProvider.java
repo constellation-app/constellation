@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class HistogramViewHelpProvider extends HelpPageProvider {
         final String histogramModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep
                 + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "histogram" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.histogram", histogramModulePath + "histogram-view.md");
+        map.put("au.gov.asd.tac.constellation.views.histogram.HistogramTopComponent", histogramModulePath + "histogram-view.md");
         return map;
     }
 

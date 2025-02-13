@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class ContractedCompositeNodeState {
      * @return An array {x,y,z} containing the coordinates of the mean position.
      */
     public float[] getMean() {
-        return this.mean;
+        return mean.clone();
     }
 
     /**
@@ -103,7 +103,7 @@ public class ContractedCompositeNodeState {
      * @param wg The graph write lock with which to perform the expansion.
      * @param vxId The Graph ID of the node that is being expanded. The caller
      * must ensure that this is the state object corresponding to this node!
-     * @return A list of graph IDs of the constituent nodes of the now expanded
+     * @return A list of node IDs of the constituent nodes of the now expanded
      * composite.
      */
     public List<Integer> expand(final GraphWriteMethods wg, final int vxId) {
@@ -145,7 +145,7 @@ public class ContractedCompositeNodeState {
             wg.setObjectValue(compositeStateAttr, id, new CompositeNodeState(id, expansionState));
         });
 
-        // Correct the x,y,z coordinates of the nodes in the zonsitutentNodeStore in case the composite node has been moved.
+        // Correct the x,y,z coordinates of the nodes in the constituentNodeStore in case the composite node has been moved.
         final float x = wg.getFloatValue(xAttr, vxId);
         final float y = wg.getFloatValue(yAttr, vxId);
         final float z = wg.getFloatValue(zAttr, vxId);

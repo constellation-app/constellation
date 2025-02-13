@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,6 @@ public class JellyfishGraphBuilder extends GraphBuilder {
     }
 
     public static JellyfishGraphBuilder addJellyfish(final GraphWriteMethods graph, final int[] tentacleLengths, final TentacleDirection direction) {
-
         final int numTentacles = tentacleLengths.length;
 
         final StarGraphBuilder star = StarGraphBuilder.addStar(graph, numTentacles, direction.starDirection);
@@ -93,7 +92,8 @@ public class JellyfishGraphBuilder extends GraphBuilder {
     public final int[][] tentacleNodes;
     public final int[][] tentacleTransactions;
 
-    private JellyfishGraphBuilder(final GraphWriteMethods graph, final StarGraphBuilder star, final int[] pendants, final int[][] tentacleNodes, int[][] tentacleTransactions) {
+    private JellyfishGraphBuilder(final GraphWriteMethods graph, final StarGraphBuilder star, final int[] pendants, 
+            final int[][] tentacleNodes, final int[][] tentacleTransactions) {
         super(graph);
         this.centre = star.centre;
         this.pendants = pendants;

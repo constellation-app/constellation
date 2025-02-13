@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +60,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     public static final ConstellationColor GREY = new ConstellationColor("Grey", Color.GRAY);
     public static final ConstellationColor LIGHT_BLUE = new ConstellationColor("LightBlue", 0.0F, 0.5F, 1.0F, 1.0F);
     public static final ConstellationColor LIGHT_GREEN = new ConstellationColor("LightGreen", 0.5F, 1.0F, 0.0F, 1.0F);
+    public static final ConstellationColor LIGHT_SKY = new ConstellationColor("Light Sky", 206, 220, 235, 255);
     public static final ConstellationColor LIME = new ConstellationColor("Lime", 57, 255, 20, 255);
     public static final ConstellationColor MAGENTA = new ConstellationColor("Magenta", Color.MAGENTA);
     public static final ConstellationColor MANILLA = new ConstellationColor("Manilla", 255, 230, 153, 255);
@@ -108,6 +109,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
                     GREY,
                     LIGHT_BLUE,
                     LIGHT_GREEN,
+                    LIGHT_SKY,
                     LIME,
                     MAGENTA,
                     MANILLA,
@@ -140,6 +142,12 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
             NAMED_COLOR_MAP.put(colorValue.name.toUpperCase(), colorValue);
         }
     }
+    
+    private final String name;
+    private final float redColorValue;
+    private final float greenColorValue;
+    private final float blueColorValue;
+    private final float alpha;
 
     /**
      * Return a ColorValue corresponding to the given name.
@@ -167,8 +175,6 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
             return fromRgbWithCommaColor(ucName);
         } else if (ucName.startsWith("#")) {
             return fromHtmlColor(name);
-        } else {
-            // Do nothing
         }
 
         return null;
@@ -183,8 +189,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @param alpha the alpha component of the color
      * @return a ColorValue instance
      */
-    public static ConstellationColor getColorValue(final float red,
-            final float green, final float blue, final float alpha) {
+    public static ConstellationColor getColorValue(final float red, final float green, final float blue, final float alpha) {
         for (final ConstellationColor colorValue : NAMED_COLOR_LIST) {
             if (colorValue.getRed() == red
                     && colorValue.getGreen() == green
@@ -196,12 +201,6 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
 
         return new ConstellationColor(null, red, green, blue, alpha);
     }
-
-    private final String name;
-    private final float redColorValue;
-    private final float greenColorValue;
-    private final float blueColorValue;
-    private final float alpha;
 
     /**
      * Create a ColorValue with red, green, blue, and alpha in the range [0, 1].
@@ -480,8 +479,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
 
     @Override
     public boolean equals(final Object other) {
-        if (other instanceof ConstellationColor) {
-            final ConstellationColor c = (ConstellationColor) other;
+        if (other instanceof ConstellationColor c) {
             return redColorValue == c.redColorValue && greenColorValue == c.greenColorValue && blueColorValue == c.blueColorValue && alpha == c.alpha;
         }
 
@@ -515,15 +513,13 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
             return 1;
         } else if (o.name != null) {
             return -1;
-        } else {
-            if (redColorValue != o.redColorValue) {
-                return compareColorComponents(redColorValue, o.redColorValue);
-            } else if (greenColorValue != o.greenColorValue) {
-                return compareColorComponents(greenColorValue, o.greenColorValue);
-            }
-            return blueColorValue != o.blueColorValue ? compareColorComponents(blueColorValue, o.blueColorValue)
-                    : compareColorComponents(alpha, o.alpha);
+        } else if (redColorValue != o.redColorValue) {
+            return compareColorComponents(redColorValue, o.redColorValue);
+        } else if (greenColorValue != o.greenColorValue) {
+            return compareColorComponents(greenColorValue, o.greenColorValue);
         }
+        return blueColorValue != o.blueColorValue ? compareColorComponents(blueColorValue, o.blueColorValue)
+                : compareColorComponents(alpha, o.alpha);
     }
     
     /**

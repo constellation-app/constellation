@@ -3,7 +3,7 @@
 <toc version="2.0">
     <tocitem text="Views" mergetype="javax.help.SortMerge">
         <tocitem text="Find View">
-            <tocitem text="Find and Replace" target="au.gov.asd.tac.constellation.views.find" />
+            <tocitem text="Find and Replace" target="au.gov.asd.tac.constellation.views.find.FindViewTopComponent" />
         </tocitem>
     </tocitem>
 </toc>

@@ -52,6 +52,10 @@
     -fx-padding: 0.166667em 0.833333em 0.25em 0.833333em;  /*2 10 3 10*/
 }
 
+#titled-pane-label {
+    -fx-padding: 2 0 0 0;
+}
+
 .page-corner {
     -fx-padding: 4.5 4.5 4.5 4.5;
     -fx-background-color: linear-gradient( from 0% 0% to 50% 50%, rgba(252,247,182,0.5), rgba(165,156,49,0.5));
@@ -66,4 +70,32 @@
 #invalid {
     -fx-background-color: #8a1d1d;
     -fx-control-inner-background: #8a1d1d;
+}
+
+.combo-box {
+    -fx-background-color: #333333;
+    -fx-border-color: #666666
+}
+
+.check-box > .box {
+    -fx-background-color: linear-gradient(to bottom, derive(#999999,100%), derive(#555555,0%) 5%, derive(#999999,-25%) 95%, derive(#999999,50%) 100%);
+}
+
+#layer-checkbox {
+    -fx-padding: 2 0 0 0;
+}
+
+#layer-function-enable {
+    -fx-background-color: #245288;
+}
+
+#layer-function-enable:hover {
+    -fx-background-color: #33659c;
+}
+
+#layer-function-disable {
+    -fx-background-color: #742d2e;
+}
+#layer-function-disable:hover {
+    -fx-background-color: #8a3b3c;
 }

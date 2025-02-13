@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,9 +47,6 @@ public class HideVisualisationNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(HideVisualisationNGTest.class.getName());
     
-    public HideVisualisationNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -68,10 +65,12 @@ public class HideVisualisationNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -80,6 +79,7 @@ public class HideVisualisationNGTest {
     @Test
     public void testDeactivate() {
         System.out.println("deactivate");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -100,6 +100,7 @@ public class HideVisualisationNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
+        
         final AbstractHideTranslator translator = new ScoreToHideTranslator();
         final HideVisualisation instance = new HideVisualisation(translator);
         String expResult = "Hide Elements";
@@ -113,6 +114,7 @@ public class HideVisualisationNGTest {
     @Test
     public void testGetTranslator() {
         System.out.println("getTranslator");
+        
         final AbstractHideTranslator translator = new ScoreToHideTranslator();
         final HideVisualisation instance = new HideVisualisation(translator);
         final AnalyticTranslator result = instance.getTranslator();
@@ -125,6 +127,7 @@ public class HideVisualisationNGTest {
     @Test
     public void testGetAffectedAttributes() {
         System.out.println("getAffectedAttributes");
+        
         final AbstractHideTranslator translator = new ScoreToHideTranslator();
         final HideVisualisation instance = new HideVisualisation(translator);
         final List expResult = Arrays.asList(
@@ -140,6 +143,7 @@ public class HideVisualisationNGTest {
     @Test
     public void testIsActive() {
         System.out.println("isActive");
+        
         final AbstractHideTranslator translator = new ScoreToHideTranslator();
         final HideVisualisation instance = new HideVisualisation(translator);
         final boolean expResult = false;
@@ -153,12 +157,12 @@ public class HideVisualisationNGTest {
     @Test
     public void testSetSelected() {
         System.out.println("setSelected");
+        
         final boolean selected = false;
         final AbstractHideTranslator translator = new ScoreToHideTranslator();
         final HideVisualisation instance = new HideVisualisation(translator);
         instance.setSelected(selected);
         final boolean result = instance.isActive();
         assertEquals(result, selected);
-    }
-    
+    } 
 }

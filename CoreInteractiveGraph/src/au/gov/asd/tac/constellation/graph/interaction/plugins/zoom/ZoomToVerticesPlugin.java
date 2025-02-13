@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
@@ -103,7 +103,7 @@ public final class ZoomToVerticesPlugin extends SimpleEditPlugin {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         if (activeGraph != null && activeGraph.getId().equals(graph.getId())) {
             // Only do the camera animation if the edited graph is currently active
-            Animation.startAnimation(new PanAnimation("Zoom to Vertices", oldCamera, camera, true));
+            AnimationUtilities.startAnimation(new PanAnimation("Zoom to Vertices", oldCamera, camera, true), activeGraph.getId());
         } else {
             // Skip the animation, just set the new camera position
             VisualGraphUtilities.setCamera(graph, camera);

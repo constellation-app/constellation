@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionReferences({
     @ActionReference(path = "Menu/Experimental/Build Graph", position = 0)
 })
-@Messages("CTL_ImageGraphBuilderAction=From Image...")
+@Messages("CTL_ImageGraphBuilderAction=From Image(s)...")
 public final class ImageGraphBuilderAction implements ActionListener {
 
     private final GraphNode context;

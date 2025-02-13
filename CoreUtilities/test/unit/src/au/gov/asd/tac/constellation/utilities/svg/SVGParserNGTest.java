@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.svg;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 import org.testng.annotations.AfterClass;
@@ -32,56 +33,55 @@ import org.testng.annotations.Test;
  * @author capricornunicorn123
  */
 public class SVGParserNGTest {
-       
-    public SVGParserNGTest() {
-        
-    }
     
     @BeforeClass
     public static void setUpClass() {
+        // Not currently required
     }
     
     @AfterClass
     public static void tearDownClass() {
+        // Not currently required
     }
     
     @BeforeMethod
-    public void setUp() {
+    public void setUpMethod() {
+        // Not currently required
     }
     
     @AfterMethod
-    public void tearDown() {
+    public void tearDownMethod() {
+        // Not currently required
     }
     
     /**
      * Test of parse(), of class SVGParser.
-     * @throws java.lang.Exception
      * @throws java.io.IOException
      */
     @Test(expectedExceptions=IOException.class)
-    public void testParseException() throws Exception, IOException {
+    public void testParseException() throws IOException {
         SVGParser.parse(null);
     }
     
     /**
      * Test of parse(), of class SVGParser.
-     * @throws java.lang.Exception
+     * @throws java.io.IOException
      */
     @Test
-    public void testParse() throws Exception {
+    public void testParse() throws IOException {
         //Ensure loading template file passes
         TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_COMPLIANT;
         final InputStream inputStream = template.getClass().getResourceAsStream(template.getFileName());
         SVGData templateSVG = SVGParser.parse(inputStream);
-        CommonTests.testLoadedData(templateSVG);
+        SVGTestUtilities.testLoadedData(templateSVG);
     }
     
     /**
      * Test of parse(), of class SVGParser.
-     * @throws java.lang.Exception
+     * @throws java.io.IOException
      */
     @Test(expectedExceptions=IllegalStateException.class)
-    public void testParseInvalidFile() throws Exception, IllegalStateException{
+    public void testParseInvalidFile() throws IOException {
         //Ensure loading template file with invalid lines fails
         TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_INVALID_JSON;
         final InputStream inputStream = template.getClass().getResourceAsStream(template.getFileName());
@@ -90,10 +90,10 @@ public class SVGParserNGTest {
     
     /**
      * Test of parse(), of class SVGParser.
-     * @throws java.lang.Exception
+     * @throws java.io.IOException
      */
     @Test(expectedExceptions=IllegalStateException.class)
-    public void testParseMultipleRoots() throws Exception, IllegalStateException{
+    public void testParseMultipleRoots() throws IOException {
         //Ensure loading template file with multiple roots fails
         TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_INVALID_MULTI_ROOT;
         final InputStream inputStream = template.getClass().getResourceAsStream(template.getFileName());
@@ -105,7 +105,7 @@ public class SVGParserNGTest {
      */
     @Test
     public void testSanitisePlanText() {
-        ArrayList<Integer> knownBadCharacters = new ArrayList<>();
+        List<Integer> knownBadCharacters = new ArrayList<>();
         knownBadCharacters.add(0); // NUL
         knownBadCharacters.add(12); // FF
         knownBadCharacters.add(34); // "
@@ -124,9 +124,6 @@ public class SVGParserNGTest {
             }
         }
         String fireChineseCharacter = "火";
-        assertEquals(SVGParser.sanitisePlanText(fireChineseCharacter), SVGParser.NON_LATIN_CHARACTER_OMMMISION_TEXT);
-        
-        
-    }
-    
+        assertEquals(SVGParser.sanitisePlanText(fireChineseCharacter), SVGParser.NON_LATIN_CHARACTER_OMMMISION_TEXT);       
+    }   
 }

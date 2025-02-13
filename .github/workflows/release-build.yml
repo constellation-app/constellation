@@ -6,8 +6,8 @@ jobs:
   create-release-build:
     runs-on: ubuntu-latest
     env:
-      RUNNER_IMAGE: "constellationapplication/netbeans-runner:21.0.1"
-      ADAPTORS_VERSION: "v2.11.0"
+      RUNNER_IMAGE: "constellationapplication/netbeans-runner:21.0.2"
+      ADAPTORS_VERSION: "v3.0.0"
     container:
       image: docker://pandoc/latex:2.9
       options: --entrypoint=bash
@@ -49,22 +49,22 @@ jobs:
             docker run -e GIT_DISCOVERY_ACROSS_FILESYSTEM=1 \
             --mount "type=bind,source=/,target=/home/runner/work/constellation" \
             --workdir /home/runner/work/constellation/home/runner/work/constellation/constellation/workspace/constellation-applications \
-            constellationapplication/netbeans-runner:21.0.1 \
+            constellationapplication/netbeans-runner:21.0.2 \
             ./build-zip.sh -a constellation -m "constellation constellation-adaptors"
       - name: Upload Linux Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Linux Release Build
           path: ./workspace/constellation-applications/constellation/dist/constellation-linux**
           retention-days: 2
       - name: Upload MacOS Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: MacOSX Release Build
           path: ./workspace/constellation-applications/constellation/dist/constellation-macosx**
           retention-days: 2
       - name: Upload Windows Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Windows Release Build
           path: ./workspace/constellation-applications/constellation/dist/constellation-win**.zip

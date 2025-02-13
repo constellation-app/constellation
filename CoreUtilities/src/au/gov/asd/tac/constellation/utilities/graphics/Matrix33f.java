@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,19 +78,19 @@ public final class Matrix33f {
         final float xs = x * s;
         final float ys = y * s;
         final float zs = z * s;
-        final float one_c = 1.0F - c;
+        final float oneC = 1.0F - c;
 
-        a[index33(0, 0)] = (one_c * xx) + c;
-        a[index33(0, 1)] = (one_c * xy) - zs;
-        a[index33(0, 2)] = (one_c * zx) + ys;
+        a[index33(0, 0)] = (oneC * xx) + c;
+        a[index33(0, 1)] = (oneC * xy) - zs;
+        a[index33(0, 2)] = (oneC * zx) + ys;
 
-        a[index33(1, 0)] = (one_c * xy) + zs;
-        a[index33(1, 1)] = (one_c * yy) + c;
-        a[index33(1, 2)] = (one_c * yz) - xs;
+        a[index33(1, 0)] = (oneC * xy) + zs;
+        a[index33(1, 1)] = (oneC * yy) + c;
+        a[index33(1, 2)] = (oneC * yz) - xs;
 
-        a[index33(2, 0)] = (one_c * zx) - ys;
-        a[index33(2, 1)] = (one_c * yz) + xs;
-        a[index33(2, 2)] = (one_c * zz) + c;
+        a[index33(2, 0)] = (oneC * zx) - ys;
+        a[index33(2, 1)] = (oneC * yz) + xs;
+        a[index33(2, 2)] = (oneC * zz) + c;
     }
 
     /**
@@ -186,7 +186,7 @@ public final class Matrix33f {
 
     @Override
     public String toString() {
-        StringBuilder b = new StringBuilder();
+        final StringBuilder b = new StringBuilder();
         b.append("[");
         for (int i = 0; i < a.length; i++) {
             if (i > 0) {

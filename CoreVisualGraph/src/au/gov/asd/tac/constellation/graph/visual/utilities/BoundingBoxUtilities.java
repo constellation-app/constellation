@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.graph.visual.utilities;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 
 /**
@@ -71,11 +71,10 @@ public final class BoundingBoxUtilities {
         box.resetMinMax();
         final int nVertices = rg.getVertexCount();
         if (nVertices > 0) {
-
             // Primary vertices.
-            final int xAttr = rg.getAttribute(GraphElementType.VERTEX, "x");
-            final int yAttr = rg.getAttribute(GraphElementType.VERTEX, "y");
-            final int zAttr = rg.getAttribute(GraphElementType.VERTEX, "z");
+            final int xAttr = VisualConcept.VertexAttribute.X.get(rg);
+            final int yAttr = VisualConcept.VertexAttribute.Y.get(rg);
+            final int zAttr = VisualConcept.VertexAttribute.Z.get(rg);
 
             for (int position = 0; position < nVertices; position++) {
                 final int vxId = rg.getVertex(position);
@@ -86,9 +85,9 @@ public final class BoundingBoxUtilities {
             }
 
             // Secondary vertices.
-            final int x2Attr = rg.getAttribute(GraphElementType.VERTEX, "x2");
-            final int y2Attr = rg.getAttribute(GraphElementType.VERTEX, "y2");
-            final int z2Attr = rg.getAttribute(GraphElementType.VERTEX, "z2");
+            final int x2Attr = VisualConcept.VertexAttribute.X2.get(rg);
+            final int y2Attr = VisualConcept.VertexAttribute.Y2.get(rg);
+            final int z2Attr = VisualConcept.VertexAttribute.Z2.get(rg);
             if (x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND) {
                 for (int position = 0; position < nVertices; position++) {
                     final int vxId = rg.getVertex(position);
@@ -120,13 +119,13 @@ public final class BoundingBoxUtilities {
     private static void encompassSelectedElements(final BoundingBox box, final GraphReadMethods rg) {
         box.setEmpty(true);
         box.resetMinMax();
-        final int selectedAttr = rg.getAttribute(GraphElementType.VERTEX, "selected");
+        final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(rg);
         final int nVertices = rg.getVertexCount();
         if (selectedAttr != Graph.NOT_FOUND || nVertices > 0) {
             // Primary vertices.
-            final int xAttr = rg.getAttribute(GraphElementType.VERTEX, "x");
-            final int yAttr = rg.getAttribute(GraphElementType.VERTEX, "y");
-            final int zAttr = rg.getAttribute(GraphElementType.VERTEX, "z");
+            final int xAttr = VisualConcept.VertexAttribute.X.get(rg);
+            final int yAttr = VisualConcept.VertexAttribute.Y.get(rg);
+            final int zAttr = VisualConcept.VertexAttribute.Z.get(rg);
 
             for (int position = 0; position < nVertices; position++) {
                 final int vxId = rg.getVertex(position);
@@ -142,9 +141,9 @@ public final class BoundingBoxUtilities {
             }
 
             // Secondary vertices.
-            final int x2Attr = rg.getAttribute(GraphElementType.VERTEX, "x2");
-            final int y2Attr = rg.getAttribute(GraphElementType.VERTEX, "y2");
-            final int z2Attr = rg.getAttribute(GraphElementType.VERTEX, "z2");
+            final int x2Attr = VisualConcept.VertexAttribute.X2.get(rg);
+            final int y2Attr = VisualConcept.VertexAttribute.Y2.get(rg);
+            final int z2Attr = VisualConcept.VertexAttribute.Z2.get(rg);
             if (x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND) {
                 for (int position = 0; position < nVertices; position++) {
                     final int vxId = rg.getVertex(position);
@@ -161,7 +160,7 @@ public final class BoundingBoxUtilities {
             }
 
             // If any transactions are selected, add the vertices at the ends.
-            final int txSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION, "selected");
+            final int txSelectedAttr = VisualConcept.TransactionAttribute.SELECTED.get(rg);
             if (txSelectedAttr != Graph.NOT_FOUND) {
                 final int txCount = rg.getTransactionCount();
                 for (int position = 0; position < txCount; position++) {
@@ -223,9 +222,9 @@ public final class BoundingBoxUtilities {
         final int nVertices = vertices.length;
         if (nVertices > 0) {
             // Primary vertices.
-            final int xAttr = rg.getAttribute(GraphElementType.VERTEX, "x");
-            final int yAttr = rg.getAttribute(GraphElementType.VERTEX, "y");
-            final int zAttr = rg.getAttribute(GraphElementType.VERTEX, "z");
+            final int xAttr = VisualConcept.VertexAttribute.X.get(rg);
+            final int yAttr = VisualConcept.VertexAttribute.Y.get(rg);
+            final int zAttr = VisualConcept.VertexAttribute.Z.get(rg);
 
             for (final int vxId : vertices) {
                 final float x = rg.getFloatValue(xAttr, vxId);
@@ -235,9 +234,9 @@ public final class BoundingBoxUtilities {
             }
 
             // Secondary vertices.
-            final int x2Attr = rg.getAttribute(GraphElementType.VERTEX, "x2");
-            final int y2Attr = rg.getAttribute(GraphElementType.VERTEX, "y2");
-            final int z2Attr = rg.getAttribute(GraphElementType.VERTEX, "z2");
+            final int x2Attr = VisualConcept.VertexAttribute.X2.get(rg);
+            final int y2Attr = VisualConcept.VertexAttribute.Y2.get(rg);
+            final int z2Attr = VisualConcept.VertexAttribute.Z2.get(rg);
             if (x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND) {
                 for (final int vxId : vertices) {
                     final float x2 = rg.getFloatValue(x2Attr, vxId);

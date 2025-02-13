@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,15 @@ package au.gov.asd.tac.constellation.views.wordcloud.ui;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.ClipboardUtilities;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
+import au.gov.asd.tac.constellation.views.NoGraphPane;
+import au.gov.asd.tac.constellation.views.wordcloud.utilities.WordCloudUtilities;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -61,7 +64,9 @@ import javafx.scene.text.FontWeight;
 public class WordCloudPane extends BorderPane {
 
     private final WordCloudController controller;
-
+    
+    private final VBox noGraphPane;
+    
     private final SplitPane everything;
     private final VBox theCloud;
     private final Label queryInfoLabel;
@@ -105,10 +110,9 @@ public class WordCloudPane extends BorderPane {
     public WordCloudPane(final WordCloudController controller) {
         everything = new SplitPane();
         everything.setOrientation(Orientation.VERTICAL);
-        everything.setDividerPositions(0.5f);
+        everything.setDividerPositions(0.5F);
         this.controller = controller;
         setPadding(WORDCLOUD_PADDING);
-        setTop(everything);
 
         // Scroll pane for entire top of word cloud view
         topPart = new ScrollPane();
@@ -241,6 +245,9 @@ public class WordCloudPane extends BorderPane {
         wordButtons = new HashMap<>();
         noWord = new Hyperlink();
         noWord.setMaxSize(0, 0);
+        
+        this.noGraphPane = new NoGraphPane("Word Cloud View", WordCloudUtilities.createHelpButton());
+        noGraphPane.prefWidthProperty().bind(this.widthProperty());
     }
 
     /**
@@ -281,6 +288,16 @@ public class WordCloudPane extends BorderPane {
     protected FlowPane getWords() {
         return words;
     }
+    
+    /**
+     * Set the pane enabled will switch between the real word cloud pane and a
+     * message pane notifying the user that a graph is required.
+     *
+     * @param enable true if there is a graph
+     */
+    public void setEnabled(final boolean enable) {
+        Platform.runLater(() -> this.setTop(enable ? everything : noGraphPane));
+    }
 
     public void setInProgress() {
         cloudStackPane.getChildren().add(spinner);
@@ -300,7 +317,7 @@ public class WordCloudPane extends BorderPane {
     public void enableTheCloud(final boolean unionButtonSelected, final boolean frequencyButtonSelected, final boolean hasSignificances) {
         theCloud.setVisible(true);
         theCloud.setManaged(true);
-        everything.setDividerPositions(0.5f);
+        everything.setDividerPositions(0.5F);
         if (unionButtonSelected) {
             modeButtons.selectToggle(union);
         } else {
@@ -335,7 +352,7 @@ public class WordCloudPane extends BorderPane {
         topPart.setMinHeight(0);
         theCloud.setVisible(false);
         theCloud.setManaged(false);
-        everything.setDividerPositions(0.0f);
+        everything.setDividerPositions(0.0F);
     }
 
     /**
@@ -378,7 +395,6 @@ public class WordCloudPane extends BorderPane {
             // Create a hyperlink for the word
             final Hyperlink h = new Hyperlink(word);
             h.setWrapText(true);
-            //h.setMaxWidth(CLOUD_WIDTH);
             // Set the word's font based on its prescribed size 
             final Font f = Font.font("Arial", FontWeight.BOLD, getFontSize(wordListWithSizes.get(word), baseFontSize));
             h.setFont(f);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
 /**
- * This class creates the UI buttons that invokes the "Select Loops" Tool
+ * This class creates the UI buttons that invokes the "Select Sinks" Tool
  * perform loops service on graph
  *
  * @author aquila

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,34 +36,29 @@ import org.testng.annotations.Test;
 public class ResetViewContextMenuNGTest {
 
     private StoreGraph graph;
-
-    public ResetViewContextMenuNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        graph = new StoreGraph();
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
-
-    private void generateData() throws InterruptedException {
-        graph = new StoreGraph();
-    }
-
+    
     @Test
     public void simulateResetContextMenuTest() throws InterruptedException, PluginException {
-        generateData();
-
         final ResetViewContextMenu menu = new ResetViewContextMenu();
 
         assertEquals(graph.getVertexCount(), 0);

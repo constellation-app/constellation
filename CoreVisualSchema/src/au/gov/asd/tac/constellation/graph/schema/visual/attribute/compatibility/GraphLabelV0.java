@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,18 +117,18 @@ public final class GraphLabelV0 implements Serializable {
         return String.format("[GraphLabel:%s;%s;%f]", StringUtilities.escapeString(label, metaChar), color, radius);
     }
 
-    public static GraphLabelV0 fromString(String graphLabelString) {
+    public static GraphLabelV0 fromString(final String graphLabelString) {
         String thisLabel = null;
         ConstellationColor thisColor = null;
         Float thisRadius = null;
         if (StringUtils.isNotBlank(graphLabelString)) {
-            Set<Character> splitChar = new HashSet<>();
+            final Set<Character> splitChar = new HashSet<>();
             splitChar.add(';');
-            List<String> graphLabelComponents = StringUtilities.splitLabelsWithEscapeCharacters(graphLabelString.substring(graphLabelString.indexOf(':') + 1, graphLabelString.lastIndexOf(']')), splitChar);
-            char[] metaChar = {' ', ';', '[', ']'};
+            final List<String> graphLabelComponents = StringUtilities.splitLabelsWithEscapeCharacters(graphLabelString.substring(graphLabelString.indexOf(':') + 1, graphLabelString.lastIndexOf(']')), splitChar);
+            final char[] metaChar = {' ', ';', '[', ']'};
             thisLabel = StringUtilities.unescapeString(graphLabelComponents.get(0), metaChar);
-            String[] rgba = graphLabelComponents.get(1).split(",");
-            thisColor = ConstellationColor.getColorValue(Float.valueOf(rgba[0]), Float.valueOf(rgba[1]), Float.valueOf(rgba[2]), Float.valueOf(rgba[3]));
+            final String[] rgba = graphLabelComponents.get(1).split(",");
+            thisColor = ConstellationColor.getColorValue(Float.parseFloat(rgba[0]), Float.parseFloat(rgba[1]), Float.parseFloat(rgba[2]), Float.parseFloat(rgba[3]));
             thisRadius = Float.valueOf(graphLabelComponents.get(2));
         }
 

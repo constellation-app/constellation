@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
-import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -34,51 +33,52 @@ import org.xml.sax.SAXException;
  * @author aldebaran30701
  */
 public class TOCParserNGTest {
-
-    public TOCParserNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Test of parse method, of class TOCParser.
+     * @throws org.xml.sax.SAXException
+     * @throws java.io.IOException
+     * @throws javax.xml.parsers.ParserConfigurationException
      */
     @Test
     public void testParse() throws SAXException, IOException, ParserConfigurationException {
         System.out.println("parse single file");
 
-        final String fileContents = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN\" \"http://java.sun.com/products/javahelp/toc_2_0.dtd\">\n"
-                + "<toc version=\"2.0\">\n"
-                + "    <tocitem text=\"Views\" mergetype=\"javax.help.SortMerge\">\n"
-                + "        <tocitem text=\"Layers View\" mergetype=\"javax.help.SortMerge\">\n"
-                + "            <tocitem text=\"Layers View\" target=\"au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent\" />\n"
-                + "        </tocitem>\n"
-                + "    </tocitem>\n"
-                + "</toc>\n"
-                + "";
+        final String fileContents = """
+                                    <?xml version="1.0" encoding="UTF-8"?>
+                                    <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+                                    <toc version="2.0">
+                                        <tocitem text="Views" mergetype="javax.help.SortMerge">
+                                            <tocitem text="Layers View" mergetype="javax.help.SortMerge">
+                                                <tocitem text="Layers View" target="au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent" />
+                                            </tocitem>
+                                        </tocitem>
+                                    </toc>
+                                    """;
 
         File tempFile = null;
         try {
-            try {
-                tempFile = File.createTempFile("testfile", ".xml");
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+            tempFile = File.createTempFile("testfile", ".xml");
 
             // try with resources
             try (final FileWriter fw = new FileWriter(tempFile)) {
@@ -107,8 +107,6 @@ public class TOCParserNGTest {
             assertEquals(child11, expectedChild11);
             assertEquals(child111, expectedChild111);
 
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
@@ -120,33 +118,33 @@ public class TOCParserNGTest {
 
     /**
      * Test of parse method, of class TOCParser.
+     * @throws org.xml.sax.SAXException
+     * @throws java.io.IOException
+     * @throws javax.xml.parsers.ParserConfigurationException
      */
     @Test
     public void testParseNonNested() throws SAXException, IOException, ParserConfigurationException {
         System.out.println("parse Non nested single file");
 
-        final String fileContents = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN\" \"http://java.sun.com/products/javahelp/toc_2_0.dtd\">\n"
-                + "<toc version=\"2.0\">\n"
-                + "    <tocitem text=\"Views\" mergetype=\"javax.help.SortMerge\">\n"
-                + "        <tocitem text=\"Layers View\" mergetype=\"javax.help.SortMerge\">\n"
-                + "            <tocitem text=\"Layers View\" target=\"au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent\" />\n"
-                + "        </tocitem>\n"
-                + "    </tocitem>\n"
-                + "    <tocitem text=\"Jupyter\">\n"
-                + "        <tocitem text=\"About The Jupyter Notebook Server\" target=\"au.gov.asd.tac.constellation.utilities.jupyter\"/>\n"
-                + "        <tocitem text=\"About The Constellation REST Server\" target=\"au.gov.asd.tac.constellation.utilities.rest\"/>\n"
-                + "    </tocitem>\n"
-                + "</toc>\n"
-                + "";
+        final String fileContents = """
+                                    <?xml version="1.0" encoding="UTF-8"?>
+                                    <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+                                    <toc version="2.0">
+                                        <tocitem text="Views" mergetype="javax.help.SortMerge">
+                                            <tocitem text="Layers View" mergetype="javax.help.SortMerge">
+                                                <tocitem text="Layers View" target="au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent" />
+                                            </tocitem>
+                                        </tocitem>
+                                        <tocitem text="Jupyter">
+                                            <tocitem text="About The Jupyter Notebook Server" target="au.gov.asd.tac.constellation.utilities.jupyter"/>
+                                            <tocitem text="About The Constellation REST Server" target="au.gov.asd.tac.constellation.utilities.rest"/>
+                                        </tocitem>
+                                    </toc>
+                                    """;
 
         File tempFile = null;
         try {
-            try {
-                tempFile = File.createTempFile("testfile", ".xml");
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+            tempFile = File.createTempFile("testfile", ".xml");
 
             // try with resources
             try (final FileWriter fw = new FileWriter(tempFile)) {
@@ -189,8 +187,6 @@ public class TOCParserNGTest {
             assertEquals(child21, expectedChild21);
             assertEquals(child22, expectedChild22);
 
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
@@ -202,67 +198,70 @@ public class TOCParserNGTest {
 
     /**
      * Test of parse method, of class TOCParser.
+     * @throws org.xml.sax.SAXException
+     * @throws java.io.IOException
+     * @throws javax.xml.parsers.ParserConfigurationException
      */
     @Test
     public void testParseMultipleFiles() throws SAXException, IOException, ParserConfigurationException {
         System.out.println("parse multiple file");
 
-        final String fileContents = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN\" \"http://java.sun.com/products/javahelp/toc_2_0.dtd\">\n"
-                + "<toc version=\"2.0\">\n"
-                + "    <tocitem text=\"Views\" mergetype=\"javax.help.SortMerge\">\n"
-                + "        <tocitem text=\"Layers View\" mergetype=\"javax.help.SortMerge\">\n"
-                + "            <tocitem text=\"Layers View\" target=\"au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent\" />\n"
-                + "        </tocitem>\n"
-                + "    </tocitem>\n"
-                + "</toc>\n"
-                + "";
-        final String fileContents2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN\" \"http://java.sun.com/products/javahelp/toc_2_0.dtd\">\n"
-                + "<toc version=\"2.0\">\n"
-                + "    <tocitem text=\"Views\" mergetype=\"javax.help.SortMerge\">\n"
-                + "        <tocitem text=\"Notes View\" mergetype=\"javax.help.SortMerge\">\n"
-                + "            <tocitem text=\"Notes View\" target=\"au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent\" />\n"
-                + "        </tocitem>\n"
-                + "    </tocitem>\n"
-                + "</toc>\n"
-                + "";
-        final String fileContents3 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN\" \"http://java.sun.com/products/javahelp/toc_2_0.dtd\">\n"
-                + "<toc version=\"2.0\">\n"
-                + "    <tocitem text=\"Views\" mergetype=\"javax.help.SortMerge\">\n"
-                + "        <tocitem text=\"Layers View\" mergetype=\"javax.help.SortMerge\">\n"
-                + "            <tocitem text=\"Layers View Extra\" target=\"au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent.Extra\" />\n"
-                + "            <tocitem text=\"Layers View Extra2\" target=\"au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent.Extra2\" />\n"
-                + "        </tocitem>\n"
-                + "    </tocitem>\n"
-                + "</toc>\n"
-                + "";
-        final String fileContents4 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<!DOCTYPE toc PUBLIC \"-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN\" \"http://java.sun.com/products/javahelp/toc_2_0.dtd\">\n"
-                + "<toc version=\"2.0\">\n"
-                + "    <tocitem text=\"Features\" mergetype=\"javax.help.SortMerge\">\n"
-                + "        <tocitem text=\"Selection\" mergetype=\"javax.help.SortMerge\">\n"
-                + "            <tocitem text=\"Node Selection\" target=\"nodeselectiontarget\" />\n"
-                + "            <tocitem text=\"Transaction Selection\" target=\"transactionselectiontarget\" />\n"
-                + "        </tocitem>\n"
-                + "    </tocitem>\n"
-                + "</toc>\n"
-                + "";
+        final String fileContents = """
+                                    <?xml version="1.0" encoding="UTF-8"?>
+                                    <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+                                    <toc version="2.0">
+                                        <tocitem text="Views" mergetype="javax.help.SortMerge">
+                                            <tocitem text="Layers View" mergetype="javax.help.SortMerge">
+                                                <tocitem text="Layers View" target="au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent" />
+                                            </tocitem>
+                                        </tocitem>
+                                    </toc>
+                                    """;
+        final String fileContents2 = """
+                                     <?xml version="1.0" encoding="UTF-8"?>
+                                     <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+                                     <toc version="2.0">
+                                         <tocitem text="Views" mergetype="javax.help.SortMerge">
+                                             <tocitem text="Notes View" mergetype="javax.help.SortMerge">
+                                                 <tocitem text="Notes View" target="au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent" />
+                                             </tocitem>
+                                         </tocitem>
+                                     </toc>
+                                     """;
+        final String fileContents3 = """
+                                     <?xml version="1.0" encoding="UTF-8"?>
+                                     <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+                                     <toc version="2.0">
+                                         <tocitem text="Views" mergetype="javax.help.SortMerge">
+                                             <tocitem text="Layers View" mergetype="javax.help.SortMerge">
+                                                 <tocitem text="Layers View Extra" target="au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent.Extra" />
+                                                 <tocitem text="Layers View Extra2" target="au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent.Extra2" />
+                                             </tocitem>
+                                         </tocitem>
+                                     </toc>
+                                     """;
+        final String fileContents4 = """
+                                     <?xml version="1.0" encoding="UTF-8"?>
+                                     <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+                                     <toc version="2.0">
+                                         <tocitem text="Features" mergetype="javax.help.SortMerge">
+                                             <tocitem text="Selection" mergetype="javax.help.SortMerge">
+                                                 <tocitem text="Node Selection" target="nodeselectiontarget" />
+                                                 <tocitem text="Transaction Selection" target="transactionselectiontarget" />
+                                             </tocitem>
+                                         </tocitem>
+                                     </toc>
+                                     """;
 
         File tempFile = null;
         File tempFile2 = null;
         File tempFile3 = null;
         File tempFile4 = null;
         try {
-            try {
-                tempFile = File.createTempFile("testfile", ".xml");
-                tempFile2 = File.createTempFile("testfile2", ".xml");
-                tempFile3 = File.createTempFile("testfile3", ".xml");
-                tempFile4 = File.createTempFile("testfile4", ".xml");
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+            tempFile = File.createTempFile("testfile", ".xml");
+            tempFile2 = File.createTempFile("testfile2", ".xml");
+            tempFile3 = File.createTempFile("testfile3", ".xml");
+            tempFile4 = File.createTempFile("testfile4", ".xml");
 
             // try with resources
             try (final FileWriter fw = new FileWriter(tempFile)) {
@@ -343,8 +342,6 @@ public class TOCParserNGTest {
             assertEquals(child111c, expectedChild111c);
             assertEquals(child111d, expectedChild111d);
 
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
@@ -364,6 +361,9 @@ public class TOCParserNGTest {
 
     /**
      * Test of parse method, of class TOCParser.
+     * @throws org.xml.sax.SAXException
+     * @throws java.io.IOException
+     * @throws javax.xml.parsers.ParserConfigurationException
      */
     @Test
     public void testParseNull() throws SAXException, IOException, ParserConfigurationException {
@@ -383,6 +383,9 @@ public class TOCParserNGTest {
     /**
      * Test of parse method, of class TOCParser. Expects an exception to be
      * thrown when the path is invalid
+     * @throws org.xml.sax.SAXException
+     * @throws java.io.IOException
+     * @throws javax.xml.parsers.ParserConfigurationException
      */
     @Test(expectedExceptions = FileNotFoundException.class)
     public void testParseFail() throws SAXException, IOException, ParserConfigurationException {

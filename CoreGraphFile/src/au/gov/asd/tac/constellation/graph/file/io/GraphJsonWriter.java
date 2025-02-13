@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.utilities.icon.DefaultCustomIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -113,7 +114,7 @@ public final class GraphJsonWriter implements Cancellable {
         try {
             if (!isCancelled) {
                 final File parentDir = gf.getParentFile();
-                for (final Map.Entry<String, File> entry : byteWriter.getFileMap().entrySet()) {
+                for (final Entry<String, File> entry : byteWriter.getFileMap().entrySet()) {
                     final String reference = entry.getKey();
                     final File fbin = entry.getValue();
 
@@ -182,7 +183,7 @@ public final class GraphJsonWriter implements Cancellable {
             zout.closeEntry();
             try {
                 if (!isCancelled) {
-                    for (final Map.Entry<String, File> entry : byteWriter.getFileMap().entrySet()) {
+                    for (final Entry<String, File> entry : byteWriter.getFileMap().entrySet()) {
                         final String reference = entry.getKey();
                         final File f = entry.getValue();
                         final ZipEntry ze = new ZipEntry(reference);
@@ -195,8 +196,8 @@ public final class GraphJsonWriter implements Cancellable {
                         final ConstellationIcon icon = IconManager.getIcon(iconName);
                         final IconData iconData = icon.getIconData();
                         String filePath = "";
-                        if (iconData instanceof FileIconData) {
-                            filePath = ((FileIconData) iconData).getFilePath();
+                        if (iconData instanceof FileIconData fileIconData) {
+                            filePath = fileIconData.getFilePath();
                         }
                         if (!filePath.isEmpty()) {
                             // prepare to put the icon image into the star/zip file
@@ -330,7 +331,7 @@ public final class GraphJsonWriter implements Cancellable {
 
         final AbstractGraphIOProvider[] ioProviders = new AbstractGraphIOProvider[graph.getAttributeCapacity()];
 
-        final ArrayList<Attribute> attrs = new ArrayList<>();
+        final List<Attribute> attrs = new ArrayList<>();
         for (int position = 0; position < graph.getAttributeCount(elementType); position++) {
             final int attrId = graph.getAttribute(elementType, position);
             final Attribute attr = new GraphAttribute(graph, attrId);
@@ -368,8 +369,6 @@ public final class GraphJsonWriter implements Cancellable {
                 jg.writeBooleanField(DEFAULT_FIELD, (Boolean) attr.getDefaultValue());
             } else if (attr.getDefaultValue() != null) {
                 jg.writeStringField(DEFAULT_FIELD, attr.getDefaultValue().toString());
-            } else {
-                // Do nothing
             }
 
             if (attr.getAttributeMerger() != null) {
@@ -461,8 +460,6 @@ public final class GraphJsonWriter implements Cancellable {
                     return;
                 } else if (counter % REPORT_INTERVAL == 0 && progress != null) {
                     progress.progress(counter);
-                } else {
-                    // Do nothing
                 }
             }
         } else if (elementType == GraphElementType.TRANSACTION) {
@@ -494,8 +491,6 @@ public final class GraphJsonWriter implements Cancellable {
                     progress.progress(counter);
                 }
             }
-        } else {
-            // Do nothing
         }
 
         jg.writeEndArray();
@@ -513,7 +508,7 @@ public final class GraphJsonWriter implements Cancellable {
      * @return true if the attribute is numeric, false otherwise.
      */
     private static boolean isNumeric(final Attribute attr) {
-        return StringUtils.equalsAny(attr.getAttributeType(), new String[]{"integer", "float"});
+        return StringUtilities.equalsAny(attr.getAttributeType(), "integer", "float");
     }
 
     @Override

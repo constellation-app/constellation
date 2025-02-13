@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,21 +26,20 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- * Attrivute Set Get Test
+ * Attribute Set Get Test
  *
  * @author algol
  */
 public class AttributeSetGetNGTest {
-
-    public AttributeSetGetNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -73,15 +72,15 @@ public class AttributeSetGetNGTest {
         final GraphWriteMethods graph = new StoreGraph();
         final int attr = graph.addAttribute(elementType, attributeType, name, null, null, null);
 
-        final float VALUE1 = 17;
-        final float VALUE2 = 43;
+        final float value1 = 17;
+        final float value2 = 43;
         final int id1 = graph.addVertex();
-        graph.setFloatValue(attr, id1, VALUE1);
+        graph.setFloatValue(attr, id1, value1);
         final int id2 = graph.addVertex();
-        graph.setFloatValue(attr, id2, VALUE2);
+        graph.setFloatValue(attr, id2, value2);
 
-        assertTrue("Retrieve float value", VALUE1 == graph.getFloatValue(attr, id1));
-        assertTrue("Retrieve float value", VALUE2 == graph.getFloatValue(attr, id2));
+        assertTrue("Retrieve float value", value1 == graph.getFloatValue(attr, id1));
+        assertTrue("Retrieve float value", value2 == graph.getFloatValue(attr, id2));
     }
 
     @Test
@@ -108,15 +107,15 @@ public class AttributeSetGetNGTest {
         final GraphWriteMethods graph = new StoreGraph();
         final int attr = graph.addAttribute(elementType, attributeType, name, null, null, null);
 
-        final int VALUE1 = 17;
-        final int VALUE2 = 43;
+        final int value1 = 17;
+        final int value2 = 43;
         final int id1 = graph.addVertex();
-        graph.setIntValue(attr, id1, VALUE1);
+        graph.setIntValue(attr, id1, value1);
         final int id2 = graph.addVertex();
-        graph.setIntValue(attr, id2, VALUE2);
+        graph.setIntValue(attr, id2, value2);
 
-        assertEquals("Retrieve int value", VALUE1, graph.getIntValue(attr, id1));
-        assertEquals("Retrieve int value", VALUE2, graph.getIntValue(attr, id2));
+        assertEquals("Retrieve int value", value1, graph.getIntValue(attr, id1));
+        assertEquals("Retrieve int value", value2, graph.getIntValue(attr, id2));
     }
 
     @Test
@@ -127,15 +126,15 @@ public class AttributeSetGetNGTest {
         final GraphWriteMethods graph = new StoreGraph();
         final int attr = graph.addAttribute(elementType, attributeType, name, null, null, null);
 
-        final boolean VALUE1 = false;
-        final boolean VALUE2 = true;
+        final boolean value1 = false;
+        final boolean value2 = true;
         final int id1 = graph.addVertex();
-        graph.setBooleanValue(attr, id1, VALUE1);
+        graph.setBooleanValue(attr, id1, value1);
         final int id2 = graph.addVertex();
-        graph.setBooleanValue(attr, id2, VALUE2);
+        graph.setBooleanValue(attr, id2, value2);
 
-        assertEquals("Retrieve boolean value", VALUE1, graph.getBooleanValue(attr, id1));
-        assertEquals("Retrieve boolean value", VALUE2, graph.getBooleanValue(attr, id2));
+        assertEquals("Retrieve boolean value", value1, graph.getBooleanValue(attr, id1));
+        assertEquals("Retrieve boolean value", value2, graph.getBooleanValue(attr, id2));
     }
 
     @Test
@@ -146,15 +145,15 @@ public class AttributeSetGetNGTest {
         final GraphWriteMethods graph = new StoreGraph();
         final int attr = graph.addAttribute(elementType, attributeType, name, null, null, null);
 
-        final Object VALUE1 = new Object();
-        final Object VALUE2 = new Object();
+        final Object value1 = new Object();
+        final Object value2 = new Object();
         final int id1 = graph.addVertex();
-        graph.setObjectValue(attr, id1, VALUE1);
+        graph.setObjectValue(attr, id1, value1);
         final int id2 = graph.addVertex();
-        graph.setObjectValue(attr, id2, VALUE2);
+        graph.setObjectValue(attr, id2, value2);
 
-        assertSame("Retrieve object value", VALUE1, graph.getObjectValue(attr, id1));
-        assertSame("Retrieve object value", VALUE2, graph.getObjectValue(attr, id2));
+        assertSame("Retrieve object value", value1, graph.getObjectValue(attr, id1));
+        assertSame("Retrieve object value", value2, graph.getObjectValue(attr, id2));
     }
 
     /**
@@ -168,9 +167,9 @@ public class AttributeSetGetNGTest {
         final int stringAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "stringattr", null, null, null);
 
         // Add lots of values for this attribute.
-        final int N = 10000;
-        final int[] v = new int[N];
-        for (int i = 0; i < N; i++) {
+        final int n = 10000;
+        final int[] v = new int[n];
+        for (int i = 0; i < n; i++) {
             v[i] = graph.addVertex();
             graph.setIntValue(intAttr, v[i], i);
             graph.setFloatValue(floatAttr, v[i], 2f * i);
@@ -178,7 +177,7 @@ public class AttributeSetGetNGTest {
         }
 
         // Retrieve the values.
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < n; i++) {
             final int ival = graph.getIntValue(intAttr, v[i]);
             assertEquals("Compare int", i, ival);
             final float fval = graph.getFloatValue(floatAttr, v[i]);
@@ -196,19 +195,19 @@ public class AttributeSetGetNGTest {
         final GraphWriteMethods graph = new StoreGraph();
         final int attr = graph.addAttribute(elementType, attributeType, name, null, null, null);
 
-        final int N = 10;
-        final int[] attrs = new int[N];
+        final int n = 10;
+        final int[] attrs = new int[n];
         assertEquals("Adding some elements", 0, graph.getVertexCount());
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < n; i++) {
             attrs[i] = graph.addVertex();
             graph.setIntValue(attr, attrs[i], i);
             assertEquals("Adding some elements", i + 1, graph.getVertexCount());
             assertTrue("Adding, capacity", graph.getVertexCapacity() >= graph.getVertexCount());
         }
 
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < n; i++) {
             graph.removeVertex(attrs[i]);
-            assertEquals("Removing some elements", N - i - 1, graph.getVertexCount());
+            assertEquals("Removing some elements", n - i - 1, graph.getVertexCount());
             assertTrue("Removing, capacity", graph.getVertexCapacity() >= graph.getVertexCount());
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,7 @@ import java.util.regex.Pattern;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * A Rule for identifying node identifier values which do not comply with their
- * specified type.
+ * A Rule for identifying node identifier values which do not comply with their specified type.
  *
  * @author cygnus_x-1
  */
@@ -35,12 +34,10 @@ public class IdentifierInconsistentWithTypeRule extends QualityControlRule {
 
     private static final String NAME = "Identifier inconsistent with type";
     private static final String DESCRIPTION
-            = "This rule is used to identify nodes whose identifier do not "
-            + "appear to match their type.\n"
-            + "This check is performed using the regular expressions specified "
-            + "for each node type.\n"
-            + "Examples of when this rule will match are phone numbers that are "
-            + "too short or email addresses without the @ symbol.";
+            = """
+              This rule is used to identify nodes whose identifier do not appear to match their type.
+              This check is performed using the regular expressions specified for each node type.
+              Examples of when this rule will match are phone numbers that are too short or email addresses without the @ symbol.""";
     private static final int RISK = 30;
 
     public IdentifierInconsistentWithTypeRule() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,17 +37,25 @@ import org.testng.annotations.Test;
  */
 public class CosineSimilarityPluginNGTest {
 
-    private int transactionCosineAttribute, vertexSelectedAttribute, transactionIdentifier;
-    private int vxId0, vxId1, vxId2, vxId3, vxId4;
-    private int txId0, txId1, txId2, txId3, txId4;
+    private int transactionCosineAttribute;
+    private int transactionIdentifier;
+    
+    private int vxId0;
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    
     private StoreGraph graph;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -58,8 +66,8 @@ public class CosineSimilarityPluginNGTest {
 
         // add attributes
         transactionCosineAttribute = SnaConcept.TransactionAttribute.COSINE_SIMILARITY.ensure(graph);
-        vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         transactionIdentifier = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
+        VisualConcept.VertexAttribute.SELECTED.ensure(graph);
 
         // add vertices
         vxId0 = graph.addVertex();
@@ -69,11 +77,11 @@ public class CosineSimilarityPluginNGTest {
         vxId4 = graph.addVertex();
 
         // add transactions
-        txId0 = graph.addTransaction(vxId0, vxId1, true);
-        txId1 = graph.addTransaction(vxId1, vxId2, true);
-        txId2 = graph.addTransaction(vxId1, vxId3, true);
-        txId3 = graph.addTransaction(vxId2, vxId3, true);
-        txId4 = graph.addTransaction(vxId3, vxId4, true);
+        graph.addTransaction(vxId0, vxId1, true);
+        graph.addTransaction(vxId1, vxId2, true);
+        graph.addTransaction(vxId1, vxId3, true);
+        graph.addTransaction(vxId2, vxId3, true);
+        graph.addTransaction(vxId3, vxId4, true);
     }
 
     @AfterMethod
@@ -94,8 +102,8 @@ public class CosineSimilarityPluginNGTest {
 
         int transactionCount = graph.getTransactionCount();
 
-        for (int transactionId = 0; transactionId < transactionCount; transactionId++) {
-            int transaction = graph.getTransaction(transactionId);
+        for (int transaction = 0; transaction < transactionCount; transaction++) {
+            int transactionId = graph.getTransaction(transaction);
             String identifier = graph.getStringValue(transactionIdentifier, transactionId);
             if ("1 == similarity == 2".equals(identifier)) {
                 assertEquals(graph.getFloatValue(transactionCosineAttribute, transactionId), 0.70710677f);
@@ -118,8 +126,8 @@ public class CosineSimilarityPluginNGTest {
 
         int transactionCount = graph.getTransactionCount();
 
-        for (int transactionId = 0; transactionId < transactionCount; transactionId++) {
-            int transaction = graph.getTransaction(transactionId);
+        for (int transaction = 0; transaction < transactionCount; transaction++) {
+            int transactionId = graph.getTransaction(transaction);
             String identifier = graph.getStringValue(transactionIdentifier, transactionId);
             if ("2 == similarity == 4".equals(identifier)) {
                 assertEquals(graph.getFloatValue(transactionCosineAttribute, transactionId), 0.70710677f);
@@ -132,5 +140,4 @@ public class CosineSimilarityPluginNGTest {
             }
         }
     }
-
 }

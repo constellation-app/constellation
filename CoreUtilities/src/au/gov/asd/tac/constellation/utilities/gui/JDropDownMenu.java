@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ public class JDropDownMenu<E> extends JComponent implements ActionListener {
         Icon arrow = null;
         try {
             arrow = new ImageIcon(Utilities.toURI(InstalledFileLocator.getDefault().locate("modules/ext/icons/drop_down_arrow.png", "au.gov.asd.tac.constellation.utilities", false)).toURL());
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             LOGGER.warning("Could not create drop down arrow image");
         }
 
@@ -124,7 +124,7 @@ public class JDropDownMenu<E> extends JComponent implements ActionListener {
     }
 
     protected Map<JMenuItem, E> getMenuItems() {
-        return menuItems;
+        return Collections.unmodifiableMap(menuItems);
     }
 
     public final String getText() {

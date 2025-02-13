@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,8 @@ public interface AnalyticQuestionDescription<R extends AnalyticResult<?>> {
 
     public String getDescription();
 
+    public String getDocumentationUrl();
+    
     public List<Class<? extends AnalyticPlugin<R>>> getPluginClasses();
 
     public Class<? extends AnalyticAggregator<R>> getAggregatorType();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,13 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
     protected JFXPanel jfxContainer = new JFXPanel();
     protected Scene scene;
     protected ScrollPane scrollPane;
+    
+    /**
+     * This is the system property that is set to true in order to make the AWT
+     * thread run in headless mode for tests, etc.
+     */
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
+    
     /**
      * A JavaFxTopComponent will have a ScrollPane by default, as it cannot know
      * the expected layout of the given pane. If you wish to remove the
@@ -98,9 +105,9 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
             if (getHorizontalScrollPolicy() == ScrollBarPolicy.NEVER) {
                 scrollPane.setFitToWidth(true);
             } else {
+                // TODO: fix a bug where the width of the scroll can grow infinitely
                 scrollPane.viewportBoundsProperty().addListener((observable, oldValue, newValue)
-                        ->                    // TODO: fix a bug where the width of the scroll can grow infinitely
-                    scrollPane.setFitToWidth(content.prefWidth(-1) <= newValue.getWidth()));
+                        -> scrollPane.setFitToWidth(content.prefWidth(-1) <= newValue.getWidth()));
             }
             scrollPane.setVbarPolicy(getVerticalScrollPolicy());
             if (getVerticalScrollPolicy() == ScrollBarPolicy.NEVER) {
@@ -112,7 +119,10 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
 
             // set the font on initialise
             updateFont();
-
+            
+            if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+                return;
+            }
             jfxContainer.setScene(scene);
             jfxContainer.setBackground(Color.red);
             SwingUtilities.invokeLater(() -> {

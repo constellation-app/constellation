@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Random;
 import javax.imageio.ImageIO;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -64,10 +63,12 @@ public class IconDataNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -691,8 +692,7 @@ public class IconDataNGTest {
         assertEquals(result1, expResult1);
 
         // When data is anything but null.
-        final Random random = new Random();
-        final int bytes = random.nextInt(50) + 1;
+        final int bytes = 25;
 
         doReturn(new byte[bytes]).when(instance).createData(ConstellationIcon.DEFAULT_ICON_SIZE, null);
         instance.getData();

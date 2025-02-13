@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -205,5 +205,4 @@ public class Matrix33fNGTest {
         assertEquals(getMatrix().toString(), "[123.0,321.0,456.0, "
                 + "654.0,789.0,987.0, 195.0,951.0,286.0]");
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.io.IOException;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.Mockito;
@@ -53,17 +54,15 @@ public class AbstractUncachedStringIOProviderNGTest {
     final int elementId = 41;
     final String attribValue = "TestAttrib";
     final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
-
     
-    public AbstractUncachedStringIOProviderNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -73,6 +72,7 @@ public class AbstractUncachedStringIOProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -88,9 +88,10 @@ public class AbstractUncachedStringIOProviderNGTest {
 
     /**
      * Test of readObject method, of class AbstractUncachedStringIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testReadObject() throws Exception {
+    public void testReadObject() throws IOException {
         System.out.println("AbstractUncachedStringIOProviderNGTest.testReadObject");
         
         // Call method under test with JsonNode set to return isNull = true
@@ -109,9 +110,10 @@ public class AbstractUncachedStringIOProviderNGTest {
 
     /**
      * Test of writeObject method, of class AbstractUncachedStringIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteObject() throws Exception {
+    public void testWriteObject() throws IOException {
         System.out.println("AbstractUncachedStringIOProviderNGTest.testWriteObject");
         
         // Test not verbose and graph.IsDefaultValue is true

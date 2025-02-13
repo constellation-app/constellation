@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import org.openide.awt.UndoRedo;
-import org.openide.util.Exceptions;
 import org.testng.Assert;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeClass;
@@ -37,108 +36,91 @@ public class UpdateNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @Test
-    public void TestAttributeUpdating() {
+    public void TestAttributeUpdating() throws InterruptedException {
+        int a;
+        int v;
+
+        DualGraph g = new DualGraph(null);
+        WritableGraph wg = g.getWritableGraph("", true);
         try {
-            int a, v;
+            a = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "label", "description", null, null);
+            v = wg.addVertex();
+            wg.setStringValue(a, v, "Hello");
+        } finally {
+            wg.commit();
+        }
 
-            DualGraph g = new DualGraph(null);
-            WritableGraph wg = g.getWritableGraph("", true);
-            try {
-                a = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "label", "description", null, null);
-                v = wg.addVertex();
-                wg.setStringValue(a, v, "Hello");
-            } finally {
-                wg.commit();
-            }
+        long mc;
 
-            long mc;
+        try (final ReadableGraph rg = g.getReadableGraph()) {
+            assertEquals(1, rg.getVertexCount());
+            assertEquals("Hello", rg.getStringValue(a, v));
+            mc = rg.getGlobalModificationCounter();
+        }
 
-            ReadableGraph rg = g.getReadableGraph();
-            try {
-                assertEquals(1, rg.getVertexCount());
-                assertEquals("Hello", rg.getStringValue(a, v));
-                mc = rg.getGlobalModificationCounter();
-            } finally {
-                rg.release();
-            }
+        wg = g.getWritableGraph("", true);
+        try {
+        } finally {
+            wg.commit();
+        }
 
-            wg = g.getWritableGraph("", true);
-            try {
-            } finally {
-                wg.commit();
-            }
-
-            rg = g.getReadableGraph();
-            try {
-                assertEquals(1, rg.getVertexCount());
-                assertEquals("Hello", rg.getStringValue(a, v));
-                assertEquals(mc, rg.getGlobalModificationCounter());
-            } finally {
-                rg.release();
-            }
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        try (final ReadableGraph rg = g.getReadableGraph()) {
+            assertEquals(1, rg.getVertexCount());
+            assertEquals("Hello", rg.getStringValue(a, v));
+            assertEquals(mc, rg.getGlobalModificationCounter());
         }
     }
 
     @Test
-    public void rollingBack() {
+    public void rollingBack() throws InterruptedException {
+        final DualGraph g = new DualGraph(null);
+        final WritableGraph wg = g.getWritableGraph("", true);
+        final int af;
+        final int ac;
+        final int v;
         try {
-            final DualGraph g = new DualGraph(null);
-            final WritableGraph wg = g.getWritableGraph("", true);
-            final int af;
-            final int ac;
-            final int v;
-            try {
-                af = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
-                ac = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "level", "description", null, null);
-                v = wg.addVertex();
-                wg.setFloatValue(af, v, 2.71828f);
-                wg.setStringValue(ac, v, "3");
-            } finally {
-                wg.commit();
-            }
+            af = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
+            ac = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "level", "description", null, null);
+            v = wg.addVertex();
+            wg.setFloatValue(af, v, 2.71828f);
+            wg.setStringValue(ac, v, "3");
+        } finally {
+            wg.commit();
+        }
 
-            final WritableGraph wgr = g.getWritableGraph("", true);
-            try {
-                final int vr = wgr.addVertex();
-                wgr.setFloatValue(af, vr, 99);
-                wgr.setStringValue(ac, vr, "5");
-//                throw new Exception();
-            } finally {
-                wgr.rollBack();
-            }
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        final WritableGraph wgr = g.getWritableGraph("", true);
+        try {
+            final int vr = wgr.addVertex();
+            wgr.setFloatValue(af, vr, 99);
+            wgr.setStringValue(ac, vr, "5");
+        } finally {
+            wgr.rollBack();
         }
     }
 
     @Test
-    public void commitThenRollback() {
+    public void commitThenRollback() throws InterruptedException {
+        final DualGraph g = new DualGraph(null);
+        final WritableGraph wg = g.getWritableGraph("", true);
+        final int af;
+        final int ac;
+        final int v;
         try {
-            final DualGraph g = new DualGraph(null);
-            final WritableGraph wg = g.getWritableGraph("", true);
-            final int af;
-            final int ac;
-            final int v;
+            af = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
+            ac = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "level", "description", null, null);
+            v = wg.addVertex();
+            wg.setFloatValue(af, v, 2.71828f);
+            wg.setStringValue(ac, v, "3");
+        } finally {
+            wg.commit();
             try {
-                af = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
-                ac = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "level", "description", null, null);
-                v = wg.addVertex();
-                wg.setFloatValue(af, v, 2.71828f);
-                wg.setStringValue(ac, v, "3");
-            } finally {
-                wg.commit();
-                try {
-                    wg.rollBack();
-                } catch (IllegalMonitorStateException ex) {
-                }
+                wg.rollBack();
+            } catch (IllegalMonitorStateException ex) {
             }
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
         }
     }
 
@@ -160,35 +142,24 @@ public class UpdateNGTest {
 
         final WritableGraph wg = g.getWritableGraph("Write", true);
         try {
-
             wg.addVertex();
-
-            ReadableGraph rg = g.getReadableGraph();
-            try {
+            try (final ReadableGraph rg = g.getReadableGraph()) {
                 assert (rg.getVertexCount() == 1);
-            } finally {
-                rg.release();
             }
-
         } finally {
             wg.commit();
         }
-
     }
 
     @Test
-    public void multiRollback() {
+    public void multiRollback() throws InterruptedException {
+        final DualGraph g = new DualGraph(null);
+        final WritableGraph wg = g.getWritableGraph("", true);
+        wg.rollBack();
         try {
-            final DualGraph g = new DualGraph(null);
-            final WritableGraph wg = g.getWritableGraph("", true);
             wg.rollBack();
-            try {
-                wg.rollBack();
-            } catch (IllegalMonitorStateException ex) {
-                System.out.printf("%s\n", ex);
-            }
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (IllegalMonitorStateException ex) {
+            System.out.printf("%s\n", ex);
         }
     }
 
@@ -250,7 +221,7 @@ public class UpdateNGTest {
 //        }
 //    }
     @Test
-    public void createTransactionToNonexistentDestination() {
+    public void createTransactionToNonexistentDestination() throws InterruptedException {
         final DualGraph g = new DualGraph(null);
         g.setUndoManager(new UndoRedo.Manager());
 
@@ -265,15 +236,13 @@ public class UpdateNGTest {
             for (int i = 0; i < 100; i++) {
                 vx = wg.addVertex();
             }
-            final int tx = wg.addTransaction(vx, vx + 1, true);
+            
+            wg.addTransaction(vx, vx + 1, true);
 
             Assert.fail("Shouldn't get here, wg.addTransaction() should fail.");
         } catch (IllegalArgumentException ex) {
             // Expected result.
             System.out.printf("Expected exception: %s\n", ex.getMessage());
-//            ex.printStackTrace(System.out);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
         }
 
         if (wg != null) {

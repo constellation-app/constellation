@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,18 +34,15 @@ public class PlaneNGTest {
     // Create object under test
     final BufferedImage bufferedImage = new BufferedImage(1, 2, 3);
     Plane instance;
-
-    public PlaneNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
-        System.out.println("PlaneNGTest.");
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        System.out.println("PlaneNGTest.");
+        // Not currently required
     }
 
     @BeforeMethod
@@ -55,6 +52,7 @@ public class PlaneNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -208,25 +206,6 @@ public class PlaneNGTest {
         System.out.println("PlaneNGTest.testSetVisible");
         instance.setVisible(false);
         assertFalse(instance.isVisible());
-    }
-
-    /**
-     * Test of readNode method, of class Plane.
-     */
-    @Test
-    public void testReadNode() throws Exception {
-        System.out.println("PlaneNGTest.testReadNode");
-        // Not currently implemented, beed to deal with ImageIO
-        
-    }
-
-    /**
-     * Test of writeNode method, of class Plane.
-     */
-    @Test
-    public void testWriteNode() throws Exception {
-        System.out.println("PlaneNGTest.testWriteNode");
-        // Not currently implemented, beed to deal with ImageIO
     }
 
     /**

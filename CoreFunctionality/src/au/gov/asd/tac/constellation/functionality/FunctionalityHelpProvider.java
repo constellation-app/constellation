@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class FunctionalityHelpProvider extends HelpPageProvider {
 
     private static final String CODEBASE_NAME = "constellation";
+    private static final String SEP = File.separator;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -40,10 +41,9 @@ public class FunctionalityHelpProvider extends HelpPageProvider {
      */
     @Override
     public Map<String, String> getHelpMap() {
-        final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String functionalityModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "functionality" + sep;
+        final Map<String, String> map = new HashMap<>();       
+        final String functionalityModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreFunctionality" + SEP + "src" + SEP + "au" + SEP + "gov"
+                + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "functionality" + SEP;
 
         map.put("au.gov.asd.tac.constellation.functionality.about", functionalityModulePath + "about-constellation.md");
         map.put("au.gov.asd.tac.constellation.functionality.gettingstarted", functionalityModulePath + "getting-started.md");
@@ -58,10 +58,7 @@ public class FunctionalityHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String functionalityPath;
-        functionalityPath = "ext" + sep + "docs" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "functionality" + sep + "core-toc.xml";
-        return functionalityPath;
+        return "ext" + SEP + "docs" + SEP + "CoreFunctionality" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" 
+                + SEP + CODEBASE_NAME + SEP + "functionality" + SEP + "core-toc.xml";
     }
 }

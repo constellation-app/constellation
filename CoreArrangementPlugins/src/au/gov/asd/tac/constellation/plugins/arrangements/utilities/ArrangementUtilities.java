@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,12 +67,8 @@ public final class ArrangementUtilities {
      *
      * @return the minimum distance to each vertex in the graph.
      */
-    public static float[] getMinDistancesToReachableVertices(
-            final GraphReadMethods graph,
-            final int vxId,
-            final boolean goForward,
-            final boolean goBackward,
-            final float minRadius) {
+    public static float[] getMinDistancesToReachableVertices(final GraphReadMethods graph, final int vxId,
+            final boolean goForward, final boolean goBackward, final float minRadius) {
         final int nradiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(graph);
         final float[] distancesToVertices = new float[graph.getVertexCapacity()];
 
@@ -142,9 +138,7 @@ public final class ArrangementUtilities {
      * @return the mean of the x,y,z coordinates of the vertices of a graph.
      */
     public static float[] getXyzMean(final GraphReadMethods rg) {
-        final double[] mean = new double[]{
-            0, 0, 0
-        };
+        final double[] mean = new double[]{0, 0, 0};
 
         final int vxCount = rg.getVertexCount();
         if (vxCount != 0) {
@@ -170,9 +164,7 @@ public final class ArrangementUtilities {
             mean[2] /= vxCount;
         }
 
-        return new float[]{
-            (float) mean[0], (float) mean[1], (float) mean[2]
-        };
+        return new float[]{(float) mean[0], (float) mean[1], (float) mean[2]};
     }
 
     /**
@@ -209,9 +201,7 @@ public final class ArrangementUtilities {
 
     @Deprecated
     public static float[] getSubsetMean(final GraphWriteMethods graph, final BitSet vertices) {
-        final double[] mean = new double[]{
-            0, 0, 0
-        };
+        final double[] mean = new double[]{0, 0, 0};
 
         final double n = vertices.cardinality();
         if (n != 0) {
@@ -246,9 +236,7 @@ public final class ArrangementUtilities {
             mean[2] /= n;
         }
 
-        return new float[]{
-            (float) mean[0], (float) mean[1], (float) mean[2]
-        };
+        return new float[]{(float) mean[0], (float) mean[1], (float) mean[2]};
     }
 
     /**

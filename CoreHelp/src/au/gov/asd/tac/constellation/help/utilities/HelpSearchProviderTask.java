@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
  */
 package au.gov.asd.tac.constellation.help.utilities;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.openide.util.HelpCtx;
 
@@ -42,24 +43,21 @@ public class HelpSearchProviderTask implements Runnable {
     }
 
     /**
-     * Matches the quick search item to a value in the mappings and displays the help page if there is a valid key in the mapping
+     * Matches the quick search item to a value in the mappings and displays the help page if there is a valid key in
+     * the mapping
      */
     @Override
     public void run() {
         // Get the names of all of the help files
         final Map<String, String> mappings = HelpMapper.getMappings();
-        final Collection<String> values = mappings.values();
+        final List<String> alreadyOpened = new ArrayList<>();
 
         // Find the value that matches the name of the quick search item
-        for (final String value : values) {
-            if (value.contains(helpPageName)) {
-                for (final Map.Entry<String, String> entry : mappings.entrySet()) {
-
-                    // Display the help page for that value 
-                    if (value.equals(entry.getValue())) {
-                        new HelpCtx(entry.getKey()).display();
-                    }
-                }
+        for (final Map.Entry<String, String> entry : mappings.entrySet()) {
+            // Display the help page for that value, if not already found previously
+            if (entry.getValue().contains(helpPageName) && !alreadyOpened.contains(entry.getValue())) {
+                new HelpCtx(entry.getKey()).display();
+                alreadyOpened.add(entry.getValue());
             }
         }
     }

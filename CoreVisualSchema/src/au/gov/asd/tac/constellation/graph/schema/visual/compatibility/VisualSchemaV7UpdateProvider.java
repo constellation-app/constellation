@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,6 @@ public class VisualSchemaV7UpdateProvider extends SchemaUpdateProvider {
 
     @Override
     protected void schemaUpdate(final StoreGraph graph) {
-
         // Retrieve the attributes IDs of the previous attributes 
         final int oldGraphBottomlabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, NODE_BOTTOM_LABELS_COLOURS);
         final int oldGraphToplabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, NODE_TOP_LABEL_COLOURS);

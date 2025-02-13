@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -64,6 +65,8 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
     public static final String NEW_GRAPH_OUTPUT_PARAMETER_ID = PluginParameter.buildId(CopyToNewGraphPlugin.class, "new_graph");
 
     private Graph copy = null;
+    
+    private static final Pattern DIGITS_REGEX = Pattern.compile("\\d+");
 
     @Override
     protected void read(final GraphReadMethods rg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
@@ -105,7 +108,7 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
         final int p = name.lastIndexOf('_');
         if (p != -1) {
             final String suffix = name.substring(p + 1);
-            boolean isDigits = !suffix.isEmpty() && suffix.matches("\\d+");
+            boolean isDigits = !suffix.isEmpty() && DIGITS_REGEX.matcher(suffix).matches();
             if (isDigits) {
                 name = name.substring(0, p);
             }
@@ -176,8 +179,8 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
             final int namedSelectionAttr = original.getAttribute(GraphElementType.META, NamedSelectionState.ATTRIBUTE_NAME);
             if (namedSelectionAttr != Graph.NOT_FOUND) {
                 final Object possibleState = original.getObjectValue(namedSelectionAttr, 0);
-                if (possibleState instanceof NamedSelectionState) {
-                    final NamedSelectionState state = new NamedSelectionState((NamedSelectionState) possibleState);
+                if (possibleState instanceof NamedSelectionState namedSelectionState) {
+                    final NamedSelectionState state = new NamedSelectionState(namedSelectionState);
                     graph.setObjectValue(attributeTranslation[namedSelectionAttr], 0, state);
                 }
             }

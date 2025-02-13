@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -95,23 +95,16 @@ public final class ResetViewPlugin extends SimpleEditPlugin {
             final String axis = parameters.getStringValue(AXIS_PARAMETER_ID);
             final boolean negative = parameters.getBooleanValue(NEGATIVE_PARAMETER_ID);
             switch (axis.toLowerCase()) {
-                case "x":
-                    CameraUtilities.refocusOnXAxis(camera, boundingBox, negative);
-                    break;
-                case "y":
-                    CameraUtilities.refocusOnYAxis(camera, boundingBox, negative);
-                    break;
-                case "z":
-                default:
-                    CameraUtilities.refocusOnZAxis(camera, boundingBox, negative);
-                    break;
+                case "x" -> CameraUtilities.refocusOnXAxis(camera, boundingBox, negative);
+                case "y"  -> CameraUtilities.refocusOnYAxis(camera, boundingBox, negative);
+                default  -> CameraUtilities.refocusOnZAxis(camera, boundingBox, negative);
             }
 
             // add an animation to the refocused camera so that it pans from the old position.
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null && activeGraph.getId().equals(graph.getId())) {
                 // Only do the camera animation if the edited graph is currently active
-                Animation.startAnimation(new PanAnimation("Reset View", oldCamera, camera, parameters.getBooleanValue(SIGNIFICANT_PARAMETER_ID)));
+                AnimationUtilities.startAnimation(new PanAnimation("Reset View", oldCamera, camera, parameters.getBooleanValue(SIGNIFICANT_PARAMETER_ID)), activeGraph.getId());
             } else {
                 // Skip the animation, just set the new camera position
                 graph.setObjectValue(cameraAttribute, 0, camera);

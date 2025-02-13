@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public final class NBFilesystemTestAction implements ActionListener {
 
     private static void descend(final FileObject fo, final int level) {
         final String fmt = String.format("%%%ds", (level + 1) * 2);
-        final String log = String.format(fmt + " %s %s\n", " ", fo.getNameExt(), fo.getAttribute("position"));
+        final String log = String.format(fmt + " %s %s%n", " ", fo.getNameExt(), fo.getAttribute("position"));
         LOGGER.log(Level.INFO, log);
         for (final FileObject child : fo.getChildren()) {
             descend(child, level + 1);

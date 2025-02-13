@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,21 +28,18 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
  * This class allows de-obfuscation of obfuscated passwords.
  * <p>
- * To get the password from an obfuscated password, run this class as an
- * application and enter the obfuscated password at the prompt. The password
- * will be echoed to the screen.
+ * To get the password from an obfuscated password, run this class as an application and enter the obfuscated password
+ * at the prompt. The password will be echoed to the screen.
  * <p>
- * Note that storing obfuscated passwords in source code or configuration files
- * is strongly discouraged. This is NOT a good security practice and might make
- * sense if working locally and as a temporary measure. Once again, strongly
- * discourage using password obfuscation in a production environment. USE AT
- * YOUR OWN RISK!
+ * Note that storing obfuscated passwords in source code or configuration files is strongly discouraged. This is NOT a
+ * good security practice and might make sense if working locally and as a temporary measure. Once again, strongly
+ * discourage using password obfuscation in a production environment. USE AT YOUR OWN RISK!
  *
  * @author ruby_crucis
  * @author arcturus
@@ -54,15 +51,14 @@ public class PasswordDeobfuscator {
     /**
      * Return the de-obfuscated password.
      *
-     * This is returned as a String which is not ideal. In future this should be
-     * changed to a mutable character type.
+     * This is returned as a String which is not ideal. In future this should be changed to a mutable character type.
      *
      * @param password The obfuscated password
      *
      * @return The de-obfuscated password.
      */
     public static String deobfuscate(final ObfuscatedPassword password) {
-        final IvParameterSpec iv = new IvParameterSpec(PasswordUtilities.getIV());
+        final GCMParameterSpec iv = new GCMParameterSpec(PasswordUtilities.T_LEN, PasswordUtilities.getIV());
         final SecretKeySpec key = new SecretKeySpec(PasswordUtilities.getKey(), PasswordUtilities.ALG);
         try {
             final Cipher cipher = Cipher.getInstance(PasswordUtilities.ALG_SPEC);
@@ -78,9 +74,8 @@ public class PasswordDeobfuscator {
     /**
      * De-obfuscate a password.
      * <p>
-     * To run the main method navigate to
-     * constellation\CoreSecurity\build\classes on the command prompt and run
-     * the following command:
+     * To run the main method navigate to constellation\CoreSecurity\build\classes on the command prompt and run the
+     * following command:
      * <pre>
      * java -cp {path/to/org-openide-util-lookup.jar};. au.gov.asd.tac.constellation.security.password.PasswordDeobfuscator
      * </pre>

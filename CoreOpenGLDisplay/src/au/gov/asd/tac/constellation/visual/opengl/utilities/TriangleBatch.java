@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector2f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GL2ES3;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
@@ -61,7 +61,7 @@ public class TriangleBatch {
         vertexArrayBufferObject = new int[1];
     }
 
-    public void dispose(final GL3 gl) {
+    public void dispose(final GL2ES3 gl) {
         gl.glDeleteBuffers(4, bufferObjects, 0);
         gl.glDeleteVertexArrays(1, vertexArrayBufferObject, 0);
     }
@@ -160,7 +160,7 @@ public class TriangleBatch {
      *
      * @param gl the current OpenGL context.
      */
-    public void end(final GL3 gl) {
+    public void end(final GL2ES3 gl) {
         // Create the master vertex array object.
         gl.glGenVertexArrays(1, vertexArrayBufferObject, 0);
         gl.glBindVertexArray(vertexArrayBufferObject[0]);
@@ -215,7 +215,7 @@ public class TriangleBatch {
      *
      * @param gl the current OpenGL context.
      */
-    public void draw(final GL3 gl) {
+    public void draw(final GL2ES3 gl) {
         gl.glBindVertexArray(vertexArrayBufferObject[0]);
 
         gl.glDrawElements(GL.GL_TRIANGLES, nNumIndexes, GL.GL_UNSIGNED_SHORT, 0);

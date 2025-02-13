@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.prefs.Preferences;
 import org.apache.commons.io.IOUtils;
 import org.mockito.MockedStatic;
@@ -43,7 +41,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
@@ -61,43 +58,44 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class ConstellationHelpDisplayerNGTest {
-
-    public ConstellationHelpDisplayerNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Test of copy method, of class ConstellationHelpDisplayer.
      */
     @Test
-    public void testCopy() throws Exception {
+    public void testCopy() {
         System.out.println("copy");
 
-        String filePath = null;
+        String filePath;
         File tempFile = null;
-        File TOCFile = null;
+        File tocFile;
         File outputFile = null;
 
         try {
             tempFile = File.createTempFile("testfile", ".md");
             filePath = tempFile.getAbsolutePath();
-            TOCFile = new File(Generator.getBaseDirectory() + File.separator + Generator.getTOCDirectory());
-            TOCFile.createNewFile();
+            tocFile = new File(Generator.getBaseDirectory() + File.separator + Generator.getTOCDirectory());
+            tocFile.createNewFile();
 
             // contents of file
             final String text = "This should be written into the file.\n";
@@ -120,7 +118,7 @@ public class ConstellationHelpDisplayerNGTest {
                 });
             }
             outputFile = new File("tempFile1.txt");
-            if (outputFile != null && outputFile.exists()) {
+            if (outputFile.exists()) {
                 outputFile.delete();
             }
             assertTrue(outputFile.length() == 0);
@@ -129,7 +127,7 @@ public class ConstellationHelpDisplayerNGTest {
             try (MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
                 mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenCallRealMethod();
                 mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString())).thenCallRealMethod();
-                mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.generateHTMLOutput(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(returnHTML);
+                mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.generateHTMLOutput(Mockito.any(), Mockito.any())).thenReturn(returnHTML);
 
                 ConstellationHelpDisplayer.copy(filePath, out);
                 out.flush();
@@ -161,10 +159,10 @@ public class ConstellationHelpDisplayerNGTest {
 
     /**
      * Test of copy method, of class ConstellationHelpDisplayer.
+     * @throws java.io.IOException
      */
     @Test
-    public void testCopyReturnEarly() throws Exception {
-
+    public void testCopyReturnEarly() throws IOException {
         System.out.println("copy Return early");
 
         OutputStream os = mock(OutputStream.class);
@@ -174,19 +172,10 @@ public class ConstellationHelpDisplayerNGTest {
         FileInputStream fis = mock(FileInputStream.class);
         when(fis.readAllBytes()).thenReturn(arr);
 
-        try (MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
-            mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenCallRealMethod();
-            mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString())).thenReturn(null);
-
-            ConstellationHelpDisplayer.copy("anypath", os);
-            mockedHelpDisplayerStatic.verify(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString()), times(2));
-            verifyNoInteractions(os);
-        }
-
         try (MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic2 = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
             mockedHelpDisplayerStatic2.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenCallRealMethod();
             mockedHelpDisplayerStatic2.when(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString())).thenReturn(fis);
-            mockedHelpDisplayerStatic2.when(() -> ConstellationHelpDisplayer.generateHTMLOutput(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn("");
+            mockedHelpDisplayerStatic2.when(() -> ConstellationHelpDisplayer.generateHTMLOutput(Mockito.any(), Mockito.any())).thenReturn("");
 
             ConstellationHelpDisplayer.copy("anypath.css", os);
             mockedHelpDisplayerStatic2.verify(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString()), times(2));
@@ -197,11 +186,11 @@ public class ConstellationHelpDisplayerNGTest {
         try (MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic3 = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
             mockedHelpDisplayerStatic3.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenCallRealMethod();
             mockedHelpDisplayerStatic3.when(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString())).thenReturn(fis);
-            mockedHelpDisplayerStatic3.when(() -> ConstellationHelpDisplayer.generateHTMLOutput(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn("");
+            mockedHelpDisplayerStatic3.when(() -> ConstellationHelpDisplayer.generateHTMLOutput(Mockito.any(), Mockito.any())).thenReturn("");
 
             ConstellationHelpDisplayer.copy("anypath.txt", os);
             mockedHelpDisplayerStatic3.verify(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString()), times(2));
-            mockedHelpDisplayerStatic3.verify(() -> ConstellationHelpDisplayer.generateHTMLOutput(Mockito.anyString(), Mockito.eq(fis), Mockito.eq(fis)), times(1));
+            mockedHelpDisplayerStatic3.verify(() -> ConstellationHelpDisplayer.generateHTMLOutput(Mockito.eq(fis), Mockito.eq(fis)), times(1));
             Mockito.verify(os, times(1)).write(Mockito.eq(arr));
         }
     }
@@ -219,23 +208,19 @@ public class ConstellationHelpDisplayerNGTest {
     }
 
     @Test
-    public void testGetInputStream() throws FileNotFoundException {
+    public void testGetInputStream() throws IOException {
         System.out.println("testGetInputStream");
 
         File tempFile = null;
 
         try {
-            try {
-                tempFile = File.createTempFile("testfile", ".xml");
-                final String path = tempFile.getPath();
+            tempFile = File.createTempFile("testfile", ".xml");
+            final String path = tempFile.getPath();
 
-                final FileInputStream expectedfis = new FileInputStream(path);
+            try (final FileInputStream expectedfis = new FileInputStream(path)) {
                 final InputStream actualfis = ConstellationHelpDisplayer.getInputStream(tempFile.getPath());
-
+                
                 assertTrue(IOUtils.contentEquals(expectedfis, actualfis));
-
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
             }
         } finally {
             // Cleanup
@@ -268,8 +253,6 @@ public class ConstellationHelpDisplayerNGTest {
     public void testDisplayOnline() {
         System.out.println("display mocking online");
 
-        Preferences prefs;
-
         final String helpId = "helpID";
         HelpCtx helpCtx = new HelpCtx(helpId);
 
@@ -279,7 +262,7 @@ public class ConstellationHelpDisplayerNGTest {
 
         final String key = HelpPreferenceKeys.HELP_KEY;
         boolean onlineReturnValue = true;
-        prefs = mock(Preferences.class);
+        Preferences prefs = mock(Preferences.class);
         when(prefs.getBoolean(Mockito.eq(key), Mockito.anyBoolean())).thenReturn(onlineReturnValue);
 
         // Create static mock of NbPreferences to return the preferences mock
@@ -327,9 +310,7 @@ public class ConstellationHelpDisplayerNGTest {
     @Test
     public void testDisplayOnlineUnsupportedDesktop() {
         System.out.println("display mocking onlineUnsupportedDesktop");
-
-        Preferences prefs;
-
+        
         final String helpId = "helpID";
         HelpCtx helpCtx = new HelpCtx(helpId);
 
@@ -339,7 +320,7 @@ public class ConstellationHelpDisplayerNGTest {
 
         final String key = HelpPreferenceKeys.HELP_KEY;
         boolean onlineReturnValue = true;
-        prefs = mock(Preferences.class);
+        Preferences prefs = mock(Preferences.class);
         when(prefs.getBoolean(Mockito.eq(key), Mockito.anyBoolean())).thenReturn(onlineReturnValue);
 
         // Create static mock of NbPreferences to return the preferences mock
@@ -387,8 +368,6 @@ public class ConstellationHelpDisplayerNGTest {
     public void testDisplayOffline() {
         System.out.println("display mocking offline");
 
-        Preferences prefs;
-
         final String helpId = "helpID";
         HelpCtx helpCtx = new HelpCtx(helpId);
 
@@ -398,7 +377,7 @@ public class ConstellationHelpDisplayerNGTest {
 
         final String key = HelpPreferenceKeys.HELP_KEY;
         boolean onlineReturnValue = false;
-        prefs = mock(Preferences.class);
+        Preferences prefs = mock(Preferences.class);
         when(prefs.getBoolean(Mockito.eq(key), Mockito.anyBoolean())).thenReturn(onlineReturnValue);
 
         // Create static mock of NbPreferences to return the preferences mock
@@ -453,12 +432,12 @@ public class ConstellationHelpDisplayerNGTest {
      * Test of browse method, of class ConstellationHelpDisplayer. TODO: This
      * will need revision when static mocking of global threads works
      */
-    @Test
-    public void testBrowse() throws IOException, InterruptedException, ExecutionException, URISyntaxException {
-        System.out.println("browse");
-
-        //TODO: This below test does not carry static mocks between threads globally.
-        // Needs revision
+//    @Test
+//    public void testBrowse() throws IOException, InterruptedException, ExecutionException, URISyntaxException {
+//        System.out.println("browse");
+//
+//        //TODO: This below test does not carry static mocks between threads globally.
+//        // Needs revision
 //        CompletableFuture fut = CompletableFuture.runAsync(() -> {
 //            try {
 //                URI uri = new URI("https://localhost:8888/file/c:/users/filename.txt");
@@ -488,6 +467,5 @@ public class ConstellationHelpDisplayerNGTest {
 //        });
 //        fut.get();
 //        assertEquals(fut.isCompletedExceptionally(), false);
-    }
-
+//    }
 }

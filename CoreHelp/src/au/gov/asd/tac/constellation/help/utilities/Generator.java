@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,8 +46,15 @@ public class Generator implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Generator.class.getName());
     private static String baseDirectory = "";
     private static String tocDirectory = "";
+    private static String onlineTocDirectory = "";
     public static final String TOC_FILE_NAME = "toc.md";
     public static final String ROOT_NODE_NAME = "Constellation Documentation";
+
+    /**
+     * This is the system property that is set to true in order to make the AWT
+     * thread run in headless mode for tests, etc.
+     */
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
 
     public Generator() {
         // Intentionally left blank
@@ -58,25 +65,48 @@ public class Generator implements Runnable {
      */
     @Override
     public void run() {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            return;
+        }
         baseDirectory = getBaseDirectory();
         tocDirectory = String.format("ext%1$s%2$s", File.separator, TOC_FILE_NAME);
+        
+        // To update the online help TOC file change the boolean to true
+        // Must also run adaptors when updating online help so those links aren't removed from the TOC
+        // Reset back to false after updating the TOC file 
+        final boolean updateOnlineHelp = false;
+ 
+        if (updateOnlineHelp) {
+            onlineTocDirectory = getOnlineHelpTOCDirectory(baseDirectory) + TOC_FILE_NAME;
 
-        // Create TOCFile with the location of the resources file
-        // Create the root node for application-wide table of contents
+            // First: create the TOCFile in the base directory for ONLINE help
+            // Create the online root node for application-wide table of contents
+            TOCGenerator.createTOCFile(onlineTocDirectory);
+            final TreeNode<?> root = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
+            final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
+            try {
+                TOCGenerator.convertXMLMappings(tocXMLFiles, root);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.WARNING, String.format("There was an error creating the documentation file %s "
+                        + "- Documentation may not be complete", baseDirectory), ex);
+            }
+        }
+
+        // Second: Create TOCFile for OFFLINE help with the location of the resources file
+        // Create the offline root node for application-wide table of contents
         TOCGenerator.createTOCFile(baseDirectory + tocDirectory);
-        final TreeNode root = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
+        final TreeNode<?> rootOffline = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
         final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
-
         try {
-            TOCGenerator.convertXMLMappings(tocXMLFiles, root);
+            TOCGenerator.convertXMLMappings(tocXMLFiles, rootOffline);
         } catch (final IOException ex) {
             LOGGER.log(Level.WARNING, String.format("There was an error creating the documentation file %s "
-                    + "- Documentation may not be complete", baseDirectory + tocDirectory), ex);
+                    + "- Documentation may not be complete.", baseDirectory + tocDirectory), ex);
         }
     }
 
     /**
-     * get the directory that the table of contents is saved to
+     * Get the directory that the table of contents is saved to
      *
      * @return a String path for the file location
      */
@@ -86,7 +116,7 @@ public class Generator implements Runnable {
     }
 
     /**
-     * get a list of the xml files using a lookup
+     * Get a list of the xml files using a lookup
      *
      * @param baseDirectory
      * @return
@@ -136,6 +166,16 @@ public class Generator implements Runnable {
         final int jarIx = path.toString().lastIndexOf(File.separator);
         final String newPath = jarIx > -1 ? path.toString().substring(0, jarIx) : "";
         return newPath != null ? newPath + File.separator + "ext" : "";
+    }
+    
+    public static String getOnlineHelpTOCDirectory(final String filePath) {
+        // include "modules" in the check, because looking for "constellation" alone can match earlier in the path
+        // ie. /home/constellation/test/rc1/constellation/modules/ext/
+        int index = filePath.indexOf("constellation" + File.separator + "modules");
+        if (index <= 0) {
+            index = filePath.indexOf("constellation" + File.separator);
+        }
+        return index <= 0 ? filePath : filePath.substring(0, index + 14);
     }
 
 }

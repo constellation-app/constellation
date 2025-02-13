@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,17 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.analytic.concept;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import static org.testng.Assert.assertEquals;
@@ -35,18 +46,113 @@ public class AnalyticConceptNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
+    }
+    
+    /**
+     * Test whether all the attributes of AnalyticConcept are registered in the Analytic Schema
+     */
+    @Test
+    public void testAnalyticAttributesRegistered() {
+        System.out.println("analyticAttributesRegistered");
+        
+        final SchemaFactory schemaFactory = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID);
+        
+        final List<SchemaAttribute> registeredAttributes = new ArrayList<>();
+        for (final Map<String, SchemaAttribute> graphElementAttributes : schemaFactory.getRegisteredAttributes().values()) {
+            registeredAttributes.addAll(graphElementAttributes.values());
+        }
+
+        final AnalyticConcept instance = new AnalyticConcept();
+        final Collection<SchemaAttribute> analyticAttributes = instance.getSchemaAttributes();
+        
+        for (final SchemaAttribute analyticAttribute : analyticAttributes) {
+            assertTrue(registeredAttributes.contains(analyticAttribute));
+        }
+    }
+    
+    /**
+     * Test to check whether all attributes in AnalyticConcept have been added to 
+     * the collection of schema attributes for the concept
+     */
+    @Test
+    public void testAttributesCorrectlyAdded() {
+        System.out.println("attributesCorrectlyAdded");
+        
+        final AnalyticConcept instance = new AnalyticConcept();
+        final Collection<SchemaAttribute> analyticAttributes = instance.getSchemaAttributes();
+        
+        final List<SchemaAttribute> nodeAttributes = ConceptTestUtilities.getElementTypeSpecificAttributes(analyticAttributes, GraphElementType.VERTEX);
+        final List<SchemaAttribute> transactionAttributes = ConceptTestUtilities.getElementTypeSpecificAttributes(analyticAttributes, GraphElementType.TRANSACTION);
+        
+        final int nodeAttributeCount = ConceptTestUtilities.getFieldCount(AnalyticConcept.VertexAttribute.class, SchemaAttribute.class);
+        final int transactionAttributeCount = ConceptTestUtilities.getFieldCount(AnalyticConcept.TransactionAttribute.class, SchemaAttribute.class);
+        
+        // ensure that all created attributes have been added to the schema attributes collection
+        assertEquals(nodeAttributes.size(), nodeAttributeCount);
+        assertEquals(transactionAttributes.size(), transactionAttributeCount);
+        // this check will catch out any new attribute classes added to the concept
+        assertEquals(analyticAttributes.size(), nodeAttributeCount + transactionAttributeCount);
+    }
+    
+    /**
+     * Test whether all the types of AnalyticConcept are registered in the Analytic Schema
+     */
+    @Test
+    public void testAnalyticTypesRegistered() {
+        System.out.println("analyticTypesRegistered");
+        
+        final SchemaFactory schemaFactory = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID);
+        
+        final List<SchemaVertexType> registeredVertexTypes = schemaFactory.getRegisteredVertexTypes();
+        final List<SchemaTransactionType> registeredTransactionTypes = schemaFactory.getRegisteredTransactionTypes();
+
+        final AnalyticConcept instance = new AnalyticConcept();
+        
+        final List<SchemaVertexType> analyticVertexTypes = instance.getSchemaVertexTypes();
+        for (final SchemaVertexType analyticVertexType : analyticVertexTypes) {
+            assertTrue(registeredVertexTypes.contains(analyticVertexType));
+        }
+        
+        final List<SchemaTransactionType> analyticTransactionTypes = instance.getSchemaTransactionTypes();
+        for (final SchemaTransactionType analyticTransactionType : analyticTransactionTypes) {
+            assertTrue(registeredTransactionTypes.contains(analyticTransactionType));
+        }
+    }
+    
+    /**
+     * Test to check whether all types in AnalyticConcept have been added to 
+     * the corresponding list of schema types for the concept
+     */
+    @Test
+    public void testTypesCorrectlyAdded() {
+        System.out.println("typesCorrectlyAdded");
+        
+        final AnalyticConcept instance = new AnalyticConcept();
+        final List<SchemaVertexType> vertexTypes = instance.getSchemaVertexTypes();
+        final List<SchemaTransactionType> transactionTypes = instance.getSchemaTransactionTypes();
+        
+        final int nodeAttributeCount = ConceptTestUtilities.getFieldCount(AnalyticConcept.VertexType.class, SchemaVertexType.class);
+        final int transactionAttributeCount = ConceptTestUtilities.getFieldCount(AnalyticConcept.TransactionType.class, SchemaTransactionType.class);
+        
+        // ensure that all created types have been added to the corresponding schema types list
+        assertEquals(vertexTypes.size(), nodeAttributeCount);
+        assertEquals(transactionTypes.size(), transactionAttributeCount);
     }
 
     private static final String TELEPHONE_IDENTIFIER_VALID = "+61433123456";

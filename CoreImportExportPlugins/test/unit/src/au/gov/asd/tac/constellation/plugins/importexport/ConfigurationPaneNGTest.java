@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,10 +34,9 @@ import org.testng.annotations.Test;
  * @author altair1673
  */
 public class ConfigurationPaneNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(ConfigurationPaneNGTest.class.getName());
-    public ConfigurationPaneNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -47,11 +46,9 @@ public class ConfigurationPaneNGTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
-
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages: ", ex);
         }
 
@@ -59,10 +56,12 @@ public class ConfigurationPaneNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -84,16 +83,11 @@ public class ConfigurationPaneNGTest {
         tempData.add(tempColumns);
 
         instance.setSampleData(tempColumns, tempData);
-
-
         instance.clearSelectedPane();
 
         RunPane runPane = (RunPane) instance.tabPane.getSelectionModel().getSelectedItem().getContent();
 
         assertEquals(0, runPane.getSampleDataView().getItems().size());
         assertEquals(0, runPane.getSampleDataView().getColumns().size());
-
     }
-
-
 }

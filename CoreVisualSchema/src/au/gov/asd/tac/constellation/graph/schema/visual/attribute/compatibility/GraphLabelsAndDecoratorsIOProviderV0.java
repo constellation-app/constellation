@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class GraphLabelsAndDecoratorsIOProviderV0 extends AbstractGraphIOProvide
     }
 
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) {
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, final ImmutableObjectCache cache) {
         if (!jnode.isNull()) {
             final GraphLabelsAndDecoratorsV0 labels = new GraphLabelsAndDecoratorsV0();
             labels.setBottomLabels(getLabels(jnode, GraphLabelsAndDecoratorsV0.FIELD_BOTTOM));
@@ -95,7 +95,7 @@ public class GraphLabelsAndDecoratorsIOProviderV0 extends AbstractGraphIOProvide
     }
 
     @Override
-    public void writeObject(final Attribute attr, final int elementId, final com.fasterxml.jackson.core.JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
+    public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
             GraphLabelsAndDecoratorsV0 state = (GraphLabelsAndDecoratorsV0) graph.getObjectValue(attr.getId(), elementId);
             if (state == null) {

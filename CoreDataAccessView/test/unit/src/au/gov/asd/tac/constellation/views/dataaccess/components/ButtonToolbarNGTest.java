@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -545,14 +545,11 @@ public class ButtonToolbarNGTest {
         }
 
         // Compare images size
-        if (firstImage.getWidth() != secondImage.getWidth()) {
+        if (firstImage.getWidth() != secondImage.getWidth()
+                || firstImage.getHeight() != secondImage.getHeight()) {
             return false;
         }
-
-        if (firstImage.getHeight() != secondImage.getHeight()) {
-            return false;
-        }
-
+        
         // Compare images color
         for (int x = 0; x < firstImage.getWidth(); x++) {
             for (int y = 0; y < firstImage.getHeight(); y++) {

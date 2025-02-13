@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,29 +30,31 @@ public class GraphBuilder {
         return new GraphBuilder(new StoreGraph());
     }
 
-    protected static int constructVertex(GraphWriteMethods graph) {
-        int vxId = graph.addVertex();
+    protected static int constructVertex(final GraphWriteMethods graph) {
+        final int vxId = graph.addVertex();
         if (graph.getSchema() != null) {
             graph.getSchema().newVertex(graph, vxId);
         }
         return vxId;
     }
 
-    protected static int constructTransaction(GraphWriteMethods graph, int notionalSourceId, int noitonalDestId, boolean directed) {
+    protected static int constructTransaction(final GraphWriteMethods graph, final int notionalSourceId, final int noitonalDestId, 
+            final boolean directed) {
         return constructTransaction(graph, notionalSourceId, noitonalDestId, directed, false);
     }
 
-    protected static int constructTransaction(GraphWriteMethods graph, int notionalSourceId, int noitonalDestId, boolean directed, boolean reverse) {
+    protected static int constructTransaction(final GraphWriteMethods graph, final int notionalSourceId, final int noitonalDestId, 
+            final boolean directed, final boolean reverse) {
         final int sourceId = reverse ? noitonalDestId : notionalSourceId;
         final int destId = reverse ? notionalSourceId : noitonalDestId;
-        int txId = graph.addTransaction(sourceId, destId, directed);
+        final int txId = graph.addTransaction(sourceId, destId, directed);
         if (graph.getSchema() != null) {
             graph.getSchema().newTransaction(graph, txId);
         }
         return txId;
     }
 
-    protected static int[] squashGrouping(int[][][] elementGroupings) {
+    protected static int[] squashGrouping(final int[][][] elementGroupings) {
         final int[][] elements = new int[elementGroupings.length][];
         for (int i = 0; i < elements.length; i++) {
             elements[i] = squashGrouping(elementGroupings[i]);
@@ -60,23 +62,22 @@ public class GraphBuilder {
         return squashGrouping(elements);
     }
 
-    protected static int[] squashGrouping(int[][] elementGroupings) {
+    protected static int[] squashGrouping(final int[][] elementGroupings) {
         final int[] elements;
         int totalVerts = 0;
-        for (int[] group : elementGroupings) {
+        for (final int[] group : elementGroupings) {
             totalVerts += group.length;
         }
         elements = new int[totalVerts];
         int currentPos = 0;
-        for (int[] group : elementGroupings) {
+        for (final int[] group : elementGroupings) {
             System.arraycopy(group, 0, elements, currentPos, group.length);
             currentPos += group.length;
         }
         return elements;
     }
 
-    protected GraphBuilder(GraphWriteMethods graph) {
+    protected GraphBuilder(final GraphWriteMethods graph) {
         this.graph = graph;
     }
-
 }

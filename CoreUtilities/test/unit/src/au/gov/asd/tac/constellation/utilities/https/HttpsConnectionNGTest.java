@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,13 +103,9 @@ public class HttpsConnectionNGTest {
             securityMgr.when(() -> ConstellationSecurityManager.getCurrentSecurityContext())
                     .thenReturn(secCtx);
             
-            final HttpsURLConnection httpsConn = 
-                    new HttpsConnection(DUMMY_HTTPS_URL, true).getConnection();
+            final HttpsURLConnection httpsConn = new HttpsConnection(DUMMY_HTTPS_URL, true).getConnection();
             
-            assertSame(
-                    httpsConn.getSSLSocketFactory(), 
-                    ConstellationSecurityManager.getCurrentSecurityContext()
-                            .getSSLContext().getSocketFactory());
+            assertSame(httpsConn.getSSLSocketFactory(), ConstellationSecurityManager.getCurrentSecurityContext().getSSLContext().getSocketFactory());
             assertSame(httpsConn.getURL(), DUMMY_HTTPS_URL);
             assertFalse(httpsConn.getUseCaches());
             assertEquals(httpsConn.getRequestProperty("User-Agent"), 
@@ -147,9 +143,7 @@ public class HttpsConnectionNGTest {
         try (final MockedStatic<ConstellationSecurityManager> securityMgr
                 = mockStatic(ConstellationSecurityManager.class)) {
             final ConstellationSecurityContext secCtx = getMockSecurityContext();
-            securityMgr.when(
-                    ConstellationSecurityManager::getCurrentSecurityContext)
-                    .thenReturn(secCtx);
+            securityMgr.when(ConstellationSecurityManager::getCurrentSecurityContext).thenReturn(secCtx);
             
             assertEquals(
                     HttpsConnection
@@ -183,8 +177,7 @@ public class HttpsConnectionNGTest {
     @Test
     public void testNoInput() throws IOException {
         // get the connection and make sure doInput is true
-        final HttpsConnection httpConn = 
-                new HttpsConnection(DUMMY_HTTP_URL, false);
+        final HttpsConnection httpConn = new HttpsConnection(DUMMY_HTTP_URL, false);
         assertTrue(httpConn.getInsecureConnection().getDoInput());
 
         // set doInput to false and check
@@ -200,8 +193,7 @@ public class HttpsConnectionNGTest {
     @Test
     public void testDoOutput() throws IOException {
         // get the connection and make sure doOutput is false
-        final HttpsConnection httpConn = 
-                new HttpsConnection(DUMMY_HTTP_URL, false);
+        final HttpsConnection httpConn = new HttpsConnection(DUMMY_HTTP_URL, false);
         assertFalse(httpConn.getInsecureConnection().getDoOutput());
 
         // set doOutput to true and check
@@ -217,8 +209,7 @@ public class HttpsConnectionNGTest {
     @Test
     public void testUseCache() throws IOException {
         // get the connection and make sure useCaches is false
-        final HttpsConnection httpConn = 
-                new HttpsConnection(DUMMY_HTTP_URL, false);
+        final HttpsConnection httpConn = new HttpsConnection(DUMMY_HTTP_URL, false);
         assertFalse(httpConn.getInsecureConnection().getUseCaches());
 
         // set useCaches to true and check
@@ -234,8 +225,7 @@ public class HttpsConnectionNGTest {
     @Test
     public void testRequestProperty() throws IOException {
         // get the connection and record the number of request properties
-        final HttpsConnection httpConn = 
-                new HttpsConnection(DUMMY_HTTP_URL, false);
+        final HttpsConnection httpConn = new HttpsConnection(DUMMY_HTTP_URL, false);
         final int numProps = httpConn.getInsecureConnection()
                 .getRequestProperties().size();
 
@@ -265,8 +255,7 @@ public class HttpsConnectionNGTest {
     @Test
     public void testWithConnectionTimeout() throws IOException {
         // get the connection and make sure the connection timeout is zero
-        final HttpsConnection httpConn = 
-                new HttpsConnection(DUMMY_HTTP_URL, false);
+        final HttpsConnection httpConn = new HttpsConnection(DUMMY_HTTP_URL, false);
         assertEquals(httpConn.getInsecureConnection().getConnectTimeout(), 0);
 
         // set connection timeout and check
@@ -285,8 +274,7 @@ public class HttpsConnectionNGTest {
     @Test
     public void testWithReadTimeout() throws IOException {
         // get the connection and make sure the read timeout is zero
-        final HttpsConnection httpConn = 
-                new HttpsConnection(DUMMY_HTTP_URL, false);
+        final HttpsConnection httpConn = new HttpsConnection(DUMMY_HTTP_URL, false);
         assertEquals(httpConn.getInsecureConnection().getReadTimeout(), 0);
 
         // set read timeout and check
@@ -308,20 +296,14 @@ public class HttpsConnectionNGTest {
      */
     @Test
     public void testHostnameVerifier() throws IOException {
-        try (final MockedStatic<ConstellationSecurityManager> securityMgr
-                = mockStatic(ConstellationSecurityManager.class)) {
+        try (final MockedStatic<ConstellationSecurityManager> securityMgr = mockStatic(ConstellationSecurityManager.class)) {
             final ConstellationSecurityContext secCtx = getMockSecurityContext();
-            securityMgr.when(
-                    ConstellationSecurityManager::getCurrentSecurityContext)
-                    .thenReturn(secCtx);
+            securityMgr.when(ConstellationSecurityManager::getCurrentSecurityContext).thenReturn(secCtx);
             
             // get the connection, set a hostname verifier and check
-            final HttpsConnection httpsConn = 
-                    HttpsConnection.withUrl(DUMMY_HTTPS_URL.toString());            
+            final HttpsConnection httpsConn = HttpsConnection.withUrl(DUMMY_HTTPS_URL.toString());            
             httpsConn.withHostnameVerifier(HOSTNAME_VERIFIER);
-            assertSame(
-                    httpsConn.getConnection().getHostnameVerifier(), 
-                    HOSTNAME_VERIFIER);
+            assertSame(httpsConn.getConnection().getHostnameVerifier(), HOSTNAME_VERIFIER);
         }
     }
     
@@ -333,16 +315,14 @@ public class HttpsConnectionNGTest {
     @Test
     public void testAcceptJson() throws IOException {
         // get the connection and make sure the accept header is null
-        final HttpsConnection httpConn = 
-                new HttpsConnection(DUMMY_HTTP_URL, false);
+        final HttpsConnection httpConn = new HttpsConnection(DUMMY_HTTP_URL, false);
         assertEquals(httpConn.getInsecureConnection()
                 .getRequestProperty(HttpsConnection.ACCEPT), null);
 
         // set accept to JSON and check
         httpConn.acceptJson();
-        assertEquals(
-                httpConn.getInsecureConnection()
-                        .getRequestProperty(HttpsConnection.ACCEPT),
+        assertEquals(httpConn.getInsecureConnection()
+                .getRequestProperty(HttpsConnection.ACCEPT),
                 HttpsConnection.APPLICATION_JSON);
     }
     
@@ -354,16 +334,13 @@ public class HttpsConnectionNGTest {
     @Test
     public void testAcceptXml() throws IOException {
         // get the connection and make sure the accept header is null
-        final HttpsConnection httpConn = 
-                new HttpsConnection(DUMMY_HTTP_URL, false);
-        assertEquals(httpConn.getInsecureConnection()
-                .getRequestProperty(HttpsConnection.ACCEPT), null);
+        final HttpsConnection httpConn = new HttpsConnection(DUMMY_HTTP_URL, false);
+        assertEquals(httpConn.getInsecureConnection().getRequestProperty(HttpsConnection.ACCEPT), null);
 
         // set accept to XML and check
         httpConn.acceptXml();
-        assertEquals(
-                httpConn.getInsecureConnection()
-                        .getRequestProperty(HttpsConnection.ACCEPT),
+        assertEquals(httpConn.getInsecureConnection()
+                .getRequestProperty(HttpsConnection.ACCEPT),
                 HttpsConnection.APPLICATION_XML);
     }
     
@@ -375,16 +352,13 @@ public class HttpsConnectionNGTest {
     @Test
     public void testAcceptPng() throws IOException {
         // get the connection and make sure the accept header is null
-        final HttpsConnection httpConn = 
-                new HttpsConnection(DUMMY_HTTP_URL, false);
-        assertEquals(httpConn.getInsecureConnection()
-                .getRequestProperty(HttpsConnection.ACCEPT), null);
+        final HttpsConnection httpConn = new HttpsConnection(DUMMY_HTTP_URL, false);
+        assertEquals(httpConn.getInsecureConnection().getRequestProperty(HttpsConnection.ACCEPT), null);
 
         // set accept to PNG and check
         httpConn.acceptPng();
-        assertEquals(
-                httpConn.getInsecureConnection()
-                        .getRequestProperty(HttpsConnection.ACCEPT),
+        assertEquals(httpConn.getInsecureConnection()
+                .getRequestProperty(HttpsConnection.ACCEPT),
                 HttpsConnection.IMAGE_PNG);
     }
     
@@ -396,16 +370,13 @@ public class HttpsConnectionNGTest {
     @Test
     public void testWithJsonContentType() throws IOException {
         // get the connection and make sure the content type is null
-        final HttpsConnection httpConn = 
-                new HttpsConnection(DUMMY_HTTP_URL, false);
-        assertEquals(httpConn.getInsecureConnection()
-                .getRequestProperty(HttpsConnection.CONTENT_TYPE), null);
+        final HttpsConnection httpConn = new HttpsConnection(DUMMY_HTTP_URL, false);
+        assertEquals(httpConn.getInsecureConnection().getRequestProperty(HttpsConnection.CONTENT_TYPE), null);
 
         // set content type to JSON and check
         httpConn.withJsonContentType();
-        assertEquals(
-                httpConn.getInsecureConnection()
-                        .getRequestProperty(HttpsConnection.CONTENT_TYPE),
+        assertEquals(httpConn.getInsecureConnection()
+                .getRequestProperty(HttpsConnection.CONTENT_TYPE),
                 HttpsConnection.APPLICATION_JSON);
     }
     
@@ -417,16 +388,13 @@ public class HttpsConnectionNGTest {
     @Test
     public void testWithXmlContentType() throws IOException {
         // get the connection and make sure the content type is null
-        final HttpsConnection httpConn = 
-                new HttpsConnection(DUMMY_HTTP_URL, false);
-        assertEquals(httpConn.getInsecureConnection()
-                .getRequestProperty(HttpsConnection.CONTENT_TYPE), null);
+        final HttpsConnection httpConn = new HttpsConnection(DUMMY_HTTP_URL, false);
+        assertEquals(httpConn.getInsecureConnection().getRequestProperty(HttpsConnection.CONTENT_TYPE), null);
 
         // set content type to XML and check
         httpConn.withXmlContentType();
-        assertEquals(
-                httpConn.getInsecureConnection()
-                        .getRequestProperty(HttpsConnection.CONTENT_TYPE),
+        assertEquals(httpConn.getInsecureConnection()
+                .getRequestProperty(HttpsConnection.CONTENT_TYPE),
                 HttpsConnection.APPLICATION_XML);
     }
     
@@ -438,8 +406,7 @@ public class HttpsConnectionNGTest {
     @Test
     public void testInsecureCalls() throws IOException {
         // mock the connect call
-        final HttpURLConnection httpUrlConn = 
-                mock(HttpURLConnection.class, CALLS_REAL_METHODS);
+        final HttpURLConnection httpUrlConn = mock(HttpURLConnection.class, CALLS_REAL_METHODS);
         doNothing().when(httpUrlConn).connect();
         final URL url = mock(URL.class);
         when(url.openConnection()).thenReturn(httpUrlConn);
@@ -451,23 +418,17 @@ public class HttpsConnectionNGTest {
         
         // POST
         httpConn.insecurePost();
-        assertEquals(
-                httpConn.getInsecureConnection().getRequestMethod(), 
-                "POST");
+        assertEquals(httpConn.getInsecureConnection().getRequestMethod(), "POST");
         verify(httpUrlConn, times(1)).connect();
         
         // GET
         httpConn.insecureGet();
-        assertEquals(
-                httpConn.getInsecureConnection().getRequestMethod(), 
-                "GET");
+        assertEquals(httpConn.getInsecureConnection().getRequestMethod(), "GET");
         verify(httpUrlConn, times(2)).connect();
         
         // PUT
         httpConn.insecurePut();
-        assertEquals(
-                httpConn.getInsecureConnection().getRequestMethod(), 
-                "PUT");
+        assertEquals(httpConn.getInsecureConnection().getRequestMethod(), "PUT");
         verify(httpUrlConn, times(3)).connect();
     }
     
@@ -478,16 +439,14 @@ public class HttpsConnectionNGTest {
      */
     @Test
     public void testSecureCalls() throws IOException {
-        try (final MockedStatic<ConstellationSecurityManager> securityMgr
-                = mockStatic(ConstellationSecurityManager.class)) {
+        try (final MockedStatic<ConstellationSecurityManager> securityMgr = mockStatic(ConstellationSecurityManager.class)) {
             // mock the security context
             final ConstellationSecurityContext secCtx = getMockSecurityContext();
             securityMgr.when(ConstellationSecurityManager::getCurrentSecurityContext)
                     .thenReturn(secCtx);
             
             // mock the connect call
-            final HttpsURLConnection httpsUrlConn = 
-                    mock(HttpsURLConnection.class, CALLS_REAL_METHODS);
+            final HttpsURLConnection httpsUrlConn = mock(HttpsURLConnection.class, CALLS_REAL_METHODS);
             doNothing().when(httpsUrlConn).connect();
             final URL url = mock(URL.class);
             when(url.openConnection()).thenReturn(httpsUrlConn);
@@ -499,30 +458,22 @@ public class HttpsConnectionNGTest {
 
             // POST
             httpsConn.post();
-            assertEquals(
-                    httpsConn.getConnection().getRequestMethod(),
-                    "POST");
+            assertEquals(httpsConn.getConnection().getRequestMethod(), "POST");
             verify(httpsUrlConn, times(1)).connect();
             
             // GET
             httpsConn.get();
-            assertEquals(
-                    httpsConn.getConnection().getRequestMethod(),
-                    "GET");
+            assertEquals(httpsConn.getConnection().getRequestMethod(), "GET");
             verify(httpsUrlConn, times(2)).connect();
             
             // PUT
             httpsConn.put();
-            assertEquals(
-                    httpsConn.getConnection().getRequestMethod(),
-                    "PUT");
+            assertEquals(httpsConn.getConnection().getRequestMethod(), "PUT");
             verify(httpsUrlConn, times(3)).connect();
             
             // DELETE
             httpsConn.delete();
-            assertEquals(
-                    httpsConn.getConnection().getRequestMethod(),
-                    "DELETE");
+            assertEquals(httpsConn.getConnection().getRequestMethod(), "DELETE");
             verify(httpsUrlConn, times(4)).connect();
         }
     }
@@ -541,9 +492,7 @@ public class HttpsConnectionNGTest {
         
         /* create a new HttpConnection and check it is using the expected 
            URL connection */
-        assertSame(
-                new HttpsConnection(url, false).getInsecureConnection(),
-                httpUrlConn);
+        assertSame(new HttpsConnection(url, false).getInsecureConnection(), httpUrlConn);
     }
     
     /**
@@ -553,12 +502,10 @@ public class HttpsConnectionNGTest {
      */
     @Test
     public void testGetSecureConnection() throws IOException {
-        try (final MockedStatic<ConstellationSecurityManager> securityMgr
-                = mockStatic(ConstellationSecurityManager.class)) {
+        try (final MockedStatic<ConstellationSecurityManager> securityMgr = mockStatic(ConstellationSecurityManager.class)) {
             // mock the security context and URL connection
             final ConstellationSecurityContext secCtx = getMockSecurityContext();
-            securityMgr.when(ConstellationSecurityManager::getCurrentSecurityContext)
-                    .thenReturn(secCtx);
+            securityMgr.when(ConstellationSecurityManager::getCurrentSecurityContext).thenReturn(secCtx);
 
             final HttpsURLConnection httpsUrlConn = mock(HttpsURLConnection.class);
             final URL url = mock(URL.class);
@@ -566,9 +513,7 @@ public class HttpsConnectionNGTest {
             
         /* create a new HttpConnection and check it is using the expected 
            URL connection */
-        assertSame(
-                new HttpsConnection(url, true).getConnection(),
-                httpsUrlConn);
+        assertSame(new HttpsConnection(url, true).getConnection(), httpsUrlConn);
         }
     }
 }

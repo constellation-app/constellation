@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.mergers.ConcatenatedSetGraphAttributeMerger;
 import au.gov.asd.tac.constellation.graph.undo.UndoGraphEdit;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import org.testng.annotations.Test;
 
 /**
@@ -41,9 +43,9 @@ public class AttributeMergerNGTest {
         final int defaultMergerAttributeId = g.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "defaultMergerAttribute", null, null, GraphAttributeMerger.getDefault().getId());
         final int customMergerAttributeId = g.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "customMergerAttribute", null, null, ConcatenatedSetGraphAttributeMerger.ID);
         final int noMergerAttributeId = g.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "noMergerAttribute", null, null, null);
-        assert g.getAttributeMerger(defaultMergerAttributeId) == GraphAttributeMerger.getDefault();
-        assert g.getAttributeMerger(customMergerAttributeId) == GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID);
-        assert g.getAttributeMerger(noMergerAttributeId) == null;
+        assertEquals(g.getAttributeMerger(defaultMergerAttributeId), GraphAttributeMerger.getDefault());
+        assertEquals(g.getAttributeMerger(customMergerAttributeId), GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID));
+        assertNull(g.getAttributeMerger(noMergerAttributeId));
     }
 
     /**
@@ -76,9 +78,9 @@ public class AttributeMergerNGTest {
         int customMergerAttribute = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "customMerger", null, null, ConcatenatedSetGraphAttributeMerger.ID);
 
         // Assert that the attribute mergers are correct
-        assert graph.getAttributeMerger(noMergerAttribute) == null;
-        assert graph.getAttributeMerger(defaultMergerAttribute) == GraphAttributeMerger.getDefault();
-        assert graph.getAttributeMerger(customMergerAttribute) == GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID);
+        assertNull(graph.getAttributeMerger(noMergerAttribute));
+        assertEquals(graph.getAttributeMerger(defaultMergerAttribute), GraphAttributeMerger.getDefault());
+        assertEquals(graph.getAttributeMerger(customMergerAttribute), GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID));
 
         // Finish the edit
         graph.setGraphEdit(null);
@@ -88,9 +90,9 @@ public class AttributeMergerNGTest {
         addEdit.undo(graph);
 
         // Assert that the attributes have been removed
-        assert graph.getAttribute(GraphElementType.VERTEX, "noMerger") == Graph.NOT_FOUND;
-        assert graph.getAttribute(GraphElementType.VERTEX, "defaultMerger") == Graph.NOT_FOUND;
-        assert graph.getAttribute(GraphElementType.VERTEX, "customMerger") == Graph.NOT_FOUND;
+        assertEquals(graph.getAttribute(GraphElementType.VERTEX, "noMerger"), Graph.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.VERTEX, "defaultMerger"), Graph.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.VERTEX, "customMerger"), Graph.NOT_FOUND);
 
         // Redo the edit
         addEdit.execute(graph);
@@ -101,9 +103,9 @@ public class AttributeMergerNGTest {
         customMergerAttribute = graph.getAttribute(GraphElementType.VERTEX, "customMerger");
 
         // Assert that the attribute mergers have been restored correctly
-        assert graph.getAttributeMerger(noMergerAttribute) == null;
-        assert graph.getAttributeMerger(defaultMergerAttribute) == GraphAttributeMerger.getDefault();
-        assert graph.getAttributeMerger(customMergerAttribute) == GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID);
+        assertNull(graph.getAttributeMerger(noMergerAttribute));
+        assertEquals(graph.getAttributeMerger(defaultMergerAttribute), GraphAttributeMerger.getDefault());
+        assertEquals(graph.getAttributeMerger(customMergerAttribute), GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID));
 
         // Create a new edit to store the remove attribute commands
         final UndoGraphEdit removeEdit = new UndoGraphEdit();
@@ -119,16 +121,16 @@ public class AttributeMergerNGTest {
         removeEdit.finish();
 
         // Assert that the attributes have been removed
-        assert graph.getAttribute(GraphElementType.VERTEX, "noMerger") == Graph.NOT_FOUND;
-        assert graph.getAttribute(GraphElementType.VERTEX, "defaultMerger") == Graph.NOT_FOUND;
-        assert graph.getAttribute(GraphElementType.VERTEX, "customMerger") == Graph.NOT_FOUND;
+        assertEquals(graph.getAttribute(GraphElementType.VERTEX, "noMerger"), Graph.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.VERTEX, "defaultMerger"), Graph.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.VERTEX, "customMerger"), Graph.NOT_FOUND);
 
         // Undo the remove edit
         removeEdit.undo(graph);
 
         // Assert that the attribute mergers have been restored correctly
-        assert graph.getAttributeMerger(noMergerAttribute) == null;
-        assert graph.getAttributeMerger(defaultMergerAttribute) == GraphAttributeMerger.getDefault();
-        assert graph.getAttributeMerger(customMergerAttribute) == GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID);
+        assertNull(graph.getAttributeMerger(noMergerAttribute));
+        assertEquals(graph.getAttributeMerger(defaultMergerAttribute), GraphAttributeMerger.getDefault());
+        assertEquals(graph.getAttributeMerger(customMergerAttribute), GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID));
     }
 }

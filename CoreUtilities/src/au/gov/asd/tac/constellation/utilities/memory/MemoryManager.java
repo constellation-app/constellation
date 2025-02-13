@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The MemoryManager records statistics on the creation and deletion of
- * instances of participating classes. This is mainly of use to developers
- * interested in detecting memory leaks. It is up to a specific class to send
- * new and finalize information to the MemoryManager.
+ * The MemoryManager records statistics on the creation and deletion of instances of participating classes. This is
+ * mainly of use to developers interested in detecting memory leaks. It is up to a specific class to send new and
+ * finalize information to the MemoryManager.
  *
  * @author sirius
  */
@@ -34,7 +33,7 @@ public class MemoryManager {
 
     // The listeners currently registered
     private static final List<MemoryManagerListener> LISTENERS = new ArrayList<>();
-    
+
     /**
      * Registers that a new instance of the specified class has been created.
      *
@@ -82,9 +81,8 @@ public class MemoryManager {
     }
 
     /**
-     * Returns the ClassStats for all registered classes. The returned Map is a
-     * copy meaning that it can be mutated as required with out effecting the
-     * MemoryManager.
+     * Returns the ClassStats for all registered classes. The returned Map is a copy meaning that it can be mutated as
+     * required with out effecting the MemoryManager.
      *
      * @return the ClassStats for all registered classes.
      */
@@ -93,10 +91,10 @@ public class MemoryManager {
             return new HashMap<>(OBJECT_COUNTS);
         }
     }
-    
+
     /**
      * Returns a copy of all the currently registered listeners.
-     * 
+     *
      * @return all the registered listeners
      */
     protected static List<MemoryManagerListener> getListeners() {
@@ -104,7 +102,7 @@ public class MemoryManager {
             return new ArrayList<>(LISTENERS);
         }
     }
-    
+
     /**
      * Adds a new listener to this MemoryManager.
      *
@@ -128,21 +126,21 @@ public class MemoryManager {
             LISTENERS.remove(listener);
         }
     }
-    
+
     /**
-     * Clears the object counts and listeners. 
-     * NOTE: This function is only added to enable proper unit testing of this class and probably shouldn't be used otherwise
+     * Clears the object counts and listeners. NOTE: This function is only added to enable proper unit testing of this
+     * class and probably shouldn't be used otherwise
      */
     protected static void reset() {
         synchronized (OBJECT_COUNTS) {
             OBJECT_COUNTS.clear();
         }
-        
+
         synchronized (LISTENERS) {
             LISTENERS.clear();
         }
-    }  
-    
+    }
+
     public static class ClassStats {
 
         private int currentCount = 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class VertexTypeTopLevelFormatter extends BinFormatter {
 
     @Override
     public boolean appliesToBin(Bin bin) {
-        return bin instanceof AttributeBin && ((AttributeBin) bin).getAttributeType().equals(VertexTypeAttributeDescription.ATTRIBUTE_NAME);
+        return bin instanceof AttributeBin attributeBin && attributeBin.getAttributeType().equals(VertexTypeAttributeDescription.ATTRIBUTE_NAME);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class VertexTypeTopLevelFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.getKeyAsObject() instanceof SchemaVertexType ? ((SchemaVertexType) bin.getKeyAsObject()).getTopLevelType().getName() : null;
+            key = bin.getKeyAsObject() instanceof SchemaVertexType schemaVertexType ? schemaVertexType.getTopLevelType().getName() : null;
         }
 
         @Override

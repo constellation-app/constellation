@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesListener;
-import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.Collections;
@@ -30,31 +29,25 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.textfield.TextFields;
 
 /**
- * A text box allowing entry of single line text, multiple line text, or
- * passwords corresponding to a {@link PluginParameter} of
+ * A text box allowing entry of single line text, multiple line text corresponding to a {@link PluginParameter} of
  * {@link au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType}.
  * <p>
- * Editing the value in the text box will set the string value for the
- * underlying {@link PluginParameter}.
+ * Editing the value in the text box will set the string value for the underlying {@link PluginParameter}.
  *
- * @see
- * au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
+ * @see au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
  *
  * @author ruby_crucis
  */
@@ -92,6 +85,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
         if (suggestedHeight == null) {
             suggestedHeight = 1;
         }
+        final int numberOfLines = suggestedHeight;
         parameterId = parameter.getId();
         required = parameter.isRequired();
 
@@ -105,91 +99,83 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             l.setPrefWidth(defaultWidth);
             getChildren().add(l);
             parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
-                    switch (change) {
-                        case VALUE:
-                            // Don't change the value if it isn't necessary.
-                            // Setting the text changes the cursor position, which makes it look like text is
-                            // being entered right-to-left.
-                            final String param = parameter.getStringValue();
-                            if (!l.getText().equals(param)) {
-                                l.setText(param);
-                            }
-                            break;
-                        case VISIBLE:
-                            l.setManaged(parameter.isVisible());
-                            l.setVisible(parameter.isVisible());
-                            this.setVisible(parameter.isVisible());
-                            this.setManaged(parameter.isVisible());
-                            break;
-                        default:
-                            break;
-                    }
-                }));
-        } else {
-            final boolean isPassword = PasswordParameterType.ID.equals(parameter.getType().getId());
-            if (isPassword) {
-                recentValuesCombo = null;
-            } else {
-                recentValuesCombo = new ComboBox<>();
-                recentValuesCombo.setEditable(false);
-
-                recentValuesCombo.setTooltip(new Tooltip("Recent values"));
-                recentValuesCombo.setMaxWidth(5);
-                final List<String> recentValues = RecentParameterValues.getRecentValues(parameterId);
-                if (recentValues != null) {
-                    recentValuesCombo.setItems(FXCollections.observableList(recentValues));
-                } else {
-                    recentValuesCombo.setDisable(true);
-                }
-
-                final ListCell<String> button = new ListCell<String>() {
-                    @Override
-                    protected void updateItem(final String item, final boolean empty) {
-                        super.updateItem(item, empty);
-
-                        setText("...");
-
-                    }
-                };
-                recentValuesCombo.setButtonCell(button);
-
-                recentValuesCombo.setCellFactory((final ListView<String> param) -> {
-                    return new ListCell<String>() {
-                        @Override
-                        public void updateItem(final String item, final boolean empty) {
-                            super.updateItem(item, empty);
-                            if (item != null) {
-                                setText(item);
-                                final int textLength = getText().length();
-                                if ((textLength > STRING_LENGTH) && (comboBoxWidth < DEFAULT_WIDTH) && (comboBoxWidth < STRING_LENGTH * textLength)) {
-                                    comboBoxWidth = (STRING_LENGTH * textLength) > DEFAULT_WIDTH ? DEFAULT_WIDTH : STRING_LENGTH * textLength;
-                                }
-                            } else {
-                                setText(null);
-                            }
-                            getListView().setPrefWidth(comboBoxWidth);
+                switch (change) {
+                    case VALUE -> {
+                        // Don't change the value if it isn't necessary.
+                        // Setting the text changes the cursor position, which makes it look like text is
+                        // being entered right-to-left.
+                        final String param = parameter.getStringValue();
+                        if (!l.getText().equals(param)) {
+                            l.setText(param);
                         }
-                    };
-                }); 
+                    }
+                    case VISIBLE -> {
+                        l.setManaged(parameter.isVisible());
+                        l.setVisible(parameter.isVisible());
+                        this.setVisible(parameter.isVisible());
+                        this.setManaged(parameter.isVisible());
+                    }
+                    default -> {
+                        // do nothing
+                    }
+                }
+            }));
+        } else {
+            recentValuesCombo = new ComboBox<>();
+            recentValuesCombo.setEditable(false);
+            recentValuesCombo.setTooltip(new Tooltip("Recent values"));
+            recentValuesCombo.setMaxWidth(5);
+            final List<String> recentValues = RecentParameterValues.getRecentValues(parameterId);
+            if (recentValues != null) {
+                recentValuesCombo.setItems(FXCollections.observableList(recentValues));
+            } else {
+                recentValuesCombo.setDisable(true);
             }
 
-            if (isPassword) {
-                field = new PasswordField();
-            } else if (suggestedHeight > 1) {
+            final ListCell<String> button = new ListCell<String>() {
+                @Override
+                protected void updateItem(final String item, final boolean empty) {
+                    super.updateItem(item, empty);
+
+                    setText("...");
+
+                }
+            };
+            recentValuesCombo.setButtonCell(button);
+
+            recentValuesCombo.setCellFactory((final ListView<String> param) -> {
+                return new ListCell<String>() {
+                    @Override
+                    public void updateItem(final String item, final boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item);
+                            final int textLength = getText().length();
+                            if ((textLength > STRING_LENGTH) && (comboBoxWidth < DEFAULT_WIDTH) && (comboBoxWidth < STRING_LENGTH * textLength)) {
+                                comboBoxWidth = (STRING_LENGTH * textLength) > DEFAULT_WIDTH ? DEFAULT_WIDTH : STRING_LENGTH * textLength;
+                            }
+                        } else {
+                            setText(null);
+                        }
+                        getListView().setPrefWidth(comboBoxWidth);
+                    }
+                };
+            });
+
+            if (suggestedHeight > 1) {
                 field = new TextArea();
                 ((TextArea) field).setWrapText(true);
                 ((TextArea) field).setPrefRowCount(suggestedHeight);
             } else {
                 field = new TextField();
-                Platform.runLater(() -> TextFields.bindAutoCompletion((TextField) field, recentValuesCombo.getItems()));
+                TextFields.bindAutoCompletion((TextField) field, recentValuesCombo.itemsProperty());
             }
 
+            field.setPrefWidth(defaultWidth);
             field.setPromptText(parameter.getDescription());
             if (parameter.getObjectValue() != null) {
                 field.setText(parameter.getStringValue());
             }
-
-            field.setPrefWidth(defaultWidth);
 
             if (recentValuesCombo != null) {
                 recentValueSelectionListener = (ov, t, t1) -> {
@@ -217,42 +203,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 recentValuesCombo.setDisable(!parameter.isEnabled());
             }
 
-            field.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                if (event.getCode() == KeyCode.DELETE) {
-                    final IndexRange selection = field.getSelection();
-                    if (selection.getLength() == 0) {
-                        field.deleteNextChar();
-                    } else {
-                        field.deleteText(selection);
-                    }
-                    event.consume();
-                } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
-                    field.selectNextWord();
-                    event.consume();
-                } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
-                    field.selectPreviousWord();
-                    event.consume();
-                } else if (event.isShortcutDown() && (event.getCode() == KeyCode.RIGHT)) {
-                    field.nextWord();
-                    event.consume();
-                } else if (event.isShortcutDown() && (event.getCode() == KeyCode.LEFT)) {
-                    field.previousWord();
-                    event.consume();
-                } else if (event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
-                    field.selectForward();
-                    event.consume();
-                } else if (event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
-                    field.selectBackward();
-                    event.consume();
-                } else if (event.isShortcutDown() && (event.getCode() == KeyCode.A)) {
-                    field.selectAll();
-                    event.consume();
-                } else if (event.getCode() == KeyCode.ESCAPE) {
-                    event.consume();
-                } else {
-                    // Do nothing
-                }
-            });
+            field.addEventFilter(KeyEvent.KEY_PRESSED, event -> FileInputPane.handleEventFilter(event, field));
 
             final Tooltip tooltip = new Tooltip("");
             tooltip.setStyle("-fx-text-fill: white;");
@@ -268,49 +219,43 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                     field.setTooltip(null);
                     field.setId("");
                 }
-
                 parameter.setStringValue(field.getText());
             });
 
             parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
-                    switch (change) {
-                        case VALUE:
-                            // Don't change the value if it isn't necessary.
-                            // Setting the text changes the cursor position, which makes it look like text is
-                            // being entered right-to-left.
-                            final String param = parameter.getStringValue();
-                            if (!field.getText().equals(param)) {
-                                field.setText(param != null ? param : "");
-                            }
-                            break;
-                        case ENABLED:
-                            // If enabled, then ensure widget is both editable and enabled.
-                            field.setEditable(pluginParameter.isEnabled());
-                            field.setDisable(!pluginParameter.isEnabled());
-                            recentValuesCombo.setDisable(!pluginParameter.isEnabled());
-                            break;
-                        case VISIBLE:
-                            field.setManaged(parameter.isVisible());
-                            field.setVisible(parameter.isVisible());
-                            this.setVisible(parameter.isVisible());
-                            this.setManaged(parameter.isVisible());
-                            break;
-                        default:
-                            LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-                            break;
+                switch (change) {
+                    case VALUE -> {
+                        // Don't change the value if it isn't necessary.
+                        // Setting the text changes the cursor position, which makes it look like text is
+                        // being entered right-to-left.
+                        final String param = parameter.getStringValue();
+                        if (!field.getText().equals(param)) {
+                            field.setText(param != null ? param : "");
+                        }
                     }
-                }));
+                    case ENABLED -> {
+                        // If enabled, then ensure widget is both editable and enabled.
+                        field.setEditable(pluginParameter.isEnabled());
+                        field.setDisable(!pluginParameter.isEnabled());
+                        recentValuesCombo.setDisable(!pluginParameter.isEnabled());
+                    }
+                    case VISIBLE -> {
+                        field.setManaged(parameter.isVisible());
+                        field.setVisible(parameter.isVisible());
+                        this.setVisible(parameter.isVisible());
+                        this.setManaged(parameter.isVisible());
+                    }
+                    default ->
+                        LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+                }
+            }));
 
             final HBox fieldAndRecentValues = new HBox();
             fieldAndRecentValues.setSpacing(2);
             fieldAndRecentValues.getChildren().add(field);
-            if (!isPassword) {
-                fieldAndRecentValues.getChildren().add(recentValuesCombo);
-                getChildren().add(fieldAndRecentValues);
-                RecentParameterValues.addListener(this);
-            } else {
-                getChildren().add(fieldAndRecentValues);
-            }
+            fieldAndRecentValues.getChildren().add(recentValuesCombo);
+            getChildren().add(fieldAndRecentValues);
+            RecentParameterValues.addListener(this);
         }
     }
 
@@ -331,7 +276,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 }
                 recentValuesCombo.setPromptText("...");
                 recentValuesCombo.getSelectionModel().selectedIndexProperty().addListener(recentValueSelectionListener);
-            });            
+            });
         }
     }
 }

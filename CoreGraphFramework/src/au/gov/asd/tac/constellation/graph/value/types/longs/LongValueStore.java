@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class LongValueStore implements ValueStore<LongValue> {
         values = EMPTY_VALUES;
     }
 
-    public LongValueStore(long[] values) {
+    public LongValueStore(final long[] values) {
         this.values = values;
     }
 
@@ -47,17 +47,17 @@ public class LongValueStore implements ValueStore<LongValue> {
     }
 
     @Override
-    public void setCapacity(int capacity) {
+    public void setCapacity(final int capacity) {
         values = Arrays.copyOf(values, capacity);
     }
 
     @Override
-    public void write(int id, LongValue value) {
+    public void write(final int id, final LongValue value) {
         values[id] = value.readLong();
     }
 
     @Override
-    public void read(int id, LongValue value) {
+    public void read(final int id, final LongValue value) {
         value.writeLong(values[id]);
     }
 }

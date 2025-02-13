@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,6 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
-import javafx.util.Pair;
 import javax.swing.ImageIcon;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.ImageUtilities;
@@ -76,15 +75,13 @@ public class BlazeContextMenu implements ContextMenuProvider {
 
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
-
         Blaze clickedBlaze = null;
         int clickedVertexId = Graph.NOT_FOUND;
         BitSet selectedVertices = null;
         Plugin plugin = null;
         PluginParameters parameters = null;
 
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int blazeAttributeId = VisualConcept.VertexAttribute.BLAZE.get(rg);
             if (blazeAttributeId != Graph.NOT_FOUND) {
                 clickedBlaze = rg.getObjectValue(blazeAttributeId, elementId);
@@ -103,8 +100,6 @@ public class BlazeContextMenu implements ContextMenuProvider {
                     }
                 }
             }
-        } finally {
-            rg.release();
         }
 
         if (clickedBlaze == null) {
@@ -112,27 +107,27 @@ public class BlazeContextMenu implements ContextMenuProvider {
         }
 
         switch (item) {
-            case ADD_CUSTOM_BLAZE:
+            case ADD_CUSTOM_BLAZE -> {
                 final ConstellationColor defaultColor = clickedBlaze == null
                         ? BlazeUtilities.DEFAULT_BLAZE.getColor()
                         : clickedBlaze.getColor();
-                final Pair<Boolean, ConstellationColor> colorResult = BlazeUtilities.colorDialog(defaultColor);
-                if (colorResult.getKey()) {
+                final ConstellationColor colorResult = BlazeUtilities.colorDialog(defaultColor);
+                if (colorResult != null) {
                     plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
                     parameters = DefaultPluginParameters.getDefaultParameters(plugin);
-                    parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, colorResult.getValue());
+                    parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, colorResult);
                 }
-                break;
-            case UNSET_BLAZE:
+            }
+            case UNSET_BLAZE -> {
                 plugin = PluginRegistry.get(VisualGraphPluginRegistry.REMOVE_BLAZE);
                 parameters = DefaultPluginParameters.getDefaultParameters(plugin);
-                break;
-            default:
+            }
+            default -> {
                 final ConstellationColor color = ConstellationColor.getColorValue(item);
                 plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
                 parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                 parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, color);
-                break;
+            }
         }
 
         if (plugin != null && parameters != null) {
@@ -153,16 +148,17 @@ public class BlazeContextMenu implements ContextMenuProvider {
             final List<String> colorList = new ArrayList<>();
             for (final ConstellationColor color : BlazeActions.getPresetCustomColors()) {
                 if (color != null) {
-                    final Color javaColor = color.getJavaColor();
-                    String colorName = "#" + String.format("%02x", javaColor.getRed())
-                            + String.format("%02x", javaColor.getGreen())
-                            + String.format("%02x", javaColor.getBlue());
+                    final String colorName;
                     if (color.getName() != null) {
                         colorName = color.getName();
+                    } else {
+                        final Color javaColor = color.getJavaColor();
+                        colorName = "#" + String.format("%02x", javaColor.getRed())
+                                + String.format("%02x", javaColor.getGreen())
+                                + String.format("%02x", javaColor.getBlue());                     
                     }
                     colorList.add(colorName);
                 }
-
             }
 
             colorList.add(ADD_CUSTOM_BLAZE);

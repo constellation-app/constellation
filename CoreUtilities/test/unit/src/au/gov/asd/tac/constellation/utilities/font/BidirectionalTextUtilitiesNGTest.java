@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +52,6 @@ public class BidirectionalTextUtilitiesNGTest {
     @Test
     public void testRtl() {
         String expected = "لكن لا بد أن أوضح لك أن كل" + "\n" + "لكن لا بد أن أوضح لك أ";
-        assertEquals(
-                BidirectionalTextUtilities.doBidi(RTL_TEXT1 + "\n" + RTL_TEXT2), 
-                expected);
+        assertEquals(BidirectionalTextUtilities.doBidi(RTL_TEXT1 + "\n" + RTL_TEXT2), expected);
     }
 }

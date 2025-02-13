@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.select;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.operations.SetBooleanValuesOperation;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
@@ -79,6 +80,8 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
         final int txSelectedAttr = VisualConcept.TransactionAttribute.SELECTED.get(graph);
         final int vxVisibilityAttr = VisualConcept.VertexAttribute.VISIBILITY.get(graph);
         final int txVisibilityAttr = VisualConcept.TransactionAttribute.VISIBILITY.get(graph);
+        final int vxLayerVisibilityAttr = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(graph);
+        final int txLayerVisibilityAttr = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(graph);
 
         final SetBooleanValuesOperation selectVerticesOperation = new SetBooleanValuesOperation(graph, GraphElementType.VERTEX, vxSelectedAttr);
         final SetBooleanValuesOperation selectTransactionsOperation = new SetBooleanValuesOperation(graph, GraphElementType.TRANSACTION, txSelectedAttr);
@@ -128,7 +131,8 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
 
             if (requiresVertexVisibility) {
                 final float visibility = graph.getFloatValue(vxVisibilityAttr, vxId);
-                if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                final float layerVisibility = vxLayerVisibilityAttr != Graph.NOT_FOUND ? graph.getFloatValue(vxLayerVisibilityAttr, vxId) : 1.0F;
+                if (layerVisibility == 0.0F || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                     continue;
                 }
             }
@@ -288,8 +292,9 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         final int txId = graph.getTransaction(position);
                         if (vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId)) && !graph.getBooleanValue(txSelectedAttr, txId)) {
                             if (requiresTransactionVisibility) {
-                                float visibility = graph.getFloatValue(txVisibilityAttr, txId);
-                                if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                                final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
+                                final float layerVisibility = txLayerVisibilityAttr != Graph.NOT_FOUND ? graph.getFloatValue(txLayerVisibilityAttr, txId) : 1.0F;
+                                if (layerVisibility == 0.0F || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                     continue;
                                 }
                             }
@@ -311,8 +316,9 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         final int txId = graph.getTransaction(position);
                         if (vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId))) {
                             if (requiresTransactionVisibility) {
-                                float visibility = graph.getFloatValue(txVisibilityAttr, txId);
-                                if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                                final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
+                                final float layerVisibility = txLayerVisibilityAttr != Graph.NOT_FOUND ? graph.getFloatValue(txLayerVisibilityAttr, txId) : 1.0F;
+                                if (layerVisibility == 0.0F || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                     continue;
                                 }
                             }
@@ -338,8 +344,9 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         final int txId = graph.getTransaction(position);
                         boolean included = vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId));
                         if (requiresTransactionVisibility) {
-                            float visibility = graph.getFloatValue(txVisibilityAttr, txId);
-                            if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                            final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
+                            final float layerVisibility = txLayerVisibilityAttr != Graph.NOT_FOUND ? graph.getFloatValue(txLayerVisibilityAttr, txId) : 1.0F;
+                            if (layerVisibility == 0.0F || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                 included = false;
                             }
                         }
@@ -432,7 +439,8 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
         // We know now that the end-points are outside the rectangle, so we only have to worry
         // that the line is between the sides.
         if (x1 == x2) {
-            return minX <= x1 && x1 <= maxX;
+            // At this point minX <= x1 is always true
+            return x1 <= maxX;
         }
 
         // Slope of line segment.

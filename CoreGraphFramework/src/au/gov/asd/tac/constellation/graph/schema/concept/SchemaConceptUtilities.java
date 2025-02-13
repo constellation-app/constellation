@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class SchemaConceptUtilities {
      *
      * @return The highest priority SchemaConcept.
      */
-    public static final SchemaConcept getDefaultConcept() {
+    public static final synchronized SchemaConcept getDefaultConcept() {
         if (defaultConcept == null) {
             defaultConcept = Lookup.getDefault().lookup(SchemaConcept.class);
         }
@@ -68,7 +68,7 @@ public class SchemaConceptUtilities {
      */
     public static final synchronized Collection<SchemaConcept> getConcepts() {
         if (schemaConcepts == null) {
-            Collection<? extends SchemaConcept> concepts = Lookup.getDefault().lookupAll(SchemaConcept.class);
+            final Collection<? extends SchemaConcept> concepts = Lookup.getDefault().lookupAll(SchemaConcept.class);
             schemaConcepts = Collections.unmodifiableCollection(concepts);
         }
 

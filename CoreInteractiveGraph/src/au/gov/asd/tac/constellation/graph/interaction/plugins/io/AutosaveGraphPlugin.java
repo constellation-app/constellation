@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public final class AutosaveGraphPlugin extends SimplePlugin {
         // The user might have deleted the graph, so check first.
         if (gnode != null) {
 
-            interaction.setProgress(-1, -1, "Autosaving: " + graphId, true);
+            interaction.setProgress(-1, -1, "Autosaving: " + graphId, true, parameters);
 
             // We don't want to hold the user up while we're reading from a graph they might be using.
             // Make a copy of the graph so that we can release the read lock as soon as possible.
