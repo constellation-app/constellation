@@ -89,11 +89,11 @@ public class LogUtilitiesNGTest {
     @Test
     public void testFormat() throws IOException {
         LOGGER.log(Level.INFO, "Test message");
-        String out = getCapturedLog();
+        final String out = getCapturedLog();
         
         // Test the format of the log message
         assertTrue(out.contains("["));
-        assertTrue(out.contains("Z] - "));
+        assertTrue(out.contains("Z] "));
         assertTrue(out.contains(": "));
         assertTrue(out.contains(" INFO "));
         assertTrue(out.contains(LogUtilitiesNGTest.class.getName()));
@@ -122,14 +122,14 @@ public class LogUtilitiesNGTest {
     public void testFormatDuplicate() throws IOException {
         LOGGER.log(Level.INFO, "Test message");
         LOGGER.log(Level.INFO, "Test message");
-        String out = getCapturedLog();
+        final String out = getCapturedLog();
         
         assertTrue(out.contains("Last record repeated again."));
     }
     
     @Test
     public void testFormatDuplicateMany() throws IOException {
-        for(int i=0; i < 20; i++){
+        for(int i = 0; i < 20; i++){
             LOGGER.log(Level.INFO, "Test message");
         }
         

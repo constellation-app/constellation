@@ -30,7 +30,6 @@ public class LogPreferences {
     private static final String CONNECTION_LOG_DATE_PREF = "connectionLogDate";
     private static final long LOGGING_TIMEOUT = 151*60*1000L; // 2.5 hours
     
-    
     private LogPreferences(){
         throw new IllegalStateException("Utility class");
     }
