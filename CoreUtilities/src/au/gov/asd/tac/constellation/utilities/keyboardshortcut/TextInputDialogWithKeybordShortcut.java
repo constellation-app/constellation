@@ -126,7 +126,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
         keyboardShortcutButton = new Button("Shortcut");
 
-        keyboardShortcutButton.setOnAction(e -> {
+        keyboardShortcutButton.setOnAction(e -> {//NOSONAR
             final RecordKeyboardShortcut rk = new RecordKeyboardShortcut();
             Optional<KeyboardShortcutSelectionResult> keyboardShortcut = getKeyboardShortcut(preferenceDirectory, rk);
             if (keyboardShortcut.isPresent()) {

@@ -172,14 +172,4 @@ public class TextInputDialogWithKeybordShortcutNGTest {
         }
         return dialog;
     }
-
-    private static TextField createTextField(final String text) {
-        TextField textField = mock(TextField.class);
-        textField.setMaxWidth(Double.MAX_VALUE);
-        textField.setMaxHeight(Double.MAX_VALUE);
-        textField.getStyleClass().add("content");
-        textField.setPrefWidth(360);
-        return textField;
-    }
-
 }
