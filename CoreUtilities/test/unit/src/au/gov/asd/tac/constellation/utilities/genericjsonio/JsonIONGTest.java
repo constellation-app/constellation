@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -51,11 +52,14 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -161,8 +165,8 @@ public class JsonIONGTest {
             assertEquals(loadedPreferences, null);
         }
     }
-    
-     @Test
+
+    @Test
     public void loadJsonPreferences_pref_ioexception() throws URISyntaxException {
 
         try (
@@ -182,7 +186,6 @@ public class JsonIONGTest {
             assertEquals(jsonNode, null);
         }
     }
-
 
     @Test
     public void loadJsonPreferences_get_tree() throws URISyntaxException {
@@ -207,6 +210,28 @@ public class JsonIONGTest {
                     .put("volume", 5);
 
             assertEquals(loadedPreferences, expectedJsonNode);
+        }
+    }
+
+    @Test
+    public void loadJsonPreferences_test_ioexception() throws URISyntaxException, IOException {
+
+        try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
+            jsonIoMockedStatic.when(() -> JsonIO
+                    .loadJsonPreferences(any(Optional.class), any(Optional.class), any(TypeReference.class)))
+                    .thenCallRealMethod();
+
+            final TypeReference<MyPreferences> type = new TypeReference<MyPreferences>() {
+            };
+            
+            File testFile = new File("testfile");
+            testFile.setReadable(false);
+
+            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
+                    .thenReturn(testFile);
+
+            JsonIO.loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, type);
+            
         }
     }
 
@@ -273,8 +298,8 @@ public class JsonIONGTest {
             JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());
 
             assertFalse(outputFile.exists());
-            
-             jsonIoDialogMockedStatic.when(() -> JsonIODialog
+
+            jsonIoDialogMockedStatic.when(() -> JsonIODialog
                     .getPreferenceFileName(any(Optional.class), any()))
                     .thenReturn(Optional.empty());
 
@@ -291,7 +316,7 @@ public class JsonIONGTest {
             JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());
 
             assertTrue(outputFile.exists());
-            
+
         } finally {
 
             Files.deleteIfExists(outputFile.toPath());
@@ -333,14 +358,14 @@ public class JsonIONGTest {
                     .thenCallRealMethod();
 
             JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());
-            
-            assertTrue(outputFile.exists());            
-            
+
+            assertTrue(outputFile.exists());
+
             when(mockAlert.showAndWait()).thenReturn(Optional.of(ButtonType.OK));
-            
+
             JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());
-            
-            assertTrue(outputFile.exists());            
+
+            assertTrue(outputFile.exists());
 
         } finally {
 
@@ -592,6 +617,7 @@ public class JsonIONGTest {
             Files.deleteIfExists(outputFile.toPath());
         }
     }
+
     @Test
     public void deleteJsonPreferences() throws URISyntaxException, FileNotFoundException, IOException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
