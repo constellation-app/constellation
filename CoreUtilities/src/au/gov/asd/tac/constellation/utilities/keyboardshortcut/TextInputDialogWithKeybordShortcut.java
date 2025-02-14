@@ -129,7 +129,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         keyboardShortcutButton.setOnAction(e -> {//NOSONAR
             final RecordKeyboardShortcut rk = new RecordKeyboardShortcut();
             Optional<KeyboardShortcutSelectionResult> keyboardShortcut = getKeyboardShortcut(preferenceDirectory, rk);
-            if (keyboardShortcut.isPresent()) {
+            if (keyboardShortcut.isPresent()) {//NOSONAR
                 KeyboardShortcutSelectionResult ksResult = keyboardShortcut.get();
                 keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
                 keyboardShortcutLabel.setText(ksResult.getKeyboardShortcut());
