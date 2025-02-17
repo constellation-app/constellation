@@ -443,28 +443,9 @@ public class TimelinePanel extends Region {
     }
 
     protected void clearTimelineData() {
-        // Reset timeline by copying values to new instance
-//        lowerTime.textProperty().unbind();
-//        upperTime.textProperty().unbind();
-//
-//        // Get old extents
-//        final double lower = getTimelineLowerTimeExtent();
-//        final double upper = getTimelineUpperTimeExtent();
-//
-//        timeline = new TimelineChart(this, new NumberAxis(), new NumberAxis());
-//
-//        // Rebind text
-//        lowerTime.textProperty().bind(timeline.lowerTimeExtentProperty());
-//        upperTime.textProperty().bind(timeline.upperTimeExtentProperty());
-//
-//        timelinePane.setCenter(timeline);
-//        timeline.setExtents(lower, upper);
-
-// old
         if (timeline.getData() != null) {
             timeline.getData().clear();
         }
-        //timeline.setData(null);
     }
 
     /**
