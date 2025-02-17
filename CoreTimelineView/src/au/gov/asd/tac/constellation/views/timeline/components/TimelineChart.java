@@ -682,9 +682,13 @@ public class TimelineChart extends XYChart<Number, Number> {
             // fade out old item:
             final FadeTransition ft = new FadeTransition(Duration.millis(500), child);
             ft.setToValue(0);
-            ft.setOnFinished((final ActionEvent actionEvent) -> removeSeriesFromDisplay(series));
+            ft.setOnFinished((final ActionEvent actionEvent) -> {
+                getPlotChildren().clear();
+                removeSeriesFromDisplay(series);
+            });
             ft.play();
         } else {
+            getPlotChildren().clear();
             removeSeriesFromDisplay(series);
         }
     }

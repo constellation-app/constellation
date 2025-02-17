@@ -94,7 +94,7 @@ public class TimelinePanel extends Region {
     private final Label upperTime;
     private String nodeLabelAttr = null;
     private final ClusteringManager clusteringManager = new ClusteringManager();
-    private TimelineChart timeline;
+    private final TimelineChart timeline;
     private ComboBox<String> cmbDatetimeAttributes;
     private ComboBox<String> cmbAttributeNames;
     private ComboBox<String> cmbExcludedNodes;
@@ -442,23 +442,29 @@ public class TimelinePanel extends Region {
         return a != null && b != null ? String.format("%s %s %s", a, cxn, b) : null;
     }
 
-    public void clearTimelineData() {
+    protected void clearTimelineData() {
         // Reset timeline by copying values to new instance
-        lowerTime.textProperty().unbind();
-        upperTime.textProperty().unbind();
+//        lowerTime.textProperty().unbind();
+//        upperTime.textProperty().unbind();
+//
+//        // Get old extents
+//        final double lower = getTimelineLowerTimeExtent();
+//        final double upper = getTimelineUpperTimeExtent();
+//
+//        timeline = new TimelineChart(this, new NumberAxis(), new NumberAxis());
+//
+//        // Rebind text
+//        lowerTime.textProperty().bind(timeline.lowerTimeExtentProperty());
+//        upperTime.textProperty().bind(timeline.upperTimeExtentProperty());
+//
+//        timelinePane.setCenter(timeline);
+//        timeline.setExtents(lower, upper);
 
-        // Get old extents
-        final double lower = getTimelineLowerTimeExtent();
-        final double upper = getTimelineUpperTimeExtent();
-
-        timeline = new TimelineChart(this, new NumberAxis(), new NumberAxis());
-
-        // Rebind text
-        lowerTime.textProperty().bind(timeline.lowerTimeExtentProperty());
-        upperTime.textProperty().bind(timeline.upperTimeExtentProperty());
-
-        timeline.setExtents(lower, upper);
-        timelinePane.setCenter(timeline);
+// old
+        if (timeline.getData() != null) {
+            timeline.getData().clear();
+        }
+        //timeline.setData(null);
     }
 
     /**
