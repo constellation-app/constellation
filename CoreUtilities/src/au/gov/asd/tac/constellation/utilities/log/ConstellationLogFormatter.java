@@ -26,8 +26,9 @@ import java.util.stream.Collectors;
 
 /**
  * All Constellation log messages will come through this class for formatting.
- * They will have a fixed format: [date of log entry] log.LEVEL [class which
- * generated the log]: log message Exception stack trace (if present)
+ * They will have a fixed format: 
+ * [date_of_log_entry] log.LEVEL [class_which_generated_the_log]: log message 
+ *   Exception stack trace (if present)
  *
  * @author Guilty-Spark-343
  * @author OrionsGuardian
@@ -36,6 +37,8 @@ public class ConstellationLogFormatter extends Formatter {
 
     // Store a copy of the previous log message, so we can check for repeats.
     private String repeatedLogMessage = "";
+    private String repeatedExceptionBlock = "";
+    private boolean repeatedException = false;
     private Integer repeatedLogCount = 0;
     
     // Pending message is continually updated with a potential final message when repeat messages occur, 
@@ -53,14 +56,14 @@ public class ConstellationLogFormatter extends Formatter {
         prefix.append(logDate);
         prefix.append(logRecord.getLevel().getName());
         prefix.append(" [");
-        prefix.append(logRecord.getLoggerName());
+        prefix.append(logRecord.getLoggerName() != null ? logRecord.getLoggerName() : " ");
         prefix.append("]: ");
 
         final String formattedMessage;
         if (logRecord.getMessage() != null && logRecord.getParameters() != null) {
             formattedMessage = MessageFormat.format(logRecord.getMessage(), logRecord.getParameters()) + SeparatorConstants.NEWLINE;
         } else {
-            formattedMessage = logRecord.getMessage() + SeparatorConstants.NEWLINE;
+            formattedMessage = (logRecord.getMessage() != null ? logRecord.getMessage() : "") + SeparatorConstants.NEWLINE;
         }
 
         final StackTraceElement[] errTrace;
@@ -69,9 +72,9 @@ public class ConstellationLogFormatter extends Formatter {
         } else {
             errTrace = null;
         }
-        
+        repeatedException = false;
         if (errTrace != null) {
-            exceptionBlock.append(logRecord.getMessage());
+            exceptionBlock.append((logRecord.getMessage() != null ? logRecord.getMessage() : ""));
             exceptionBlock.append(SeparatorConstants.NEWLINE);
             exceptionBlock.append("  ");
             exceptionBlock.append(error.toString());
@@ -81,26 +84,34 @@ public class ConstellationLogFormatter extends Formatter {
                     .map(entry -> "    at " + entry.toString())
                     .collect(Collectors.joining(SeparatorConstants.NEWLINE));
 
+            repeatedException = stackTrace.equals(repeatedExceptionBlock);
+            if (!repeatedException) {
+                repeatedExceptionBlock = stackTrace;
+            }
             exceptionBlock.append(stackTrace);
             exceptionBlock.append(SeparatorConstants.NEWLINE);
         }
+        if (!repeatedException && exceptionBlock.length() == 0) {
+            repeatedExceptionBlock = "";
+        }
 
-        if ((exceptionBlock.length() > 0 && !repeatedLogMessage.isBlank() && exceptionBlock.toString().equals(repeatedLogMessage)) || (!repeatedLogMessage.isBlank() && formattedMessage.equals(repeatedLogMessage))) {
+        if (repeatedException || (!repeatedLogMessage.isBlank() && formattedMessage.equals(repeatedLogMessage))) {
             final StringBuilder repeatedResponse = new StringBuilder();
             repeatedResponse.append(prefix.toString());
             repeatedLogCount += 1;
+            final String messagePrefix = repeatedException ? "Last exception record repeated " : "Last record repeated ";
             if (repeatedLogCount == 11) {
-                repeatedResponse.append("Last record repeated more than 10 times, further logs of this record are ignored until the log record changes.");
+                repeatedResponse.append(messagePrefix).append("more than 10 times, further logs of this record are ignored until the log record changes.");
                 repeatedResponse.append(SeparatorConstants.NEWLINE);
-                pendingMessage = prefix.toString() + "Last record repeated " + repeatedLogCount + " times in total." + SeparatorConstants.NEWLINE;
+                pendingMessage = prefix.toString() + messagePrefix + repeatedLogCount + " times in total." + SeparatorConstants.NEWLINE;
             } else if (repeatedLogCount == 1) {
-                repeatedResponse.append("Last record repeated again.");
+                repeatedResponse.append(messagePrefix).append("again.");
                 repeatedResponse.append(SeparatorConstants.NEWLINE);
             } else if (repeatedLogCount > 11) {
-                pendingMessage = prefix.toString() + "Last record repeated " + repeatedLogCount + " times in total." + SeparatorConstants.NEWLINE;
+                pendingMessage = prefix.toString() + messagePrefix + repeatedLogCount + " times in total." + SeparatorConstants.NEWLINE;
                 return ""; // No log for this message.
             } else {
-                pendingMessage = prefix.toString() + "Last record repeated " + repeatedLogCount + " more times." + SeparatorConstants.NEWLINE;
+                pendingMessage = prefix.toString() + messagePrefix + repeatedLogCount + " more times." + SeparatorConstants.NEWLINE;
                 return ""; // No log for this message.
             }
             return repeatedResponse.toString();
