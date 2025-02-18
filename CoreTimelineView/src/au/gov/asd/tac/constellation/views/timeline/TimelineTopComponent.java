@@ -45,6 +45,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
@@ -122,6 +123,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     private BorderPane noActive;
     private Label lblNoActive;
     private StackPane root;
+    private final ProgressIndicator spinner = new ProgressIndicator();
     private long currentGlobalModificationCount = Long.MIN_VALUE;
     private long currentAttributeModificationCount = Long.MIN_VALUE;
     private long currentStructureModificationCount = Long.MIN_VALUE;
@@ -146,6 +148,8 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         add(container, BorderLayout.CENTER);
 
         final int height = this.getPreferredSize().height;
+
+        spinner.setMaxSize(50, 50);
 
         // Populate the jfx container:
         Platform.setImplicitExit(false);
@@ -217,6 +221,8 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         timelinePanel.updateExclusionState(graphNode.getGraph(),
                 (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
         overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
+
+        setInProgress();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Timeline and Histogram Extents">
@@ -281,6 +287,8 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
         timelinePanel.updateExclusionState(graphNode.getGraph(), (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
         overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
+
+        setInProgress();
     }
 
     protected double getTimelineLowerTimeExtent() {
@@ -685,6 +693,18 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         } else {
             return null;
         }
+    }
+
+    public void setInProgress() {
+        if (root.getChildren().contains(spinner)) {
+            return;
+        }
+        root.getChildren().add(spinner);
+        StackPane.setAlignment(spinner, Pos.CENTER);
+    }
+
+    public void setProgressComplete() {
+        Platform.runLater(() -> root.getChildren().remove(spinner));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Graph Listeners">

@@ -436,6 +436,8 @@ public class TimelinePanel extends Region {
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+
+        coordinator.setProgressComplete();
     }
 
     private static String labelMaker(final String a, final char cxn, final String b) {
