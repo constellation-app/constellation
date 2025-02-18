@@ -696,7 +696,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
 
     public void setInProgress() {
-        if (root.getChildren().contains(spinner)) {
+        if (root == null || root.getChildren().contains(spinner)) {
             return;
         }
         root.getChildren().add(spinner);
