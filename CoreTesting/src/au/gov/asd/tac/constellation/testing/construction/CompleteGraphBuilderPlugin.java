@@ -169,6 +169,10 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
      * @return True if user does not click OK
      */
     protected boolean showWarning(final int numTransactions, final boolean randomWeights) {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))) {
+            return true;
+        }
+        
         // Create popup
         final PluginParameters warningParams = new PluginParameters();
         final PluginParameter<StringParameterValue> warningMessageParam = StringParameterType.build("");
