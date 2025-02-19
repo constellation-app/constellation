@@ -172,7 +172,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))) {
             return true;
         }
-        
+
         // Create popup
         final PluginParameters warningParams = new PluginParameters();
         final PluginParameter<StringParameterValue> warningMessageParam = StringParameterType.build("");
@@ -204,9 +204,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         final int numTransactions = n * (n - 1) * (randomWeights ? 25 : 1);
 
         // If graph is going to be too large, warn user and then stop plugin if the choose to do so
-        final boolean result = showWarning(numTransactions, randomWeights);
-        System.out.println(result);
-        if (numTransactions > NUM_TRANSACTIONS_THRESHOLD && result) {
+        if (numTransactions > NUM_TRANSACTIONS_THRESHOLD && showWarning(numTransactions, randomWeights)) {
             // If user doesn't click ok, dont let the plugin run
             return;
         }
@@ -230,8 +228,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
                 graph.getAttributeName(vxPinnedAttr), null, graph.getAttributeName(vxIsGoodAttr));
         final int decoratorsAttr = VisualConcept.GraphAttribute.DECORATORS.ensure(graph);
 
-        graph.setObjectValue(decoratorsAttr,
-                0, decorators);
+        graph.setObjectValue(decoratorsAttr, 0, decorators);
 
         final int[] vxIds = new int[n];
         int vx = 0;
@@ -321,7 +318,6 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
-        interaction.setProgress(
-                1, 0, "Completed successfully", true);
+        interaction.setProgress(1, 0, "Completed successfully", true);
     }
 }
