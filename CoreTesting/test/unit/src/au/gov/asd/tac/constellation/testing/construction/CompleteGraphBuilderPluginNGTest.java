@@ -41,9 +41,9 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class CompleteGraphBuilderPluginNGTest {
-    
+
     private StoreGraph graph;
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         // Not currently required
@@ -71,9 +71,9 @@ public class CompleteGraphBuilderPluginNGTest {
     @Test
     public void testCreateParameters() {
         System.out.println("createParameters");
-        
+
         final CompleteGraphBuilderPlugin instance = new CompleteGraphBuilderPlugin();
-        
+
         final PluginParameters params = instance.createParameters();
         assertEquals(params.getParameters().size(), 4);
         assertTrue(params.getParameters().containsKey(N_PARAMETER_ID));
@@ -88,41 +88,53 @@ public class CompleteGraphBuilderPluginNGTest {
     @Test
     public void testUpdateParametersNullGraph() {
         System.out.println("updateParametersNullGraph");
-        
+
         final CompleteGraphBuilderPlugin instance = new CompleteGraphBuilderPlugin();
-        
+
         final PluginParameters params = instance.createParameters();
         final PluginParameter<MultiChoiceParameterValue> nAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(NODE_TYPES_PARAMETER_ID);
         final PluginParameter<MultiChoiceParameterValue> tAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
-        
+
         assertTrue(MultiChoiceParameterType.getOptions(nAttribute).isEmpty());
         assertTrue(MultiChoiceParameterType.getOptions(tAttribute).isEmpty());
-        
+
         instance.updateParameters(null, params);
         assertTrue(MultiChoiceParameterType.getOptions(nAttribute).isEmpty());
         assertTrue(MultiChoiceParameterType.getOptions(tAttribute).isEmpty());
     }
-    
+
     /**
      * Test of updateParameters method, of class CompleteGraphBuilderPlugin.
      */
     @Test
     public void testUpdateParameters() {
         System.out.println("updateParameters");
-        
+
         final CompleteGraphBuilderPlugin instance = new CompleteGraphBuilderPlugin();
-        
+
         final PluginParameters params = instance.createParameters();
         final PluginParameter<MultiChoiceParameterValue> nAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(NODE_TYPES_PARAMETER_ID);
         final PluginParameter<MultiChoiceParameterValue> tAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
-        
+
         assertTrue(MultiChoiceParameterType.getOptions(nAttribute).isEmpty());
         assertTrue(MultiChoiceParameterType.getOptions(tAttribute).isEmpty());
-        
+
         instance.updateParameters(new DualGraph(graph.getSchema(), graph), params);
         assertEquals(MultiChoiceParameterType.getOptions(nAttribute).size(), 27);
         assertEquals(MultiChoiceParameterType.getChoices(nAttribute).size(), 1);
         assertEquals(MultiChoiceParameterType.getOptions(tAttribute).size(), 9);
         assertEquals(MultiChoiceParameterType.getChoices(tAttribute).size(), 1);
+    }
+
+    /**
+     * Test of showWarning method, of class CompleteGraphBuilderPlugin.
+     */
+    @Test
+    public void testShowWarning() {
+        System.out.println("showWarning");
+
+        final CompleteGraphBuilderPlugin instance = new CompleteGraphBuilderPlugin();
+        // Run function, expect default answer of true (user did not click OK)
+        assertTrue(instance.showWarning(0, true));
     }
 }

@@ -161,6 +161,29 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         }
     }
 
+    /**
+     * Creates popup and warns user about the number of transactions they will create
+     *
+     * @param numTransactions The number of transactions the user will create
+     * @param randomWeights Whether or not the user is using random weights
+     * @return True if user does not click OK
+     */
+    protected boolean showWarning(final int numTransactions, final boolean randomWeights) {
+        // Create popup
+        final PluginParameters warningParams = new PluginParameters();
+        final PluginParameter<StringParameterValue> warningMessageParam = StringParameterType.build("");
+        warningMessageParam.setName("ATTENTION!");
+        warningMessageParam.setStringValue((randomWeights ? "Around " : "") + numTransactions + WARNING_TEXT);
+        StringParameterType.setIsLabel(warningMessageParam, true);
+        warningParams.addParameter(warningMessageParam);
+        final PluginParametersSwingDialog overwrite = new PluginParametersSwingDialog("Warning!", warningParams);
+        overwrite.showAndWait();
+
+        // returns false if the user clicks OK
+        return !PluginParametersDialog.OK.equals(overwrite.getResult());
+
+    }
+
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         interaction.setProgress(0, 0, "Building...", true);
@@ -176,22 +199,12 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         // If random weights is enabled, each edge will have roughly 24.7 transactions, otherwise just 1 transaction per edge
         final int numTransactions = n * (n - 1) * (randomWeights ? 25 : 1);
 
-        // If graph is going to be too large, warn user
-        if (numTransactions > NUM_TRANSACTIONS_THRESHOLD) {
-            // Create popup
-            final PluginParameters warningParams = new PluginParameters();
-            final PluginParameter<StringParameterValue> warningMessageParam = StringParameterType.build("");
-            warningMessageParam.setName("ATTENTION!");
-            warningMessageParam.setStringValue((randomWeights ? "Around " : "") + numTransactions + WARNING_TEXT);
-            StringParameterType.setIsLabel(warningMessageParam, true);
-            warningParams.addParameter(warningMessageParam);
-            final PluginParametersSwingDialog overwrite = new PluginParametersSwingDialog("Warning!", warningParams);
-            overwrite.showAndWait();
-
+        // If graph is going to be too large, warn user and then stop plugin if the choose to do so
+        final boolean result = showWarning(numTransactions, randomWeights);
+        System.out.println(result);
+        if (numTransactions > NUM_TRANSACTIONS_THRESHOLD && result) {
             // If user doesn't click ok, dont let the plugin run
-            if (!PluginParametersDialog.OK.equals(overwrite.getResult())) {
-                return;
-            }
+            return;
         }
 
         // Random countries to put in the graph
@@ -212,7 +225,9 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         final VertexDecorators decorators = new VertexDecorators(graph.getAttributeName(vxCountryAttr),
                 graph.getAttributeName(vxPinnedAttr), null, graph.getAttributeName(vxIsGoodAttr));
         final int decoratorsAttr = VisualConcept.GraphAttribute.DECORATORS.ensure(graph);
-        graph.setObjectValue(decoratorsAttr, 0, decorators);
+
+        graph.setObjectValue(decoratorsAttr,
+                0, decorators);
 
         final int[] vxIds = new int[n];
         int vx = 0;
@@ -302,6 +317,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
-        interaction.setProgress(1, 0, "Completed successfully", true);
+        interaction.setProgress(
+                1, 0, "Completed successfully", true);
     }
 }
