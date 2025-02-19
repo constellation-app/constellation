@@ -28,6 +28,10 @@ import static au.gov.asd.tac.constellation.testing.construction.CompleteGraphBui
 import static au.gov.asd.tac.constellation.testing.construction.CompleteGraphBuilderPlugin.N_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.testing.construction.CompleteGraphBuilderPlugin.RANDOM_WEIGHTS_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.testing.construction.CompleteGraphBuilderPlugin.TRANSACTION_TYPES_PARAMETER_ID;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -43,15 +47,22 @@ import org.testng.annotations.Test;
 public class CompleteGraphBuilderPluginNGTest {
 
     private StoreGraph graph;
+    private static final Logger LOGGER = Logger.getLogger(CompleteGraphBuilderPluginNGTest.class.getName());
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        // Not currently required
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        // Not currently required
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
