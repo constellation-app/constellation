@@ -37,6 +37,8 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -45,6 +47,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.security.SecureRandom;
@@ -72,13 +76,17 @@ import org.openide.util.lookup.ServiceProviders;
 @Messages("CompleteGraphBuilderPlugin=Complete Graph Builder")
 @PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.CREATE})
 public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
-    
+
     private static final Logger LOGGER = Logger.getLogger(CompleteGraphBuilderPlugin.class.getName());
 
     public static final String N_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "n");
     public static final String RANDOM_WEIGHTS_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "random_weights");
     public static final String NODE_TYPES_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "node_types");
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "transaction_types");
+    public static final String WARNING_LABEL_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "warning_label");
+
+    private static final String WARNING_TEXT = " transactions will be made. Proceed?";
+    private static final int NUM_TRANSACTIONS_THRESHOLD = 100000;
 
     private final SecureRandom r = new SecureRandom();
 
@@ -125,7 +133,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         final List<String> tChoices = new ArrayList<>();
         if (graph != null) {
             final Set<Class<? extends SchemaConcept>> concepts = graph.getSchema().getFactory().getRegisteredConcepts();
-            
+
             final Collection<SchemaVertexType> nodeTypes = SchemaVertexTypeUtilities.getTypes(concepts);
             for (final SchemaVertexType type : nodeTypes) {
                 nAttributes.add(type.getName());
@@ -137,7 +145,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
                 tAttributes.add(type.getName());
             }
             tAttributes.sort(String::compareTo);
-            
+
             nChoices.add(nAttributes.get(0));
             tChoices.add(tAttributes.get(0));
         }
@@ -164,8 +172,30 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         final List<String> nodeTypes = params.get(NODE_TYPES_PARAMETER_ID).getMultiChoiceValue().getChoices();
         final List<String> transactionTypes = params.get(TRANSACTION_TYPES_PARAMETER_ID).getMultiChoiceValue().getChoices();
 
+        // Estimate number of transactions to be made
+        // If random weights is enabled, each edge will have roughly 24.7 transactions, otherwise just 1 transaction per edge
+        final int numTransactions = n * (n - 1) * (randomWeights ? 25 : 1);
+
+        // If graph is going to be too large, warn user
+        if (numTransactions > NUM_TRANSACTIONS_THRESHOLD) {
+            // Create popup
+            final PluginParameters warningParams = new PluginParameters();
+            final PluginParameter<StringParameterValue> warningMessageParam = StringParameterType.build("");
+            warningMessageParam.setName("ATTENTION!");
+            warningMessageParam.setStringValue((randomWeights ? "Around " : "") + numTransactions + WARNING_TEXT);
+            StringParameterType.setIsLabel(warningMessageParam, true);
+            warningParams.addParameter(warningMessageParam);
+            final PluginParametersSwingDialog overwrite = new PluginParametersSwingDialog("Warning!", warningParams);
+            overwrite.showAndWait();
+
+            // If user doesn't click ok, dont let the plugin run
+            if (!PluginParametersDialog.OK.equals(overwrite.getResult())) {
+                return;
+            }
+        }
+
         // Random countries to put in the graph
-        final List<String> countries = Arrays.asList("Australia", "Brazil", "China", "France", "Japan", "New Zealand", 
+        final List<String> countries = Arrays.asList("Australia", "Brazil", "China", "France", "Japan", "New Zealand",
                 "South Africa", "United Arab Emirates", "United Kingdom", "United States");
 
         final int vxIdentifierAttr = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
@@ -179,7 +209,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         final int txTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
         final int txDateTimeAttr = TemporalConcept.TransactionAttribute.DATETIME.ensure(graph);
 
-        final VertexDecorators decorators = new VertexDecorators(graph.getAttributeName(vxCountryAttr), 
+        final VertexDecorators decorators = new VertexDecorators(graph.getAttributeName(vxCountryAttr),
                 graph.getAttributeName(vxPinnedAttr), null, graph.getAttributeName(vxIsGoodAttr));
         final int decoratorsAttr = VisualConcept.GraphAttribute.DECORATORS.ensure(graph);
         graph.setObjectValue(decoratorsAttr, 0, decorators);
