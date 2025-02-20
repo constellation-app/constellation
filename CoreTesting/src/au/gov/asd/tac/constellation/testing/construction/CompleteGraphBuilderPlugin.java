@@ -196,8 +196,6 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
 
         final int n = params.get(N_PARAMETER_ID).getIntegerValue();
         final boolean randomWeights = params.get(RANDOM_WEIGHTS_PARAMETER_ID).getBooleanValue();
-        final List<String> nodeTypes = params.get(NODE_TYPES_PARAMETER_ID).getMultiChoiceValue().getChoices();
-        final List<String> transactionTypes = params.get(TRANSACTION_TYPES_PARAMETER_ID).getMultiChoiceValue().getChoices();
 
         // Estimate number of transactions to be made
         // If random weights is enabled, each edge will have roughly 24.7 transactions, otherwise just 1 transaction per edge
@@ -208,6 +206,9 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
             // If user doesn't click ok, dont let the plugin run
             return;
         }
+
+        final List<String> nodeTypes = params.get(NODE_TYPES_PARAMETER_ID).getMultiChoiceValue().getChoices();
+        final List<String> transactionTypes = params.get(TRANSACTION_TYPES_PARAMETER_ID).getMultiChoiceValue().getChoices();
 
         // Random countries to put in the graph
         final List<String> countries = Arrays.asList("Australia", "Brazil", "China", "France", "Japan", "New Zealand",
