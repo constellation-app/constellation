@@ -154,7 +154,7 @@ public class CompleteGraphBuilderPluginNGTest {
 
         final CompleteGraphBuilderPlugin instance = new CompleteGraphBuilderPlugin();
         // Run function, expect default answer of true (user did not click OK)
-        assertTrue(instance.showWarning(0, true));
+        assertTrue(instance.showWarning(0L, true));
     }
 
     /**
@@ -169,7 +169,7 @@ public class CompleteGraphBuilderPluginNGTest {
         // Set up mocks
         final int numNodes = 1000;
         final boolean isRandomWeights = true;
-        final int numTransactions = numNodes * (numNodes - 1) * (isRandomWeights ? 25 : 1);
+        final long numTransactions = numNodes * (numNodes - 1) * (isRandomWeights ? 25 : 1);
 
         final CompleteGraphBuilderPlugin instance = spy(new CompleteGraphBuilderPlugin());
         final GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);

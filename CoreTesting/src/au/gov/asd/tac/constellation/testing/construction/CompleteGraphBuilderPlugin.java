@@ -84,8 +84,10 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String NODE_TYPES_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "node_types");
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "transaction_types");
     public static final String WARNING_LABEL_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "warning_label");
+    public static final String WARNING_LABEL_EXTRA_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "extra_warning_label");
 
     private static final String WARNING_TEXT = " transactions will be made. Proceed?";
+    private static final String WARNING_TEXT_EXTRA = "This will cause significant performance issues!";
     private static final int NUM_TRANSACTIONS_THRESHOLD = 100000;
 
     private final SecureRandom r = new SecureRandom();
@@ -168,23 +170,30 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
      * @param randomWeights Whether or not the user is using random weights
      * @return True if user does not click OK
      */
-    protected boolean showWarning(final int numTransactions, final boolean randomWeights) {
+    protected boolean showWarning(final long numTransactions, final boolean randomWeights) {
         if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))) {
             return true;
         }
 
         // Create popup
         final PluginParameters warningParams = new PluginParameters();
-        final PluginParameter<StringParameterValue> warningMessageParam = StringParameterType.build("");
+        final PluginParameter<StringParameterValue> warningMessageParam = StringParameterType.build(WARNING_LABEL_PARAMETER_ID);
         warningMessageParam.setName("ATTENTION!");
         warningMessageParam.setStringValue((randomWeights ? "Around " : "") + numTransactions + WARNING_TEXT);
         StringParameterType.setIsLabel(warningMessageParam, true);
         warningParams.addParameter(warningMessageParam);
-        final PluginParametersSwingDialog overwrite = new PluginParametersSwingDialog("Warning!", warningParams);
-        overwrite.showAndWait();
+
+        final PluginParameter<StringParameterValue> warningMessageExtraParam = StringParameterType.build(WARNING_LABEL_EXTRA_PARAMETER_ID);
+        warningMessageExtraParam.setName("");
+        warningMessageExtraParam.setStringValue(WARNING_TEXT_EXTRA);
+        StringParameterType.setIsLabel(warningMessageExtraParam, true);
+        warningParams.addParameter(warningMessageExtraParam);
+
+        final PluginParametersSwingDialog warning = new PluginParametersSwingDialog("Warning!", warningParams);
+        warning.showAndWait();
 
         // returns false if the user clicks OK
-        return !PluginParametersDialog.OK.equals(overwrite.getResult());
+        return !PluginParametersDialog.OK.equals(warning.getResult());
 
     }
 
@@ -199,11 +208,13 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
 
         // Estimate number of transactions to be made
         // If random weights is enabled, each edge will have roughly 24.7 transactions, otherwise just 1 transaction per edge
-        final int numTransactions = n * (n - 1) * (randomWeights ? 25 : 1);
+        final long numTransactions = (long) n * ((long)n - 1L) * (randomWeights ? 25L : 1L);
 
         // If graph is going to be too large, warn user and then stop plugin if the choose to do so
-        if (numTransactions > NUM_TRANSACTIONS_THRESHOLD && showWarning(numTransactions, randomWeights)) {
+        // If numTransactions is negative, overflow has occured, so n is very large
+        if ((numTransactions > NUM_TRANSACTIONS_THRESHOLD || numTransactions < 0) && showWarning(numTransactions, randomWeights)) {
             // If user doesn't click ok, dont let the plugin run
+            interaction.setProgress(1, 0, "Completed successfully", true);
             return;
         }
 
