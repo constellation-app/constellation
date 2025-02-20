@@ -44,6 +44,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupp
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport.RightButton;
 import com.fasterxml.jackson.core.io.NumberInput;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.effect.ColorInput;
 
@@ -148,9 +149,6 @@ public abstract class ConstellationInput<T> extends StackPane implements
     private boolean isValid = true;
     private boolean focused = false;
 
-    final Color fieldColor = Color.color(51 / 255D, 51 / 255D, 51 / 255D);
-    final Color invalidColor = Color.color(238 / 255D, 66 / 255D, 49 / 255D);
-
     public ConstellationInput() {
         this(TextType.SINGLELINE);
     }
@@ -179,6 +177,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
         });
         textArea.setContextMenu(contextMenu);
         textArea.setMinHeight(defaultCellHeight);
+        textArea.setPadding(new Insets(0, 5, 0, 0));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">
@@ -186,9 +185,8 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * Builds out the three layers to a ConstellationInput. Each of these layers
      * needs to have their height bound to the height of a TextArea to ensure
      * appropriate resizing with contained text. The first layer is the
-     * background layer, a {@link Rectangle} which acts a a shape to provide the
-     * fill color to an input field. When a field becomes invalid, it should be
-     * this rectangle that changes color. The second Layer is the interactable
+     * background layer, a {@link Rectangle} which acts as a shape to provide the
+     * fill color to an input field. The second Layer is the interactable
      * content layer a {@link HBox} that hosts all of the "clickable" UI
      * components. This layer need to have a clipping mask that this the same
      * size as the foreground to enable smooth corners. The third layer is the
@@ -200,11 +198,11 @@ public abstract class ConstellationInput<T> extends StackPane implements
         interactableContentLayer.setAlignment(Pos.TOP_CENTER);
         HBox.setHgrow(interactableContentLayer, Priority.ALWAYS);
 
-        final Rectangle backgroundLayer = new Rectangle();
-        backgroundLayer.setArcWidth(corner);
-        backgroundLayer.setArcHeight(corner);
-        backgroundLayer.setFill(Color.TRANSPARENT);
-        backgroundLayer.widthProperty().bind(interactableContentLayer.widthProperty());
+//        final Rectangle backgroundLayer = new Rectangle();
+//        backgroundLayer.setArcWidth(corner);
+//        backgroundLayer.setArcHeight(corner);
+//        backgroundLayer.setFill(Color.TRANSPARENT);
+//        backgroundLayer.widthProperty().bind(interactableContentLayer.widthProperty());
 
         final Rectangle interactableContentClipingMask = new Rectangle();
         interactableContentClipingMask.setArcWidth(corner);
@@ -219,9 +217,9 @@ public abstract class ConstellationInput<T> extends StackPane implements
         foregroundLayer.setMouseTransparent(true);
         foregroundLayer.widthProperty().bind(interactableContentLayer.widthProperty());
 
-        textArea.bindHeightProperty(foregroundLayer, backgroundLayer, interactableContentClipingMask);
+        textArea.bindHeightProperty(foregroundLayer, interactableContentClipingMask);
 
-        getChildren().addAll(backgroundLayer, interactableContentLayer, foregroundLayer);
+        getChildren().addAll(interactableContentLayer, foregroundLayer);
     }
 
     /**
@@ -243,7 +241,6 @@ public abstract class ConstellationInput<T> extends StackPane implements
             if (this instanceof LeftButtonSupport leftButton) {
                 final LeftButton button = leftButton.getLeftButton();
                 if (button != null) {
-                    button.getHeightProperty().bind(textArea.heightProperty());
                     interactableContent.getChildren().addFirst(button);
                     this.createWidthListener(button);
                 }
@@ -260,8 +257,6 @@ public abstract class ConstellationInput<T> extends StackPane implements
             // Add Right Button
             if (this instanceof RightButtonSupport rightButton) {
                 final RightButton button = rightButton.getRightButton();
-                button.getHeightProperty().bind(textArea.heightProperty());
-
                 interactableContent.getChildren().add(button);
                 this.createWidthListener(button);
             }
@@ -585,16 +580,14 @@ public abstract class ConstellationInput<T> extends StackPane implements
 
     /**
      * Responsible for updating the color of the background of an input field.
-     * Uses a boolean parameter to override the expression of validty in some
+     * Uses a boolean parameter to override the expression of validity in some
      * cases. Typically the isValid attribute will be passed in to ensure that
      * the input field reflects the validity of its contents.
      */
     private void updateFieldValidityVisuals(final boolean valid) {
         if (valid) {
-            getBackgroundShape().setFill(fieldColor);
             textArea.getStyleClass().remove("invalid-input");
         } else {
-            getBackgroundShape().setFill(invalidColor);
             textArea.getStyleClass().add("invalid-input");
         }
     }

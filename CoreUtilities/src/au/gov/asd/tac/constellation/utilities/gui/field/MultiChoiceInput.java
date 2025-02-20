@@ -16,20 +16,18 @@
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseEvent;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ChoiceInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
@@ -58,6 +56,8 @@ import javafx.scene.control.SeparatorMenuItem;
 public final class MultiChoiceInput<C extends Object>
         extends ChoiceInputField<List<C>, C>
         implements RightButtonSupport, AutoCompleteSupport {
+
+    private ChoiceInputDropDown choiceInputDropDown;
 
     public MultiChoiceInput() {
         initialiseDepedantComponents();
@@ -208,7 +208,7 @@ public final class MultiChoiceInput<C extends Object>
     public List<MenuItem> getLocalMenuItems() {
         final List<MenuItem> items = new ArrayList();
 
-        final MenuItem choose = new MenuItem("Select Choice");
+        final MenuItem choose = new MenuItem("Show Choices...");
         choose.setOnAction(value -> executeRightButtonAction());
         items.add(choose);
 
@@ -220,18 +220,25 @@ public final class MultiChoiceInput<C extends Object>
     @Override
     public RightButton getRightButton() {
         RightButton button = new RightButton(
-                new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL), ButtonType.DROPDOWN) {
+                new Label(""), ButtonType.DROPDOWN) {                    
+            
             @Override
-            public EventHandler<? super MouseEvent> action() {
-                return event -> executeRightButtonAction();
-            }
-        };
+            public void show() {
+                // show our menu instead
+                executeRightButtonAction();
+            }            
+        };        
         return button;
     }
 
     @Override
     public void executeRightButtonAction() {
-        showDropDown(new ChoiceInputDropDown(this));
+        if (choiceInputDropDown == null) {
+            choiceInputDropDown = new ChoiceInputDropDown(this);        
+            showDropDown(choiceInputDropDown);
+        } else {
+            choiceInputDropDown = null;
+        }
     }
     // </editor-fold> 
 

@@ -15,57 +15,49 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import javafx.beans.property.DoubleProperty;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
+import javafx.geometry.Insets;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.Region;
 
 /**
  * 
  * @author capricornunicorn123
+ * @author andromeda-224
  */
-public abstract class Button extends StackPane {
-    
-    private final int endCellPrefWidth = 50;
-    private final int defaultCellHeight = 22;
-    
-    private final Color dkButtonColor = Color.color(0.11, 0.35, 0.65);
-    private final Color dkOptionColor = Color.color(0.4, 0.4, 0.4);
-    
-    private final Color ltButtonColor = Color.color(0.19, 0.5, 0.97);
-    private final Color ltOptionColor = Color.color(0.255, 0.568, 0.91);
-    
-    private final Rectangle background = new Rectangle(endCellPrefWidth, defaultCellHeight); 
+public abstract class Button extends ComboBox {
+
+    private final ButtonType btnType;
+    private Region arrowBtn = null ;
     
     public Button(final Label label, final ButtonType type) {        
-        final Color color = switch (type){
-            case POPUP -> JavafxStyleManager.isDarkTheme() ? dkButtonColor : ltButtonColor;
-            default -> JavafxStyleManager.isDarkTheme() ? dkOptionColor : ltOptionColor;
-        };
-        background.setFill(color);
-        background.setArcHeight(7);
-        background.setOnMouseEntered(event -> background.setFill(color.brighter()));
-        background.setOnMouseExited(event -> background.setFill(color));
-        background.setOnMouseClicked(action());
-        label.setMouseTransparent(true);
-        label.setPrefWidth(endCellPrefWidth);
-        label.setAlignment(Pos.CENTER);
-        label.setStyle("-fx-text-fill: white;");
+        btnType = type;
+        if (!label.getText().isEmpty()) {
+            this.setValue(label.getText());
+        }
+    }
+    
+    @Override
+    protected void layoutChildren() {
+        super.layoutChildren();
+        // don't display arrow if not dropdown
+        if (arrowBtn == null && !btnType.equals(ButtonType.DROPDOWN)) {
+            arrowBtn = (Region)lookup(".arrow-button");            
+            arrowBtn.setMaxSize(0,0);
+            arrowBtn.setMinSize(0,0);
+            arrowBtn.setPadding(new Insets(0));
+
+            Region arrow = (Region)lookup(".arrow");
+            arrow.setMaxSize(0,0);
+            arrow.setMinSize(0,0);
+            arrow.setPadding(new Insets(0));
+            
+            // Call again the super method to relayout with the new bounds.
+            super.layoutChildren();
+        }
+    }
+    
         
-        this.getChildren().addAll(background, label);
-    }
-    
-    public DoubleProperty getHeightProperty(){
-        return background.heightProperty();
-    }
-    
-    public abstract EventHandler<? super MouseEvent> action();
-    
     public enum ButtonType{
         POPUP,
         DROPDOWN,
