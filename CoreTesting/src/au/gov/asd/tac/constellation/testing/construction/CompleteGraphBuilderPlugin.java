@@ -208,7 +208,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
 
         // Estimate number of transactions to be made
         // If random weights is enabled, each edge will have roughly 24.7 transactions, otherwise just 1 transaction per edge
-        final long numTransactions = (long) n * ((long)n - 1L) * (randomWeights ? 25L : 1L);
+        final long numTransactions = n * (n - 1L) * (randomWeights ? 25L : 1L);
 
         // If graph is going to be too large, warn user and then stop plugin if the choose to do so
         // If numTransactions is negative, overflow has occured, so n is very large
