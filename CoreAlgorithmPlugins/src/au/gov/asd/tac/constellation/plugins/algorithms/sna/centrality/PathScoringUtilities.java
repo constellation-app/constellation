@@ -23,9 +23,8 @@ import java.util.ArrayList;
 import java.util.BitSet;
 
 /**
- * Utilities for calculating scores on a graph based on shortest paths. This
- * utility makes use of the parallel breadth first search algorithm to
- * efficiently traverse the graph.
+ * Utilities for calculating scores on a graph based on shortest paths. This utility makes use of the parallel breadth
+ * first search algorithm to efficiently traverse the graph.
  *
  * @author canis_majoris
  * @author cygnus_x-1
@@ -277,9 +276,12 @@ public class PathScoringUtilities {
             }
             // update scores based on the current traversal state
             switch (scoreType) {
-                case ECCENTRICITY -> updateEccentricityScoresUndirected(scores, turn);
-                case AVERAGE_DISTANCE -> updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
-                default -> throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
+                case ECCENTRICITY ->
+                    updateEccentricityScoresUndirected(scores, turn);
+                case AVERAGE_DISTANCE ->
+                    updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
+                default ->
+                    throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
 
             turn.clear();
@@ -290,7 +292,8 @@ public class PathScoringUtilities {
         }
 
         return switch (scoreType) {
-            case ECCENTRICITY -> Tuple.create(traversal, scores);
+            case ECCENTRICITY ->
+                Tuple.create(traversal, scores);
             case AVERAGE_DISTANCE -> {
                 final float[] distanceArray = new float[distances.size()];
                 for (int i = 0; i < distances.size(); i++) {
@@ -374,9 +377,12 @@ public class PathScoringUtilities {
 
             // update scores based on the current traversal state
             switch (scoreType) {
-                case ECCENTRICITY -> updateEccentricityScoresDirected(scores, turn);
-                case AVERAGE_DISTANCE -> updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
-                default -> throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
+                case ECCENTRICITY ->
+                    updateEccentricityScoresDirected(scores, turn);
+                case AVERAGE_DISTANCE ->
+                    updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
+                default ->
+                    throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
 
             turn.clear();
@@ -387,7 +393,8 @@ public class PathScoringUtilities {
         }
 
         return switch (scoreType) {
-            case ECCENTRICITY -> Tuple.create(traversal, scores);
+            case ECCENTRICITY ->
+                Tuple.create(traversal, scores);
             case AVERAGE_DISTANCE -> {
                 final float[] distanceArray = new float[distances.size()];
                 for (int i = 0; i < distances.size(); i++) {
@@ -421,11 +428,11 @@ public class PathScoringUtilities {
             final int vxId = graph.getVertex(vertexPosition);
             if (graph.getVertexNeighbourCount(vxId) > 0) {
                 update.set(vertexPosition);
-            }
 
-            sendFails[vertexPosition] = new BitSet(vertexCount);
-            sendBuffer[vertexPosition] = new BitSet(vertexCount);
-            exclusions[vertexPosition] = new BitSet(vertexCount);
+                sendFails[vertexPosition] = new BitSet(vertexCount);
+                sendBuffer[vertexPosition] = new BitSet(vertexCount);
+                exclusions[vertexPosition] = new BitSet(vertexCount);
+            }
         }
 
         while (!update.isEmpty()) {
@@ -462,7 +469,7 @@ public class PathScoringUtilities {
 
             // update scores based on the current traversal state
             switch (scoreType) {
-                case BETWEENNESS -> 
+                case BETWEENNESS ->
                     updateBetweennessScoresUndirected(graph, traversal, scores, sendBuffer, exclusions, turn, selectedOnly);
                 case CLOSENESS, FARNESS ->
                     updateFarnessScoresUndirected(graph, traversal, scores, sendBuffer, exclusions, turn, selectedOnly);
@@ -521,23 +528,24 @@ public class PathScoringUtilities {
         // initialise variables
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             traversalF[vertexPosition] = new BitSet(vertexCount);
-            traversalB[vertexPosition] = new BitSet(vertexCount);
-            scores[vertexPosition] = 0;
-
             // only update nodes with neighbours
             final int vxId = graph.getVertex(vertexPosition);
             if (graph.getVertexNeighbourCount(vxId) > 0) {
+
+                traversalB[vertexPosition] = new BitSet(vertexCount);
+                scores[vertexPosition] = 0;
+
                 updateF.set(vertexPosition);
                 updateB.set(vertexPosition);
+
+                sendFailsF[vertexPosition] = new BitSet(vertexCount);
+                sendBufferF[vertexPosition] = new BitSet(vertexCount);
+                exclusionsF[vertexPosition] = new BitSet(vertexCount);
+
+                sendFailsB[vertexPosition] = new BitSet(vertexCount);
+                sendBufferB[vertexPosition] = new BitSet(vertexCount);
+                exclusionsB[vertexPosition] = new BitSet(vertexCount);
             }
-
-            sendFailsF[vertexPosition] = new BitSet(vertexCount);
-            sendBufferF[vertexPosition] = new BitSet(vertexCount);
-            exclusionsF[vertexPosition] = new BitSet(vertexCount);
-
-            sendFailsB[vertexPosition] = new BitSet(vertexCount);
-            sendBufferB[vertexPosition] = new BitSet(vertexCount);
-            exclusionsB[vertexPosition] = new BitSet(vertexCount);
         }
 
         while (!updateF.isEmpty() || !updateB.isEmpty()) {
@@ -651,7 +659,9 @@ public class PathScoringUtilities {
         }
 
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-            traversalF[vertexPosition].or(traversalB[vertexPosition]);
+            if (traversalB[vertexPosition] != null) {
+                traversalF[vertexPosition].or(traversalB[vertexPosition]);
+            }
         }
 
         // convert farness to closeness by taking the inverse of each score

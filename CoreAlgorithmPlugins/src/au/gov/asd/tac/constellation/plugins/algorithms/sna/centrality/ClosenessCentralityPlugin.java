@@ -37,8 +37,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Calculates closeness centrality for each vertex. This centrality measure does
- * not include loops.
+ * Calculates closeness centrality for each vertex. This centrality measure does not include loops.
  *
  * @author cygnus_x-1
  */
@@ -110,14 +109,14 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
         selectedOnlyParameter.setName("Selected Only");
         selectedOnlyParameter.setDescription("Calculate using only selected elements");
         parameters.addParameter(selectedOnlyParameter);
-        
+
         parameters.addController(NORMALISE_POSSIBLE_PARAMETER_ID, (master, params, change) -> {
             if (change == ParameterChange.VALUE && master.getBooleanValue()) {
                 // only one of normalise by max possible or max available can be enabled
                 params.get(NORMALISE_AVAILABLE_PARAMETER_ID).setBooleanValue(false);
             }
         });
-        
+
         parameters.addController(NORMALISE_AVAILABLE_PARAMETER_ID, (master, params, change) -> {
             if (change == ParameterChange.VALUE && master.getBooleanValue()) {
                 // only one of normalise by max possible or max available can be enabled
@@ -176,13 +175,13 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
         // choose the correct closeness attribute
         final int closenessAttribute;
         if (includeConnectionsIn && !includeConnectionsOut) {
-            closenessAttribute = harmonic ? IN_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph) 
+            closenessAttribute = harmonic ? IN_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph)
                     : IN_CLOSENESS_ATTRIBUTE.ensure(graph);
         } else if (!includeConnectionsIn && includeConnectionsOut) {
-            closenessAttribute = harmonic ? OUT_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph) 
+            closenessAttribute = harmonic ? OUT_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph)
                     : OUT_CLOSENESS_ATTRIBUTE.ensure(graph);
         } else {
-            closenessAttribute = harmonic ? HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph) 
+            closenessAttribute = harmonic ? HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph)
                     : CLOSENESS_ATTRIBUTE.ensure(graph);
         }
 
