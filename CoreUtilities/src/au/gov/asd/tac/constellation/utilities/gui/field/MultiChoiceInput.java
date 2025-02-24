@@ -220,24 +220,33 @@ public final class MultiChoiceInput<C extends Object>
     @Override
     public RightButton getRightButton() {
         RightButton button = new RightButton(
-                new Label(""), ButtonType.DROPDOWN) {                    
+                new Label(""), ButtonType.DROPDOWN) {
             
             @Override
             public void show() {
                 // show our menu instead
-                executeRightButtonAction();
-            }            
-        };        
+                executeRightButtonAction();               
+            }
+            
+            @Override
+            public void hide() {
+                // this is triggered when clicking away from button
+                setMenuShown(false);
+            }
+        };     
         return button;
     }
 
     @Override
     public void executeRightButtonAction() {
-        if (choiceInputDropDown == null) {
-            choiceInputDropDown = new ChoiceInputDropDown(this);        
-            showDropDown(choiceInputDropDown);
+        if (!isMenuShown() || choiceInputDropDown == null) {
+            choiceInputDropDown = new ChoiceInputDropDown(this);
+             showDropDown(choiceInputDropDown);   
+             setMenuShown(true);
         } else {
+            choiceInputDropDown.hide();
             choiceInputDropDown = null;
+            setMenuShown(false);
         }
     }
     // </editor-fold> 
@@ -263,12 +272,18 @@ public final class MultiChoiceInput<C extends Object>
             if (getOptions() != null) {
                 //Select All Bulk Selection Feature
                 final Label all = new Label("Select All");
-                all.setOnMouseClicked(event -> field.setChoices(field.getOptions()));
+                all.setOnMouseClicked(event -> {
+                    field.setChoices(field.getOptions());
+                    setMenuShown(false);
+                });
                 registerCustomMenuItem(all);
 
                 //Clear All Bulk Selection Feature
                 final Label clear = new Label("Clear All");
-                clear.setOnMouseClicked(event -> field.clearChoices());
+                clear.setOnMouseClicked(event -> {
+                    field.clearChoices();
+                    setMenuShown(false);
+                });
                 registerCustomMenuItem(clear);
                 final Object[] optionsList = getOptions().toArray();
                 if (optionsList.length > 0) {

@@ -135,6 +135,20 @@ import javafx.scene.effect.ColorInput;
 public abstract class ConstellationInput<T> extends StackPane implements
         ChangeListener<Serializable>, ContextMenuContributor {
 
+    /**
+     * @return the menuShown
+     */
+    public boolean isMenuShown() {
+        return menuShown;
+    }
+
+    /**
+     * @param menuShown the menuShown to set
+     */
+    public void setMenuShown(boolean menuShown) {
+        this.menuShown = menuShown;
+    }
+
     final int defaultCellHeight = 22;
     final int buttonVisibilityThreshold = 200;
 
@@ -148,6 +162,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
 
     private boolean isValid = true;
     private boolean focused = false;
+    protected boolean menuShown = false;
 
     public ConstellationInput() {
         this(TextType.SINGLELINE);
@@ -298,6 +313,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
                         //Listen for key events for when arrows are pressed or when to hide the menu
                         this.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
                             menu.hide();
+                            setMenuShown(false);
                         });
                         showDropDown(menu);
                     }
@@ -621,6 +637,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      */
     protected final void showDropDown(final ConstellationInputDropDown menu) {
         menu.show(this, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
+        setMenuShown(true);
     }
     // </editor-fold>
 
