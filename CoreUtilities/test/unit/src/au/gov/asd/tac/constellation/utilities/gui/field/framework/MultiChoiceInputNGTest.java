@@ -129,7 +129,7 @@ public class MultiChoiceInputNGTest {
         final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput());      
         assertEquals(multiChoiceInput.getLocalMenuItems().size(), 1);
         final MenuItem menuItem = (MenuItem) multiChoiceInput.getLocalMenuItems().getFirst();
-        assertEquals(menuItem.getText(), "Select Choice");
+        assertEquals(menuItem.getText(), "Show Choices...");
     }   
 
     @Test
