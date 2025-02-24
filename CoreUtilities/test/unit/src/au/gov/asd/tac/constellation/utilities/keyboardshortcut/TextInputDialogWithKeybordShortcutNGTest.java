@@ -15,10 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
-import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIODialog;
 import java.io.File;
 import java.util.Optional;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,13 +75,13 @@ public class TextInputDialogWithKeybordShortcutNGTest {
             outputFile.createNewFile();
 
             TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = mock(TextInputDialogWithKeybordShortcut.class);
-            when(textInputDialogWithKeybordShortcut.getDefaultValue()).thenReturn(StringUtils.EMPTY);            
+            when(textInputDialogWithKeybordShortcut.getDefaultValue()).thenReturn(StringUtils.EMPTY);
 
             final DialogPane dialogPane = mock(DialogPane.class);
             when(textInputDialogWithKeybordShortcut.getDialogPane()).thenReturn(dialogPane);
             assertEquals(textInputDialogWithKeybordShortcut.getDefaultValue(), StringUtils.EMPTY);
 
-            final  Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null));
+            final Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null));
             final RecordKeyboardShortcut rk = mock(RecordKeyboardShortcut.class);
             when(rk.start(outputFile)).thenReturn(ksResult);
 
@@ -101,25 +99,18 @@ public class TextInputDialogWithKeybordShortcutNGTest {
         final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir"));
         final Optional<String> ks = Optional.of("Ctrl+1");
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                final TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = new TextInputDialogWithKeybordShortcut(preferenceDirectory, ks);
-                Assert.assertNotNull(textInputDialogWithKeybordShortcut.getEditor());
-                assertEquals(textInputDialogWithKeybordShortcut.getDefaultValue(), "");
-            }
+        Platform.runLater(() -> {
+            final TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = new TextInputDialogWithKeybordShortcut(preferenceDirectory, ks);
+            Assert.assertNotNull(textInputDialogWithKeybordShortcut.getEditor());
+            assertEquals(textInputDialogWithKeybordShortcut.getDefaultValue(), "");
         });
 
     }
-    
+
     @Test
     public void testClickOnShortcutButton() throws Exception {
-        final Optional<String> ks = Optional.of("ctrl 1");
-        final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
-        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
-
+       
         final Stage dialog = getDialog(robot);
         dialog.setX(0);
         dialog.setY(0);
@@ -139,21 +130,20 @@ public class TextInputDialogWithKeybordShortcutNGTest {
                         .queryAs(Button.class)
         );
 
-          robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".button")
-                        .lookup(hasText("Cancel"))
-                        .queryAs(Button.class)
-        );
-          
-          robot.clickOn(
+        robot.clickOn(
                 robot.from(dialog.getScene().getRoot())
                         .lookup(".button")
                         .lookup(hasText("OK"))
                         .queryAs(Button.class)
         );
-          
-    
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".button")
+                        .lookup(hasText("OK"))
+                        .queryAs(Button.class)
+        );
+
     }
 
     private Stage getDialog(final FxRobot robot) {

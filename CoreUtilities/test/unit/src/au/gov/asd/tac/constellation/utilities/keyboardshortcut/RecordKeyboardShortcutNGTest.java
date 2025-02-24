@@ -30,7 +30,6 @@ import javafx.scene.input.KeyEvent;
 import org.apache.commons.lang3.StringUtils;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -45,7 +44,6 @@ public class RecordKeyboardShortcutNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(RecordKeyboardShortcutNGTest.class.getName());
 
-    private final FxRobot robot = new FxRobot();
 
     @BeforeClass
     public static void setUpClass() throws Exception {

@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.utilities.keyboardshortcut.TextInputDialogWi
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -42,7 +41,6 @@ import javafx.scene.control.TextInputDialog;
  */
 public class JsonIODialog {
 
-    private static final Logger LOGGER = Logger.getLogger(JsonIODialog.class.getName());
     
     private static final String REMOVE_BUTTON_TEXT = "Remove";
 

@@ -19,15 +19,12 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.components.OptionsMenuBar;
-import java.io.File;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -421,26 +418,26 @@ public class DataAccessPaneNGTest {
 
     @Test
     public void testCreateCombo() throws Exception {
-        final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
-        when(dataAccessPane.createCombo(any())).thenCallRealMethod();
+        final DataAccessPane dataAccessPane1 = mock(DataAccessPane.class);
+        when(dataAccessPane1.createCombo(any())).thenCallRealMethod();
 
         final KeyEvent keyEvent = new KeyEvent(KeyEvent.KEY_PRESSED, "Ctrl", "A", KeyCode.A, false, true, false, false);
-        final KeyCombination keyCombination = dataAccessPane.createCombo(keyEvent);
+        final KeyCombination keyCombination = dataAccessPane1.createCombo(keyEvent);
         assertTrue(keyCombination != null);
         assertTrue(keyCombination.getDisplayText().equals("Ctrl+A"));
 
         final KeyEvent keyEvent1 = new KeyEvent(KeyEvent.KEY_PRESSED, "Shift", "A", KeyCode.A, true, false, false, false);
-        final KeyCombination keyCombination1 = dataAccessPane.createCombo(keyEvent1);
+        final KeyCombination keyCombination1 = dataAccessPane1.createCombo(keyEvent1);
         assertTrue(keyCombination1 != null);
         assertTrue(keyCombination1.getDisplayText().equals("Shift+A"));
 
         final KeyEvent keyEvent2 = new KeyEvent(KeyEvent.KEY_PRESSED, "Alt", "A", KeyCode.A, false, false, true, false);
-        final KeyCombination keyCombination2 = dataAccessPane.createCombo(keyEvent2);
+        final KeyCombination keyCombination2 = dataAccessPane1.createCombo(keyEvent2);
         assertTrue(keyCombination2 != null);
         assertTrue(keyCombination2.getDisplayText().equals("Alt+A"));
 
         final KeyEvent keyEvent3 = new KeyEvent(KeyEvent.KEY_PRESSED, "Meta", "A", KeyCode.A, false, false, false, true);
-        final KeyCombination keyCombination3 = dataAccessPane.createCombo(keyEvent3);
+        final KeyCombination keyCombination3 = dataAccessPane1.createCombo(keyEvent3);
         assertTrue(keyCombination3 != null);
         assertTrue(keyCombination3.getDisplayText().equals("Meta+A"));
 

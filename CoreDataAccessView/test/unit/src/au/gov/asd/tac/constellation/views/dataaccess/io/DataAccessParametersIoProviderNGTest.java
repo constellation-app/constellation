@@ -374,26 +374,9 @@ public class DataAccessParametersIoProviderNGTest {
         when(globalParametersPane1.getParams()).thenReturn(globalPluginParameters1);
         when(globalParametersPane2.getParams()).thenReturn(globalPluginParameters2);
 
-        try (final MockedStatic<JsonIO> jsonIOStaticMock = Mockito.mockStatic(JsonIO.class)) {
-            final ObjectMapper objectMapper = new ObjectMapper();
-            final String json = IOUtils.toString(
-                    new FileInputStream(getClass().getResource("resources/preferences.json").getPath()),
-                    StandardCharsets.UTF_8
-            );
-
-            // We do not know the mockito plugin names ahead of time so substitute them in now
-            final StringSubstitutor substitutor = new StringSubstitutor(
-                    Map.of(
-                            "INSERT_PLUGIN1_NAME", plugin1.getClass().getSimpleName(),
-                            "INSERT_PLUGIN2_NAME", plugin2.getClass().getSimpleName()
-                    )
-            );
-            final List<DataAccessUserPreferences> preferences = objectMapper.readValue(
-                    substitutor.replace(json), new TypeReference<List<DataAccessUserPreferences>>() {});
-
+        try (final MockedStatic<JsonIO> jsonIOStaticMock = Mockito.mockStatic(JsonIO.class)) {           
             jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferencesWithFilePrefix(eq(Optional.of("DataAccessView")), eq(Optional.of("[Ctrl 1]")),any(TypeReference.class)))
-                    .thenCallRealMethod();           
-
+                    .thenCallRealMethod();
             DataAccessParametersIoProvider.loadParameters(dataAccessPane, "Ctrl 1");
         }
         

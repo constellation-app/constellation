@@ -21,15 +21,10 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyEvent;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
-import org.testfx.util.WaitForAsyncUtils;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -42,7 +37,6 @@ import org.testng.annotations.Test;
 public class KeyPressLabelDialogNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(KeyPressLabelDialogNGTest.class.getName());
-    private final FxRobot robot = new FxRobot();
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -63,18 +57,14 @@ public class KeyPressLabelDialogNGTest {
     @Test
     public void testKeyPressLabelDialog() throws Exception {
         
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                 KeyPressLabelDialog kl = new KeyPressLabelDialog("test");
-                 assertEquals(kl.getDefaultValue(), "test");
-                 assertEquals(kl.getLabel().getText(), "test");
-                 
-                 
-                 KeyPressLabelDialog k2 = new KeyPressLabelDialog();
-                 assertEquals(kl.getDefaultValue(), "test");
-                 assertEquals(kl.getLabel().getText(), "test");
-            }
+        Platform.runLater(() -> {
+            KeyPressLabelDialog kl = new KeyPressLabelDialog("test");
+            assertEquals(kl.getDefaultValue(), "test");
+            assertEquals(kl.getLabel().getText(), "test");
+            
+            
+            assertEquals(kl.getDefaultValue(), "test");
+            assertEquals(kl.getLabel().getText(), "test");
         });
 
         KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
@@ -104,22 +94,6 @@ public class KeyPressLabelDialogNGTest {
         return label;
     }
     
-     private Stage getDialog(final FxRobot robot) {
-        Stage dialog = null;
-        while (dialog == null) {
-            dialog = robot.robotContext().getWindowFinder().listWindows().stream()
-                    .filter(window -> window instanceof javafx.stage.Stage)
-                    .map(window -> (javafx.stage.Stage) window)
-                    .filter(stage -> stage.getModality() == Modality.APPLICATION_MODAL)
-                    .findFirst()
-                    .orElse(null);
-
-            if (dialog == null) {
-                WaitForAsyncUtils.waitForFxEvents();
-            }
-        }
-        return dialog;
-    }
 
    
 }
