@@ -169,7 +169,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
      */
     protected boolean showWarning(final long numTransactions, final boolean randomWeights) {
         if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))) {
-            return true;
+            return false;
         }
 
         // Create popup
