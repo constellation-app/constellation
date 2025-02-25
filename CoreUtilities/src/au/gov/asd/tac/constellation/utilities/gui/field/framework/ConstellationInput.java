@@ -145,7 +145,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
     /**
      * @param menuShown the menuShown to set
      */
-    public void setMenuShown(boolean menuShown) {
+    public void setMenuShown(final boolean menuShown) {
         this.menuShown = menuShown;
     }
 
@@ -173,21 +173,21 @@ public abstract class ConstellationInput<T> extends StackPane implements
         buildInputFieldLayers(textArea);
         HBox.setHgrow(textArea, Priority.ALWAYS);
 
-        this.setPrefWidth(500);
-        this.setMinWidth(200);
-        this.setMinHeight(defaultCellHeight);
-        this.setAlignment(Pos.TOP_LEFT);
+        setPrefWidth(500);
+        setMinWidth(200);
+        setMinHeight(defaultCellHeight);
+        setAlignment(Pos.TOP_LEFT);
 
         final ContextMenu contextMenu = new ContextMenu();
         contextMenu.getItems().clear();
-        contextMenu.getItems().addAll(this.getAllMenuItems());
+        contextMenu.getItems().addAll(getAllMenuItems());
         // Set the right click context menu items
         // Update each time the context menu is requested.
         // Can't make a new context menu each time as this event occurs after
         // showing
         textArea.setOnContextMenuRequested(value -> {
             contextMenu.getItems().clear();
-            contextMenu.getItems().addAll(this.getAllMenuItems());
+            contextMenu.getItems().addAll(getAllMenuItems());
             textArea.setContextMenu(contextMenu);
         });
         textArea.setContextMenu(contextMenu);
@@ -197,27 +197,20 @@ public abstract class ConstellationInput<T> extends StackPane implements
 
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">
     /**
-     * Builds out the three layers to a ConstellationInput. Each of these layers
-     * needs to have their height bound to the height of a TextArea to ensure
-     * appropriate resizing with contained text. The first layer is the
-     * background layer, a {@link Rectangle} which acts as a shape to provide the
-     * fill color to an input field. The second Layer is the interactable
-     * content layer a {@link HBox} that hosts all of the "clickable" UI
-     * components. This layer need to have a clipping mask that this the same
-     * size as the foreground to enable smooth corners. The third layer is the
-     * foreground layer a {@link Rectangle} which acts as a boarder around the
-     * input field to provide the focus effect for when the input is selected.
+     * Builds out the layers to a ConstellationInput. Each of these layers needs
+     * to have their height bound to the height of a TextArea to ensure
+     * appropriate resizing with contained text. There's a Layer that is the
+     * interactable content layer a {@link HBox} that hosts all of the
+     * "clickable" UI components. This layer need to have a clipping mask that
+     * this the same size as the foreground to enable smooth corners. The next
+     * layer is the foreground layer a {@link Rectangle} which acts as a border
+     * around the input field to provide the focus effect for when the input is
+     * selected.
      */
     private void buildInputFieldLayers(final ConstellationTextArea textArea) {
         final HBox interactableContentLayer = new HBox();
         interactableContentLayer.setAlignment(Pos.TOP_CENTER);
         HBox.setHgrow(interactableContentLayer, Priority.ALWAYS);
-
-//        final Rectangle backgroundLayer = new Rectangle();
-//        backgroundLayer.setArcWidth(corner);
-//        backgroundLayer.setArcHeight(corner);
-//        backgroundLayer.setFill(Color.TRANSPARENT);
-//        backgroundLayer.widthProperty().bind(interactableContentLayer.widthProperty());
 
         final Rectangle interactableContentClipingMask = new Rectangle();
         interactableContentClipingMask.setArcWidth(corner);
@@ -257,7 +250,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
                 final LeftButton button = leftButton.getLeftButton();
                 if (button != null) {
                     interactableContent.getChildren().addFirst(button);
-                    this.createWidthListener(button);
+                    createWidthListener(button);
                 }
             }
 
@@ -273,16 +266,15 @@ public abstract class ConstellationInput<T> extends StackPane implements
             if (this instanceof RightButtonSupport rightButton) {
                 final RightButton button = rightButton.getRightButton();
                 interactableContent.getChildren().add(button);
-                this.createWidthListener(button);
+                createWidthListener(button);
             }
-
         });
 
         // Add Shortcuts
         if (this instanceof ShortcutSupport shortcut) {
             final EventHandler<KeyEvent> shortcutEvent = shortcut.getShortcuts();
             if (shortcutEvent != null) {
-                this.textArea.addEventFilter(KeyEvent.KEY_PRESSED, shortcut.getShortcuts());
+                textArea.addEventFilter(KeyEvent.KEY_PRESSED, shortcut.getShortcuts());
             }
         }
 
@@ -301,7 +293,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
 
         // AutoComplete
         if (this instanceof AutoCompleteSupport autoComplete) {
-            this.addListener(newValue -> {
+            addListener(newValue -> {
                 if (textArea.isInFocus()) {
                     final List<MenuItem> suggestions = autoComplete.getAutoCompleteSuggestions();
                     if (suggestions != null && !suggestions.isEmpty()) {
@@ -311,7 +303,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
                         menu.setAutoFix(true);
                         menu.setWidth(textArea.getWidth());
                         //Listen for key events for when arrows are pressed or when to hide the menu
-                        this.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+                        addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
                             menu.hide();
                             setMenuShown(false);
                         });
@@ -334,7 +326,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
         final HBox interactableContent = getInteractableContent();
 
         //Allow this end cell to listen to the width of the total Input field
-        this.widthProperty().addListener((value, oldValue, newValue) -> {
+        widthProperty().addListener((value, oldValue, newValue) -> {
 
             //Hide this end cell if the width is too low
             if (newValue.intValue() < buttonVisibilityThreshold) {
@@ -375,10 +367,10 @@ public abstract class ConstellationInput<T> extends StackPane implements
         if (this.focused != focused) {
             if (focused) {
                 getForegroundShape().setStroke(Color.web("#1B92E3"));
-                this.updateFieldValidityVisuals(true);
+                updateFieldValidityVisuals(true);
             } else {
                 getForegroundShape().setStroke(null);
-                this.updateFieldValidityVisuals(this.isValid);
+                updateFieldValidityVisuals(isValid);
             }
             this.focused = focused;
         }
@@ -386,16 +378,13 @@ public abstract class ConstellationInput<T> extends StackPane implements
 
     private HBox getInteractableContent() {
         //A clunky way of getting the InteractableCOntent...
-        return (HBox) this.getChildren().stream().filter(child -> child instanceof HBox).toList().getFirst();
+        return (HBox) getChildren().stream().filter(child -> child instanceof HBox).toList().getFirst();
     }
 
     private Rectangle getForegroundShape() {
-        return (Rectangle) this.getChildren().getLast();
+        return (Rectangle) getChildren().getLast();
     }
-
-    private Rectangle getBackgroundShape() {
-        return (Rectangle) this.getChildren().getFirst();
-    }
+    
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="ObservableValue and ConstellationInputListener Interface Support">
@@ -420,7 +409,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
 
         //Boolean Changes are changs to the focused property of the ConstellationTextArea
         if (newValue instanceof Boolean newFocused) {
-            this.ensureInFocus(newFocused);
+            ensureInFocus(newFocused);
             notifyListeners(null);
         }
     }
@@ -443,7 +432,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @param listener
      */
     public final void addListener(final ConstellationInputListener listener) {
-        this.InputFieldListeners.add(listener);
+        InputFieldListeners.add(listener);
     }
 
     /**
@@ -452,7 +441,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @param listener
      */
     public final void removeListener(final ConstellationInputListener listener) {
-        this.InputFieldListeners.remove(listener);
+        InputFieldListeners.remove(listener);
     }
     // </editor-fold>   
 
@@ -463,7 +452,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @param description
      */
     public final void setPromptText(final String description) {
-        this.textArea.setPromptText(description);
+        textArea.setPromptText(description);
     }
 
     /**
@@ -474,7 +463,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @param tooltip
      */
     public final void setTooltip(final Tooltip tooltip) {
-        this.textArea.setTooltip(tooltip);
+        textArea.setTooltip(tooltip);
     }
 
     /**
@@ -486,7 +475,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @return
      */
     public final String getText() {
-        return this.textArea.getText();
+        return textArea.getText();
     }
 
     /**
@@ -498,7 +487,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @param stringValue
      */
     public final void setText(final String stringValue) {
-        this.textArea.setText(stringValue);
+        textArea.setText(stringValue);
     }
 
     /**
@@ -511,7 +500,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @param enabled
      */
     public final void setEditable(final boolean enabled) {
-        this.textArea.setEditable(enabled);
+        textArea.setEditable(enabled);
     }
 
     /**
@@ -563,8 +552,8 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @return
      */
     public boolean isValid() {
-        for (InputValidator validator : this.validators) {
-            if (null != validator.validateString(this.getText())) {
+        for (InputValidator validator : validators) {
+            if (null != validator.validateString(getText())) {
                 return false;
             }
         }
@@ -609,7 +598,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
     }
 
     public void addValidator(final InputValidator validator) {
-        this.validators.add(validator);
+        validators.add(validator);
     }
 
     // </editor-fold>  
@@ -617,12 +606,12 @@ public abstract class ConstellationInput<T> extends StackPane implements
     @Override
     public final List<MenuItem> getAllMenuItems() {
         final List<MenuItem> list = new ArrayList<>();
-        final List<MenuItem> local = this.getLocalMenuItems(); // This method is implmented by extensions of this class.
+        final List<MenuItem> local = getLocalMenuItems(); // This method is implmented by extensions of this class.
         list.addAll(local);
         if (!local.isEmpty()) {
             list.add(new SeparatorMenuItem());
         }
-        list.addAll(this.textArea.getAllMenuItems());
+        list.addAll(textArea.getAllMenuItems());
         return list;
     }
     // </editor-fold>  
