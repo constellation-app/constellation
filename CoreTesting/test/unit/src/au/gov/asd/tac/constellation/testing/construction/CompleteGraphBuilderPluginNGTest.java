@@ -153,8 +153,8 @@ public class CompleteGraphBuilderPluginNGTest {
         System.out.println("showWarning");
 
         final CompleteGraphBuilderPlugin instance = new CompleteGraphBuilderPlugin();
-        // Run function, expect default answer of true (user did not click OK)
-        assertTrue(instance.showWarning(0L, true));
+        // Run function, expect default answer of false (user did not click OK)
+        assertTrue(instance.showWarning(0L, false));
     }
 
     /**
@@ -185,7 +185,7 @@ public class CompleteGraphBuilderPluginNGTest {
         when(params.get(CompleteGraphBuilderPlugin.RANDOM_WEIGHTS_PARAMETER_ID)).thenReturn(mockParam);
         when(mockParam.getBooleanValue()).thenReturn(isRandomWeights);
 
-        when(instance.showWarning(numTransactions, isRandomWeights)).thenReturn(true);
+        when(instance.showWarning(numTransactions, isRandomWeights)).thenReturn(false);
 
         // Run function        
         instance.edit(mockGraph, interaction, parameters);
