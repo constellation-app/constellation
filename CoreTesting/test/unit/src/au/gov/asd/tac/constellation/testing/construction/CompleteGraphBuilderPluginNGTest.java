@@ -41,6 +41,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -154,7 +155,7 @@ public class CompleteGraphBuilderPluginNGTest {
 
         final CompleteGraphBuilderPlugin instance = new CompleteGraphBuilderPlugin();
         // Run function, expect default answer of false (user did not click OK)
-        assertTrue(instance.showWarning(0L, false));
+        assertFalse(instance.showWarning(0L, false));
     }
 
     /**
