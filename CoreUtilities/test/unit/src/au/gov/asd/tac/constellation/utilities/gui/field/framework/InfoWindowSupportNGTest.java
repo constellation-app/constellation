@@ -35,7 +35,7 @@ import org.testng.annotations.Test;
  */
 public class InfoWindowSupportNGTest {
 
-    private ConstellationInput ConstellationInputMock;
+    private ConstellationInput constellationInputMock;
     private InfoWindowTest infoWindowMock;
     private static final Logger LOGGER = Logger.getLogger(InfoWindowSupportNGTest.class.getName());
 
@@ -61,30 +61,35 @@ public class InfoWindowSupportNGTest {
     }
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public void tearDownClass() throws Exception {
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
+        
+        infoWindowMock = null;
+        constellationInputMock = null;
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        ConstellationInputMock = mock(ConstellationInput.class);
-        infoWindowMock = new InfoWindowTest(ConstellationInputMock);
+        constellationInputMock = mock(ConstellationInput.class);
+        infoWindowMock = new InfoWindowTest(constellationInputMock);
 
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        constellationInputMock = null;
+        infoWindowMock = null;
     }
 
     private class InfoWindowTest extends InfoWindow {

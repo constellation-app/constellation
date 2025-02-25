@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,12 +26,9 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -88,10 +84,6 @@ public class MultiChoiceInputPaneNGTest {
     }
     private List<String> planets;
 
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        
-    }
 
     @Test
     public void multiChoiceInputPane_constructorWithOptions() {
