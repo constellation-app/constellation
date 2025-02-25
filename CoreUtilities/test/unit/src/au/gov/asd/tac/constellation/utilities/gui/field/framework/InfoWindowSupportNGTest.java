@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupp
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.Node;
+import javafx.scene.layout.StackPane;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertTrue;
@@ -49,7 +49,7 @@ public class InfoWindowSupportNGTest {
 
     @Test
     public void infoWindowSupportTest_setWindow() {
-        Node contentMock = mock(Node.class);
+        StackPane contentMock = mock(StackPane.class);
         infoWindowMock.setWindowContents(contentMock);
         assertTrue(infoWindowMock.getChildren().get(0) == contentMock);
     }
@@ -100,7 +100,7 @@ public class InfoWindowSupportNGTest {
 
         @Override
         protected void refreshWindow() {
-            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            throw new UnsupportedOperationException("Not supported yet."); 
         }
     }
 }
