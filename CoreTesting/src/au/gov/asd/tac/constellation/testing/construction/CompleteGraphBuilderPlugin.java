@@ -37,8 +37,6 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -47,8 +45,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
-import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.security.SecureRandom;
@@ -61,6 +57,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -86,8 +83,9 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String WARNING_LABEL_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "warning_label");
     public static final String WARNING_LABEL_EXTRA_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "extra_warning_label");
 
-    private static final String WARNING_TEXT = " transactions will be made. Proceed?";
-    private static final String WARNING_TEXT_EXTRA = "This will cause significant performance issues!";
+    private static final String WARNING_TEXT_BEGIN = "Your current settings will generate ";
+    private static final String WARNING_TEXT_END = " transactions.";
+    private static final String WARNING_TEXT_EXTRA = "A graph of this size may cause significant performance issues in Constellation. Proceed?";
     private static final int NUM_TRANSACTIONS_THRESHOLD = 100000;
 
     private final SecureRandom r = new SecureRandom();
@@ -168,7 +166,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
      *
      * @param numTransactions The number of transactions the user will create
      * @param randomWeights Whether or not the user is using random weights
-     * @return True if user does not click OK
+     * @return Whether or not the use wants to continue in graph creation. Returns True if user clicks OK
      */
     protected boolean showWarning(final long numTransactions, final boolean randomWeights) {
         if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))) {
@@ -176,25 +174,12 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         }
 
         // Create popup
-        final PluginParameters warningParams = new PluginParameters();
-        final PluginParameter<StringParameterValue> warningMessageParam = StringParameterType.build(WARNING_LABEL_PARAMETER_ID);
-        warningMessageParam.setName("ATTENTION!");
-        warningMessageParam.setStringValue((randomWeights ? "Around " : "") + numTransactions + WARNING_TEXT);
-        StringParameterType.setIsLabel(warningMessageParam, true);
-        warningParams.addParameter(warningMessageParam);
+        final int response = JOptionPane.showConfirmDialog(null,
+                WARNING_TEXT_BEGIN + (randomWeights ? "approximately " : "") + numTransactions + WARNING_TEXT_END + "\n" + WARNING_TEXT_EXTRA,
+                "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
-        final PluginParameter<StringParameterValue> warningMessageExtraParam = StringParameterType.build(WARNING_LABEL_EXTRA_PARAMETER_ID);
-        warningMessageExtraParam.setName("");
-        warningMessageExtraParam.setStringValue(WARNING_TEXT_EXTRA);
-        StringParameterType.setIsLabel(warningMessageExtraParam, true);
-        warningParams.addParameter(warningMessageExtraParam);
-
-        final PluginParametersSwingDialog warning = new PluginParametersSwingDialog("Warning!", warningParams);
-        warning.showAndWait();
-
-        // returns false if the user clicks OK
-        return !PluginParametersDialog.OK.equals(warning.getResult());
-
+        // returns True if the user clicks OK
+        return response == JOptionPane.YES_OPTION;
     }
 
     @Override
@@ -212,7 +197,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
 
         // If graph is going to be too large, warn user and then stop plugin if the choose to do so
         // If numTransactions is negative, overflow has occured, so n is very large
-        if ((numTransactions > NUM_TRANSACTIONS_THRESHOLD || numTransactions < 0) && showWarning(numTransactions, randomWeights)) {
+        if ((numTransactions > NUM_TRANSACTIONS_THRESHOLD || numTransactions < 0) && !showWarning(numTransactions, randomWeights)) {
             // If user doesn't click ok, dont let the plugin run
             interaction.setProgress(1, 0, "Completed successfully", true);
             return;
