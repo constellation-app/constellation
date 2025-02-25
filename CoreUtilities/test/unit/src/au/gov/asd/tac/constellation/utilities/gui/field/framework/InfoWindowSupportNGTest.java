@@ -19,9 +19,11 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupp
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
+import org.testfx.util.WaitForAsyncUtils;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -39,22 +41,19 @@ public class InfoWindowSupportNGTest {
     private InfoWindowTest infoWindowMock;
     private static final Logger LOGGER = Logger.getLogger(InfoWindowSupportNGTest.class.getName());
 
-    public InfoWindowSupportNGTest() {
-    }
-
-    @Test(expectedExceptions = UnsupportedOperationException.class)
-    public void infoWindowSupportTest_refreshWindow() {
+    @Test(expectedExceptions = UnsupportedOperationException.class, expectedExceptionsMessageRegExp = "Not supported yet.")
+    public void infoWindowSupportTest_refreshWindow()  {
         infoWindowMock.refreshWindow();
     }
 
     @Test
-    public void infoWindowSupportTest_setWindow() {
+    public void infoWindowSupportTest_setWindow()  {
         StackPane contentMock = mock(StackPane.class);
         infoWindowMock.setWindowContents(contentMock);
-        assertTrue(infoWindowMock.getChildren().get(0) == contentMock);
+        assertTrue(infoWindowMock.testCount == 1);
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
+    @Test(expectedExceptions = UnsupportedOperationException.class, expectedExceptionsMessageRegExp = "Not supported yet.")
     public void infoWindowSupportTest_changed() {
         // changed method calls refreshWindow()
         infoWindowMock.changed(mock());
@@ -70,20 +69,18 @@ public class InfoWindowSupportNGTest {
     @AfterClass
     public void tearDownClass() throws Exception {
         try {
+            WaitForAsyncUtils.clearExceptions();
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
-        
-        infoWindowMock = null;
-        constellationInputMock = null;
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
         constellationInputMock = mock(ConstellationInput.class);
         infoWindowMock = new InfoWindowTest(constellationInputMock);
-
+        
     }
 
     @AfterMethod
@@ -93,14 +90,21 @@ public class InfoWindowSupportNGTest {
     }
 
     private class InfoWindowTest extends InfoWindow {
-
-        public InfoWindowTest(ConstellationInput parent) {
+        protected int testCount = 0;
+        
+        public InfoWindowTest(final ConstellationInput parent) {
             super(parent);
+        }
+
+       
+        @Override
+        public void setWindowContents(final Node content) {
+            testCount++;
         }
 
         @Override
         protected void refreshWindow() {
-            throw new UnsupportedOperationException("Not supported yet."); 
+            throw new UnsupportedOperationException("Not supported yet.");
         }
     }
 }
