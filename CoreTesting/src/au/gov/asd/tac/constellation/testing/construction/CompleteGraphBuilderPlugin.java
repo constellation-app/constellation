@@ -84,8 +84,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String WARNING_LABEL_EXTRA_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "extra_warning_label");
 
     private static final String WARNING_TEXT_BEGIN = "Your current settings will generate ";
-    private static final String WARNING_TEXT_END = " transactions.";
-    private static final String WARNING_TEXT_EXTRA = "A graph of this size may cause significant performance issues in Constellation. Proceed?";
+    private static final String WARNING_TEXT_END = " transactions.\nA graph of this size may cause significant performance issues in Constellation.\nProceed?";
     private static final int NUM_TRANSACTIONS_THRESHOLD = 100000;
 
     private final SecureRandom r = new SecureRandom();
@@ -175,7 +174,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
 
         // Create popup
         final int response = JOptionPane.showConfirmDialog(null,
-                WARNING_TEXT_BEGIN + (randomWeights ? "approximately " : "") + numTransactions + WARNING_TEXT_END + "\n" + WARNING_TEXT_EXTRA,
+                WARNING_TEXT_BEGIN + (randomWeights ? "approximately " : "") + numTransactions + WARNING_TEXT_END,
                 "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
         // returns True if the user clicks OK
