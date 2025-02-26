@@ -241,8 +241,8 @@ public final class MultiChoiceInput<C extends Object>
     public void executeRightButtonAction() {
         if (!isMenuShown() || choiceInputDropDown == null) {
             choiceInputDropDown = new ChoiceInputDropDown(this);
-             showDropDown(choiceInputDropDown);   
-             setMenuShown(true);
+            showDropDown(choiceInputDropDown);   
+            setMenuShown(true);
         } else {
             choiceInputDropDown.hide();
             choiceInputDropDown = null;

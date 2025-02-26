@@ -29,8 +29,12 @@ import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import static org.assertj.core.api.Java6Assertions.assertThatCode;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
+import org.testng.Assert;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -168,4 +172,40 @@ public class MultiChoiceInputNGTest {
         doNothing().when(multiChoiceInput).showDropDown(Mockito.any());
         assertThatCode(() -> multiChoiceInput.executeRightButtonAction()).doesNotThrowAnyException();
     }
+    
+    @Test
+    public void testMultiChoiceInput_rightButtonSupport() {  
+        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput());
+        multiChoiceInput.setOptions(fruitList);
+        doNothing().when(multiChoiceInput).setMenuShown(Mockito.anyBoolean());
+        doNothing().when(multiChoiceInput).executeRightButtonAction();
+        
+        RightButtonSupport.RightButton rightButton = multiChoiceInput.getRightButton();
+        Assert.assertNull(rightButton.getValue()); //label default
+        rightButton.show();
+        verify(multiChoiceInput, times(1)).executeRightButtonAction();
+        verify(multiChoiceInput, times(0)).setMenuShown(false);
+        rightButton.hide();
+        verify(multiChoiceInput, times(1)).setMenuShown(false);
+    }
+    
+    @Test
+    public void testMultiChoiceInput_executeRightButtonAction() {  
+        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput());
+        multiChoiceInput.setOptions(fruitList);
+
+        doReturn(false).when(multiChoiceInput).isMenuShown();
+        doNothing().when(multiChoiceInput).showDropDown(Mockito.any());       
+
+        RightButtonSupport.RightButton rightButton = multiChoiceInput.getRightButton();
+        rightButton.show();
+        verify(multiChoiceInput, times(1)).executeRightButtonAction();
+        verify(multiChoiceInput, times(1)).setMenuShown(true);
+        
+        doReturn(true).when(multiChoiceInput).isMenuShown();
+        // second consecutive time it is called, setMenuShown(false) is called
+        rightButton.show();
+        verify(multiChoiceInput, times(2)).executeRightButtonAction();
+        verify(multiChoiceInput, times(1)).setMenuShown(false);
+    }       
 }
