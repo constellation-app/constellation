@@ -407,7 +407,7 @@ public class PathScoringUtilities {
         };
     }
 
-    private static Tuple<BitSet[], float[]> computeShortestPathsUndirected(final GraphReadMethods graph, final ScoreType scoreType, final boolean selectedOnly) {
+    protected static Tuple<BitSet[], float[]> computeShortestPathsUndirected(final GraphReadMethods graph, final ScoreType scoreType, final boolean selectedOnly) {
         final int vertexCount = graph.getVertexCount();
         final BitSet[] traversal = new BitSet[vertexCount];
         final float[] scores = new float[vertexCount];
@@ -503,7 +503,7 @@ public class PathScoringUtilities {
         return Tuple.create(traversal, scores);
     }
 
-    private static Tuple<BitSet[], float[]> computeShortestPathsDirected(final GraphReadMethods graph, final ScoreType scoreType,
+    protected static Tuple<BitSet[], float[]> computeShortestPathsDirected(final GraphReadMethods graph, final ScoreType scoreType,
             final boolean includeConnectionsIn, final boolean includeConnectionsOut, final boolean treatUndirectedBidirectional, final boolean selectedOnly) {
 
         final int vertexCount = graph.getVertexCount();
