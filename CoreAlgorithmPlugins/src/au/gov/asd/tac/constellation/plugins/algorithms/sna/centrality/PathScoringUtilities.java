@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -410,7 +410,7 @@ public class PathScoringUtilities {
     protected static Tuple<BitSet[], float[]> computeShortestPathsUndirected(final GraphReadMethods graph, final ScoreType scoreType, final boolean selectedOnly) {
         final int vertexCount = graph.getVertexCount();
         final BitSet[] traversal = new BitSet[vertexCount];
-        final float[] scores = new float[vertexCount];
+        final float[] scores = new float[vertexCount]; // Array initialised with 0's
 
         final BitSet update = new BitSet(vertexCount);
         final BitSet[] sendFails = new BitSet[vertexCount];
@@ -421,12 +421,12 @@ public class PathScoringUtilities {
 
         // initialise variables
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-            traversal[vertexPosition] = new BitSet(vertexCount);
-            scores[vertexPosition] = 0;
 
             // only update nodes with neighbours
             final int vxId = graph.getVertex(vertexPosition);
             if (graph.getVertexNeighbourCount(vxId) > 0) {
+                traversal[vertexPosition] = new BitSet(vertexCount);
+
                 update.set(vertexPosition);
 
                 sendFails[vertexPosition] = new BitSet(vertexCount);
