@@ -29,7 +29,7 @@ public interface RightButtonSupport {
 
     public void executeRightButtonAction();
 
-    public abstract class RightButton extends Button {
+    public abstract class RightButton extends ConstellationInputButton {
 
         public RightButton(final Label label, final ButtonType type) {
             super(label, type);

@@ -29,8 +29,8 @@ public interface LeftButtonSupport {
     
     public void executeLeftButtonAction();
     
-    public abstract class LeftButton extends Button {
-        public LeftButton(Label label, Button.ButtonType type) {
+    public abstract class LeftButton extends ConstellationInputButton {
+        public LeftButton(Label label, ConstellationInputButton.ButtonType type) {
             super(label, type);
         }
     }

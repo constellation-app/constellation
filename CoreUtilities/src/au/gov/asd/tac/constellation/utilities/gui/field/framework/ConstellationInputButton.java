@@ -21,16 +21,21 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 
 /**
+ * This button will be used within the ConstellationInput framework.
+ * Eg. This is used in RightSupportButton, LeftSupportButton etc.
+ * It is an extension of ComboBox so it have the L&F of a ComboBox.
+ * If ButtonType is not DROPDOWN, the layoutChildren() will not
+ * display the dropdown arrow on the button.
  * 
  * @author capricornunicorn123
  * @author andromeda-224
  */
-public abstract class Button extends ComboBox {
+public abstract class ConstellationInputButton extends ComboBox {
 
     private final ButtonType btnType;
     private Region arrowBtn = null ;
     
-    public Button(final Label label, final ButtonType type) {        
+    public ConstellationInputButton(final Label label, final ButtonType type) {        
         btnType = type;
         if (!label.getText().isEmpty()) {
             this.setValue(label.getText());

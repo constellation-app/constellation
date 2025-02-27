@@ -18,9 +18,6 @@ package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 import au.gov.asd.tac.constellation.utilities.gui.context.ContextMenuContributor;
 import au.gov.asd.tac.constellation.utilities.gui.field.MultiChoiceInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.TextType;
-import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValueUtility;
-import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesChangeEvent;
-import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,22 +50,22 @@ import javafx.scene.effect.ColorInput;
  *
  * Input fields follow a magic-wand-like layout with four main sections:
  * <ol>
- * <li>{@link Button} - LeftButton Optional</li>
+ * <li>{@link ConstellationInputButton} - LeftButton Optional</li>
  * <li>{@link ConstellationTextArea} - Interactable Area</li>
  * <li>{@link InfoWindow} - Interactable Area</li>
- * <li>{@link Button} - RightButton Optional</li>
+ * <li>{@link ConstellationInputButton} - RightButton Optional</li>
  * </ol>
- * +--------------------------------------------+ 
- * | Button | Input Area | Button
- * | +--------------------------------------------+ 
- * A central input area and two
- * end buttons. in the case that 1 or both end button is not needed it can be
- * removed and the subsequent Input Area shall adapt to fill the missing space.
- * +--------------------------------------------+ 
- * | Input Area | Button |
- * +--------------------------------------------+
- *
- * Current usage of these inputs is limited to {@link PluginParameterPane} and
+ +--------------------------------------------+ 
+ | ConstellationInputButton | Input Area | ConstellationInputButton
+ | +--------------------------------------------+ 
+ A central input area and two
+ end buttons. in the case that 1 or both end button is not needed it can be
+ removed and the subsequent Input Area shall adapt to fill the missing space.
+ +--------------------------------------------+ 
+ | Input Area | ConstellationInputButton |
+ +--------------------------------------------+
+
+ Current usage of these inputs is limited to {@link PluginParameterPane} and
  * the {@link PluginReporterPane} but should be slowly integrated into all views
  * and windows.
  *
@@ -262,7 +259,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
                 insertInfoWindow(infoWindow.getInfoWindow());
             }
 
-            // Add Right Button
+            // Add Right ConstellationInputButton
             if (this instanceof RightButtonSupport rightButton) {
                 final RightButton button = rightButton.getRightButton();
                 interactableContent.getChildren().add(button);
@@ -275,19 +272,6 @@ public abstract class ConstellationInput<T> extends StackPane implements
             final EventHandler<KeyEvent> shortcutEvent = shortcut.getShortcuts();
             if (shortcutEvent != null) {
                 textArea.addEventFilter(KeyEvent.KEY_PRESSED, shortcut.getShortcuts());
-            }
-        }
-
-        // Be careful with implementing autocomplete and recent values together
-        // Add Recent Values
-        if (this instanceof RecentValuesListener listener) {
-            final String id = listener.getRecentValuesListenerID();
-            if (id != null) {
-                RecentValueUtility.addListener(listener);
-                final List<String> values = RecentValueUtility.getRecentValues(id);
-                if (values != null) {
-                    listener.recentValuesChanged(new RecentValuesChangeEvent(id, values));
-                }
             }
         }
 
@@ -321,7 +305,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @param content
      * @param side
      */
-    private void createWidthListener(final Button content) {
+    private void createWidthListener(final ConstellationInputButton content) {
 
         final HBox interactableContent = getInteractableContent();
 

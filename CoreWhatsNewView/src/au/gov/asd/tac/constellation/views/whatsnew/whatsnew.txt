@@ -1,9 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
-== 2025-02-20 Multi-choice input field
-<p>Multi-choice type ahead input field added with infrastructure to enable other input fields to be based on it
-<p>Replaced existing multi-choice dropdown input fields with multi-choice type ahead input field so they all look and behave the same.
+== 2025-02-27 Multi-choice input field
+<p>Multi-choice input fields now have the ability to type ahead and have drop down suggestions
+<p>Existing multi-choice drop down input fields have been replaced with multi-choice type ahead input field so they all look and behave the same.
 
 == 2025-02-06 Histogram can now perform aggregate functions on nullable Transaction data
 <p> The Histogram View has had an enhancement to its aggregate processing for <b>Links</b> and <b>Edges</b>.</p>

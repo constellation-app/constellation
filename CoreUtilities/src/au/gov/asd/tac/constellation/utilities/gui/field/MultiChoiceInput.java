@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputButton.ButtonType;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,9 +53,7 @@ import javafx.scene.control.SeparatorMenuItem;
  *
  * @author capricornunicorn123
  */
-public final class MultiChoiceInput<C extends Object>
-        extends ChoiceInputField<List<C>, C>
-        implements RightButtonSupport, AutoCompleteSupport {
+public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<List<C>, C> implements RightButtonSupport, AutoCompleteSupport {
 
     private ChoiceInputDropDown choiceInputDropDown;
 
@@ -216,7 +214,7 @@ public final class MultiChoiceInput<C extends Object>
     }
     // </editor-fold> 
 
-    // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
+    // <editor-fold defaultstate="collapsed" desc="ConstellationInputButton Event Implementation">   
     @Override
     public RightButton getRightButton() {
         RightButton button = new RightButton(
