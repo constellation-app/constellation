@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,15 @@
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
 /**
- * An Interface for objects that was to validate extensions of {@link ConstellationInput}.
- * Implementation of this class can be registered to a {@link ConstellationInput} and will be 
- * consulted every time the value of the {@link ConstellationInput} is changed.
- * 
+ * An Interface for objects that was to validate extensions of
+ * {@link ConstellationInput}. Implementation of this class can be registered to
+ * a {@link ConstellationInput} and will be consulted every time the value of
+ * the {@link ConstellationInput} is changed.
+ *
  * @author capricornunicorn123
  */
 public interface InputValidator {
-    
-   public String validateString(final String s);
-    
+
+    public String validateString(final String s);
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ package au.gov.asd.tac.constellation.utilities.gui.field.framework;
  *
  * @author capricornunicorn123
  */
-public interface ConstellationInputListener<T>{
-    
+public interface ConstellationInputListener<T> {
+
     /**
      * Called when the value of a {@link ConstellationInputFiled} changes.
      *
      * @param newValue The new value
      */
     void changed(final T newValue);
-    
+
 }

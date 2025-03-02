@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,25 +23,28 @@ import javafx.scene.image.ImageView;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 
 /**
- * A {@link ConstellationInput} for managing choice selection. 
- * This input provides a set of shared features used by {@link SingleChoiceInputs] and {@link MultiChoiceInput}.
- * 
+ * A {@link ConstellationInput} for managing choice selection. This input
+ * provides a set of shared features used by {@link SingleChoiceInputs] and {@link MultiChoiceInput}.
+ *
  * See referenced classes and interfaces for further details on inherited and implemented features.
- * @param <O> The type of object represented by this input field. (An individual choice)
- * @param <C> The type of object returned by this input. (an individual choice or a set of choices)
- * 
+ *
+ * @param <O> The type of object represented by this input field. (An individual
+ * choice)
+ * @param <C> The type of object returned by this input. (an individual choice
+ * or a set of choices)
+ *
  * @author capricornunicorn123
  */
-public abstract class ChoiceInputField<C extends Object, O extends Object> 
+public abstract class ChoiceInputField<C extends Object, O extends Object>
         extends ConstellationInput<C> {
 
     private final List<O> options = new ArrayList<>();
     protected final List<ImageView> icons = new ArrayList<>();
-  
-    public ChoiceInputField(){
+
+    public ChoiceInputField() {
     }
-    
-    public ChoiceInputField(final ObservableList<O> options){
+
+    public ChoiceInputField(final ObservableList<O> options) {
         if (options == null) {
             throw new InvalidOperationException(
                     "Attempting to Set Options with null options");
@@ -53,55 +56,58 @@ public abstract class ChoiceInputField<C extends Object, O extends Object>
 //            this.options.addAll(change.getList());
 //        });
     }
-    
+
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
     /**
-     * Defines the options that users can select from in this field.
-     * Any previously defined options will be overwritten with this new list.
-     * @param options 
+     * Defines the options that users can select from in this field. Any
+     * previously defined options will be overwritten with this new list.
+     *
+     * @param options
      */
     public final void setOptions(final List<O> options) {
-        if (this.options != null){
+        if (this.options != null) {
             this.options.clear();
             if (options != null) {
                 this.options.addAll(options);
             } else {
                 throw new InvalidOperationException(
-                    "Attempting to Set Options with null options");
+                        "Attempting to Set Options with null options");
             }
         }
     }
-    
+
     /**
      * Retrieves the options that users can select from in this field.
-     * @return List of Options 
+     *
+     * @return List of Options
      */
-    public final List<O> getOptions(){
-        return this.options;
+    public final List<O> getOptions() {
+        return options;
     }
-    
+
     /**
      * Defines the list of icons for the context menu
+     *
      * @param icons
      */
     public final void setIcons(final List<ImageView> icons) {
-        this.getIcons().clear();
-        this.getIcons().addAll(icons);
+        getIcons().clear();
+        getIcons().addAll(icons);
     }
-    
+
     /**
      * @return the icons
      */
     public List<ImageView> getIcons() {
         return icons;
     }
-    
+
     /**
      * Removes all choices.
      */
     public final void clearChoices() {
-       this.setText("");
+        setText("");
     }
     // </editor-fold> 
-       
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,237 +39,249 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 
 /**
-     * This class represents the area of text that users can interact with inside of a {@link ConstellationInputFiled}.
-     * 
-     * The {@link ConstellationTextArea} has been designed to provide a minimal interface to the {@link ConstellationIputField} with
-     * the intention of simplifying its use and protecting the integrity of the data it stores from uncontrolled manipulation.
-     * 
-     * To assist with the protection of data within this class, the class and methods are declared private with 
-     * the class being also declared final.
-     * 
-     * The {@linkConstellationTextArea itself} is a HBox that contains children of type {@link TextInputControll}
-     * In almost all cases, the ConstellationText Area will only have one child, a {@link TextArea} or 
-     * a {@link TextField}. In cases where the input field needs to be secret (have the characters hidden) 
-     * a primary input of {@link PasswordField} and a secondary input of {@link TextField} will be used to 
-     * facilitate hiding and showing of the hidden text.
-     * 
-     * the raw inputs can still be grabbed by using the get children methods. is this an issue / vunerability?
-     * 
-     * @author capricornunicorn123
-     */
-    public final class ConstellationTextArea extends StackPane implements ContextMenuContributor{
-        
-        private final Insets insets = new Insets(4, 8, 4, 8);
-        private List<MenuItem> menuItems = null;
-        
-        private final TextInputControl primaryInput;
-        private final TextInputControl secondaryInput;
+ * This class represents the area of text that users can interact with inside of
+ * a {@link ConstellationInputFiled}.
+ *
+ * The {@link ConstellationTextArea} has been designed to provide a minimal
+ * interface to the {@link ConstellationIputField} with the intention of
+ * simplifying its use and protecting the integrity of the data it stores from
+ * uncontrolled manipulation.
+ *
+ * To assist with the protection of data within this class, the class and
+ * methods are declared private with the class being also declared final.
+ *
+ * The {
+ *
+ * @linkConstellationTextArea itself} is a HBox that contains children of type
+ * {@link TextInputControll} In almost all cases, the ConstellationText Area
+ * will only have one child, a {@link TextArea} or a {@link TextField}. In cases
+ * where the input field needs to be secret (have the characters hidden) a
+ * primary input of {@link PasswordField} and a secondary input of
+ * {@link TextField} will be used to facilitate hiding and showing of the hidden
+ * text.
+ *
+ * the raw inputs can still be grabbed by using the get children methods. is
+ * this an issue / vulnerability?
+ *
+ * @author capricornunicorn123
+ */
+public final class ConstellationTextArea extends StackPane implements ContextMenuContributor {
 
-        public ConstellationTextArea(ConstellationInput parent, ConstellationInputConstants.TextType type){
-            switch (type){
-                case MULTILINE -> {
-                    TextArea area = new TextArea();
-                    //area.setWrapText(true);
-                    
-                    //Set the next focus event to TAB instead of CTRL + TAB.
-                    area.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
-                        if (event.getCode() == KeyCode.TAB && !event.isControlDown() && !event.isShiftDown() && !event.isMetaDown()) {
-                            KeyEvent newEvent = new KeyEvent(
+    private final Insets insets = new Insets(4, 8, 4, 8);
+    private List<MenuItem> menuItems = null;
+
+    private final TextInputControl primaryInput;
+    private final TextInputControl secondaryInput;
+
+    public ConstellationTextArea(final ConstellationInput parent, final ConstellationInputConstants.TextType type) {
+        switch (type) {
+            case MULTILINE -> {
+                final TextArea area = new TextArea();
+
+                //Set the next focus event to TAB instead of CTRL + TAB.
+                area.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+                    if (event.getCode() == KeyCode.TAB && !event.isControlDown() && !event.isShiftDown() && !event.isMetaDown()) {
+                        final KeyEvent newEvent = new KeyEvent(
                                 event.getSource(), event.getTarget(),
                                 KeyEvent.KEY_PRESSED,
                                 "", "", KeyCode.TAB,
-                                false, true, false,false
-                           );
-                           Event.fireEvent( event.getTarget(), newEvent );
-                           event.consume(); 
-                        }
-                    });
-                    
-                    primaryInput = area;
-                }
-                default -> {
-                    TextField field = new TextField();
-                    field.setPadding(insets); 
-                    
-                    //The up down arrows allow for navigation to the begining and start of a line
-                    //This is being remapped to ALT + left and ALT + right for consistency between textArea and textField
-                    field.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
-                        if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.UP) && !event.isAltDown()) {
-                           event.consume(); 
-                        }
-                    });
-                    
-                    primaryInput = field;
-                }
-            }
-            //Set up the primary InputControl
-            primaryInput.textProperty().addListener(parent);
-            primaryInput.focusedProperty().addListener(parent);
-            primaryInput.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-            
-            // Set up the optional secondary InputControl
-            switch (type) {
-                case SECRET -> {
-                    // SecondaryInputs are only used in Secret Inputs and have bound properties with the primary input
-                    secondaryInput = new PasswordField();
-                    secondaryInput.textProperty().bindBidirectional(primaryInput.textProperty());
-                    secondaryInput.textFormatterProperty().bindBidirectional(primaryInput.textFormatterProperty());
-                    secondaryInput.promptTextProperty().bindBidirectional(primaryInput.promptTextProperty());
-                    secondaryInput.styleProperty().bind(primaryInput.styleProperty());
-                    secondaryInput.focusedProperty().addListener(parent);
-                    primaryInput.setVisible(false);
+                                false, true, false, false
+                        );
+                        Event.fireEvent(event.getTarget(), newEvent);
+                        event.consume();
+                    }
+                });
 
-                    this.getChildren().addAll(primaryInput, secondaryInput);
-                }
-                default -> {
-                    secondaryInput = null;
-                    //The up down arrows allow for navigation to the begining and start of a line
-                    //This is being remappedt o ALT + left and ALT + right for consistency between textArea and textField
-                    primaryInput.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
-                        
-                        // Navigate to extremem ends of line
-                        if (event.getCode() == KeyCode.LEFT && event.isAltDown()) {
-                           primaryInput.positionCaret(0); 
-                           event.consume(); 
-                        }
-                        
-                        if (event.getCode() == KeyCode.RIGHT && event.isAltDown()) {
-                           primaryInput.positionCaret(this.getText().length());
-                           event.consume(); 
-                        }
-                    });
-                    this.getChildren().add(primaryInput);
-                }
-            } 
-        }
-        
-        public boolean isInFocus(){
-            return primaryInput.isFocused();
-        }
-        
-        // <editor-fold defaultstate="collapsed" desc="Local Private Methods"> 
-        /**
-         * Binds the heightProperty of a Rectangle to the height property of the {@link TextInputControl}. 
-         * @param bindables
-         */
-        public void bindHeightProperty(Rectangle... bindables) {
-            for (Rectangle bindable : bindables){
-                bindable.heightProperty().bind(primaryInput.heightProperty());
+                primaryInput = area;
+            }
+            default -> {
+                final TextField field = new TextField();
+                field.setPadding(insets);
+
+                //The up down arrows allow for navigation to the begining and start of a line
+                //This is being remapped to ALT + left and ALT + right for consistency between textArea and textField
+                field.addEventFilter(KeyEvent.KEY_PRESSED, (final KeyEvent event) -> {
+                    if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.UP) && !event.isAltDown()) {
+                        event.consume();
+                    }
+                });
+
+                primaryInput = field;
             }
         }
+        //Set up the primary InputControl
+        primaryInput.textProperty().addListener(parent);
+        primaryInput.focusedProperty().addListener(parent);
+        primaryInput.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
-        /**
-         * Sets the prompt text of the {@link TextInputControl}.
-         * @param promptText 
-         */
-        public final void setPromptText(final String promptText) {
-            this.primaryInput.setPromptText(promptText);
-        }
+        // Set up the optional secondary InputControl
+        switch (type) {
+            case SECRET -> {
+                // SecondaryInputs are only used in Secret Inputs and have bound properties with the primary input
+                secondaryInput = new PasswordField();
+                secondaryInput.textProperty().bindBidirectional(primaryInput.textProperty());
+                secondaryInput.textFormatterProperty().bindBidirectional(primaryInput.textFormatterProperty());
+                secondaryInput.promptTextProperty().bindBidirectional(primaryInput.promptTextProperty());
+                secondaryInput.styleProperty().bind(primaryInput.styleProperty());
+                secondaryInput.focusedProperty().addListener(parent);
+                primaryInput.setVisible(false);
 
-        /**
-         * Sets the text value of the {@link TextInputControl}.
-         * @param stringValue 
-         */
-        public void setText(String stringValue) {
-            if (stringValue != null) {
-                primaryInput.setText(stringValue);
-                primaryInput.positionCaret(stringValue.length());
+                getChildren().addAll(primaryInput, secondaryInput);
+            }
+            default -> {
+                secondaryInput = null;
+                //The up down arrows allow for navigation to the begining and start of a line
+                //This is being remappedt o ALT + left and ALT + right for consistency between textArea and textField
+                primaryInput.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+
+                    // Navigate to extremem ends of line
+                    if (event.getCode() == KeyCode.LEFT && event.isAltDown()) {
+                        primaryInput.positionCaret(0);
+                        event.consume();
+                    }
+
+                    if (event.getCode() == KeyCode.RIGHT && event.isAltDown()) {
+                        primaryInput.positionCaret(getText().length());
+                        event.consume();
+                    }
+                });
+                getChildren().add(primaryInput);
             }
         }
-        
-        public void setContextMenu(ContextMenu menu){
-            this.primaryInput.setContextMenu(menu);
-        }
+    }
 
-        /**
-         * Specifies if the {@link TextInputControl} is editable
-         * @param enabled 
-         */
-        public void setEditable(boolean enabled) {
-            primaryInput.setEditable(enabled);
-        }
+    public boolean isInFocus() {
+        return primaryInput.isFocused();
+    }
 
-        public String getText() {
-            return primaryInput.getText();
+    // <editor-fold defaultstate="collapsed" desc="Local Private Methods"> 
+    /**
+     * Binds the heightProperty of a Rectangle to the height property of the
+     * {@link TextInputControl}.
+     *
+     * @param bindables
+     */
+    public void bindHeightProperty(final Rectangle... bindables) {
+        for (final Rectangle bindable : bindables) {
+            bindable.heightProperty().bind(primaryInput.heightProperty());
         }
+    }
 
-        public void setTooltip(Tooltip tooltip) {
-             Tooltip.install(primaryInput, tooltip);
-        }
+    /**
+     * Sets the prompt text of the {@link TextInputControl}.
+     *
+     * @param promptText
+     */
+    public final void setPromptText(final String promptText) {
+        primaryInput.setPromptText(promptText);
+    }
 
-        public void setPreferedRowCount(Integer suggestedRowCount) {
-            if (primaryInput instanceof TextArea textAreaField){
-                textAreaField.setPrefRowCount(suggestedRowCount);
-                //For some reason the text area grows in height with key presses, so ensure the max height has been set.
-                textAreaField.setMaxHeight(suggestedRowCount * 16);
-            }
+    /**
+     * Sets the text value of the {@link TextInputControl}.
+     *
+     * @param stringValue
+     */
+    public void setText(final String stringValue) {
+        if (stringValue != null) {
+            primaryInput.setText(stringValue);
+            primaryInput.positionCaret(stringValue.length());
         }
+    }
 
-        public void hide() {
-            if (secondaryInput != null){
-                this.primaryInput.setVisible(false);
-                this.secondaryInput.setVisible(true);
-            } else {
-                throw new UnsupportedOperationException("Only ConstellationTextAreas of TextType.SECRET can be hidden");
-            }
-        }
+    public void setContextMenu(final ContextMenu menu) {
+        primaryInput.setContextMenu(menu);
+    }
 
-        public void reveal() {
-            if (secondaryInput != null){
-                this.primaryInput.setVisible(true);
-                this.secondaryInput.setVisible(false); 
-            } else {
-                throw new UnsupportedOperationException("Only ConstellationTextAreas of TextType.SECRET can be revealed");
-            }
-        }
-        
-        public int getCaretPosition(){
-            return primaryInput.getCaretPosition();
-        }
-        
-        public void setCaretPosition(int position){
-            primaryInput.positionCaret(position);
-        }
-        
-        // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
-        @Override
-        public List<MenuItem> getAllMenuItems() {
-            return getLocalMenuItems();
-        }
-        
-        @Override
-        public List<MenuItem> getLocalMenuItems() {
-            if (menuItems == null){
-                final MenuItem cutMenuItem = new MenuItem("Cut");          
-                final MenuItem copyMenuItem = new MenuItem("Copy");
-                final MenuItem pasteMenuItem = new MenuItem("Paste");
-                final MenuItem deleteMenuItem = new MenuItem("Delete");
-                final MenuItem selectAllMenuItem = new MenuItem("Select All");
-                final MenuItem undoMenuItem = new MenuItem("Undo");
-                final MenuItem redoMenuItem = new MenuItem("Redo");
-                undoMenuItem.setOnAction(e -> primaryInput.undo());
-                redoMenuItem.setOnAction(e -> primaryInput.redo());
-                cutMenuItem.setOnAction(e -> primaryInput.cut());
-                copyMenuItem.setOnAction(e -> primaryInput.copy());
-                pasteMenuItem.setOnAction(e -> primaryInput.paste());
-                deleteMenuItem.setOnAction(e -> primaryInput.deleteText(primaryInput.getSelection()));
-                selectAllMenuItem.setOnAction(e -> primaryInput.selectAll());
+    /**
+     * Specifies if the {@link TextInputControl} is editable
+     *
+     * @param enabled
+     */
+    public void setEditable(final boolean enabled) {
+        primaryInput.setEditable(enabled);
+    }
 
-                menuItems = Arrays.asList(undoMenuItem, redoMenuItem, cutMenuItem, copyMenuItem, pasteMenuItem, deleteMenuItem, selectAllMenuItem);
-            }
-            return menuItems;
-        }
-        // </editor-fold> 
+    public String getText() {
+        return primaryInput.getText();
+    }
 
-        public void setContextMenuRequestedEvent(EventHandler<? super ContextMenuEvent> value) {
-            this.primaryInput.setOnContextMenuRequested(value);
-        }
+    public void setTooltip(final Tooltip tooltip) {
+        Tooltip.install(primaryInput, tooltip);
+    }
 
-        public void primaryInputSetOnMouseClicked(EventHandler<MouseEvent> event) {
-            primaryInput.setOnMouseClicked(event);
+    public void setPreferedRowCount(final Integer suggestedRowCount) {
+        if (primaryInput instanceof TextArea textAreaField) {
+            textAreaField.setPrefRowCount(suggestedRowCount);
+            //For some reason the text area grows in height with key presses, so ensure the max height has been set.
+            textAreaField.setMaxHeight(suggestedRowCount * 16);
         }
+    }
 
-        public void primaryInputSetOnKeyReleased(EventHandler<KeyEvent> event) {
-            primaryInput.setOnKeyReleased(event);
+    public void hide() {
+        if (secondaryInput != null) {
+            primaryInput.setVisible(false);
+            secondaryInput.setVisible(true);
+        } else {
+            throw new UnsupportedOperationException("Only ConstellationTextAreas of TextType.SECRET can be hidden");
         }
-}   
+    }
+
+    public void reveal() {
+        if (secondaryInput != null) {
+            primaryInput.setVisible(true);
+            secondaryInput.setVisible(false);
+        } else {
+            throw new UnsupportedOperationException("Only ConstellationTextAreas of TextType.SECRET can be revealed");
+        }
+    }
+
+    public int getCaretPosition() {
+        return primaryInput.getCaretPosition();
+    }
+
+    public void setCaretPosition(final int position) {
+        primaryInput.positionCaret(position);
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
+    @Override
+    public List<MenuItem> getAllMenuItems() {
+        return getLocalMenuItems();
+    }
+
+    @Override
+    public List<MenuItem> getLocalMenuItems() {
+        if (menuItems == null) {
+            final MenuItem cutMenuItem = new MenuItem("Cut");
+            final MenuItem copyMenuItem = new MenuItem("Copy");
+            final MenuItem pasteMenuItem = new MenuItem("Paste");
+            final MenuItem deleteMenuItem = new MenuItem("Delete");
+            final MenuItem selectAllMenuItem = new MenuItem("Select All");
+            final MenuItem undoMenuItem = new MenuItem("Undo");
+            final MenuItem redoMenuItem = new MenuItem("Redo");
+            undoMenuItem.setOnAction(e -> primaryInput.undo());
+            redoMenuItem.setOnAction(e -> primaryInput.redo());
+            cutMenuItem.setOnAction(e -> primaryInput.cut());
+            copyMenuItem.setOnAction(e -> primaryInput.copy());
+            pasteMenuItem.setOnAction(e -> primaryInput.paste());
+            deleteMenuItem.setOnAction(e -> primaryInput.deleteText(primaryInput.getSelection()));
+            selectAllMenuItem.setOnAction(e -> primaryInput.selectAll());
+
+            menuItems = Arrays.asList(undoMenuItem, redoMenuItem, cutMenuItem, copyMenuItem, pasteMenuItem, deleteMenuItem, selectAllMenuItem);
+        }
+        return menuItems;
+    }
+    // </editor-fold> 
+
+    public void setContextMenuRequestedEvent(final EventHandler<? super ContextMenuEvent> value) {
+        primaryInput.setOnContextMenuRequested(value);
+    }
+
+    public void primaryInputSetOnMouseClicked(final EventHandler<MouseEvent> event) {
+        primaryInput.setOnMouseClicked(event);
+    }
+
+    public void primaryInputSetOnKeyReleased(final EventHandler<KeyEvent> event) {
+        primaryInput.setOnKeyReleased(event);
+    }
+}

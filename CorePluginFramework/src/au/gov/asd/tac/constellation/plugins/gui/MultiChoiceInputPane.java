@@ -42,8 +42,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationI
  * @author twinkle2_little
  * @author capricornunicorn123
  */
-public final class MultiChoiceInputPane extends 
-        ParameterInputPane<MultiChoiceParameterValue, List<ParameterValue>> {
+public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoiceParameterValue, List<ParameterValue>> {
 
     private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputPane.class.getName());
 
@@ -57,8 +56,8 @@ public final class MultiChoiceInputPane extends
     }
 
     @Override
-    public ConstellationInputListener getFieldChangeListener(PluginParameter<MultiChoiceParameterValue> parameter) {
-        return (ConstellationInputListener<List<ParameterValue>>) (List<ParameterValue> newValue) -> {
+    public ConstellationInputListener getFieldChangeListener(final PluginParameter<MultiChoiceParameterValue> parameter) {
+        return (ConstellationInputListener<List<ParameterValue>>) (final List<ParameterValue>newValue) -> {
             if (newValue != null) {
                 MultiChoiceParameterType.setChoicesData(parameter, newValue);
             }
@@ -67,27 +66,23 @@ public final class MultiChoiceInputPane extends
 
     @Override
     public PluginParameterListener getPluginParameterListener() {
-        return (PluginParameter<?> parameter, ParameterChange change) -> Platform.runLater(() -> {
+        return (final PluginParameter<?> parameter, final ParameterChange change) -> Platform.runLater(() -> {
             @SuppressWarnings("unchecked") //mcPluginParameter is a MultiChoiceParameter
             final PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) parameter;
             switch (change) {
-                
                 case VALUE -> {
                     // Don't change the value if it isn't necessary.
-                    List<ParameterValue> selection = getFieldValue();
+                    final List<ParameterValue> selection = getFieldValue();
                     if (!selection.equals(MultiChoiceParameterType.getChoicesData(mcPluginParameter))){
                         setFieldValue(selection);
                     }
                 }
-                
                 case PROPERTY -> {
-                    
                     // Update the Pane if the Optons have changed
-                    List<ParameterValue> paramOptions = MultiChoiceParameterType.getOptionsData(mcPluginParameter);
-                    if (!((MultiChoiceInput) input).getOptions().equals(paramOptions)){
+                    final List<ParameterValue> paramOptions = MultiChoiceParameterType.getOptionsData(mcPluginParameter);
+                    if (!((MultiChoiceInput) input).getOptions().equals(paramOptions)) {
                         ((MultiChoiceInput) input).setOptions(paramOptions);
                         final List<ParameterValue> choicesData = MultiChoiceParameterType.getChoicesData(mcPluginParameter);
-                        boolean test = paramOptions.stream().anyMatch(choicesData::contains);
                         // Only keep the value if it's in the new choices.
                         if (paramOptions.stream().anyMatch(choicesData::contains)) {
                             setFieldValue(MultiChoiceParameterType.getChoicesData(mcPluginParameter));
@@ -96,7 +91,6 @@ public final class MultiChoiceInputPane extends
                         }
                     }
                 }
-                
                 case ENABLED -> updateFieldEnablement();
                 case VISIBLE -> updateFieldVisibility();
                 default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);

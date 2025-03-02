@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -81,7 +82,11 @@ public class ChoiceInputNGTest {
     public void testChoiceInputField_nullOptions() {  
         final ChoiceInputField choiceInputFieldMock = spy(createEmptyChoiceInputField());
         assertEquals(choiceInputFieldMock.getOptions().size(), 0);
-        choiceInputFieldMock.setOptions(null);        
+        choiceInputFieldMock.setOptions(null);
+        
+        // test that null observableList throws exception
+        assertThrows(InvalidOperationException.class,
+            ()-> createChoiceInputField(null));
     }
     
     @Test
@@ -94,7 +99,12 @@ public class ChoiceInputNGTest {
         assertEquals(fruitOptions.size(), fruitList.size());
         assertEquals(fruitOptions.getFirst(), "apple");
         assertTrue(fruitOptions.contains("banana"));
-        assertEquals(fruitOptions.getLast(), "orange");               
+        assertEquals(fruitOptions.getLast(), "orange");    
+        
+        assertThrows(InvalidOperationException.class,
+            ()-> choiceInputFieldMock.setOptions(null));
+        assertTrue(choiceInputFieldMock.getOptions().isEmpty());
+
     }
     
     @Test

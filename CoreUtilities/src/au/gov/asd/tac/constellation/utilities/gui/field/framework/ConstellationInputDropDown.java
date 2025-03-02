@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,10 +38,10 @@ public class ConstellationInputDropDown extends ContextMenu {
         parent = field;
 
         //Constrain drop down menus to a height of 200
-        this.setMaxHeight(200);
-        this.setPrefHeight(200);
+        setMaxHeight(200);
+        setPrefHeight(200);
         addEventHandler(Menu.ON_SHOWING, e -> {
-            Node content = getSkin().getNode();
+            final Node content = getSkin().getNode();
             if (content instanceof Region region) {
                 region.setMaxHeight(getMaxHeight());
                 // set the drop down context menu to parent width
@@ -50,8 +50,8 @@ public class ConstellationInputDropDown extends ContextMenu {
                 content.lookupAll(".scroll-arrow").forEach(
                         bar -> bar.setStyle("-fx-background-color: transparent;"));
                 if (JavafxStyleManager.isDarkTheme()) {
-                    Node up = content.lookup(".menu-up-arrow");
-                    Node down = content.lookup(".menu-down-arrow");
+                    final Node up = content.lookup(".menu-up-arrow");
+                    final Node down = content.lookup(".menu-down-arrow");
                     up.setStyle("-fx-background-color: #e0e0e0;");
                     down.setStyle("-fx-background-color: #e0e0e0");
                 }
@@ -75,7 +75,7 @@ public class ConstellationInputDropDown extends ContextMenu {
      */
     public CustomMenuItem registerCustomMenuItem(final Labeled text) {
         text.prefWidthProperty().bind(parent.widthProperty());
-        CustomMenuItem item = new CustomMenuItem(text);
+        final CustomMenuItem item = new CustomMenuItem(text);
         getItems().add(item);
         return item;
     }
