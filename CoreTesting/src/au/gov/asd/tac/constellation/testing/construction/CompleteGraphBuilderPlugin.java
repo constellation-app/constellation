@@ -47,6 +47,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -173,7 +174,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         }
 
         // Create popup
-        final int response = JOptionPane.showConfirmDialog(null,
+        final int response = JOptionPane.showConfirmDialog(SystemUtilities.getMainframe(),
                 WARNING_TEXT_BEGIN + (randomWeights ? "approximately " : "") + numTransactions + WARNING_TEXT_END,
                 "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
