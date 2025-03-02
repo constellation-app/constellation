@@ -57,6 +57,10 @@ public class SystemUtilities {
         }
     }
 
+    /**
+     * Return the internal reference to current App window
+     * @return the internal reference to current App window
+     */
     public static JFrame getMainframe() {
         captureMainframePosition();
         return mainframe;
