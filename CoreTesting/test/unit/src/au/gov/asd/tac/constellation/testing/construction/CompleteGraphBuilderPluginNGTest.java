@@ -15,11 +15,13 @@
  */
 package au.gov.asd.tac.constellation.testing.construction;
 
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
@@ -28,7 +30,18 @@ import static au.gov.asd.tac.constellation.testing.construction.CompleteGraphBui
 import static au.gov.asd.tac.constellation.testing.construction.CompleteGraphBuilderPlugin.N_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.testing.construction.CompleteGraphBuilderPlugin.RANDOM_WEIGHTS_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.testing.construction.CompleteGraphBuilderPlugin.TRANSACTION_TYPES_PARAMETER_ID;
+import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -41,17 +54,24 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class CompleteGraphBuilderPluginNGTest {
-    
+
     private StoreGraph graph;
-    
+    private static final Logger LOGGER = Logger.getLogger(CompleteGraphBuilderPluginNGTest.class.getName());
+
     @BeforeClass
     public static void setUpClass() throws Exception {
-        // Not currently required
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        // Not currently required
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
@@ -71,9 +91,9 @@ public class CompleteGraphBuilderPluginNGTest {
     @Test
     public void testCreateParameters() {
         System.out.println("createParameters");
-        
+
         final CompleteGraphBuilderPlugin instance = new CompleteGraphBuilderPlugin();
-        
+
         final PluginParameters params = instance.createParameters();
         assertEquals(params.getParameters().size(), 4);
         assertTrue(params.getParameters().containsKey(N_PARAMETER_ID));
@@ -88,41 +108,95 @@ public class CompleteGraphBuilderPluginNGTest {
     @Test
     public void testUpdateParametersNullGraph() {
         System.out.println("updateParametersNullGraph");
-        
+
         final CompleteGraphBuilderPlugin instance = new CompleteGraphBuilderPlugin();
-        
+
         final PluginParameters params = instance.createParameters();
         final PluginParameter<MultiChoiceParameterValue> nAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(NODE_TYPES_PARAMETER_ID);
         final PluginParameter<MultiChoiceParameterValue> tAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
-        
+
         assertTrue(MultiChoiceParameterType.getOptions(nAttribute).isEmpty());
         assertTrue(MultiChoiceParameterType.getOptions(tAttribute).isEmpty());
-        
+
         instance.updateParameters(null, params);
         assertTrue(MultiChoiceParameterType.getOptions(nAttribute).isEmpty());
         assertTrue(MultiChoiceParameterType.getOptions(tAttribute).isEmpty());
     }
-    
+
     /**
      * Test of updateParameters method, of class CompleteGraphBuilderPlugin.
      */
     @Test
     public void testUpdateParameters() {
         System.out.println("updateParameters");
-        
+
         final CompleteGraphBuilderPlugin instance = new CompleteGraphBuilderPlugin();
-        
+
         final PluginParameters params = instance.createParameters();
         final PluginParameter<MultiChoiceParameterValue> nAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(NODE_TYPES_PARAMETER_ID);
         final PluginParameter<MultiChoiceParameterValue> tAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
-        
+
         assertTrue(MultiChoiceParameterType.getOptions(nAttribute).isEmpty());
         assertTrue(MultiChoiceParameterType.getOptions(tAttribute).isEmpty());
-        
+
         instance.updateParameters(new DualGraph(graph.getSchema(), graph), params);
         assertEquals(MultiChoiceParameterType.getOptions(nAttribute).size(), 27);
         assertEquals(MultiChoiceParameterType.getChoices(nAttribute).size(), 1);
         assertEquals(MultiChoiceParameterType.getOptions(tAttribute).size(), 9);
         assertEquals(MultiChoiceParameterType.getChoices(tAttribute).size(), 1);
+    }
+
+    /**
+     * Test of showWarning method, of class CompleteGraphBuilderPlugin.
+     */
+    @Test
+    public void testShowWarning() {
+        System.out.println("showWarning");
+
+        final CompleteGraphBuilderPlugin instance = new CompleteGraphBuilderPlugin();
+        // Run function, expect default answer of false (user did not click OK)
+        assertFalse(instance.showWarning(0L, false));
+    }
+
+    /**
+     * Test of edit method, of class CompleteGraphBuilderPlugin.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testEditWithWarning() throws Exception {
+        System.out.println("editWithWarning");
+
+        // Set up mocks
+        final int numNodes = 1000;
+        final boolean isRandomWeights = true;
+        final long numTransactions = numNodes * (numNodes - 1) * (isRandomWeights ? 25 : 1);
+
+        final CompleteGraphBuilderPlugin instance = spy(new CompleteGraphBuilderPlugin());
+        final GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
+        final PluginInteraction interaction = mock(PluginInteraction.class);
+        final PluginParameters parameters = mock(PluginParameters.class);
+
+        final Map<String, PluginParameter<?>> params = mock(Map.class);
+        final PluginParameter mockParam = mock(PluginParameter.class);
+
+        when(parameters.getParameters()).thenReturn(params);
+        when(params.get(CompleteGraphBuilderPlugin.N_PARAMETER_ID)).thenReturn(mockParam);
+        when(mockParam.getIntegerValue()).thenReturn(numNodes);
+        when(params.get(CompleteGraphBuilderPlugin.RANDOM_WEIGHTS_PARAMETER_ID)).thenReturn(mockParam);
+        when(mockParam.getBooleanValue()).thenReturn(isRandomWeights);
+
+        when(instance.showWarning(numTransactions, isRandomWeights)).thenReturn(false);
+
+        // Run function        
+        instance.edit(mockGraph, interaction, parameters);
+
+        // verify
+        verify(instance, times(1)).showWarning(numTransactions, isRandomWeights);
+        verify(parameters, times(1)).getParameters();
+        verify(params, times(1)).get(CompleteGraphBuilderPlugin.N_PARAMETER_ID);
+        verify(params, times(1)).get(CompleteGraphBuilderPlugin.RANDOM_WEIGHTS_PARAMETER_ID);
+        verify(mockParam, times(1)).getIntegerValue();
+        verify(mockParam, times(1)).getBooleanValue();
     }
 }
