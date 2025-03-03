@@ -460,7 +460,7 @@ public class PathScoringUtilities {
     protected static ThreeTuple<BitSet[], float[], BitSet> computeShortestPathsUndirectedThreeTuple(final GraphReadMethods graph, final ScoreType scoreType, final boolean selectedOnly) {
         final int vertexCount = graph.getVertexCount();
         final BitSet update = new BitSet(vertexCount);
-        final BitSet updateToReturn = new BitSet(vertexCount);
+        final BitSet updateUnmodified = new BitSet(vertexCount);
 
         final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
 
@@ -469,7 +469,7 @@ public class PathScoringUtilities {
             if (graph.getVertexNeighbourCount(graph.getVertex(vertexPosition)) > 0) {
                 updatedVertexIndexArray.add(vertexPosition);
                 update.set(vertexPosition);
-                updateToReturn.set(vertexPosition);
+                updateUnmodified.set(vertexPosition);
             }
         }
 
@@ -562,7 +562,7 @@ public class PathScoringUtilities {
                 scores[index] = scores[index] == 0 ? 0 : scores[index] / scores.length;
             }
         }
-        return ThreeTuple.create(traversal, scores, updateToReturn);
+        return ThreeTuple.create(traversal, scores, updateUnmodified);
     }
 
     protected static Tuple<BitSet[], float[]> computeShortestPathsDirected(final GraphReadMethods graph, final ScoreType scoreType,
