@@ -408,26 +408,14 @@ public class PathScoringUtilities {
         };
     }
 
-    /**
-     * Wrapper function for computeShortestPathsUndirectedThreeTuple that transforms the result into a two tuple
-     *
-     * @param graph The graph to compute the shortest paths of
-     * @param scoreType Either BETWEENNESS, CLOSENESS, FARNESS, HARMONIC_CLOSENESS, HARMONIC_FARNESS
-     * @param selectedOnly Whether or not to restrict to only selected nodes
-     *
-     * @return Tuple containing an array of BitSets representing each node's traversal and an array of floats with each
-     * node's score
-     */
-    protected static Tuple<BitSet[], float[]> computeShortestPathsUndirected(final GraphReadMethods graph, final ScoreType scoreType, final boolean selectedOnly) {
-        final int vertexCount = graph.getVertexCount();
+    private static Tuple<BitSet[], float[]> convertThreeTupleResultsToTwo(final ThreeTuple<BitSet[], float[], BitSet> threeTuple, final int vertexCount) {
+        final BitSet[] traversal = threeTuple.getFirst();
+        final float[] scores = threeTuple.getSecond();
+        final BitSet indexes = threeTuple.getThird();
+
+        // Convert results into a two tuple
         final BitSet[] convertedTraversal = new BitSet[vertexCount];
         final float[] convertedScores = new float[vertexCount];
-
-        final ThreeTuple<BitSet[], float[], BitSet> result = computeShortestPathsUndirectedThreeTuple(graph, scoreType, selectedOnly);
-
-        final BitSet[] traversal = result.getFirst();
-        final float[] scores = result.getSecond();
-        final BitSet indexes = result.getThird();
 
         int currentIndex = 0;
         for (int index = indexes.nextSetBit(0); index >= 0; index = indexes.nextSetBit(index + 1)) {
@@ -445,6 +433,23 @@ public class PathScoringUtilities {
         }
 
         return Tuple.create(convertedTraversal, convertedScores);
+    }
+
+    /**
+     * Wrapper function for computeShortestPathsUndirectedThreeTuple that transforms the result into a two tuple
+     *
+     * @param graph The graph to compute the shortest paths of
+     * @param scoreType Either BETWEENNESS, CLOSENESS, FARNESS, HARMONIC_CLOSENESS, HARMONIC_FARNESS
+     * @param selectedOnly Whether or not to restrict to only selected nodes
+     *
+     * @return Tuple containing an array of BitSets representing each node's traversal and an array of floats with each
+     * node's score
+     */
+    protected static Tuple<BitSet[], float[]> computeShortestPathsUndirected(final GraphReadMethods graph, final ScoreType scoreType, final boolean selectedOnly) {
+        // Run the algorithm
+        final ThreeTuple<BitSet[], float[], BitSet> result = computeShortestPathsUndirectedThreeTuple(graph, scoreType, selectedOnly);
+
+        return convertThreeTupleResultsToTwo(result, graph.getVertexCount());
     }
 
     /**
