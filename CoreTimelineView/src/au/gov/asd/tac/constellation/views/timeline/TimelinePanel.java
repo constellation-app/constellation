@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.timeline;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
@@ -34,6 +35,7 @@ import au.gov.asd.tac.constellation.views.timeline.components.TimelineChart;
 import au.gov.asd.tac.constellation.views.timeline.components.Transaction;
 import au.gov.asd.tac.constellation.views.timeline.components.Vertex;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
@@ -148,6 +150,18 @@ public class TimelinePanel extends Region {
         return coordinator;
     }
 
+    // Used mainly for testing
+    protected ClusteringManager getClusteringManager() {
+        return clusteringManager;
+    }
+
+    /**
+     * Returns the <code>TimelineChart</code> component.
+     */
+    protected TimelineChart getTimeline() {
+        return timeline;
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Layout Layers">
     /**
      * Creates organises the TimelinePanel's layers.
@@ -240,7 +254,7 @@ public class TimelinePanel extends Region {
      * @param selectedOnly limit to selected graph items
      * @param zoneId current time zone
      */
-    public void updateTimeline(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
+    protected void updateTimeline(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
         // If thread still running, stop and restart
         if (updateTimelineThread != null && updateTimelineThread.isAlive()) {
             updateTimelineThread.interrupt();
@@ -258,7 +272,7 @@ public class TimelinePanel extends Region {
         updateTimelineThread.start();
     }
 
-    private synchronized void updateTimelineWorker(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
+    protected synchronized void updateTimelineWorker(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
         final ObservableList<XYChart.Data<Number, Number>> listOfNodeItems = FXCollections.observableArrayList();
 
         // Graph attribute ids:
@@ -308,8 +322,8 @@ public class TimelinePanel extends Region {
                     final int transactionID = leaf.getId();
 
                     // Get the color for this transaction:
-                    ConstellationColor col = ConstellationColor.getColorValue(graph.getStringValue(colorTransAttr, transactionID));
-                    Color transColor = col != null ? col.getJavaFXColor() : FALLBACK_COLOR;
+                    ConstellationColor col = colorTransAttr != GraphConstants.NOT_FOUND ? ConstellationColor.getColorValue(graph.getStringValue(colorTransAttr, transactionID)) : null;
+                    final Color transColor = col != null ? col.getJavaFXColor() : FALLBACK_COLOR;
 
                     // Get the selection status for the transaction:
                     final boolean transSelected = graph.getBooleanValue(selectedTransAttr, transactionID);
@@ -324,9 +338,10 @@ public class TimelinePanel extends Region {
                     }
 
                     // Get the color for each vertex:
-                    col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceA));
+                    col = colorVertAttr != GraphConstants.NOT_FOUND ? ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceA)) : null;
                     final Color sourceAColor = col != null ? col.getJavaFXColor() : FALLBACK_COLOR;
-                    col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceB));
+
+                    col = colorVertAttr != GraphConstants.NOT_FOUND ? ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceB)) : null;
                     final Color sourceBColor = col != null ? col.getJavaFXColor() : FALLBACK_COLOR;
 
                     // Get the selection state for each vertex:

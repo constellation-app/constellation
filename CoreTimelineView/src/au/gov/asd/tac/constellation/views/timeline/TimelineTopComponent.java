@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,6 +133,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     private volatile double splitPanePosition = DEFAULT_DIVIDER_LOCATION;
     private List<String> datetimeAttributes;
     private String currentDatetimeAttribute = null;
+    private boolean isInProgress = false;
 
     public TimelineTopComponent() {
         initComponents();
@@ -695,15 +696,26 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         }
     }
 
+    /**
+     * Returns the value of isInProgress.
+     * Mainly used in testing
+     * @return 
+     */
+    protected boolean getIsInProgress() {
+        return isInProgress;
+    }
+
     public void setInProgress() {
         if (root == null || root.getChildren().contains(spinner)) {
             return;
         }
+        isInProgress = true;
         root.getChildren().add(spinner);
         StackPane.setAlignment(spinner, Pos.CENTER);
     }
 
     public void setProgressComplete() {
+        isInProgress = false;
         Platform.runLater(() -> root.getChildren().remove(spinner));
     }
 
