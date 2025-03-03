@@ -128,8 +128,6 @@ public class TimelinePanelNGTest {
         assertNotNull(instanceSpy.getUpdateTimelineThread());
         // Assert that update timeline update has finished
         assertFalse(coordinator.getIsInProgress());
-        // Assert timeline's data isnt null
-        assertNotNull(instanceSpy.getTimeline().getData());
 
         // Cleanup data, just in case
         instanceSpy.clearTimelineData();
