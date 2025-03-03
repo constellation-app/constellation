@@ -697,9 +697,9 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
 
     /**
-     * Returns the value of isInProgress.
-     * Mainly used in testing
-     * @return 
+     * Returns the value of isInProgress. Mainly used in testing
+     *
+     * @return
      */
     protected boolean getIsInProgress() {
         return isInProgress;

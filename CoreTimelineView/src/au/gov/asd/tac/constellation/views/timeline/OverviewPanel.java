@@ -358,19 +358,22 @@ public class OverviewPanel extends Pane {
      * @param isPartialClear only remove the selected dataset.
      */
     public void clearHistogram(final boolean isPartialClear) {
-        if (histogram.getData() != null) {
-            if (isPartialClear) {
-                // Remove only the 'selected' dataset which is at the 1st index location:
-                if (histogram.getData().size() > 1) {
-                    for (int i = 1; i < histogram.getData().size(); i++) {
-                        histogram.getData().remove(i);
-                    }
-                }
-            } else {
-                histogram.getData().clear();
-                histogram.setData(null);
-            }
+        if (histogram.getData() == null) {
+            return;
         }
+        
+        if (isPartialClear) {
+            // Remove only the 'selected' dataset which is at the 1st index location:
+            if (histogram.getData().size() > 1) {
+                for (int i = 1; i < histogram.getData().size(); i++) {
+                    histogram.getData().remove(i);
+                }
+            }
+        } else {
+            histogram.getData().clear();
+            histogram.setData(null);
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="POV Listeners">

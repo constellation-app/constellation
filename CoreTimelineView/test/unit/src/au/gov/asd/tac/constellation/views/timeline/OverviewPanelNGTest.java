@@ -15,11 +15,22 @@
  */
 package au.gov.asd.tac.constellation.views.timeline;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
@@ -34,15 +45,18 @@ public class OverviewPanelNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(OverviewPanelNGTest.class.getName());
 
+    private Graph graph;
+
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
+        setupGraph();
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public void tearDownClass() throws Exception {
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
@@ -74,8 +88,36 @@ public class OverviewPanelNGTest {
      * Test of clearHistogram method, of class OverviewPanel.
      */
     @Test
-    public void testClearHistogramIsPartialClear() {
-        System.out.println("clearHistogram with args");
+    public void testClearHistogramIsPartialClearTrue() {
+        System.out.println("clearHistogram with args true");
+        final boolean isPartialClear = true;
+
+        // Mocked variables
+        final TimelineTopComponent mockTopComponent = mock(TimelineTopComponent.class);
+        
+        final OverviewPanel instance = new OverviewPanel(mockTopComponent);
+
+        // Assert not null before clearing
+        assertNotNull(instance.getHistogramData());
+
+        // Populate the histogram multiple times
+        instance.populateHistogram(graph.getReadableGraph(), "DateTime", 0, 0, false, false);
+        instance.populateHistogram(graph.getReadableGraph(), "DateTime", 0, 0, false, false);
+        instance.populateHistogram(graph.getReadableGraph(), "DateTime", 0, 0, false, false);
+
+        // Run function
+        instance.clearHistogram(isPartialClear);
+
+        // Should only have one element in histogram data
+        assertEquals(instance.getHistogramData().size(), 1);
+    }
+
+    /**
+     * Test of clearHistogram method, of class OverviewPanel.
+     */
+    @Test
+    public void testClearHistogramIsPartialClearFalse() {
+        System.out.println("clearHistogram with args false");
         final boolean isPartialClear = false;
 
         // Mocked variables
@@ -91,4 +133,54 @@ public class OverviewPanelNGTest {
         assertNull(instance.getHistogramData());
     }
 
+    /**
+     * Set up a graph with two vertices and two transactions.
+     */
+    private void setupGraph() throws InterruptedException {
+        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
+
+        final int vxId1;
+        final int vxId2;
+        final int txId1;
+        final int txId2;
+        final int dateTimeAttribute;
+
+        // Setup attributes
+        WritableGraph wg = graph.getWritableGraph("", true);
+        try {
+
+            wg.addAttribute(GraphElementType.TRANSACTION, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "DateTime",
+                    "Datetime when transaction was created", ZonedDateTimeAttributeDescription.DEFAULT_VALUE, null);
+
+            final SchemaAttribute transactionSelected = VisualConcept.TransactionAttribute.SELECTED;
+            wg.addAttribute(transactionSelected.getElementType(), transactionSelected.getAttributeType(), transactionSelected.getName(),
+                    transactionSelected.getDescription(), transactionSelected.getDefault(), transactionSelected.getAttributeMergerId());
+
+            final SchemaAttribute vertexSelected = VisualConcept.VertexAttribute.SELECTED;
+            wg.addAttribute(vertexSelected.getElementType(), vertexSelected.getAttributeType(), vertexSelected.getName(),
+                    vertexSelected.getDescription(), vertexSelected.getDefault(), vertexSelected.getAttributeMergerId());
+        } finally {
+            wg.commit();
+        }
+
+        // Get id for DateTime
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            dateTimeAttribute = rg.getAttribute(GraphElementType.TRANSACTION, "DateTime");
+        }
+
+        // Setup nodes and transactions
+        wg = graph.getWritableGraph("", true);
+        try {
+            vxId1 = wg.addVertex();
+            vxId2 = wg.addVertex();
+
+            txId1 = wg.addTransaction(vxId1, vxId2, true);
+            txId2 = wg.addTransaction(vxId1, vxId2, false);
+
+            wg.setLongValue(dateTimeAttribute, txId1, 1L);
+            wg.setLongValue(dateTimeAttribute, txId2, 1L);
+        } finally {
+            wg.commit();
+        }
+    }
 }

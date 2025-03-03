@@ -35,7 +35,6 @@ import au.gov.asd.tac.constellation.views.timeline.components.TimelineChart;
 import au.gov.asd.tac.constellation.views.timeline.components.Transaction;
 import au.gov.asd.tac.constellation.views.timeline.components.Vertex;
 import java.time.ZoneId;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
