@@ -422,6 +422,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final MultiChoiceInputPane reportSettingPane = new MultiChoiceInputPane(reportSettingOptions);
         reportSettingPane.setFieldWidth(250);
         reportSettingPane.setFieldMinWidth(200);
+        reportSettingPane.setMaxHeight(20.0);
         controlToolbar.getItems().addAll(settingsBox, reportSettingPane, popupControl, minimizeButton, maximizeButton, clearButton, helpButton);
         final HBox toolboxContainer = new HBox();
         toolboxContainer.getChildren().add(controlToolbar);

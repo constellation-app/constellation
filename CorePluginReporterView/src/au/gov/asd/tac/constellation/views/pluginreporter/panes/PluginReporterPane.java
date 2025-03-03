@@ -122,10 +122,12 @@ public class PluginReporterPane extends BorderPane {
         final MultiChoiceInputPane reportSettingPane = new MultiChoiceInputPane(reportSettingOptions);
         reportSettingPane.setFieldWidth(250);
         reportSettingPane.setFieldMinWidth(200);
+        reportSettingPane.setMaxHeight(20.0);
 
         // Group these together so the Toolbar treats them as a unit.
         final HBox filterBox = new HBox(filterLabel, reportSettingPane);
         filterBox.setAlignment(Pos.BASELINE_LEFT);
+        filterBox.setPadding(new Insets(0, 0, 4, 0));
 
         // The clear button
         Button clearButton = new Button("Clear");
