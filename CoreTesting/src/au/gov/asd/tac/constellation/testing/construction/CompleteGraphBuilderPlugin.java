@@ -47,6 +47,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,6 +58,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -72,13 +74,19 @@ import org.openide.util.lookup.ServiceProviders;
 @Messages("CompleteGraphBuilderPlugin=Complete Graph Builder")
 @PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.CREATE})
 public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
-    
+
     private static final Logger LOGGER = Logger.getLogger(CompleteGraphBuilderPlugin.class.getName());
 
     public static final String N_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "n");
     public static final String RANDOM_WEIGHTS_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "random_weights");
     public static final String NODE_TYPES_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "node_types");
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "transaction_types");
+    public static final String WARNING_LABEL_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "warning_label");
+    public static final String WARNING_LABEL_EXTRA_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "extra_warning_label");
+
+    private static final String WARNING_TEXT_BEGIN = "Your current settings will generate ";
+    private static final String WARNING_TEXT_END = " transactions.\nA graph of this size may cause significant performance issues in Constellation.\nProceed?";
+    private static final int NUM_TRANSACTIONS_THRESHOLD = 100000;
 
     private final SecureRandom r = new SecureRandom();
 
@@ -125,7 +133,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         final List<String> tChoices = new ArrayList<>();
         if (graph != null) {
             final Set<Class<? extends SchemaConcept>> concepts = graph.getSchema().getFactory().getRegisteredConcepts();
-            
+
             final Collection<SchemaVertexType> nodeTypes = SchemaVertexTypeUtilities.getTypes(concepts);
             for (final SchemaVertexType type : nodeTypes) {
                 nAttributes.add(type.getName());
@@ -137,7 +145,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
                 tAttributes.add(type.getName());
             }
             tAttributes.sort(String::compareTo);
-            
+
             nChoices.add(nAttributes.get(0));
             tChoices.add(tAttributes.get(0));
         }
@@ -153,6 +161,27 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         }
     }
 
+    /**
+     * Creates popup and warns user about the number of transactions they will create
+     *
+     * @param numTransactions The number of transactions the user will create
+     * @param randomWeights Whether or not the user is using random weights
+     * @return Whether or not the use wants to continue in graph creation. Returns True if user clicks OK
+     */
+    protected boolean showWarning(final long numTransactions, final boolean randomWeights) {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))) {
+            return false;
+        }
+
+        // Create popup
+        final int response = JOptionPane.showConfirmDialog(SystemUtilities.getMainframe(),
+                WARNING_TEXT_BEGIN + (randomWeights ? "approximately " : "") + numTransactions + WARNING_TEXT_END,
+                "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+        // returns True if the user clicks OK
+        return response == JOptionPane.YES_OPTION;
+    }
+
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         interaction.setProgress(0, 0, "Building...", true);
@@ -161,11 +190,24 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
 
         final int n = params.get(N_PARAMETER_ID).getIntegerValue();
         final boolean randomWeights = params.get(RANDOM_WEIGHTS_PARAMETER_ID).getBooleanValue();
+
+        // Estimate number of transactions to be made
+        // If random weights is enabled, each edge will have roughly 24.7 transactions, otherwise just 1 transaction per edge
+        final long numTransactions = n * (n - 1L) * (randomWeights ? 25L : 1L);
+
+        // If graph is going to be too large, warn user and then stop plugin if the choose to do so
+        // If numTransactions is negative, overflow has occured, so n is very large
+        if ((numTransactions > NUM_TRANSACTIONS_THRESHOLD || numTransactions < 0) && !showWarning(numTransactions, randomWeights)) {
+            // If user doesn't click ok, dont let the plugin run
+            interaction.setProgress(1, 0, "Completed successfully", true);
+            return;
+        }
+
         final List<String> nodeTypes = params.get(NODE_TYPES_PARAMETER_ID).getMultiChoiceValue().getChoices();
         final List<String> transactionTypes = params.get(TRANSACTION_TYPES_PARAMETER_ID).getMultiChoiceValue().getChoices();
 
         // Random countries to put in the graph
-        final List<String> countries = Arrays.asList("Australia", "Brazil", "China", "France", "Japan", "New Zealand", 
+        final List<String> countries = Arrays.asList("Australia", "Brazil", "China", "France", "Japan", "New Zealand",
                 "South Africa", "United Arab Emirates", "United Kingdom", "United States");
 
         final int vxIdentifierAttr = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
@@ -179,9 +221,10 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
         final int txTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
         final int txDateTimeAttr = TemporalConcept.TransactionAttribute.DATETIME.ensure(graph);
 
-        final VertexDecorators decorators = new VertexDecorators(graph.getAttributeName(vxCountryAttr), 
+        final VertexDecorators decorators = new VertexDecorators(graph.getAttributeName(vxCountryAttr),
                 graph.getAttributeName(vxPinnedAttr), null, graph.getAttributeName(vxIsGoodAttr));
         final int decoratorsAttr = VisualConcept.GraphAttribute.DECORATORS.ensure(graph);
+
         graph.setObjectValue(decoratorsAttr, 0, decorators);
 
         final int[] vxIds = new int[n];
