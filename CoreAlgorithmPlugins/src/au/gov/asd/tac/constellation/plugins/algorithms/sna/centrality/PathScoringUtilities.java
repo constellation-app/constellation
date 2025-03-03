@@ -410,24 +410,31 @@ public class PathScoringUtilities {
 
     /**
      * Wrapper function for computeShortestPathsUndirectedThreeTuple that transforms the result into a two tuple
+     *
+     * @param graph The graph to compute the shortest paths of
+     * @param scoreType Either BETWEENNESS, CLOSENESS, FARNESS, HARMONIC_CLOSENESS, HARMONIC_FARNESS
+     * @param selectedOnly Whether or not to restrict to only selected nodes
+     *
+     * @return Tuple containing an array of BitSets representing each node's traversal and an array of floats with each
+     * node's score
      */
     protected static Tuple<BitSet[], float[]> computeShortestPathsUndirected(final GraphReadMethods graph, final ScoreType scoreType, final boolean selectedOnly) {
         final int vertexCount = graph.getVertexCount();
         final BitSet[] convertedTraversal = new BitSet[vertexCount];
         final float[] convertedScores = new float[vertexCount];
 
-        final ThreeTuple<BitSet[], float[], int[]> result = computeShortestPathsUndirectedThreeTuple(graph, scoreType, selectedOnly);
+        final ThreeTuple<BitSet[], float[], BitSet> result = computeShortestPathsUndirectedThreeTuple(graph, scoreType, selectedOnly);
 
         final BitSet[] traversal = result.getFirst();
         final float[] scores = result.getSecond();
-        final int[] indexes = result.getThird();
+        final BitSet indexes = result.getThird();
 
         int currentIndex = 0;
-        for (final int index : indexes) {
+        for (int index = indexes.nextSetBit(0); index >= 0; index = indexes.nextSetBit(index + 1)) {
             final BitSet convertedBitSet = new BitSet(vertexCount);
             final BitSet currentBitSet = traversal[currentIndex];
             int i = 0;
-            for (final int indexBitSet : indexes) {
+            for (int indexBitSet = indexes.nextSetBit(0); indexBitSet >= 0; indexBitSet = indexes.nextSetBit(indexBitSet + 1)) {
                 convertedBitSet.set(indexBitSet, currentBitSet.get(i));
                 i++;
             }
@@ -440,9 +447,20 @@ public class PathScoringUtilities {
         return Tuple.create(convertedTraversal, convertedScores);
     }
 
-    protected static ThreeTuple<BitSet[], float[], int[]> computeShortestPathsUndirectedThreeTuple(final GraphReadMethods graph, final ScoreType scoreType, final boolean selectedOnly) {
+    /**
+     * Calculates the shortest paths (undirected) for the given graph
+     *
+     * @param graph The graph to compute the shortest paths of
+     * @param scoreType Either BETWEENNESS, CLOSENESS, FARNESS, HARMONIC_CLOSENESS, HARMONIC_FARNESS
+     * @param selectedOnly Whether or not to restrict to only selected nodes
+     *
+     * @return ThreeTuple containing an array of BitSets representing each node's traversal, an array of floats with
+     * each node's score, and TODO
+     */
+    protected static ThreeTuple<BitSet[], float[], BitSet> computeShortestPathsUndirectedThreeTuple(final GraphReadMethods graph, final ScoreType scoreType, final boolean selectedOnly) {
         final int vertexCount = graph.getVertexCount();
         final BitSet update = new BitSet(vertexCount);
+        final BitSet updateToReturn = new BitSet(vertexCount);
 
         final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
 
@@ -451,6 +469,7 @@ public class PathScoringUtilities {
             if (graph.getVertexNeighbourCount(graph.getVertex(vertexPosition)) > 0) {
                 updatedVertexIndexArray.add(vertexPosition);
                 update.set(vertexPosition);
+                updateToReturn.set(vertexPosition);
             }
         }
 
@@ -481,7 +500,7 @@ public class PathScoringUtilities {
 
         while (!update.isEmpty()) {
             // update the information of each node with messages
-            for (int i = 0; i < updatedVertexIndexArray.size(); i++) {
+            for (int i = 0; i < updateVertexCount; i++) {
                 traversal[i].or(sendBuffer[i]);
                 traversal[i].set(i);
                 sendFails[i].clear();
@@ -490,7 +509,7 @@ public class PathScoringUtilities {
             }
 
             // for each neighbour, check if there is any new information it needs to receive
-            for (int i = 0; i < updatedVertexIndexArray.size(); i++) {
+            for (int i = 0; i < updateVertexCount; i++) {
                 final int vertexId = graph.getVertex(updatedVertexIndexArray.get(i));
 
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
@@ -543,8 +562,7 @@ public class PathScoringUtilities {
                 scores[index] = scores[index] == 0 ? 0 : scores[index] / scores.length;
             }
         }
-
-        return ThreeTuple.create(traversal, scores, updatedVertexIndexArray.stream().mapToInt(i -> i).toArray());
+        return ThreeTuple.create(traversal, scores, updateToReturn);
     }
 
     protected static Tuple<BitSet[], float[]> computeShortestPathsDirected(final GraphReadMethods graph, final ScoreType scoreType,
