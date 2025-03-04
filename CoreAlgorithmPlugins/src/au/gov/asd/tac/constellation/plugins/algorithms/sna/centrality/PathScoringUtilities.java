@@ -485,22 +485,15 @@ public class PathScoringUtilities {
         final BitSet[] sendFails = new BitSet[updateVertexCount];
         final BitSet[] sendBuffer = new BitSet[updateVertexCount];
         final BitSet[] exclusions = new BitSet[updateVertexCount];
-        final BitSet newUpdate = new BitSet(updateVertexCount);
+        final BitSet newUpdate = new BitSet(vertexCount);
         final BitSet turn = new BitSet(updateVertexCount);
 
         // initialise variables
-        int currentIndex = 0;
-        for (int vertexPosition : updatedVertexIndexArray) {
-            // only update nodes with neighbours
-            final int vxId = graph.getVertex(vertexPosition);
-            if (graph.getVertexNeighbourCount(vxId) > 0) {
-                traversal[currentIndex] = new BitSet(updateVertexCount);
-
-                sendFails[currentIndex] = new BitSet(updateVertexCount);
-                sendBuffer[currentIndex] = new BitSet(updateVertexCount);
-                exclusions[currentIndex] = new BitSet(updateVertexCount);
-            }
-            currentIndex++;
+        for (int vertexPosition = 0; vertexPosition < updateVertexCount; vertexPosition++) {
+            traversal[vertexPosition] = new BitSet(updateVertexCount);
+            sendFails[vertexPosition] = new BitSet(updateVertexCount);
+            sendBuffer[vertexPosition] = new BitSet(updateVertexCount);
+            exclusions[vertexPosition] = new BitSet(updateVertexCount);
         }
 
         while (!update.isEmpty()) {
@@ -527,7 +520,7 @@ public class PathScoringUtilities {
                         diff.andNot(traversal[neighbourPosition]);
                         sendBuffer[neighbourPosition].or(diff);
                         sendFails[i].andNot(diff);
-                        newUpdate.set(neighbourPosition);
+                        newUpdate.set(graph.getVertexPosition(neighbourId));
                     }
                 }
                 for (int neighbourPosition = sendFails[i].nextSetBit(0); neighbourPosition >= 0; neighbourPosition = sendFails[i].nextSetBit(neighbourPosition + 1)) {
@@ -572,73 +565,91 @@ public class PathScoringUtilities {
 
     protected static Tuple<BitSet[], float[]> computeShortestPathsDirected(final GraphReadMethods graph, final ScoreType scoreType,
             final boolean includeConnectionsIn, final boolean includeConnectionsOut, final boolean treatUndirectedBidirectional, final boolean selectedOnly) {
+        // Run the algorithm
+        final ThreeTuple<BitSet[], float[], BitSet> result = computeShortestPathsDirectedThreeTuple(graph, scoreType,
+                includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional, selectedOnly);
+
+        // Convert results into a two tuple
+        return convertThreeTupleResultsToTwo(result, graph.getVertexCount());
+    }
+
+    protected static ThreeTuple<BitSet[], float[], BitSet> computeShortestPathsDirectedThreeTuple(final GraphReadMethods graph, final ScoreType scoreType,
+            final boolean includeConnectionsIn, final boolean includeConnectionsOut, final boolean treatUndirectedBidirectional, final boolean selectedOnly) {
 
         final int vertexCount = graph.getVertexCount();
-        final BitSet[] traversalF = new BitSet[vertexCount];
-        final BitSet[] traversalB = new BitSet[vertexCount];
-        final float[] scores = new float[vertexCount];
 
+        final BitSet updateUnmodified = new BitSet(vertexCount); // A Copy of updateF that wont be modified during this functions execution, will be returned
         final BitSet updateF = new BitSet(vertexCount);
-        final BitSet[] sendFailsF = new BitSet[vertexCount];
-        final BitSet[] sendBufferF = new BitSet[vertexCount];
-        final BitSet[] exclusionsF = new BitSet[vertexCount];
-        final BitSet newUpdateF = new BitSet(vertexCount);
-
         final BitSet updateB = new BitSet(vertexCount);
-        final BitSet[] sendFailsB = new BitSet[vertexCount];
-        final BitSet[] sendBufferB = new BitSet[vertexCount];
-        final BitSet[] exclusionsB = new BitSet[vertexCount];
-        final BitSet newUpdateB = new BitSet(vertexCount);
-
-        final BitSet turn = new BitSet(vertexCount);
+        final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
 
         // initialise variables
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-            traversalF[vertexPosition] = new BitSet(vertexCount);
-            // only update nodes with neighbours
-            final int vxId = graph.getVertex(vertexPosition);
-            if (graph.getVertexNeighbourCount(vxId) > 0) {
-
-                traversalB[vertexPosition] = new BitSet(vertexCount);
-                scores[vertexPosition] = 0;
+            if (graph.getVertexNeighbourCount(graph.getVertex(vertexPosition)) > 0) {
+                updatedVertexIndexArray.add(vertexPosition);
 
                 updateF.set(vertexPosition);
                 updateB.set(vertexPosition);
-
-                sendFailsF[vertexPosition] = new BitSet(vertexCount);
-                sendBufferF[vertexPosition] = new BitSet(vertexCount);
-                exclusionsF[vertexPosition] = new BitSet(vertexCount);
-
-                sendFailsB[vertexPosition] = new BitSet(vertexCount);
-                sendBufferB[vertexPosition] = new BitSet(vertexCount);
-                exclusionsB[vertexPosition] = new BitSet(vertexCount);
+                updateUnmodified.set(vertexPosition);
             }
+        }
+
+        final int updateVertexCount = updatedVertexIndexArray.size();
+
+        final BitSet[] traversalF = new BitSet[updateVertexCount];
+        final BitSet[] traversalB = new BitSet[updateVertexCount];
+        final float[] scores = new float[updateVertexCount]; // Initialises with 0
+
+        final BitSet[] sendFailsF = new BitSet[updateVertexCount];
+        final BitSet[] sendBufferF = new BitSet[updateVertexCount];
+        final BitSet[] exclusionsF = new BitSet[updateVertexCount];
+        final BitSet newUpdateF = new BitSet(vertexCount);
+
+        final BitSet[] sendFailsB = new BitSet[updateVertexCount];
+        final BitSet[] sendBufferB = new BitSet[updateVertexCount];
+        final BitSet[] exclusionsB = new BitSet[updateVertexCount];
+        final BitSet newUpdateB = new BitSet(vertexCount);
+
+        final BitSet turn = new BitSet(updateVertexCount);
+
+        // initialise variables
+        for (int vertexPosition = 0; vertexPosition < updateVertexCount; vertexPosition++) {
+            traversalF[vertexPosition] = new BitSet(updateVertexCount);
+            sendFailsF[vertexPosition] = new BitSet(updateVertexCount);
+            sendBufferF[vertexPosition] = new BitSet(updateVertexCount);
+            exclusionsF[vertexPosition] = new BitSet(updateVertexCount);
+
+            traversalB[vertexPosition] = new BitSet(updateVertexCount);
+            sendFailsB[vertexPosition] = new BitSet(updateVertexCount);
+            sendBufferB[vertexPosition] = new BitSet(updateVertexCount);
+            exclusionsB[vertexPosition] = new BitSet(updateVertexCount);
+
         }
 
         while (!updateF.isEmpty() || !updateB.isEmpty()) {
             // update the information of each node with messages
-            for (int vertexPosition = updateF.nextSetBit(0); vertexPosition >= 0; vertexPosition = updateF.nextSetBit(vertexPosition + 1)) {
-                traversalF[vertexPosition].or(sendBufferF[vertexPosition]);
-                traversalF[vertexPosition].set(vertexPosition);
-                sendFailsF[vertexPosition].clear();
-                sendFailsF[vertexPosition].or(sendBufferF[vertexPosition]);
-                sendBufferF[vertexPosition].clear();
+            for (int i = 0; i < updateVertexCount; i++) {
+                traversalF[i].or(sendBufferF[i]);
+                traversalF[i].set(i);
+                sendFailsF[i].clear();
+                sendFailsF[i].or(sendBufferF[i]);
+                sendBufferF[i].clear();
             }
-            for (int vertexPosition = updateB.nextSetBit(0); vertexPosition >= 0; vertexPosition = updateB.nextSetBit(vertexPosition + 1)) {
-                traversalB[vertexPosition].or(sendBufferB[vertexPosition]);
-                traversalB[vertexPosition].set(vertexPosition);
-                sendFailsB[vertexPosition].clear();
-                sendFailsB[vertexPosition].or(sendBufferB[vertexPosition]);
-                sendBufferB[vertexPosition].clear();
+            for (int i = 0; i < updateVertexCount; i++) {
+                traversalB[i].or(sendBufferB[i]);
+                traversalB[i].set(i);
+                sendFailsB[i].clear();
+                sendFailsB[i].or(sendBufferB[i]);
+                sendBufferB[i].clear();
             }
 
             // for each neighbour, check if there is any new information it needs to receive
-            for (int vertexPosition = updateF.nextSetBit(0); vertexPosition >= 0; vertexPosition = updateF.nextSetBit(vertexPosition + 1)) {
-                int vertexId = graph.getVertex(vertexPosition);
+            for (int vertexPosition = 0; vertexPosition < updateVertexCount; vertexPosition++) {
+                final int vertexId = graph.getVertex(updatedVertexIndexArray.get(vertexPosition));
 
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
                     final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
-                    final int neighbourPosition = graph.getVertexPosition(neighbourId);
+                    final int neighbourPosition = updatedVertexIndexArray.indexOf(graph.getVertexPosition(neighbourId));
 
                     boolean isRequestedDirection = false;
                     final int linkId = graph.getLink(vertexId, neighbourId);
@@ -669,12 +680,12 @@ public class PathScoringUtilities {
             }
 
             // for each neighbour, check if there is any new information it needs to receive
-            for (int vertexPosition = updateB.nextSetBit(0); vertexPosition >= 0; vertexPosition = updateB.nextSetBit(vertexPosition + 1)) {
-                int vertexId = graph.getVertex(vertexPosition);
+            for (int vertexPosition = 0; vertexPosition < updateVertexCount; vertexPosition++) {
+                final int vertexId = graph.getVertex(updatedVertexIndexArray.get(vertexPosition));
 
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
                     final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
-                    final int neighbourPosition = graph.getVertexPosition(neighbourId);
+                    final int neighbourPosition = updatedVertexIndexArray.indexOf(graph.getVertexPosition(neighbourId));
 
                     boolean isOppositeDirection = false;
                     int linkId = graph.getLink(vertexId, neighbourId);
@@ -725,7 +736,7 @@ public class PathScoringUtilities {
             newUpdateB.clear();
         }
 
-        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+        for (int vertexPosition = 0; vertexPosition < updateVertexCount; vertexPosition++) {
             if (traversalB[vertexPosition] != null) {
                 traversalF[vertexPosition].or(traversalB[vertexPosition]);
             }
@@ -746,7 +757,7 @@ public class PathScoringUtilities {
             }
         }
 
-        return Tuple.create(traversalF, scores);
+        return ThreeTuple.create(traversalF, scores, updateUnmodified);
     }
 
     private static void updateEccentricityScoresUndirected(final float[] scores, final BitSet turn) {

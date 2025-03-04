@@ -51,7 +51,7 @@ public class PathScoringUtilitiesNGTest {
 
         // Set up expected expected bit set array
         final BitSet expectedBitSetA = BitSet.valueOf(new long[]{0b11011});
-        final BitSet expectedBitSetB = BitSet.valueOf(new long[]{0b00000});
+        final BitSet expectedBitSetB = null;
         final BitSet[] expectedBitSets = {expectedBitSetA, expectedBitSetA, expectedBitSetB, expectedBitSetA, expectedBitSetA};
         // Set up expected float array
         final float[] expectedFloats = {3.0F, 3.0F, 0.0F, 3.0F, 3.0F};
