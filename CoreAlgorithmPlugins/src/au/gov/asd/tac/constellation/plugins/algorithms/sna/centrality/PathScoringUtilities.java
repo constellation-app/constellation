@@ -644,8 +644,10 @@ public class PathScoringUtilities {
             }
 
             // for each neighbour, check if there is any new information it needs to receive
-            for (int vertexPosition = 0; vertexPosition < updateVertexCount; vertexPosition++) {
-                final int vertexId = graph.getVertex(updatedVertexIndexArray.get(vertexPosition));
+            // for (int vertexPosition = 0; vertexPosition < updateVertexCount; vertexPosition++) {
+            for (int vertexPositionGlobal = updateF.nextSetBit(0); vertexPositionGlobal >= 0; vertexPositionGlobal = updateF.nextSetBit(vertexPositionGlobal + 1)) {
+                final int vertexId = graph.getVertex(vertexPositionGlobal);
+                final int vertexPosition = updatedVertexIndexArray.indexOf(graph.getVertexPosition(vertexId));
 
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
                     final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
@@ -671,7 +673,7 @@ public class PathScoringUtilities {
                         diff.andNot(traversalF[neighbourPosition]);
                         sendBufferF[neighbourPosition].or(diff);
                         sendFailsF[vertexPosition].andNot(diff);
-                        newUpdateF.set(neighbourPosition);
+                        newUpdateF.set(graph.getVertexPosition(neighbourId));
                     }
                 }
                 for (int neighbourPosition = sendFailsF[vertexPosition].nextSetBit(0); neighbourPosition >= 0; neighbourPosition = sendFailsF[vertexPosition].nextSetBit(neighbourPosition + 1)) {
@@ -680,8 +682,9 @@ public class PathScoringUtilities {
             }
 
             // for each neighbour, check if there is any new information it needs to receive
-            for (int vertexPosition = 0; vertexPosition < updateVertexCount; vertexPosition++) {
-                final int vertexId = graph.getVertex(updatedVertexIndexArray.get(vertexPosition));
+            for (int vertexPositionGlobal = updateB.nextSetBit(0); vertexPositionGlobal >= 0; vertexPositionGlobal = updateB.nextSetBit(vertexPositionGlobal + 1)) {
+                final int vertexId = graph.getVertex(vertexPositionGlobal);
+                final int vertexPosition = updatedVertexIndexArray.indexOf(graph.getVertexPosition(vertexId));
 
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
                     final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
@@ -705,7 +708,7 @@ public class PathScoringUtilities {
                         diff.andNot(traversalB[neighbourPosition]);
                         sendBufferB[neighbourPosition].or(diff);
                         sendFailsB[vertexPosition].andNot(diff);
-                        newUpdateB.set(neighbourPosition);
+                        newUpdateB.set(graph.getVertexPosition(neighbourId));
                     }
                 }
                 for (int neighbourPosition = sendFailsB[vertexPosition].nextSetBit(0); neighbourPosition >= 0; neighbourPosition = sendFailsB[vertexPosition].nextSetBit(neighbourPosition + 1)) {
