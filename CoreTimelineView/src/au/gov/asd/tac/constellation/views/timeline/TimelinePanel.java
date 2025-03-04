@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.timeline;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
@@ -36,6 +37,8 @@ import au.gov.asd.tac.constellation.views.timeline.components.Vertex;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -83,9 +86,9 @@ import org.openide.util.NbBundle.Messages;
 public class TimelinePanel extends Region {
 
     private static final char ARROW_CHAR = 0x2192;
-    
+
     private static final int MIN_CLUSTER_WIDTH = 14; // Min width of 14 pixels which matches the min label width.
-    public final TimelineTopComponent coordinator;
+    private final TimelineTopComponent coordinator;
     private final AnchorPane innerPane = new AnchorPane();
     private final ToolBar toolbar;
     private final Label lowerTime;
@@ -102,17 +105,19 @@ public class TimelinePanel extends Region {
     private long expectedvxMod = Long.MIN_VALUE;
     private long expectedtxMod = Long.MIN_VALUE;
 
+    final BorderPane timelinePane = new BorderPane();
+
+    private Thread updateTimelineThread = null;
+
     /*
      If there is no color set for a node or transaction then set it to clouds.
      */
     private static final Color FALLBACK_COLOR = ConstellationColor.CLOUDS.getJavaFXColor();
 
     /**
-     * Constructs a new TimelinePanel, and sets the parent top component as its
-     * coordinator.
+     * Constructs a new TimelinePanel, and sets the parent top component as its coordinator.
      *
-     * @param coordinator The top component that manages and liaises with both
-     * the timeline and histogram components.
+     * @param coordinator The top component that manages and liaises with both the timeline and histogram components.
      *
      * @see TimelineTopComponent
      */
@@ -140,13 +145,28 @@ public class TimelinePanel extends Region {
         doLayout();
     }
 
+    public TimelineTopComponent getCoordinator() {
+        return coordinator;
+    }
+
+    // Used mainly for testing
+    protected ClusteringManager getClusteringManager() {
+        return clusteringManager;
+    }
+
+    /**
+     * Returns the <code>TimelineChart</code> component.
+     */
+    protected TimelineChart getTimeline() {
+        return timeline;
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Layout Layers">
     /**
      * Creates organises the TimelinePanel's layers.
      */
-    private void doLayout() {
+    protected void doLayout() {
         // Layer that contains the timelinechart component:
-        final BorderPane timelinePane = new BorderPane();
 
         timelinePane.setCenter(timeline);
         // The layer that contains the time extent labels:
@@ -213,11 +233,47 @@ public class TimelinePanel extends Region {
         } else {
             this.setTimelineExtent(graph, 0, System.currentTimeMillis(), selectedOnly, zoneId);
         }
-
     }
 
-    public void updateTimeline(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
-        final XYChart.Series<Number, Number> series = new XYChart.Series<>();
+    /**
+     * Returns the current thread for updating the timeline.
+     *
+     * @return current update timeline thread.
+     */
+    protected Thread getUpdateTimelineThread() {
+        return updateTimelineThread;
+    }
+
+    /**
+     * Wrapper function for updateTimelineThread, which runs updateTimelineWorker, allowing it to be interrupted and
+     * restarted. UpdateTimelineWorker can be a lengthy function as it's processing time scales with the amount of data,
+     * so allowing it to be interrupted prevents issues with running out of memory and overall responsiveness
+     *
+     * @param graph the graph to update the timeline from
+     * @param selectedOnly limit to selected graph items
+     * @param zoneId current time zone
+     */
+    protected void updateTimeline(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
+        // If thread still running, stop and restart
+        if (updateTimelineThread != null && updateTimelineThread.isAlive()) {
+            updateTimelineThread.interrupt();
+            updateTimelineThread = null;
+        }
+
+        // At this stage, thread has to be stopped/finished. So start again
+        updateTimelineThread = new Thread() {
+            @Override
+            public void run() {
+                updateTimelineWorker(graph, selectedOnly, zoneId);
+            }
+        };
+
+        updateTimelineThread.start();
+    }
+
+    protected synchronized void updateTimelineWorker(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
+        final ObservableList<XYChart.Data<Number, Number>> listOfNodeItems = FXCollections.observableArrayList();
+
         // Graph attribute ids:
         final String colorAttrDesc = new ColorAttributeDescription().getName();
         final int colorTransAttr = graph.getAttribute(GraphElementType.TRANSACTION, colorAttrDesc);
@@ -228,15 +284,45 @@ public class TimelinePanel extends Region {
         long lowestObservedY = Long.MAX_VALUE;
         long highestObservedY = Long.MIN_VALUE;
 
-        for (final TreeElement element : clusteringManager.getElementsToDraw()) {
+        // Check if thread has been interrupted
+        if (Thread.interrupted()) {
+            return;
+        }
+
+        final CountDownLatch clearLatch = new CountDownLatch(1);
+        // Helps with out of memory issues
+        Platform.runLater(() -> {
+            clearTimelineData();
+            clearLatch.countDown();
+        });
+
+        try {
+            clearLatch.await();
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        // Loop done in this way to prevent concurrent modification error
+        // Copy of the array is stored as opposed to being called in for loop to prevent issues cause by threading
+        final Object[] arrayCopy = clusteringManager.getElementsToDraw().toArray();
+        for (final Object elementsFromArray : arrayCopy) {
+
+            // Check if thread has been interrupted
+            if (Thread.interrupted()) {
+                return;
+            }
+
+            final TreeElement element = (TreeElement) elementsFromArray;
+
             XYChart.Data<Number, Number> nodeItem = element.getNodeItem();
             if (nodeItem == null) {
                 if (element instanceof TreeLeaf leaf) {
                     final int transactionID = leaf.getId();
 
                     // Get the color for this transaction:
-                    ConstellationColor col = ConstellationColor.getColorValue(graph.getStringValue(colorTransAttr, transactionID));
-                    Color transColor = col != null ? col.getJavaFXColor() : FALLBACK_COLOR;
+                    ConstellationColor col = colorTransAttr != GraphConstants.NOT_FOUND ? ConstellationColor.getColorValue(graph.getStringValue(colorTransAttr, transactionID)) : null;
+                    final Color transColor = col != null ? col.getJavaFXColor() : FALLBACK_COLOR;
 
                     // Get the selection status for the transaction:
                     final boolean transSelected = graph.getBooleanValue(selectedTransAttr, transactionID);
@@ -245,10 +331,16 @@ public class TimelinePanel extends Region {
                     final int sourceA = graph.getTransactionSourceVertex(transactionID);
                     final int sourceB = graph.getTransactionDestinationVertex(transactionID);
 
+                    // If either vertex not found, skip this loop
+                    if (sourceA == -1 || sourceB == -1) {
+                        continue;
+                    }
+
                     // Get the color for each vertex:
-                    col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceA));
+                    col = colorVertAttr != GraphConstants.NOT_FOUND ? ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceA)) : null;
                     final Color sourceAColor = col != null ? col.getJavaFXColor() : FALLBACK_COLOR;
-                    col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceB));
+
+                    col = colorVertAttr != GraphConstants.NOT_FOUND ? ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceB)) : null;
                     final Color sourceBColor = col != null ? col.getJavaFXColor() : FALLBACK_COLOR;
 
                     // Get the selection state for each vertex:
@@ -285,7 +377,8 @@ public class TimelinePanel extends Region {
                                 final String label = labelMaker(sourceALabel, ARROW_CHAR, sourceBLabel);
                                 transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
                             }
-                            case Graph.UPHILL -> throw new IllegalArgumentException("source > dest is always downhill");
+                            case Graph.UPHILL ->
+                                throw new IllegalArgumentException("source > dest is always downhill");
                             default -> { // Undirected / Bi-directional
                                 final String label = labelMaker(sourceALabel, '-', sourceBLabel);
                                 transaction = new Transaction(transactionID, transColor, label, transSelected);
@@ -298,7 +391,8 @@ public class TimelinePanel extends Region {
                                 sourceASelected, transSelected, btnShowLabels.isSelected());
 
                         switch (directionality) {
-                            case Graph.DOWNHILL -> throw new IllegalArgumentException("source < dest is always uphill");
+                            case Graph.DOWNHILL ->
+                                throw new IllegalArgumentException("source < dest is always uphill");
                             case Graph.UPHILL -> {
                                 final String label = labelMaker(sourceALabel, ARROW_CHAR, sourceBLabel);
                                 transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_DOWN, transSelected);
@@ -321,46 +415,69 @@ public class TimelinePanel extends Region {
                             (Math.max(sourceA, sourceB) - Math.min(sourceA, sourceB)),
                             new Interaction(vertexA, vertexB, transaction, btnShowLabels.isSelected()));
                 } else {
-                    nodeItem = new XYChart.Data<>(element.getLowerTimeExtent(), element.getLowerDisplayPos(), 
-                            new Cluster(element.getLowerTimeExtent(), element.getUpperTimeExtent(), 
+                    nodeItem = new XYChart.Data<>(element.getLowerTimeExtent(), element.getLowerDisplayPos(),
+                            new Cluster(element.getLowerTimeExtent(), element.getUpperTimeExtent(),
                                     element.getLowerDisplayPos(), element.getUpperDisplayPos(), element.getCount(),
                                     element.getSelectedCount(), element.anyNodesSelected()));
                 }
-                
+
                 element.setNodeItem(nodeItem);
             }
-
-            series.getData().add(nodeItem);
-
+            listOfNodeItems.add(nodeItem);
             lowestObservedY = Math.min(element.getLowerDisplayPos(), lowestObservedY);
             highestObservedY = Math.max(element.getUpperDisplayPos(), highestObservedY);
         }
 
-        timeline.populate(series, lowestObservedY, highestObservedY, selectedOnly, zoneId);
+        // Check if thread has been interrupted
+        if (Thread.interrupted()) {
+            return;
+        }
+
+        final XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        series.setData(listOfNodeItems);
+        final long low = lowestObservedY;
+        final long high = highestObservedY;
+
+        final CountDownLatch populateLatch = new CountDownLatch(1);
+
+        Platform.runLater(() -> {
+            timeline.populate(series, low, high, selectedOnly, zoneId);
+            populateLatch.countDown();
+        });
+
+        try {
+            populateLatch.await();
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        coordinator.setProgressComplete();
     }
 
     private static String labelMaker(final String a, final char cxn, final String b) {
         return a != null && b != null ? String.format("%s %s %s", a, cxn, b) : null;
     }
 
+    protected void clearTimelineData() {
+        if (timeline.getData() != null) {
+            timeline.getData().clear();
+        }
+    }
+
     /**
-     * Method responsible for removing all content from the
-     * <code>TimelineChart</code> component.
+     * Method responsible for removing all content from the <code>TimelineChart</code> component.
      *
      * @see TimelineChart
      */
     public void clearTimeline() {
-        if (timeline.getData() != null) {
-            timeline.getData().clear();
-        }
-
-        clusteringManager.clearTree();
+        clearTimelineData();
+        clusteringManager.cleanupVariables();
         GraphManager.getDefault().setElementSelected(false);
     }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Extents">
-    protected void setTimelineExtent(final GraphReadMethods graph, final double lowerTimeExtent, final double upperTimeExtent, 
+    protected void setTimelineExtent(final GraphReadMethods graph, final double lowerTimeExtent, final double upperTimeExtent,
             final boolean showSelectedOnly, final ZoneId zoneId) {
         final double millisPerPixel = (upperTimeExtent - lowerTimeExtent) / timeline.getWidth();
         final double pixelsPerTransaction = MIN_CLUSTER_WIDTH * millisPerPixel;
@@ -368,15 +485,17 @@ public class TimelinePanel extends Region {
         clusteringManager.filterTree(pixelsPerTransaction, (long) lowerTimeExtent, (long) upperTimeExtent);
 
         updateTimeline(graph, showSelectedOnly, zoneId);
-
         timeline.setExtents(lowerTimeExtent, upperTimeExtent);
     }
 
     protected void setExclusionState(final int exclusionState) {
         switch (exclusionState) {
-            case 1 -> cmbExcludedNodes.setValue(Bundle.DimNodesLabel());
-            case 2 -> cmbExcludedNodes.setValue(Bundle.HideNodesLabel());
-            default -> cmbExcludedNodes.setValue(Bundle.ShowNodesLabel());
+            case 1 ->
+                cmbExcludedNodes.setValue(Bundle.DimNodesLabel());
+            case 2 ->
+                cmbExcludedNodes.setValue(Bundle.HideNodesLabel());
+            default ->
+                cmbExcludedNodes.setValue(Bundle.ShowNodesLabel());
         }
     }
 
@@ -400,7 +519,7 @@ public class TimelinePanel extends Region {
         return actualVxModCount <= expectedvxMod && actualTxModCount <= expectedtxMod;
     }
 
-    protected void initExclusionState(final Graph graph, final long lowerTimeExtent, final long upperTimeExtent, 
+    protected void initExclusionState(final Graph graph, final long lowerTimeExtent, final long upperTimeExtent,
             final int exclusionState) {
         final Plugin initPlugin = clusteringManager.new InitDimOrHidePlugin(lowerTimeExtent, upperTimeExtent, exclusionState, (vxMod, txMod) -> {
             expectedvxMod = vxMod;
@@ -409,7 +528,7 @@ public class TimelinePanel extends Region {
         PluginExecution.withPlugin(initPlugin).executeLater(graph);
     }
 
-    protected void updateExclusionState(final Graph graph, final long lowerTimeExtent, final long upperTimeExtent, 
+    protected void updateExclusionState(final Graph graph, final long lowerTimeExtent, final long upperTimeExtent,
             final int exclusionState) {
         final Plugin updatePlugin = clusteringManager.new UpdateDimOrHidePlugin(lowerTimeExtent, upperTimeExtent, exclusionState, (vxMod, txMod) -> {
             expectedvxMod = vxMod;
@@ -455,8 +574,7 @@ public class TimelinePanel extends Region {
         timeZoneComboBox.setCellFactory(cellFactory);
         timeZoneComboBox.setButtonCell(cellFactory.call(null));
         timeZoneComboBox.getSelectionModel().select(TimeZoneUtilities.UTC);
-        timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> 
-            coordinator.updateTimeZone(n));
+        timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> coordinator.updateTimeZone(n));
 
         // Combo box for excluded nodes visibility
         cmbExcludedNodes = new ComboBox<>();
@@ -483,21 +601,17 @@ public class TimelinePanel extends Region {
 
         // Handle
         btnShowLabels = new ToggleButton(Bundle.ShowLabels());
-        btnShowLabels.selectedProperty().addListener((observable, oldValue, newValue) 
-                -> coordinator.setIsShowingNodeLabels(newValue));
+        btnShowLabels.selectedProperty().addListener((observable, oldValue, newValue) -> coordinator.setIsShowingNodeLabels(newValue));
 
         final Button btnZoomToSelection = new Button(Bundle.ZoomtoSelection());
-        btnZoomToSelection.setOnAction(e -> 
-            coordinator.setExtents());
+        btnZoomToSelection.setOnAction(e -> coordinator.setExtents());
 
         selectedOnlyButton = new ToggleButton(Bundle.Lbl_ShowSelectedOnly());
-        selectedOnlyButton.selectedProperty().addListener((observable, oldValue, newValue) -> 
-            coordinator.setIsShowingSelectedOnly(newValue));
+        selectedOnlyButton.selectedProperty().addListener((observable, oldValue, newValue) -> coordinator.setIsShowingSelectedOnly(newValue));
 
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.WHITE.getJavaColor())));
         helpButton.setTooltip(new Tooltip("Display help for Timeline"));
-        helpButton.setOnAction(event -> 
-            new HelpCtx(TimelineTopComponent.class.getName()).display());
+        helpButton.setOnAction(event -> new HelpCtx(TimelineTopComponent.class.getName()).display());
 
         final Label spacer1 = new Label("   ");
         final Label spacer2 = new Label("   ");
