@@ -460,7 +460,7 @@ public class PathScoringUtilities {
      * @param selectedOnly Whether or not to restrict to only selected nodes
      *
      * @return ThreeTuple containing an array of BitSets representing each node's traversal, an array of floats with
-     * each node's score, and TODO
+     * each node's score, and a BitSet representing which nodes from the graph are actually influential to the function
      */
     protected static ThreeTuple<BitSet[], float[], BitSet> computeShortestPathsUndirectedThreeTuple(final GraphReadMethods graph, final ScoreType scoreType, final boolean selectedOnly) {
         final int vertexCount = graph.getVertexCount();
@@ -644,7 +644,6 @@ public class PathScoringUtilities {
             }
 
             // for each neighbour, check if there is any new information it needs to receive
-            // for (int vertexPosition = 0; vertexPosition < updateVertexCount; vertexPosition++) {
             for (int vertexPositionGlobal = updateF.nextSetBit(0); vertexPositionGlobal >= 0; vertexPositionGlobal = updateF.nextSetBit(vertexPositionGlobal + 1)) {
                 final int vertexId = graph.getVertex(vertexPositionGlobal);
                 final int vertexPosition = updatedVertexIndexArray.indexOf(graph.getVertexPosition(vertexId));
