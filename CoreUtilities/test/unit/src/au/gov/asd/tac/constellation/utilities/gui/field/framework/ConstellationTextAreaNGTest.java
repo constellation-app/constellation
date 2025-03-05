@@ -53,7 +53,7 @@ public class ConstellationTextAreaNGTest {
     public static void tearDownClass() throws Exception {
         try {
             FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
+        } catch (final TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
     }

@@ -161,7 +161,7 @@ public class ChoiceInputNGTest {
         }
 
         @Override
-        public void setValue(Object value) {
+        public void setValue(final Object value) {
             return;
         }
 

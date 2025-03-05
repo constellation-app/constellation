@@ -347,9 +347,9 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
 //            return null;
 //        } 
         //Remove blank entries from here
-        final String[] candidateArray = this.getText().split(SeparatorConstants.COMMA);
+        final String[] candidateArray = this.getText().split(SeparatorConstants.COMMA + " ");
         final int indexOfNull = choices.indexOf(null) == -1 ? 0 : choices.indexOf(null);
-        final String invalidEntry = indexOfNull > -1 ? candidateArray[indexOfNull].stripLeading().stripTrailing() : "";
+        final String invalidEntry = indexOfNull > -1 && !(indexOfNull > candidateArray.length -1) && !candidateArray[indexOfNull].contains(" ")? candidateArray[indexOfNull] : "";
 
         final List<MenuItem> suggestions = new ArrayList<>();
 

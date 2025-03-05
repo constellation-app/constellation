@@ -63,7 +63,7 @@ public class MultiChoiceInputPaneNGTest {
     public static void tearDownClass() throws Exception {
         try {
             FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
+        } catch (final TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
     }
@@ -86,7 +86,7 @@ public class MultiChoiceInputPaneNGTest {
 
     @Test
     public void multiChoiceInputPane_constructorWithOptions() {
-        MultiChoiceInputPane multiChoiceInputPane = spy(
+        final MultiChoiceInputPane multiChoiceInputPane = spy(
                 new MultiChoiceInputPane((PluginParameter<MultiChoiceParameterType.MultiChoiceParameterValue>) params.getParameters().get(PLANETS_PARAMETER_ID)));
         assertTrue(multiChoiceInputPane.input.getAllMenuItems().size() == planets.size());
         assertTrue(multiChoiceInputPane.getFieldValue().size() == planetOptions.getMultiChoiceValue().getChoicesData().size());
@@ -95,12 +95,11 @@ public class MultiChoiceInputPaneNGTest {
     
     @Test
     public void multiChoiceInputPane_getFieldListener() {
-        MultiChoiceInputPane multiChoiceInputPane = spy(
+        final MultiChoiceInputPane multiChoiceInputPane = spy(
                 new MultiChoiceInputPane((PluginParameter<MultiChoiceParameterType.MultiChoiceParameterValue>) params.getParameters().get(PLANETS_PARAMETER_ID)));
         
-        ConstellationInputListener<List<ParameterValue>> fieldChangeListenerMock = mock(ConstellationInputListener.class);
+        final ConstellationInputListener<List<ParameterValue>> fieldChangeListenerMock = mock(ConstellationInputListener.class);
         doReturn(fieldChangeListenerMock).when(multiChoiceInputPane).getFieldChangeListener(planetOptions);        
-        ConstellationInputListener<List<ParameterValue>> fieldChangeListener = multiChoiceInputPane.getFieldChangeListener(planetOptions);        
         assertTrue(multiChoiceInputPane.getFieldChangeListener(planetOptions) == fieldChangeListenerMock);
     }
 }
