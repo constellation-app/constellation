@@ -634,8 +634,7 @@ public class PathScoringUtilities {
                 sendFailsF[i].clear();
                 sendFailsF[i].or(sendBufferF[i]);
                 sendBufferF[i].clear();
-            }
-            for (int i = 0; i < updateVertexCount; i++) {
+
                 traversalB[i].or(sendBufferB[i]);
                 traversalB[i].set(i);
                 sendFailsB[i].clear();
