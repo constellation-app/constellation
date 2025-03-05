@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ import java.util.Set;
  */
 public class ClusteringManager {
 
-    final List<TreeLeaf> leaves = new ArrayList<>();
+    private final List<TreeLeaf> leaves = new ArrayList<>();
     private TreeElement tree;
     private Set<TreeElement> elementsToDraw = new HashSet<>();
     private Set<TreeElement> elementsToUndim = new HashSet<>();
@@ -62,7 +62,7 @@ public class ClusteringManager {
         final int selectedTransAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(graph);
         final int selectedNodeAttributeId = VisualConcept.VertexAttribute.SELECTED.get(graph);
 
-        // If we actually have a the attributes
+        // If we actually have the attributes
         if (datetimeAttributeId != Graph.NOT_FOUND && selectedNodeAttributeId != Graph.NOT_FOUND && selectedTransAttributeId != Graph.NOT_FOUND) {
             // Grab all of the transactions off the graph and turn into leaves:
             for (int i = 0; i < transactionCount; i++) {
@@ -214,6 +214,20 @@ public class ClusteringManager {
         return Collections.unmodifiableSet(elementsToDraw);
     }
 
+    public void cleanupVariables() {
+        clearTree();
+        if (elementsToDraw != null) {
+            elementsToDraw.clear();
+        }
+        elementsToDraw = null;
+        elementsToUndim = null;
+        oldElementsToUndim = null;
+        undimmedVerticesOnGraph.clear();
+        elementsToUnhide = null;
+        oldElementsToUnhide = null;
+        unhiddenVerticesOnGraph.clear();
+    }
+
     public void clearTree() {
         tree = null;
         leaves.clear();
@@ -233,7 +247,7 @@ public class ClusteringManager {
         final int exclusionState;
         final ExclusionStateNotifier exclusionStateNotifier;
 
-        public InitDimOrHidePlugin(final long lowerTimeExtent, final long upperTimeExtent, 
+        public InitDimOrHidePlugin(final long lowerTimeExtent, final long upperTimeExtent,
                 final int exclusionState, final ExclusionStateNotifier exclusionStateNotifier) {
             this.lowerTimeExtent = lowerTimeExtent;
             this.upperTimeExtent = upperTimeExtent;
@@ -279,7 +293,7 @@ public class ClusteringManager {
                             stack.add(te);
                             while (!stack.isEmpty()) {
                                 final TreeElement element = stack.remove(stack.size() - 1);
-                                
+
                                 if (element instanceof TreeLeaf leaf) {
                                     transactionsToUndim.add(leaf.getId());
 

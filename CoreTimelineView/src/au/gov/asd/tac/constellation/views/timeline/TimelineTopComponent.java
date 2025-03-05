@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -43,6 +45,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
@@ -100,13 +103,15 @@ import org.openide.windows.TopComponent;
 public final class TimelineTopComponent extends TopComponent implements LookupListener, GraphChangeListener, UndoRedo.Provider {
 
     private static final Logger LOGGER = Logger.getLogger(TimelineTopComponent.class.getName());
-    
+
     private static final double DEFAULT_DIVIDER_LOCATION = 0.8;
     private static final String UPDATE_TIMELINE_THREAD_NAME = "Update Timeline from Graph";
     public static final List<String> SUPPORTED_DATETIME_ATTRIBUTE_TYPES = Arrays.asList(
             ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME,
             LocalDateTimeAttributeDescription.ATTRIBUTE_NAME,
             DateAttributeDescription.ATTRIBUTE_NAME);
+
+    private static final long CLOSE_CLEANUP_TIMEOUT = 5L;
 
     private GraphNode graphNode = null;
     private final Lookup.Result<GraphNode> result;
@@ -118,6 +123,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     private BorderPane noActive;
     private Label lblNoActive;
     private StackPane root;
+    private final ProgressIndicator spinner = new ProgressIndicator();
     private long currentGlobalModificationCount = Long.MIN_VALUE;
     private long currentAttributeModificationCount = Long.MIN_VALUE;
     private long currentStructureModificationCount = Long.MIN_VALUE;
@@ -127,6 +133,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     private volatile double splitPanePosition = DEFAULT_DIVIDER_LOCATION;
     private List<String> datetimeAttributes;
     private String currentDatetimeAttribute = null;
+    private boolean isInProgress = false;
 
     public TimelineTopComponent() {
         initComponents();
@@ -142,6 +149,8 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         add(container, BorderLayout.CENTER);
 
         final int height = this.getPreferredSize().height;
+
+        spinner.setMaxSize(50, 50);
 
         // Populate the jfx container:
         Platform.setImplicitExit(false);
@@ -180,8 +189,14 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             splitPane.setDividerPositions(splitPanePosition);
 
             // Set the split pane as the javafx scene:
-            container.setScene(scene);
+            if (!isHeadless()) {
+                container.setScene(scene);
+            }
         });
+    }
+
+    private boolean isHeadless() {
+        return Boolean.parseBoolean(System.getProperty("java.awt.headless", "false"));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Timeline and Histogram Extents">
@@ -195,19 +210,20 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         state.setLowerTimeExtent(lowerTimeExtent);
         state.setUpperTimeExtent(upperTimeExtent);
 
-        if (graphNode.getGraph() != null) {
-            final ReadableGraph graph = graphNode.getGraph().getReadableGraph();
-            try {
-                timelinePanel.setTimelineExtent(graph, state.getLowerTimeExtent(),
-                        state.getUpperTimeExtent(), state.isShowingSelectedOnly(), state.getTimeZone());
-            } finally {
-                graph.release();
-            }
-
-            timelinePanel.updateExclusionState(graphNode.getGraph(),
-                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
-            overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
+        if (graphNode == null || graphNode.getGraph() == null) {
+            return;
         }
+
+        try (final ReadableGraph graph = graphNode.getGraph().getReadableGraph()) {
+            timelinePanel.setTimelineExtent(graph, state.getLowerTimeExtent(),
+                    state.getUpperTimeExtent(), state.isShowingSelectedOnly(), state.getTimeZone());
+        }
+
+        timelinePanel.updateExclusionState(graphNode.getGraph(),
+                (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
+        overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
+
+        setInProgress();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Timeline and Histogram Extents">
@@ -217,9 +233,11 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
      */
     public void setExtents() {
 
-        if (graphNode.getGraph() != null) {
+        if (graphNode == null || graphNode.getGraph() == null) {
+            return;
+        }
 
-            final ReadableGraph graph = graphNode.getGraph().getReadableGraph();
+        try (final ReadableGraph graph = graphNode.getGraph().getReadableGraph()) {
             final int txCount = graph.getTransactionCount();
             final int txTimAttrId = graph.getAttribute(GraphElementType.TRANSACTION, this.currentDatetimeAttribute);
             final int txSelAttrId = graph.getAttribute(GraphElementType.TRANSACTION,
@@ -231,36 +249,47 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             long maxTime = Long.MIN_VALUE;
 
             for (int txID = 0; txID < txCount; txID++) {
-                if (graph.getBooleanValue(txSelAttrId, txID)) {
-                    lowerTimeExtent = Math.min(graph.getLongValue(txTimAttrId, txID), lowerTimeExtent);
-                    upperTimeExtent = Math.max(graph.getLongValue(txTimAttrId, txID), upperTimeExtent);
+                // We can use getStringValue to see if dateTime exists. 0 is returned from getLong if dateTime is null, but it could also be a legitimated dateTime
+                if (graph.getStringValue(txTimAttrId, txID) == null) {
+                    continue;
                 }
-                minTime = Math.min(graph.getLongValue(txTimAttrId, txID), minTime);
-                maxTime = Math.max(graph.getLongValue(txTimAttrId, txID), maxTime);
+
+                final long currentTimeValue = graph.getLongValue(txTimAttrId, txID);
+                if (graph.getBooleanValue(txSelAttrId, txID)) {
+                    lowerTimeExtent = Math.min(currentTimeValue, lowerTimeExtent);
+                    upperTimeExtent = Math.max(currentTimeValue, upperTimeExtent);
+                }
+                minTime = Math.min(currentTimeValue, minTime);
+                maxTime = Math.max(currentTimeValue, maxTime);
             }
 
-            if (lowerTimeExtent != Long.MAX_VALUE) {
-                state.setLowerTimeExtent(lowerTimeExtent);
-            } else {
-                state.setLowerTimeExtent(minTime);
+            if (lowerTimeExtent == Long.MAX_VALUE) {
+                lowerTimeExtent = minTime;
             }
-            if (upperTimeExtent != Long.MIN_VALUE) {
-                state.setUpperTimeExtent(upperTimeExtent);
-            } else {
-                state.setUpperTimeExtent(maxTime);
+            if (upperTimeExtent == Long.MIN_VALUE) {
+                upperTimeExtent = maxTime;
             }
 
-            try {
-                timelinePanel.setTimelineExtent(graph, state.getLowerTimeExtent(),
-                        state.getUpperTimeExtent(), state.isShowingSelectedOnly(), state.getTimeZone());
-            } finally {
-                graph.release();
+            // If no times were found, dont update the timeline view
+            if (lowerTimeExtent == Long.MAX_VALUE && upperTimeExtent == Long.MIN_VALUE) {
+                return;
             }
 
-            timelinePanel.updateExclusionState(graphNode.getGraph(),
-                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
-            overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
+            // Edge case that fixes issues when range of these two values is 0
+            if (lowerTimeExtent == upperTimeExtent) {
+                lowerTimeExtent--;
+                upperTimeExtent++;
+            }
+
+            state.setLowerTimeExtent(lowerTimeExtent);
+            state.setUpperTimeExtent(upperTimeExtent);
+            timelinePanel.setTimelineExtent(graph, state.getLowerTimeExtent(), state.getUpperTimeExtent(), state.isShowingSelectedOnly(), state.getTimeZone());
         }
+
+        timelinePanel.updateExclusionState(graphNode.getGraph(), (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
+        overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
+
+        setInProgress();
     }
 
     protected double getTimelineLowerTimeExtent() {
@@ -270,12 +299,27 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     protected double getTimelineUpperTimeExtent() {
         return timelinePanel.getTimelineUpperTimeExtent();
     }
-    // </editor-fold>
 
+    protected void setTimelinePanel(final TimelinePanel newtimelinePanel) {
+        timelinePanel = newtimelinePanel;
+    }
+
+    protected TimelinePanel getTimelinePanel() {
+        return timelinePanel;
+    }
+
+    protected void setOverviewPanel(final OverviewPanel newOverviewPanel) {
+        overviewPanel = newOverviewPanel;
+    }
+
+    protected OverviewPanel getOverviewPanel() {
+        return overviewPanel;
+    }
+
+    // </editor-fold>
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
+     * content of this method is always regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -290,6 +334,8 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         // Ensure that graph manager is listening for graphs:
         GraphManager.getDefault();
         result.addLookupListener(this);
+        // Populate the graph, this ensures that when timeline view is opened after being closed, it will be updated
+        populateFromGraphNode(true);
     }
 
     public void zoomFromOverview(final ScrollEvent se) {
@@ -297,7 +343,33 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
 
     @Override
+    public boolean canClose() {
+        // Data needs to be cleared BEFORE component is closed,
+        // otherwise memory isn't always freed correctly
+        // I believe its because once the top component is closed, the panels cant update and remove the data too
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            timelinePanel.clearTimeline();
+            overviewPanel.clearHistogram(false);
+            latch.countDown();
+        });
+        try {
+            // Wait for five seconds or until data cleared
+            if (!latch.await(CLOSE_CLEANUP_TIMEOUT, TimeUnit.SECONDS)) {
+                // Warn if 5 seconds had passed
+                LOGGER.log(Level.WARNING, "Latch in TimelineTopComponent canClose() timed out!");
+            }
+        } catch (final InterruptedException e) {
+            LOGGER.log(Level.WARNING, "Interrupted!", e);
+            Thread.currentThread().interrupt();
+        }
+
+        return true;
+    }
+
+    @Override
     public void componentClosed() {
+        super.componentClosed();
         result.removeLookupListener(this);
     }
 
@@ -324,7 +396,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
     // </editor-fold>
 
-    private void setNode(final GraphNode node) {
+    protected void setNode(final GraphNode node) {
         // Navigating away from the current graph:
         if (graphNode != null) {
             final Graph graph = graphNode.getGraph();
@@ -361,8 +433,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             retrieveStateFromGraph();
 
             // Update the graph change counters:
-            final ReadableGraph rg = graph.getReadableGraph();
-            try {
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
                 currentGlobalModificationCount = rg.getGlobalModificationCounter();
                 currentAttributeModificationCount = rg.getAttributeModificationCounter();
                 currentStructureModificationCount = rg.getStructureModificationCounter();
@@ -375,15 +446,13 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                 if (vertSelectedAttr != Graph.NOT_FOUND) {
                     currentVertSelectedModificationCount = rg.getValueModificationCounter(vertSelectedAttr);
                 }
-            } finally {
-                rg.release();
             }
 
             populateFromGraph(graph, true);
 
             graph.addGraphChangeListener(this);
-        
-        // Moving to nothing:
+
+            // Moving to nothing:
         } else {
             persistStateToGraph();
 
@@ -419,8 +488,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                     return;
                 }
                 datetimeAttributes = new ArrayList<>();
-                final ReadableGraph rg = graph.getReadableGraph();
-                try {
+                try (final ReadableGraph rg = graph.getReadableGraph()) {
                     final int attributeCount = rg.getAttributeCount(GraphElementType.TRANSACTION);
                     for (int i = 0; i < attributeCount; i++) {
                         final int attrID = rg.getAttribute(GraphElementType.TRANSACTION, i);
@@ -454,54 +522,46 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                     if (currentDatetimeAttribute != null) {
                         currentTemporalAttributeModificationCount = rg.getValueModificationCounter(rg.getAttribute(GraphElementType.TRANSACTION, currentDatetimeAttribute));
                         // We've calculated everything, so start populating the graph:
+
                         Platform.runLater(() -> {
-                            final ReadableGraph rg1 = graph.getReadableGraph();
-                            try {
-                                // Now that the heights are known, set the position of the splitPane divider:
-                                splitPane.setDividerPositions(splitPanePosition);
-                                // Clear anything already on the charts:
-                                timelinePanel.clearTimeline();
-                                overviewPanel.clearHistogram(!isFullRefresh);
-                                // Ensure that everything is visible:
-                                timelinePanel.setDisable(false);
-                                //if visibility is set to false at the constructor, the javafx thread gets stuck in an endless loop under
-                                //certain conditions (with timeline open, create graph, close graph) so we set opacity to 0 in the constructor so that it is 'invisible'
-                                splitPane.setVisible(true);
-                                splitPane.setDisable(false);
-                                // Add the datetime attributes:
-                                timelinePanel.setDateTimeAttributes(datetimeAttributes, currentDatetimeAttribute);
-                                timelinePanel.setTimeZone(state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
-                                // Add the label attributes:
-                                timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
-                                final boolean selectedOnly = state != null && state.isShowingSelectedOnly();
-                                timelinePanel.setIsShowingSelectedOnly(selectedOnly);
-                                if (state != null && state.getNodeLabelsAttr() != null) {
-                                    timelinePanel.setNodeLabelAttribute(state.getNodeLabelsAttr());
-                                    timelinePanel.setIsShowingNodeLabelAttributes(state.isShowingNodeLabels());
-                                    timelinePanel.populateFromGraph(rg1, currentDatetimeAttribute, state.getNodeLabelsAttr(), selectedOnly, state.getTimeZone());
-                                } else {
-                                    timelinePanel.populateFromGraph(rg1, currentDatetimeAttribute, null, selectedOnly, state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
-                                }
-                                overviewPanel.populateHistogram(rg1, currentDatetimeAttribute, getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(), isFullRefresh, selectedOnly);
-                            } finally {
-                                rg1.release();
-                            }
-                            // Restore the dimming state if we have it:
-                            if (state != null) {
-                                if (state.getLowerTimeExtent() == 0) {
-                                    setExtents(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent());
-                                }
-                                timelinePanel.setExclusionState(state.getExclusionState());
+                            // Now that the heights are known, set the position of the splitPane divider:
+                            splitPane.setDividerPositions(splitPanePosition);
+                            // Clear anything already on the charts:
+                            timelinePanel.clearTimeline();
+                            overviewPanel.clearHistogram(!isFullRefresh);
+                            // Ensure that everything is visible:
+                            timelinePanel.setDisable(false);
+                            //if visibility is set to false at the constructor, the javafx thread gets stuck in an endless loop under
+                            //certain conditions (with timeline open, create graph, close graph) so we set opacity to 0 in the constructor so that it is 'invisible'
+                            splitPane.setVisible(true);
+                            splitPane.setDisable(false);
+                            // Add the datetime attributes:
+                            timelinePanel.setDateTimeAttributes(datetimeAttributes, currentDatetimeAttribute);
+                            timelinePanel.setTimeZone(state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
+                            // Add the label attributes:
+                            timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
+                            final boolean selectedOnly = state != null && state.isShowingSelectedOnly();
+                            timelinePanel.setIsShowingSelectedOnly(selectedOnly);
+                            if (state != null && state.getNodeLabelsAttr() != null) {
+                                timelinePanel.setNodeLabelAttribute(state.getNodeLabelsAttr());
+                                timelinePanel.setIsShowingNodeLabelAttributes(state.isShowingNodeLabels());
+                                timelinePanel.populateFromGraph(rg, currentDatetimeAttribute, state.getNodeLabelsAttr(), selectedOnly, state.getTimeZone());
                             } else {
+                                timelinePanel.populateFromGraph(rg, currentDatetimeAttribute, null, selectedOnly, state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
+                            }
+                            overviewPanel.populateHistogram(rg, currentDatetimeAttribute, getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(), isFullRefresh, selectedOnly);
+
+                            // Restore the dimming state if we have it:
+                            if (state == null) {
                                 // There is no state, so lets create a new one:
                                 state = new TimelineState(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(),
                                         0, false, currentDatetimeAttribute, false, null, TimeZoneUtilities.UTC);
                             }
+
                             setExtents(state.getLowerTimeExtent(), state.getUpperTimeExtent());
+                            timelinePanel.setExclusionState(state.getExclusionState());
                         });
                     }
-                } finally {
-                    rg.release();
                 }
             }
         };
@@ -559,7 +619,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         if (state != null) {
             state.setExclusionState(exclusionState);
             // Enable dimming if just enabled:
-            timelinePanel.initExclusionState(graphNode.getGraph(), (long) state.getLowerTimeExtent(), 
+            timelinePanel.initExclusionState(graphNode.getGraph(), (long) state.getLowerTimeExtent(),
                     (long) state.getUpperTimeExtent(), exclusionState);
         }
     }
@@ -610,23 +670,20 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
 
     private void persistStateToGraph() {
-        if (graphNode != null) {
+        if (graphNode != null && state != null) {
             // Ensure there is a graph to persist state to
             PluginExecution.withPlugin(new TimelineStatePlugin(state)).executeLater(graphNode.getGraph());
         }
     }
 
     private void retrieveStateFromGraph() {
-        final ReadableGraph rg = graphNode.getGraph().getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graphNode.getGraph().getReadableGraph()) {
             final int attrID = rg.getAttribute(GraphElementType.META, TimelineConcept.MetaAttribute.TIMELINE_STATE.getName());
             if (attrID != Graph.NOT_FOUND) {
                 state = (TimelineState) rg.getObjectValue(attrID, 0);
             } else {
                 state = null;
             }
-        } finally {
-            rg.release();
         }
     }
 
@@ -639,6 +696,29 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         }
     }
 
+    /**
+     * Returns the value of isInProgress. Mainly used in testing
+     *
+     * @return
+     */
+    protected boolean getIsInProgress() {
+        return isInProgress;
+    }
+
+    public void setInProgress() {
+        if (root == null || root.getChildren().contains(spinner)) {
+            return;
+        }
+        isInProgress = true;
+        root.getChildren().add(spinner);
+        StackPane.setAlignment(spinner, Pos.CENTER);
+    }
+
+    public void setProgressComplete() {
+        isInProgress = false;
+        Platform.runLater(() -> root.getChildren().remove(spinner));
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Graph Listeners">
     /**
      * Listener method called on changes to the graph node.
@@ -648,8 +728,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     @Override
     public void resultChanged(final LookupEvent ev) {
         final Node[] activatedNodes = TopComponent.getRegistry().getActivatedNodes();
-        if (activatedNodes != null && activatedNodes.length == 1
-                && activatedNodes[0] instanceof GraphNode) {
+        if (activatedNodes != null && activatedNodes.length == 1 && activatedNodes[0] instanceof GraphNode) {
             final GraphNode gnode = ((GraphNode) activatedNodes[0]);
 
             if (gnode != graphNode) {
@@ -667,43 +746,45 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
      */
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
-        if (graphNode != null) {
-            final ReadableGraph rg = graphNode.getGraph().getReadableGraph();
-            try {
-                final long oldGlobalModificationCount = currentGlobalModificationCount;
-                currentGlobalModificationCount = rg.getGlobalModificationCounter();
+        if (graphNode == null) {
+            return;
+        }
 
-                // Continue only if there has been a change:
-                if (currentGlobalModificationCount == oldGlobalModificationCount) {
-                    return;
-                }
+        try (final ReadableGraph rg = graphNode.getGraph().getReadableGraph()) {
+            final long oldGlobalModificationCount = currentGlobalModificationCount;
+            currentGlobalModificationCount = rg.getGlobalModificationCounter();
 
-                final long oldAttributeModificationCount = currentAttributeModificationCount;
-                currentAttributeModificationCount = rg.getAttributeModificationCounter();
+            // Continue only if there has been a change:
+            if (currentGlobalModificationCount == oldGlobalModificationCount) {
+                return;
+            }
 
-                final long oldStructureModificationCount = currentStructureModificationCount;
-                currentStructureModificationCount = rg.getStructureModificationCounter();
+            final long oldAttributeModificationCount = currentAttributeModificationCount;
+            currentAttributeModificationCount = rg.getAttributeModificationCounter();
 
-                // Selected and dimming attributes:
-                final long oldTransSelectedModificationCount = currentTransSelectedModificationCount;
-                final long oldVertSelectedModificationCount = currentVertSelectedModificationCount;
-                final long oldTemporalAttributeModificationCount = currentTemporalAttributeModificationCount;
-                final int transSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION,
-                        VisualConcept.TransactionAttribute.SELECTED.getName());
-                final int vertSelectedAttr = rg.getAttribute(GraphElementType.VERTEX,
-                        VisualConcept.VertexAttribute.SELECTED.getName());
-                if (transSelectedAttr != Graph.NOT_FOUND) {
-                    currentTransSelectedModificationCount = rg.getValueModificationCounter(transSelectedAttr);
-                }
-                if (vertSelectedAttr != Graph.NOT_FOUND) {
-                    currentVertSelectedModificationCount = rg.getValueModificationCounter(vertSelectedAttr);
-                }
-                final int temporalAttrId = rg.getAttribute(GraphElementType.TRANSACTION, this.currentDatetimeAttribute);
-                if (temporalAttrId != Graph.NOT_FOUND) {
-                    currentTemporalAttributeModificationCount = rg.getValueModificationCounter(temporalAttrId);
-                }
+            final long oldStructureModificationCount = currentStructureModificationCount;
+            currentStructureModificationCount = rg.getStructureModificationCounter();
 
-                /*final int transDimAttr = rg.getAttribute(GraphElementType.TRANSACTION,
+            // Selected and dimming attributes:
+            final long oldTransSelectedModificationCount = currentTransSelectedModificationCount;
+            final long oldVertSelectedModificationCount = currentVertSelectedModificationCount;
+            final long oldTemporalAttributeModificationCount = currentTemporalAttributeModificationCount;
+            final int transSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION,
+                    VisualConcept.TransactionAttribute.SELECTED.getName());
+            final int vertSelectedAttr = rg.getAttribute(GraphElementType.VERTEX,
+                    VisualConcept.VertexAttribute.SELECTED.getName());
+            if (transSelectedAttr != Graph.NOT_FOUND) {
+                currentTransSelectedModificationCount = rg.getValueModificationCounter(transSelectedAttr);
+            }
+            if (vertSelectedAttr != Graph.NOT_FOUND) {
+                currentVertSelectedModificationCount = rg.getValueModificationCounter(vertSelectedAttr);
+            }
+            final int temporalAttrId = rg.getAttribute(GraphElementType.TRANSACTION, this.currentDatetimeAttribute);
+            if (temporalAttrId != Graph.NOT_FOUND) {
+                currentTemporalAttributeModificationCount = rg.getValueModificationCounter(temporalAttrId);
+            }
+
+            /*final int transDimAttr = rg.getAttribute(GraphElementType.TRANSACTION,
                         VisualConcept.TransactionAttribute.DIMMED.getName());
                 final int vertDimAttr = rg.getAttribute(GraphElementType.VERTEX,
                         VisualConcept.VertexAttribute.DIMMED.getName());
@@ -723,30 +804,30 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                 if (vertHideAttr != Graph.NOT_FOUND) {
                     currentVertHideModificationCount = rg.getValueModificationCounter(vertHideAttr);
                 }*/
-                // Detect graph changes to attributes:
-                if (currentAttributeModificationCount != oldAttributeModificationCount) {
-                    Platform.runLater(() -> {
-                        // Re-populate charts:
-                        timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
-                        populateFromGraphNode(true);
-                    });
-                
-                // Detect value change on the temporal attribute
-                } else if (currentTemporalAttributeModificationCount != oldTemporalAttributeModificationCount) {
-                    populateFromGraphNode(true);
-                // Detect graph structural changes (such as adding and removal of nodes etc):
-                } else if (currentStructureModificationCount != oldStructureModificationCount) {
+            // Detect graph changes to attributes:
+            if (currentAttributeModificationCount != oldAttributeModificationCount) {
+                Platform.runLater(() -> {
                     // Re-populate charts:
+                    timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
                     populateFromGraphNode(true);
+                });
+
+                // Detect value change on the temporal attribute
+            } else if (currentTemporalAttributeModificationCount != oldTemporalAttributeModificationCount) {
+                populateFromGraphNode(true);
+                // Detect graph structural changes (such as adding and removal of nodes etc):
+            } else if (currentStructureModificationCount != oldStructureModificationCount) {
+                // Re-populate charts:
+                populateFromGraphNode(true);
                 // Detect changes of selection to transactions or vertices:
-                } else if (currentTransSelectedModificationCount != oldTransSelectedModificationCount
-                        || currentVertSelectedModificationCount != oldVertSelectedModificationCount) {
-                    // Do only a partial update, ie the timeline and selection area for histogram:
-                    populateFromGraphNode(false);
-                } else {
-                    // Do nothing
-                } // Detect changes of dim to transactions and vertices:
-                /*else if (!timelinePanel.isDimOrHideExpected(currentVertDimModificationCount, currentTransDimModificationCount)) {
+            } else if (currentTransSelectedModificationCount != oldTransSelectedModificationCount
+                    || currentVertSelectedModificationCount != oldVertSelectedModificationCount) {
+                // Do only a partial update, ie the timeline and selection area for histogram:
+                populateFromGraphNode(false);
+            } else {
+                // Do nothing
+            } // Detect changes of dim to transactions and vertices:
+            /*else if (!timelinePanel.isDimOrHideExpected(currentVertDimModificationCount, currentTransDimModificationCount)) {
                     Platform.runLater(() -> {
                         timelinePanel.setExclusionState(0);
                     });
@@ -756,9 +837,6 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                         timelinePanel.setExclusionState(0);
                     });
                 }*/
-            } finally {
-                rg.release();
-            }
         }
     }
     // </editor-fold>
