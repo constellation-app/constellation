@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -164,7 +164,7 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
      * @return A List of {@link ParameterValue} objects representing the
      * collection of selected values for the given parameter.
      */
-    public static List<? extends ParameterValue> getChoicesData(final PluginParameter<MultiChoiceParameterValue> parameter) {
+    public static List<ParameterValue> getChoicesData(final PluginParameter<MultiChoiceParameterValue> parameter) {
         return parameter.getMultiChoiceValue().getChoicesData();
     }
 
