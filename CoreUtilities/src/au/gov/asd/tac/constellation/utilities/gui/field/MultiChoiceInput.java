@@ -217,7 +217,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     // <editor-fold defaultstate="collapsed" desc="ConstellationInputButton Event Implementation">   
     @Override
     public RightButton getRightButton() {
-        RightButton button = new RightButton(
+        final RightButton button = new RightButton(
                 new Label(""), ButtonType.DROPDOWN) {
             
             @Override
@@ -340,12 +340,6 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     @Override
     public List<MenuItem> getAutoCompleteSuggestions() {
         final List<C> choices = this.getChoices();
-        //do not show suggestions in the following cases
-        //if there are two unknown choices that the user has entered, i.e more than 1 null value.
-        //if there is 1 or more valid choices in the event that this is a single choice input.
-//        if (choices.stream().filter(value -> value == null).count() != 1 || this.getText().isBlank()){
-//            return null;
-//        } 
         //Remove blank entries from here
         final String[] candidateArray = this.getText().split(SeparatorConstants.COMMA + " ");
         final int indexOfNull = choices.indexOf(null) == -1 ? 0 : choices.indexOf(null);

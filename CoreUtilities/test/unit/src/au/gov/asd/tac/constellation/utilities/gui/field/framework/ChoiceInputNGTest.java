@@ -62,14 +62,14 @@ public class ChoiceInputNGTest {
     public static void tearDownClass() throws Exception {
         try {
             FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
+        } catch (final TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {                
-        String[] fruits = {"apple", "banana", "orange"};
+        final String[] fruits = {"apple", "banana", "orange"};
         fruitList = Arrays.asList(fruits);
     }
     
@@ -146,7 +146,7 @@ public class ChoiceInputNGTest {
 
         private List<MenuItem> items = new ArrayList<>();
 
-        public ChoiceInputFieldImpl(ObservableList options) {
+        public ChoiceInputFieldImpl(final ObservableList options) {
             super(options);
             items = options;
         }

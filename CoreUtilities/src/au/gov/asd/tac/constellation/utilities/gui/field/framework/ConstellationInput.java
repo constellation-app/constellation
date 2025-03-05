@@ -404,7 +404,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @param newValue
      */
     public final void notifyListeners(final T newValue) {
-        for (ConstellationInputListener listener : InputFieldListeners) {
+        for (final ConstellationInputListener listener : InputFieldListeners) {
             listener.changed(newValue);
         }
     }
@@ -536,7 +536,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @return
      */
     public boolean isValid() {
-        for (InputValidator validator : validators) {
+        for (final InputValidator validator : validators) {
             if (null != validator.validateString(getText())) {
                 return false;
             }
