@@ -585,6 +585,9 @@ public abstract class ConstellationInput<T> extends StackPane implements
         validators.add(validator);
     }
 
+    public final int getCaretPosition(){
+        return textArea.getCaretPosition();
+    }
     // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
     @Override

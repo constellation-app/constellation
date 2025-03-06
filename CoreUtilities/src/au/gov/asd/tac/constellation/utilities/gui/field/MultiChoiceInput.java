@@ -159,7 +159,16 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
         for (String item : items) {
             final int index = choiceIndex.indexOf(item.strip());
             if (index == -1) {
-                foundChoices.add(null);
+                String[] splitItem = item.strip().split(" ");
+                // check if there is a whitespace in this string
+                // if so, it may be type-ahead of another choice
+                for (final String stringItem : splitItem) {
+                    if (choiceIndex.indexOf(stringItem.strip()) == -1) {
+                        foundChoices.add(null);
+                    } else {
+                        foundChoices.add(this.getOptions().get(choiceIndex.indexOf(stringItem.strip())));
+                    }
+                }         
             } else {
                 foundChoices.add(this.getOptions().get(index));
             }
@@ -338,29 +347,51 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
 
     // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
     @Override
-    public List<MenuItem> getAutoCompleteSuggestions() {
+        public List<MenuItem> getAutoCompleteSuggestions() {
         final List<C> choices = this.getChoices();
-        //Remove blank entries from here
-        final String[] candidateArray = this.getText().split(SeparatorConstants.COMMA + " ");
-        final int indexOfNull = choices.indexOf(null) == -1 ? 0 : choices.indexOf(null);
-        final String invalidEntry = indexOfNull > -1 && !(indexOfNull > candidateArray.length -1) && !candidateArray[indexOfNull].contains(" ")? candidateArray[indexOfNull] : "";
+ 
+        int caretPos = getCaretPosition();
+        String fullText = this.getText();
+        // this forces a whitespace after comma to trigger dropdown
+        int prevCommaIndex = fullText.lastIndexOf(", ", caretPos);
 
+        if (prevCommaIndex < 0) {
+            prevCommaIndex = 0;
+        } else {
+            prevCommaIndex++; // moved to position after comma
+        }
+        if (caretPos < prevCommaIndex) {
+            caretPos = prevCommaIndex;
+        }
+        // this checks if there is text or a space after the caret
+        if (caretPos < fullText.length() && (fullText.length() > caretPos + 1) && fullText.charAt(caretPos + 1) == ' ') {
+            caretPos++;
+        }
+        if (caretPos > fullText.length()) {
+            caretPos = fullText.length();
+        }
+        final String incompleteEntry = fullText.substring(prevCommaIndex, caretPos).trim();
+        
+        // count of how many current choices before caret
+        final long count = fullText.substring(0, caretPos).chars().filter(ch -> ch == ',').count();        
+        final int indexChoicesArray = count > 0 ? (int) count : 0;
+        
         final List<MenuItem> suggestions = new ArrayList<>();
 
         this.getOptions()
                 .stream()
                 .map(value -> value)
                 .filter(value -> !choices.contains(value))
-                .filter(value -> value.toString().toUpperCase().startsWith(invalidEntry.toUpperCase()))
+                .filter(value -> value.toString().toUpperCase().startsWith(incompleteEntry.toUpperCase()))
                 .forEach(value -> {
                     final MenuItem item = new MenuItem(value.toString());
                     item.setOnAction(event -> {
-                        choices.add(indexOfNull, value);
+                        choices.add(indexChoicesArray, value);
                         this.setChoices(choices);
                     });
                     suggestions.add(item);
                 });
         return suggestions;
-    }
+    }        
     // </editor-fold> 
 }
