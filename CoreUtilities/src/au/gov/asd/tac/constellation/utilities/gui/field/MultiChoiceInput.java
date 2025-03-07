@@ -349,35 +349,24 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     @Override
         public List<MenuItem> getAutoCompleteSuggestions() {
         final List<C> choices = this.getChoices();
- 
-        int caretPos = getCaretPosition();
+
+        int caretPos = getInferredCaretPosition();
         String fullText = this.getText();
+
         // this forces a whitespace after comma to trigger dropdown
         int prevCommaIndex = fullText.lastIndexOf(", ", caretPos);
-
-        if (prevCommaIndex < 0) {
+        if (prevCommaIndex < 0 || caretPos == 0) {
             prevCommaIndex = 0;
         } else {
             prevCommaIndex++; // moved to position after comma
         }
-        if (caretPos < prevCommaIndex) {
-            caretPos = prevCommaIndex;
-        }
-        // this checks if there is text or a space after the caret
-        if (caretPos < fullText.length() && (fullText.length() > caretPos + 1) && fullText.charAt(caretPos + 1) == ' ') {
-            caretPos++;
-        }
-        if (caretPos > fullText.length()) {
-            caretPos = fullText.length();
-        }
-        final String incompleteEntry = fullText.substring(prevCommaIndex, caretPos).trim();
-        
+
         // count of how many current choices before caret
         final long count = fullText.substring(0, caretPos).chars().filter(ch -> ch == ',').count();        
-        final int indexChoicesArray = count > 0 ? (int) count : 0;
-        
-        final List<MenuItem> suggestions = new ArrayList<>();
+        final int indexOfChoiceInArray = count > 0 ? (int) count : 0;
 
+        final String incompleteEntry = fullText.substring(prevCommaIndex, caretPos).trim();
+        final List<MenuItem> suggestions = new ArrayList<>();
         this.getOptions()
                 .stream()
                 .map(value -> value)
@@ -386,7 +375,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
                 .forEach(value -> {
                     final MenuItem item = new MenuItem(value.toString());
                     item.setOnAction(event -> {
-                        choices.add(indexChoicesArray, value);
+                        choices.add(indexOfChoiceInArray, value);
                         this.setChoices(choices);
                     });
                     suggestions.add(item);
