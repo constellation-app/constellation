@@ -16,17 +16,16 @@
 package au.gov.asd.tac.constellation.graph.visual.plugins.merge;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.util.ArrayList;
 import java.util.HashMap;
-import static org.testng.Assert.fail;
+import java.util.List;
+import java.util.Map;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
@@ -42,22 +41,30 @@ import org.testng.annotations.Test;
  * @author altair
  */
 public class MergeNodeNGTest {
-
-    private int attrX, attrY, attrZ;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6, vxId7;
-    private int txId1, txId2, txId3, txId4, txId5;
-    private int vAttrId, tAttrId;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    private int vxId5;
+    private int vxId6;
+    private int vxId7;
+    
+    private int xVertexAttribute;
+    private int yVertexAttribute;
+    private int zVertexAttribute;
+    private int selectedVertexAttribute;
+    
     private Graph graph;
-
-    public MergeNodeNGTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
@@ -70,65 +77,51 @@ public class MergeNodeNGTest {
         graph = new DualGraph(null);
         WritableGraph wg = graph.getWritableGraph("add", true);
         try {
-            attrX = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0.0, null);
-            if (attrX == Graph.NOT_FOUND) {
-                fail();
-            }
-
-            attrY = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0.0, null);
-            if (attrY == Graph.NOT_FOUND) {
-                fail();
-            }
-
-            attrZ = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0.0, null);
-            if (attrZ == Graph.NOT_FOUND) {
-                fail();
-            }
-
-            vAttrId = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
-            if (vAttrId == Graph.NOT_FOUND) {
-                fail();
-            }
-
-            tAttrId = wg.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
-            if (tAttrId == Graph.NOT_FOUND) {
-                fail();
-            }
+            xVertexAttribute = VisualConcept.VertexAttribute.X.ensure(wg);
+            yVertexAttribute = VisualConcept.VertexAttribute.Y.ensure(wg);
+            zVertexAttribute = VisualConcept.VertexAttribute.Z.ensure(wg);
+            selectedVertexAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
 
             vxId1 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId1, 1.0f);
-            wg.setFloatValue(attrY, vxId1, 1.0f);
-            wg.setBooleanValue(vAttrId, vxId1, false);
+            wg.setFloatValue(xVertexAttribute, vxId1, 1.0f);
+            wg.setFloatValue(yVertexAttribute, vxId1, 1.0f);
+            wg.setBooleanValue(selectedVertexAttribute, vxId1, false);
+            
             vxId2 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId2, 5.0f);
-            wg.setFloatValue(attrY, vxId2, 1.0f);
-            wg.setBooleanValue(vAttrId, vxId2, false);
+            wg.setFloatValue(xVertexAttribute, vxId2, 5.0f);
+            wg.setFloatValue(yVertexAttribute, vxId2, 1.0f);
+            wg.setBooleanValue(selectedVertexAttribute, vxId2, false);
+            
             vxId3 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId3, 1.0f);
-            wg.setFloatValue(attrY, vxId3, 5.0f);
-            wg.setBooleanValue(vAttrId, vxId3, false);
+            wg.setFloatValue(xVertexAttribute, vxId3, 1.0f);
+            wg.setFloatValue(yVertexAttribute, vxId3, 5.0f);
+            wg.setBooleanValue(selectedVertexAttribute, vxId3, false);
+            
             vxId4 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId4, 5.0f);
-            wg.setFloatValue(attrY, vxId4, 5.0f);
-            wg.setBooleanValue(vAttrId, vxId4, false);
+            wg.setFloatValue(xVertexAttribute, vxId4, 5.0f);
+            wg.setFloatValue(yVertexAttribute, vxId4, 5.0f);
+            wg.setBooleanValue(selectedVertexAttribute, vxId4, false);
+            
             vxId5 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId5, 10.0f);
-            wg.setFloatValue(attrY, vxId5, 10.0f);
-            wg.setBooleanValue(vAttrId, vxId5, false);
+            wg.setFloatValue(xVertexAttribute, vxId5, 10.0f);
+            wg.setFloatValue(yVertexAttribute, vxId5, 10.0f);
+            wg.setBooleanValue(selectedVertexAttribute, vxId5, false);
+            
             vxId6 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId6, 15.0f);
-            wg.setFloatValue(attrY, vxId6, 15.0f);
-            wg.setBooleanValue(vAttrId, vxId6, false);
+            wg.setFloatValue(xVertexAttribute, vxId6, 15.0f);
+            wg.setFloatValue(yVertexAttribute, vxId6, 15.0f);
+            wg.setBooleanValue(selectedVertexAttribute, vxId6, false);
+            
             vxId7 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId7, 100.0f);
-            wg.setFloatValue(attrY, vxId7, 100.0f);
-            wg.setBooleanValue(vAttrId, vxId7, false);
+            wg.setFloatValue(xVertexAttribute, vxId7, 100.0f);
+            wg.setFloatValue(yVertexAttribute, vxId7, 100.0f);
+            wg.setBooleanValue(selectedVertexAttribute, vxId7, false);
 
-            txId1 = wg.addTransaction(vxId1, vxId2, false);
-            txId2 = wg.addTransaction(vxId1, vxId3, false);
-            txId3 = wg.addTransaction(vxId2, vxId4, true);
-            txId4 = wg.addTransaction(vxId4, vxId2, true);
-            txId5 = wg.addTransaction(vxId5, vxId6, false);
+            wg.addTransaction(vxId1, vxId2, false);
+            wg.addTransaction(vxId1, vxId3, false);
+            wg.addTransaction(vxId2, vxId4, true);
+            wg.addTransaction(vxId4, vxId2, true);
+            wg.addTransaction(vxId5, vxId6, false);
         } finally {
             wg.commit();
         }
@@ -185,7 +178,7 @@ public class MergeNodeNGTest {
 //            assertEquals("Transaction count", 5, wg.getTransactionCount());
 //            assertEquals("Node count", 7, wg.getVertexCount());
 //
-//            ArrayList<Integer> list = new ArrayList<>();
+//            List<Integer> list = new ArrayList<>();
 //            list.add(vxId7);
 //
 //            PluginExecution.withPlugin(CorePluginRegistry.PERMANENT_NODE_MERGE)
@@ -206,14 +199,14 @@ public class MergeNodeNGTest {
             assertEquals("Transaction count", 5, wg.getTransactionCount());
             assertEquals("Node count", 7, wg.getVertexCount());
 
-            ArrayList<Integer> list = new ArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.add(vxId5);
             list.add(vxId6);
 
-            HashMap<Integer, String> values = new HashMap<>();
-            values.put(attrX, "123.0");
-            values.put(attrY, "456.0");
-            values.put(attrZ, "789.0");
+            Map<Integer, String> values = new HashMap<>();
+            values.put(xVertexAttribute, "123.0");
+            values.put(yVertexAttribute, "456.0");
+            values.put(zVertexAttribute, "789.0");
 
             PluginExecution.withPlugin(VisualGraphPluginRegistry.PERMANENT_MERGE)
                     .withParameter(PermanentMergePlugin.SELECTED_NODES_PARAMETER_ID, list)
@@ -236,9 +229,9 @@ public class MergeNodeNGTest {
         boolean found = false;
         for (int i = 0; i < graph.getVertexCount(); i++) {
             int id = graph.getVertex(i);
-            float x2 = graph.getFloatValue(attrX, id);
-            float y2 = graph.getFloatValue(attrY, id);
-            float z2 = graph.getFloatValue(attrZ, id);
+            float x2 = graph.getFloatValue(xVertexAttribute, id);
+            float y2 = graph.getFloatValue(yVertexAttribute, id);
+            float z2 = graph.getFloatValue(zVertexAttribute, id);
             if (x == x2 && y == y2 && z == z2) {
                 found = true;
             }
@@ -253,16 +246,16 @@ public class MergeNodeNGTest {
             assertEquals("Transaction count", 5, wg.getTransactionCount());
             assertEquals("Node count", 7, wg.getVertexCount());
 
-            ArrayList<Integer> list = new ArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.add(vxId1);
             list.add(vxId2);
             list.add(vxId3);
             list.add(vxId4);
 
-            HashMap<Integer, String> values = new HashMap<>();
-            values.put(attrX, "123.0");
-            values.put(attrY, "456.0");
-            values.put(attrZ, "789.0");
+            Map<Integer, String> values = new HashMap<>();
+            values.put(xVertexAttribute, "123.0");
+            values.put(yVertexAttribute, "456.0");
+            values.put(zVertexAttribute, "789.0");
 
             PluginExecution.withPlugin(VisualGraphPluginRegistry.PERMANENT_MERGE)
                     .withParameter(PermanentMergePlugin.SELECTED_NODES_PARAMETER_ID, list)

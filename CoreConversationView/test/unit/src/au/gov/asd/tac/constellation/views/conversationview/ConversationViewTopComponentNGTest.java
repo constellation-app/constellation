@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -23,6 +25,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.testfx.api.FxToolkit;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -42,18 +45,28 @@ public class ConversationViewTopComponentNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        try {            
+            FxToolkit.cleanupStages();
+        } catch (final TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -62,6 +75,7 @@ public class ConversationViewTopComponentNGTest {
     @Test
     public void testCreateStyle() {
         System.out.println("createStyle");
+        
         final String expResult = "resources/conversation.css";
         topComponent = new ConversationViewTopComponent();
         final String result = topComponent.createStyle();
@@ -75,7 +89,8 @@ public class ConversationViewTopComponentNGTest {
     @Test
     public void testCreateContent() {
         System.out.println("createContent");
-        try (MockedStatic<ConversationController> controllerStatic = Mockito.mockStatic(ConversationController.class)) {
+        
+        try (final MockedStatic<ConversationController> controllerStatic = Mockito.mockStatic(ConversationController.class)) {
             final ConversationController controller = spy(ConversationController.class);
             controllerStatic.when(ConversationController::getDefault).thenReturn(controller);
 
@@ -94,7 +109,8 @@ public class ConversationViewTopComponentNGTest {
     @Test
     public void testHandleNewGraph() {
         System.out.println("handleNewGraph");
-        try (MockedStatic<ConversationController> controllerStatic = Mockito.mockStatic(ConversationController.class)) {
+        
+        try (final MockedStatic<ConversationController> controllerStatic = Mockito.mockStatic(ConversationController.class)) {
             final ConversationController controller = spy(ConversationController.class);
             controllerStatic.when(ConversationController::getDefault).thenReturn(controller);
             final Graph graph = mock(Graph.class);

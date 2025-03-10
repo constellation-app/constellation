@@ -123,10 +123,9 @@ public class DragAction extends AbstractAction {
             final Graph graph = context.getGraph();
             final List<Map<String, String>> vxList = new ArrayList<>();
             final List<Map<String, String>> txList = new ArrayList<>();
-            final ReadableGraph rg = graph.getReadableGraph();
-            try {
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
                 // Get the selected vertices.
-                final int vxSelectedId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+                final int vxSelectedId = VisualConcept.VertexAttribute.SELECTED.get(rg);
                 final int vxCount = rg.getVertexCount();
                 for (int position = 0; position < vxCount; position++) {
                     final int vxId = rg.getVertex(position);
@@ -145,7 +144,7 @@ public class DragAction extends AbstractAction {
                 }
 
                 // Get the selected transactions.
-                final int txSelectedId = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
+                final int txSelectedId = VisualConcept.TransactionAttribute.SELECTED.get(rg);
                 final int txCount = rg.getTransactionCount();
                 for (int position = 0; position < txCount; position++) {
                     final int txId = rg.getTransaction(position);
@@ -165,8 +164,6 @@ public class DragAction extends AbstractAction {
                         txList.add(txMap);
                     }
                 }
-            } finally {
-                rg.release();
             }
 
             final Map<String, List<Map<String, String>>> gmap = new HashMap<>();

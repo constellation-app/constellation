@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.KatzCentralityAnalytic;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
+import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import java.util.Arrays;
 import java.util.List;
 import org.openide.util.lookup.ServiceProvider;
@@ -42,6 +43,11 @@ public class MostEasilyReachedQuestion implements AnalyticQuestionDescription<Sc
     @Override
     public String getDescription() {
         return "";
+    }
+    
+    @Override 
+    public String getDocumentationUrl() {
+        return AnalyticUtilities.getHelpPath() + "question-most-easily-reached.md";
     }
 
     @Override

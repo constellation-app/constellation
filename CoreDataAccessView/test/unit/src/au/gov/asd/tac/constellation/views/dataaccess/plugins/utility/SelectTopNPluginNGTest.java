@@ -44,15 +44,14 @@ public class SelectTopNPluginNGTest {
     /**
      * Test of edit method, of class SelectTopNPlugin.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test(expectedExceptions = PluginException.class)
-    public void testEditWithNothingSelected() throws Exception {
+    public void testEditWithNothingSelected() throws InterruptedException, PluginException {
         final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
         final int vertexLabelAttr = VisualConcept.VertexAttribute.LABEL.ensure(graph);
         final int vertexSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        final int vertexTypeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
-        final int transactionTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
 
         final int vx0 = graph.addVertex();
         graph.setStringValue(vertexLabelAttr, vx0, "foo");
@@ -65,12 +64,12 @@ public class SelectTopNPluginNGTest {
     }
 
     @Test
-    public void testEditWithNoResults() throws Exception {
+    public void testEditWithNoResults() throws InterruptedException, PluginException {
         final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
         final int vertexLabelAttr = VisualConcept.VertexAttribute.LABEL.ensure(graph);
         final int vertexSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        final int vertexTypeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
-        final int transactionTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+        AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
+        AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
 
         final int vx0 = graph.addVertex();
         graph.setStringValue(vertexLabelAttr, vx0, "foo");
@@ -94,12 +93,12 @@ public class SelectTopNPluginNGTest {
     }
 
     @Test
-    public void testEditWithTopFiveLocationsWithEqualCounts() throws Exception {
+    public void testEditWithTopFiveLocationsWithEqualCounts() throws InterruptedException, PluginException {
         final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
         final int vertexLabelAttr = VisualConcept.VertexAttribute.LABEL.ensure(graph);
         final int vertexSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         final int vertexTypeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
-        final int transactionTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+        AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
 
         final int sourceVxId = graph.addVertex();
         graph.setStringValue(vertexLabelAttr, sourceVxId, "source");
@@ -135,12 +134,12 @@ public class SelectTopNPluginNGTest {
     }
 
     @Test
-    public void testEditWithTopTwoLocationsAndEverythingIsGci() throws Exception {
+    public void testEditWithTopTwoLocationsAndEverythingIsCountry() throws InterruptedException, PluginException {
         final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
         final int vertexLabelAttr = VisualConcept.VertexAttribute.LABEL.ensure(graph);
         final int vertexSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         final int vertexTypeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
-        final int transactionTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+        AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
 
         final int sourceVxId = graph.addVertex();
         graph.setStringValue(vertexLabelAttr, sourceVxId, "source");
@@ -180,12 +179,12 @@ public class SelectTopNPluginNGTest {
     }
 
     @Test
-    public void testEditWithTopTwoLocationsContainingDifferentTypes() throws Exception {
+    public void testEditWithTopTwoLocationsContainingDifferentTypes() throws InterruptedException, PluginException {
         final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
         final int vertexLabelAttr = VisualConcept.VertexAttribute.LABEL.ensure(graph);
         final int vertexSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         final int vertexTypeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
-        final int transactionTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+        AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
 
         final int sourceVxId = graph.addVertex();
         graph.setStringValue(vertexLabelAttr, sourceVxId, "source");
@@ -234,12 +233,12 @@ public class SelectTopNPluginNGTest {
     }
 
     @Test
-    public void testEditWithTopTwoContactsAndEverythingIsCommunicationTransactions() throws Exception {
+    public void testEditWithTopTwoContactsAndEverythingIsCommunicationTransactions() throws InterruptedException, PluginException {
         final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
         final int vertexLabelAttr = VisualConcept.VertexAttribute.LABEL.ensure(graph);
         final int vertexSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        final int vertexTypeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
         final int transactionTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+        AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
 
         final int sourceVxId = graph.addVertex();
         graph.setStringValue(vertexLabelAttr, sourceVxId, "source");
@@ -278,12 +277,12 @@ public class SelectTopNPluginNGTest {
     }
 
     @Test
-    public void testEditWithTopTwoLocationsContainingDifferentTransactionTypes() throws Exception {
+    public void testEditWithTopTwoLocationsContainingDifferentTransactionTypes() throws InterruptedException, PluginException {
         final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
         final int vertexLabelAttr = VisualConcept.VertexAttribute.LABEL.ensure(graph);
         final int vertexSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        final int vertexTypeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
         final int transactionTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+        AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
 
         final int sourceVxId = graph.addVertex();
         graph.setStringValue(vertexLabelAttr, sourceVxId, "source");
@@ -329,5 +328,4 @@ public class SelectTopNPluginNGTest {
             assertFalse(graph.getBooleanValue(vertexSelectedAttr, sourceVxId + i));
         }
     }
-
 }

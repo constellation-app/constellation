@@ -25,6 +25,7 @@ import java.util.logging.Logger;
  * @author OrionsGuardian
  */
 public class PseudoTabDisplayerUI {
+    
     private static final Logger LOGGER = Logger.getLogger(PseudoTabDisplayerUI.class.getName());
     // The colorsReady variable is used in Windows FlatLAf and Metal Look and Feel classes.
     private static boolean colorsReady = false;
@@ -49,6 +50,5 @@ public class PseudoTabDisplayerUI {
     
     private static boolean getColorsReady(){
         return colorsReady;
-    }
-    
+    }   
 }

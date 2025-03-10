@@ -332,7 +332,7 @@ public class GraphRecordStoreUtilities {
                 }
             }
 
-            // TODO: look at ensure(true/fale)
+            // TODO: look at ensure(true/false)
             int attribute = graph.getAttribute(elementType, key);
             if (attribute == Graph.NOT_FOUND) {
                 attribute = graph.getSchema() != null ? graph.getSchema().getFactory().ensureAttribute(graph, elementType, key) : Graph.NOT_FOUND;

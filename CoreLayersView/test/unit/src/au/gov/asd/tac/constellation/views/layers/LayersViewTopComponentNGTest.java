@@ -37,102 +37,26 @@ import org.testng.annotations.Test;
  */
 public class LayersViewTopComponentNGTest {
     
-    public LayersViewTopComponentNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
-
-    /**
-     * Test of update method, of class LayersViewTopComponent.
-     */
-    @Test
-    public void testUpdate() {
-    }
-
-    /**
-     * Test of removeValueHandlers method, of class LayersViewTopComponent.
-     */
-    @Test
-    public void testRemoveValueHandlers() {
-    }
-
-    /**
-     * Test of setChangeListeners method, of class LayersViewTopComponent.
-     */
-    @Test
-    public void testSetChangeListeners() {
-    }
-
-    /**
-     * Test of createStyle method, of class LayersViewTopComponent.
-     */
-    @Test
-    public void testCreateStyle() {
-    }
-
-    /**
-     * Test of createContent method, of class LayersViewTopComponent.
-     */
-    @Test
-    public void testCreateContent() {
-    }
-
-    /**
-     * Test of handleNewGraph method, of class LayersViewTopComponent.
-     */
-    @Test
-    public void testHandleNewGraph() {
-    }
-
-    /**
-     * Test of handleGraphOpened method, of class LayersViewTopComponent.
-     */
-    @Test
-    public void testHandleGraphOpened() {
-    }
-
-    /**
-     * Test of handleGraphClosed method, of class LayersViewTopComponent.
-     */
-    @Test
-    public void testHandleGraphClosed() {
-    }
-
-    /**
-     * Test of handleComponentOpened method, of class LayersViewTopComponent.
-     */
-    @Test
-    public void testHandleComponentOpened() {
-    }
-
-    /**
-     * Test of componentShowing method, of class LayersViewTopComponent.
-     */
-    @Test
-    public void testComponentShowing() {
-    }
-
-    /**
-     * Test of preparePane method, of class LayersViewTopComponent.
-     */
-    @Test
-    public void testPreparePane() {
-    }
-
+    
     /**
      * Test of setPaneStatus method, of class LayersViewTopComponent.
      */
@@ -187,5 +111,5 @@ public class LayersViewTopComponentNGTest {
             verify(lvp).setEnabled(Mockito.eq(true));
         }
     }
-    
+   
 }

@@ -68,9 +68,8 @@ public class ConstellationInstalledFileLocatorNGTest {
      */
     @Test
     public void testFileExists() throws IOException {
-        try (
-                final MockedStatic<InstalledFileLocator> locatorMockedStatic = mockStatic(InstalledFileLocator.class);
-                final MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class);) {
+        try (final MockedStatic<InstalledFileLocator> locatorMockedStatic = mockStatic(InstalledFileLocator.class);
+                final MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class)) {
             // mock the file locator to return null
             final InstalledFileLocator locator = mock(InstalledFileLocator.class);
             locatorMockedStatic.when(() -> InstalledFileLocator.getDefault()).thenReturn(locator);
@@ -101,9 +100,8 @@ public class ConstellationInstalledFileLocatorNGTest {
      */
     @Test(expectedExceptions = {RuntimeException.class}, expectedExceptionsMessageRegExp = "Couldn't find file.*")
     public void testFileNotExist() throws IOException {
-        try (
-                final MockedStatic<InstalledFileLocator> locatorMockedStatic = mockStatic(InstalledFileLocator.class);
-                final MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class);) {
+        try (final MockedStatic<InstalledFileLocator> locatorMockedStatic = mockStatic(InstalledFileLocator.class);
+                final MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class)) {
             // mock the file locator to return null
             final InstalledFileLocator locator = mock(InstalledFileLocator.class);
             locatorMockedStatic.when(() -> InstalledFileLocator.getDefault()).thenReturn(locator);

@@ -68,10 +68,7 @@ public class DefaultPluginEnvironmentNGTest {
     private static final Logger LOGGER = Logger.getLogger(DefaultPluginEnvironmentNGTest.class.getName());
 
     private static MockedConstruction<DefaultPluginInteraction> interactionMocks;
-
-    public DefaultPluginEnvironmentNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -97,14 +94,18 @@ public class DefaultPluginEnvironmentNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Test of executePluginLater method, of class DefaultPluginEnvironment.
+     * @throws java.util.concurrent.ExecutionException
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testExecutePluginLaterWithNullAsync() throws ExecutionException, InterruptedException {
@@ -287,9 +288,11 @@ public class DefaultPluginEnvironmentNGTest {
 
     /**
      * Test of executePluginNow method, of class DefaultPluginEnvironment.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExecutePluginNow() throws Exception {
+    public void testExecutePluginNow() throws InterruptedException, PluginException {
         System.out.println("executePluginNow");
         Graph graph = mock(Graph.class);
         Plugin plugin = mock(Plugin.class);
@@ -302,7 +305,7 @@ public class DefaultPluginEnvironmentNGTest {
     }
 
     @Test
-    public void testExecutePluginNowWithNullGraph() throws Exception {
+    public void testExecutePluginNowWithNullGraph() throws InterruptedException, PluginException {
         System.out.println("executePluginNow");
         Graph graph = null;
         Plugin plugin = mock(Plugin.class);
@@ -315,7 +318,7 @@ public class DefaultPluginEnvironmentNGTest {
     }
 
     @Test(expectedExceptions = PluginException.class)
-    public void testExecutePluginNowThrowsPluginException() throws Exception {
+    public void testExecutePluginNowThrowsPluginException() throws InterruptedException, PluginException {
         System.out.println("executePluginNow");
         Graph graph = mock(Graph.class);
         Plugin plugin = mock(Plugin.class);
@@ -334,7 +337,7 @@ public class DefaultPluginEnvironmentNGTest {
     }
 
     @Test(expectedExceptions = RuntimeException.class)
-    public void testExecutePluginNowThrowsRuntimeException() throws Exception {
+    public void testExecutePluginNowThrowsRuntimeException() throws InterruptedException, PluginException {
         System.out.println("executePluginNow");
         Graph graph = mock(Graph.class);
         Plugin plugin = mock(Plugin.class);
@@ -352,9 +355,11 @@ public class DefaultPluginEnvironmentNGTest {
 
     /**
      * Test of executeEditPluginNow method, of class DefaultPluginEnvironment.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExecuteEditPluginNow() throws Exception {
+    public void testExecuteEditPluginNow() throws InterruptedException, PluginException {
         System.out.println("executeEditPluginNow");
         GraphWriteMethods graph = mock(GraphWriteMethods.class);
         Plugin plugin = mock(Plugin.class);
@@ -367,7 +372,7 @@ public class DefaultPluginEnvironmentNGTest {
     }
 
     @Test(expectedExceptions = InterruptedException.class)
-    public void testExecuteEditPluginNowThrowsInterruptedException() throws Exception {
+    public void testExecuteEditPluginNowThrowsInterruptedException() throws InterruptedException, PluginException {
         System.out.println("executeEditPluginNow");
         GraphWriteMethods graph = mock(GraphWriteMethods.class);
         Plugin plugin = mock(Plugin.class);
@@ -387,7 +392,7 @@ public class DefaultPluginEnvironmentNGTest {
     }
 
     @Test(expectedExceptions = PluginException.class)
-    public void testExecuteEditPluginNowThrowsPluginException() throws Exception {
+    public void testExecuteEditPluginNowThrowsPluginException() throws InterruptedException, PluginException {
         System.out.println("executeEditPluginNow");
         GraphWriteMethods graph = mock(GraphWriteMethods.class);
         Plugin plugin = mock(Plugin.class);
@@ -406,7 +411,7 @@ public class DefaultPluginEnvironmentNGTest {
     }
 
     @Test(expectedExceptions = RuntimeException.class)
-    public void testExecuteEditPluginNowThrowsRuntimeException() throws Exception {
+    public void testExecuteEditPluginNowThrowsRuntimeException() throws InterruptedException, PluginException {
         System.out.println("executeEditPluginNow");
         GraphWriteMethods graph = mock(GraphWriteMethods.class);
         Plugin plugin = mock(Plugin.class);
@@ -424,9 +429,11 @@ public class DefaultPluginEnvironmentNGTest {
 
     /**
      * Test of executeReadPluginNow method, of class DefaultPluginEnvironment.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExecuteReadPluginNow() throws Exception {
+    public void testExecuteReadPluginNow() throws InterruptedException, PluginException {
         System.out.println("executeReadPluginNow");
         GraphReadMethods graph = mock(GraphReadMethods.class);
         Plugin plugin = mock(Plugin.class);
@@ -439,7 +446,7 @@ public class DefaultPluginEnvironmentNGTest {
     }
 
     @Test(expectedExceptions = InterruptedException.class)
-    public void testExecuteReadPluginNowThrowsInterruptedException() throws Exception {
+    public void testExecuteReadPluginNowThrowsInterruptedException() throws InterruptedException, PluginException {
         System.out.println("executeReadPluginNow");
         GraphReadMethods graph = mock(GraphReadMethods.class);
         Plugin plugin = mock(Plugin.class);
@@ -458,7 +465,7 @@ public class DefaultPluginEnvironmentNGTest {
     }
 
     @Test(expectedExceptions = PluginException.class)
-    public void testExecuteReadPluginNowThrowsPluginException() throws Exception {
+    public void testExecuteReadPluginNowThrowsPluginException() throws InterruptedException, PluginException {
         System.out.println("executeReadPluginNow");
         GraphReadMethods graph = mock(GraphReadMethods.class);
         Plugin plugin = mock(Plugin.class);
@@ -477,7 +484,7 @@ public class DefaultPluginEnvironmentNGTest {
     }
 
     @Test(expectedExceptions = RuntimeException.class)
-    public void testExecuteReadPluginNowThrowsRuntimeException() throws Exception {
+    public void testExecuteReadPluginNowThrowsRuntimeException() throws InterruptedException, PluginException {
         System.out.println("executeReadPluginNow");
         GraphReadMethods graph = mock(GraphReadMethods.class);
         Plugin plugin = mock(Plugin.class);
@@ -496,6 +503,8 @@ public class DefaultPluginEnvironmentNGTest {
     /**
      * Test coverage for DefaultPluginEnvironment where parent and current ThreadConstraints
      * may or may not have plugin reports defined.
+     * @throws java.util.concurrent.ExecutionException
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testExecutePluginLaterWithAndWithoutParentReports() throws ExecutionException, InterruptedException {

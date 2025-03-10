@@ -30,6 +30,7 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class DataAccessPreferenceUtilitiesNGTest {
+    
     private static final String TITLE = "a test title";
     
     private Preferences preferences;
@@ -100,6 +101,7 @@ public class DataAccessPreferenceUtilitiesNGTest {
      */
     public void testGetDir3() {
         System.out.println("testGetDir3");
+        
         final String key = null;
         final String value = null;
 
@@ -112,7 +114,8 @@ public class DataAccessPreferenceUtilitiesNGTest {
     }
 
     /**
-     * Tests with an invalid directory.
+     * Tests with an invalid d
+     * @throws java.io.IOExceptionirectory.
      */
     @Test
     public void testIsSaveResultsEnabled() throws IOException {
@@ -181,6 +184,7 @@ public class DataAccessPreferenceUtilitiesNGTest {
      * Test of getDataAccessResultsDir method, of class
      * DataAccessPreferenceKeys. Testing when a file is requested instead of a
      * directory. Should return null as it is invalid.
+     * @throws java.io.IOException
      */
     @Test
     public void testGetDataAccessResultsDir() throws IOException {
@@ -282,6 +286,7 @@ public class DataAccessPreferenceUtilitiesNGTest {
     /**
      * Test of getDataAccessResultsDirEx method, of class
      * DataAccessPreferenceKeys. Test invalid directory
+     * @throws java.io.IOException
      */
     @Test
     public void testGetDataAccessResultsDirEx2() throws IOException {
@@ -341,6 +346,7 @@ public class DataAccessPreferenceUtilitiesNGTest {
      * Test of setDataAccessResultsDir method, of class
      * DataAccessPreferenceKeys. Test adding file dir to preferences. Should not
      * store a path to a file...
+     * @throws java.io.IOException
      */
     @Test
     public void testSetDataAccessResultsDir2() throws IOException {
@@ -399,6 +405,7 @@ public class DataAccessPreferenceUtilitiesNGTest {
      * Test of getPreviousDataAccessResultsDir method, of class
      * DataAccessPreferenceKeys. Testing when a file is requested instead of a
      * directory. Should return null as it is invalid.
+     * @throws java.io.IOException
      */
     @Test
     public void testGetPreviousDataAccessResultsDir() throws IOException {

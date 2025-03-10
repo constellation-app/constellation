@@ -144,7 +144,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
         if (newColor != null) {
             colorPanels.get(panelID - 1).setBackground(newColor);
-            BlazeUtilities.savePreset(newColor, panelID - 1);
+            BlazeUtilities.savePreset(ConstellationColor.fromJavaColor(newColor), panelID - 1);
         }
     }
 
@@ -384,9 +384,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
     }
 
     private void updateSliders(final Graph graph) {
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
-
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int blazeSizeAttributeId = VisualConcept.GraphAttribute.BLAZE_SIZE.get(rg);
             final float blazeSize = blazeSizeAttributeId == Graph.NOT_FOUND
                     ? (prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)) / 100F
@@ -403,8 +401,6 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
             opacitySlider.removeChangeListener(sliderChangeListener);
             opacitySlider.setValue((int) (blazeOpacity * 100));
             opacitySlider.addChangeListener(sliderChangeListener);
-        } finally {
-            rg.release();
         }
     }
 
@@ -417,9 +413,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
         switch (command) {
             case ADD_CUSTOM_BLAZE_ACTION -> {
-                final Pair<Boolean, ConstellationColor> colorResult = BlazeUtilities.colorDialog(selectionResult.getValue());
-                if (colorResult.getKey()) {
-                    final ConstellationColor color = colorResult.getValue();
+                final ConstellationColor color = BlazeUtilities.colorDialog(selectionResult.getValue());
+                if (color != null) {
                     plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
                     parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                     parameters.getParameters().get(BlazeUtilities.VERTEX_IDS_PARAMETER_ID).setObjectValue(selectionResult.getKey());

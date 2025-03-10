@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.components.advanced.utilities;
 
-import au.gov.asd.tac.constellation.views.find.components.advanced.utilities.AdvancedSearchParameters;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -45,28 +44,28 @@ public class AdvancedSearchParametersNGTest {
     private AdvancedSearchParameters paramatersOne;
     private AdvancedSearchParameters paramatersTwo;
 
-    private List<FindCriteriaValues> criteriaValuesListOne = new ArrayList<>();
-    private List<FindCriteriaValues> criteriaValuesListTwo = new ArrayList<>();
-
-    ;
-
-    public AdvancedSearchParametersNGTest() {
-    }
-
+    private List<FindCriteriaValues> criteriaValuesListOne;
+    private List<FindCriteriaValues> criteriaValuesListTwo;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
+        criteriaValuesListOne = new ArrayList<>();
+        criteriaValuesListTwo = new ArrayList<>();
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -75,6 +74,7 @@ public class AdvancedSearchParametersNGTest {
     @Test
     public void testCopyParameters() {
         System.out.println("copyParameters");
+        
         populateCriteriaLists();
         paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         paramatersTwo = new AdvancedSearchParameters();
@@ -89,6 +89,7 @@ public class AdvancedSearchParametersNGTest {
     @Test
     public void testGetCriteriaValuesList() {
         System.out.println("getCriteriaValuesList");
+        
         populateCriteriaLists();
         paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         assertEquals(criteriaValuesListOne, paramatersOne.getCriteriaValuesList());
@@ -100,6 +101,7 @@ public class AdvancedSearchParametersNGTest {
     @Test
     public void testGetGraphElementType() {
         System.out.println("getGraphElementType");
+        
         populateCriteriaLists();
         paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         assertEquals(GraphElementType.VERTEX, paramatersOne.getGraphElementType());
@@ -111,6 +113,7 @@ public class AdvancedSearchParametersNGTest {
     @Test
     public void testGetAllOrAny() {
         System.out.println("getAllOrAny");
+        
         populateCriteriaLists();
         paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         assertEquals("Any", paramatersOne.getAllOrAny());
@@ -122,6 +125,7 @@ public class AdvancedSearchParametersNGTest {
     @Test
     public void testGetCurrentSelection() {
         System.out.println("getCurrentSelection");
+        
         populateCriteriaLists();
         paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         assertEquals("Replace Selection", paramatersOne.getPostSearchAction());
@@ -207,7 +211,6 @@ public class AdvancedSearchParametersNGTest {
     }
 
     private void populateCriteriaLists() {
-
         FindCriteriaValues valueOne = new StringCriteriaValues("string", "Identifier", "Is", "one", true, false);
         FindCriteriaValues valueTwo = new StringCriteriaValues("string", "Identifier", "Is", "two", true, false);
         criteriaValuesListOne.add(valueOne);
@@ -244,8 +247,6 @@ public class AdvancedSearchParametersNGTest {
     }
 
     private String addZero(int number) {
-        String newNumber = (number < 10 ? newNumber = "0" + Integer.toString(number) : Integer.toString(number));
-        return newNumber;
+        return number < 10 ? "0" + Integer.toString(number) : Integer.toString(number);
     }
-
 }

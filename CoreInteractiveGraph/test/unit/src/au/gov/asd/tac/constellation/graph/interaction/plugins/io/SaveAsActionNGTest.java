@@ -19,14 +19,15 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
+import static org.testng.Assert.assertFalse;
 import org.testng.annotations.Test;
 
 /**
@@ -35,25 +36,6 @@ import org.testng.annotations.Test;
  * @author sol695510
  */
 public class SaveAsActionNGTest {
-
-    public SaveAsActionNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
 
     /**
      * Test of getSaveFileChooser method, of class SaveAsAction.
@@ -96,5 +78,27 @@ public class SaveAsActionNGTest {
 
         Files.deleteIfExists(file1.toPath());
         Files.deleteIfExists(file3.toPath());
+    }
+
+    /**
+     * Test of actionPerformed method, of class SaveAsAction.
+     *
+     * @throws InterruptedException
+     */
+    @Test
+    public void testActionPerformedNull() throws InterruptedException {
+        System.out.println("actionPerformedNull");
+        final ArrayList<SaveAsAction> instance = new ArrayList<>();
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        SwingUtilities.invokeLater(() -> {
+            instance.add(new SaveAsAction());
+            instance.get(0).actionPerformed(null);
+            latch.countDown();
+        });
+
+        latch.await(5000, TimeUnit.MILLISECONDS);
+        // Assert isSaved is still false, as null was fed into actionPerformed
+        assertFalse(instance.get(0).isSaved());
     }
 }

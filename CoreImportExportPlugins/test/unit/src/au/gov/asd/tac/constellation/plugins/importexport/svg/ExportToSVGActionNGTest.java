@@ -62,15 +62,14 @@ public class ExportToSVGActionNGTest {
     final String graphName = "Test Graph 1";
     final DrawFlags drawFlags = new DrawFlags(true, true, true, true, true); 
     
-    public ExportToSVGActionNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -153,8 +152,6 @@ public class ExportToSVGActionNGTest {
         verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.SHOW_CONNECTION_LABELS_PARAMETER_ID, true);
         verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, true);
         verify(pluginExecutionMock, times(1)).executeLater(graphMock);
-        verify(contextMock, times(2)).getGraph();
-        
+        verify(contextMock, times(2)).getGraph();       
     }
-    
 }

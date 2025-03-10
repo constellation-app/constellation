@@ -22,7 +22,6 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io;
 public final class Config {
 
     public enum ConnectionType {
-
         TRANSACTIONS, EDGES, LINKS
     }
 

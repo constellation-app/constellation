@@ -49,3 +49,7 @@ body {
 #pluginCheckbox {
     -fx-color: black;
 }
+
+a {
+    color: white;
+}

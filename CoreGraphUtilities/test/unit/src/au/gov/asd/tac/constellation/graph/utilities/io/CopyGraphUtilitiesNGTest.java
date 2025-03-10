@@ -48,19 +48,30 @@ public class CopyGraphUtilitiesNGTest {
     private static final String EDGE_ATTRIBUTE_2_LABEL = "edge2 label";
 
     StoreGraph source;
-    int metaAttribute1, graphAttribute1, vertexAttribute1, transactionAttribute1, linkAttribute1, edgeAttribute1;
-    int metaAttribute2, graphAttribute2, vertexAttribute2, transactionAttribute2, linkAttribute2, edgeAttribute2;
-    int vx0, vx1, tx0, tx1, ed0, ed1, lk0;
-
-    public CopyGraphUtilitiesNGTest() {
-    }
-
+    
+    int metaAttribute2;
+    int graphAttribute2;
+    int vertexAttribute2;
+    int transactionAttribute2;
+    int linkAttribute2;
+    int edgeAttribute2;
+    
+    int vx0;
+    int vx1;
+    int tx0;
+    int tx1;
+    int ed0;
+    int ed1;
+    int lk0;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -68,17 +79,17 @@ public class CopyGraphUtilitiesNGTest {
         source = new StoreGraph();
 
         // make the attributes
-        metaAttribute1 = source.addAttribute(GraphElementType.META, StringAttributeDescription.ATTRIBUTE_NAME, META_ATTRIBUTE_1_LABEL, "meta1 description", "meta1 default", null);
+        source.addAttribute(GraphElementType.META, StringAttributeDescription.ATTRIBUTE_NAME, META_ATTRIBUTE_1_LABEL, "meta1 description", "meta1 default", null);
         metaAttribute2 = source.addAttribute(GraphElementType.META, StringAttributeDescription.ATTRIBUTE_NAME, META_ATTRIBUTE_2_LABEL, "meta2 description", "meta2 default", null);
-        graphAttribute1 = source.addAttribute(GraphElementType.GRAPH, StringAttributeDescription.ATTRIBUTE_NAME, GRAPH_ATTRIBUTE_1_LABEL, "graph1 description", "graph1 default", null);
+        source.addAttribute(GraphElementType.GRAPH, StringAttributeDescription.ATTRIBUTE_NAME, GRAPH_ATTRIBUTE_1_LABEL, "graph1 description", "graph1 default", null);
         graphAttribute2 = source.addAttribute(GraphElementType.GRAPH, StringAttributeDescription.ATTRIBUTE_NAME, GRAPH_ATTRIBUTE_2_LABEL, "graph2 description", "graph2 default", null);
-        vertexAttribute1 = source.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, VERTEX_ATTRIBUTE_1_LABEL, "vertex1 description", "vertex1 default", null);
+        source.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, VERTEX_ATTRIBUTE_1_LABEL, "vertex1 description", "vertex1 default", null);
         vertexAttribute2 = source.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, VERTEX_ATTRIBUTE_2_LABEL, "vertex2 description", "vertex2 default", null);
-        transactionAttribute1 = source.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, TRANSACTION_ATTRIBUTE_1_LABEL, "transaction1 description", "transaction1 default", null);
+        source.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, TRANSACTION_ATTRIBUTE_1_LABEL, "transaction1 description", "transaction1 default", null);
         transactionAttribute2 = source.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, TRANSACTION_ATTRIBUTE_2_LABEL, "transaction2 description", "transaction2 default", null);
-        linkAttribute1 = source.addAttribute(GraphElementType.LINK, StringAttributeDescription.ATTRIBUTE_NAME, LINK_ATTRIBUTE_1_LABEL, "link1 description", "link1 default", null);
+        source.addAttribute(GraphElementType.LINK, StringAttributeDescription.ATTRIBUTE_NAME, LINK_ATTRIBUTE_1_LABEL, "link1 description", "link1 default", null);
         linkAttribute2 = source.addAttribute(GraphElementType.LINK, StringAttributeDescription.ATTRIBUTE_NAME, LINK_ATTRIBUTE_2_LABEL, "link2 description", "link2 default", null);
-        edgeAttribute1 = source.addAttribute(GraphElementType.EDGE, StringAttributeDescription.ATTRIBUTE_NAME, EDGE_ATTRIBUTE_1_LABEL, "edge1 description", "edge1 default", null);
+        source.addAttribute(GraphElementType.EDGE, StringAttributeDescription.ATTRIBUTE_NAME, EDGE_ATTRIBUTE_1_LABEL, "edge1 description", "edge1 default", null);
         edgeAttribute2 = source.addAttribute(GraphElementType.EDGE, StringAttributeDescription.ATTRIBUTE_NAME, EDGE_ATTRIBUTE_2_LABEL, "edge2 description", "edge2 default", null);
 
         // add 2 nodes and transactions
@@ -104,6 +115,7 @@ public class CopyGraphUtilitiesNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

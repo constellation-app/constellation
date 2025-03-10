@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.file.SaveNotification;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
 import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationManager;
 import au.gov.asd.tac.constellation.graph.interaction.framework.GraphVisualManagerFactory;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToClipboardAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CutToClipboardAction;
@@ -84,15 +85,19 @@ import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.SecondaryLoop;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -109,6 +114,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.Cleaner;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -116,6 +123,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -216,6 +225,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
     private final GraphVisualManagerFactory graphVisualManagerFactory;
     private final VisualManager visualManager;
+    private final AnimationManager animationManager;
     private final InstanceContent content;
     private final Graph graph;
     private MySaveAs saveAs = null;
@@ -250,12 +260,17 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static final String DISCARD = "Discard";
     private static final String CANCEL = "Cancel";
 
+    // For cleaning up object for garbage collection. Replaced finalize
+    private static final Cleaner cleaner = Cleaner.create();
+    private static final Runnable cleanupAction = () -> MemoryManager.finalizeObject(VisualGraphTopComponent.class);
+
     /**
      * Initialise the TopComponent state.
      */
     private void init() {
-        displayPanel.add(visualManager.getVisualComponent(), BorderLayout.CENTER);
-
+        if (visualManager != null) {
+            displayPanel.add(visualManager.getVisualComponent(), BorderLayout.CENTER);
+        }
         DropTargetAdapter dta = new DropTargetAdapter() {
             @Override
             public void dragEnter(DropTargetDragEvent dtde) {
@@ -285,8 +300,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 }
             }
         };
-
-        displayPanel.setDropTarget(new DropTarget(displayPanel, DnDConstants.ACTION_COPY, dta, true));
+        if (!isHeadless()) {
+            displayPanel.setDropTarget(new DropTarget(displayPanel, DnDConstants.ACTION_COPY, dta, true));
+        }
 
         content.add(getActionMap());
         savable = new MySavable();
@@ -416,20 +432,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
      * Construct a new TopComponent with an empty graph.
      */
     public VisualGraphTopComponent() {
-        initComponents();
+        this(GraphObjectUtilities.createMemoryDataObject("graph", true), new DualGraph(null));
         setName(NbBundle.getMessage(VisualGraphTopComponent.class, "CTL_VisualGraphTopComponent"));
         setToolTipText(NbBundle.getMessage(VisualGraphTopComponent.class, "HINT_VisualGraphTopComponent"));
-
-        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
-        this.graph = new DualGraph(null);
-
-        graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
-        visualManager = graphVisualManagerFactory.constructVisualManager(graph);
-        visualManager.startProcessing();
-        graphNode = new GraphNode(graph, gdo, this, visualManager);
-        content = new InstanceContent();
-        init();
-        MemoryManager.newObject(VisualGraphTopComponent.class);
     }
 
     /**
@@ -445,8 +450,13 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         this.graph = graph;
         graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
-        visualManager = graphVisualManagerFactory.constructVisualManager(graph);
-        visualManager.startProcessing();
+
+        if (!isHeadless()) {
+            visualManager = graphVisualManagerFactory.constructVisualManager(graph);
+            visualManager.startProcessing();
+        } else {
+            visualManager = null;
+        }
 
         Schema schema = graph.getSchema();
         if (schema instanceof GraphNodeFactory graphNodeFactory) {
@@ -458,12 +468,29 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         content = new InstanceContent();
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
+        animationManager = new AnimationManager(graph.getId());
+        cleaner.register(this, cleanupAction);
     }
 
     @Override
     public void requestActive() {
         super.requestActive();
-        visualManager.getVisualComponent().requestFocusInWindow();
+        if (visualManager != null) {
+            visualManager.getVisualComponent().requestFocusInWindow();
+            visualManager.refreshVisualProcessor();
+        }
+    }
+
+    /**
+     * Request the graph be active with a countdown latch to notify caller when graph has finished refreshing
+     *
+     * @param latch the CountDownLatch that will count down when the visualManager has finished refreshing
+     */
+    public void requestActiveWithLatch(final CountDownLatch latch) {
+        requestActive();
+        if (visualManager != null) {
+            visualManager.setRefreshLatch(latch);
+        }
     }
 
     /**
@@ -486,6 +513,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
      */
     public GraphNode getGraphNode() {
         return graphNode;
+    }
+    
+    public AnimationManager getAnimationManager(){
+        return animationManager;
     }
 
     /**
@@ -516,6 +547,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
     @Override
     public void componentClosed() {
+        animationManager.interruptAllAnimations();
         super.componentClosed();
 
         setActivatedNodes(new Node[]{});
@@ -568,15 +600,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         }
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            MemoryManager.finalizeObject(VisualGraphTopComponent.class);
-        } finally {
-            super.finalize();
-        }
-    }
-
     private void visualUpdate() {
 
         final ReadableGraph rg = graph.getReadableGraph();
@@ -623,12 +646,17 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             toggleDrawDirectedAction.putValue(Action.SMALL_ICON, isDrawingDirectedTransactions ? DIRECTED_ICON : UNDIRECTED_ICON);
             toggleDrawDirectedAction.putValue(Action.SHORT_DESCRIPTION, isDrawingDirectedTransactions ? DIRECTED_SHORT_DESCRIPTION : UNDIRECTED_SHORT_DESCRIPTION);
             toggleDrawDirectedAction.setEnabled(isDrawingMode);
-
-            switch (connectionMode) {
-                case LINK -> drawLinksAction.putValue(Action.SELECTED_KEY, true);
-                case EDGE -> drawEdgesAction.putValue(Action.SELECTED_KEY, true);
-                case TRANSACTION -> drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
-                default -> throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
+            if (connectionMode != null) {
+                switch (connectionMode) {
+                    case LINK ->
+                        drawLinksAction.putValue(Action.SELECTED_KEY, true);
+                    case EDGE ->
+                        drawEdgesAction.putValue(Action.SELECTED_KEY, true);
+                    case TRANSACTION ->
+                        drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
+                    default ->
+                        throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
+                }
             }
         } finally {
             rg.release();
@@ -779,6 +807,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     public boolean forceClose() {
+        animationManager.interruptAllAnimations();
         savable.setModified(false);
         return close();
     }
@@ -855,6 +884,35 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                         schema.getFactory().getIcon().buildBufferedImage(16));
             }
             return ICON_CACHE.get(schema.getFactory().getIcon().getName());
+        }
+    }
+
+    private boolean isHeadless() {
+        return Boolean.parseBoolean(System.getProperty("java.awt.headless", "false"));
+    }
+
+    private void screenshotWithLoop(final Semaphore waiter, final String name) {
+        // Create a 'secondary loop', allows screenshots to be taken when closing consty
+        // Otherwise consty locks up as screenshots and some GUI occupy the same dispatch thread
+        final Toolkit tk = Toolkit.getDefaultToolkit();
+        final EventQueue eq = tk.getSystemEventQueue();
+        final SecondaryLoop loop = eq.createSecondaryLoop();
+
+        new Thread(() -> {
+            // Temporary file made so the absolute path has correct file seperators
+            final File tempFile = new File(name);
+            RecentGraphScreenshotUtilities.takeScreenshot(tempFile.getAbsolutePath(), graph);
+            // Exit the secondary loop
+            waiter.release();
+            loop.exit();
+        }).start();
+
+        // Start loop and report errors if they happen
+        if (!isHeadless()) {
+            final boolean result = loop.enter();
+            if (!result) {
+                LOGGER.log(Level.SEVERE, "Error with starting secondary loop in VisualGraphTopComponent");
+            }
         }
     }
 
@@ -938,33 +996,46 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
          * @throws IOException When I/O errors happen.
          */
         @Override
-        protected void handleSave() throws IOException {
+        protected synchronized void handleSave() throws IOException {
             final GraphDataObject gdo = graphNode.getDataObject();
 
-            if (gdo.isInMemory()) {
+            // If graph is valid and has already been saved to a file previously
+            if (gdo.isValid() && !gdo.isInMemory()) {
+                final String name = gdo.getName();
+                // Create a new file and write to it.
+                final String tmpnam = String.format("%s_tmp%08x", name, gdo.hashCode());
+
+                //Dont create temp file if one already exists (createFromTemplate will throw an exception if one of the same name exists)
+                final Path folderPath = Paths.get(gdo.getFolder().getPrimaryFile().toURI());
+                final Path filepath = Paths.get(folderPath.toString(), tmpnam + GraphDataObject.FILE_EXTENSION);
+                if (Files.exists(filepath)) {
+                    return;
+                }
+
+                final GraphDataObject freshGdo = (GraphDataObject) gdo.createFromTemplate(gdo.getFolder(), tmpnam);
+
+                final Semaphore waiter = new Semaphore(0);
+
+                screenshotWithLoop(waiter, gdo.getPrimaryFile().getPath());
+
+                // Wait for screenshot to finish
+                waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+
+                // Begin saving file, but dont bother taking another screenshot
+                final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, true, waiter);
+                writer.execute();
+                // Wait for file writer to finish
+                waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+                isSaved = true;
+            } else {
+                // Either hasn't been saved before OR user might be saving a file previously deleted (edge case)
+                // Either way, just open up the 'save as' menu
+
                 // We don't want to do a save if this is an in-memory DataObject.
                 // Instead, we'll do the "Save As..." action and let it naturally do the right thing.
                 // We have to make sure that this TopComponent is the the active one, because SaveAsAction
                 // just saves the current graph. If we don't do this and we have multiple graphs, the same
                 // graph will get saved each time.
-                requestActive();
-
-                final SaveAsAction action = new SaveAsAction();
-                action.actionPerformed(null);
-                isSaved = action.isSaved();
-                return;
-            }
-
-            if (gdo.isValid()) {
-                final String name = gdo.getName();
-                // Create a new file and write to it.
-                final String tmpnam = String.format("%s_tmp%08x", name, gdo.hashCode());
-                final GraphDataObject freshGdo = (GraphDataObject) gdo.createFromTemplate(gdo.getFolder(), tmpnam);
-                final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, true);
-                writer.execute();
-                isSaved = true;
-            } else {
-                // File might have been saved over, so just open up the 'save as' menu
                 requestActive();
                 final SaveAsAction action = new SaveAsAction();
                 action.actionPerformed(null);
@@ -1034,7 +1105,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
             final File newFile = new File(folder.getPath(), name + ext);
 
-            // One last check if file were saving over doesn't have it's grpah open UNLESS were saving over the file with the same graph
+            // One last check if file were saving over doesn't have it's graph open UNLESS were saving over the file with the same graph
             final Path currentFilePath = Paths.get(graphNode.getDataObject().getPrimaryFile().getPath());
 
             // Check if overwriting open graph
@@ -1058,8 +1129,17 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
             final FileObject fo = FileUtil.createData(newFile);
             final GraphDataObject freshGdo = (GraphDataObject) DataObject.find(fo);
-            final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, false);
+            final Semaphore waiter = new Semaphore(0);
+
+            final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, false, waiter);
             writer.execute();
+
+            // Wait for writing
+            waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+            screenshotWithLoop(waiter, freshGdo.getPrimaryFile().getPath());
+
+            // Wait for screenshot to finish
+            waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
         }
     }
 
@@ -1073,6 +1153,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         private final boolean deleteOldGdo;
         private boolean cancelled;
         private GraphReadMethods copy;
+        private final Semaphore waiter;
 
         /**
          * Construct a new BackgroundWriter.
@@ -1081,13 +1162,16 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
          * @param freshGdo The current GraphDataObject will be replaced by this GDO in the Lookup if the write succeeds.
          * @param deleteOldGdo If true, delete the file represented by the old GDO.
          */
-        BackgroundWriter(final String name, final GraphDataObject freshGdo, final boolean deleteOldGdo) {
+        BackgroundWriter(final String name, final GraphDataObject freshGdo, final boolean deleteOldGdo, final Semaphore semaphore) {
             this.name = name;
             this.freshGdo = freshGdo;
             this.deleteOldGdo = deleteOldGdo;
             cancelled = false;
+            this.waiter = semaphore;
 
-            GraphNode.getGraphNode(graph).makeBusy(true);
+            if (GraphNode.getGraphNode(graph) != null) {
+                GraphNode.getGraphNode(graph).makeBusy(true);
+            }
         }
 
         @Override
@@ -1115,22 +1199,30 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 //        - if backup was not found throw load error
                 final FileObject fileobj = freshGdo.getPrimaryFile();
                 final File srcFile = new File(fileobj.getPath());
-                final String srcfilePath = srcFile.getParent().concat(File.separator).concat(this.name).concat(".").concat(fileobj.getExt());
 
                 if (srcFile.exists() && !srcFile.isDirectory() && FileUtils.sizeOf(srcFile) > 0) {
+                    final String srcfilePath = srcFile.getParent().concat(File.separator).concat(this.name).concat(SeparatorConstants.PERIOD).concat(fileobj.getExt());
                     // Create a backup copy of the file before overwriting it. If the backup copy fails, then code will never
                     // get to execute the save, so the actual file should remain intact. If the save fails, the backup file will
                     // already have been written.
                     FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(FileExtensionConstants.BACKUP)));
                 }
+                final OutputStream outputStream = freshGdo.getPrimaryFile().getOutputStream();
+                if (outputStream != null) {
+                    try (final OutputStream out = new BufferedOutputStream(outputStream)) {
+                        // Write the graph.   
+                        cancelled = new GraphJsonWriter().writeGraphToZip(copy, out, new HandleIoProgress("Writing..."));
+                    }
 
-                try (OutputStream out = new BufferedOutputStream(freshGdo.getPrimaryFile().getOutputStream())) {
-                    // Write the graph.
-                    cancelled = new GraphJsonWriter().writeGraphToZip(copy, out, new HandleIoProgress("Writing..."));
+                    outputStream.close();
                 }
                 SaveNotification.saved(freshGdo.getPrimaryFile().getPath());
             } catch (final Exception ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
+
+            if (waiter != null) {
+                waiter.release();
             }
 
             return null;
@@ -1171,7 +1263,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
-            PluginExecution.withPlugin(new WriteGraphFile(copy, freshGdo)).executeLater(null);
+            PluginExecution.withPlugin(new WriteGraphFile(copy, freshGdo)).executeLater(graph);
 
             if (GraphNode.getGraphNode(graph) != null) {
                 GraphNode.getGraphNode(graph).makeBusy(false);
@@ -1230,7 +1322,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     file,
                     ConstellationLoggerHelper.SUCCESS
             );
-            RecentGraphScreenshotUtilities.takeScreenshot(file.getAbsolutePath());
         }
     }
 }

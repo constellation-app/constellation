@@ -53,11 +53,7 @@ public class TransactionTypeAttributeDescription extends AbstractObjectAttribute
 
     @Override
     protected SchemaTransactionType convertFromString(final String string) {
-        if (StringUtils.isBlank(string)) {
-            return getDefault();
-        } else {
-            return SchemaTransactionTypeUtilities.getTypeOrBuildNew(string);
-        }
+        return StringUtils.isBlank(string) ? getDefault() : SchemaTransactionTypeUtilities.getTypeOrBuildNew(string);
     }
 
     @Override

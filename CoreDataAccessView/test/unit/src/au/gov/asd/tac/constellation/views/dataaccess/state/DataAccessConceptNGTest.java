@@ -30,6 +30,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataAccessConceptNGTest {
+    
     private DataAccessConcept dataAccessConcept;
     
     @BeforeMethod

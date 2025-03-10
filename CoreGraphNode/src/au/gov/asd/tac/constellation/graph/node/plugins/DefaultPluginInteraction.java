@@ -19,12 +19,17 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,7 +48,7 @@ import org.openide.util.Cancellable;
  * This class allows for plugins to interact with constellations reporting mechanisms, the {@link NotifyDisplayer} and the {@link PluginReporter}.
  * Capabilities for terminating plugins are also available in the class due to the need from the relevant reporting mechanism.
  * 
- * <p>{@link PluginReporter} interactions can be facilitated using {@code setProgress()} and {@code setExecutionStage()}.</p> 
+ * <p>{@link PluginReporter} interactions can be facilitated using {@code setProgressTimestamp()}, {@code setProgress()} and {@code setExecutionStage()}.</p> 
  * 
  * <p>{@link NotifyDisplayer} interactions can be facilitated using {@code confirm()} and {@code notify()}.</p> 
  * <p>The following is a summary of the various visual presentations based on the supplied {@link PluginNotificationLevel}:</p>
@@ -127,14 +132,50 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public String getCurrentMessage() {
         return currentMessage;
     }
+    
+    @Override
+    public void setProgressTimestamp(final boolean addTimestamp) throws InterruptedException {
+
+        if (pluginReport != null && addTimestamp) {
+            final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ",  Locale.getDefault());
+            final Date date = new Date(pluginReport.getStartTime());
+            pluginReport.addMessage("Time: " + format.format(date));
+        }
+    }
+    
+    @Override
+    public void setProgress(final int currentStep, final int totalSteps,
+            final String message, final boolean cancellable) throws InterruptedException {       
+        setProgress(currentStep, totalSteps, message, cancellable, null, -1);
+    }
 
     @Override
-    public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException {
+    public void setProgress(final int currentStep, final int totalSteps,
+            final String message, final boolean cancellable,
+            final PluginParameters params) throws InterruptedException {
+        setProgress(currentStep, totalSteps, message, cancellable, params, -1);
+    }
+    
+    @Override
+    public void setProgress(final int currentStep, final int totalSteps,
+            final String message, final boolean cancellable,
+            final PluginParameters params, final int selected) throws InterruptedException {
 
         if (pluginReport != null) {
+            final StringBuilder builder = new StringBuilder();            
+
+            if (params != null) {
+                final Map<String, PluginParameter<?>> parameters = params.getParameters();
+                for (final String key : parameters.keySet()) {
+                    builder.append(String.format("%s : %s \n", parameters.get(key).getName(), parameters.get(key).getStringValue()));
+                }
+                pluginReport.addMessage('\n' + builder.toString());
+            }
+            if (selected > -1) {
+                pluginReport.addMessage("Selected count: " + selected);
+            }
             pluginReport.addMessage(message);
         }
-
         currentMessage = message;
         
         this.setProgress(currentStep, totalSteps, cancellable);

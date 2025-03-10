@@ -45,7 +45,7 @@ public class FindViewHelpProvider extends HelpPageProvider {
         final String findModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreFindView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
                 + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "find" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.find", findModulePath + "find-view.md");
+        map.put("au.gov.asd.tac.constellation.views.find.FindViewTopComponent", findModulePath + "find-view.md");
         return map;
     }
 

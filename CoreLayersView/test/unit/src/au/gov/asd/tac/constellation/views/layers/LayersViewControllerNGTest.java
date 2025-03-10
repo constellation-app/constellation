@@ -29,7 +29,6 @@ import au.gov.asd.tac.constellation.views.layers.query.Query;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
-import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -45,27 +44,38 @@ import org.testng.annotations.Test;
  */
 public class LayersViewControllerNGTest {
 
-    private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT, selectedV, selectedT;
-    private int vxId1, vxId2, txId1, txId2;
+    private int layerMaskV;
+    private int layerMaskT;
+    private int layerVisibilityV;
+    private int layerVisibilityT;
+    private int selectedV;
+    private int selectedT;
+    
+    private int vxId1;
+    private int vxId2;
+    private int txId1;
+    private int txId2;
+    
     private Graph graph;
-
-    public LayersViewControllerNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -96,34 +106,34 @@ public class LayersViewControllerNGTest {
         try (MockedStatic<GraphManager> mockedStatic = Mockito.mockStatic(GraphManager.class)) {
             mockedStatic.when(() -> GraphManager.getDefault()).thenReturn(gm);
 
-            ReadableGraph rg = graph.getReadableGraph();
-            assertEquals(rg.getVertexCount(), 0);
-            rg.close();
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
+                assertEquals(rg.getVertexCount(), 0);
+            }
 
             // remove bitmask from elements - nothing should be on layer 5
             int currentIndex = 5;
             LayersViewController instance = LayersViewController.getDefault().init(null);
             instance.removeBitmaskFromElements(currentIndex);
 
-            ReadableGraph rg2 = graph.getReadableGraph();
-            assertEquals(rg2.getVertexCount(), 0);
-            rg2.close();
+            try (final ReadableGraph rg2 = graph.getReadableGraph()) {
+                assertEquals(rg2.getVertexCount(), 0);
+            }
 
             currentIndex = 1;
             instance.removeBitmaskFromElements(currentIndex);
 
-            ReadableGraph rg3 = graph.getReadableGraph();
-            assertEquals(rg3.getVertexCount(), 0);
-            rg3.close();
-
+            try (final ReadableGraph rg3 = graph.getReadableGraph()) {
+                assertEquals(rg3.getVertexCount(), 0);
+            }
         }
     }
 
     /**
      * Test of removeBitmaskFromElements method, of class LayersViewController.
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testRemoveBitmaskFromElements() {
+    public void testRemoveBitmaskFromElements() throws InterruptedException {
         System.out.println("removeBitmaskFromElements");
 
         // Setup a graph with elements
@@ -136,10 +146,8 @@ public class LayersViewControllerNGTest {
         try (MockedStatic<GraphManager> mockedStatic = Mockito.mockStatic(GraphManager.class)) {
             mockedStatic.when(() -> GraphManager.getDefault()).thenReturn(gm);
 
-            WritableGraph wg;
+            WritableGraph wg = graph.getWritableGraph("", true);
             try {
-                wg = graph.getWritableGraph("", true);
-
                 // Check Vertex set correctly
                 assertEquals(wg.getIntValue(layerMaskV, vxId1), 1);
                 assertEquals(wg.getFloatValue(layerVisibilityV, vxId1), 1.0f);
@@ -157,12 +165,8 @@ public class LayersViewControllerNGTest {
                 assertEquals(wg.getIntValue(layerMaskT, vxId2), 1);
                 assertEquals(wg.getFloatValue(layerVisibilityT, vxId2), 1.0f);
                 assertFalse(wg.getBooleanValue(selectedT, vxId2));
-
+            } finally {
                 wg.commit();
-
-            } catch (final InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
-                Thread.currentThread().interrupt();
             }
 
             // remove bitmask from elements - nothing should be on layer 5
@@ -170,9 +174,8 @@ public class LayersViewControllerNGTest {
             LayersViewController instance = LayersViewController.getDefault().init(null);
             instance.removeBitmaskFromElements(currentIndex);
 
+            wg = graph.getWritableGraph("", true);
             try {
-                wg = graph.getWritableGraph("", true);
-
                 // Check Vertex unchanged
                 assertEquals(wg.getIntValue(layerMaskV, vxId1), 1);
                 assertEquals(wg.getFloatValue(layerVisibilityV, vxId1), 1.0f);
@@ -195,21 +198,17 @@ public class LayersViewControllerNGTest {
                 wg.setIntValue(layerMaskV, vxId2, 0b11);
                 wg.setFloatValue(layerVisibilityV, vxId2, 0.0f);
                 wg.setIntValue(layerMaskT, txId2, 0b11);
-                wg.setFloatValue(layerVisibilityT, txId2, 0.0f);
-
+                wg.setFloatValue(layerVisibilityT, txId2, 0.0f);              
+            } finally {
                 wg.commit();
-
-            } catch (final InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
-                Thread.currentThread().interrupt();
             }
 
             // remove bitmask from elements - should only remove the elements vx2 and tx2
             currentIndex = 1;
             instance.removeBitmaskFromElements(currentIndex);
 
+            wg = graph.getWritableGraph("", true);
             try {
-                wg = graph.getWritableGraph("", true);
                 // Check Vertex 1 unchanged
                 assertEquals(wg.getIntValue(layerMaskV, vxId1), 1);
                 assertEquals(wg.getFloatValue(layerVisibilityV, vxId1), 1.0f);
@@ -228,12 +227,8 @@ public class LayersViewControllerNGTest {
                 assertEquals(wg.getIntValue(layerMaskT, vxId2), 1);
                 assertEquals(wg.getFloatValue(layerVisibilityT, vxId2), 0.0f);
                 assertFalse(wg.getBooleanValue(selectedT, vxId2));
-
+            } finally {
                 wg.commit();
-
-            } catch (final InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
-                Thread.currentThread().interrupt();
             }
         }
     }
@@ -245,11 +240,11 @@ public class LayersViewControllerNGTest {
     /**
      * Set up a graph with two vertices and two transactions on layer 1.
      */
-    private void setupGraph() {
+    private void setupGraph() throws InterruptedException {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
+        
+        WritableGraph wg = graph.getWritableGraph("", true);
         try {
-
-            WritableGraph wg = graph.getWritableGraph("", true);
 
             // Create LayerMask attributes
             layerMaskV = LayersConcept.VertexAttribute.LAYER_MASK.ensure(wg);
@@ -284,12 +279,8 @@ public class LayersViewControllerNGTest {
             wg.setIntValue(layerMaskT, txId2, 1);
             wg.setFloatValue(layerVisibilityT, vxId2, 1.0f);
             wg.setBooleanValue(selectedT, vxId2, false);
-
+        } finally {
             wg.commit();
-
-        } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-            Thread.currentThread().interrupt();
         }
     }
 
@@ -395,7 +386,5 @@ public class LayersViewControllerNGTest {
         
         instance.updateQuery(queryString2, index2, "Transaction Query: ");
         assertEquals(instance.getTxQueryCollection().getQuery(index2).getQueryString(), queryString2);
-
-    }
-    
+    }  
 }

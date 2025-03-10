@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@ import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.log.ConstellationLogFormatter;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import org.openide.windows.OnShowing;
 import org.openide.windows.WindowManager;
@@ -44,8 +47,19 @@ public class Startup implements Runnable {
      */
     private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
 
+    private static final Logger LOGGER = Logger.getLogger(Startup.class.getName());
+
     @Override
     public void run() {
+
+        // Setup the logging format
+        if (LOGGER.getUseParentHandlers()) {
+            final Handler[] parentHandlers = LOGGER.getParent().getHandlers();
+            for (final Handler handler : parentHandlers) {
+                handler.setFormatter(new ConstellationLogFormatter());
+            }
+        }
+
         ConstellationSecurityManager.startSecurityLater(null);
 
         // application environment

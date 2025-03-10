@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental
 
 import java.util.ArrayList;
 import java.util.List;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**
@@ -35,8 +35,7 @@ public class DimensionsNGTest {
         List<String> expResult = new ArrayList<>();
         expResult.add(Dimensions.TWO.toString());
         expResult.add(Dimensions.THREE.toString());
-        List result = Dimensions.getOptions();
+        List<String> result = Dimensions.getOptions();
         assertEquals(result, expResult);
     }
-
 }

@@ -48,7 +48,7 @@ public class Graphics3DUtilitiesNGTest {
     private static final float[] M2_R4 = {340.8639F, 112.199844F, 861.1616F, 153.07498F};
 
     @BeforeClass
-    public void before() {
+    public static void setUpClass() {
         M1.setRow(M1_R1[0], M1_R1[1], M1_R1[2], M1_R1[3], 0);
         M1.setRow(M1_R2[0], M1_R2[1], M1_R2[2], M1_R2[3], 1);
         M1.setRow(M1_R3[0], M1_R3[1], M1_R3[2], M1_R3[3], 2);
@@ -87,8 +87,7 @@ public class Graphics3DUtilitiesNGTest {
                 copyMatrix(M2),
                 viewport,
                 worldPosition);
-        assertEquals(worldPosition.toString(),
-                new Vector3f(-51.814575F, 19.934322F, 37.437538F).toString());
+        assertEquals(worldPosition.toString(), new Vector3f(-51.814575F, 19.934322F, 37.437538F).toString());
     }
 
     /**
@@ -104,8 +103,7 @@ public class Graphics3DUtilitiesNGTest {
 
         // using the main method
         final Matrix44f m = copyMatrix(M1);
-        Graphics3DUtilities.getModelViewMatrix(
-                new Vector3f(V3_1), new Vector3f(V3_2), new Vector3f(V3_3), m);
+        Graphics3DUtilities.getModelViewMatrix(new Vector3f(V3_1), new Vector3f(V3_2), new Vector3f(V3_3), m);
         assertEquals(m.toString(), expected.toString());
 
         // using the convenience method passing in a Camera object
@@ -123,10 +121,8 @@ public class Graphics3DUtilitiesNGTest {
     @Test
     public void testProject() {
         final Vector4f v = new Vector4f();
-        assertTrue(Graphics3DUtilities.project(
-                new Vector3f(V3_1), copyMatrix(M1), new int[]{7, 3, 4, 14}, v));
-        assertEquals(v.toString(),
-                new Vector4f(10.976173F, 16.944405F, 0.998015F, 1158.400024F).toString());
+        assertTrue(Graphics3DUtilities.project(new Vector3f(V3_1), copyMatrix(M1), new int[]{7, 3, 4, 14}, v));
+        assertEquals(v.toString(), new Vector4f(10.976173F, 16.944405F, 0.998015F, 1158.400024F).toString());
     }
 
     /**
@@ -139,11 +135,7 @@ public class Graphics3DUtilitiesNGTest {
             zeroMatrix.setRow(0, 0, 0, 0, i);
         }
         final Vector4f v = copyVector4f(V4_1);
-        assertFalse(Graphics3DUtilities.project(
-                new Vector3f(ZERO_V),
-                zeroMatrix,
-                new int[]{0, 0, 0, 0},
-                new Vector4f()));
+        assertFalse(Graphics3DUtilities.project(new Vector3f(ZERO_V), zeroMatrix, new int[]{0, 0, 0, 0}, new Vector4f()));
         assertEquals(v.toString(), V4_1.toString());
     }
 
@@ -153,10 +145,8 @@ public class Graphics3DUtilitiesNGTest {
     @Test
     public void testUnproject() {
         final Vector3f v = new Vector3f();
-        assertTrue(Graphics3DUtilities.unproject(
-                copyVector4f(V4_1), copyMatrix(M2), new int[]{7, 3, 4, 14}, v));
-        assertEquals(v.toString(),
-                new Vector3f(2.996596F, -3.345851F, -2.156693F).toString());
+        assertTrue(Graphics3DUtilities.unproject(copyVector4f(V4_1), copyMatrix(M2), new int[]{7, 3, 4, 14}, v));
+        assertEquals(v.toString(), new Vector3f(2.996596F, -3.345851F, -2.156693F).toString());
     }
 
     /**
@@ -165,14 +155,9 @@ public class Graphics3DUtilitiesNGTest {
     @Test
     public void testMoveByProjection() {
         final Vector3f newPosition = new Vector3f(V3_3);
-        Graphics3DUtilities.moveByProjection(
-                new Vector3f(V3_1),
-                copyMatrix(M2),
-                new int[]{7, 3, 4, 14},
-                new Vector3f(V3_2),
-                newPosition);
-        assertEquals(newPosition.toString(),
-                new Vector3f(4.897831F, -3.934850F, -4.368528F).toString());
+        Graphics3DUtilities.moveByProjection(new Vector3f(V3_1), copyMatrix(M2), new int[]{7, 3, 4, 14},
+                new Vector3f(V3_2), newPosition);
+        assertEquals(newPosition.toString(), new Vector3f(4.897831F, -3.934850F, -4.368528F).toString());
     }
 
     /**
@@ -181,15 +166,9 @@ public class Graphics3DUtilitiesNGTest {
     @Test
     public void testMoveByProjectionUnprojection() {
         final Vector3f newPosition = new Vector3f(V3_3);
-        assertTrue(Graphics3DUtilities.moveByProjection(
-                new Vector3f(V3_1),
-                copyMatrix(M2),
-                new int[]{7, 3, 4, 14},
-                15,
-                102,
-                newPosition));
-        assertEquals(newPosition.toString(),
-                new Vector3f(11.809882F, -2.461684F, -9.804049F).toString());
+        assertTrue(Graphics3DUtilities.moveByProjection(new Vector3f(V3_1), copyMatrix(M2), new int[]{7, 3, 4, 14},
+                15, 102, newPosition));
+        assertEquals(newPosition.toString(), new Vector3f(11.809882F, -2.461684F, -9.804049F).toString());
     }
 
     /**
@@ -202,13 +181,8 @@ public class Graphics3DUtilitiesNGTest {
             zeroMatrix.setRow(0, 0, 0, 0, i);
         }
         final Vector3f newPosition = new Vector3f(V3_3);
-        assertFalse(Graphics3DUtilities.moveByProjection(
-                new Vector3f(ZERO_V),
-                zeroMatrix,
-                new int[]{0, 0, 0, 0},
-                0,
-                0,
-                newPosition));
+        assertFalse(Graphics3DUtilities.moveByProjection(new Vector3f(ZERO_V), zeroMatrix, new int[]{0, 0, 0, 0},
+                0, 0, newPosition));
         assertEquals(newPosition.toString(), V3_3.toString());
     }
 
@@ -227,9 +201,7 @@ public class Graphics3DUtilitiesNGTest {
      */
     @Test
     public void testMixFloat() {
-        assertEquals(
-                Graphics3DUtilities.mix(-53.213F, 13.4F, 155.597F),
-                10311.57F);
+        assertEquals(Graphics3DUtilities.mix(-53.213F, 13.4F, 155.597F), 10311.57F);
     }
 
     /**
@@ -263,8 +235,6 @@ public class Graphics3DUtilitiesNGTest {
      */
     @Test
     public void testDistance() {
-        assertEquals(
-                Graphics3DUtilities.distance(new Vector3f(V3_1), new Vector3f(V3_3)),
-                3.4641016F);
+        assertEquals(Graphics3DUtilities.distance(new Vector3f(V3_1), new Vector3f(V3_3)), 3.4641016F);
     }
 }

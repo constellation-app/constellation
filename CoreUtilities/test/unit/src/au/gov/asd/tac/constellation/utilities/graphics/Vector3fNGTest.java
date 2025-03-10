@@ -380,8 +380,6 @@ public class Vector3fNGTest {
      */
     @Test
     public void testToString() {
-        assertEquals(
-                new Vector3f(F1, F2, F3).toString(),
-                "3f[123.000000,321.000000,456.000000]");
+        assertEquals(new Vector3f(F1, F2, F3).toString(), "3f[123.000000,321.000000,456.000000]");
     }
 }

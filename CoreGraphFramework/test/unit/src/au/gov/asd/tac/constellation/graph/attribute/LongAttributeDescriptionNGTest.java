@@ -39,16 +39,15 @@ import org.testng.annotations.Test;
 public class LongAttributeDescriptionNGTest {
 
     LongAttributeDescription instance;
-
-    public LongAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -59,6 +58,7 @@ public class LongAttributeDescriptionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooserMode;
 import java.io.File;
 import javafx.scene.input.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -42,7 +43,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.openide.filesystems.FileChooserBuilder;
-
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -82,44 +82,7 @@ public class FileInputPaneNGTest {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-        } catch (Exception e) {
-            if (e.toString().contains("HeadlessException")) {
-                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
-            } else {
-                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
-                throw e;
-            }
         }
-    }
-
-    @Test
-    public void testConstructor() {
-        System.out.println("testConstructor");
-
-        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(SAVE_TYPE, FileExtensionConstants.SVG);
-        final FileInputPane instance = new FileInputPane(paramInstance);
-
-        assertEquals(instance.getClass(), FileInputPane.class);
-    }
-
-    @Test
-    public void testConstructorTwoParams() {
-        System.out.println("testConstructorTwoParams");
-
-        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(SAVE_TYPE, FileExtensionConstants.SVG);
-        final FileInputPane instance = new FileInputPane(paramInstance, FileInputPane.DEFAULT_WIDTH);
-
-        assertEquals(instance.getClass(), FileInputPane.class);
-    }
-
-    @Test
-    public void testConstructorThreeParams() {
-        System.out.println("testConstructorThreeParams");
-
-        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(SAVE_TYPE, FileExtensionConstants.SVG);
-        final FileInputPane instance = new FileInputPane(paramInstance, FileInputPane.DEFAULT_WIDTH, 1);
-
-        assertEquals(instance.getClass(), FileInputPane.class);
     }
 
     private static Optional<File> stubLambda(final FileChooserBuilder fileChooserBuilder, final FileChooserMode fileDialogMode) {
@@ -138,7 +101,6 @@ public class FileInputPaneNGTest {
         final CompletableFuture dialogFuture = CompletableFuture.completedFuture(stubLambda(null, null));
 
         try (MockedStatic<FileChooser> fileChooserStaticMock = Mockito.mockStatic(FileChooser.class, Mockito.CALLS_REAL_METHODS)) {
-
             // Setup static mock
             fileChooserStaticMock.when(() -> FileChooser.openOpenDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
             fileChooserStaticMock.when(() -> FileChooser.openMultiDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
@@ -183,7 +145,6 @@ public class FileInputPaneNGTest {
         assertThrows(InterruptedException.class, () -> dialogFutureMock.get());
 
         try (MockedStatic<FileChooser> fileChooserStaticMock = Mockito.mockStatic(FileChooser.class, Mockito.CALLS_REAL_METHODS)) {
-
             // Setup static mock
             fileChooserStaticMock.when(() -> FileChooser.openOpenDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
             fileChooserStaticMock.when(() -> FileChooser.openMultiDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
@@ -225,7 +186,6 @@ public class FileInputPaneNGTest {
         assertThrows(ExecutionException.class, () -> dialogFutureMock.get());
 
         try (MockedStatic<FileChooser> fileChooserStaticMock = Mockito.mockStatic(FileChooser.class, Mockito.CALLS_REAL_METHODS)) {
-
             // Setup static mock
             fileChooserStaticMock.when(() -> FileChooser.openOpenDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
             fileChooserStaticMock.when(() -> FileChooser.openMultiDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
@@ -251,8 +211,8 @@ public class FileInputPaneNGTest {
     public void testHandleEventFilter() {
         System.out.println("testHandleEventFilter");
 
-        final ArrayList<KeyEvent> eventsSuccess = new ArrayList<>();
-        final ArrayList<KeyEvent> eventsFail = new ArrayList<>();
+        final List<KeyEvent> eventsSuccess = new ArrayList<>();
+        final List<KeyEvent> eventsFail = new ArrayList<>();
         final TextInputControl field = new TextArea();
         final KeyCode[] keyCodes = {KeyCode.RIGHT, KeyCode.LEFT};
 

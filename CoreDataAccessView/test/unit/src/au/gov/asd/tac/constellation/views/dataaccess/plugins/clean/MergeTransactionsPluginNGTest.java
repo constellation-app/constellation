@@ -38,9 +38,21 @@ import org.testng.annotations.Test;
  */
 public class MergeTransactionsPluginNGTest {
 
-    private int vertexIdentifierAttribute, vertexTypeAttribute, transactionDateTimeAttribute, transactionTypeAttribute, transactionIdentifierAttribute, transactionSelectedAttribute;
-    private int vxId1, vxId2;
-    private int txId1, txId2, txId3, txId4, txId5;
+    private int vertexIdentifierAttribute;
+    private int transactionDateTimeAttribute;
+    private int transactionTypeAttribute;
+    private int transactionIdentifierAttribute;
+    private int transactionSelectedAttribute;
+    
+    private int vxId1;
+    private int vxId2;
+    
+    private int txId1;
+    private int txId2;
+    private int txId3;
+    private int txId4;
+    private int txId5;
+    
     private StoreGraph graph;
 
     @BeforeMethod
@@ -51,7 +63,6 @@ public class MergeTransactionsPluginNGTest {
 
         // add attributes
         vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
-        vertexTypeAttribute = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
         transactionIdentifierAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
         transactionTypeAttribute = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
         transactionDateTimeAttribute = TemporalConcept.TransactionAttribute.DATETIME.ensure(graph);

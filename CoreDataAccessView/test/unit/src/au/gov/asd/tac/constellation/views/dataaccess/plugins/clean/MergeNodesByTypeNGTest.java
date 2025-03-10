@@ -48,9 +48,17 @@ import org.testng.annotations.Test;
  */
 public class MergeNodesByTypeNGTest {
 
-    private int vertexIdentifierAttribute, vertexTypeAttribute, vertexSelectedAttribute;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6;
-    private int txId1, txId2, txId3, txId4, txId5;
+    private int vertexIdentifierAttribute;
+    private int vertexTypeAttribute;
+    private int vertexSelectedAttribute;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    private int vxId5;
+    private int vxId6;
+    
     private StoreGraph graph;
 
     @BeforeMethod
@@ -78,13 +86,6 @@ public class MergeNodesByTypeNGTest {
         graph.setStringValue(vertexIdentifierAttribute, vxId3, "V2");
         graph.setStringValue(vertexIdentifierAttribute, vxId4, "V3");
         graph.setStringValue(vertexIdentifierAttribute, vxId5, "V3");
-
-        // add transactions
-        txId1 = graph.addTransaction(vxId1, vxId2, false);
-        txId2 = graph.addTransaction(vxId3, vxId4, false);
-        txId3 = graph.addTransaction(vxId5, vxId3, false);
-        txId4 = graph.addTransaction(vxId1, vxId3, false);
-        txId5 = graph.addTransaction(vxId4, vxId6, false);
 
         // select all
         graph.setBooleanValue(vertexSelectedAttribute, vxId1, true);
@@ -142,8 +143,9 @@ public class MergeNodesByTypeNGTest {
      * identifier Attribute
      */
     @Test
-    public void testGetNodesToMerge_NoIdentifierAttribute() throws Exception {
+    public void testGetNodesToMerge_NoIdentifierAttribute() {
         System.out.println("testGetNodesToMerge_NoTypes");
+        
         Comparator<String> leadVertexChooser = null;
         int threshold = 0;
         boolean selectedOnly = false;
@@ -152,22 +154,22 @@ public class MergeNodesByTypeNGTest {
 
         // create a new analytic graph
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
-        StoreGraph graph = new StoreGraph(schema);
+        StoreGraph graph2 = new StoreGraph(schema);
 
         // add attributes
-        int vertexTypeAttribute = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
+        int vertexTypeAttribute2 = AnalyticConcept.VertexAttribute.TYPE.ensure(graph2);
 
         // add vertices
-        int vxId1 = graph.addVertex();
-        int vxId2 = graph.addVertex();
-        int vxId3 = graph.addVertex();
+        int vxId21 = graph2.addVertex();
+        int vxId22 = graph2.addVertex();
+        int vxId23 = graph2.addVertex();
 
         // set the identifier of each vertex to something unique
-        graph.setStringValue(vertexTypeAttribute, vxId1, AnalyticConcept.VertexType.DOCUMENT.getName());
-        graph.setStringValue(vertexTypeAttribute, vxId2, AnalyticConcept.VertexType.DOCUMENT.getName());
-        graph.setStringValue(vertexTypeAttribute, vxId3, AnalyticConcept.VertexType.ONLINE_IDENTIFIER.getName());
+        graph2.setStringValue(vertexTypeAttribute2, vxId21, AnalyticConcept.VertexType.DOCUMENT.getName());
+        graph2.setStringValue(vertexTypeAttribute2, vxId22, AnalyticConcept.VertexType.DOCUMENT.getName());
+        graph2.setStringValue(vertexTypeAttribute2, vxId23, AnalyticConcept.VertexType.ONLINE_IDENTIFIER.getName());
 
-        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph2, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
 
@@ -176,8 +178,9 @@ public class MergeNodesByTypeNGTest {
      * Attribute
      */
     @Test
-    public void testGetNodesToMerge_NoTypeAttribute() throws Exception {
+    public void testGetNodesToMerge_NoTypeAttribute() {
         System.out.println("testGetNodesToMerge_NoTypes");
+        
         Comparator<String> leadVertexChooser = null;
         int threshold = 0;
         boolean selectedOnly = false;
@@ -186,22 +189,22 @@ public class MergeNodesByTypeNGTest {
 
         // create a new analytic graph
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
-        StoreGraph graph = new StoreGraph(schema);
+        StoreGraph graph2 = new StoreGraph(schema);
 
         // add attributes
-        int vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        int vertexIdentifierAttribute2 = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph2);
 
         // add vertices
-        int vxId1 = graph.addVertex();
-        int vxId2 = graph.addVertex();
-        int vxId3 = graph.addVertex();
+        int vxId21 = graph2.addVertex();
+        int vxId22 = graph2.addVertex();
+        int vxId23 = graph2.addVertex();
 
         // set the identifier of each vertex to something unique
-        graph.setStringValue(vertexIdentifierAttribute, vxId1, "V1");
-        graph.setStringValue(vertexIdentifierAttribute, vxId2, "V2");
-        graph.setStringValue(vertexIdentifierAttribute, vxId3, "V2");
+        graph2.setStringValue(vertexIdentifierAttribute2, vxId21, "V1");
+        graph2.setStringValue(vertexIdentifierAttribute2, vxId22, "V2");
+        graph2.setStringValue(vertexIdentifierAttribute2, vxId23, "V2");
 
-        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph2, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
 
@@ -209,8 +212,9 @@ public class MergeNodesByTypeNGTest {
      * Test of getNodesToMerge method, of class MergeNodesByType, with no types
      */
     @Test
-    public void testGetNodesToMerge_NoTypes() throws Exception {
+    public void testGetNodesToMerge_NoTypes() {
         System.out.println("testGetNodesToMerge_NoTypes");
+        
         Comparator<String> leadVertexChooser = null;
         int threshold = 0;
         boolean selectedOnly = false;
@@ -226,6 +230,7 @@ public class MergeNodesByTypeNGTest {
     @Test
     public void testGetNodesToMerge_WithTypes() {
         System.out.println("getNodesToMerge");
+        
         Comparator<String> leadVertexChooser = null;
         int threshold = 0;
         boolean selectedOnly = false;
@@ -256,6 +261,7 @@ public class MergeNodesByTypeNGTest {
     @Test
     public void testGetNodesToMerge_selectedOnly() {
         System.out.println("getNodesToMerge");
+        
         Comparator<String> leadVertexChooser = null;
         int threshold = 0;
         boolean selectedOnly = true;
@@ -285,5 +291,4 @@ public class MergeNodesByTypeNGTest {
         Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
-
 }

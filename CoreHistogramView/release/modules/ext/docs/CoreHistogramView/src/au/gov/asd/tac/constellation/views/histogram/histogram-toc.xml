@@ -3,7 +3,7 @@
 <toc version="2.0">
     <tocitem text="Views" mergetype="javax.help.SortMerge">
         <tocitem text="Histogram View">
-            <tocitem text="Histogram" target="au.gov.asd.tac.constellation.views.histogram" />
+            <tocitem text="Histogram" target="au.gov.asd.tac.constellation.views.histogram.HistogramTopComponent" />
         </tocitem>
     </tocitem>
 </toc>

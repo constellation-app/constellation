@@ -3,7 +3,7 @@
 <toc version="2.0">
     <tocitem text="Views" mergetype="javax.help.SortMerge">
         <tocitem text="Scripting View">
-            <tocitem text="Scripting View" target="au.gov.asd.tac.constellation.views.scripting"/>
+            <tocitem text="Scripting View" target="au.gov.asd.tac.constellation.views.scripting.ScriptingViewTopComponent"/>
         </tocitem>
     </tocitem>
 </toc>

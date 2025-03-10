@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.value.values.IntValue;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,6 +86,33 @@ public class BitMaskQueryCollection {
         queries[bitMaskIndex] = new BitMaskQuery(new Query(elementType, query), bitMaskIndex, StringUtils.EMPTY);
     }
 
+    
+    public long getActiveQueriesBitmask(){
+        return activeQueriesBitMask;
+    }
+    
+    public List<Boolean> getVisibilityList() {
+        final List<Boolean> results = new ArrayList<>();
+        for (final BitMaskQuery query : queries) {
+            if (query != null) {
+                results.add(query.isVisible());
+            } else {
+                results.add(false);
+            }
+        }
+        return results;
+    }
+    
+    public void setVisibilities(final List<Boolean> revisedVis) {
+        int visPos = 0;
+        for (final BitMaskQuery query : queries) {
+            if (query != null) {
+                query.setVisibility(revisedVis.get(visPos));
+            }
+            visPos++;
+        }
+    }
+    
     /**
      * Determine which queries are currently active on the graph
      * 
@@ -106,6 +134,9 @@ public class BitMaskQueryCollection {
                     activeQueries.add(query);
                 }
             }
+        } else {
+            // compile active querires ?
+            
         }
     }
 
@@ -150,7 +181,7 @@ public class BitMaskQueryCollection {
         }
         return !updateQueries.isEmpty();
     }
-
+    
     /**
      * Update the bit mask depending on the current queries
      *
@@ -197,6 +228,30 @@ public class BitMaskQueryCollection {
         }
     }
 
+    /**
+     * Select or De-Select elements that match the query on a layer
+     * 
+     * @param graph
+     * @param isVertex      -   true = vertex, false = transaction
+     * @param isSelected    -   true = select the element, false = de-select the element
+     */
+    public void selectMatchingElements(final GraphWriteMethods graph, final boolean isVertex, final boolean isSelected) {
+        if (this.update(graph)) {
+            final int selectedElementID = isVertex ? VisualConcept.VertexAttribute.SELECTED.get(graph) : VisualConcept.TransactionAttribute.SELECTED.get(graph);
+
+            final int elementCount = elementType.getElementCount(graph);
+            for (int position = 0; position < elementCount; position++) {
+                final int elementId = elementType.getElement(graph, position);
+                index.writeInt(elementId);
+                final long queryCombinedBitMask = updateQueryBitmap(0);
+                if (queryCombinedBitMask > 0) {
+                    graph.setBooleanValue(selectedElementID, elementId, isSelected); 
+                }
+            }
+        }
+    }
+    
+    
     /**
      * Set the default layers
      */

@@ -48,7 +48,7 @@ public class ErrorReportFullSuiteNGTest {
             if (!FxToolkit.isFXApplicationThreadRunning()) {
                 FxToolkit.registerPrimaryStage();
             }
-        } catch (Exception e) {
+        } catch (TimeoutException e) {
             System.out.println("\n**** SETUP ERROR: " + e);
             throw e;
         }
@@ -68,15 +68,13 @@ public class ErrorReportFullSuiteNGTest {
                 throw e;
             }
         }
-    }
+    } 
 
     @Test
     public void runSessionDataTest() {
 
         System.out.println("\n>>>> ERROR REPORT VIEW - TEST SUITE\n");
-
-        System.setProperty("java.awt.headless", "true");
-
+    
         final ErrorReportDialogManager erdm = ErrorReportDialogManager.getInstance();
         erdm.setErrorReportRunning(false);
         erdm.setLatestPopupDismissDate(null);
@@ -125,11 +123,9 @@ public class ErrorReportFullSuiteNGTest {
         System.out.println("\n>>>> Check screen update requested");
         assertTrue(ErrorReportSessionData.isScreenUpdateRequested());
 
-        List<String> activeLevels = erdm.getActivePopupErrorLevels();
-
         System.out.println("\n\n>>>> Waiting for SEVERE dialogs");
         // default popup mode 2 only allows 1 popup
-        storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.SEVERE)), 1);
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.SEVERE)), 1);
         System.out.println("\n\n>>>> Done Waiting");
 
         dismissPopups(storedList);
@@ -139,7 +135,7 @@ public class ErrorReportFullSuiteNGTest {
         System.out.println("\n>>>> Check new list size");
         assertEquals(storedList.size(), 1);
 
-        activeLevels = erdm.getActivePopupErrorLevels();
+        List<String> activeLevels = erdm.getActivePopupErrorLevels();
 
         System.out.println("\n>>>> Check active levels: " + activeLevels);
         System.out.println("\n>>>> resumption date: " + erdm.getGracePeriodResumptionDate()
@@ -216,9 +212,8 @@ public class ErrorReportFullSuiteNGTest {
         System.out.println("\n>>>> Check WARNINGS list size");
         assertEquals(storedList.size(), 1);
 
-//        final boolean isFlashing = ertcInstance.isIconFlashing();
-//        assertTrue(isFlashing);
-// TODO: Fix test for V3 environment. This test is no longer returning the expected result ?
+        final boolean isFlashing = ertcInstance.isIconFlashing();
+        assertTrue(isFlashing);
 
         ertcInstance.setReportsExpanded(false);
         ertcInstance.refreshSessionErrors();
@@ -231,7 +226,6 @@ public class ErrorReportFullSuiteNGTest {
         ertcInstance.handleComponentClosed();
         ertcInstance.close();
 
-        System.clearProperty("java.awt.headless");
         System.out.println("\n>>>> PASSED ALL TESTS");
 
     }

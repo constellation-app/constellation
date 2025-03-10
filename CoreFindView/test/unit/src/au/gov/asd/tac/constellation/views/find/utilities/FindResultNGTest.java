@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.utilities;
 
-import au.gov.asd.tac.constellation.views.find.utilities.FindResult;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import static au.gov.asd.tac.constellation.views.find.utilities.FindResult.SEPARATOR;
 import static org.testng.Assert.assertEquals;
@@ -33,24 +32,25 @@ import org.testng.annotations.Test;
 public class FindResultNGTest {
 
     FindResult findResult;
-
-    public FindResultNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -59,6 +59,7 @@ public class FindResultNGTest {
     @Test
     public void testGetID() {
         System.out.println("getID");
+        
         findResult = new FindResult(1, 2, GraphElementType.VERTEX, "ID");
 
         assertEquals(findResult.getID(), 1);
@@ -70,6 +71,7 @@ public class FindResultNGTest {
     @Test
     public void testSetID() {
         System.out.println("setID");
+        
         findResult = new FindResult(1, 2, GraphElementType.VERTEX, "ID");
 
         findResult.setID(2);
@@ -82,6 +84,7 @@ public class FindResultNGTest {
     @Test
     public void testGetUID() {
         System.out.println("getUID");
+        
         findResult = new FindResult(1, 2, GraphElementType.VERTEX, "ID");
 
         assertEquals(findResult.getUID(), 2);
@@ -93,6 +96,7 @@ public class FindResultNGTest {
     @Test
     public void testSetUID() {
         System.out.println("setUID");
+        
         findResult = new FindResult(1, 2, GraphElementType.VERTEX, "ID");
 
         findResult.setUID(3);
@@ -105,6 +109,7 @@ public class FindResultNGTest {
     @Test
     public void testGetType() {
         System.out.println("getType");
+        
         findResult = new FindResult(1, 2, GraphElementType.VERTEX, "ID");
 
         assertEquals(findResult.getType(), GraphElementType.VERTEX);
@@ -116,6 +121,7 @@ public class FindResultNGTest {
     @Test
     public void testSetType() {
         System.out.println("setType");
+        
         findResult = new FindResult(1, 2, GraphElementType.VERTEX, "ID");
 
         findResult.setType(GraphElementType.TRANSACTION);
@@ -155,6 +161,7 @@ public class FindResultNGTest {
     @Test
     public void testGetAttributeValue() {
         System.out.println("getAttributeValue");
+        
         String objectValue = "value";
         String objectValueExpected = "value";
         findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
@@ -186,7 +193,7 @@ public class FindResultNGTest {
         String objectValue = "value";
         findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
 
-        String toStringExpected = objectValue.toString() + SEPARATOR + "attribute";
+        String toStringExpected = objectValue + SEPARATOR + "attribute";
 
         assertEquals(findResult.toString(), toStringExpected);
     }
@@ -216,11 +223,11 @@ public class FindResultNGTest {
     @Test
     public void testHashCode() {
         System.out.println("hashCode");
+        
         String objectValue = "value";
         findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
         FindResult findResult2 = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
 
         assertEquals(findResult.hashCode(), findResult2.hashCode());
     }
-
 }

@@ -45,6 +45,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class WaitForQueriesToCompleteTaskNGTest {
+    
     private static final String GRAPH_ID = "graphId";
     
     private static MockedStatic<DataAccessPaneState> paneStateMockedStatic;

@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -27,24 +27,25 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class TransactionAttributeNameAttributeDescriptionNGTest {
-
-    public TransactionAttributeNameAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

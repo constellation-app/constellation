@@ -31,16 +31,15 @@ public class VertexGraphLabelsIOProviderNGTest {
     
     // Create object under test
     VertexGraphLabelsIOProvider instance;
-
-    public VertexGraphLabelsIOProviderNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -50,6 +49,7 @@ public class VertexGraphLabelsIOProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

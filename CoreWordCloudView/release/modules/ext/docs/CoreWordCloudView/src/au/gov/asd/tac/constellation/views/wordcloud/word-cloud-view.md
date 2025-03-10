@@ -19,7 +19,7 @@
 <tr class="odd">
 <td>Open Word Cloud View</td>
 <td>Ctrl + Shift + W</td>
-<td>Experimental -&gt; Views -&gt; Word Cloud View</td>
+<td>Views -&gt; Word Cloud View</td>
 <td style="text-align: center;"><img src="../ext/docs/CoreWordCloudView/src/au/gov/asd/tac/constellation/views/wordcloud/resources/word_cloud.png" alt="Word Cloud View Icon" /></td>
 </tr>
 </tbody>

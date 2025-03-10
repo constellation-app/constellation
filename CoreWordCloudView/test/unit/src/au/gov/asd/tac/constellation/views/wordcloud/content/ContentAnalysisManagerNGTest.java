@@ -48,18 +48,22 @@ public class ContentAnalysisManagerNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -106,6 +110,5 @@ public class ContentAnalysisManagerNGTest {
         assertEquals(adaptor.getCurrentElementID(), 0);
         assertEquals(adaptor.getWorkload(), 5);
         adaptor.disconnect();
-    }
-    
+    } 
 }

@@ -1,6 +1,23 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2025-02-06 Histogram can now perform aggregate functions on nullable Transaction data
+<p> The Histogram View has had an enhancement to its aggregate processing for <b>Links</b> and <b>Edges</b>.</p>
+<p> The <b>Category</b> options to calculate Average, Sum, Min, and Max on Transactions will now work on nullable datatypes, such as "long_or_null", "double_or_null", etc. </p>
+
+== 2025-02-03 Search Added to Online and Offline Help
+<p>A search has been added to the help documentation to make finding help pages easier.</p>
+<p>This search uses the names of each help page and the category they are in for the table of contents to narrow down results.</p>
+
+== 2024-12-18 Animation updates
+<p>Direction Indicators animation moved to Animations -> Experimental.</p>
+<p>New Color Warp animation added to Animations -> Experimental.</p>
+<p>Pause/Resume/Stop animation options added.</p>
+
+== 2024-11-18 Word Cloud View no longer in Experimental
+<p>Word Cloud View has been moved out from Experimental.</p>
+<p>Word Cloud View can now be found in Views -&gt; Word Cloud View.</p>
+
 == 2024-08-13 Layers View - Union and Intersection Modes have now been implemented.
 <p> You can now switch between Union and Intersection modes using the control at the top right of the Layers View. Union mode will show <b>all</b> elements matching with <b>any</b> Layer. Intersection mode will <b>only</b> show graph elements that match with <b>every</b> active layer.
 <p> Layers will now correctly display combined matches to queries as well as any manual allocations for the same layer.

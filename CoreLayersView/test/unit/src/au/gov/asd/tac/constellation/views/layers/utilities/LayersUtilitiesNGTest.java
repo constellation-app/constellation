@@ -29,7 +29,6 @@ import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -42,49 +41,40 @@ import org.testng.annotations.Test;
  * @author Delphinus8821
  */
 public class LayersUtilitiesNGTest {
-
-   private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT;
+    
     private StoreGraph graph;
 
-    public void setupGraph() {
+    private void setupGraph() {
         graph = new StoreGraph();
 
         // Create LayerMask attributes
-        layerMaskV = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
-        if (layerMaskV == Graph.NOT_FOUND) {
-            fail();
-        }
-        layerMaskT = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
-        if (layerMaskT == Graph.NOT_FOUND) {
-            fail();
-        }
+        LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
+        LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
 
         // Create LayerVisilibity Attributes
-        layerVisibilityV = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
-        if (layerVisibilityV == Graph.NOT_FOUND) {
-            fail();
-        }
-        layerVisibilityT = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
-        if (layerVisibilityT == Graph.NOT_FOUND) {
-            fail();
-        }
+        LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
+        LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
     }
 
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -127,7 +117,6 @@ public class LayersUtilitiesNGTest {
 
         result = LayersUtilities.calculateCurrentLayerSelectionBitMask(vxQueries, txQueries);
         assertEquals(result, expected);
-
     }
 
     /**
@@ -173,6 +162,5 @@ public class LayersUtilitiesNGTest {
 
         final String descriptionResult = state.getVxQueriesCollection().getQuery(2).getDescription();
         assertEquals(descriptionResult, description);
-
     }
 }

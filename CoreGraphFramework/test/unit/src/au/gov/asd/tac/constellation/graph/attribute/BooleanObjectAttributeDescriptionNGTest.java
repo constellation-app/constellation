@@ -34,16 +34,15 @@ import org.testng.annotations.Test;
 public class BooleanObjectAttributeDescriptionNGTest {
 
     BooleanObjectAttributeDescription instance;
-
-    public BooleanObjectAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -54,6 +53,7 @@ public class BooleanObjectAttributeDescriptionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

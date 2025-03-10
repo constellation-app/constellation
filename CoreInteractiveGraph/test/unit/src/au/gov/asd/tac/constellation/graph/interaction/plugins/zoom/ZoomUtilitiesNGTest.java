@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
@@ -38,16 +37,15 @@ public class ZoomUtilitiesNGTest {
 
     private int cameraAttribute;
     private StoreGraph graph;
-
-    public ZoomUtilitiesNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -62,6 +60,7 @@ public class ZoomUtilitiesNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -71,10 +70,8 @@ public class ZoomUtilitiesNGTest {
     public void closestNodeCameraCoordinatesNoGraph() {
         System.out.println("closestNodeCameraCoordinatesNoGraph");
 
-        GraphWriteMethods graph = null;
-
         Vector3f expResult = null;
-        Vector3f result = ZoomUtilities.closestNodeCameraCoordinates(graph);
+        Vector3f result = ZoomUtilities.closestNodeCameraCoordinates(null);
         assertEquals(result, expResult);
     }
 
@@ -107,5 +104,4 @@ public class ZoomUtilitiesNGTest {
         Vector3f result = ZoomUtilities.closestNodeCameraCoordinates(graph);
         assertEquals(result, expResult);
     }
-
 }

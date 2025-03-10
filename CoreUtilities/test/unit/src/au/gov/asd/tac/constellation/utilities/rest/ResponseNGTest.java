@@ -39,24 +39,25 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class ResponseNGTest {
-
-    public ResponseNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -338,7 +339,5 @@ public class ResponseNGTest {
         public String getSaveResponseFilename() {
             return "test";
         }
-
     }
-
 }
