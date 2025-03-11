@@ -154,8 +154,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
 
     private final ConstellationTextArea textArea;
 
-    protected final List<ConstellationInputListener> InputFieldListeners
-            = new ArrayList<>();
+    protected final List<ConstellationInputListener> InputFieldListeners = new ArrayList<>();
     private final List<InputValidator> validators = new ArrayList<>();
 
     private final int corner = 7;
