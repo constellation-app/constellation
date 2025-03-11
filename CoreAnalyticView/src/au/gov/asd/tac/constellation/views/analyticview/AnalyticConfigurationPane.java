@@ -209,6 +209,7 @@ public class AnalyticConfigurationPane extends VBox {
 
         // ensure that only one of either the category or question pane are expanded at any time
         categoryListPane.expandedProperty().addListener((observable, oldValue, newValue) -> {
+
             questionListPane.setExpanded(!categoryListPane.isExpanded());
             if (categoryListPane.isExpanded()) {
                 currentQuestion = null;
@@ -390,6 +391,7 @@ public class AnalyticConfigurationPane extends VBox {
      * @return the answered {@link AnalyticQuestion}.
      */
     public final AnalyticQuestion<?> answerCurrentQuestion() throws AnalyticException {
+
         // build question
         final AnalyticQuestion<?> question = new AnalyticQuestion<>(currentQuestion);
         AnalyticViewController.getDefault().setCurrentQuestion(currentQuestion);
