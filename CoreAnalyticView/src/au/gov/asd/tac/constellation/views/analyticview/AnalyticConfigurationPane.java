@@ -515,7 +515,6 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.setItems(FXCollections.observableArrayList(selectablePlugins));
         pluginList.getSelectionModel().clearSelection();
         updateSelectablePluginsParameters();
-//        updateGlobalParameters(); // called in updateSelectablePluginsParameters() anyway
 
         setSuppressedFlag(false);
     }
