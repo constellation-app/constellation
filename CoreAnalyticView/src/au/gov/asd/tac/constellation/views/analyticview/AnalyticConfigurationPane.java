@@ -39,6 +39,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -153,6 +154,8 @@ public class AnalyticConfigurationPane extends VBox {
         categoryList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             currentQuestion = null;
             populateParameterPane(globalAnalyticParameters);
+            //System.out.println("categoryList");
+            //System.out.println(globalAnalyticParameters.getParameters());
             setPluginsFromSelectedCategory();
         });
 
@@ -183,14 +186,18 @@ public class AnalyticConfigurationPane extends VBox {
         final List<AnalyticQuestionDescription<?>> questions = new ArrayList<>(questionToPluginsMap.keySet());
         Collections.sort(questions, (question1, question2) -> question1.getName().compareToIgnoreCase(question2.getName()));
         questionList.getItems().addAll(questions);
+        // Doesnt seems to be the cause
         questionList.setCellFactory(list -> new ListCell<AnalyticQuestionDescription<?>>() {
             @Override
             protected void updateItem(final AnalyticQuestionDescription<?> item, final boolean empty) {
+                //System.out.println("updateItem");
                 super.updateItem(item, empty);
                 setText(item == null ? "" : item.getName());
             }
         });
+        // Doesnt seems to be the cause
         questionList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            //System.out.println("questionList.getSelectionModel().selectedItemProperty()");
             currentQuestion = newValue;
             @SuppressWarnings("unchecked") //AGGREGATOR_PARAMETER_ID is always a SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> aggregator = (PluginParameter<SingleChoiceParameterValue>) globalAnalyticParameters.getParameters().get(AGGREGATOR_PARAMETER_ID);
@@ -208,24 +215,26 @@ public class AnalyticConfigurationPane extends VBox {
         this.questionListPane = new TitledPane("Questions", questionList);
 
         // ensure that only one of either the category or question pane are expanded at any time
+        // when commented out it seems to work right, need more tesintg
         categoryListPane.expandedProperty().addListener((observable, oldValue, newValue) -> {
-
+            //System.out.println("categoryListPane.expandedProperty() " + newValue);
             questionListPane.setExpanded(!categoryListPane.isExpanded());
             if (categoryListPane.isExpanded()) {
                 currentQuestion = null;
-                populateParameterPane(globalAnalyticParameters);            
-                setPluginsFromSelectedCategory();
+                populateParameterPane(globalAnalyticParameters);
+                setPluginsFromSelectedCategory(); // Might be the culprit, only lags THIS categoryListPane
                 AnalyticViewController.getDefault().setCategoriesVisible(true);
             }
 
         });
         questionListPane.expandedProperty().addListener((observable, oldValue, newValue) -> {
+            //System.out.println("questionListPane.expandedProperty() " + newValue);
             categoryListPane.setExpanded(!questionListPane.isExpanded());
             if (questionListPane.isExpanded()) {
                 currentQuestion = questionList.getSelectionModel().getSelectedItem();
                 populateDocumentationPane(currentQuestion.getDocumentationUrl());
                 populateParameterPane(globalAnalyticParameters);
-                setPluginsFromSelectedQuestion();
+                setPluginsFromSelectedQuestion();// Might be the culprit, only lags THIS questionListPane
                 AnalyticViewController.getDefault().setCategoriesVisible(false);
             }
         });
@@ -238,6 +247,7 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.setCellFactory(selectableAnalytics -> new ListCell<SelectableAnalyticPlugin>() {
             @Override
             protected void updateItem(final SelectableAnalyticPlugin item, final boolean empty) {
+                //System.out.println("pluginList updateItem");
                 super.updateItem(item, empty);
                 if (item == null) {
                     setGraphic(null);
@@ -252,6 +262,7 @@ public class AnalyticConfigurationPane extends VBox {
         });
 
         pluginList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            //System.out.println("pluginList.getSelectionModel().selectedItemProperty()");
             if (!selectionSuppressed) {
                 if (newValue != null) {
                     populateDocumentationPane(newValue.getPlugin().getDocumentationUrl());
@@ -296,7 +307,7 @@ public class AnalyticConfigurationPane extends VBox {
                 documentationView.getEngine().setUserStyleSheetLocation(getClass().getResource("resources/analytic-view-dark.css").toExternalForm());
             } else {
                 documentationView.getEngine().setUserStyleSheetLocation(getClass().getResource("resources/analytic-view-light.css").toExternalForm());
-            }     
+            }
             populateDocumentationPane(null);
             cdl.countDown();
         });
@@ -372,12 +383,12 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
-     * Reset to the initial state for the analytic configuration pane. The
-     * question list will be expanded, the first question selected, and the
-     * analytics list populated based on the selected question.
+     * Reset to the initial state for the analytic configuration pane. The question list will be expanded, the first
+     * question selected, and the analytics list populated based on the selected question.
      */
     protected final void reset() {
         Platform.runLater(() -> {
+            //System.out.println("reset");
             categoryList.getSelectionModel().select(0);
             questionList.getSelectionModel().select(0);
             categoryListPane.setExpanded(false);
@@ -392,7 +403,7 @@ public class AnalyticConfigurationPane extends VBox {
      * @return the answered {@link AnalyticQuestion}.
      */
     public final AnalyticQuestion<?> answerCurrentQuestion() throws AnalyticException {
-
+        //System.out.println("answerCurrentQuestion");
         // build question
         final AnalyticQuestion<?> question = new AnalyticQuestion<>(currentQuestion);
         AnalyticViewController.getDefault().setCurrentQuestion(currentQuestion);
@@ -410,7 +421,7 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.getItems().forEach(selectablePlugin -> {
             if (selectablePlugin.checkbox.isSelected()) {
                 selectedPlugins.add(selectablePlugin);
-                question.addPlugin(selectablePlugin.plugin, selectablePlugin.getPluginSpecificParameters());      
+                question.addPlugin(selectablePlugin.plugin, selectablePlugin.getPluginSpecificParameters());
             }
         });
         if (selectedPlugins.isEmpty()) {
@@ -427,7 +438,7 @@ public class AnalyticConfigurationPane extends VBox {
 
     /**
      * Populate the documentation pane based on the currently selected plugin
-     * 
+     *
      * @param plugin
      */
     private void populateDocumentationPane(final String documentationURL) {
@@ -438,7 +449,7 @@ public class AnalyticConfigurationPane extends VBox {
                 try {
                     final Path path = Paths.get(documentationURL);
                     final InputStream pageInput = new FileInputStream(path.toString());
-                    final String pageString =  new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
+                    final String pageString = new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
                     final Parser parser = Parser.builder().build();
                     final HtmlRenderer renderer = HtmlRenderer.builder().build();
                     final Node tocDocument = parser.parse(pageString);
@@ -450,7 +461,6 @@ public class AnalyticConfigurationPane extends VBox {
             }
         }
     }
-
 
     private void createGlobalParameters() {
         globalAnalyticParameters.addGroup(GLOBAL_PARAMS_GROUP, new PluginParametersPane.TitledSeparatedParameterLayout(GLOBAL_PARAMS_GROUP, 14, false));
@@ -469,10 +479,11 @@ public class AnalyticConfigurationPane extends VBox {
         if (categoryListPane.isExpanded()) {
             @SuppressWarnings("unchecked") //return type of getResultType is actually Class<? extends AnalyticResult<?>>
             final Class<? extends AnalyticResult<?>> pluginResultType = pluginList.getItems().get(0).getPlugin().getResultType();
-            AnalyticUtilities.lookupAnalyticAggregators(pluginResultType)
-                    .forEach(aggregator -> aggregators.add(new AnalyticAggregatorParameterValue(aggregator)));
+            // this has to be the culprit, ACTUALLY ONLY PARTIAL
+            AnalyticUtilities.lookupAnalyticAggregators(pluginResultType).forEach(aggregator -> aggregators.add(new AnalyticAggregatorParameterValue(aggregator)));
+
             SingleChoiceParameterType.setOptionsData(aggregatorParameter, aggregators);
-            SingleChoiceParameterType.setChoiceData(aggregatorParameter, aggregators.get(0));
+            SingleChoiceParameterType.setChoiceData(aggregatorParameter, aggregators.get(0)); // this? SEEMS TO BE THE CULPRIT
         } else if (questionListPane.isExpanded() && currentQuestion != null) {
             final Class<? extends AnalyticAggregator<?>> questionAggregatorType = currentQuestion.getAggregatorType();
             aggregators.add(new AnalyticAggregatorParameterValue(AnalyticUtilities.lookupAnalyticAggregator(questionAggregatorType)));
@@ -489,6 +500,10 @@ public class AnalyticConfigurationPane extends VBox {
      * @param pluginParameters
      */
     private void populateParameterPane(final PluginParameters pluginParameters) {
+        // Clear existing listeners 
+        for (final var entry : pluginParameters.getParameters().entrySet()) {
+            entry.getValue().removeAllListeners();
+        }
         final PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(pluginParameters, null);
         // The parameters should only be editable if we are looking at a category rather than a question.
         pluginParametersPane.setDisable(questionListPane.isExpanded());
@@ -511,8 +526,10 @@ public class AnalyticConfigurationPane extends VBox {
         }
         pluginList.setItems(FXCollections.observableArrayList(selectablePlugins));
         pluginList.getSelectionModel().clearSelection();
+        // One of these two
         updateSelectablePluginsParameters();
-        updateGlobalParameters();
+//        updateGlobalParameters(); // called in updateSelectablePluginsParameters() anyway
+
         setSuppressedFlag(false);
     }
 
@@ -554,7 +571,7 @@ public class AnalyticConfigurationPane extends VBox {
                 currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);
             });
         }
-        updateGlobalParameters();
+        updateGlobalParameters();  // this must be the culprit
     }
 
     /**
@@ -566,6 +583,7 @@ public class AnalyticConfigurationPane extends VBox {
      */
     protected final void updatePanes(final boolean categoriesVisible, final List<AnalyticQuestionDescription<?>> activeAnalyticQuestions,
             final List<List<SelectableAnalyticPlugin>> activeSelectablePlugins, final String activeCategory) {
+        //System.out.println("updatePanes");
 
         Platform.runLater(() -> {
             categoryListPane.setExpanded(categoriesVisible);
@@ -598,7 +616,6 @@ public class AnalyticConfigurationPane extends VBox {
         });
     }
 
-
     public final class SelectableAnalyticPlugin {
 
         private final CheckBox checkbox;
@@ -611,6 +628,7 @@ public class AnalyticConfigurationPane extends VBox {
             this.checkbox = new CheckBox();
             // Allows triggering of selection listener when a checkbox is changed
             this.checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                // System.out.println("this.checkbox.selectedProperty()");
                 if (parent != null) {
                     if (parent.getListView().getSelectionModel().getSelectedItem() == this) {
                         parent.getListView().getSelectionModel().clearSelection();
