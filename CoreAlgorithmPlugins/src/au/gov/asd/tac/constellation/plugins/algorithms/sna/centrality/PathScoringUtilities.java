@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 
 /**
@@ -225,36 +226,56 @@ public class PathScoringUtilities {
         return traversal;
     }
 
-    private static Tuple<BitSet[], float[]> computeAllPathsUndirected(final GraphReadMethods graph, final ScoreType scoreType) {
+    protected static Tuple<BitSet[], float[]> computeAllPathsUndirected(final GraphReadMethods graph, final ScoreType scoreType) {
+        // Run the algorithm
+        final ThreeTuple<BitSet[], float[], BitSet> result = computeAllPathsUndirectedThreeTuple(graph, scoreType);
+
+        // Convert results into a two tuple
+        return convertThreeTupleResultsToTwo(result, graph.getVertexCount());
+    }
+
+// TODO take another look just in case and test
+    protected static ThreeTuple<BitSet[], float[], BitSet> computeAllPathsUndirectedThreeTuple(final GraphReadMethods graph, final ScoreType scoreType) {
+        System.out.println("computeAllPathsUndirectedThreeTuple");
         final int vxCount = graph.getVertexCount();
-        final BitSet[] traversal = new BitSet[vxCount];
-        final float[] scores = new float[vxCount];
+
         final ArrayList<Float> distances = new ArrayList<>();
 
         final BitSet update = new BitSet(vxCount);
-        final BitSet[] sendBuffer = new BitSet[vxCount];
+        final BitSet updateToReturn = new BitSet(vxCount);
         final BitSet turn = new BitSet(vxCount);
         final BitSet newUpdate = new BitSet(vxCount);
+
+        final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
 
         // initialising variables
         for (int vxPosition = 0; vxPosition < vxCount; vxPosition++) {
             // get the vertex ID at this position
             final int vxId = graph.getVertex(vxPosition);
 
-            traversal[vxPosition] = new BitSet(vxCount);
-            sendBuffer[vxPosition] = new BitSet(vxCount);
-            scores[vxPosition] = 0;
-
             // assuming the node has neighbours
             if (graph.getVertexNeighbourCount(vxId) > 0) {
                 update.set(vxPosition);
+                updateToReturn.set(vxPosition);
+                updatedVertexIndexArray.add(vxPosition);
             }
+        }
+
+        final int updateVertexCount = update.cardinality();
+
+        final BitSet[] traversal = new BitSet[updateVertexCount];
+        final float[] scores = new float[updateVertexCount];
+        final BitSet[] sendBuffer = new BitSet[updateVertexCount];
+
+        for (int i = 0; i < updateVertexCount; i++) {
+            traversal[i] = new BitSet(updateVertexCount);
+            sendBuffer[i] = new BitSet(updateVertexCount);
         }
 
         while (!update.isEmpty()) {
 
             // each node with messages needs to update its own information
-            for (int vxPosition = update.nextSetBit(0); vxPosition >= 0; vxPosition = update.nextSetBit(vxPosition + 1)) {
+            for (int vxPosition = 0; vxPosition < updateVertexCount; vxPosition++) {
                 traversal[vxPosition].or(sendBuffer[vxPosition]);
                 traversal[vxPosition].set(vxPosition);
                 sendBuffer[vxPosition].clear();
@@ -263,15 +284,18 @@ public class PathScoringUtilities {
             // for each neighbour, check if there is any new information it needs to receive
             for (int sourcePosition = update.nextSetBit(0); sourcePosition >= 0; sourcePosition = update.nextSetBit(sourcePosition + 1)) {
                 final int vxId = graph.getVertex(sourcePosition);
-                for (int neighbourPosition = 0; neighbourPosition < graph.getVertexNeighbourCount(vxId); neighbourPosition++) {
-                    final int destinationPosition = graph.getVertexPosition(graph.getVertexNeighbour(vxId, neighbourPosition));
-                    if (!traversal[sourcePosition].equals(traversal[destinationPosition])) {
+                final int sourcePosLocal = updatedVertexIndexArray.indexOf(sourcePosition);
 
-                        final BitSet diff = (BitSet) traversal[sourcePosition].clone();
+                for (int neighbourPosition = 0; neighbourPosition < graph.getVertexNeighbourCount(vxId); neighbourPosition++) {
+                    final int destinationPositionGraph = graph.getVertexPosition(graph.getVertexNeighbour(vxId, neighbourPosition));
+                    final int destinationPosition = updatedVertexIndexArray.indexOf(destinationPositionGraph);
+                    if (!traversal[sourcePosLocal].equals(traversal[destinationPosition])) {
+
+                        final BitSet diff = (BitSet) traversal[sourcePosLocal].clone();
                         diff.andNot(traversal[destinationPosition]);
                         sendBuffer[destinationPosition].or(diff);
                         turn.or(diff);
-                        newUpdate.set(destinationPosition);
+                        newUpdate.set(destinationPositionGraph);
                     }
                 }
             }
@@ -294,52 +318,80 @@ public class PathScoringUtilities {
 
         return switch (scoreType) {
             case ECCENTRICITY ->
-                Tuple.create(traversal, scores);
+                ThreeTuple.create(traversal, scores, updateToReturn);
             case AVERAGE_DISTANCE -> {
                 final float[] distanceArray = new float[distances.size()];
                 for (int i = 0; i < distances.size(); i++) {
                     distanceArray[i] = distances.get(i);
                 }
-                yield Tuple.create(traversal, distanceArray);
+                yield ThreeTuple.create(traversal, distanceArray, updateToReturn);
             }
             default ->
                 throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
         };
     }
 
-    private static Tuple<BitSet[], float[]> computeAllPathsDirected(final GraphReadMethods graph, final ScoreType scoreType,
+    protected static Tuple<BitSet[], float[]> computeAllPathsDirected(final GraphReadMethods graph, final ScoreType scoreType,
             final boolean includeConnectionsIn, final boolean includeConnectionsOut, final boolean treatUndirectedBidirectional) {
+
+        // Run the algorithm
+        final ThreeTuple<BitSet[], float[], BitSet> result = computeAllPathsDirectedThreeTuple(graph, scoreType, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional);
+
+        // Convert results into a two tuple
+        return convertThreeTupleResultsToTwo(result, graph.getVertexCount());
+
+    }
+
+    // Todo
+    protected static ThreeTuple<BitSet[], float[], BitSet> computeAllPathsDirectedThreeTuple(final GraphReadMethods graph, final ScoreType scoreType,
+            final boolean includeConnectionsIn, final boolean includeConnectionsOut, final boolean treatUndirectedBidirectional) {
+        System.out.println("computeAllPathsDirectedThreeTuple");
         final int vertexCount = graph.getVertexCount();
-        final BitSet[] traversal = new BitSet[vertexCount];
-        final float[] scores = new float[vertexCount];
+
         final ArrayList<Float> distances = new ArrayList<>();
 
         final BitSet update = new BitSet(vertexCount);
-        final BitSet[] sendBuffer = new BitSet[vertexCount];
+        final BitSet updateReturn = new BitSet(vertexCount);
+
         final BitSet newUpdate = new BitSet(vertexCount);
 
         final BitSet turn = new BitSet(vertexCount);
+
+        final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
 
         // initialising variables
         for (int vxPosition = 0; vxPosition < vertexCount; vxPosition++) {
             // get the vertex ID at this position
             final int vxId = graph.getVertex(vxPosition);
 
-            traversal[vxPosition] = new BitSet(vertexCount);
-            sendBuffer[vxPosition] = new BitSet(vertexCount);
-
-            scores[vxPosition] = 0;
-
             // assuming the node has neighbours
             if (graph.getVertexNeighbourCount(vxId) > 0) {
+
+//                traversal[vxPosition] = new BitSet(vertexCount);
+//                sendBuffer[vxPosition] = new BitSet(vertexCount);
+                //scores[vxPosition] = 0;
+
                 update.set(vxPosition);
+                updateReturn.set(vxPosition);
+                updatedVertexIndexArray.add(vxPosition);
             }
+        }
+
+        final int updateVertexCount = update.cardinality();
+
+        final BitSet[] traversal = new BitSet[updateVertexCount];
+        final float[] scores = new float[updateVertexCount];
+        final BitSet[] sendBuffer = new BitSet[updateVertexCount];
+
+        for (int i = 0; i < updateVertexCount; i++) {
+            traversal[i] = new BitSet(updateVertexCount);
+            sendBuffer[i] = new BitSet(updateVertexCount);
         }
 
         while (!update.isEmpty()) {
 
             // update the information of each node with messages
-            for (int vertexPosition = update.nextSetBit(0); vertexPosition >= 0; vertexPosition = update.nextSetBit(vertexPosition + 1)) {
+            for (int vertexPosition = 0; vertexPosition < updateVertexCount; vertexPosition++) {
                 traversal[vertexPosition].or(sendBuffer[vertexPosition]);
                 traversal[vertexPosition].set(vertexPosition);
                 sendBuffer[vertexPosition].clear();
@@ -348,11 +400,13 @@ public class PathScoringUtilities {
             // for each neighbour, check if there is any new information it needs to receive
             for (int vertexPosition = update.nextSetBit(0); vertexPosition >= 0; vertexPosition = update.nextSetBit(vertexPosition + 1)) {
                 int vertexId = graph.getVertex(vertexPosition);
+                final int vertexPosLocal = updatedVertexIndexArray.indexOf(vertexPosition);
 
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
                     final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
-                    final int neighbourPosition = graph.getVertexPosition(neighbourId);
-
+                    final int neighbourPositionGraph = graph.getVertexPosition(neighbourId);
+                    final int neighbourPosition = updatedVertexIndexArray.indexOf(neighbourPositionGraph);
+                    
                     boolean isRequestedDirection = false;
                     final int linkId = graph.getLink(vertexId, neighbourId);
                     for (int linkEdgePosition = 0; linkEdgePosition < graph.getLinkEdgeCount(linkId); linkEdgePosition++) {
@@ -366,12 +420,12 @@ public class PathScoringUtilities {
                         }
                     }
 
-                    if (isRequestedDirection && !traversal[vertexPosition].equals(traversal[neighbourPosition])) {
-                        final BitSet diff = (BitSet) traversal[vertexPosition].clone();
+                    if (isRequestedDirection && !traversal[vertexPosLocal].equals(traversal[neighbourPosition])) {
+                        final BitSet diff = (BitSet) traversal[vertexPosLocal].clone();
                         diff.andNot(traversal[neighbourPosition]);
                         turn.or(diff);
                         sendBuffer[neighbourPosition].or(diff);
-                        newUpdate.set(neighbourPosition);
+                        newUpdate.set(neighbourPositionGraph);
                     }
                 }
             }
@@ -395,13 +449,13 @@ public class PathScoringUtilities {
 
         return switch (scoreType) {
             case ECCENTRICITY ->
-                Tuple.create(traversal, scores);
+                ThreeTuple.create(traversal, scores, updateReturn);
             case AVERAGE_DISTANCE -> {
                 final float[] distanceArray = new float[distances.size()];
                 for (int i = 0; i < distances.size(); i++) {
                     distanceArray[i] = distances.get(i);
                 }
-                yield Tuple.create(traversal, distanceArray);
+                yield ThreeTuple.create(traversal, distanceArray, updateReturn);
             }
             default ->
                 throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));

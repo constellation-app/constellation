@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import static au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.PathScoringUtilities.ScoreType.ECCENTRICITY;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -88,6 +89,64 @@ public class PathScoringUtilitiesNGTest {
 
         // Run function
         final Tuple result = PathScoringUtilities.computeShortestPathsUndirected(graph, scoreType, selectedOnly);
+
+        // Assert results equal
+        assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
+        assertTrue(Arrays.equals((float[]) result.getSecond(), expectedFloats));
+    }
+
+    /**
+     * Test of computeAllPathsUndirected method, of class PathScoringUtilities.
+     */
+    @Test
+    public void testComputeAllPathsUndirected() {
+        System.out.println("computeAllPathsUndirected");
+
+        final PathScoringUtilities.ScoreType scoreType = PathScoringUtilities.ScoreType.ECCENTRICITY;
+
+        final int vertexCount = 5;
+
+        // Set up mock graph
+        final GraphReadMethods graph = mockGraphHelper(vertexCount);
+
+        // Set up expected expected bit set array
+        final BitSet expectedBitSetA = BitSet.valueOf(new long[]{0b11011});
+        final BitSet expectedBitSetB = null;
+        final BitSet[] expectedBitSets = {expectedBitSetA, expectedBitSetA, expectedBitSetB, expectedBitSetA, expectedBitSetA};
+        // Set up expected float array
+        final float[] expectedFloats = {2.0F, 2.0F, 0.0F, 2.0F, 2.0F};
+
+        // Run function
+        final Tuple result = PathScoringUtilities.computeAllPathsUndirected(graph, scoreType);
+
+        // Assert results equal
+        assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
+        assertTrue(Arrays.equals((float[]) result.getSecond(), expectedFloats));
+    }
+
+    /**
+     * Test of computeAllPathsDirected method, of class PathScoringUtilities.
+     */
+    @Test
+    public void testComputeAllPathsDirected() {
+        System.out.println("computeAllPathsDirected");
+
+        final PathScoringUtilities.ScoreType scoreType = PathScoringUtilities.ScoreType.ECCENTRICITY;
+
+        final int vertexCount = 5;
+
+        // Set up mock graph
+        final GraphReadMethods graph = mockGraphHelper(vertexCount);
+
+        // Set up expected expected bit set array
+        final BitSet expectedBitSetA = BitSet.valueOf(new long[]{0b11011});
+        final BitSet expectedBitSetB = null;
+        final BitSet[] expectedBitSets = {expectedBitSetA, expectedBitSetA, expectedBitSetB, expectedBitSetA, expectedBitSetA};
+        // Set up expected float array
+        final float[] expectedFloats = {3.0F, 3.0F, 0.0F, 3.0F, 3.0F};
+
+        // Run function
+        final Tuple result = PathScoringUtilities.computeAllPathsDirected(graph, scoreType, false, true, false);
 
         // Assert results equal
         assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
