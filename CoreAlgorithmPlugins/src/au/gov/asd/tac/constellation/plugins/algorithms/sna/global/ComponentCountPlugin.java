@@ -56,7 +56,7 @@ public class ComponentCountPlugin extends SimpleEditPlugin {
         int numComponents = 0;
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final BitSet subgraph = subgraphs[vertexPosition];
-            if (subgraph.cardinality() <= 1) {
+            if (subgraph == null || subgraph.cardinality() <= 1) {
                 numComponents += 1;
             } else {
                 connectedComponents.add(subgraph);

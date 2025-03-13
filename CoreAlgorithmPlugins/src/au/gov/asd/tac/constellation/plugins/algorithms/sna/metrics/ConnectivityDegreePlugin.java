@@ -112,7 +112,7 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final float eccentricity = eccentricities[vertexPosition];
             final BitSet subgraph = subgraphs[vertexPosition];
-            if (subgraph.cardinality() <= 1) {
+            if (subgraph == null || subgraph.cardinality() <= 1) {
                 if (!ignoreSingletons) {
                     numComponents += 1;
                 }
@@ -135,9 +135,10 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
             final int vertexId = graph.getVertex(vertexPosition);
             final float eccentricity = eccentricities[vertexPosition];
             final BitSet subgraph = subgraphs[vertexPosition];
-            graph.setFloatValue(cSizeAttribute, vertexId, subgraph.cardinality());
+            final int cardinality = subgraph != null ? subgraph.cardinality() : 0;
+            graph.setFloatValue(cSizeAttribute, vertexId, cardinality);
             // singleton or singleton with a loop
-            if (subgraph.cardinality() <= 1) {
+            if (cardinality <= 1) {
                 if (normalise && ignoreSingletons) {
                     graph.setFloatValue(ccAttribute, vertexId, numComponents);
                 } else if (normalise && !ignoreSingletons) {
@@ -145,7 +146,7 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
                 } else {
                     graph.setFloatValue(ccAttribute, vertexId, 0);
                 }
-            } else if (subgraph.cardinality() == 2) {
+            } else if (cardinality == 2) {
                 // subgraph just two connected nodes
                 if (normalise && ignoreSingletons) {
                     graph.setFloatValue(ccAttribute, vertexId, numComponents - 1);
