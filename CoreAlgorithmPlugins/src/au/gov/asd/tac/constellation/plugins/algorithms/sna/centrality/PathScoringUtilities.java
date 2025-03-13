@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
 
 /**
@@ -231,10 +230,9 @@ public class PathScoringUtilities {
         final ThreeTuple<BitSet[], float[], BitSet> result = computeAllPathsUndirectedThreeTuple(graph, scoreType);
 
         // Convert results into a two tuple
-        return convertThreeTupleResultsToTwo(result, graph.getVertexCount());
+        return convertThreeTupleResultsToTwo(result, graph.getVertexCount(), scoreType);
     }
 
-// TODO take another look just in case and test
     protected static ThreeTuple<BitSet[], float[], BitSet> computeAllPathsUndirectedThreeTuple(final GraphReadMethods graph, final ScoreType scoreType) {
         System.out.println("computeAllPathsUndirectedThreeTuple");
         final int vxCount = graph.getVertexCount();
@@ -301,7 +299,8 @@ public class PathScoringUtilities {
                 case ECCENTRICITY ->
                     updateEccentricityScoresUndirected(scores, turn);
                 case AVERAGE_DISTANCE ->
-                    updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
+                    //updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
+                    updateAveragePathScoresUndirectedCompact(distances, scores, turn, sendBuffer, updatedVertexIndexArray);
                 default ->
                     throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
@@ -335,11 +334,10 @@ public class PathScoringUtilities {
         final ThreeTuple<BitSet[], float[], BitSet> result = computeAllPathsDirectedThreeTuple(graph, scoreType, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional);
 
         // Convert results into a two tuple
-        return convertThreeTupleResultsToTwo(result, graph.getVertexCount());
+        return convertThreeTupleResultsToTwo(result, graph.getVertexCount(), scoreType);
 
     }
 
-    // Todo clean and test
     protected static ThreeTuple<BitSet[], float[], BitSet> computeAllPathsDirectedThreeTuple(final GraphReadMethods graph, final ScoreType scoreType,
             final boolean includeConnectionsIn, final boolean includeConnectionsOut, final boolean treatUndirectedBidirectional) {
 
@@ -450,14 +448,14 @@ public class PathScoringUtilities {
         };
     }
 
-    private static Tuple<BitSet[], float[]> convertThreeTupleResultsToTwo(final ThreeTuple<BitSet[], float[], BitSet> threeTuple, final int vertexCount) {
+    private static Tuple<BitSet[], float[]> convertThreeTupleResultsToTwo(final ThreeTuple<BitSet[], float[], BitSet> threeTuple, final int vertexCount, final ScoreType scoreType) {
         final BitSet[] traversal = threeTuple.getFirst();
-        final float[] scores = threeTuple.getSecond();
+        final float[] secondArray = threeTuple.getSecond();
         final BitSet indexes = threeTuple.getThird();
 
         // Convert results into a two tuple
         final BitSet[] convertedTraversal = new BitSet[vertexCount];
-        final float[] convertedScores = new float[vertexCount];
+        final float[] convertedSecond = scoreType == ScoreType.AVERAGE_DISTANCE ? secondArray : new float[vertexCount];
 
         int currentIndex = 0;
         for (int index = indexes.nextSetBit(0); index >= 0; index = indexes.nextSetBit(index + 1)) {
@@ -470,11 +468,13 @@ public class PathScoringUtilities {
             }
 
             convertedTraversal[index] = convertedBitSet;
-            convertedScores[index] = scores[currentIndex];
+            if (scoreType != ScoreType.AVERAGE_DISTANCE) {
+                convertedSecond[index] = secondArray[currentIndex];
+            }
             currentIndex++;
         }
 
-        return Tuple.create(convertedTraversal, convertedScores);
+        return Tuple.create(convertedTraversal, convertedSecond);
     }
 
     /**
@@ -491,7 +491,7 @@ public class PathScoringUtilities {
         // Run the algorithm
         final ThreeTuple<BitSet[], float[], BitSet> result = computeShortestPathsUndirectedThreeTuple(graph, scoreType, selectedOnly);
 
-        return convertThreeTupleResultsToTwo(result, graph.getVertexCount());
+        return convertThreeTupleResultsToTwo(result, graph.getVertexCount(), scoreType);
     }
 
     /**
@@ -612,7 +612,7 @@ public class PathScoringUtilities {
                 includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional, selectedOnly);
 
         // Convert results into a two tuple
-        return convertThreeTupleResultsToTwo(result, graph.getVertexCount());
+        return convertThreeTupleResultsToTwo(result, graph.getVertexCount(), scoreType);
     }
 
     protected static ThreeTuple<BitSet[], float[], BitSet> computeShortestPathsDirectedThreeTuple(final GraphReadMethods graph, final ScoreType scoreType,
@@ -823,6 +823,17 @@ public class PathScoringUtilities {
             scores[vxId]++;
             for (int nxId = sendBuffer[vxId].nextSetBit(0); nxId >= 0; nxId = sendBuffer[vxId].nextSetBit(nxId + 1)) {
                 distances.add(scores[vxId]);
+            }
+        }
+    }
+
+    private static void updateAveragePathScoresUndirectedCompact(final ArrayList<Float> distances, final float[] scores, final BitSet turn, final BitSet[] sendBuffer, final ArrayList<Integer> updateVertexArray) {
+        // for each node that has a message in transit, update its eccentricity
+        for (int vxId = turn.nextSetBit(0); vxId >= 0; vxId = turn.nextSetBit(vxId + 1)) {
+            final int vxIdLocal = updateVertexArray.indexOf(vxId);
+            scores[vxIdLocal]++;
+            for (int nxId = sendBuffer[vxIdLocal].nextSetBit(0); nxId >= 0; nxId = sendBuffer[vxIdLocal].nextSetBit(nxId + 1)) {
+                distances.add(scores[vxIdLocal]);
             }
         }
     }
