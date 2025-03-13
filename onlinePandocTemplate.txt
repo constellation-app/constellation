@@ -241,7 +241,7 @@
     const renderSearchResults = (results) => {
         resultsList.innerHTML = results.map(({title, link}) => {
             return `<li class="Result">
-                <a href=\ ${link}> $${capitalize(title)}</a>
+                <a href=\ $${link}> $${capitalize(title)}</a>
                 </li>`;
             }).join('\n');
 
@@ -255,7 +255,7 @@
     // Display the suggestions
     const renderSuggestions = (suggestions) => {
         suggestionList.innerHTML = suggestions.map(({ suggestion }) => {
-            return `<li class="Suggestion">${suggestion}</li>`;
+            return `<li class="Suggestion">$${suggestion}</li>`;
         }).join('\n');
 
         if (suggestions.length > 0) {
