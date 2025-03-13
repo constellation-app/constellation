@@ -234,7 +234,6 @@ public class PathScoringUtilities {
     }
 
     protected static ThreeTuple<BitSet[], float[], BitSet> computeAllPathsUndirectedThreeTuple(final GraphReadMethods graph, final ScoreType scoreType) {
-        System.out.println("computeAllPathsUndirectedThreeTuple");
         final int vxCount = graph.getVertexCount();
 
         final ArrayList<Float> distances = new ArrayList<>();
@@ -299,8 +298,7 @@ public class PathScoringUtilities {
                 case ECCENTRICITY ->
                     updateEccentricityScoresUndirected(scores, turn);
                 case AVERAGE_DISTANCE ->
-                    //updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
-                    updateAveragePathScoresUndirectedCompact(distances, scores, turn, sendBuffer, updatedVertexIndexArray);
+                    updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer, updatedVertexIndexArray);
                 default ->
                     throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
@@ -421,7 +419,7 @@ public class PathScoringUtilities {
                 case ECCENTRICITY ->
                     updateEccentricityScoresDirected(scores, turn);
                 case AVERAGE_DISTANCE ->
-                    updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
+                    updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer, updatedVertexIndexArray);
                 default ->
                     throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
@@ -817,23 +815,12 @@ public class PathScoringUtilities {
         }
     }
 
-    private static void updateAveragePathScoresUndirected(final ArrayList<Float> distances, final float[] scores, final BitSet turn, final BitSet[] sendBuffer) {
+    private static void updateAveragePathScoresUndirected(final ArrayList<Float> distances, final float[] scores, final BitSet turn, final BitSet[] sendBuffer, final ArrayList<Integer> updateVertexArray) {
         // for each node that has a message in transit, update its eccentricity
-        for (int vxId = turn.nextSetBit(0); vxId >= 0; vxId = turn.nextSetBit(vxId + 1)) {
+        for (int vxId = 0; vxId < updateVertexArray.size(); vxId++) {
             scores[vxId]++;
             for (int nxId = sendBuffer[vxId].nextSetBit(0); nxId >= 0; nxId = sendBuffer[vxId].nextSetBit(nxId + 1)) {
                 distances.add(scores[vxId]);
-            }
-        }
-    }
-
-    private static void updateAveragePathScoresUndirectedCompact(final ArrayList<Float> distances, final float[] scores, final BitSet turn, final BitSet[] sendBuffer, final ArrayList<Integer> updateVertexArray) {
-        // for each node that has a message in transit, update its eccentricity
-        for (int vxId = turn.nextSetBit(0); vxId >= 0; vxId = turn.nextSetBit(vxId + 1)) {
-            final int vxIdLocal = updateVertexArray.indexOf(vxId);
-            scores[vxIdLocal]++;
-            for (int nxId = sendBuffer[vxIdLocal].nextSetBit(0); nxId >= 0; nxId = sendBuffer[vxIdLocal].nextSetBit(nxId + 1)) {
-                distances.add(scores[vxIdLocal]);
             }
         }
     }
