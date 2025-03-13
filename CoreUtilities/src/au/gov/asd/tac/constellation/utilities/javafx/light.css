@@ -155,3 +155,7 @@
 #errorDialogOccBox{
     -fx-background-color: #bcbcbc;
 }
+
+.invalid-input {
+    -fx-control-inner-background: #8a1d1d;
+}
