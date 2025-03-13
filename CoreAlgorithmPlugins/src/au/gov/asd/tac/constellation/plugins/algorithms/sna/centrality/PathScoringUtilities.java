@@ -250,11 +250,8 @@ public class PathScoringUtilities {
 
         // initialising variables
         for (int vxPosition = 0; vxPosition < vxCount; vxPosition++) {
-            // get the vertex ID at this position
-            final int vxId = graph.getVertex(vxPosition);
-
             // assuming the node has neighbours
-            if (graph.getVertexNeighbourCount(vxId) > 0) {
+            if (graph.getVertexNeighbourCount(graph.getVertex(vxPosition)) > 0) {
                 update.set(vxPosition);
                 updateToReturn.set(vxPosition);
                 updatedVertexIndexArray.add(vxPosition);
@@ -342,10 +339,10 @@ public class PathScoringUtilities {
 
     }
 
-    // Todo
+    // Todo clean and test
     protected static ThreeTuple<BitSet[], float[], BitSet> computeAllPathsDirectedThreeTuple(final GraphReadMethods graph, final ScoreType scoreType,
             final boolean includeConnectionsIn, final boolean includeConnectionsOut, final boolean treatUndirectedBidirectional) {
-        System.out.println("computeAllPathsDirectedThreeTuple");
+
         final int vertexCount = graph.getVertexCount();
 
         final ArrayList<Float> distances = new ArrayList<>();
@@ -354,23 +351,14 @@ public class PathScoringUtilities {
         final BitSet updateReturn = new BitSet(vertexCount);
 
         final BitSet newUpdate = new BitSet(vertexCount);
-
         final BitSet turn = new BitSet(vertexCount);
 
         final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
 
         // initialising variables
         for (int vxPosition = 0; vxPosition < vertexCount; vxPosition++) {
-            // get the vertex ID at this position
-            final int vxId = graph.getVertex(vxPosition);
-
             // assuming the node has neighbours
-            if (graph.getVertexNeighbourCount(vxId) > 0) {
-
-//                traversal[vxPosition] = new BitSet(vertexCount);
-//                sendBuffer[vxPosition] = new BitSet(vertexCount);
-                //scores[vxPosition] = 0;
-
+            if (graph.getVertexNeighbourCount(graph.getVertex(vxPosition)) > 0) {
                 update.set(vxPosition);
                 updateReturn.set(vxPosition);
                 updatedVertexIndexArray.add(vxPosition);
@@ -406,7 +394,7 @@ public class PathScoringUtilities {
                     final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
                     final int neighbourPositionGraph = graph.getVertexPosition(neighbourId);
                     final int neighbourPosition = updatedVertexIndexArray.indexOf(neighbourPositionGraph);
-                    
+
                     boolean isRequestedDirection = false;
                     final int linkId = graph.getLink(vertexId, neighbourId);
                     for (int linkEdgePosition = 0; linkEdgePosition < graph.getLinkEdgeCount(linkId); linkEdgePosition++) {

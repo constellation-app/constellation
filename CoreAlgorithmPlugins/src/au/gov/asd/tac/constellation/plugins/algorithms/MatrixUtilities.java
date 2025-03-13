@@ -125,7 +125,6 @@ public class MatrixUtilities {
     }
 
     public static SimpleMatrix degreeCompact(final GraphReadMethods graph, final ArrayList<Integer> updatedVertexIndexs) {
-        System.out.println("degreeCompact");
         final int vertexCount = graph.getVertexCount();
 
         final ArrayList<Integer> updatedVertexIndexArray;
