@@ -314,12 +314,15 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             // Create a json file for the online help search
             final String path = Generator.getOnlineHelpTOCDirectory(Generator.getBaseDirectory()) + "search.json";
             try (final FileWriter search = new FileWriter(path)) {
+                final List<String> documentsHtml = documents;
                 final StringBuilder documentString = new StringBuilder();
                 documentString.append("[");
-                documentString.append(documents.getFirst());
-                for (int i = 1; i < documents.size(); i++) {
+                final String firstEntry = documentsHtml.getFirst().replace(".md\"", ".html\"");
+                documentString.append(firstEntry);
+                for (int i = 1; i < documentsHtml.size(); i++) {
                     documentString.append(",");
-                    documentString.append(documents.get(i));
+                    final String newEntry = documentsHtml.get(i).replace(".md\"", ".html\"");
+                    documentString.append(newEntry);
                 }
                 documentString.append("]");
                 search.write(documentString.toString());
