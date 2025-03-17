@@ -298,7 +298,7 @@ public class PathScoringUtilities {
                 case ECCENTRICITY ->
                     updateEccentricityScoresUndirected(scores, turn);
                 case AVERAGE_DISTANCE ->
-                    updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer, updatedVertexIndexArray);
+                    updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer, updatedVertexIndexArray, graph);
                 default ->
                     throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
@@ -419,7 +419,7 @@ public class PathScoringUtilities {
                 case ECCENTRICITY ->
                     updateEccentricityScoresDirected(scores, turn);
                 case AVERAGE_DISTANCE ->
-                    updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer, updatedVertexIndexArray);
+                    updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer, updatedVertexIndexArray, graph);
                 default ->
                     throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
@@ -815,12 +815,19 @@ public class PathScoringUtilities {
         }
     }
 
-    private static void updateAveragePathScoresUndirected(final ArrayList<Float> distances, final float[] scores, final BitSet turn, final BitSet[] sendBuffer, final ArrayList<Integer> updateVertexArray) {
+    private static void updateAveragePathScoresUndirected(final ArrayList<Float> distances, final float[] scores, final BitSet turn, final BitSet[] sendBuffer, final ArrayList<Integer> updateVertexArray, final GraphReadMethods graph) {
         // for each node that has a message in transit, update its eccentricity
-        for (int vxId = 0; vxId < updateVertexArray.size(); vxId++) {
-            scores[vxId]++;
-            for (int nxId = sendBuffer[vxId].nextSetBit(0); nxId >= 0; nxId = sendBuffer[vxId].nextSetBit(nxId + 1)) {
-                distances.add(scores[vxId]);
+        for (int vxPos = turn.nextSetBit(0); vxPos >= 0; vxPos = turn.nextSetBit(vxPos + 1)) {
+            int vxId = graph.getVertex(vxPos);
+            final int localVxId = updateVertexArray.indexOf(vxId);
+
+            if (localVxId == -1) {
+                continue;
+            }
+
+            scores[localVxId]++;
+            for (int nxId = sendBuffer[localVxId].nextSetBit(0); nxId >= 0; nxId = sendBuffer[localVxId].nextSetBit(nxId + 1)) {
+                distances.add(scores[localVxId]);
             }
         }
     }

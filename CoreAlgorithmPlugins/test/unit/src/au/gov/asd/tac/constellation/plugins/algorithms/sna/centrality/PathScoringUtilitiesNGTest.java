@@ -15,15 +15,16 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality;
 
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import static au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.PathScoringUtilities.ScoreType.ECCENTRICITY;
+import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.Arrays;
 import java.util.BitSet;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -32,17 +33,73 @@ import org.testng.annotations.Test;
  */
 public class PathScoringUtilitiesNGTest {
 
+    private StoreGraph graph;
+
+    private StoreGraph bigGraph;
+    private final static int NUM_NODES = 20;
+
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+        /////// Small graph
+        // create an analytic graph
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        graph = new StoreGraph(schema);
+
+        // add attributes
+        VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+
+        // add vertices
+        final int vxId0 = graph.addVertex();
+        final int vxId1 = graph.addVertex();
+        graph.addVertex(); // vxId2 is on its own
+        final int vxId3 = graph.addVertex();
+        final int vxId4 = graph.addVertex();
+
+        // add transactions
+        graph.addTransaction(vxId0, vxId1, true);
+        graph.addTransaction(vxId1, vxId3, true);
+        graph.addTransaction(vxId3, vxId4, true);
+        graph.addTransaction(vxId4, vxId0, true);
+
+        /////// Big graph
+        final Schema schema2 = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        bigGraph = new StoreGraph(schema2);
+
+        // add attributes
+        VisualConcept.VertexAttribute.SELECTED.ensure(bigGraph);
+
+        // Set up nodes
+        for (int i = 0; i < NUM_NODES; i++) {
+            bigGraph.addVertex();
+        }
+
+        // Set up transactions
+        bigGraph.addTransaction(0, 4, true);
+        bigGraph.addTransaction(1, 7, true);
+        bigGraph.addTransaction(3, 15, true);
+        bigGraph.addTransaction(4, 14, true);
+        bigGraph.addTransaction(4, 8, true);
+
+        bigGraph.addTransaction(7, 10, true);
+        bigGraph.addTransaction(8, 12, true);
+        bigGraph.addTransaction(10, 13, true);
+        bigGraph.addTransaction(11, 19, true);
+        bigGraph.addTransaction(12, 16, true);
+
+        bigGraph.addTransaction(13, 17, true);
+        bigGraph.addTransaction(13, 1, true);
+        bigGraph.addTransaction(17, 6, true);
+        bigGraph.addTransaction(17, 19, true);
+        bigGraph.addTransaction(19, 8, true);
+
+    }
+
     /**
      * Test of computeShortestPathsDirected method, of class PathScoringUtilities.
      */
     @Test
     public void testComputeShortestPathsDirected() {
         System.out.println("computeShortestPathsDirected");
-
-        final int vertexCount = 5;
-
-        // Set up mock graph
-        final GraphReadMethods graph = mockGraphHelper(vertexCount);
 
         final PathScoringUtilities.ScoreType scoreType = PathScoringUtilities.ScoreType.BETWEENNESS;
         final boolean includeConnectionsIn = false;
@@ -52,7 +109,9 @@ public class PathScoringUtilitiesNGTest {
 
         // Set up expected expected bit set array
         final BitSet expectedBitSetA = BitSet.valueOf(new long[]{0b11011});
+        //final BitSet expectedBitSetB = BitSet.valueOf(new long[]{0b00000});
         final BitSet expectedBitSetB = null;
+
         final BitSet[] expectedBitSets = {expectedBitSetA, expectedBitSetA, expectedBitSetB, expectedBitSetA, expectedBitSetA};
         // Set up expected float array
         final float[] expectedFloats = {3.0F, 3.0F, 0.0F, 3.0F, 3.0F};
@@ -75,14 +134,11 @@ public class PathScoringUtilitiesNGTest {
         final PathScoringUtilities.ScoreType scoreType = PathScoringUtilities.ScoreType.BETWEENNESS;
         final boolean selectedOnly = false;
 
-        final int vertexCount = 5;
-
-        // Set up mock graph
-        final GraphReadMethods graph = mockGraphHelper(vertexCount);
-
         // Set up expected expected bit set array
         final BitSet expectedBitSetA = BitSet.valueOf(new long[]{0b11011});
+        //final BitSet expectedBitSetB = BitSet.valueOf(new long[]{0b00000});
         final BitSet expectedBitSetB = null;
+
         final BitSet[] expectedBitSets = {expectedBitSetA, expectedBitSetA, expectedBitSetB, expectedBitSetA, expectedBitSetA};
         // Set up expected float array
         final float[] expectedFloats = {2.0F, 2.0F, 0.0F, 2.0F, 2.0F};
@@ -104,14 +160,11 @@ public class PathScoringUtilitiesNGTest {
 
         final PathScoringUtilities.ScoreType scoreType = PathScoringUtilities.ScoreType.ECCENTRICITY;
 
-        final int vertexCount = 5;
-
-        // Set up mock graph
-        final GraphReadMethods graph = mockGraphHelper(vertexCount);
-
         // Set up expected expected bit set array
         final BitSet expectedBitSetA = BitSet.valueOf(new long[]{0b11011});
+        //final BitSet expectedBitSetB = BitSet.valueOf(new long[]{0b00000});
         final BitSet expectedBitSetB = null;
+
         final BitSet[] expectedBitSets = {expectedBitSetA, expectedBitSetA, expectedBitSetB, expectedBitSetA, expectedBitSetA};
         // Set up expected float array
         final float[] expectedFloats = {2.0F, 2.0F, 0.0F, 2.0F, 2.0F};
@@ -133,14 +186,11 @@ public class PathScoringUtilitiesNGTest {
 
         final PathScoringUtilities.ScoreType scoreType = PathScoringUtilities.ScoreType.ECCENTRICITY;
 
-        final int vertexCount = 5;
-
-        // Set up mock graph
-        final GraphReadMethods graph = mockGraphHelper(vertexCount);
-
         // Set up expected expected bit set array
         final BitSet expectedBitSetA = BitSet.valueOf(new long[]{0b11011});
+        //final BitSet expectedBitSetB = BitSet.valueOf(new long[]{0b00000});
         final BitSet expectedBitSetB = null;
+
         final BitSet[] expectedBitSets = {expectedBitSetA, expectedBitSetA, expectedBitSetB, expectedBitSetA, expectedBitSetA};
         // Set up expected float array
         final float[] expectedFloats = {3.0F, 3.0F, 0.0F, 3.0F, 3.0F};
@@ -151,79 +201,6 @@ public class PathScoringUtilitiesNGTest {
         // Assert results equal
         assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
         assertTrue(Arrays.equals((float[]) result.getSecond(), expectedFloats));
-    }
-
-    private GraphReadMethods mockGraphHelper(final int numVertices) {
-        // Set up mock graph
-        final GraphReadMethods graph = mock(GraphReadMethods.class);
-        when(graph.getVertexCount()).thenReturn(numVertices);
-
-        // Set up getting vertex from position and getting neighbour count
-        for (int i = 0; i < 5; i++) {
-            final int vId = i * 101;
-
-            when(graph.getVertexNeighbourCount(vId)).thenReturn(2);
-            when(graph.getVertex(i)).thenReturn(vId);
-            when(graph.getVertexPosition(vId)).thenReturn(i);
-        }
-
-        // Specifaccly say vertex 2 has no neighbours
-        when(graph.getVertexNeighbourCount(202)).thenReturn(0);
-
-        // Set up cyclic neighbours
-        when(graph.getVertexNeighbour(0, 0)).thenReturn(101);
-        when(graph.getVertexNeighbour(0, 1)).thenReturn(404);
-
-        when(graph.getVertexNeighbour(101, 0)).thenReturn(303);
-        when(graph.getVertexNeighbour(101, 1)).thenReturn(0);
-
-        when(graph.getVertexNeighbour(303, 0)).thenReturn(404);
-        when(graph.getVertexNeighbour(303, 1)).thenReturn(101);
-
-        when(graph.getVertexNeighbour(404, 0)).thenReturn(0);
-        when(graph.getVertexNeighbour(404, 1)).thenReturn(303);
-
-        // Get link
-        when(graph.getLink(0, 101)).thenReturn(0);
-        when(graph.getLink(101, 0)).thenReturn(0);
-
-        when(graph.getLink(101, 303)).thenReturn(1);
-        when(graph.getLink(303, 101)).thenReturn(1);
-
-        when(graph.getLink(303, 404)).thenReturn(2);
-        when(graph.getLink(404, 303)).thenReturn(2);
-
-        when(graph.getLink(404, 0)).thenReturn(3);
-        when(graph.getLink(0, 404)).thenReturn(3);
-
-        // Get Link Edge Count
-        when(graph.getLinkEdgeCount(anyInt())).thenReturn(1);
-
-        // Get Link Edge
-        when(graph.getLinkEdge(0, 0)).thenReturn(0);
-        when(graph.getLinkEdge(1, 0)).thenReturn(1);
-        when(graph.getLinkEdge(2, 0)).thenReturn(2);
-        when(graph.getLinkEdge(3, 0)).thenReturn(3);
-
-        // Get Edge Direction
-        when(graph.getEdgeDirection(0)).thenReturn(0);
-        when(graph.getEdgeDirection(1)).thenReturn(0);
-        when(graph.getEdgeDirection(2)).thenReturn(0);
-
-        when(graph.getEdgeDirection(3)).thenReturn(1);
-
-        // Get Edge Destination Vertex
-        when(graph.getEdgeDestinationVertex(3)).thenReturn(0);
-        when(graph.getEdgeDestinationVertex(0)).thenReturn(101);
-        when(graph.getEdgeDestinationVertex(1)).thenReturn(303);
-        when(graph.getEdgeDestinationVertex(2)).thenReturn(404);
-
-        when(graph.getEdgeSourceVertex(0)).thenReturn(0);
-        when(graph.getEdgeSourceVertex(1)).thenReturn(101);
-        when(graph.getEdgeSourceVertex(2)).thenReturn(303);
-        when(graph.getEdgeSourceVertex(3)).thenReturn(404);
-
-        return graph;
     }
 
 }

@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.algorithms;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
+import java.util.List;
 import org.ejml.simple.SimpleMatrix;
 
 /**
@@ -55,7 +56,7 @@ public class MatrixUtilities {
         return new SimpleMatrix(data);
     }
 
-    public static SimpleMatrix adjacencyCompact(final GraphReadMethods graph, final boolean weighted, final ArrayList<Integer> updatedVertexIndexs) {
+    public static SimpleMatrix adjacencyCompact(final GraphReadMethods graph, final boolean weighted, final List<Integer> updatedVertexIndexs) {
         final int vertexCount = graph.getVertexCount();
         if (vertexCount == 0) {
             return new SimpleMatrix(0, 0);
@@ -124,7 +125,7 @@ public class MatrixUtilities {
         return SimpleMatrix.diag(data);
     }
 
-    public static SimpleMatrix degreeCompact(final GraphReadMethods graph, final ArrayList<Integer> updatedVertexIndexs) {
+    public static SimpleMatrix degreeCompact(final GraphReadMethods graph, final List<Integer> updatedVertexIndexs) {
         final int vertexCount = graph.getVertexCount();
 
         final ArrayList<Integer> updatedVertexIndexArray;
@@ -159,7 +160,7 @@ public class MatrixUtilities {
         return degree.minus(adjacency);
     }
 
-    public static SimpleMatrix laplacianCompact(final GraphReadMethods graph, final ArrayList<Integer> updatedVertexIndexArray) {
+    public static SimpleMatrix laplacianCompact(final GraphReadMethods graph, final List<Integer> updatedVertexIndexArray) {
         final SimpleMatrix adjacency = adjacencyCompact(graph, false, updatedVertexIndexArray);
         final SimpleMatrix degree = degreeCompact(graph, updatedVertexIndexArray);
         return degree.minus(adjacency);

@@ -71,7 +71,6 @@ public class EffectiveResistancePlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        System.out.println("Effective Resistance Plugin");
         final boolean weighted = parameters.getBooleanValue(WEIGHTED_PARAMETER_ID);
         final boolean normaliseByAvailable = parameters.getBooleanValue(NORMALISE_AVAILABLE_PARAMETER_ID);
 
