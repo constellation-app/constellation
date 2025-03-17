@@ -36,7 +36,7 @@ public class PathScoringUtilitiesNGTest {
     private StoreGraph graph;
 
     private StoreGraph bigGraph;
-    private final static int NUM_NODES = 20;
+    private static final int NUM_NODES = 20;
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
