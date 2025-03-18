@@ -446,35 +446,6 @@ public class PathScoringUtilities {
         };
     }
 
-    private static Tuple<BitSet[], float[]> convertThreeTupleResultsToTwo(final ThreeTuple<BitSet[], float[], BitSet> threeTuple, final int vertexCount, final ScoreType scoreType) {
-        final BitSet[] traversal = threeTuple.getFirst();
-        final float[] secondArray = threeTuple.getSecond();
-        final BitSet indexes = threeTuple.getThird();
-
-        // Convert results into a two tuple
-        final BitSet[] convertedTraversal = new BitSet[vertexCount];
-        final float[] convertedSecond = scoreType == ScoreType.AVERAGE_DISTANCE ? secondArray : new float[vertexCount];
-
-        int currentIndex = 0;
-        for (int index = indexes.nextSetBit(0); index >= 0; index = indexes.nextSetBit(index + 1)) {
-            final BitSet convertedBitSet = new BitSet(vertexCount);
-            final BitSet currentBitSet = traversal[currentIndex];
-            int i = 0;
-            for (int indexBitSet = indexes.nextSetBit(0); indexBitSet >= 0; indexBitSet = indexes.nextSetBit(indexBitSet + 1)) {
-                convertedBitSet.set(indexBitSet, currentBitSet.get(i));
-                i++;
-            }
-
-            convertedTraversal[index] = convertedBitSet;
-            if (scoreType != ScoreType.AVERAGE_DISTANCE) {
-                convertedSecond[index] = secondArray[currentIndex];
-            }
-            currentIndex++;
-        }
-
-        return Tuple.create(convertedTraversal, convertedSecond);
-    }
-
     /**
      * Wrapper function for computeShortestPathsUndirectedThreeTuple that transforms the result into a two tuple
      *
@@ -1007,5 +978,34 @@ public class PathScoringUtilities {
                 }
             }
         }
+    }
+
+    private static Tuple<BitSet[], float[]> convertThreeTupleResultsToTwo(final ThreeTuple<BitSet[], float[], BitSet> threeTuple, final int vertexCount, final ScoreType scoreType) {
+        final BitSet[] traversal = threeTuple.getFirst();
+        final float[] secondArray = threeTuple.getSecond();
+        final BitSet indexes = threeTuple.getThird();
+
+        // Convert results into a two tuple
+        final BitSet[] convertedTraversal = new BitSet[vertexCount];
+        final float[] convertedSecond = scoreType == ScoreType.AVERAGE_DISTANCE ? secondArray : new float[vertexCount];
+
+        int currentIndex = 0;
+        for (int index = indexes.nextSetBit(0); index >= 0; index = indexes.nextSetBit(index + 1)) {
+            final BitSet convertedBitSet = new BitSet(vertexCount);
+            final BitSet currentBitSet = traversal[currentIndex];
+            int i = 0;
+            for (int indexBitSet = indexes.nextSetBit(0); indexBitSet >= 0; indexBitSet = indexes.nextSetBit(indexBitSet + 1)) {
+                convertedBitSet.set(indexBitSet, currentBitSet.get(i));
+                i++;
+            }
+
+            convertedTraversal[index] = convertedBitSet;
+            if (scoreType != ScoreType.AVERAGE_DISTANCE) {
+                convertedSecond[index] = secondArray[currentIndex];
+            }
+            currentIndex++;
+        }
+
+        return Tuple.create(convertedTraversal, convertedSecond);
     }
 }
