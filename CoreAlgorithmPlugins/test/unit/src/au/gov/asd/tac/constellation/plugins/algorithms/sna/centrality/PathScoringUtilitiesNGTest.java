@@ -109,7 +109,6 @@ public class PathScoringUtilitiesNGTest {
 
         // Set up expected expected bit set array
         final BitSet expectedBitSetA = BitSet.valueOf(new long[]{0b11011});
-        //final BitSet expectedBitSetB = BitSet.valueOf(new long[]{0b00000});
         final BitSet expectedBitSetB = null;
 
         final BitSet[] expectedBitSets = {expectedBitSetA, expectedBitSetA, expectedBitSetB, expectedBitSetA, expectedBitSetA};
@@ -122,6 +121,38 @@ public class PathScoringUtilitiesNGTest {
         // Assert results equal
         assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
         assertTrue(Arrays.equals((float[]) result.getSecond(), expectedFloats));
+
+        // BIG GRAPH
+        // Set up expected expected bit set array
+        final BitSet[] expectedBitSetsBig = {
+            BitSet.valueOf(new long[]{0b10101000100010001}),
+            BitSet.valueOf(new long[]{0b10110011010111000010}),
+            null,
+            BitSet.valueOf(new long[]{0b00001000000000001000}),
+            BitSet.valueOf(new long[]{0b00010101000100010001}),
+            null,
+            BitSet.valueOf(new long[]{0b00100010010011000010}),
+            BitSet.valueOf(new long[]{0b10110011010111000010}),
+            BitSet.valueOf(new long[]{0b10110011110110010011}),
+            null,
+            BitSet.valueOf(new long[]{0b10110011010111000010}),
+            BitSet.valueOf(new long[]{0b10010001100100000000}),
+            BitSet.valueOf(new long[]{0b10110011110110010011}),
+            BitSet.valueOf(new long[]{0b10110011010111000010}),
+            BitSet.valueOf(new long[]{0b00000100000000010001}),
+            BitSet.valueOf(new long[]{0b00001000000000001000}),
+            BitSet.valueOf(new long[]{0b10110011110110010011}),
+            BitSet.valueOf(new long[]{0b10110011010111000010}),
+            null,
+            BitSet.valueOf(new long[]{0b10110011110110000010})};
+
+        // Set up expected float array
+        final float[] expectedFloatsbig = {0.0F, 3.0F, 0.0F, 0.0F, 4.0F, 0.0F, 0.0F, 9.0F, 18.0F, 0.0F, 15.0F, 0.0F, 10.0F, 21.0F, 0.0F, 0.0F, 0.0F, 20.0F, 0.0F, 18.0F};
+
+        final Tuple resultBig = PathScoringUtilities.computeShortestPathsDirected(bigGraph, scoreType, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional, selectedOnly);
+
+        assertTrue(Arrays.equals((BitSet[]) resultBig.getFirst(), expectedBitSetsBig));
+        assertTrue(Arrays.equals((float[]) resultBig.getSecond(), expectedFloatsbig));
     }
 
     /**
@@ -136,7 +167,6 @@ public class PathScoringUtilitiesNGTest {
 
         // Set up expected expected bit set array
         final BitSet expectedBitSetA = BitSet.valueOf(new long[]{0b11011});
-        //final BitSet expectedBitSetB = BitSet.valueOf(new long[]{0b00000});
         final BitSet expectedBitSetB = null;
 
         final BitSet[] expectedBitSets = {expectedBitSetA, expectedBitSetA, expectedBitSetB, expectedBitSetA, expectedBitSetA};
@@ -149,6 +179,14 @@ public class PathScoringUtilitiesNGTest {
         // Assert results equal
         assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
         assertTrue(Arrays.equals((float[]) result.getSecond(), expectedFloats));
+
+        // BIG GRAPH
+        // Set up expected float array
+        final float[] expectedFloatsbig = {0.0F, 22.0F, 0.0F, 0.0F, 60.0F, 0.0F, 0.0F, 2.0F, 92.0F, 0.0F, 22.0F, 0.0F, 52.0F, 62.0F, 0.0F, 0.0F, 0.0F, 88.0F, 0.0F, 100.0F};
+
+        final Tuple resultBig = PathScoringUtilities.computeShortestPathsUndirected(bigGraph, scoreType, selectedOnly);
+
+        assertTrue(Arrays.equals((float[]) resultBig.getSecond(), expectedFloatsbig));
     }
 
     /**
@@ -162,7 +200,6 @@ public class PathScoringUtilitiesNGTest {
 
         // Set up expected expected bit set array
         final BitSet expectedBitSetA = BitSet.valueOf(new long[]{0b11011});
-        //final BitSet expectedBitSetB = BitSet.valueOf(new long[]{0b00000});
         final BitSet expectedBitSetB = null;
 
         final BitSet[] expectedBitSets = {expectedBitSetA, expectedBitSetA, expectedBitSetB, expectedBitSetA, expectedBitSetA};
@@ -175,6 +212,14 @@ public class PathScoringUtilitiesNGTest {
         // Assert results equal
         assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
         assertTrue(Arrays.equals((float[]) result.getSecond(), expectedFloats));
+
+        // BIG GRAPH
+        // Set up expected float array
+        final float[] expectedFloatsbig = {7.0F, 6.0F, 0.0F, 1.0F, 6.0F, 0.0F, 5.0F, 7.0F, 5.0F, 0.0F, 6.0F, 5.0F, 6.0F, 5.0F, 7.0F, 1.0F, 7.0F, 4.0F, 0.0F, 4.0F};
+
+        final Tuple resultBig = PathScoringUtilities.computeAllPathsUndirected(bigGraph, scoreType);
+
+        assertTrue(Arrays.equals((float[]) resultBig.getSecond(), expectedFloatsbig));
     }
 
     /**
@@ -188,7 +233,6 @@ public class PathScoringUtilitiesNGTest {
 
         // Set up expected expected bit set array
         final BitSet expectedBitSetA = BitSet.valueOf(new long[]{0b11011});
-        //final BitSet expectedBitSetB = BitSet.valueOf(new long[]{0b00000});
         final BitSet expectedBitSetB = null;
 
         final BitSet[] expectedBitSets = {expectedBitSetA, expectedBitSetA, expectedBitSetB, expectedBitSetA, expectedBitSetA};
@@ -201,6 +245,14 @@ public class PathScoringUtilitiesNGTest {
         // Assert results equal
         assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
         assertTrue(Arrays.equals((float[]) result.getSecond(), expectedFloats));
+
+        // BIG GRAPH
+        // Set up expected float array
+        final float[] expectedFloatsbig = {4.0F, 8.0F, 0.0F, 1.0F, 3.0F, 0.0F, 0.0F, 7.0F, 2.0F, 0.0F, 6.0F, 4.0F, 1.0F, 5.0F, 0.0F, 0.0F, 0.0F, 4.0F, 0.0F, 3.0F};
+
+        final Tuple resultBig = PathScoringUtilities.computeAllPathsDirected(bigGraph, scoreType, false, true, false);
+
+        assertTrue(Arrays.equals((float[]) resultBig.getSecond(), expectedFloatsbig));
     }
 
 }
