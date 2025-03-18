@@ -255,4 +255,37 @@ public class PathScoringUtilitiesNGTest {
         assertTrue(Arrays.equals((float[]) resultBig.getSecond(), expectedFloatsbig));
     }
 
+    /**
+     * Test of computeAllPathsDirected method, of class PathScoringUtilities.
+     */
+    @Test
+    public void testComputeAllPathsDirectedAverageDistance() {
+        System.out.println("computeAllPathsDirectedAverageDistance");
+
+        final PathScoringUtilities.ScoreType scoreType = PathScoringUtilities.ScoreType.AVERAGE_DISTANCE;
+
+        // Set up expected expected bit set array
+        final BitSet expectedBitSetA = BitSet.valueOf(new long[]{0b11011});
+        final BitSet expectedBitSetB = null;
+
+        final BitSet[] expectedBitSets = {expectedBitSetA, expectedBitSetA, expectedBitSetB, expectedBitSetA, expectedBitSetA};
+        // Set up expected float array
+        final float[] expectedFloats = {1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 2.0F, 2.0F, 2.0F};
+
+        // Run function
+        final Tuple result = PathScoringUtilities.calculateScores(graph, scoreType, true, true, true, false);
+
+        // Assert results equal
+        assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
+        assertTrue(Arrays.equals((float[]) result.getSecond(), expectedFloats));
+
+        // BIG GRAPH
+        // Set up expected float array
+        final float[] expectedFloatsbig = {1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 2.0F, 2.0F, 2.0F, 2.0F, 2.0F, 2.0F, 2.0F, 2.0F, 3.0F, 3.0F, 3.0F, 3.0F, 4.0F};
+
+        final Tuple resultBig = PathScoringUtilities.computeAllPathsDirected(bigGraph, scoreType, false, true, false);
+
+        assertTrue(Arrays.equals((float[]) resultBig.getSecond(), expectedFloatsbig));
+    }
+
 }
