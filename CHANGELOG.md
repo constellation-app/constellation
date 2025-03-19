@@ -1,5 +1,9 @@
 # Constellation Changes
 
+## Changes in February 2025
+- Added multichoice type ahead parameter with infrastructure for future input implementations
+- Multichoice input fields replaced with new multichoice type ahead parameter
+
 ## Changes in January 2025
 -   Removed classes `VideoCreator` and `VideoFrame` from Core Utilities as they are unused. 
 
