@@ -54,15 +54,13 @@ import javafx.util.StringConverter;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * The <code>TimelineChart</code> is a JavaFX based component that can be used
- * for mapping temporal data.
+ * The <code>TimelineChart</code> is a JavaFX based component that can be used for mapping temporal data.
  * <p>
- * The x-axis represents time, and the y-axis represents a field of interest
- * that temporal data is classified against such as names, IDs etc.
+ * The x-axis represents time, and the y-axis represents a field of interest that temporal data is classified against
+ * such as names, IDs etc.
  * <p>
- * The underlying chart is a JavaFX <code>XYChart</code> that has been extended
- * to incorporate temporal aspects and mouse handling events. The mouse handling
- * events are responsible for tasks such as zooming the timeline, shifting the
+ * The underlying chart is a JavaFX <code>XYChart</code> that has been extended to incorporate temporal aspects and
+ * mouse handling events. The mouse handling events are responsible for tasks such as zooming the timeline, shifting the
  * timeline and selecting a datetime range.
  *
  * @see XYChart
@@ -129,12 +127,12 @@ public class TimelineChart extends XYChart<Number, Number> {
                     // Change the mouse cursor for the timeline:
                     if (me.getEventType() == MouseEvent.MOUSE_ENTERED) {
                         parent.setCursor(Cursor.CROSSHAIR);
-                    
-                    // Recognise mouse clicks and register the origin for drag operations:    
+
+                        // Recognise mouse clicks and register the origin for drag operations:    
                     } else if (me.getEventType() == MouseEvent.MOUSE_PRESSED) {
                         mouseOrigin = me.getX();
-                        
-                    // Handle scrolling back and forth:
+
+                        // Handle scrolling back and forth:
                     } else if (me.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                         final double amount = range / width;
                         final double delta = mouseOrigin - mouseX;
@@ -142,12 +140,12 @@ public class TimelineChart extends XYChart<Number, Number> {
                         lowerTimeExtent += (delta * amount);
                         upperTimeExtent += (delta * amount);
 
-                        parent.coordinator.setExtents(lowerTimeExtent, upperTimeExtent);
+                        parent.getCoordinator().setExtents(lowerTimeExtent, upperTimeExtent);
 
                         // Update variables based on current mouse pointer position:
                         mouseOrigin = mouseX;
-                    
-                    // Get the time under the cursor and place it in a tooltip:
+
+                        // Get the time under the cursor and place it in a tooltip:
                     } else if (me.getEventType() == MouseEvent.MOUSE_MOVED) {
                         final double pos = lowerTimeExtent + ((mouseX * (upperTimeExtent - lowerTimeExtent)) / width);
 
@@ -182,8 +180,8 @@ public class TimelineChart extends XYChart<Number, Number> {
 
                         selection.setLayoutX(mouseOrigin);
                         selection.setWidth(0);
-                    
-                    // Determine if we are doing a drag based selection:
+
+                        // Determine if we are doing a drag based selection:
                     } else if (me.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                         final double delta = mouseOrigin - mouseX;
                         mouseDistanceFromOrigin += delta;
@@ -211,8 +209,7 @@ public class TimelineChart extends XYChart<Number, Number> {
     // </editor-fold>
 
     /**
-     * Constructs a new <code>TimelineChart</code> component given a parent
-     * panel and axes.
+     * Constructs a new <code>TimelineChart</code> component given a parent panel and axes.
      *
      * @param parent the panel containing this chart.
      * @param xAxis the x axis.
@@ -279,40 +276,42 @@ public class TimelineChart extends XYChart<Number, Number> {
     }
 
     public void performZoom(final ScrollEvent se, final double mouseX) {
+        // Zoom on scrolling events:
+        if (se.getEventType() != ScrollEvent.SCROLL) {
+            return;
+        }
+
         final double range = upperTimeExtent - lowerTimeExtent;
         final double width = parent.getWidth();
+
         // Register the event as a ScrollEvent:
+        // Determine the scale here:
+        final double quantum = range / 10.0;
+        final double mousePosInRange = lowerTimeExtent + range * (mouseX / width); // Midpoint of the lower and upper, adjusted for position of mouse
 
-        // Zoom on scrolling events:
-        if (se.getEventType() == ScrollEvent.SCROLL) {
-            // Determine the scale here:
-            final double quantum = range / 10.0;
-            final double msMouse = lowerTimeExtent + ((mouseX * (upperTimeExtent - lowerTimeExtent)) / width);
-
-            // We are zooming in:
-            if (se.getDeltaY() > 0D) {
-                // Only zoom in if we haven't reached the minimum size:
-                if (quantum >= 0.5) {
-                    lowerTimeExtent = (msMouse - ((msMouse - lowerTimeExtent) * 0.9)); // Zoom in by 10%
-                    upperTimeExtent = (msMouse + ((upperTimeExtent - msMouse) * 0.9));
-
-                    // update the scope window:
-                    parent.coordinator.setExtents(lowerTimeExtent, upperTimeExtent);
-                }
-            } else if (quantum <= YEAR * 10D) { // We are zooming out:
-                lowerTimeExtent = (long) (msMouse - ((msMouse - lowerTimeExtent) * 1.1)); // Zoom out by 10%
-                upperTimeExtent = (long) (msMouse + ((upperTimeExtent - msMouse) * 1.1));
+        // We are zooming in:
+        if (se.getDeltaY() > 0D) {
+            // Only zoom in if we haven't reached the minimum size:
+            if (quantum >= 0.5) {
+                lowerTimeExtent = (mousePosInRange - ((mousePosInRange - lowerTimeExtent) * 0.9)); // Zoom in by 10%
+                upperTimeExtent = (mousePosInRange + ((upperTimeExtent - mousePosInRange) * 0.9));
 
                 // update the scope window:
-                parent.coordinator.setExtents((long) lowerTimeExtent, (long) upperTimeExtent);
+                parent.getCoordinator().setExtents(lowerTimeExtent, upperTimeExtent);
             }
+        } else if (quantum <= YEAR * 10D) { // We are zooming out:
+            lowerTimeExtent = (mousePosInRange - ((mousePosInRange - lowerTimeExtent) * 1.1)); // Zoom out by 10%
+            upperTimeExtent = (mousePosInRange + ((upperTimeExtent - mousePosInRange) * 1.1));
+
+            // update the scope window:
+            parent.getCoordinator().setExtents(lowerTimeExtent, upperTimeExtent);
         }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Axes Look and Feel">
     /**
-     * Formats the axes to set the required look and feel of a timeline rather
-     * than a generic chart which axes are originally suited for.
+     * Formats the axes to set the required look and feel of a timeline rather than a generic chart which axes are
+     * originally suited for.
      */
     private void formatAxes() {
         // Format the yAxis:
@@ -348,7 +347,7 @@ public class TimelineChart extends XYChart<Number, Number> {
                 lowerTimeExtentProperty.setValue(extentFormatter.format(new Date((long) lowerTimeExtent)));
                 upperTimeExtentProperty.setValue(extentFormatter.format(new Date((long) upperTimeExtent)));
 
-                if(tickDate != null) {
+                if (tickDate != null) {
                     tickDate.setTimeZone(currentTimezone);
                     return tickDate.format(date);
                 }
@@ -389,12 +388,11 @@ public class TimelineChart extends XYChart<Number, Number> {
     /**
      * Publishes data to the <code>TimelineChart</code> instance.
      *
-     * @param series The data to be published. (Temporal data containing
-     * interactions).
+     * @param series The data to be published. (Temporal data containing interactions).
      * @param lowestObservedDisplayPos Sets the lowest yAxis value.
      * @param highestObservedDisplayPos Sets the highest yAxis value.
      */
-    public void populate(final XYChart.Series<Number, Number> series, final long lowestObservedDisplayPos, final long highestObservedDisplayPos, 
+    public void populate(final XYChart.Series<Number, Number> series, final long lowestObservedDisplayPos, final long highestObservedDisplayPos,
             final boolean selectedOnly, final ZoneId zoneId) {
         this.selectedOnly = selectedOnly;
         this.currentTimezone = TimeZone.getTimeZone(zoneId);
@@ -427,17 +425,13 @@ public class TimelineChart extends XYChart<Number, Number> {
     }
 
     /**
-     * Given a lower and upper time extent, sets the timeline's view to the
-     * corresponding pov.
+     * Given a lower and upper time extent, sets the timeline's view to the corresponding pov.
      * <p>
-     * This method performs the conversion from time values to the actual pixel
-     * values, and also handles padding of the timeline to create a sliding
-     * window for the POV.
+     * This method performs the conversion from time values to the actual pixel values, and also handles padding of the
+     * timeline to create a sliding window for the POV.
      *
-     * @param lowerTimeExtent The lower time value to set the left of the
-     * timeline window to.
-     * @param upperTimeExtent The upper time value to set the right of the
-     * timeline window to.
+     * @param lowerTimeExtent The lower time value to set the left of the timeline window to.
+     * @param upperTimeExtent The upper time value to set the right of the timeline window to.
      */
     public void setExtents(final double lowerTimeExtent, final double upperTimeExtent) {
         determineRange((long) lowerTimeExtent, (long) upperTimeExtent, timeline.getWidth());
@@ -456,8 +450,8 @@ public class TimelineChart extends XYChart<Number, Number> {
     }
 
     /**
-     * Helper method that determines the labelling requirements of the time axis
-     * based on the magnitude of time represented by the lower and upper bounds.
+     * Helper method that determines the labelling requirements of the time axis based on the magnitude of time
+     * represented by the lower and upper bounds.
      *
      * @param lowerBound The lower time value of the timeline window.
      * @param upperBound The upper time value of the timeline window.
@@ -637,9 +631,13 @@ public class TimelineChart extends XYChart<Number, Number> {
             // fade out old item:
             final FadeTransition ft = new FadeTransition(Duration.millis(500), child);
             ft.setToValue(0);
-            ft.setOnFinished((final ActionEvent actionEvent) -> getPlotChildren().remove(child));
+            ft.setOnFinished((final ActionEvent actionEvent) -> {
+                removeDataItemFromDisplay(series, item);
+                getPlotChildren().remove(child);
+            });
             ft.play();
         } else {
+            removeDataItemFromDisplay(series, item);
             getPlotChildren().remove(child);
         }
     }
@@ -684,17 +682,20 @@ public class TimelineChart extends XYChart<Number, Number> {
             // fade out old item:
             final FadeTransition ft = new FadeTransition(Duration.millis(500), child);
             ft.setToValue(0);
-            ft.setOnFinished((final ActionEvent actionEvent) -> getPlotChildren().clear());
+            ft.setOnFinished((final ActionEvent actionEvent) -> {
+                getPlotChildren().clear();
+                removeSeriesFromDisplay(series);
+            });
             ft.play();
         } else {
             getPlotChildren().clear();
+            removeSeriesFromDisplay(series);
         }
     }
 
     /**
-     * This method manually lays out all of the interactions and clusters based
-     * on properties such as when they occurred (x axis), and their respective
-     * display positions (y axis).
+     * This method manually lays out all of the interactions and clusters based on properties such as when they occurred
+     * (x axis), and their respective display positions (y axis).
      */
     @Override
     protected void layoutPlotChildren() {
@@ -766,12 +767,10 @@ public class TimelineChart extends XYChart<Number, Number> {
     }
 
     /**
-     * This is called when the range has been invalidated and we need to update
-     * it.
+     * This is called when the range has been invalidated and we need to update it.
      *
-     * If the axis are auto-ranging then we compile a list of all data that the
-     * given axis has to plot and call invalidateRange() on the axis passing it
-     * that data.
+     * If the axis are auto-ranging then we compile a list of all data that the given axis has to plot and call
+     * invalidateRange() on the axis passing it that data.
      */
     @Override
     protected void updateAxisRange() {
