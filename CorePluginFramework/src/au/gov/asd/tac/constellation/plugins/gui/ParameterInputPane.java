@@ -73,10 +73,10 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
         // Ensure that the input and the parameter are listening to changes on each other
         this.input.addListener(getFieldChangeListener(parameter));
         parameter.addListener(getPluginParameterListener());
-
+        
         // Add a validator that uses the parameter validation to validate the value of an input.
         this.input.addValidator(parameter::validateString);
-
+        
         getChildren().add(input);
     }
 
@@ -87,7 +87,7 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
      *
      * @return
      */
-    protected final ConstellationInput<V> getInputReference() {
+    protected final ConstellationInput<V> getInputReference(){
         return input;
     }
 
@@ -99,7 +99,7 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
     public void setFieldValue(final V value) {
         input.setValue(value);
     }
-
+    
     public V getFieldValue() {
         return input.getValue();
     }
@@ -114,7 +114,7 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
 
     public void setFieldMinWidth(final double prefWidth) {
         input.setMinWidth(prefWidth);
-    }
+    }    
 
     public final void updateFieldVisibility() {
         input.setManaged(parameter.isVisible());

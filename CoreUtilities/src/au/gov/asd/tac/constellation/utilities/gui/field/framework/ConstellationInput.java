@@ -132,6 +132,9 @@ import javafx.scene.effect.ColorInput;
 public abstract class ConstellationInput<T> extends StackPane implements
         ChangeListener<Serializable>, ContextMenuContributor {
 
+    private int inferredCaretPos = 0;
+    private boolean updatingText = false;
+    
     /**
      * @return the menuShown
      */
@@ -151,8 +154,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
 
     private final ConstellationTextArea textArea;
 
-    protected final List<ConstellationInputListener> InputFieldListeners
-            = new ArrayList<>();
+    protected final List<ConstellationInputListener> InputFieldListeners = new ArrayList<>();
     private final List<InputValidator> validators = new ArrayList<>();
 
     private final int corner = 7;
@@ -381,7 +383,23 @@ public abstract class ConstellationInput<T> extends StackPane implements
     public final void changed(final ObservableValue<? extends Serializable> observable, final Serializable oldValue, final Serializable newValue) {
 
         // String changes are changes to the text value of the ConstellationTextArea
-        if (newValue instanceof String) {
+        if (newValue instanceof String newStr) {
+            if (!updatingText) {
+                // We need to manually determine what the caret position will be after an inline edit,
+                // because the standard getCaretPosition() function gives us the position just prior to the edit
+                inferredCaretPos = 0;
+                if (oldValue instanceof String oldStr) {
+                    final int newLen = newStr.length();
+                    final int oldLen = oldStr.length();
+                    inferredCaretPos = newLen;
+                    for (int i = 0; i < newLen && i < oldLen; i++) {
+                        if (newStr.charAt(i) != oldStr.charAt(i)) {
+                            inferredCaretPos = i + (newLen > oldLen ? 1 : 0);
+                            break;
+                        }
+                    }
+                }
+            }
             if (isValid()) {
                 setValid(true);
                 notifyListeners(getValue());
@@ -404,7 +422,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @param newValue
      */
     public final void notifyListeners(final T newValue) {
-        for (ConstellationInputListener listener : InputFieldListeners) {
+        for (final ConstellationInputListener listener : InputFieldListeners) {
             listener.changed(newValue);
         }
     }
@@ -471,7 +489,10 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @param stringValue
      */
     public final void setText(final String stringValue) {
+        updatingText = true;
+        inferredCaretPos = stringValue != null ? stringValue.length() : 0;
         textArea.setText(stringValue);
+        updatingText = false;
     }
 
     /**
@@ -536,7 +557,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @return
      */
     public boolean isValid() {
-        for (InputValidator validator : validators) {
+        for (final InputValidator validator : validators) {
             if (null != validator.validateString(getText())) {
                 return false;
             }
@@ -583,6 +604,14 @@ public abstract class ConstellationInput<T> extends StackPane implements
 
     public void addValidator(final InputValidator validator) {
         validators.add(validator);
+    }
+
+    public final int getCaretPosition(){
+        return textArea.getCaretPosition();
+    }
+
+    public final int getInferredCaretPosition(){
+        return inferredCaretPos;
     }
 
     // </editor-fold>  

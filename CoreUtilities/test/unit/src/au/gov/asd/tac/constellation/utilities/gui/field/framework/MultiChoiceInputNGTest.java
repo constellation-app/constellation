@@ -34,6 +34,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
+import org.testfx.util.WaitForAsyncUtils;
 import org.testng.Assert;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -65,8 +66,9 @@ public class MultiChoiceInputNGTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
         try {
+            WaitForAsyncUtils.clearExceptions();
             FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
+        } catch (final TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
     }
@@ -180,7 +182,7 @@ public class MultiChoiceInputNGTest {
         doNothing().when(multiChoiceInput).setMenuShown(Mockito.anyBoolean());
         doNothing().when(multiChoiceInput).executeRightButtonAction();
         
-        RightButtonSupport.RightButton rightButton = multiChoiceInput.getRightButton();
+        final RightButtonSupport.RightButton rightButton = multiChoiceInput.getRightButton();
         Assert.assertNull(rightButton.getValue()); //label default
         rightButton.show();
         verify(multiChoiceInput, times(1)).executeRightButtonAction();
@@ -197,7 +199,7 @@ public class MultiChoiceInputNGTest {
         doReturn(false).when(multiChoiceInput).isMenuShown();
         doNothing().when(multiChoiceInput).showDropDown(Mockito.any());       
 
-        RightButtonSupport.RightButton rightButton = multiChoiceInput.getRightButton();
+        final RightButtonSupport.RightButton rightButton = multiChoiceInput.getRightButton();
         rightButton.show();
         verify(multiChoiceInput, times(1)).executeRightButtonAction();
         verify(multiChoiceInput, times(1)).setMenuShown(true);

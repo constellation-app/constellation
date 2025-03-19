@@ -161,7 +161,16 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
         for (String item : items) {
             final int index = choiceIndex.indexOf(item.strip());
             if (index == -1) {
-                foundChoices.add(null);
+                String[] splitItem = item.strip().split(" ");
+                // check if there is a whitespace in this string
+                // if so, it may be type-ahead of another choice
+                for (final String stringItem : splitItem) {
+                    if (choiceIndex.indexOf(stringItem.strip()) == -1) {
+                        foundChoices.add(null);
+                    } else {
+                        foundChoices.add(this.getOptions().get(choiceIndex.indexOf(stringItem.strip())));
+                    }
+                }         
             } else {
                 foundChoices.add(this.getOptions().get(index));
             }
@@ -219,7 +228,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     // <editor-fold defaultstate="collapsed" desc="ConstellationInputButton Event Implementation">   
     @Override
     public RightButton getRightButton() {
-        RightButton button = new RightButton(
+        final RightButton button = new RightButton(
                 new Label(""), ButtonType.DROPDOWN) {
             
             @Override
@@ -340,35 +349,40 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
 
     // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
     @Override
-    public List<MenuItem> getAutoCompleteSuggestions() {
+        public List<MenuItem> getAutoCompleteSuggestions() {
         final List<C> choices = this.getChoices();
-        //do not show suggestions in the following cases
-        //if there are two unknown choices that the user has entered, i.e more than 1 null value.
-        //if there is 1 or more valid choices in the event that this is a single choice input.
-//        if (choices.stream().filter(value -> value == null).count() != 1 || this.getText().isBlank()){
-//            return null;
-//        } 
-        //Remove blank entries from here
-        final String[] candidateArray = this.getText().split(SeparatorConstants.COMMA);
-        final int indexOfNull = choices.indexOf(null) == -1 ? 0 : choices.indexOf(null);
-        final String invalidEntry = indexOfNull > -1 ? candidateArray[indexOfNull].stripLeading().stripTrailing() : "";
-        
-        final List<MenuItem> suggestions = new ArrayList<>();
 
+        int caretPos = getInferredCaretPosition();
+        String fullText = this.getText();
+
+        // this forces a whitespace after comma to trigger dropdown
+        int prevCommaIndex = fullText.lastIndexOf(", ", caretPos);
+        if (prevCommaIndex < 0 || caretPos == 0) {
+            prevCommaIndex = 0;
+        } else if (prevCommaIndex != caretPos) {
+            prevCommaIndex++; // moved to position after comma
+        }
+
+        // count of how many current choices before caret
+        final long count = fullText.substring(0, caretPos).chars().filter(ch -> ch == ',').count();        
+        final int indexOfChoiceInArray = count > 0 ? (int) count : 0;
+
+        final String incompleteEntry = fullText.substring(prevCommaIndex, getInferredCaretPosition()).trim();
+        final List<MenuItem> suggestions = new ArrayList<>();
         this.getOptions()
                 .stream()
                 .map(value -> value)
                 .filter(value -> !choices.contains(value))
-                .filter(value -> value.toString().toUpperCase().startsWith(invalidEntry.toUpperCase()))
+                .filter(value -> value.toString().toUpperCase().startsWith(incompleteEntry.toUpperCase()))
                 .forEach(value -> {
                     final MenuItem item = new MenuItem(value.toString());
                     item.setOnAction(event -> {
-                            choices.addLast(value);
-                            this.setChoices(choices);
+                        choices.add(indexOfChoiceInArray, value);
+                        this.setChoices(choices);
                     });
                     suggestions.add(item);
                 });
         return suggestions;
-    }
+    }        
     // </editor-fold> 
 }
