@@ -54,6 +54,7 @@ import javafx.geometry.Side;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
@@ -213,7 +214,7 @@ public class AnalyticConfigurationPane extends VBox {
             questionListPane.setExpanded(!categoryListPane.isExpanded());
             if (categoryListPane.isExpanded()) {
                 currentQuestion = null;
-                populateParameterPane(globalAnalyticParameters);            
+                populateParameterPane(globalAnalyticParameters);
                 setPluginsFromSelectedCategory();
                 AnalyticViewController.getDefault().setCategoriesVisible(true);
             }
@@ -296,7 +297,7 @@ public class AnalyticConfigurationPane extends VBox {
                 documentationView.getEngine().setUserStyleSheetLocation(getClass().getResource("resources/analytic-view-dark.css").toExternalForm());
             } else {
                 documentationView.getEngine().setUserStyleSheetLocation(getClass().getResource("resources/analytic-view-light.css").toExternalForm());
-            }     
+            }
             populateDocumentationPane(null);
             cdl.countDown();
         });
@@ -372,9 +373,8 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
-     * Reset to the initial state for the analytic configuration pane. The
-     * question list will be expanded, the first question selected, and the
-     * analytics list populated based on the selected question.
+     * Reset to the initial state for the analytic configuration pane. The question list will be expanded, the first
+     * question selected, and the analytics list populated based on the selected question.
      */
     protected final void reset() {
         Platform.runLater(() -> {
@@ -410,7 +410,7 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.getItems().forEach(selectablePlugin -> {
             if (selectablePlugin.checkbox.isSelected()) {
                 selectedPlugins.add(selectablePlugin);
-                question.addPlugin(selectablePlugin.plugin, selectablePlugin.getPluginSpecificParameters());      
+                question.addPlugin(selectablePlugin.plugin, selectablePlugin.getPluginSpecificParameters());
             }
         });
         if (selectedPlugins.isEmpty()) {
@@ -427,7 +427,7 @@ public class AnalyticConfigurationPane extends VBox {
 
     /**
      * Populate the documentation pane based on the currently selected plugin
-     * 
+     *
      * @param plugin
      */
     private void populateDocumentationPane(final String documentationURL) {
@@ -438,7 +438,7 @@ public class AnalyticConfigurationPane extends VBox {
                 try {
                     final Path path = Paths.get(documentationURL);
                     final InputStream pageInput = new FileInputStream(path.toString());
-                    final String pageString =  new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
+                    final String pageString = new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
                     final Parser parser = Parser.builder().build();
                     final HtmlRenderer renderer = HtmlRenderer.builder().build();
                     final Node tocDocument = parser.parse(pageString);
@@ -450,7 +450,6 @@ public class AnalyticConfigurationPane extends VBox {
             }
         }
     }
-
 
     private void createGlobalParameters() {
         globalAnalyticParameters.addGroup(GLOBAL_PARAMS_GROUP, new PluginParametersPane.TitledSeparatedParameterLayout(GLOBAL_PARAMS_GROUP, 14, false));
@@ -492,7 +491,12 @@ public class AnalyticConfigurationPane extends VBox {
         final PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(pluginParameters, null);
         // The parameters should only be editable if we are looking at a category rather than a question.
         pluginParametersPane.setDisable(questionListPane.isExpanded());
-        parametersTab.setContent(pluginParametersPane);
+
+        final ScrollPane pluginParametersPaneScrollPane = new ScrollPane();
+        pluginParametersPaneScrollPane.setFitToWidth(true);
+        pluginParametersPaneScrollPane.setContent(pluginParametersPane);
+
+        parametersTab.setContent(pluginParametersPaneScrollPane);
     }
 
     /**
@@ -597,7 +601,6 @@ public class AnalyticConfigurationPane extends VBox {
             }
         });
     }
-
 
     public final class SelectableAnalyticPlugin {
 
