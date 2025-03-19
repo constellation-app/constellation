@@ -409,6 +409,16 @@ public class PluginParameter<V extends ParameterValue> {
     }
 
     /**
+     * Returns list of all listeners for this parameter. Used mainly in testing
+     *
+     * @return list of all listeners
+     *
+     */
+    protected List<PluginParameterListener> getListeners() {
+        return listeners;
+    }
+
+    /**
      * Create a new instance of PluginParameter.
      * <p>
      * Override to create an instance of a subclass.
