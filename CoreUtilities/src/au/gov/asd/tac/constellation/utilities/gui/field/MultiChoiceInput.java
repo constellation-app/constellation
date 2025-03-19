@@ -357,7 +357,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
         int prevCommaIndex = fullText.lastIndexOf(", ", caretPos);
         if (prevCommaIndex < 0 || caretPos == 0) {
             prevCommaIndex = 0;
-        } else {
+        } else if (prevCommaIndex != caretPos) {
             prevCommaIndex++; // moved to position after comma
         }
 
@@ -365,7 +365,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
         final long count = fullText.substring(0, caretPos).chars().filter(ch -> ch == ',').count();        
         final int indexOfChoiceInArray = count > 0 ? (int) count : 0;
 
-        final String incompleteEntry = fullText.substring(prevCommaIndex, caretPos).trim();
+        final String incompleteEntry = fullText.substring(prevCommaIndex, getInferredCaretPosition()).trim();
         final List<MenuItem> suggestions = new ArrayList<>();
         this.getOptions()
                 .stream()
