@@ -490,7 +490,9 @@ public class AnalyticConfigurationPane extends VBox {
     private void populateParameterPane(final PluginParameters pluginParameters) {
         final PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(pluginParameters, null);
         // The parameters should only be editable if we are looking at a category rather than a question.
-        pluginParametersPane.setDisable(questionListPane.isExpanded());
+        // TODO: Find out if users need to edit question parameters, 
+        // or if we can uncommented below code to disable editing parameters as intended
+        //pluginParametersPane.setDisable(questionListPane.isExpanded());
 
         final ScrollPane pluginParametersPaneScrollPane = new ScrollPane();
         pluginParametersPaneScrollPane.setFitToWidth(true);
