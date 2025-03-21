@@ -10,8 +10,8 @@
 <p>This search uses the names of each help page and the category they are in for the table of contents to narrow down results.</p>
 
 == 2024-12-18 Animation updates
-<p>Direction Indicators animation moved to Animations -> Experimental.</p>
-<p>New Color Warp animation added to Animations -> Experimental.</p>
+<p>Direction Indicators animation moved to Experimental -> Animations.</p>
+<p>New Color Warp animation added to Experimental -> Animations.</p>
 <p>Pause/Resume/Stop animation options added.</p>
 
 == 2024-11-18 Word Cloud View no longer in Experimental
