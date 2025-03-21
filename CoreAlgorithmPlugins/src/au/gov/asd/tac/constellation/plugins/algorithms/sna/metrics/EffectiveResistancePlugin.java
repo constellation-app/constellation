@@ -28,13 +28,15 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import java.util.ArrayList;
 import org.ejml.simple.SimpleMatrix;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Calculates effective resistance (or resistance distance) for each link.
- * Results are stored on the transactions constituting that link.
+ * Calculates effective resistance (or resistance distance) for each link. Results are stored on the transactions
+ * constituting that link.
  *
  * @author cygnus_x-1
  */
@@ -72,7 +74,9 @@ public class EffectiveResistancePlugin extends SimpleEditPlugin {
         final boolean weighted = parameters.getBooleanValue(WEIGHTED_PARAMETER_ID);
         final boolean normaliseByAvailable = parameters.getBooleanValue(NORMALISE_AVAILABLE_PARAMETER_ID);
 
-        final SimpleMatrix iL = MatrixUtilities.inverseLaplacian(graph);
+        final Tuple<SimpleMatrix, ArrayList<Integer>> result = MatrixUtilities.inverseLaplacianCompact(graph);
+        final SimpleMatrix iL = result.getFirst();
+        final ArrayList<Integer> updatedVertexIndexArray = result.getSecond();
 
         final int linkCount = graph.getLinkCount();
         final double[] resistances = new double[linkCount];
@@ -82,8 +86,8 @@ public class EffectiveResistancePlugin extends SimpleEditPlugin {
             final int lowVertexId = graph.getLinkLowVertex(linkId);
             final int highVertexId = graph.getLinkHighVertex(linkId);
 
-            final int i = graph.getVertexPosition(lowVertexId);
-            final int j = graph.getVertexPosition(highVertexId);
+            final int i = updatedVertexIndexArray.indexOf(graph.getVertexPosition(lowVertexId));
+            final int j = updatedVertexIndexArray.indexOf(graph.getVertexPosition(highVertexId));
             final double resistance;
             if (weighted) {
                 final int linkTransactionCount = graph.getLinkTransactionCount(linkId);
