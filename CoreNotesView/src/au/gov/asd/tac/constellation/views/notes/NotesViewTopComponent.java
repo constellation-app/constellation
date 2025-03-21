@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReport;
 import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReportListener;
 import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReportManager;
@@ -26,6 +27,9 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.awt.ActionID;
@@ -60,9 +64,17 @@ import org.openide.windows.TopComponent;
     "CTL_NotesViewTopComponent=Notes View",
     "HINT_NotesViewTopComponent=Notes View"})
 public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> implements GraphReportListener, UndoRedoReportListener {
+    
     private final NotesViewController notesViewController;
     private final NotesViewPane notesViewPane;
     private static final Logger LOGGER = Logger.getLogger(NotesViewTopComponent.class.getName());
+    private static final String NOTES_VIEW_GRAPH_CHANGED_THREAD_NAME = "Notes View Graph Changed Updater";
+    
+    private LinkedBlockingQueue<Object> queue = new LinkedBlockingQueue<>();
+    private Thread refreshThread;
+    private final Runnable refreshRunnable;
+    private long latestGraphChangeID = 0;
+    private Graph activeGraph;
 
     /**
      * NotesViewTopComponent constructor.
@@ -91,19 +103,31 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
             }
             notesViewPane.updateNotesUI();
         });
+        
+        refreshRunnable = () -> {
+            final List<Object> devNull = new ArrayList<>();
+            while (!queue.isEmpty()) {
+                queue.drainTo(devNull);
+            }
+
+            // update notes view pane
+            notesViewPane.updateNotesUI();
+        };
     }
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        if (needsUpdate() && graph != null) {
+        if (needsUpdate() && activeGraph != graph) {
+            activeGraph = graph;
             notesViewPane.clearNotes();
+            notesViewController.readState(activeGraph);
             notesViewPane.getCreateNewNoteButton().setDisable(false);
-            notesViewController.readState(graph);
+            notesViewPane.updateNotesUI();
         }
 
         if (graph == null) {
             notesViewPane.getCreateNewNoteButton().setDisable(true);
-        }
+        } 
 
         LOGGER.log(Level.FINE, "Handling new graph");
     }
@@ -118,6 +142,34 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
         LOGGER.log(Level.FINE, "Handling graph closed");
     }
+    
+    @Override
+    protected void handleGraphChange(final GraphChangeEvent event) {
+        if (event == null) { // can be null at this point in time
+            return;
+        }
+        final GraphChangeEvent newEvent = event.getLatest();
+        if (newEvent == null) { // latest event may be null - defensive check
+            return;
+        }
+        if (newEvent.getId() > latestGraphChangeID) {
+            latestGraphChangeID = newEvent.getId();
+            if (activeGraph != null) {
+                queue.add(newEvent);
+                if (refreshThread == null || !refreshThread.isAlive()) {
+                    refreshThread = new Thread(refreshRunnable);
+                    refreshThread.setName(NOTES_VIEW_GRAPH_CHANGED_THREAD_NAME);
+                    refreshThread.start();
+                }
+            }
+        }
+    }
+    
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        handleNewGraph(GraphManager.getDefault().getActiveGraph());
+    }
 
     @Override
     protected void handleComponentOpened() {
@@ -131,7 +183,6 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     }
 
     private void populateNotes() {
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         if (activeGraph != null) {
             notesViewController.readState(activeGraph);
             notesViewPane.getCreateNewNoteButton().setDisable(false);
@@ -165,8 +216,6 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
      */
     @Override
     public void newPluginReport(final PluginReport pluginReport) {
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-
         // update the graph report if the new plugin report isn't a low level plugin (which aren't useful as notes)
         if (activeGraph != null && pluginReport.getGraphReport().getGraphId().equals(activeGraph.getId())
                 && !pluginReport.hasLowLevelTag()) {
@@ -181,8 +230,6 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
      */
     @Override
     public void fireNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-
         if (activeGraph != null && undoRedoReport.getGraphId().equals(activeGraph.getId())) {
             notesViewPane.processNewUndoRedoReport(undoRedoReport);
         }
