@@ -84,7 +84,7 @@ public class InfoWindowSupportNGTest {
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         constellationInputMock = null;
         infoWindowMock = null;
     }

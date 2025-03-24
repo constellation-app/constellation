@@ -149,8 +149,8 @@ public abstract class ConstellationInput<T> extends StackPane implements
         this.menuShown = menuShown;
     }
 
-    final static int DEFAULT_CELL_HEIGHT = 22;
-    final static int BUTTON_VISIBILITY_WIDTH_THRESHOLD = 200;
+    private static final int DEFAULT_CELL_HEIGHT = 22;
+    private static final int BUTTON_VISIBILITY_WIDTH_THRESHOLD = 200;
     private static final int CORNER = 7;
 
     private final ConstellationTextArea textArea;
@@ -172,7 +172,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
         HBox.setHgrow(textArea, Priority.ALWAYS);
 
         setPrefWidth(500);
-        setMinWidth(BUTTON_VISIBILITY_WIDTH_THRESHOLD);
+        setMinWidth(200);
         setMinHeight(DEFAULT_CELL_HEIGHT);
         setAlignment(Pos.TOP_LEFT);
 

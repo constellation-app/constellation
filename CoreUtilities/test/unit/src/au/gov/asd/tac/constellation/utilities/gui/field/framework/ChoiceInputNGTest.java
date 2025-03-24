@@ -48,9 +48,6 @@ public class ChoiceInputNGTest {
     
     List<String> fruitList;
     
-//    public ChoiceInputNGTest() {
-//    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
