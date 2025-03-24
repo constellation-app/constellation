@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -480,14 +480,14 @@ public class FindViewController {
 
         // If delete is chosen
         if (DialogDisplayer.getDefault().notify(dialog).equals(DELETE)) {
-            final HashMap<String, ArrayList> graphDeletePluginMap = new HashMap<>();
+            final HashMap<String, ArrayList<DeleteResultsPlugin>> graphDeletePluginMap = new HashMap<>();
         
             try {
                 for (final FindResult result : foundResults) {            
                     // Create delete plugin for each found result
                     final DeleteResultsPlugin deleteResultsPlugin = new DeleteResultsPlugin(result);
                     final String graphId = result.getGraphId();
-                    ArrayList deleteResultsPluginsList = graphDeletePluginMap.get(graphId);
+                    ArrayList<DeleteResultsPlugin> deleteResultsPluginsList = graphDeletePluginMap.get(graphId);
                     if (deleteResultsPluginsList == null) {
                         deleteResultsPluginsList = new ArrayList<>();
                     }
@@ -496,11 +496,11 @@ public class FindViewController {
                     graphDeletePluginMap.put(graphId, deleteResultsPluginsList);                                        
                 }                
                 // iterate and delete per graph
-                final Iterator iter = graphDeletePluginMap.entrySet().iterator();
+                final Iterator<Entry<String,ArrayList<DeleteResultsPlugin>>> iter = graphDeletePluginMap.entrySet().iterator();
                 while (iter.hasNext()) {
-                    final Map.Entry<String, ArrayList> entrySet = (Map.Entry)iter.next();
+                    final Entry<String, ArrayList<DeleteResultsPlugin>> entrySet = (Entry)iter.next();
                     final String graphId = entrySet.getKey();
-                    final ArrayList pluginList = (ArrayList) entrySet.getValue();
+                    final ArrayList<DeleteResultsPlugin> pluginList = entrySet.getValue();
                     final Graph graph = GraphManager.getDefault().getAllGraphs().get(graphId);
                         
                     for (final Object plugin : pluginList) {
