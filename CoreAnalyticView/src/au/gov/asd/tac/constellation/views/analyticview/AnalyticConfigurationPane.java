@@ -468,8 +468,9 @@ public class AnalyticConfigurationPane extends VBox {
         if (categoryListPane.isExpanded()) {
             @SuppressWarnings("unchecked") //return type of getResultType is actually Class<? extends AnalyticResult<?>>
             final Class<? extends AnalyticResult<?>> pluginResultType = pluginList.getItems().get(0).getPlugin().getResultType();
-            AnalyticUtilities.lookupAnalyticAggregators(pluginResultType)
-                    .forEach(aggregator -> aggregators.add(new AnalyticAggregatorParameterValue(aggregator)));
+
+            AnalyticUtilities.lookupAnalyticAggregators(pluginResultType).forEach(aggregator -> aggregators.add(new AnalyticAggregatorParameterValue(aggregator)));
+
             SingleChoiceParameterType.setOptionsData(aggregatorParameter, aggregators);
             SingleChoiceParameterType.setChoiceData(aggregatorParameter, aggregators.get(0));
         } else if (questionListPane.isExpanded() && currentQuestion != null) {
@@ -488,6 +489,10 @@ public class AnalyticConfigurationPane extends VBox {
      * @param pluginParameters
      */
     private void populateParameterPane(final PluginParameters pluginParameters) {
+        // Clear existing listeners 
+        for (final var entry : pluginParameters.getParameters().entrySet()) {
+            entry.getValue().removeAllListeners();
+        }
         final PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(pluginParameters, null);
         // The parameters should only be editable if we are looking at a category rather than a question.
         // TODO: Find out if users need to edit question parameters, 
@@ -518,7 +523,7 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.setItems(FXCollections.observableArrayList(selectablePlugins));
         pluginList.getSelectionModel().clearSelection();
         updateSelectablePluginsParameters();
-        updateGlobalParameters();
+
         setSuppressedFlag(false);
     }
 
