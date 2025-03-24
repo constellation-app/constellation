@@ -67,7 +67,7 @@ public class InfoWindowSupportNGTest {
     }
 
     @AfterClass
-    public void tearDownClass() throws Exception {
+    public void tearDownClass() {
         try {
             WaitForAsyncUtils.clearExceptions();
             FxToolkit.cleanupStages();

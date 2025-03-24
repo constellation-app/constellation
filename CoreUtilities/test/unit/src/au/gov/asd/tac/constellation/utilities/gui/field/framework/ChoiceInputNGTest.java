@@ -48,8 +48,8 @@ public class ChoiceInputNGTest {
     
     List<String> fruitList;
     
-    public ChoiceInputNGTest() {
-    }
+//    public ChoiceInputNGTest() {
+//    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -68,16 +68,12 @@ public class ChoiceInputNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {                
+    public void setUpMethod() {                
         final String[] fruits = {"apple", "banana", "orange"};
         fruitList = Arrays.asList(fruits);
     }
     
 
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
-    
     @Test(expectedExceptions = InvalidOperationException.class)
     public void testChoiceInputField_nullOptions() {  
         final ChoiceInputField choiceInputFieldMock = spy(createEmptyChoiceInputField());

@@ -40,7 +40,7 @@ import javafx.scene.shape.Rectangle;
 
 /**
  * This class represents the area of text that users can interact with inside of
- * a {@link ConstellationInputFiled}.
+ * a {@link ConstellationInputField}.
  *
  * The {@link ConstellationTextArea} has been designed to provide a minimal
  * interface to the {@link ConstellationIputField} with the intention of

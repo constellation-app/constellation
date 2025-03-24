@@ -52,10 +52,7 @@ public class MultiChoiceInputNGTest {
     
     private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputNGTest.class.getName());
     List<String> fruitList;
-    
-    public MultiChoiceInputNGTest() {
-    }
-
+       
    @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -74,11 +71,9 @@ public class MultiChoiceInputNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
-                
+    public void setUpMethod() {                
         final String[] fruits = {"apple", "banana", "orange"};
-        fruitList = Arrays.asList(fruits);
-        
+        fruitList = Arrays.asList(fruits);        
     }
     
     

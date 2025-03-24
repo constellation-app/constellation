@@ -36,13 +36,11 @@ public interface InfoWindowSupport {
 
         public final ConstellationInput parent;
 
-        public InfoWindow(final ConstellationInput parent) {
+        protected InfoWindow(final ConstellationInput parent) {
             this.parent = parent;
             setPadding(new Insets(0, 6, 0, 0));
             setAlignment(Pos.CENTER);
-            Platform.runLater(() -> {
-                refreshWindow();
-            });
+            Platform.runLater(() -> refreshWindow());            
             parent.addListener(this);
         }
 

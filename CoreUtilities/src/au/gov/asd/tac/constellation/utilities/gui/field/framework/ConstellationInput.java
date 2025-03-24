@@ -123,8 +123,8 @@ import javafx.scene.effect.ColorInput;
  * for the benefit of password input field but also benefits others
  *
  * The Text of the input field should be taken as the source of truth for the
- * current value. implementations of ConselationInput fields may implements
- * their own back end data structures and objects to simplify the
+ * current value. Implementations of ConselationInput fields may implement
+ * their own back end data structures and objects to simplify the text value.
  *
  * @author capricornunicorn123
  * @author andromeda-224
@@ -149,32 +149,31 @@ public abstract class ConstellationInput<T> extends StackPane implements
         this.menuShown = menuShown;
     }
 
-    final int defaultCellHeight = 22;
-    final int buttonVisibilityThreshold = 200;
+    final static int DEFAULT_CELL_HEIGHT = 22;
+    final static int BUTTON_VISIBILITY_WIDTH_THRESHOLD = 200;
+    private static final int CORNER = 7;
 
     private final ConstellationTextArea textArea;
 
-    protected final List<ConstellationInputListener> InputFieldListeners = new ArrayList<>();
+    protected final List<ConstellationInputListener> inputFieldListeners = new ArrayList<>();
     private final List<InputValidator> validators = new ArrayList<>();
-
-    private final int corner = 7;
-
+    
     private boolean isValid = true;
     private boolean focused = false;
     protected boolean menuShown = false;
 
-    public ConstellationInput() {
+    protected ConstellationInput() {
         this(TextType.SINGLELINE);
     }
 
-    public ConstellationInput(final TextType type) {
+    protected ConstellationInput(final TextType type) {
         textArea = new ConstellationTextArea(this, type);
         buildInputFieldLayers(textArea);
         HBox.setHgrow(textArea, Priority.ALWAYS);
 
         setPrefWidth(500);
-        setMinWidth(200);
-        setMinHeight(defaultCellHeight);
+        setMinWidth(BUTTON_VISIBILITY_WIDTH_THRESHOLD);
+        setMinHeight(DEFAULT_CELL_HEIGHT);
         setAlignment(Pos.TOP_LEFT);
 
         final ContextMenu contextMenu = new ContextMenu();
@@ -190,7 +189,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
             textArea.setContextMenu(contextMenu);
         });
         textArea.setContextMenu(contextMenu);
-        textArea.setMinHeight(defaultCellHeight);
+        textArea.setMinHeight(DEFAULT_CELL_HEIGHT);
         textArea.setPadding(new Insets(0, 5, 0, 0));
     }
 
@@ -212,14 +211,14 @@ public abstract class ConstellationInput<T> extends StackPane implements
         HBox.setHgrow(interactableContentLayer, Priority.ALWAYS);
 
         final Rectangle interactableContentClipingMask = new Rectangle();
-        interactableContentClipingMask.setArcWidth(corner);
-        interactableContentClipingMask.setArcHeight(corner);
+        interactableContentClipingMask.setArcWidth(CORNER);
+        interactableContentClipingMask.setArcHeight(CORNER);
         interactableContentClipingMask.widthProperty().bind(interactableContentLayer.widthProperty());
         interactableContentLayer.setClip(interactableContentClipingMask);
 
         final Rectangle foregroundLayer = new Rectangle();
-        foregroundLayer.setArcWidth(corner);
-        foregroundLayer.setArcHeight(corner);
+        foregroundLayer.setArcWidth(CORNER);
+        foregroundLayer.setArcHeight(CORNER);
         foregroundLayer.setFill(Color.TRANSPARENT);
         foregroundLayer.setMouseTransparent(true);
         foregroundLayer.widthProperty().bind(interactableContentLayer.widthProperty());
@@ -315,7 +314,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
         widthProperty().addListener((value, oldValue, newValue) -> {
 
             //Hide this end cell if the width is too low
-            if (newValue.intValue() < buttonVisibilityThreshold) {
+            if (newValue.intValue() < BUTTON_VISIBILITY_WIDTH_THRESHOLD) {
                 if (content.isVisible()) {
                     interactableContent.getChildren().remove(content);
                 }
@@ -364,7 +363,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
 
     private HBox getInteractableContent() {
         //A clunky way of getting the InteractableCOntent...
-        return (HBox) getChildren().stream().filter(child -> child instanceof HBox).toList().getFirst();
+        return (HBox) getChildren().stream().filter(HBox.class::isInstance).toList().getFirst();
     }
 
     private Rectangle getForegroundShape() {
@@ -422,7 +421,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @param newValue
      */
     public final void notifyListeners(final T newValue) {
-        for (final ConstellationInputListener listener : InputFieldListeners) {
+        for (final ConstellationInputListener listener : inputFieldListeners) {
             listener.changed(newValue);
         }
     }
@@ -434,7 +433,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @param listener
      */
     public final void addListener(final ConstellationInputListener listener) {
-        InputFieldListeners.add(listener);
+        inputFieldListeners.add(listener);
     }
 
     /**
@@ -443,7 +442,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * @param listener
      */
     public final void removeListener(final ConstellationInputListener listener) {
-        InputFieldListeners.remove(listener);
+        inputFieldListeners.remove(listener);
     }
     // </editor-fold>   
 
@@ -678,7 +677,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      */
     protected boolean hasInfoWindow() {
         final HBox interactableContent = getInteractableContent();
-        return interactableContent.getChildren().stream().anyMatch(node -> node instanceof InfoWindow);
+        return interactableContent.getChildren().stream().anyMatch(InfoWindow.class::isInstance);
     }
 //     </editor-fold>
 }

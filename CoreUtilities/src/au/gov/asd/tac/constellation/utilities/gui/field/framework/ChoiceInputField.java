@@ -41,20 +41,15 @@ public abstract class ChoiceInputField<C extends Object, O extends Object>
     private final List<O> options = new ArrayList<>();
     protected final List<ImageView> icons = new ArrayList<>();
 
-    public ChoiceInputField() {
+    protected ChoiceInputField() {
     }
 
-    public ChoiceInputField(final ObservableList<O> options) {
+    protected ChoiceInputField(final ObservableList<O> options) {
         if (options == null) {
             throw new InvalidOperationException(
                     "Attempting to Set Options with null options");
         }
         this.options.addAll(options);
-        // This is not needed for plugin parameters, may be required later
-//        options.addListener((ListChangeListener.Change<? extends O> change) -> {
-//            this.options.clear();
-//            this.options.addAll(change.getList());
-//        });
     }
 
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
@@ -65,14 +60,12 @@ public abstract class ChoiceInputField<C extends Object, O extends Object>
      * @param options
      */
     public final void setOptions(final List<O> options) {
-        if (this.options != null) {
-            this.options.clear();
-            if (options != null) {
-                this.options.addAll(options);
-            } else {
-                throw new InvalidOperationException(
-                        "Attempting to Set Options with null options");
-            }
+        this.options.clear();
+        if (options != null) {
+            this.options.addAll(options);
+        } else {
+            throw new InvalidOperationException(
+                    "Attempting to Set Options with null options");
         }
     }
 
@@ -82,7 +75,7 @@ public abstract class ChoiceInputField<C extends Object, O extends Object>
      * @return List of Options
      */
     public final List<O> getOptions() {
-        return options;
+        return this.options;
     }
 
     /**

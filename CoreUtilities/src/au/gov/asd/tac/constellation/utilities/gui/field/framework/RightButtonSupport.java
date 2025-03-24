@@ -31,7 +31,7 @@ public interface RightButtonSupport {
 
     public abstract class RightButton extends ConstellationInputButton {
 
-        public RightButton(final Label label, final ButtonType type) {
+        protected RightButton(final Label label, final ButtonType type) {
             super(label, type);
         }
     }
