@@ -486,7 +486,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final String fineBorder = "#009c9c";
 
 
-        List<String> choices = new ArrayList();
+        List<String> choices = new ArrayList<>();
         if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
             MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
             choices = multiChoiceValue.getChoices();
@@ -526,7 +526,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     public void updateFilterData() {
         
 
-        List<String> choices = new ArrayList();
+        List<String> choices = new ArrayList<>();
         if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
             MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
             choices = multiChoiceValue.getChoices();
@@ -575,14 +575,14 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final int errCount = sessionErrors.size();
         if (!sessionErrorsBox.getChildren().isEmpty()) {
             for (int i = 0; i < errCount; i++) {
-                ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(
-                        sessionErrors.get(i).getEntryId(), null, null, ((TitledPane) sessionErrorsBox.getChildren().get(i)).isExpanded(), sessionErrors.get(i).getDialog());
+                final ErrorReportEntry sessionErr = sessionErrors.get(i);
+                ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(sessionErr.getEntryId(), null, null, ((TitledPane) sessionErrorsBox.getChildren().get(i)).isExpanded(), sessionErr.getDialog());
             }
         }
         final ArrayList<String> activeFilters = new ArrayList<>();
         
         
-        List<String> choices = new ArrayList();
+        List<String> choices = new ArrayList<>();
         if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
             MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
             choices = multiChoiceValue.getChoices();
@@ -598,7 +598,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final boolean finePopupIsSelected = choices.contains(SeverityCode.FINE_POPUP.getCode());
         
         
-         if (severeRepIsSelected || severePopupIsSelected) {
+        if (severeRepIsSelected || severePopupIsSelected) {
             activeFilters.add(SeverityCode.SEVERE.getCode());
         }
         if (warningRepIsSelected || warningPopupIsSelected) {
@@ -646,6 +646,9 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                             hiddenErrors.add(entry);
                         }
                     }
+                    default -> {
+                        return;
+                    }
                 }
             }
         }
@@ -661,7 +664,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 sessionErrorsBox.getChildren().clear();
                 
                 // check popup selection
-                List<String> choices = new ArrayList();
+                List<String> choices = new ArrayList<>();
                 if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
                     MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
                     choices = multiChoiceValue.getChoices();
