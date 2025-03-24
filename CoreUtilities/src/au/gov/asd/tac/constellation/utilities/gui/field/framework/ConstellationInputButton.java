@@ -35,7 +35,7 @@ public abstract class ConstellationInputButton extends ComboBox {
     private final ButtonType btnType;
     private Region arrowBtn = null ;
     
-    public ConstellationInputButton(final Label label, final ButtonType type) {        
+    protected ConstellationInputButton(final Label label, final ButtonType type) {        
         btnType = type;
         if (!label.getText().isEmpty()) {
             this.setValue(label.getText());
@@ -46,7 +46,7 @@ public abstract class ConstellationInputButton extends ComboBox {
     protected void layoutChildren() {
         super.layoutChildren();
         // don't display arrow if not dropdown
-        if (arrowBtn == null && !btnType.equals(ButtonType.DROPDOWN)) {
+        if (arrowBtn == null && btnType != ButtonType.DROPDOWN) {
             arrowBtn = (Region)lookup(".arrow-button");            
             arrowBtn.setMaxSize(0,0);
             arrowBtn.setMinSize(0,0);

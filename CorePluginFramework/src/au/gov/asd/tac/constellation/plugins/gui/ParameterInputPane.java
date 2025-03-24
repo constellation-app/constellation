@@ -50,7 +50,6 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
 
     public final ConstellationInput<V> input;
     public final PluginParameter<T> parameter;
-
     /**
      * Constructor taking in input and parameter.
      *
@@ -58,7 +57,6 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
      * @param parameter
      */
     protected ParameterInputPane(final ConstellationInput<V> input, final PluginParameter<T> parameter) {
-
         //Set local references to the PluginParameter and the ConstellationInput
         this.input = input;
         this.parameter = parameter;
@@ -93,14 +91,13 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
 
     /**
      * Sets the value of the input that this ParameterInputPane uses.
-     *
-     * @param value Value to set in input field.
+     * @param value Value to set in input field. 
      */
-    public void setFieldValue(final V value) {
+    public void setFieldValue(final V value){
         input.setValue(value);
     }
     
-    public V getFieldValue() {
+    public V getFieldValue(){
         return input.getValue();
     }
 

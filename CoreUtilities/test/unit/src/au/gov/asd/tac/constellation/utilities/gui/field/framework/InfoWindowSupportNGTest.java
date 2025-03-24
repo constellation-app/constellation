@@ -67,7 +67,7 @@ public class InfoWindowSupportNGTest {
     }
 
     @AfterClass
-    public void tearDownClass() throws Exception {
+    public void tearDownClass() {
         try {
             WaitForAsyncUtils.clearExceptions();
             FxToolkit.cleanupStages();
@@ -84,7 +84,7 @@ public class InfoWindowSupportNGTest {
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         constellationInputMock = null;
         infoWindowMock = null;
     }

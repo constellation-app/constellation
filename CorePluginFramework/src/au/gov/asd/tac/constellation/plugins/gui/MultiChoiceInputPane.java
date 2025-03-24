@@ -48,7 +48,7 @@ public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoicePa
 
     
     public MultiChoiceInputPane(final PluginParameter<MultiChoiceParameterValue> parameter) {
-        super(new MultiChoiceInput<ParameterValue>(), parameter);
+        super(new MultiChoiceInput<>(), parameter);
         final MultiChoiceParameterValue pv = parameter.getParameterValue();
         ((MultiChoiceInput) input).setOptions(pv.getOptionsData());
         setFieldValue(pv.getChoicesData());

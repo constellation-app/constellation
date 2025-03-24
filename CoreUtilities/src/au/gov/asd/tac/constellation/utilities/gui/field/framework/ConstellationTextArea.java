@@ -40,7 +40,7 @@ import javafx.scene.shape.Rectangle;
 
 /**
  * This class represents the area of text that users can interact with inside of
- * a {@link ConstellationInputFiled}.
+ * a {@link ConstellationInputField}.
  *
  * The {@link ConstellationTextArea} has been designed to provide a minimal
  * interface to the {@link ConstellationIputField} with the intention of
@@ -94,7 +94,7 @@ public final class ConstellationTextArea extends StackPane implements ContextMen
 
                 primaryInput = area;
             }
-            default -> {
+            case null, default -> {
                 final TextField field = new TextField();
                 field.setPadding(insets);
 
@@ -115,38 +115,35 @@ public final class ConstellationTextArea extends StackPane implements ContextMen
         primaryInput.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
         // Set up the optional secondary InputControl
-        switch (type) {
-            case SECRET -> {
-                // SecondaryInputs are only used in Secret Inputs and have bound properties with the primary input
-                secondaryInput = new PasswordField();
-                secondaryInput.textProperty().bindBidirectional(primaryInput.textProperty());
-                secondaryInput.textFormatterProperty().bindBidirectional(primaryInput.textFormatterProperty());
-                secondaryInput.promptTextProperty().bindBidirectional(primaryInput.promptTextProperty());
-                secondaryInput.styleProperty().bind(primaryInput.styleProperty());
-                secondaryInput.focusedProperty().addListener(parent);
-                primaryInput.setVisible(false);
+        if (type == SECRET) {
+            // SecondaryInputs are only used in Secret Inputs and have bound properties with the primary input
+            secondaryInput = new PasswordField();
+            secondaryInput.textProperty().bindBidirectional(primaryInput.textProperty());
+            secondaryInput.textFormatterProperty().bindBidirectional(primaryInput.textFormatterProperty());
+            secondaryInput.promptTextProperty().bindBidirectional(primaryInput.promptTextProperty());
+            secondaryInput.styleProperty().bind(primaryInput.styleProperty());
+            secondaryInput.focusedProperty().addListener(parent);
+            primaryInput.setVisible(false);
 
-                getChildren().addAll(primaryInput, secondaryInput);
-            }
-            default -> {
-                secondaryInput = null;
-                //The up down arrows allow for navigation to the begining and start of a line
-                //This is being remappedt o ALT + left and ALT + right for consistency between textArea and textField
-                primaryInput.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+            getChildren().addAll(primaryInput, secondaryInput);
+        } else {
+            secondaryInput = null;
+            //The up down arrows allow for navigation to the begining and start of a line
+            //This is being remappedt o ALT + left and ALT + right for consistency between textArea and textField
+            primaryInput.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
 
-                    // Navigate to extremem ends of line
-                    if (event.getCode() == KeyCode.LEFT && event.isAltDown()) {
-                        primaryInput.positionCaret(0);
-                        event.consume();
-                    }
+                // Navigate to extremem ends of line
+                if (event.getCode() == KeyCode.LEFT && event.isAltDown()) {
+                    primaryInput.positionCaret(0);
+                    event.consume();
+                }
 
-                    if (event.getCode() == KeyCode.RIGHT && event.isAltDown()) {
-                        primaryInput.positionCaret(getText().length());
-                        event.consume();
-                    }
-                });
-                getChildren().add(primaryInput);
-            }
+                if (event.getCode() == KeyCode.RIGHT && event.isAltDown()) {
+                    primaryInput.positionCaret(getText().length());
+                    event.consume();
+                }
+            });
+            getChildren().add(primaryInput);
         }
     }
 

@@ -49,8 +49,6 @@ public class MultiChoiceInputPaneNGTest {
     private final PluginParameter<MultiChoiceParameterType.MultiChoiceParameterValue> planetOptions = MultiChoiceParameterType.build(PLANETS_PARAMETER_ID);
     final PluginParameters params = new PluginParameters();
 
-    public MultiChoiceInputPaneNGTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {

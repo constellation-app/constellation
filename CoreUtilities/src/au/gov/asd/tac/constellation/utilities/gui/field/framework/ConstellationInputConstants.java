@@ -24,11 +24,11 @@ package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 public class ConstellationInputConstants {
 
     //Button labels
-    public final static String SELECT_BUTTON_LABEL = "Select";
-    public final static String NEXT_BUTTON_LABEL = "Next";
-    public final static String PREVIOUS_BUTTON_LABEL = "Prev";
-    public final static String HIDE_BUTTON_LABEL = "Hide";
-    public final static String SHOW_BUTTON_LABEL = "Show";
+    public static final String SELECT_BUTTON_LABEL = "Select";
+    public static final String NEXT_BUTTON_LABEL = "Next";
+    public static final String PREVIOUS_BUTTON_LABEL = "Prev";
+    public static final String HIDE_BUTTON_LABEL = "Hide";
+    public static final String SHOW_BUTTON_LABEL = "Show";
 
     public enum TextType {
         SECRET,

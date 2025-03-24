@@ -31,8 +31,10 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationI
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
+import java.util.Map;
 import javafx.collections.ObservableList;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.stage.WindowEvent;
 
 /**
  * A {@link ChoiceInput} for managing multiple choice selection. This input
@@ -199,7 +201,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
             final List<C> items = stringToList(getText());
 
             if (items != null && !items.contains(null)) {
-                final List<C> duplicates = items.stream().collect(Collectors.groupingBy(i -> i)).entrySet().stream().filter(entry -> entry.getValue().size() > 1).map(entry -> entry.getKey()).toList();
+                final List<C> duplicates = items.stream().collect(Collectors.groupingBy(i -> i)).entrySet().stream().filter(entry -> entry.getValue().size() > 1).map(Map.Entry::getKey).toList();
                 return duplicates.isEmpty();
             }
             return false;
@@ -215,7 +217,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
      */
     @Override
     public List<MenuItem> getLocalMenuItems() {
-        final List<MenuItem> items = new ArrayList();
+        final List<MenuItem> items = new ArrayList<>();
 
         final MenuItem choose = new MenuItem("Show Choices...");
         choose.setOnAction(value -> executeRightButtonAction());
@@ -228,7 +230,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     // <editor-fold defaultstate="collapsed" desc="ConstellationInputButton Event Implementation">   
     @Override
     public RightButton getRightButton() {
-        final RightButton button = new RightButton(
+        return new RightButton(
                 new Label(""), ButtonType.DROPDOWN) {
             
             @Override
@@ -242,8 +244,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
                 // this is triggered when clicking away from button
                 setMenuShown(false);
             }
-        };     
-        return button;
+        };             
     }
 
     @Override
@@ -335,14 +336,10 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
             };
 
             //Register the Context Menu as a listener whilst it is open in case choices are modified externally.
-            setOnShowing(value -> {
-                field.addListener(cl);
-            });
+            setOnShowing(value -> field.addListener(cl));            
 
             //This context menu may be superseeded by a new context menu so deregister it when hidden.
-            setOnHiding(value -> {
-                field.removeListener(cl);
-            });
+            setOnHiding(value -> field.removeListener(cl));
         }
     }
     // </editor-fold> 
