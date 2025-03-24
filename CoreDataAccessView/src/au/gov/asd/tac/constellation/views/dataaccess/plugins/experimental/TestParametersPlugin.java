@@ -236,7 +236,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
                     final float f = empty ? 0 : item.toString().length() / 11F;
                     final Color c = Color.color(1 - f / 2F, 0, 0);
                     setTextFill(c);
-                    setGraphic(new ImageView(img));
+                    setGraphic(empty ? null : new ImageView(img));
                 }
             });
         });
