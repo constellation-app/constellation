@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,13 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import java.util.HashSet;
+import java.util.Set;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -57,10 +64,12 @@ public class SubgraphUtilitiesNGTest {
     }
 
     /**
-     * Test of copyGraph method, of class SubGraphUtilities.
+     * Test of copyGraph method, of class SubgraphUtilities.
      */
     @Test
     public void testCopyGraphWithTransaction() {
+        System.out.println("copyGraphWithTransaction");
+        
         final String vxAttribute = "Name";
         final String vxValue = "Foo";
         final String txAttribute = "Name";
@@ -95,8 +104,13 @@ public class SubgraphUtilitiesNGTest {
         assertEquals(copy.getStringValue(txAttrCopy, tx0), txValue);
     }
 
+    /**
+     * Test of copyGraph method, of class SubgraphUtilities. No transactions
+     */
     @Test
     public void testCopyGraphWithoutTransaction() {
+        System.out.println("copyGraphWithoutTransaction");
+        
         final String vxAttribute = "Name";
         final String vxValue = "Foo";
         
@@ -120,8 +134,13 @@ public class SubgraphUtilitiesNGTest {
         assertEquals(copy.getStringValue(vxAttrCopy, vx0), vxValue);
     }
 
+    /**
+     * Test of copyGraph method, of class SubgraphUtilities. No transactions but have transaction attribute.
+     */
     @Test
     public void testCopyGraphWithoutTransactionButWithTransactionAttribute() {
+        System.out.println("copyGraphWithoutTransactionButWithTransactionAttribute");
+        
         final String vxAttribute = "Name";
         final String vxValue = "Foo";
         final String txAttribute = "Name";
@@ -148,5 +167,50 @@ public class SubgraphUtilitiesNGTest {
         assertTrue(copy.getAttribute(GraphElementType.VERTEX, vxAttribute) != Graph.NOT_FOUND);
         assertTrue(copy.getAttribute(GraphElementType.TRANSACTION, txAttribute) != Graph.NOT_FOUND);
         assertEquals(copy.getStringValue(vxAttrCopy, vx0), vxValue);
+    }
+    
+    /**
+     * Test of getTransactionTypeSubgraph method, of class SubgraphUtilities.
+     */
+    @Test
+    public void testGetTransactionTypeSubgraph() {
+        System.out.println("getTransactionTypeSubgraph");
+        
+        final int vxId1 = graph.addVertex();
+        final int vxId2 = graph.addVertex();
+        final int vxId3 = graph.addVertex();
+        final int vxId4 = graph.addVertex();
+        
+        final int txId1 = graph.addTransaction(vxId1, vxId2, true);
+        final int txId2 = graph.addTransaction(vxId1, vxId3, true);
+        final int txId3 = graph.addTransaction(vxId3, vxId1, true);
+        final int txId4 = graph.addTransaction(vxId2, vxId4, true);
+        
+        final int typeTransactionAttribute = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+        
+        graph.setObjectValue(typeTransactionAttribute, txId1, AnalyticConcept.TransactionType.BEHAVIOUR);
+        graph.setObjectValue(typeTransactionAttribute, txId2, AnalyticConcept.TransactionType.BEHAVIOUR);
+        graph.setObjectValue(typeTransactionAttribute, txId3, AnalyticConcept.TransactionType.COMMUNICATION);
+        graph.setObjectValue(typeTransactionAttribute, txId4, AnalyticConcept.TransactionType.COMMUNICATION);
+        
+        assertEquals(graph.getVertexCount(), 4);
+        assertEquals(graph.getTransactionCount(), 4);
+        
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        
+        final Set<SchemaTransactionType> subgraphTypes = new HashSet<>();
+        subgraphTypes.add(AnalyticConcept.TransactionType.BEHAVIOUR);
+        
+        final StoreGraph inclusiveSubgraph = SubgraphUtilities.getTransactionTypeSubgraph(graph, schema, subgraphTypes, false);
+        
+        // this subgraph should only contain behaviour transactions and attached nodes
+        assertEquals(inclusiveSubgraph.getVertexCount(), 3);
+        assertEquals(inclusiveSubgraph.getTransactionCount(), 2);
+        
+        final StoreGraph exclusiveSubgraph = SubgraphUtilities.getTransactionTypeSubgraph(graph, schema, subgraphTypes, true);
+        
+        // this subgraph should only contain non-behaviour transactions and attached nodes
+        assertEquals(exclusiveSubgraph.getVertexCount(), 4);
+        assertEquals(exclusiveSubgraph.getTransactionCount(), 2);
     }
 }

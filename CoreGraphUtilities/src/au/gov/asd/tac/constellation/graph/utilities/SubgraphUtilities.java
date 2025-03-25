@@ -124,11 +124,11 @@ public class SubgraphUtilities {
      * Return a new graph which represents a subgraph of the given graph
      * filtered by transaction type.
      *
-     * @param graph
-     * @param schema
-     * @param types
-     * @param isExclusive
-     * @return
+     * @param graph the graph to generate from
+     * @param schema the schema of the new subgraph
+     * @param types the set of types to filter by
+     * @param isExclusive if false, only include types and subtypes from the types set. If true, only include types and subtypes not in the types set.
+     * @return a subgraph of the specified graph, filtered by the specified transaction types
      */
     public static StoreGraph getTransactionTypeSubgraph(final GraphReadMethods graph, final Schema schema, final Set<SchemaTransactionType> types, final boolean isExclusive) {
         final StoreGraph subgraph = new StoreGraph(schema);
