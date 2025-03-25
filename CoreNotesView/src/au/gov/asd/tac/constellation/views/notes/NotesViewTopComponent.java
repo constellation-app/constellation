@@ -117,7 +117,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        if (needsUpdate() && activeGraph != graph) {
+        if (needsUpdate() && activeGraph != graph && graph != null) {
             activeGraph = graph;
             notesViewPane.clearNotes();
             notesViewController.readState(activeGraph);
@@ -138,8 +138,8 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         if (needsUpdate() && graph != null) {
             notesViewPane.clearNotes();
         }
-        populateNotes();
-
+            populateNotes();
+        
         LOGGER.log(Level.FINE, "Handling graph closed");
     }
     
