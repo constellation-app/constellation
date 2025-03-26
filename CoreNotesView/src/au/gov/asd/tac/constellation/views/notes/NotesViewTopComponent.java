@@ -138,8 +138,8 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         if (needsUpdate() && graph != null) {
             notesViewPane.clearNotes();
         }
-            populateNotes();
-        
+        populateNotes();
+
         LOGGER.log(Level.FINE, "Handling graph closed");
     }
     
