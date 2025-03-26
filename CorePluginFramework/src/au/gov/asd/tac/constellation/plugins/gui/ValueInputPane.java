@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -32,17 +33,14 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import org.apache.commons.lang3.StringUtils;
-import org.controlsfx.control.textfield.TextFields;
 
 /**
- * A text box allowing entry of single line text, multiple line text corresponding to a {@link PluginParameter} of
+ * A text box allowing entry of single line text, multiple line text
+ * corresponding to a {@link PluginParameter} of
  * {@link au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType}.
  * <p>
  * Editing the value in the text box will set the string value for the underlying {@link PluginParameter}.
@@ -60,7 +58,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
 
     private final ChangeListener<Number> recentValueSelectionListener;
     private final ComboBox<String> recentValuesCombo;
-    private final TextInputControl field;
+    private final SpellCheckingTextArea field;
     private final String parameterId;
     private final boolean required;
     private int comboBoxWidth = EMPTY_WIDTH;
@@ -162,14 +160,20 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 };
             });
 
+            field = new SpellCheckingTextArea(parameter.isSpellCheckEnabled());
             if (suggestedHeight > 1) {
-                field = new TextArea();
-                ((TextArea) field).setWrapText(true);
-                ((TextArea) field).setPrefRowCount(suggestedHeight);
+                field.setWrapText(true);
             } else {
-                field = new TextField();
-                TextFields.bindAutoCompletion((TextField) field, recentValuesCombo.itemsProperty());
+                field.autoComplete(recentValuesCombo.getItems());
             }
+
+
+            Platform.runLater(() -> {
+                final Text t = (Text) field.lookup(".text");
+                if (t != null) {
+                    field.setPrefHeight(numberOfLines * t.getBoundsInLocal().getHeight() + field.EXTRA_HEIGHT);
+                }
+            });
 
             field.setPrefWidth(defaultWidth);
             field.setPromptText(parameter.getDescription());
@@ -202,8 +206,6 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             if (recentValuesCombo != null) {
                 recentValuesCombo.setDisable(!parameter.isEnabled());
             }
-
-            field.addEventFilter(KeyEvent.KEY_PRESSED, event -> FileInputPane.handleEventFilter(event, field));
 
             final Tooltip tooltip = new Tooltip("");
             tooltip.setStyle("-fx-text-fill: white;");

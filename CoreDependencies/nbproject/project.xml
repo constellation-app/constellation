@@ -449,6 +449,7 @@
                 <package>it.geosolutions.jaiext.warp</package>
                 <package>it.geosolutions.jaiext.zonal</package>
                 <package>it.geosolutions.rendered.viewer</package>
+                <package>jakarta.inject</package>
                 <package>jakarta.servlet</package>
                 <package>jakarta.servlet.annotation</package>
                 <package>jakarta.servlet.descriptor</package>
@@ -1117,6 +1118,7 @@
                 <package>org.apache.xmlbeans.soap</package>
                 <package>org.apache.xmlbeans.xml.stream</package>
                 <package>org.apache.xmlbeans.xml.stream.events</package>
+                <package>org.apiguardian.api</package>
                 <package>org.assertj.core.annotations</package>
                 <package>org.assertj.core.api</package>
                 <package>org.assertj.core.api.exception</package>
@@ -2413,6 +2415,7 @@
                 <package>tech.units.indriya.function</package>
                 <package>tech.units.indriya.internal.format</package>
                 <package>tech.units.indriya.internal.format.l10n</package>
+                <package>tech.units.indriya.internal.function</package>
                 <package>tech.units.indriya.internal.function.calc</package>
                 <package>tech.units.indriya.internal.function.radix</package>
                 <package>tech.units.indriya.internal.function.simplify</package>
