@@ -118,7 +118,7 @@ public final class HistogramState {
      * to the values saved in elementStateMap for the currently selected Graph
      * Element Type.
      */
-    protected void setElementState() {
+    public void setElementState() { // Set back to protected after histogram rewrite fully replaces old version
         attributeType = elementStateMap.get(elementType).getAttributeType();
         attribute = elementStateMap.get(elementType).getAttribute();
         binFormatter = elementStateMap.get(elementType).getBinFormatter();

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.histogram;
+package au.gov.asd.tac.constellation.views.histogram.rewrite;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
@@ -23,9 +23,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
-import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.utilities.ElementSet;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -38,8 +36,21 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParamete
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.*;
+import au.gov.asd.tac.constellation.views.histogram.AttributeType;
+import au.gov.asd.tac.constellation.views.histogram.BinCollection;
+import au.gov.asd.tac.constellation.views.histogram.BinComparator;
+import au.gov.asd.tac.constellation.views.histogram.BinCreator;
+import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
+import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
+import au.gov.asd.tac.constellation.views.histogram.BinSelector;
+import au.gov.asd.tac.constellation.views.histogram.HistogramClearFilterPlugin;
+import au.gov.asd.tac.constellation.views.histogram.HistogramConcept;
+import au.gov.asd.tac.constellation.views.histogram.HistogramDisplay;
+import au.gov.asd.tac.constellation.views.histogram.HistogramFilterOnSelectionPlugin;
+import au.gov.asd.tac.constellation.views.histogram.HistogramState;
 import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
-import java.awt.BorderLayout;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -57,14 +68,14 @@ import org.openide.windows.TopComponent;
 /**
  * Top component which displays the histogram view.
  *
- * @author sirius
+ * @author sirius, Quasar985
  */
 @ConvertAsProperties(
         dtd = "-//au.gov.asd.tac.constellation.views.histogram//Histogram//EN",
         autostore = false
 )
 @TopComponent.Description(
-        preferredID = "HistogramTopComponent",
+        preferredID = "HistogramTopComponent2",
         iconBase = "au/gov/asd/tac/constellation/views/histogram/resources/histogram.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
@@ -74,28 +85,29 @@ import org.openide.windows.TopComponent;
 )
 @ActionID(
         category = "Window",
-        id = "au.gov.asd.tac.constellation.views.histogram.HistogramTopComponent"
+        id = "au.gov.asd.tac.constellation.views.histogram.rewrite.HistogramTopComponent2"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 500),
-    @ActionReference(path = "Shortcuts", name = "CS-H"),
+    @ActionReference(path = "Menu/Views", position = 501),
+//    @ActionReference(path = "Shortcuts", name = "CS-H"),
     @ActionReference(path = "Toolbars/Views", position = 0)
 })
 @TopComponent.OpenActionRegistration(
-        displayName = "#CTL_HistogramAction",
-        preferredID = "HistogramTopComponent"
+        displayName = "#CTL_HistogramAction2",
+        preferredID = "HistogramTopComponent2"
 )
 @Messages({
-    "CTL_HistogramTopComponent=Histogram",
-    "HINT_HistogramTopComponent=The histogram view will display attribute values as a bar chart"
+    "CTL_HistogramTopComponent2=Histogram2",
+    "HINT_HistogramTopComponent2=The histogram view will display attribute values as a bar chart"
 })
-public final class HistogramTopComponent extends TopComponent implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider {
+//public final class HistogramTopComponent2 extends TopComponent implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider {
+public final class HistogramTopComponent2OLD extends JavaFxTopComponent<HistogramPane> {
 
     private static final int MIN_WIDTH = 425;
     private static final int MIN_HEIGHT = 400;
     Graph currentGraph = null;
-    private final HistogramControls controls;
-    private final HistogramDisplay display;
+    //private final HistogramControls controls;
+    //private final HistogramDisplay display;
     private long currentGlobalModificationCount = Long.MIN_VALUE;
     private long currentAttributeModificationCount = Long.MIN_VALUE;
     private long currentStructureModificationCount = Long.MIN_VALUE;
@@ -112,50 +124,78 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     private long latestGraphChangeID = 0;
     private ElementSet currentFilter;
 
-    public HistogramTopComponent() {
+    private final HistogramPane histogramPane;
+    private final HistogramController histogramController;
+
+    public HistogramTopComponent2OLD() {
+        System.out.println("A");
         initComponents();
-        setName(Bundle.CTL_HistogramTopComponent());
-        setToolTipText(Bundle.HINT_HistogramTopComponent());
+        System.out.println("B");
+        //setName(Bundle.CTL_HistogramTopComponent2());
+        //setToolTipText(Bundle.HINT_HistogramTopComponent2());
         this.setMinimumSize(new java.awt.Dimension(MIN_WIDTH, MIN_HEIGHT));
+        System.out.println("C");
+//        controls = new HistogramControls(this);
+//        add(controls, BorderLayout.SOUTH);
 
-        controls = new HistogramControls(this);
-        add(controls, BorderLayout.SOUTH);
-
-        display = new HistogramDisplay(this);
-        final JScrollPane displayScroll = new JScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        displayScroll.getVerticalScrollBar().setUnitIncrement(HistogramDisplay.MAXIMUM_BAR_HEIGHT);
-        add(displayScroll, BorderLayout.CENTER);
+//        display = new HistogramDisplay(null);
+//        final JScrollPane displayScroll = new JScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+//        displayScroll.getVerticalScrollBar().setUnitIncrement(HistogramDisplay.MAXIMUM_BAR_HEIGHT);
+        // add(displayScroll, BorderLayout.CENTER);
+        histogramController = HistogramController.getDefault().init(this);
+        histogramPane = new HistogramPane(histogramController);
+        
+        System.out.println("D");
+//        final JScrollPane paneScroll = new JScrollPane(histogramPane, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+//        add(paneScroll, BorderLayout.CENTER);
     }
 
     /**
      * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
      * content of this method is always regenerated by the Form Editor.
      */
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         setMinimumSize(new java.awt.Dimension(100, 100));
         setLayout(new java.awt.BorderLayout());
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify                     
+    // End of variables declaration                   
+//    @Override
+//    public void handleComponentOpened() {
+//        GraphManager.getDefault().addGraphManagerListener(this);
+//        newActiveGraph(GraphManager.getDefault().getActiveGraph());
+//    }
+//    @Override
+//    public void handleComponentClosed() {
+//        GraphManager.getDefault().removeGraphManagerListener(this);
+//        newActiveGraph(null);
+//        // Remove Listeners when Histogram View is closed.
+//        removeMouseListener(display);
+//        removeMouseMotionListener(display);
+//        removeMouseWheelListener(display);
+//        removeComponentListener(display);
+//        removeKeyListener(display);
+//    }
     @Override
-    public void componentOpened() {
-        GraphManager.getDefault().addGraphManagerListener(this);
-        newActiveGraph(GraphManager.getDefault().getActiveGraph());
+    protected void componentShowing() {
+        super.componentShowing();
+        histogramController.readState();
     }
 
     @Override
-    public void componentClosed() {
-        GraphManager.getDefault().removeGraphManagerListener(this);
-        newActiveGraph(null);
-        // Remove Listeners when Histogram View is closed.
-        removeMouseListener(display);
-        removeMouseMotionListener(display);
-        removeMouseWheelListener(display);
-        removeComponentListener(display);
-        removeKeyListener(display);
+    public HistogramPane createContent() {
+        System.out.println("histogram createContent");
+        return histogramPane;
+    }
+
+    @Override
+    public String createStyle() {
+        return JavafxStyleManager.isDarkTheme()
+                ? "resources/data-access-view-dark.css"
+                : "resources/data-access-view-light.css";
     }
 
     void writeProperties(Properties p) {
@@ -166,167 +206,167 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         // Method required for @ConvertAsProperties, intentionally left blank.
     }
 
-    @Override
-    public void newActiveGraph(Graph graph) {
-        if (currentGraph != graph) {
-
-            if (currentGraph != null) {
-                currentGraph.removeGraphChangeListener(this);
-                currentGraph = null;
-            }
-
-            if (graph != null) {
-                currentGraph = graph;
-                currentGraph.addGraphChangeListener(this);
-            }
-
-            reset();
-        }
-    }
-
+//    @Override
+//    public void newActiveGraph(Graph graph) {
+//        if (currentGraph != graph) {
+//
+//            if (currentGraph != null) {
+//                currentGraph.removeGraphChangeListener(this);
+//                currentGraph = null;
+//            }
+//
+//            if (graph != null) {
+//                currentGraph = graph;
+//                currentGraph.addGraphChangeListener(this);
+//            }
+//
+//            reset();
+//        }
+//    }
     @Override
     public UndoRedo getUndoRedo() {
         GraphNode graphNode = GraphNode.getGraphNode(currentGraph);
         return graphNode == null ? null : graphNode.getUndoRedoManager();
     }
 
-    @Override
-    public void graphChanged(GraphChangeEvent evt) {
-        evt = evt.getLatest();
-        if (evt.getId() > latestGraphChangeID) {
-            latestGraphChangeID = evt.getId();
-
-            if (currentGraph != null) {
-
-                boolean binCollectionModified = false;
-
-                ReadableGraph rg = currentGraph.getReadableGraph();
-                try {
-
-                    long oldGlobalModificationCount = currentGlobalModificationCount;
-                    currentGlobalModificationCount = rg.getGlobalModificationCounter();
-
-                    long oldAttributeModificationCount = currentAttributeModificationCount;
-                    currentAttributeModificationCount = rg.getAttributeModificationCounter();
-
-                    long oldStructureModificationCount = currentStructureModificationCount;
-                    currentStructureModificationCount = rg.getStructureModificationCounter();
-
-                    if (currentGlobalModificationCount != oldGlobalModificationCount) {
-
-                        if (currentAttributeModificationCount != oldAttributeModificationCount
-                                || currentStructureModificationCount != oldStructureModificationCount) {
-                            reset(rg);
-                            return;
-                        }
-
-                        if (CURRENT_TIME_ZONE_ATTRIBUTE != Graph.NOT_FOUND && currentTimeZoneModificationCount != rg.getValueModificationCounter(CURRENT_TIME_ZONE_ATTRIBUTE)) {
-                            currentTimeZoneModificationCount = rg.getValueModificationCounter(CURRENT_TIME_ZONE_ATTRIBUTE);
-                            reset(rg);
-                            return;
-                        }
-
-                        if (binnedAttribute != Graph.NOT_FOUND) {
-                            long oldBinnedModificationCount = currentBinnedModificationCount;
-                            currentBinnedModificationCount = rg.getValueModificationCounter(binnedAttribute);
-                            if (currentBinnedModificationCount != oldBinnedModificationCount) {
-                                reset();
-                                return;
-                            }
-                        }
-
-                        HistogramState oldHistogramState = currentHistogramState;
-                        if (histogramStateAttribute != Graph.NOT_FOUND) {
-                            currentHistogramState = (HistogramState) rg.getObjectValue(histogramStateAttribute, 0);
-                            if (currentHistogramState == null) {
-                                currentHistogramState = new HistogramState();
-                            }
-                        } else {
-                            currentHistogramState = new HistogramState();
-                        }
-
-                        // Ensure that the HistogramState is compatible with the current graph.
-                        currentHistogramState.validate(rg);
-
-                        if (currentHistogramState != oldHistogramState) {
-
-                            if (oldHistogramState == null || currentHistogramState.getElementType() != oldHistogramState.getElementType()
-                                    || currentHistogramState.getAttributeType() != oldHistogramState.getAttributeType()
-                                    || currentHistogramState.getBinFormatter() != oldHistogramState.getBinFormatter()
-                                    || currentHistogramState.getBinFormatterParameters() != oldHistogramState.getBinFormatterParameters()) {
-                                reset(rg);
-                                return;
-                            }
-
-                            String currentAttribute = currentHistogramState.getAttribute();
-                            if (currentAttribute == null ? oldHistogramState.getAttribute() != null : !currentAttribute.equals(oldHistogramState.getAttribute())) {
-                                reset(rg);
-                                return;
-                            }
-
-                            if ((currentFilter == null && currentHistogramState.getFilter(currentHistogramState.getElementType()) != null)
-                                    || (currentFilter != null && currentFilter != currentHistogramState.getFilter(currentHistogramState.getElementType()))) {
-                                reset(rg);
-                                return;
-                            }
-
-                            if (currentHistogramState.getBinComparator() != oldHistogramState.getBinComparator() && currentBinCollection != null) {
-                                currentBinCollection.sort(currentHistogramState.getBinComparator());
-                                binCollectionModified = true;
-                            }
-
-                            if (currentHistogramState.getBinSelectionMode() != oldHistogramState.getBinSelectionMode() && currentBinCollection != null) {
-                                display.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
-                                binCollectionModified = true;
-                            }
-
-                            controls.setHistogramState(currentHistogramState, binCreators);
-                        }
-
-                        if (selectedAttribute != Graph.NOT_FOUND) {
-                            long oldSelectedModificationCount = currentSelectedModificationCount;
-                            currentSelectedModificationCount = rg.getValueModificationCounter(selectedAttribute);
-                            if (currentSelectedModificationCount != oldSelectedModificationCount && currentBinCollection != null) {
-                                currentBinCollection.updateSelection(rg);
-                                if (currentHistogramState.getBinComparator().usesSelection()) {
-                                    currentBinCollection.sort(currentHistogramState.getBinComparator());
-                                }
-                                binCollectionModified = true;
-                            }
-                        }
-
-                        if (binCollectionModified) {
-                            display.updateBinCollection();
-                        }
-                    }
-
-                } finally {
-                    rg.release();
-                }
-            }
-        }
-    }
-
+//    @Override
+//    public void graphChanged(GraphChangeEvent evt) {
+//        super.graphChanged(evt);
+//
+//        // TODO: check if we should return or just not do some of the below code
+//        if (evt == null) {
+//            return;
+//        }
+//
+//        evt = evt.getLatest();
+//        if (evt.getId() <= latestGraphChangeID) {
+//            return;
+//        }
+//        latestGraphChangeID = evt.getId();
+//
+//        if (currentGraph == null) {
+//            return;
+//        }
+//
+//        boolean binCollectionModified = false;
+//
+//        try (final ReadableGraph rg = currentGraph.getReadableGraph()) {
+//
+//            long oldGlobalModificationCount = currentGlobalModificationCount;
+//            currentGlobalModificationCount = rg.getGlobalModificationCounter();
+//
+//            long oldAttributeModificationCount = currentAttributeModificationCount;
+//            currentAttributeModificationCount = rg.getAttributeModificationCounter();
+//
+//            long oldStructureModificationCount = currentStructureModificationCount;
+//            currentStructureModificationCount = rg.getStructureModificationCounter();
+//
+//            if (currentGlobalModificationCount == oldGlobalModificationCount) {
+//                return;
+//            }
+//
+//            if (currentAttributeModificationCount != oldAttributeModificationCount
+//                    || currentStructureModificationCount != oldStructureModificationCount) {
+//                reset(rg);
+//                return;
+//            }
+//
+//            if (CURRENT_TIME_ZONE_ATTRIBUTE != Graph.NOT_FOUND && currentTimeZoneModificationCount != rg.getValueModificationCounter(CURRENT_TIME_ZONE_ATTRIBUTE)) {
+//                currentTimeZoneModificationCount = rg.getValueModificationCounter(CURRENT_TIME_ZONE_ATTRIBUTE);
+//                reset(rg);
+//                return;
+//            }
+//
+//            if (binnedAttribute != Graph.NOT_FOUND) {
+//                long oldBinnedModificationCount = currentBinnedModificationCount;
+//                currentBinnedModificationCount = rg.getValueModificationCounter(binnedAttribute);
+//                if (currentBinnedModificationCount != oldBinnedModificationCount) {
+//                    reset();
+//                    return;
+//                }
+//            }
+//
+//            HistogramState oldHistogramState = currentHistogramState;
+//            if (histogramStateAttribute != Graph.NOT_FOUND) {
+//                currentHistogramState = (HistogramState) rg.getObjectValue(histogramStateAttribute, 0);
+//                if (currentHistogramState == null) {
+//                    currentHistogramState = new HistogramState();
+//                }
+//            } else {
+//                currentHistogramState = new HistogramState();
+//            }
+//
+//            // Ensure that the HistogramState is compatible with the current graph.
+//            currentHistogramState.validate(rg);
+//
+//            if (currentHistogramState != oldHistogramState) {
+//
+//                if (oldHistogramState == null || currentHistogramState.getElementType() != oldHistogramState.getElementType()
+//                        || currentHistogramState.getAttributeType() != oldHistogramState.getAttributeType()
+//                        || currentHistogramState.getBinFormatter() != oldHistogramState.getBinFormatter()
+//                        || currentHistogramState.getBinFormatterParameters() != oldHistogramState.getBinFormatterParameters()) {
+//                    reset(rg);
+//                    return;
+//                }
+//
+//                String currentAttribute = currentHistogramState.getAttribute();
+//                if (currentAttribute == null ? oldHistogramState.getAttribute() != null : !currentAttribute.equals(oldHistogramState.getAttribute())) {
+//                    reset(rg);
+//                    return;
+//                }
+//
+//                if ((currentFilter == null && currentHistogramState.getFilter(currentHistogramState.getElementType()) != null)
+//                        || (currentFilter != null && currentFilter != currentHistogramState.getFilter(currentHistogramState.getElementType()))) {
+//                    reset(rg);
+//                    return;
+//                }
+//
+//                if (currentHistogramState.getBinComparator() != oldHistogramState.getBinComparator() && currentBinCollection != null) {
+//                    currentBinCollection.sort(currentHistogramState.getBinComparator());
+//                    binCollectionModified = true;
+//                }
+//
+//                if (currentHistogramState.getBinSelectionMode() != oldHistogramState.getBinSelectionMode() && currentBinCollection != null) {
+//                    //display.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
+//                    binCollectionModified = true;
+//                }
+//
+//                //controls.setHistogramState(currentHistogramState, binCreators);
+//            }
+//
+//            if (selectedAttribute != Graph.NOT_FOUND) {
+//                long oldSelectedModificationCount = currentSelectedModificationCount;
+//                currentSelectedModificationCount = rg.getValueModificationCounter(selectedAttribute);
+//                if (currentSelectedModificationCount != oldSelectedModificationCount && currentBinCollection != null) {
+//                    currentBinCollection.updateSelection(rg);
+//                    if (currentHistogramState.getBinComparator().usesSelection()) {
+//                        currentBinCollection.sort(currentHistogramState.getBinComparator());
+//                    }
+//                    binCollectionModified = true;
+//                }
+//            }
+//
+//            if (binCollectionModified) {
+//                //display.updateBinCollection();
+//            }
+//        }
+//    }
     public void modifyBinHeight(final int change) {
-        if (change < 0) {
-            display.decreaseBarHeight();
-        } else if (change > 0) {
-            display.increaseBarHeight();
-        }
+//        if (change < 0) {
+//            display.decreaseBarHeight();
+//        } else if (change > 0) {
+//            display.increaseBarHeight();
+//        }
     }
 
     private void reset() {
-        if (currentGraph != null) {
-            ReadableGraph rg = currentGraph.getReadableGraph();
-            try {
-                reset(rg);
-            } finally {
-                if (rg != null) {
-                    rg.release();
-                }
-            }
-        } else {
+        if (currentGraph == null) {
             reset(null);
+            return;
+        }
+
+        try (final ReadableGraph rg = currentGraph.getReadableGraph()) {
+            reset(rg);
         }
     }
 
@@ -334,8 +374,8 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
         if (graph == null) {
             currentHistogramState = null;
-            controls.setHistogramState(null, null);
-            display.setBinCollection(null, BinIconMode.NONE);
+            //controls.setHistogramState(null, null);
+            //display.setBinCollection(null, BinIconMode.NONE);
             currentFilter = null;
             return;
         }
@@ -359,9 +399,8 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         binCreators.clear();
         binType.addBinCreators(graph, currentHistogramState.getElementType(), binCreators);
 
-        controls.setHistogramState(currentHistogramState, binCreators);
-        display.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
-
+        //controls.setHistogramState(currentHistogramState, binCreators);
+        //display.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
         currentFilter = currentHistogramState.getFilter(currentHistogramState.getElementType());
 
         selectedAttribute = graph.getAttribute(BinSelector.getSelectionElementType(currentHistogramState.getElementType()), "selected");
@@ -400,7 +439,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                 currentBinCollection.sort(currentHistogramState.getBinComparator());
             }
         }
-        display.setBinCollection(currentBinCollection, binIconMode);
+        //display.setBinCollection(currentBinCollection, binIconMode);
     }
 
     public void setHistogramViewOptions(final GraphElementType elementType, final AttributeType attributeType, final String attribute) {
@@ -560,16 +599,15 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
-    @Override
-    public void graphOpened(Graph graph) {
-        // Required for GraphManagerListener, intentionally left blank.
-    }
-
-    @Override
-    public void graphClosed(Graph graph) {
-        // Required for GraphManagerListener, intentionally left blank.
-    }
-
+//    @Override
+//    public void graphOpened(Graph graph) {
+//        // Required for GraphManagerListener, intentionally left blank.
+//    }
+//
+//    @Override
+//    public void graphClosed(Graph graph) {
+//        // Required for GraphManagerListener, intentionally left blank.
+//    }
     /**
      * Plugin to update histogram state.
      */
@@ -726,7 +764,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                 currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
             }
 
-            SwingUtilities.invokeLater(display::repaint);
+            //SwingUtilities.invokeLater(display::repaint);
         }
     }
 
@@ -783,7 +821,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                 currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
             }
 
-            SwingUtilities.invokeLater(display::repaint);
+            //SwingUtilities.invokeLater(display::repaint);
         }
     }
 }

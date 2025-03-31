@@ -165,7 +165,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
     }
 
     @Override
-    public final void graphChanged(final GraphChangeEvent event) {
+    public void graphChanged(final GraphChangeEvent event) {
         LOGGER.finer("GraphChange");
 
         if (event != null && ignoredEvents.contains(event.getDescription())) {
