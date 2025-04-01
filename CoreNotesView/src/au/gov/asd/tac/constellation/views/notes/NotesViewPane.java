@@ -68,7 +68,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
@@ -141,8 +140,8 @@ public class NotesViewPane extends BorderPane {
     private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
     private final String fontStyle = String.format("-fx-text-fill: " + (DARK_MODE ? "white" : "black") + "; -fx-font-size:%d;", FontUtilities.getApplicationFontSize());
     private static final String BOLD_STYLE = "-fx-font-weight: bold;";
-    private static String fontSize = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
-    private static String userChosenColour = USER_COLOR;
+    private static final String FONT_SIZE = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
+    private static final String USER_CHOSEN_COLOR = USER_COLOR;
 
     private final List<Integer> nodesSelected = new ArrayList<>();
     private final List<Integer> transactionsSelected = new ArrayList<>();
@@ -178,7 +177,7 @@ public class NotesViewPane extends BorderPane {
         filterSelectionMultiChoiceInput.setTitle("Select a filter...");
         filterSelectionMultiChoiceInput.setMinWidth(165);
 
-        filterSelectionMultiChoiceInput.setStyle(fontSize);
+        filterSelectionMultiChoiceInput.setStyle(FONT_SIZE);
         filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isSelectedFiltersUpdating) {
                 setFilters(filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems());
@@ -209,7 +208,7 @@ public class NotesViewPane extends BorderPane {
 
         // CheckComboBox for the Auto Note filters.
         autoFilterCheckComboBox = new MultiChoiceInputField(tagsFiltersList);
-        autoFilterCheckComboBox.setStyle(fontSize);
+        autoFilterCheckComboBox.setStyle(FONT_SIZE);
         autoFilterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isAutoSelectedFiltersUpdating) {
                 updateSelectedTagsCombo(autoFilterCheckComboBox.getCheckModel().getCheckedItems());
@@ -260,7 +259,7 @@ public class NotesViewPane extends BorderPane {
         final ToolBar toolBar = new ToolBar();
         toolBar.getItems().addAll(createNewNoteButton, filterSelectionMultiChoiceInput, autoFilterCheckComboBox, dateTimeRangePicker.getTimeFilterMenu(), helpButton);
         // Create the actual node that allows user to add new notes
-        newNotePane = new NewNotePane(userChosenColour);
+        newNotePane = new NewNotePane(USER_CHOSEN_COLOR);
 
         // Button to trigger pop-up window to make a new note
         createNewNoteButton.setText("Create Note");
@@ -409,7 +408,6 @@ public class NotesViewPane extends BorderPane {
                                 notesViewController.writeState(activeGraph);
                             }
                         }
-                        return;
                     }
                 });
             }
@@ -685,6 +683,8 @@ public class NotesViewPane extends BorderPane {
                 // Keeps the scroll bar at the bottom?
                 notesListScrollPane.setVvalue(notesListScrollPane.getVmax());
             }
+            
+            createNewNoteButton.setDisable(false);
         });
     }
 
@@ -1109,33 +1109,32 @@ public class NotesViewPane extends BorderPane {
         transactionsSelected.clear();
 
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        final ReadableGraph rg = activeGraph.getReadableGraph();
-        try {
-            // Get all currently selected nodes.
-            final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
-            if (vxSelectedAttr != Graph.NOT_FOUND) {
-                final int vxCount = rg.getVertexCount();
-                for (int position = 0; position < vxCount; position++) {
-                    final int vxId = rg.getVertex(position);
-                    if (rg.getBooleanValue(vxSelectedAttr, vxId)) {
-                        nodesSelected.add(vxId);
+        if (activeGraph != null) {
+            try (final ReadableGraph rg = activeGraph.getReadableGraph()) {
+                // Get all currently selected nodes.
+                final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+                if (vxSelectedAttr != Graph.NOT_FOUND) {
+                    final int vxCount = rg.getVertexCount();
+                    for (int position = 0; position < vxCount; position++) {
+                        final int vxId = rg.getVertex(position);
+                        if (rg.getBooleanValue(vxSelectedAttr, vxId)) {
+                            nodesSelected.add(vxId);
+                        }
                     }
                 }
-            }
 
-            // Get all currently selected transactions.
-            final int txSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
-            if (txSelectedAttr != Graph.NOT_FOUND) {
-                final int txCount = rg.getTransactionCount();
-                for (int position = 0; position < txCount; position++) {
-                    final int txId = rg.getTransaction(position);
-                    if (rg.getBooleanValue(txSelectedAttr, txId)) {
-                        transactionsSelected.add(txId);
+                // Get all currently selected transactions.
+                final int txSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
+                if (txSelectedAttr != Graph.NOT_FOUND) {
+                    final int txCount = rg.getTransactionCount();
+                    for (int position = 0; position < txCount; position++) {
+                        final int txId = rg.getTransaction(position);
+                        if (rg.getBooleanValue(txSelectedAttr, txId)) {
+                            transactionsSelected.add(txId);
+                        }
                     }
                 }
-            }
-        } finally {
-            rg.release();
+            } 
         }
     }
 
