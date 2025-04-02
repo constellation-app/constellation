@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Transaction;
 import org.geotools.data.shapefile.ShapefileDataStore;
@@ -51,6 +54,7 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.geopkg.FeatureEntry;
 import org.geotools.geopkg.GeoPackage;
+import org.geotools.geopkg.GeoPkgDataStoreFactory;
 import org.geotools.kml.v22.KML;
 import org.geotools.kml.v22.KMLConfiguration;
 import org.geotools.referencing.CRS;
@@ -526,11 +530,32 @@ public class Shape {
         featureEntry.setBounds(ReferencedEnvelope.EVERYTHING);
         featureEntry.setSrid(spatialReference.getSrid());
 
-        // write feature collection to geopackage
-        try (final GeoPackage geoPackage = new GeoPackage(output)) {
-            geoPackage.add(featureEntry, featureCollection);
-            geoPackage.createSpatialIndex(featureEntry);
-        }
+        // write feature collection to geopackage        
+        try {
+            final HashMap<String, Object> map = new HashMap<>();
+            map.put(GeoPkgDataStoreFactory.DBTYPE.key, "geopkg");
+            map.put(GeoPkgDataStoreFactory.DATABASE.key, output.getAbsolutePath());
+            final DataStore store = DataStoreFinder.getDataStore(map);
+
+            if (store != null) {                
+                final String[] names = store.getTypeNames();
+                // remove existing schema with same name
+                if (Arrays.asList(names).contains(uuid)) {
+                    store.removeSchema(uuid);
+                }
+            }
+
+            try (final GeoPackage geopkg = new GeoPackage(output)) {
+                geopkg.add(featureEntry, featureCollection);
+                // check if there's an existing spatial index with same name
+                if (!geopkg.hasSpatialIndex(featureEntry)) {
+                    geopkg.createSpatialIndex(featureEntry);
+                }
+            }
+        } catch (IOException ex) {
+            LOGGER.severe(ex.getLocalizedMessage());
+            throw ex;
+        }        
     }
 
     /**
