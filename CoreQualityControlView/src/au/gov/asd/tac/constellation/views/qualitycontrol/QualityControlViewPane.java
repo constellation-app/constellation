@@ -133,7 +133,6 @@ public final class QualityControlViewPane extends BorderPane {
     private static final String SELECTED_UNFOCUSED_COLOR = "#808080";
 
     private TableRow<QualityControlEvent> selectedRow;
-    private boolean isViewFocused = false;
 
     /*firstClick is a workaround for currently a existing bug within ControlsFX object, which causes two clicks 
     to be registered upon the user's first click within the view pane when calling value.getClickCount()*/
@@ -185,9 +184,8 @@ public final class QualityControlViewPane extends BorderPane {
 
         // Track the whole view's focus
         qualityTable.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            // Update variable and row's highlighting
-            isViewFocused = newVal;
-            setRowHighlight(isViewFocused);
+            // Update row's highlighting
+            setRowHighlight(newVal);
 
         });
 
@@ -202,7 +200,7 @@ public final class QualityControlViewPane extends BorderPane {
                     }
                     // Update new selected row's highlighting
                     selectedRow = row;
-                    setRowHighlight(isViewFocused);
+                    setRowHighlight(qualityTable.isFocused());
                 }
             });
             return row;
