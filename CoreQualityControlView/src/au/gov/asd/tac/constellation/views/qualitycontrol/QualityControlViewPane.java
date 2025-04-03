@@ -70,6 +70,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
@@ -127,6 +128,12 @@ public final class QualityControlViewPane extends BorderPane {
     private static final String BLACK_TEXT_COLOR = "-fx-text-fill: black;";
     private static final String ENABLE_TEXT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : BLACK_TEXT_COLOR;
 
+    // Colours to applyed to row background when row is seleted. Mixes with row's quality colour, as quality colour is slightly transparent
+    private static final String SELECTED_COLOR = "#404040";
+    private static final String SELECTED_UNFOCUSED_COLOR = "white";
+
+    private TableRow<QualityControlEvent> selectedRow;
+    private boolean isViewFocused = false;
 
     /*firstClick is a workaround for currently a existing bug within ControlsFX object, which causes two clicks 
     to be registered upon the user's first click within the view pane when calling value.getClickCount()*/
@@ -175,6 +182,31 @@ public final class QualityControlViewPane extends BorderPane {
         qualityTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         qualityTable.setPlaceholder(wrappedLabel(Bundle.MSG_SelectSomething()));
         setCenter(qualityTable);
+
+        // Track the whole view's focus
+        qualityTable.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            // Update variable and row's highlighting
+            isViewFocused = newVal;
+            setRowHighlight(isViewFocused);
+
+        });
+
+        qualityTable.setRowFactory(tv -> {
+            TableRow<QualityControlEvent> row = new TableRow<>();
+            // Track each row's focus
+            row.focusedProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal) {
+                    // Set previous selected row's style to default
+                    if (selectedRow != null) {
+                        selectedRow.setStyle("");
+                    }
+                    // Update new selected row's highlighting
+                    selectedRow = row;
+                    setRowHighlight(isViewFocused);
+                }
+            });
+            return row;
+        });
 
         optionsPane = new FlowPane();
         optionsPane.setId("qualitycontrolview-flow-pane");
@@ -228,6 +260,10 @@ public final class QualityControlViewPane extends BorderPane {
 
         this.setId("qualitycontrolview-border-pane");
         this.setPadding(new Insets(5));
+    }
+
+    private void setRowHighlight(final boolean isFocused) {
+        selectedRow.setStyle(isFocused ? "-fx-background-color: " + SELECTED_COLOR + ";" : "-fx-background-color: " + SELECTED_UNFOCUSED_COLOR + ";");
     }
 
     public TableView<QualityControlEvent> getQualityTable() {
