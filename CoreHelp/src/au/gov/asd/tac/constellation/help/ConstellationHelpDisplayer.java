@@ -70,7 +70,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
     public static void copy(final String filePath, final OutputStream out) throws IOException {
         final InputStream pageInput = getInputStream(filePath);
-        final InputStream tocInput = getInputStream(Generator.getBaseDirectory() + SEP + Generator.getTOCDirectory());
+        final InputStream tocInput = getInputStream(Generator.getTOCDirectory());
 
         // avoid parsing utility files or images into html
         if (filePath.contains(".css") || filePath.contains(".js") || filePath.contains(".png") || filePath.contains(".jpg")) {

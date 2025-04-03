@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## Changes in March 2025
+-   Moved creation of `toc.md` for offline help to the netbeans-defined user directory.
+
 ## Changes in January 2025
 -   Removed classes `VideoCreator` and `VideoFrame` from Core Utilities as they are unused. 
 

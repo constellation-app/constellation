@@ -1109,33 +1109,32 @@ public class NotesViewPane extends BorderPane {
         transactionsSelected.clear();
 
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        final ReadableGraph rg = activeGraph.getReadableGraph();
-        try {
-            // Get all currently selected nodes.
-            final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
-            if (vxSelectedAttr != Graph.NOT_FOUND) {
-                final int vxCount = rg.getVertexCount();
-                for (int position = 0; position < vxCount; position++) {
-                    final int vxId = rg.getVertex(position);
-                    if (rg.getBooleanValue(vxSelectedAttr, vxId)) {
-                        nodesSelected.add(vxId);
+        if (activeGraph != null) {
+            try (final ReadableGraph rg = activeGraph.getReadableGraph()) {
+                // Get all currently selected nodes.
+                final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+                if (vxSelectedAttr != Graph.NOT_FOUND) {
+                    final int vxCount = rg.getVertexCount();
+                    for (int position = 0; position < vxCount; position++) {
+                        final int vxId = rg.getVertex(position);
+                        if (rg.getBooleanValue(vxSelectedAttr, vxId)) {
+                            nodesSelected.add(vxId);
+                        }
                     }
                 }
-            }
 
-            // Get all currently selected transactions.
-            final int txSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
-            if (txSelectedAttr != Graph.NOT_FOUND) {
-                final int txCount = rg.getTransactionCount();
-                for (int position = 0; position < txCount; position++) {
-                    final int txId = rg.getTransaction(position);
-                    if (rg.getBooleanValue(txSelectedAttr, txId)) {
-                        transactionsSelected.add(txId);
+                // Get all currently selected transactions.
+                final int txSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
+                if (txSelectedAttr != Graph.NOT_FOUND) {
+                    final int txCount = rg.getTransactionCount();
+                    for (int position = 0; position < txCount; position++) {
+                        final int txId = rg.getTransaction(position);
+                        if (rg.getBooleanValue(txSelectedAttr, txId)) {
+                            transactionsSelected.add(txId);
+                        }
                     }
                 }
-            }
-        } finally {
-            rg.release();
+            } 
         }
     }
 
