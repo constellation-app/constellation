@@ -530,32 +530,15 @@ public class Shape {
         featureEntry.setBounds(ReferencedEnvelope.EVERYTHING);
         featureEntry.setSrid(spatialReference.getSrid());
 
-        // write feature collection to geopackage        
-        try {
-            final HashMap<String, Object> map = new HashMap<>();
-            map.put(GeoPkgDataStoreFactory.DBTYPE.key, "geopkg");
-            map.put(GeoPkgDataStoreFactory.DATABASE.key, output.getAbsolutePath());
-            final DataStore store = DataStoreFinder.getDataStore(map);
-
-            if (store != null) {                
-                final String[] names = store.getTypeNames();
-                // remove existing schema with same name
-                if (Arrays.asList(names).contains(uuid)) {
-                    store.removeSchema(uuid);
-                }
-            }
-
-            try (final GeoPackage geopkg = new GeoPackage(output)) {
-                geopkg.add(featureEntry, featureCollection);
-                // check if there's an existing spatial index with same name
-                if (!geopkg.hasSpatialIndex(featureEntry)) {
-                    geopkg.createSpatialIndex(featureEntry);
-                }
-            }
-        } catch (IOException ex) {
-            LOGGER.severe(ex.getLocalizedMessage());
-            throw ex;
-        }        
+        // Remove geopackage file if exists as it stores existing tables/indexes
+        if (output.isFile()) {
+            output.delete();
+        }
+        // write feature collection to geopackage
+        try (final GeoPackage geoPackage = new GeoPackage(output)) {
+            geoPackage.add(featureEntry, featureCollection);
+            geoPackage.createSpatialIndex(featureEntry);
+        }
     }
 
     /**
