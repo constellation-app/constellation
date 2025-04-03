@@ -129,8 +129,8 @@ public final class QualityControlViewPane extends BorderPane {
     private static final String ENABLE_TEXT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : BLACK_TEXT_COLOR;
 
     // Colours to applyed to row background when row is seleted. Mixes with row's quality colour, as quality colour is slightly transparent
-    private static final String SELECTED_COLOR = "#404040";
-    private static final String SELECTED_UNFOCUSED_COLOR = "white";
+    private static final String SELECTED_COLOR = "#E8E8E8";
+    private static final String SELECTED_UNFOCUSED_COLOR = "#808080";
 
     private TableRow<QualityControlEvent> selectedRow;
     private boolean isViewFocused = false;
