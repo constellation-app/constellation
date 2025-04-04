@@ -132,7 +132,7 @@ public final class QualityControlViewPane extends BorderPane {
     private static final String SELECTED_COLOR = "#E8E8E8";
     private static final String SELECTED_UNFOCUSED_COLOR = "#808080";
 
-    private TableRow<QualityControlEvent> selectedRow;
+    private ArrayList<TableRow<QualityControlEvent>> selectedRowList = new ArrayList();
 
     /*firstClick is a workaround for currently a existing bug within ControlsFX object, which causes two clicks 
     to be registered upon the user's first click within the view pane when calling value.getClickCount()*/
@@ -189,15 +189,22 @@ public final class QualityControlViewPane extends BorderPane {
         qualityTable.setRowFactory(tv -> {
             TableRow<QualityControlEvent> row = new TableRow<>();
             // Track each row's focus
-            row.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            row.selectedProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
-                    // Set previous selected row's style to default
-                    if (selectedRow != null) {
-                        selectedRow.setStyle("");
+                    // If list doesnt already contain this row, add
+                    if (!selectedRowList.contains(row)) {
+                        selectedRowList.add(row);
                     }
-                    // Update new selected row's highlighting
-                    selectedRow = row;
+                    // Update highlighting
                     setRowHighlight(qualityTable.isFocused());
+                } else {
+                    // Not selected
+                    // Remove from list if it's in there
+                    if (selectedRowList.contains(row)) {
+                        selectedRowList.remove(row);
+                    }
+                    // Remove highlight styling
+                    row.setStyle("");
                 }
             });
             return row;
@@ -258,7 +265,9 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     private void setRowHighlight(final boolean isFocused) {
-        selectedRow.setStyle(isFocused ? "-fx-background-color: " + SELECTED_COLOR + ";" : "-fx-background-color: " + SELECTED_UNFOCUSED_COLOR + ";");
+        for (final TableRow<QualityControlEvent> selectedRow : selectedRowList) {
+            selectedRow.setStyle(isFocused ? "-fx-background-color: " + SELECTED_COLOR + ";" : "-fx-background-color: " + SELECTED_UNFOCUSED_COLOR + ";");
+        }
     }
 
     public TableView<QualityControlEvent> getQualityTable() {
