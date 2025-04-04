@@ -58,8 +58,11 @@
         <dependency org="org.openjdk.nashorn" name="nashorn-core" rev="15.4" conf="defaultconf"/>
         
         <!-- Dependency for languagetool using indriya v1.3 -->
-        <dependency org="org.languagetool" name="language-en" rev="6.0" conf="languagetoolconf"/> 
-        
+        <dependency org="org.languagetool" name="language-en" rev="6.0" conf="defaultconf"/>   
+        <dependency org="tech.units" name="indriya" rev="1.3" conf="languagetoolconf">
+            <exclude org="javax.measure" module="unit-api"/>
+        </dependency>   
+               
         <!-- Geotools -->
         <dependency org="org.geotools" name="gt-cql" rev="26.4" conf="defaultconf"/>
         <dependency org="org.geotools" name="gt-jdbc" rev="26.4" conf="defaultconf"/>

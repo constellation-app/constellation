@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.text;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,14 +39,14 @@ public class LanguagetoolClassLoader {
     private static Class<?> spellingCheckRule;
     private static final Logger LOGGER = Logger.getLogger(LanguagetoolClassLoader.class.getName());
 
-    private LanguagetoolClassLoader(final URL[] urls) {
-        classLoader = new URLClassLoader(urls);
+    private LanguagetoolClassLoader(final List<URL> urls) {
+        classLoader = new URLClassLoader(urls.toArray(URL[]::new));
     }
 
     public static synchronized void loadDependencies() {
         if (languagetoolClassLoader == null) {
             try {
-                final URL[] urls = LanguageToolDependencyUrlLoader.loadUrls();
+                final List<URL> urls = LanguageToolDependencyUrlLoader.loadUrls();
                 languagetoolClassLoader = new LanguagetoolClassLoader(urls);
                 LoadOtherClasses();
             } catch (final MalformedURLException | ClassNotFoundException ex) {
