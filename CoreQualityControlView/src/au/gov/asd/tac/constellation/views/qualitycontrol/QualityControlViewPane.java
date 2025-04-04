@@ -143,7 +143,11 @@ public final class QualityControlViewPane extends BorderPane {
         readSerializedRuleEnabledStatuses();
 
         qualityTable = new TableView<>();
-        qualityTable.focusedProperty().addListener((observable, oldValue, newValue) -> firstClick = true);
+        qualityTable.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            firstClick = true;
+            // Update row's highlighting
+            setRowHighlight(newValue);
+        });
 
         identifierColumn = new TableColumn<>("Identifier");
         identifierColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.25));
@@ -181,13 +185,6 @@ public final class QualityControlViewPane extends BorderPane {
         qualityTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         qualityTable.setPlaceholder(wrappedLabel(Bundle.MSG_SelectSomething()));
         setCenter(qualityTable);
-
-        // Track the whole view's focus
-        qualityTable.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            // Update row's highlighting
-            setRowHighlight(newVal);
-
-        });
 
         qualityTable.setRowFactory(tv -> {
             TableRow<QualityControlEvent> row = new TableRow<>();
