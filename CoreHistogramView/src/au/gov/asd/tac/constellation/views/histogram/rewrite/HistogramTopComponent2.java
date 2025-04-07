@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.histogram.rewrite;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.utilities.ElementSet;
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.histogram.BinCollection;
 import au.gov.asd.tac.constellation.views.histogram.BinCreator;
@@ -27,15 +26,21 @@ import java.util.Map;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
-import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
 /**
- * The Analytic View Top Component.
+ * Top component which displays the histogram view.
+ *
+ * @author sirius, Quasar985
  */
+//@ConvertAsProperties(
+//        dtd = "-//au.gov.asd.tac.constellation.views.histogram//Histogram//EN",
+//        autostore = false
+//)
 @TopComponent.Description(
-        preferredID = "AnalyticViewTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/views/analyticview/resources/analytic-view.png",
+        preferredID = "HistogramTopComponent2",
+        iconBase = "au/gov/asd/tac/constellation/views/histogram/resources/histogram.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
@@ -44,21 +49,24 @@ import org.openide.windows.TopComponent;
 )
 @ActionID(
         category = "Window",
-        id = "au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent"
+        id = "au.gov.asd.tac.constellation.views.histogram.rewrite.HistogramTopComponent2"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 0),
-    @ActionReference(path = "Shortcuts", name = "CS-Z")
+    @ActionReference(path = "Menu/Views", position = 501),
+//    @ActionReference(path = "Shortcuts", name = "CS-H"),
+    @ActionReference(path = "Toolbars/Views", position = 0)
 })
 @TopComponent.OpenActionRegistration(
-        displayName = "#CTL_AnalyticViewAction",
-        preferredID = "AnalyticViewTopComponent"
+        displayName = "#CTL_HistogramAction2",
+        preferredID = "HistogramTopComponent2"
 )
-@Messages({
-    "CTL_AnalyticViewAction=Analytic View",
-    "CTL_AnalyticViewTopComponent=Analytic View",
-    "HINT_AnalyticViewTopComponent=Analytic View"
+@NbBundle.Messages({
+    "CTL_HistogramAction2=Histogram2",
+    "CTL_HistogramTopComponent2=Histogram2",
+    "HINT_HistogramTopComponent2=The histogram view will display attribute values as a bar chart"
 })
+
+//public final class HistogramTopComponent2 extends TopComponent implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider {
 public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPane> {
 
     private static final int MIN_WIDTH = 425;
@@ -86,16 +94,14 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     private final HistogramController histogramController;
 
     public HistogramTopComponent2() {
-        System.out.println("A");
-        initComponents();
-        System.out.println("B");
-        //setName(Bundle.CTL_HistogramTopComponent2());
-        //setToolTipText(Bundle.HINT_HistogramTopComponent2());
+        super();
+
+        setName(Bundle.CTL_HistogramTopComponent2());
+        setToolTipText(Bundle.HINT_HistogramTopComponent2());
         this.setMinimumSize(new java.awt.Dimension(MIN_WIDTH, MIN_HEIGHT));
-        System.out.println("C");
+
 //        controls = new HistogramControls(this);
 //        add(controls, BorderLayout.SOUTH);
-
 //        display = new HistogramDisplay(null);
 //        final JScrollPane displayScroll = new JScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 //        displayScroll.getVerticalScrollBar().setUnitIncrement(HistogramDisplay.MAXIMUM_BAR_HEIGHT);
@@ -103,7 +109,9 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         histogramController = HistogramController.getDefault().init(this);
         histogramPane = new HistogramPane(histogramController);
 
-        System.out.println("D");
+        initComponents();
+        super.initContent();
+
 //        final JScrollPane paneScroll = new JScrollPane(histogramPane, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 //        add(paneScroll, BorderLayout.CENTER);
     }
@@ -142,10 +150,11 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     }
 
     @Override
-    public String createStyle() {
-        return JavafxStyleManager.isDarkTheme()
-                ? "resources/data-access-view-dark.css"
-                : "resources/data-access-view-light.css";
+    protected String createStyle() {
+//        return JavafxStyleManager.isDarkTheme()
+//                ? "resources/data-access-view-dark.css"
+//                : "resources/data-access-view-light.css";
+        return null;
     }
 
     // VESTIGAL FROM ANALYTIC VIEW

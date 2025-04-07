@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.histogram.rewrite;
 
+import au.gov.asd.tac.constellation.graph.node.plugins.ThreadConstraints;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.views.histogram.HistogramTopComponent;
 import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -35,7 +35,7 @@ import org.openide.util.HelpCtx;
 public class HistogramPane extends BorderPane {
 
     private static final Logger LOGGER = Logger.getLogger(HistogramPane.class.getName());
-    private static final String HISTOGRAM_TOP_COMPONENT_CLASS_NAME = HistogramTopComponent.class.getName();
+    private static final String HISTOGRAM_TOP_COMPONENT_CLASS_NAME = HistogramTopComponent2.class.getName();
 
     private static final String NO_PLUGINS_SELECTED_TITLE = "No plugins selected.";
 
@@ -50,6 +50,18 @@ public class HistogramPane extends BorderPane {
 
     private Button helpButton;
     //private final HistogramTopComponent2 topComponent;
+
+    private final VBox viewPane;
+
+    // testing copying striaght from analytic pane
+    private static final String RUN_START_TEXT = "Run";
+    private static final String RUN_START_STYLE = "-fx-background-color: rgb(64,180,64);";
+    private static final String RUN_STOP_TEXT = "Stop";
+    private static final String RUN_STOP_STYLE = "-fx-background-color: rgb(180,64,64);";
+
+    private static boolean running = false;
+    private Thread questionThread = null;
+    private ThreadConstraints parentConstraints = null;
 
     public HistogramPane(final HistogramController histogramContoller) {
         System.out.println("HistogramPane");
@@ -72,19 +84,14 @@ public class HistogramPane extends BorderPane {
         helpButton.setStyle(HELP_STYLE);
         System.out.println("HistogramPane finished help button");
 
-        final VBox vbox = new VBox();
-        vbox.prefWidthProperty().bind(this.widthProperty());
+        viewPane = new VBox();
+        viewPane.prefWidthProperty().bind(this.widthProperty());
 
-//        AnchorPane.setTopAnchor(vbox, 0.0);
-//        AnchorPane.setBottomAnchor(vbox, 0.0);
-//        AnchorPane.setLeftAnchor(vbox, 0.0);
-//        AnchorPane.setRightAnchor(vbox, 0.0);
-        vbox.getChildren().addAll(helpButton);
+        AnchorPane.setRightAnchor(helpButton, 5.0);
 
-        // getChildren().add(vbox);
-        System.out.println("HistogramPane finished vbox");
-        this.setCenter(vbox);
-        System.out.println("HistogramPane done");
+        viewPane.getChildren().addAll(helpButton);
+
+        this.setCenter(viewPane);
     }
 
 //    private void init() {
@@ -143,5 +150,4 @@ public class HistogramPane extends BorderPane {
 ////            }
 ////        });
 //    }
-
 }
