@@ -612,7 +612,6 @@ public abstract class ConstellationInput<T> extends StackPane implements
     public final int getInferredCaretPosition(){
         return inferredCaretPos;
     }
-
     // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
     @Override

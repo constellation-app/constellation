@@ -26,22 +26,20 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationI
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InputValidator;
 
 /**
- * An abstract base class for {@link ParamerPanes} that get user input through a
- * {@link InputField} to modify {@link PluginParameter} objects in
- * Constellation. This class and it's extended classes act as the link between
- * {@link PluignParameter} objects and {@link ConstellationInput} objects.
- *
- * This class provides standard functionality for this link and defines some
- * implementation specific methods to assist in the nuanced interactions across
- * different {@link PluginParameterType} implementations.
- *
- * Visually, extensions of this class are represented by a {@link HBox} which
- * contains a {@link ConstellationInput}. This {@link HBox} is typically added
- * to a {@link GridPane} by the {@link PluginParametersPane}.
- *
- * Visual examples of the {@link ParameterInputPane} can be found in the
- * DataAccessView or the SphereGraphBuilder.
- *
+ * An abstract base class for {@link ParamerPanes} that get user input through a {@link InputField} 
+ * to modify {@link PluginParameter} objects in Constellation.
+ * This class and it's extended classes act as the link between {@link PluignParameter} objects
+ * and {@link ConstellationInput} objects.
+ * 
+ * This class provides standard functionality for this link and defines some implementation specific 
+ * methods to assist in the nuanced interactions across different {@link PluginParameterType} implementations.
+ * 
+ * Visually, extensions of this class are represented by a {@link HBox} which contains a 
+ * {@link ConstellationInput}. This {@link HBox} is typically added to a {@link GridPane} by
+ * the {@link PluginParametersPane}.
+ * 
+ * Visual examples of the {@link ParameterInputPane} can be found in the DataAccessView or the SphereGraphBuilder.
+ * 
  * @author capricornunicorn123
  * @param <T> the Value represented by the {@link PluginParameter}
  * @param <V> the Value represented by the {@link ConstellationInput}
@@ -67,7 +65,7 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
 
         //Update the prompt text of the input
         this.input.setPromptText(parameter.getDescription());
-
+        
         // Ensure that the input and the parameter are listening to changes on each other
         this.input.addListener(getFieldChangeListener(parameter));
         parameter.addListener(getPluginParameterListener());
@@ -88,7 +86,6 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
     protected final ConstellationInput<V> getInputReference(){
         return input;
     }
-
     /**
      * Sets the value of the input that this ParameterInputPane uses.
      * @param value Value to set in input field. 

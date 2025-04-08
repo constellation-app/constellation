@@ -34,7 +34,6 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
 import java.util.Map;
 import javafx.collections.ObservableList;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.stage.WindowEvent;
 
 /**
  * A {@link ChoiceInput} for managing multiple choice selection. This input
@@ -336,8 +335,8 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
             };
 
             //Register the Context Menu as a listener whilst it is open in case choices are modified externally.
-            setOnShowing(value -> field.addListener(cl));            
-
+            setOnShowing(value -> field.addListener(cl));
+            
             //This context menu may be superseeded by a new context menu so deregister it when hidden.
             setOnHiding(value -> field.removeListener(cl));
         }
