@@ -24,6 +24,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Skin;
 import javafx.scene.control.Tooltip;
 import org.controlsfx.control.CheckComboBox;
@@ -71,6 +72,7 @@ public class MultiChoiceInputField<T extends Object> extends CheckComboBox<T> {
         bulkSelectionOptionsMenuButton.setMinWidth(50);
         setSelectionOption("Select All", event -> this.getCheckModel().checkAll());
         setSelectionOption("Clear All", event -> this.getCheckModel().clearChecks());
+        contextMenu.getItems().add(new SeparatorMenuItem());
     }
     
     /**
