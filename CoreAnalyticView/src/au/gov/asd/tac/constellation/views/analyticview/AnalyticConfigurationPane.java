@@ -539,7 +539,6 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.setItems(FXCollections.observableArrayList(selectablePlugins));
         pluginList.getSelectionModel().clearSelection();
         updateSelectablePluginsParameters();
-        updateGlobalParameters();
         AnalyticViewController.getDefault().setCurrentQuestion(selectedQuestion);
     }
 
