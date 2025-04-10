@@ -23,6 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * A Custom class loader to load Languagetool classes, to avoid transient
+ * dependency version conflicts.
  *
  * @author Auriga2
  */
