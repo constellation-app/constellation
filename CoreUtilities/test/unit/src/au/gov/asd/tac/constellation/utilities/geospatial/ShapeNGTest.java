@@ -37,7 +37,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
 import org.geotools.data.DataStore;
@@ -1109,6 +1108,13 @@ public class ShapeNGTest {
                 store.dispose();
             }
         }
+        // try to generateGeoPackage to the same filename
+        try {
+            Shape.generateGeoPackage(id, getTestShapes(), getTestAttributes(), f, Shape.SpatialReference.WGS84);
+            assertTrue(true);  //successful if no exception 
+        } catch (IOException ex) {
+            fail(ex.getMessage(), ex);
+        }      
     }
 
     /**
