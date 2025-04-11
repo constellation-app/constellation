@@ -36,6 +36,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -55,7 +56,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class PluginParameterNGTest {
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         // Not currently required
@@ -82,7 +83,7 @@ public class PluginParameterNGTest {
     @Test
     public void testSetName() {
         System.out.println("setName");
-        
+
         final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
         final PluginParameter<StringParameterValue> paramSpy = spy(stringParam);
         assertEquals(paramSpy.getName(), "my string parameter");
@@ -101,7 +102,7 @@ public class PluginParameterNGTest {
     @Test
     public void testSetVisible() {
         System.out.println("setVisible");
-        
+
         final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
         final PluginParameter<StringParameterValue> paramSpy = spy(stringParam);
         assertTrue(paramSpy.isVisible());
@@ -120,35 +121,35 @@ public class PluginParameterNGTest {
     @Test
     public void testSuppressEvent() {
         System.out.println("suppressEvent");
-        
+
         final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
         for (final ParameterChange changeType : ParameterChange.values()) {
             assertFalse(stringParam.eventIsSuppressed(changeType));
         }
-        
+
         stringParam.suppressEvent(true, Arrays.asList(ParameterChange.VALUE));
         for (final ParameterChange changeType : ParameterChange.values()) {
             if (changeType == ParameterChange.VALUE) {
                 assertTrue(stringParam.eventIsSuppressed(changeType));
             } else {
                 assertFalse(stringParam.eventIsSuppressed(changeType));
-                
+
             }
         }
-        
+
         stringParam.suppressEvent(true, Collections.emptyList());
         for (final ParameterChange changeType : ParameterChange.values()) {
             assertTrue(stringParam.eventIsSuppressed(changeType));
         }
     }
-    
+
     /**
      * Test of setEnabled method, of class PluginParameter.
      */
     @Test
     public void testSetEnabled() {
         System.out.println("setEnabled");
-        
+
         final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
         final PluginParameter<StringParameterValue> paramSpy = spy(stringParam);
         assertTrue(paramSpy.isEnabled());
@@ -167,11 +168,11 @@ public class PluginParameterNGTest {
     @Test
     public void testSetProperty() {
         System.out.println("setProperty");
-        
-        final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");     
+
+        final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
         final PluginParameter<StringParameterValue> paramSpy = spy(stringParam);
         assertNull(paramSpy.getProperty("test"));
-        
+
         paramSpy.setProperty("test", "value");
         assertEquals(paramSpy.getProperty("test"), "value");
         verify(paramSpy, times(1)).fireChangeEvent(ParameterChange.PROPERTY);
@@ -179,7 +180,7 @@ public class PluginParameterNGTest {
         paramSpy.setProperty("test", "value");
         assertEquals(paramSpy.getProperty("test"), "value");
         verify(paramSpy, times(1)).fireChangeEvent(ParameterChange.PROPERTY);
-        
+
         paramSpy.setProperty("test", null);
         assertNull(paramSpy.getProperty("test"));
         verify(paramSpy, times(2)).fireChangeEvent(ParameterChange.PROPERTY);
@@ -195,7 +196,7 @@ public class PluginParameterNGTest {
     @Test
     public void testSetDescription() {
         System.out.println("setDescription");
-        
+
         final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
         final PluginParameter<StringParameterValue> paramSpy = spy(stringParam);
         assertNull(paramSpy.getDescription());
@@ -214,7 +215,7 @@ public class PluginParameterNGTest {
     @Test
     public void testSetIcon() {
         System.out.println("setIcon");
-        
+
         final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
         final PluginParameter<StringParameterValue> paramSpy = spy(stringParam);
         assertNull(paramSpy.getIcon());
@@ -226,14 +227,14 @@ public class PluginParameterNGTest {
         assertEquals(paramSpy.getIcon(), "an icon");
         verify(paramSpy, times(1)).fireChangeEvent(ParameterChange.ICON);
     }
-    
+
     /**
      * Test of setHelpID method, of class PluginParameter.
      */
     @Test
     public void testSetHelpID() {
         System.out.println("setHelpID");
-        
+
         final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
         assertNull(stringParam.getHelpID());
         stringParam.setHelpID("some help");
@@ -246,24 +247,24 @@ public class PluginParameterNGTest {
     @Test
     public void testLoadToRecentValue() {
         System.out.println("loadToRecentValue");
-        
+
         final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
         assertEquals(stringParam.getStringValue(), "test");
-        
+
         // no recent value stored so load should fail
         assertFalse(stringParam.loadToRecentValue());
         assertEquals(stringParam.getStringValue(), "test");
-        
+
         stringParam.setStringValue("another value");
         // despite value change, because no value has been stored, load should still fail
         assertFalse(stringParam.loadToRecentValue());
         assertEquals(stringParam.getStringValue(), "another value");
-        
+
         stringParam.storeRecentValue();
         stringParam.setStringValue("yet another value");
         // value has finally been stored so this should succeed
         assertTrue(stringParam.loadToRecentValue());
-        assertEquals(stringParam.getStringValue(), "another value"); 
+        assertEquals(stringParam.getStringValue(), "another value");
     }
 
     /**
@@ -272,7 +273,7 @@ public class PluginParameterNGTest {
     @Test
     public void testSetError() {
         System.out.println("setError");
-        
+
         final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
         final PluginParameter<StringParameterValue> paramSpy = spy(stringParam);
         assertNull(paramSpy.getError());
@@ -299,7 +300,7 @@ public class PluginParameterNGTest {
     @Test
     public void testCopy() {
         System.out.println("copy");
-        
+
         final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
         final PluginParameter<StringParameterValue> stringParamCopy = stringParam.copy();
         assertEquals(stringParam.getId(), stringParamCopy.getId());
@@ -316,15 +317,15 @@ public class PluginParameterNGTest {
     @Test
     public void testSetObjectValue() {
         System.out.println("setObjectValue");
-        
+
         final PluginParameter<IntegerParameterValue> integerParam = new PluginParameter<>(new IntegerParameterValue(), new IntegerParameterType(), "my integer parameter");
         final PluginParameter<IntegerParameterValue> paramSpy = spy(integerParam);
         assertEquals(paramSpy.getParameterValue().get(), 0);
-        
+
         paramSpy.setObjectValue(1);
         assertEquals(paramSpy.getObjectValue(), 1);
         verify(paramSpy, times(1)).fireChangeEvent(ParameterChange.VALUE);
-        
+
         // no change so set wasn't successful (and therefore no event fired)
         paramSpy.setObjectValue(1);
         assertEquals(paramSpy.getObjectValue(), 1);
@@ -337,36 +338,36 @@ public class PluginParameterNGTest {
     @Test
     public void testSetStringValue() {
         System.out.println("setStringValue");
-        
+
         final PluginParameter<IntegerParameterValue> integerParam = new PluginParameter<>(new IntegerParameterValue(), new IntegerParameterType(), "my integer parameter");
         final PluginParameter<IntegerParameterValue> paramSpy = spy(integerParam);
         assertEquals(paramSpy.getParameterValue().get(), 0);
-        
+
         paramSpy.setStringValue("1");
         assertEquals(paramSpy.getStringValue(), "1");
         assertNull(paramSpy.getError());
         verify(paramSpy, times(1)).fireChangeEvent(ParameterChange.VALUE);
-        
+
         // no change so set wasn't successful (and therefore no event fired)
         paramSpy.setStringValue("1");
         assertEquals(paramSpy.getStringValue(), "1");
         assertNull(paramSpy.getError());
         verify(paramSpy, times(1)).fireChangeEvent(ParameterChange.VALUE);
-        
+
         // invalid integer passes so value remains same with error noted
         paramSpy.setStringValue("Not an integer");
         assertEquals(paramSpy.getStringValue(), "1");
         assertEquals(paramSpy.getError(), "Not a valid integer");
         verify(paramSpy, times(1)).fireChangeEvent(ParameterChange.VALUE);
     }
-    
+
     /**
      * Test of setBooleanValue method, of class PluginParameter.
      */
     @Test
     public void testSetBooleanValue() {
         System.out.println("setBooleanValue");
-        
+
         final PluginParameter<BooleanParameterValue> booleanParam = new PluginParameter<>(new BooleanParameterValue(), new BooleanParameterType(), "my boolean parameter");
         final PluginParameter<BooleanParameterValue> paramSpy = spy(booleanParam);
         assertFalse(paramSpy.getBooleanValue());
@@ -385,7 +386,7 @@ public class PluginParameterNGTest {
     @Test
     public void testSetColorValue() {
         System.out.println("setColorValue");
-        
+
         final PluginParameter<ColorParameterValue> colorParam = new PluginParameter<>(new ColorParameterValue(), new ColorParameterType(), "my color parameter");
         final PluginParameter<ColorParameterValue> paramSpy = spy(colorParam);
         assertEquals(paramSpy.getColorValue(), ConstellationColor.CLOUDS);
@@ -397,14 +398,14 @@ public class PluginParameterNGTest {
         assertEquals(paramSpy.getColorValue(), ConstellationColor.BANANA);
         verify(paramSpy, times(1)).fireChangeEvent(ParameterChange.VALUE);
     }
-    
+
     /**
      * Test of setDateTimeRangeValue method, of class PluginParameter.
      */
     @Test
     public void testSetDateTimeRangeValue() {
         System.out.println("setDateTimeRangeValue");
-        
+
         final PluginParameter<DateTimeRangeParameterValue> datetimeRangeParam = new PluginParameter<>(new DateTimeRangeParameterValue(), new DateTimeRangeParameterType(), "my datetime range parameter");
         final PluginParameter<DateTimeRangeParameterValue> paramSpy = spy(datetimeRangeParam);
         assertEquals(paramSpy.getDateTimeRangeValue(), new DateTimeRange(Period.ofDays(1), ZoneId.of("UTC")));
@@ -424,7 +425,7 @@ public class PluginParameterNGTest {
     @Test
     public void testSetIntegerValue() {
         System.out.println("setIntegerValue");
-        
+
         final PluginParameter<IntegerParameterValue> integerParam = new PluginParameter<>(new IntegerParameterValue(), new IntegerParameterType(), "my integer parameter");
         final PluginParameter<IntegerParameterValue> paramSpy = spy(integerParam);
         assertEquals(paramSpy.getIntegerValue(), 0);
@@ -443,7 +444,7 @@ public class PluginParameterNGTest {
     @Test
     public void testSetFloatValue() {
         System.out.println("setFloatValue");
-        
+
         final PluginParameter<FloatParameterValue> floatParam = new PluginParameter<>(new FloatParameterValue(), new FloatParameterType(), "my float parameter");
         final PluginParameter<FloatParameterValue> paramSpy = spy(floatParam);
         assertEquals(paramSpy.getFloatValue(), 0F);
@@ -462,7 +463,7 @@ public class PluginParameterNGTest {
     @Test
     public void testSetLocalDateValue() {
         System.out.println("setLocalDateValue");
-        
+
         final PluginParameter<LocalDateParameterValue> localDateParam = new PluginParameter<>(new LocalDateParameterValue(), new LocalDateParameterType(), "my local date parameter");
         final PluginParameter<LocalDateParameterValue> paramSpy = spy(localDateParam);
         final LocalDate ld = LocalDate.ofYearDay(1970, 2);
@@ -482,7 +483,7 @@ public class PluginParameterNGTest {
     @Test
     public void testSetNumberValue() {
         System.out.println("setNumberValue");
-        
+
         final PluginParameter<IntegerParameterValue> numberParam = new PluginParameter<>(new IntegerParameterValue(), new IntegerParameterType(), "my number parameter");
         final PluginParameter<IntegerParameterValue> paramSpy = spy(numberParam);
         assertEquals(paramSpy.getNumberValue(), 0);
@@ -501,7 +502,7 @@ public class PluginParameterNGTest {
     @Test
     public void testBuildId() {
         System.out.println("buildId");
-        
+
         // obviously note plugin classes but working within the bounds of the classes we can access
         assertEquals(PluginParameter.buildId(PluginParameter.class, "test"), "PluginParameter.test");
         assertEquals(PluginParameter.buildId(PluginParameter.class, "anothertest"), "PluginParameter.anothertest");
@@ -514,7 +515,7 @@ public class PluginParameterNGTest {
     @Test
     public void testSetRequestBodyExampleJson() {
         System.out.println("setRequestBodyExampleJson");
-        
+
         final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
         assertNull(stringParam.getRequestBodyExampleJson());
         stringParam.setRequestBodyExampleJson("json request body example");
@@ -530,10 +531,30 @@ public class PluginParameterNGTest {
     @Test
     public void testSetRequired() {
         System.out.println("setRequired");
-        
+
         final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
         assertFalse(stringParam.isRequired());
         stringParam.setRequired(true);
         assertTrue(stringParam.isRequired());
-    }    
+    }
+
+    /**
+     * Test of removeAllListeners method, of class PluginParameter.
+     */
+    @Test
+    public void testRemoveAllListeners() {
+        System.out.println("removeAllListeners");
+
+        final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
+        // Assert param has no listeners to begin with
+        assertTrue(stringParam.getListeners().isEmpty());
+
+        // Add a listner
+        stringParam.addListener(mock(PluginParameterListener.class));
+        assertFalse(stringParam.getListeners().isEmpty());
+
+        // Remove all listeners
+        stringParam.removeAllListeners();
+        assertTrue(stringParam.getListeners().isEmpty());
+    }
 }
