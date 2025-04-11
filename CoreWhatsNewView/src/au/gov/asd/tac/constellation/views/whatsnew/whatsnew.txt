@@ -1,12 +1,16 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
-== 2025-02-10 Spell checking in Constellation
+== 2025-04-11 Spell checking in Constellation
 <p>Spell checking is available in text areas of Constellation. E.g. Data access view (Extract Types and Extract Words Plugins). It can be added in other text areas as requested.</p>
 <p>When enabled, incorrect spellings and some grammar errors are highlighted and underlined. 
 Left Clicking on a highlighted word/phrase will popup a suggestions list to choose from. An "Ignore All" button is available for spelling errors which will ignore the same error in the current text area.</p>
 <p>Constellation Option "Enable spell checking in specified text areas" (Enabled by default) is used to enable/disable spell checking. 
 If it is set, the right click context menu option "Turn On Spell Checking" will be available on fields where it has been enabled, and it can be used to toggle on/off spell checking dynamically. </p>
+
+== 2025-02-27 Multi-choice input field
+<p>Multi-choice input fields now have the ability to type ahead and have drop down suggestions
+<p>Existing multi-choice drop down input fields have been replaced with multi-choice type ahead input field so they all look and behave the same.
 
 == 2025-02-06 Histogram can now perform aggregate functions on nullable Transaction data
 <p> The Histogram View has had an enhancement to its aggregate processing for <b>Links</b> and <b>Edges</b>.</p>
@@ -17,8 +21,8 @@ If it is set, the right click context menu option "Turn On Spell Checking" will 
 <p>This search uses the names of each help page and the category they are in for the table of contents to narrow down results.</p>
 
 == 2024-12-18 Animation updates
-<p>Direction Indicators animation moved to Animations -> Experimental.</p>
-<p>New Color Warp animation added to Animations -> Experimental.</p>
+<p>Direction Indicators animation moved to Experimental -> Animations.</p>
+<p>New Color Warp animation added to Experimental -> Animations.</p>
 <p>Pause/Resume/Stop animation options added.</p>
 
 == 2024-11-18 Word Cloud View no longer in Experimental
