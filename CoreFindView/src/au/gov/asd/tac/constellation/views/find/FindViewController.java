@@ -34,8 +34,11 @@ import au.gov.asd.tac.constellation.views.find.utilities.FindResult;
 import au.gov.asd.tac.constellation.views.find.utilities.FindResultsList;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -477,21 +480,39 @@ public class FindViewController {
 
         // If delete is chosen
         if (DialogDisplayer.getDefault().notify(dialog).equals(DELETE)) {
-            for (final FindResult result : foundResults) {
-                try {
-                    // Delete each found result
+            final HashMap<String, ArrayList<DeleteResultsPlugin>> graphDeletePluginMap = new HashMap<>();
+        
+            try {
+                for (final FindResult result : foundResults) {            
+                    // Create delete plugin for each found result
                     final DeleteResultsPlugin deleteResultsPlugin = new DeleteResultsPlugin(result);
-                    final Graph graph = GraphManager.getDefault().getAllGraphs().get(result.getGraphId());
-
-                    PluginExecution.withPlugin(deleteResultsPlugin).executeLater(graph).get();
-
-                } catch (final InterruptedException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                    Thread.currentThread().interrupt();
-                } catch (final ExecutionException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                }
-            }
+                    final String graphId = result.getGraphId();
+                    ArrayList<DeleteResultsPlugin> deleteResultsPluginsList = graphDeletePluginMap.get(graphId);
+                    if (deleteResultsPluginsList == null) {
+                        deleteResultsPluginsList = new ArrayList<>();
+                    }
+                    // store in map against graph id                    
+                    deleteResultsPluginsList.add(deleteResultsPlugin);
+                    graphDeletePluginMap.put(graphId, deleteResultsPluginsList);                                        
+                }                
+                // iterate and delete per graph
+                final Iterator<Entry<String,ArrayList<DeleteResultsPlugin>>> iter = graphDeletePluginMap.entrySet().iterator();
+                while (iter.hasNext()) {
+                    final Entry<String, ArrayList<DeleteResultsPlugin>> entrySet = (Entry)iter.next();
+                    final String graphId = entrySet.getKey();
+                    final ArrayList<DeleteResultsPlugin> pluginList = entrySet.getValue();
+                    final Graph graph = GraphManager.getDefault().getAllGraphs().get(graphId);
+                        
+                    for (final Object plugin : pluginList) {
+                        PluginExecution.withPlugin((DeleteResultsPlugin)plugin).executeLater(graph).get();
+                    }
+                }                
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                Thread.currentThread().interrupt();
+            } catch (final ExecutionException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            }            
         }
     }
 }

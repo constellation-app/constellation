@@ -94,7 +94,7 @@ public class ConstellationHelpDisplayerNGTest {
         try {
             tempFile = File.createTempFile("testfile", ".md");
             filePath = tempFile.getAbsolutePath();
-            tocFile = new File(Generator.getBaseDirectory() + File.separator + Generator.getTOCDirectory());
+            tocFile = new File(Generator.getTOCDirectory());
             tocFile.createNewFile();
 
             // contents of file

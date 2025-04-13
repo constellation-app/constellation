@@ -54,6 +54,7 @@ import javafx.geometry.Side;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
@@ -494,8 +495,15 @@ public class AnalyticConfigurationPane extends VBox {
         }
         final PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(pluginParameters, null);
         // The parameters should only be editable if we are looking at a category rather than a question.
-        pluginParametersPane.setDisable(questionListPane.isExpanded());
-        parametersTab.setContent(pluginParametersPane);
+        // TODO: Find out if users need to edit question parameters, 
+        // or if we can uncommented below code to disable editing parameters as intended
+        //pluginParametersPane.setDisable(questionListPane.isExpanded());
+
+        final ScrollPane pluginParametersPaneScrollPane = new ScrollPane();
+        pluginParametersPaneScrollPane.setFitToWidth(true);
+        pluginParametersPaneScrollPane.setContent(pluginParametersPane);
+
+        parametersTab.setContent(pluginParametersPaneScrollPane);
     }
 
     /**

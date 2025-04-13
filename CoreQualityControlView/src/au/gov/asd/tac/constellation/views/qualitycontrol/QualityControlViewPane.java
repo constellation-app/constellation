@@ -70,6 +70,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
@@ -123,10 +124,15 @@ public final class QualityControlViewPane extends BorderPane {
 
     private static final String DISABLE = "Disable";
     private static final String ENABLE = "Enable";
-    
+
     private static final String BLACK_TEXT_COLOR = "-fx-text-fill: black;";
     private static final String ENABLE_TEXT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : BLACK_TEXT_COLOR;
-    
+
+    // Colours to applyed to row background when row is seleted. Mixes with row's quality colour, as quality colour is slightly transparent
+    private static final String SELECTED_COLOR = JavafxStyleManager.isDarkTheme() ? "#E8E8E8" : "#808080";
+    private static final String SELECTED_UNFOCUSED_COLOR = JavafxStyleManager.isDarkTheme() ? "#808080" : "#BEBEBE";
+
+    private ArrayList<TableRow<QualityControlEvent>> selectedRowList = new ArrayList();
 
     /*firstClick is a workaround for currently a existing bug within ControlsFX object, which causes two clicks 
     to be registered upon the user's first click within the view pane when calling value.getClickCount()*/
@@ -137,7 +143,11 @@ public final class QualityControlViewPane extends BorderPane {
         readSerializedRuleEnabledStatuses();
 
         qualityTable = new TableView<>();
-        qualityTable.focusedProperty().addListener((observable, oldValue, newValue) -> firstClick = true);
+        qualityTable.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            firstClick = true;
+            // Update row's highlighting
+            setRowHighlight(newValue);
+        });
 
         identifierColumn = new TableColumn<>("Identifier");
         identifierColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.25));
@@ -175,6 +185,30 @@ public final class QualityControlViewPane extends BorderPane {
         qualityTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         qualityTable.setPlaceholder(wrappedLabel(Bundle.MSG_SelectSomething()));
         setCenter(qualityTable);
+
+        qualityTable.setRowFactory(tv -> {
+            TableRow<QualityControlEvent> row = new TableRow<>();
+            // Track each row's focus
+            row.selectedProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal) {
+                    // If list doesnt already contain this row, add
+                    if (!selectedRowList.contains(row)) {
+                        selectedRowList.add(row);
+                    }
+                    // Update highlighting
+                    setRowHighlight(qualityTable.isFocused());
+                } else {
+                    // Not selected
+                    // Remove from list if it's in there
+                    if (selectedRowList.contains(row)) {
+                        selectedRowList.remove(row);
+                    }
+                    // Remove highlight styling
+                    row.setStyle("");
+                }
+            });
+            return row;
+        });
 
         optionsPane = new FlowPane();
         optionsPane.setId("qualitycontrolview-flow-pane");
@@ -228,6 +262,12 @@ public final class QualityControlViewPane extends BorderPane {
 
         this.setId("qualitycontrolview-border-pane");
         this.setPadding(new Insets(5));
+    }
+
+    private void setRowHighlight(final boolean isFocused) {
+        for (final TableRow<QualityControlEvent> selectedRow : selectedRowList) {
+            selectedRow.setStyle(isFocused ? "-fx-background-color: " + SELECTED_COLOR + ";" : "-fx-background-color: " + SELECTED_UNFOCUSED_COLOR + ";");
+        }
     }
 
     public TableView<QualityControlEvent> getQualityTable() {
@@ -383,7 +423,7 @@ public final class QualityControlViewPane extends BorderPane {
      * @return a javafx style based on the given quality value.
      */
     public static String qualityStyle(final QualityCategory category) {
-        return qualityStyle(category, 1.0F);
+        return qualityStyle(category, 0.75F);
     }
 
     /**

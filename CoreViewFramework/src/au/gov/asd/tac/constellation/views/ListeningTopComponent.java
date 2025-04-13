@@ -135,8 +135,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
                 currentGraph = graph;
                 currentGraph.addGraphChangeListener(this);
 
-                final ReadableGraph readableGraph = currentGraph.getReadableGraph();
-                try {
+                try (final ReadableGraph readableGraph = currentGraph.getReadableGraph()) {
                     final Map<GlobalMonitor, Consumer<Graph>> globalMonitorsCopy;
                     synchronized (globalMonitors) {
                         globalMonitorsCopy = new HashMap<>(globalMonitors);
@@ -157,10 +156,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
                         attributeMonitorsCopy = new HashMap<>(attributeValueMonitors);
                     }
                     attributeMonitorsCopy.forEach((monitor, handler) -> monitor.update(readableGraph));
-                } finally {
-                    readableGraph.release();
-                }
-
+                } 
                 graphChanged(null);
             }
         }
@@ -177,73 +173,72 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
             return;
         }
 
-        final ReadableGraph readableGraph = currentGraph.getReadableGraph();
-        try {
-            final Map<GlobalMonitor, Consumer<Graph>> globalMonitorsCopy;
-            synchronized (globalMonitors) {
-                globalMonitorsCopy = new HashMap<>(globalMonitors);
-            }
-            globalMonitorsCopy.forEach((monitor, handler) -> {
-                LOGGER.finer("GraphChanged::CheckGlobal");
-
-                if (monitor.update(readableGraph) == MonitorTransition.CHANGED) {
-                    LOGGER.finer("GraphChanged::UpdateGlobal");
-
-                    if (handler != null) {
-                        handler.accept(currentGraph);
-                    }
+        if (currentGraph != null) {
+            try (final ReadableGraph readableGraph = currentGraph.getReadableGraph()) {
+                final Map<GlobalMonitor, Consumer<Graph>> globalMonitorsCopy;
+                synchronized (globalMonitors) {
+                    globalMonitorsCopy = new HashMap<>(globalMonitors);
                 }
-            });
-            final Map<StructureMonitor, Consumer<Graph>> structureMonitorsCopy;
-            synchronized (globalMonitors) {
-                structureMonitorsCopy = new HashMap<>(structureMonitors);
-            }
-            structureMonitorsCopy.forEach((monitor, handler) -> {
-                LOGGER.finer("GraphChanged::CheckStructure");
+                globalMonitorsCopy.forEach((monitor, handler) -> {
+                    LOGGER.finer("GraphChanged::CheckGlobal");
 
-                if (monitor.update(readableGraph) == MonitorTransition.CHANGED) {
-                    LOGGER.finer("GraphChanged::UpdateStructure");
+                    if (monitor.update(readableGraph) == MonitorTransition.CHANGED) {
+                        LOGGER.finer("GraphChanged::UpdateGlobal");
 
-                    if (handler != null) {
-                        handler.accept(currentGraph);
+                        if (handler != null) {
+                            handler.accept(currentGraph);
+                        }
                     }
+                });
+                final Map<StructureMonitor, Consumer<Graph>> structureMonitorsCopy;
+                synchronized (globalMonitors) {
+                    structureMonitorsCopy = new HashMap<>(structureMonitors);
                 }
-            });
-            final Map<AttributeCountMonitor, Consumer<Graph>> attributeCountMonitorsCopy;
-            synchronized (globalMonitors) {
-                attributeCountMonitorsCopy = new HashMap<>(attributeCountMonitors);
-            }
-            attributeCountMonitorsCopy.forEach((monitor, handler) -> {
-                LOGGER.finer("GraphChanged::CheckAttributeCount");
+                structureMonitorsCopy.forEach((monitor, handler) -> {
+                    LOGGER.finer("GraphChanged::CheckStructure");
 
-                if (monitor.update(readableGraph) == MonitorTransition.CHANGED) {
-                    LOGGER.finer("GraphChanged::UpdateAttributeCount");
+                    if (monitor.update(readableGraph) == MonitorTransition.CHANGED) {
+                        LOGGER.finer("GraphChanged::UpdateStructure");
 
-                    if (handler != null) {
-                        handler.accept(currentGraph);
+                        if (handler != null) {
+                            handler.accept(currentGraph);
+                        }
                     }
+                });
+                final Map<AttributeCountMonitor, Consumer<Graph>> attributeCountMonitorsCopy;
+                synchronized (globalMonitors) {
+                    attributeCountMonitorsCopy = new HashMap<>(attributeCountMonitors);
                 }
-            });
-            final Map<AttributeValueMonitor, Tuple<Consumer<Graph>, MonitorTransitionFilter>> attributeMonitorsCopy;
-            synchronized (globalMonitors) {
-                attributeMonitorsCopy = new HashMap<>(attributeValueMonitors);
-            }
-            attributeMonitorsCopy.forEach((monitor, handlerPair) -> {
-                LOGGER.finer("GraphChanged::CheckAttribute");
+                attributeCountMonitorsCopy.forEach((monitor, handler) -> {
+                    LOGGER.finer("GraphChanged::CheckAttributeCount");
 
-                final Consumer<Graph> handler = handlerPair.getFirst();
-                final MonitorTransitionFilter transitionFilter = handlerPair.getSecond();
-                monitor.update(readableGraph);
-                if (transitionFilter.matchesTransitions(monitor)) {
-                    LOGGER.log(Level.FINER, "GraphChanged::UpdateAttribute::{0}", monitor.getName());
+                    if (monitor.update(readableGraph) == MonitorTransition.CHANGED) {
+                        LOGGER.finer("GraphChanged::UpdateAttributeCount");
 
-                    if (handler != null) {
-                        handler.accept(currentGraph);
+                        if (handler != null) {
+                            handler.accept(currentGraph);
+                        }
                     }
+                });
+                final Map<AttributeValueMonitor, Tuple<Consumer<Graph>, MonitorTransitionFilter>> attributeMonitorsCopy;
+                synchronized (globalMonitors) {
+                    attributeMonitorsCopy = new HashMap<>(attributeValueMonitors);
                 }
-            });
-        } finally {
-            readableGraph.release();
+                attributeMonitorsCopy.forEach((monitor, handlerPair) -> {
+                    LOGGER.finer("GraphChanged::CheckAttribute");
+
+                    final Consumer<Graph> handler = handlerPair.getFirst();
+                    final MonitorTransitionFilter transitionFilter = handlerPair.getSecond();
+                    monitor.update(readableGraph);
+                    if (transitionFilter.matchesTransitions(monitor)) {
+                        LOGGER.log(Level.FINER, "GraphChanged::UpdateAttribute::{0}", monitor.getName());
+
+                        if (handler != null) {
+                            handler.accept(currentGraph);
+                        }
+                    }
+                });
+            }
         }
 
         handleGraphChange(event);
@@ -347,12 +342,9 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
      */
     private void initialiseMonitor(final Monitor monitor) {
         if (currentGraph != null) {
-            final ReadableGraph readableGraph = currentGraph.getReadableGraph();
-            try {
+            try (final ReadableGraph readableGraph = currentGraph.getReadableGraph()) {
                 monitor.update(readableGraph);
-            } finally {
-                readableGraph.release();
-            }
+            } 
         } else {
             monitor.reset();
         }
