@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -191,7 +191,7 @@ public class JsonIO {
         }
     }
 
-    public static Optional<String> getDefaultKeyboardShortcut(File preferenceDirectory) {
+    public static Optional<String> getDefaultKeyboardShortcut(final File preferenceDirectory) {
 
         for (int index = 1; index <= 5; index++) {
 

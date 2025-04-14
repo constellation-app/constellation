@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- *
+ * Reads from key press event on keyboard shortcut label
  * @author spica
  */
 public class RecordKeyboardShortcut  {
@@ -55,7 +55,7 @@ public class RecordKeyboardShortcut  {
     }
     
     //For unit test
-    public RecordKeyboardShortcut(KeyPressLabelDialog td) {
+    public RecordKeyboardShortcut(final KeyPressLabelDialog td) {
         this.td = td;
     }
     
