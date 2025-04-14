@@ -21,11 +21,13 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationManager;
 import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
 import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
 import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEventHandler;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
+import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateTransactionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateVertexPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectionPlugin;
@@ -36,6 +38,7 @@ import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.SceneAct
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionFreeformModel;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -143,7 +146,6 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     private final SelectionFreeformModel freeformModel = new SelectionFreeformModel();
 
-    private boolean announceNextFlush = false;
     private boolean handleEvents;
 
     private static final Logger LOGGER = Logger.getLogger(DefaultInteractionEventHandler.class.getName());
@@ -225,16 +227,14 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         if (interactionGraph != null) {
                             nextWaitTime = Math.max(0, beforeProcessing + handler.processEvent(interactionGraph) - System.currentTimeMillis());
                         } else {
-                            LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph");
+                            logNullInteractionGraph();                           
                         }
                         // Add any visual operations that need to occur after a graph flush.
                         final List<VisualOperation> operations = new LinkedList<>();
                         operationQueue.drainTo(operations);
-                        if (!operations.isEmpty()) {
-                            if (interactionGraph != null) {
-                                interactionGraph = interactionGraph.flush(announceNextFlush);
-                            }
-                            operations.forEach(op -> manager.addOperation(op));
+                        operations.forEach(op -> manager.addOperation(op));
+                        if (!operations.isEmpty() && interactionGraph != null) {
+                            interactionGraph = interactionGraph.flush(false);
                         }
                         final boolean waitForever = eventState.isMousePressed() || (eventState.getCurrentAction().equals(SceneAction.CREATING) && eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION));
                         waitTime = Math.max(nextWaitTime, time + waitTime - System.currentTimeMillis());
@@ -265,6 +265,18 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         handleEvents = true;
         eventHandlingThread.setName("Default Interaction Event Handler");
         eventHandlingThread.start();
+    }
+
+    private void logNullInteractionGraph() {
+        // info log for race condition when running animations
+        final GraphNode gn = GraphNode.getGraphNode(graph.getId());
+        final AnimationManager animationManager = ((VisualGraphTopComponent) gn.getTopComponent()).getAnimationManager();
+        
+        if (!animationManager.isAnimating()) {
+            LOGGER.log(Level.WARNING, "Unable to obtain lock on interactionGraph, event is queued");
+        } else {
+            LOGGER.log(Level.INFO, "Unable to obtain lock on interactionGraph during animation, event is queued");
+        }
     }
 
     @Override

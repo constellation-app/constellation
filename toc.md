@@ -27,7 +27,8 @@
       <a href="..\ext\docs\CoreInteractiveGraph\src\au\gov\asd\tac\constellation\graph\interaction\cut-copy-paste.md">Cut, Copy, Paste</a><br/>
       <a href="..\ext\docs\CoreInteractiveGraph\src\au\gov\asd\tac\constellation\graph\interaction\composite-nodes.md">Composite Nodes</a><br/>
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Visualisation" aria-expanded="false" aria-controls="Visualisation">Visualisation</button></h2></div>
-<div id="Visualisation" class="collapse" aria-labelledby="Visualisation" data-parent="#Visualisation"> <div class="card-body">      <a href="..\ext\docs\CoreUtilities\src\au\gov\asd\tac\constellation\utilities\decorators.md">Decorators</a><br/>
+<div id="Visualisation" class="collapse" aria-labelledby="Visualisation" data-parent="#Visualisation"> <div class="card-body">      <a href="..\ext\docs\CoreInteractiveGraph\src\au\gov\asd\tac\constellation\graph\interaction\general-animation.md">Animation</a><br/>
+      <a href="..\ext\docs\CoreUtilities\src\au\gov\asd\tac\constellation\utilities\decorators.md">Decorators</a><br/>
       <a href="..\ext\docs\CoreUtilities\src\au\gov\asd\tac\constellation\utilities\icons.md">Icons</a><br/>
 </a> </div> </div> </div></a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Selection" aria-expanded="false" aria-controls="Selection">Selection</button></h2></div>
 <div id="Selection" class="collapse" aria-labelledby="Selection" data-parent="#Selection"> <div class="card-body">    <a href="..\ext\docs\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\general-selection.md">General Selection</a><br/>

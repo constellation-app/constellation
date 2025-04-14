@@ -144,7 +144,6 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         final PluginParameter<MultiChoiceParameterValue> attributesParameter = MultiChoiceParameterType.build(ATTRIBUTES_PARAMETER_ID, GraphAttributeParameterValue.class);
         attributesParameter.setName("Attributes");
         attributesParameter.setDescription("The list of attribute names to include in the export");
-        attributesParameter.setEnabled(false);
         parameters.addParameter(attributesParameter);
 
         final PluginParameter<BooleanParameterValue> selectedOnlyParameter = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);

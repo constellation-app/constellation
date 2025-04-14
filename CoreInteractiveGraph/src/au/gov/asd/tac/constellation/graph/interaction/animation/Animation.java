@@ -18,118 +18,82 @@ package au.gov.asd.tac.constellation.graph.interaction.animation;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
-import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
-import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Base class for animations as well as static utilities for running animations.
- * <p>
- * The life-cycle of an animation is follows (this is a simplified version of
- * the logic that actually runs in an animation's thread):
- * <pre>
- * wg = graph.getWritableGraph()
- * animation.initialise(wg)
- * while (true) {
- *     animation.animate(wg)
- *     // wait for this long
- *     animation.getIntervalInMillis()
- * }
- * animation.reset(wg)
- * wg.commit()
- * </pre>
- * </p>
- * All animations run on their own thread, but at the moment only one animation
- * can be run at a time (this may be changed in the future if there is a
- * requirement).
+ * Base class for animations.
  *
+ * The flow of an animation is as follows: 
+ * <ol><li> Animations initialize themselves by ensuring that the graph is in a state that the animation can modify.
+ * Animations may check for specific attributes or node and transaction quantities. </li>
+ * <li> Animations run in frames. With each frame obtaining a graph lock modifying the graph and releasing 
+ * its lock to then wait a predefined amount of time before the next frame. </li>
+ * <li> When an animation finishes, It may reset the graph to a particular state or trigger another animation. 
+ * </li></ol>
+ * All animations run on their own thread, enabling concurrent animations.
+ * Animations may be disabled by an application option. In these cases animations with a finite number of 
+ * steps can simply skip and perform the required graph modification in a single frame.
+ * 
  * @author twilight_sparkle
+ * @author capricornunicorn123
  */
 public abstract class Animation {
 
-    private static Animation runningAnimation = null;
-
-    /**
-     * If there is a currently running animation, stop it.
-     */
-    public static final synchronized void stopAnimation() {
-        if (runningAnimation != null) {
-            runningAnimation.stop();
-        }
-        runningAnimation = null;
+    private WritableGraph wg;
+    public String graphID;
+    private boolean finished = false;
+    protected Thread animationThread;
+    private static final Logger LOGGER = Logger.getLogger(Animation.class.getName());
+    
+    public void setGraphID(final String graphID){
+        this.graphID = graphID;
     }
 
     /**
-     * Start the specified animation on the active graph. If an animation is
-     * currently running, stop it fist.
-     *
-     * @param animation The animation to run
-     */
-    public static final synchronized void startAnimation(final Animation animation) {
-        startAnimation(animation, GraphManager.getDefault().getActiveGraph());
-    }
-
-    /**
-     * Start the specified animation on the specified graph. If an animation is
-     * currently running, stop it fist.
-     *
-     * @param animation The animation to run
-     * @param graph The graph to run the animation on.
-     */
-    public static final synchronized void startAnimation(final Animation animation, final Graph graph) {
-        stopAnimation();
-        animation.run(graph);
-        runningAnimation = animation;
-    }
-
-    /**
-     * Initialise this animation.
-     * <p>
+     * Initialize this animation.
      * This method is called prior to any calls to {@link #animate} and allows
      * the animation to store any data that it will use over the course of the
-     * animation.
+     * animation. This method may also store initial state data for resetting 
+     * after the animation.
      *
-     * @param wg A write lock on the graph to initialise the animation with.
+     * @param wg A write lock on the graph to initialize the animation with.
      */
-    public abstract void initialise(GraphWriteMethods wg);
+    public abstract void initialise(final GraphWriteMethods wg);
 
     /**
      * Run one frame of the animation.
-     * <p>
-     * This method should modify the graph as necessary and return a list of
-     * visual changes that allow the relevant {@link VisualProcessor} to respond
-     * quickly to these changes (without having to wait until the lock on the
-     * graph is released).
+     * This method should modify the graph as necessary writing any changes 
+     * to the provided graph.
      *
      * @param wg A write lock on the graph the animation is running on.
      * @return
      */
-    public abstract List<VisualChange> animate(GraphWriteMethods wg);
+    public abstract void animate(final GraphWriteMethods wg);
 
     /**
      * Reset any ephemeral changes made by the animation.
-     * <p>
      * This method is called after all calls to {@link #animate} and allows the
      * animation to clean up any changes it made to the graph that should not
      * persist after the animation has concluded.
      *
      * @param wg A write lock on the graph to reset the animation on.
      */
-    public abstract void reset(GraphWriteMethods wg);
+    public abstract void reset(final GraphWriteMethods wg);
 
     /**
      * Get the interval in milliseconds between each frame of the animation.
+     * Note: Standard film frame rate is 24 fps which equates to 41.6 milliseconds per frame  
      *
      * @return The interval between frames for this animation.
      */
-    public abstract long getIntervalInMillis();
+    public long getIntervalInMillis() {
+        return 40;
+    }
 
     /**
      * Get the name of this animation.
-     * <p>
      * This name will be used to retrieve the write lock on the graph, and
      * consequentially if this animation is also significant, the name by which
      * the result of the animation can be undone/redone.
@@ -140,7 +104,6 @@ public abstract class Animation {
 
     /**
      * Get whether or not this animation is 'significant'.
-     * <p>
      * Significant animations will make significant edits on the graph, meaning
      * that their results can be undone/redone atomically.
      *
@@ -153,70 +116,118 @@ public abstract class Animation {
     /**
      * Marks this animation as finished, indicating that the next (or current)
      * call to animate will be the last.
-     * <p>
-     * This method is often called by {@link #animate} in implementations with a
+     * This method is called by {@link #animate} in implementations with a
      * finite number of frames.
      */
     protected final void setFinished() {
         finished = true;
     }
 
-    private boolean finished = false;
-
-    private Thread animationThread;
-
-    private void run(final Graph graph) {
-        if (GraphNode.getGraphNode(graph) != null) {
-            final VisualManager manager = GraphNode.getGraphNode(graph).getVisualManager();
+    /**
+     * Handles the variables that persist for the life-cycle of the animation
+     * and creates the animation thread.
+     * 
+     * @param graphId
+     */
+    public void run(final String graphId) {
+        final GraphNode gn = GraphNode.getGraphNode(graphId);
+        
+        if (gn != null) {
+            this.graphID = graphId;
+            final Graph graph = gn.getGraph();
+            // Create the Thread for this animaton
             animationThread = new Thread(() -> {
-                WritableGraph wg;
-                while (true) {
-                    try {
-                        wg = graph.getWritableGraph(getName(), isSignificant());
-                        break;
-                    } catch (InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
                 try {
-                    editGraph(manager, wg);
+                    if (lockGraphSafely(graph)) {
+                        initialise(wg);
+                        wg.commit();
+                        editGraph(graph);
+                    } 
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.INFO, String.format("Animation %s was interrupted", this.getName()));
                 } finally {
-                    wg.commit();
-                }
+                    if (lockGraphSafely(graph)) {                    
+                        reset(wg);
+                        wg.commit();
+                    }
+                    AnimationUtilities.notifyComplete(this);
+                }    
             });
-            animationThread.setName("Animation");
             animationThread.start();
         }
     }
 
-    private void editGraph(final VisualManager manager, WritableGraph wg) {
-        initialise(wg);
-        while (true) {
-            final List<VisualChange> changes = animate(wg);
-            if (!changes.isEmpty() && manager != null) {
-                manager.addMultiChangeOperation(changes);
-                wg = wg.flush(false);
-            }
-            if (finished) {
-                reset(wg);
-                break;
-            }
-            try {
-                Thread.sleep(getIntervalInMillis());
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                if (finished) {
-                    reset(wg);
-                    break;
+    /**
+     * Handles the flow of the life-cycle of the animation
+     * To enable concurrent animation as well as graph manipulation during animation 
+     * the animation must only hold graph locks when necessary
+     * @param graph
+     * @throws InterruptedException 
+     */
+    private void editGraph(final Graph graph) throws InterruptedException {
+        while (!finished) {
+            
+            if (!AnimationUtilities.isGraphAnimationsPaused(this.graphID)){    
+                // Animate a frame
+                if (lockGraphSafely(graph)) {
+                    animate(wg);
+                    wg.commit();
                 }
             }
+            
+            // Sleep until it is time for the next frame
+            Thread.sleep(getIntervalInMillis());
+
+        }
+    }
+    
+    /**
+     * Attempts to put a lock on the graph. 
+     * If a lock on the graph has been applied, will return true.
+     * @param graph
+     * @return 
+     */
+    private boolean lockGraphSafely(final Graph graph) {
+        try {
+            wg = graph.getWritableGraph(getName(), isSignificant());
+            return true;
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            LOGGER.log(Level.WARNING, String.format(
+                    "Unable to lock graph %s safely", graph.getId()));
+            return false;
         }
     }
 
-    private void stop() {
+    protected void stop() {
         setFinished();
-        if (animationThread != null) {
-            animationThread.interrupt();
-        }
     }
+    
+    /**
+     * Interrupt this animation.
+     */
+    public void interrupt() {
+        this.animationThread.interrupt();
+    }
+
+    /**
+     * This method enables finite animations to execute when animations have been disabled.
+     * Essentially the animation occurs in one frame. 
+     * @param graphId 
+     */
+    public void skip(final String graphId) {
+        final GraphNode gn = GraphNode.getGraphNode(graphId);
+        
+        if (gn != null) {
+            final Graph graph = gn.getGraph();
+            
+            if (lockGraphSafely(graph)) {
+                initialise(wg);
+                setFinalFrame(wg);
+                wg.commit();
+            }
+        }
+    };
+    
+    public abstract void setFinalFrame(final GraphWriteMethods wg);
 }

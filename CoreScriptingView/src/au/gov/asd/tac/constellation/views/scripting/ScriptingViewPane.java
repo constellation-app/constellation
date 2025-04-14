@@ -39,6 +39,7 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -210,11 +211,7 @@ public class ScriptingViewPane extends JPanel {
 
         this.helpButton = new JButton();
         helpButton.setIcon(UserInterfaceIconProvider.HELP.buildIcon(16, ConstellationColor.SKY.getJavaColor()));
-        helpButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                new HelpCtx(this.getClass().getPackage().getName()).display();
-            }
-        });
+        helpButton.addActionListener(evt -> new HelpCtx("au.gov.asd.tac.constellation.views.scripting.ScriptingViewTopComponent").display());
         
         this.executeButton = new JButton();
         executeButton.setText("Execute");

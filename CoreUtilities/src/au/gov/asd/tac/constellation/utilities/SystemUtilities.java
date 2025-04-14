@@ -24,17 +24,17 @@ import org.openide.windows.WindowManager;
 
 /**
  * General Utilities that are useful across the application and are not tied to any specific functionality group.
- * 
+ *
  * @author OrionsGuardian
  */
 public class SystemUtilities {
 
     private static final Logger LOGGER = Logger.getLogger(SystemUtilities.class.getName());
     private static JFrame mainframe = null;
-    
+
     /**
-     * This is the system property that is set to true in order to make the AWT
-     * thread run in headless mode for tests, etc.
+     * This is the system property that is set to true in order to make the AWT thread run in headless mode for tests,
+     * etc.
      */
     private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
 
@@ -56,11 +56,20 @@ public class SystemUtilities {
             LOGGER.log(Level.SEVERE, "Error Displaying Dialog", ex);
         }
     }
-    
+
     /**
-     * This returns the X position of where the main application window is located.
-     * Caters for multi-screen environments.
-     * 
+     * Return the internal reference to current App window
+     * @return the internal reference to current App window
+     */
+    public static JFrame getMainframe() {
+        captureMainframePosition();
+        return mainframe;
+    }
+
+    /**
+     * This returns the X position of where the main application window is located. Caters for multi-screen
+     * environments.
+     *
      * @return X position of main app window (returns 0 in headless environment)
      */
     public static double getMainframeXPos() {
@@ -72,9 +81,9 @@ public class SystemUtilities {
     }
 
     /**
-     * This returns the Y position of where the main application window is located.
-     * Caters for multi-screen environments.
-     * 
+     * This returns the Y position of where the main application window is located. Caters for multi-screen
+     * environments.
+     *
      * @return Y position of main app window (returns 0 in headless environment)
      */
     public static double getMainframeYPos() {
@@ -87,7 +96,7 @@ public class SystemUtilities {
 
     /**
      * This returns the width of the main application window.
-     * 
+     *
      * @return width of main app window (returns 640 in headless environment)
      */
     public static double getMainframeWidth() {
@@ -100,7 +109,7 @@ public class SystemUtilities {
 
     /**
      * This returns height of the main application window.
-     * 
+     *
      * @return height of main app window (returns 480 in headless environment)
      */
     public static double getMainframeHeight() {
@@ -110,5 +119,5 @@ public class SystemUtilities {
         }
         return mainframe.getSize().getHeight();
     }
-    
+
 }

@@ -65,7 +65,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class QualityControlViewPaneNGTest {
-    
+
     private static final Logger LOGGER = Logger.getLogger(QualityControlViewPaneNGTest.class.getName());
 
     private int vertexIdentifierAttribute;
@@ -161,7 +161,7 @@ public class QualityControlViewPaneNGTest {
             // this is inserted here means this will happens after the previous function call has finished processing in the JFX
             latch.countDown();
         });
-        
+
         latch.await();
         final int noOfItems = instance.getQualityTable().getItems().size();
         assertEquals(noOfItems, 0);
@@ -186,7 +186,7 @@ public class QualityControlViewPaneNGTest {
             // this is inserted here means this will happens after the previous function call has finished processing in the JFX
             latch.countDown();
         });
-        
+
         latch.await();
         final int noOfItems = instance.getQualityTable().getItems().size();
         assertEquals(noOfItems, 0);
@@ -211,7 +211,7 @@ public class QualityControlViewPaneNGTest {
             // this is inserted here means this will happens after the previous function call has finished processing in the JFX
             latch.countDown();
         });
-        
+
         latch.await();
         final int noOfItems = instance.getQualityTable().getItems().size();
         assertEquals(noOfItems, 2);
@@ -224,59 +224,60 @@ public class QualityControlViewPaneNGTest {
     public void testQualityStyle() {
         System.out.println("qualityStyle");
 
+        final float expectedAlpha = 0.75F;
+
         final String okStyle = QualityControlViewPane.qualityStyle(QualityCategory.OK);
-        assertEquals(okStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(0,200,0,%f);", 1.0f));
+        assertEquals(okStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(0,200,0,%f);", expectedAlpha));
         final String minorStyle = QualityControlViewPane.qualityStyle(QualityCategory.MINOR);
-        assertEquals(minorStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(90,150,255,%f);", 1.0f));
+        assertEquals(minorStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(90,150,255,%f);", expectedAlpha));
         final String mediumStyle = QualityControlViewPane.qualityStyle(QualityCategory.MEDIUM);
-        assertEquals(mediumStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(255,215,0,%f);", 1.0f));
+        assertEquals(mediumStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(255,215,0,%f);", expectedAlpha));
         final String majorStyle = QualityControlViewPane.qualityStyle(QualityCategory.MAJOR);
-        assertEquals(majorStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(255,102,0,%f);", 1.0f));
+        assertEquals(majorStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(255,102,0,%f);", expectedAlpha));
         final String severeStyle = QualityControlViewPane.qualityStyle(QualityCategory.SEVERE);
-        assertEquals(severeStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(255,%d,%d,%f);", 26, 26, 1.0f));
+        assertEquals(severeStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(255,%d,%d,%f);", 26, 26, expectedAlpha));
         final String criticalStyle = QualityControlViewPane.qualityStyle(QualityCategory.CRITICAL);
-        assertEquals(criticalStyle, String.format("-fx-text-fill: rgb(255,255,0); -fx-background-color: rgba(150,%d,%d,%f);", 13, 13, 1.0f));
+        assertEquals(criticalStyle, String.format("-fx-text-fill: rgb(255,255,0); -fx-background-color: rgba(150,%d,%d,%f);", 13, 13, expectedAlpha));
     }
-    
+
     /**
      * Test of readSerializedRuleEnabledStatuses method, of class QualityControlViewPane.
      */
     @Test
     public void testReadSerializedRuleEnabledStatuses() {
         System.out.println("readSerializedRuleEnabledStatuses");
-        
+
         try (
-                final MockedStatic<JsonUtilities> jsonUtilitiesMockedStatic = mockStatic(JsonUtilities.class);
-                final MockedStatic<QualityControlViewPane> qualityControlViewPaneMockedStatic = mockStatic(QualityControlViewPane.class)) {
+                final MockedStatic<JsonUtilities> jsonUtilitiesMockedStatic = mockStatic(JsonUtilities.class); final MockedStatic<QualityControlViewPane> qualityControlViewPaneMockedStatic = mockStatic(QualityControlViewPane.class)) {
             final Map<String, String> jsonMap = new HashMap<>();
             jsonMap.put("Missing type", "false");
             jsonMap.put("Unknown type", "true");
-            
+
             jsonUtilitiesMockedStatic.when(() -> JsonUtilities.getStringAsMap(any(JsonFactory.class), anyString()))
                     .thenReturn(jsonMap);
-            
+
             final MissingTypeRule mRule = new MissingTypeRule();
             final UnknownTypeRule uRule = new UnknownTypeRule();
-            
+
             final Map<QualityControlRule, Boolean> enabledMap = new HashMap<>();
-            
+
             qualityControlViewPaneMockedStatic.when(() -> QualityControlViewPane.getEnablementStatuses())
                     .thenReturn(enabledMap);
             qualityControlViewPaneMockedStatic.when(() -> QualityControlViewPane.readSerializedRuleEnabledStatuses())
                     .thenCallRealMethod();
-            
+
             QualityControlViewPane.readSerializedRuleEnabledStatuses();
-            
+
             // clearing results so that we can successfully grab the rules
             // other tests requiring results should be executing the rules anyway
             for (final QualityControlRule rule : enabledMap.keySet()) {
                 rule.clearResults();
             }
-            
+
             assertFalse(enabledMap.get(mRule));
             assertTrue(enabledMap.get(uRule));
         }
-        
+
     }
 
     /**
@@ -301,14 +302,14 @@ public class QualityControlViewPaneNGTest {
         assertEquals(result.get(mRule), QualityCategory.SEVERE);
         assertEquals(result.get(uRule), QualityCategory.MINOR);
     }
-    
+
     /**
      * Test of getPriorities method, of class QualityControlViewPane.
      */
     @Test
     public void testGetEnablementStatuses() {
         System.out.println("getEnablementStatuses");
-        
+
         final Map<QualityControlRule, Boolean> result = QualityControlViewPane.getEnablementStatuses();
         assertEquals(result.size(), rules.size());
 
@@ -324,7 +325,7 @@ public class QualityControlViewPaneNGTest {
         assertTrue(result.get(iiRule));
         assertTrue(result.get(mRule));
         assertTrue(result.get(uRule));
-    }  
+    }
 
     /**
      * Test of DeleteQualityControlEvents plugin with no events.

@@ -26,6 +26,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import org.testfx.api.FxToolkit;
+import org.testfx.util.WaitForAsyncUtils;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -59,6 +60,7 @@ public class MultiChoiceInputFieldNGTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
         try {
+            WaitForAsyncUtils.clearExceptions();
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);

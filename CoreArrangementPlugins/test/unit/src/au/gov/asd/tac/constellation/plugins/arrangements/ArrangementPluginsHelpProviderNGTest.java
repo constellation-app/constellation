@@ -61,9 +61,9 @@ public class ArrangementPluginsHelpProviderNGTest {
         expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.uncollide", arrangementModulePath + "uncollide-arrangement.md");
         expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.pinUnpin", arrangementModulePath + "pin-unpin-nodes.md");
 
-        ArrangementPluginsHelpProvider instance = new ArrangementPluginsHelpProvider();
+        final ArrangementPluginsHelpProvider instance = new ArrangementPluginsHelpProvider();
 
-        Map result = instance.getHelpMap();
+        final Map<String, String> result = instance.getHelpMap();
         assertTrue(expResult.equals(result));
 
     }
@@ -75,12 +75,11 @@ public class ArrangementPluginsHelpProviderNGTest {
     public void testGetHelpTOC() {
         System.out.println("getHelpTOC");
 
-        ArrangementPluginsHelpProvider instance = new ArrangementPluginsHelpProvider();
+        final ArrangementPluginsHelpProvider instance = new ArrangementPluginsHelpProvider();
         final String expResult = "ext" + SEP + "docs" + SEP + "CoreArrangementPlugins" + SEP + "src" + SEP + "au" + SEP
                 + "gov" + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "plugins" + SEP + "arrangements" + SEP
                 + "arrangements-toc.xml";
 
         assertEquals(instance.getHelpTOC(), expResult);
-
     }
 }
