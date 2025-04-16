@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -529,7 +528,7 @@ public class Shape {
 
         // Remove geopackage file if exists as it stores existing tables/indexes
         if (output.isFile()) {
-            Files.delete(output.toPath());
+            output.delete();
         }
         // write feature collection to geopackage
         try (final GeoPackage geoPackage = new GeoPackage(output)) {
