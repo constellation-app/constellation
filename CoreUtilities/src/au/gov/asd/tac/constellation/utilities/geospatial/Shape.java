@@ -526,6 +526,10 @@ public class Shape {
         featureEntry.setBounds(ReferencedEnvelope.EVERYTHING);
         featureEntry.setSrid(spatialReference.getSrid());
 
+        // Remove geopackage file if exists as it stores existing tables/indexes
+        if (output.isFile()) {
+            output.delete();
+        }
         // write feature collection to geopackage
         try (final GeoPackage geoPackage = new GeoPackage(output)) {
             geoPackage.add(featureEntry, featureCollection);
