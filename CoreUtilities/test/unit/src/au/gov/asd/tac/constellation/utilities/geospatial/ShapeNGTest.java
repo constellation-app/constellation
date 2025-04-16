@@ -1112,7 +1112,7 @@ public class ShapeNGTest {
         try {
             Shape.generateGeoPackage(id, getTestShapes(), getTestAttributes(), f, Shape.SpatialReference.WGS84);
             assertTrue(true);  //successful if no exception 
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             fail(ex.getMessage(), ex);
         }      
     }
