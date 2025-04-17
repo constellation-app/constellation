@@ -42,8 +42,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -104,6 +106,8 @@ public class AnalyticConfigurationPane extends VBox {
     private final Map<String, List<SelectableAnalyticPlugin>> categoryToPluginsMap;
     private final Map<AnalyticQuestionDescription<?>, List<SelectableAnalyticPlugin>> questionToPluginsMap;
     private final PluginParameters globalAnalyticParameters = new PluginParameters();
+
+    private final Set<PluginParameters> removeEntrys = new HashSet<>();
     private final List<PluginParameterListener> removeListeners = new ArrayList<>();
 
     public AnalyticConfigurationPane() {
@@ -486,23 +490,39 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
+     * Remove all listeners gained from populating the parameters plane
+     *
+     */
+    private void cleanupListeners() {
+        // For each PluginParameters that populateParameterPane() has encountered
+        for (final PluginParameters pluginParameters : removeEntrys) {
+            // Collect all listeners that need to be removed
+            final ArrayList<PluginParameterListener> toRemove = new ArrayList<>();
+            for (final var entry : pluginParameters.getParameters().entrySet()) {
+                for (final PluginParameterListener listener : removeListeners) {
+                    // Remove listener from pane
+                    if (entry.getValue().removeListener(listener)) {
+                        // Add to list, to remove from global list
+                        toRemove.add(listener);
+                    }
+                }
+            }
+
+            removeListeners.removeAll(toRemove);
+        }
+    }
+
+    /**
      * Populate the parameter pane based on the selected plugins
      *
      * @param pluginParameters
      */
     private void populateParameterPane(final PluginParameters pluginParameters) {
 
-        // Remove old listeners
-        final ArrayList<PluginParameterListener> toRemove = new ArrayList<>();
-        for (final var entry : pluginParameters.getParameters().entrySet()) {
-            for (final PluginParameterListener listener : removeListeners) {
-                if (entry.getValue().removeListener(listener)) {
-                    toRemove.add(listener);
-                }
-            }
-        }
+        cleanupListeners();
 
-        removeListeners.removeAll(toRemove);
+        // Add this PluginParameters to cleaning list
+        removeEntrys.add(pluginParameters);
 
         final List<PluginParameterListener> originalListeners = new ArrayList<>();
         final List<PluginParameterListener> updatedListeners = new ArrayList<>();
