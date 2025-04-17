@@ -255,20 +255,17 @@ public class AnalyticConfigurationPane extends VBox {
         });
 
         pluginList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            //System.out.println("Listener selected property... " + oldValue + " " + newValue);
             if (!selectionSuppressed) {
                 if (newValue != null) {
-                    //System.out.println("A");
                     populateDocumentationPane(newValue.getPlugin().getDocumentationUrl());
                     populateParameterPane(newValue.getAllParameters());
                 } else {
-                    //System.out.println("B");
                     if (currentQuestion != null) {
                         populateDocumentationPane(currentQuestion.getDocumentationUrl());
                     } else {
                         populateDocumentationPane(null);
                     }
-                    populateParameterPane(globalAnalyticParameters);;
+                    populateParameterPane(globalAnalyticParameters);
                 }
             }
         });
