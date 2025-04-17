@@ -493,7 +493,7 @@ public class AnalyticConfigurationPane extends VBox {
     private void populateParameterPane(final PluginParameters pluginParameters) {
 
         // Remove old listeners
-        final ArrayList<PluginParameterListener> toRemove = new ArrayList();
+        final ArrayList<PluginParameterListener> toRemove = new ArrayList<>();
         for (final var entry : pluginParameters.getParameters().entrySet()) {
             for (final PluginParameterListener listener : removeListeners) {
                 if (entry.getValue().removeListener(listener)) {
