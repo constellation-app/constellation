@@ -36,7 +36,6 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -538,23 +537,4 @@ public class PluginParameterNGTest {
         assertTrue(stringParam.isRequired());
     }
 
-//    /**
-//     * Test of removeAllListeners method, of class PluginParameter.
-//     */
-//    @Test
-//    public void testRemoveAllListeners() {
-//        System.out.println("removeAllListeners");
-//
-//        final PluginParameter<StringParameterValue> stringParam = new PluginParameter<>(new StringParameterValue("test"), new StringParameterType(), "my string parameter");
-//        // Assert param has no listeners to begin with
-//        assertTrue(stringParam.getListeners().isEmpty());
-//
-//        // Add a listner
-//        stringParam.addListener(mock(PluginParameterListener.class));
-//        assertFalse(stringParam.getListeners().isEmpty());
-//
-//        // Remove all listeners
-//        stringParam.removeAllListeners();
-//        assertTrue(stringParam.getListeners().isEmpty());
-//    }
 }

@@ -401,14 +401,6 @@ public class PluginParameter<V extends ParameterValue> {
     }
 
     /**
-     * Remove all listeners from this parameter.
-     *
-     */
-    public void removeAllListeners() {
-        listeners.clear();
-    }
-
-    /**
      * Returns list of all listeners for this parameter. Used mainly in testing
      *
      * @return list of all listeners
