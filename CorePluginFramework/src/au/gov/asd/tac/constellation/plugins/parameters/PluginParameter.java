@@ -396,8 +396,8 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @param listener The {@link PluginParameterListener} to remove.
      */
-    public void removeListener(final PluginParameterListener listener) {
-        listeners.remove(listener);
+    public boolean removeListener(final PluginParameterListener listener) {
+        return listeners.remove(listener);
     }
 
     /**
@@ -414,7 +414,7 @@ public class PluginParameter<V extends ParameterValue> {
      * @return list of all listeners
      *
      */
-    protected List<PluginParameterListener> getListeners() {
+    public List<PluginParameterListener> getListeners() {
         return listeners;
     }
 

@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
@@ -103,6 +104,11 @@ public class AnalyticConfigurationPane extends VBox {
     private final Map<String, List<SelectableAnalyticPlugin>> categoryToPluginsMap;
     private final Map<AnalyticQuestionDescription<?>, List<SelectableAnalyticPlugin>> questionToPluginsMap;
     private final PluginParameters globalAnalyticParameters = new PluginParameters();
+    private final PluginParameters parameterPaneParameters = new PluginParameters();
+
+    private final List<PluginParameterListener> removeListeners = new ArrayList<>();
+
+    private static final boolean USE_GLOBAL = true; // varible for testing changes, remmove eventually
 
     public AnalyticConfigurationPane() {
 
@@ -153,7 +159,8 @@ public class AnalyticConfigurationPane extends VBox {
         categoryList.getItems().addAll(categories);
         categoryList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             currentQuestion = null;
-            populateParameterPane(globalAnalyticParameters);
+            //populateParameterPane(globalAnalyticParameters);
+            populateParameterPane(USE_GLOBAL ? globalAnalyticParameters : parameterPaneParameters);
             setPluginsFromSelectedCategory();
         });
 
@@ -201,7 +208,8 @@ public class AnalyticConfigurationPane extends VBox {
                 }
             });
             populateDocumentationPane(newValue.getDocumentationUrl());
-            populateParameterPane(globalAnalyticParameters);
+            //populateParameterPane(globalAnalyticParameters);
+            populateParameterPane(USE_GLOBAL ? globalAnalyticParameters : parameterPaneParameters);
             setPluginsFromSelectedQuestion();
         });
 
@@ -214,7 +222,8 @@ public class AnalyticConfigurationPane extends VBox {
             questionListPane.setExpanded(!categoryListPane.isExpanded());
             if (categoryListPane.isExpanded()) {
                 currentQuestion = null;
-                populateParameterPane(globalAnalyticParameters);
+                //populateParameterPane(globalAnalyticParameters);
+                populateParameterPane(USE_GLOBAL ? globalAnalyticParameters : parameterPaneParameters);
                 setPluginsFromSelectedCategory();
                 AnalyticViewController.getDefault().setCategoriesVisible(true);
             }
@@ -225,7 +234,8 @@ public class AnalyticConfigurationPane extends VBox {
             if (questionListPane.isExpanded()) {
                 currentQuestion = questionList.getSelectionModel().getSelectedItem();
                 populateDocumentationPane(currentQuestion.getDocumentationUrl());
-                populateParameterPane(globalAnalyticParameters);
+                //populateParameterPane(globalAnalyticParameters);
+                populateParameterPane(USE_GLOBAL ? globalAnalyticParameters : parameterPaneParameters);
                 setPluginsFromSelectedQuestion();
                 AnalyticViewController.getDefault().setCategoriesVisible(false);
             }
@@ -253,17 +263,22 @@ public class AnalyticConfigurationPane extends VBox {
         });
 
         pluginList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            //System.out.println("Listener selected property... " + oldValue + " " + newValue);
             if (!selectionSuppressed) {
                 if (newValue != null) {
+                    //System.out.println("A");
                     populateDocumentationPane(newValue.getPlugin().getDocumentationUrl());
                     populateParameterPane(newValue.getAllParameters());
+                    //populateParameterPane(USE_GLOBAL ? globalAnalyticParameters : parameterPaneParameters);
                 } else {
+                    //System.out.println("B");
                     if (currentQuestion != null) {
                         populateDocumentationPane(currentQuestion.getDocumentationUrl());
                     } else {
                         populateDocumentationPane(null);
                     }
-                    populateParameterPane(globalAnalyticParameters);
+                    //populateParameterPane(globalAnalyticParameters);
+                    populateParameterPane(USE_GLOBAL ? globalAnalyticParameters : parameterPaneParameters);
                 }
             }
         });
@@ -489,16 +504,54 @@ public class AnalyticConfigurationPane extends VBox {
      * @param pluginParameters
      */
     private void populateParameterPane(final PluginParameters pluginParameters) {
+
+        // Remove old listeners
+        final ArrayList<PluginParameterListener> toRemove = new ArrayList();
+        for (final var entry : pluginParameters.getParameters().entrySet()) {
+            for (final PluginParameterListener listener : removeListeners) {
+                if (entry.getValue().removeListener(listener)) {
+                    toRemove.add(listener);
+                }
+            }
+        }
+
+        removeListeners.removeAll(toRemove);
+
+        final List<PluginParameterListener> originalListeners = new ArrayList<>();
+        final List<PluginParameterListener> updatedListeners = new ArrayList<>();
+
         // Clear existing listeners 
         for (final var entry : pluginParameters.getParameters().entrySet()) {
-            entry.getValue().removeAllListeners();
+            //entry.getValue().removeAllListeners();
+            originalListeners.addAll(entry.getValue().getListeners());
         }
+
+        //System.out.println("originalListeners.size(): " + originalListeners.size());
+
         final PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(pluginParameters, null);
+        //final PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(parameterPaneParameters, null);
+
+        //System.out.println("parameterPaneParameters:");
+        for (final var entry : pluginParameters.getParameters().entrySet()) {
+            //System.out.println("entry: " + entry + " entry.getKey() " + entry.getKey() + " entry.getValue() " + entry.getValue());
+            //globalAnalyticParameters.addListener(entry.getValue());
+            updatedListeners.addAll(entry.getValue().getListeners());
+        }
+
+        //System.out.println("updatedListeners.size(): " + updatedListeners.size());
+        //System.out.println("");
+        //removeListeners.clear();
+        for (final PluginParameterListener listener : updatedListeners) {
+            if (!originalListeners.contains(listener)) {
+                removeListeners.add(listener);
+            }
+        }
+        //System.out.println("removeListeners.size(): " + removeListeners.size());
+
         // The parameters should only be editable if we are looking at a category rather than a question.
         // TODO: Find out if users need to edit question parameters, 
         // or if we can uncommented below code to disable editing parameters as intended
         //pluginParametersPane.setDisable(questionListPane.isExpanded());
-
         final ScrollPane pluginParametersPaneScrollPane = new ScrollPane();
         pluginParametersPaneScrollPane.setFitToWidth(true);
         pluginParametersPaneScrollPane.setContent(pluginParametersPane);
@@ -631,6 +684,7 @@ public class AnalyticConfigurationPane extends VBox {
             this.parameters = new PluginParameters();
             parameters.addGroup(GLOBAL_PARAMS_GROUP, new PluginParametersPane.TitledSeparatedParameterLayout(GLOBAL_PARAMS_GROUP, 14, false));
             globalAnalyticParameters.getParameters().values().forEach(parameter -> parameters.addParameter(parameter, GLOBAL_PARAMS_GROUP));
+            //parameterPaneParameters.getParameters().values().forEach(parameter -> parameters.addParameter(parameter, GLOBAL_PARAMS_GROUP));
             final String parameterSpecificGroupName = plugin.getName() + " Parameters";
             parameters.addGroup(parameterSpecificGroupName, new PluginParametersPane.TitledSeparatedParameterLayout(parameterSpecificGroupName, 14, false));
             plugin.createParameters().getParameters().values().forEach(parameter -> parameters.addParameter(parameter, parameterSpecificGroupName));
@@ -662,6 +716,7 @@ public class AnalyticConfigurationPane extends VBox {
             final PluginParameters pluginParameters = new PluginParameters();
             parameters.getParameters().entrySet().forEach(parameter -> {
                 if (!globalAnalyticParameters.hasParameter(parameter.getKey())) {
+                    // if (!globalAnalyticParameters.hasParameter(parameter.getKey()) && !parameterPaneParameters.hasParameter(parameter.getKey())) {
                     pluginParameters.addParameter(parameter.getValue());
                 }
             });
