@@ -15,13 +15,33 @@
  */
 package au.gov.asd.tac.constellation.views.histogram.rewrite;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.histogram.AttributeType;
+import au.gov.asd.tac.constellation.views.histogram.Bin;
+import au.gov.asd.tac.constellation.views.histogram.BinComparator;
+import au.gov.asd.tac.constellation.views.histogram.BinCreator;
+import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
+import static au.gov.asd.tac.constellation.views.histogram.HistogramControls.CURRENT_PARAMETER_IDS;
+import au.gov.asd.tac.constellation.views.histogram.HistogramState;
+import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.control.MenuItem;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -43,7 +63,8 @@ public class HistogramPane extends BorderPane {
 
     // Styles
     private static final String HELP_STYLE = "-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null;";
-    private static final String BUTTON_STYLE = "-fx-border-color: grey; -fx-border-width: 1px;  -fx-border-radius: 3px; -fx-background-color: transparent;";
+    //private static final String BUTTON_STYLE = "-fx-border-color: grey; -fx-border-width: 1px;  -fx-border-radius: 3px; -fx-background-color: transparent;";
+    private static final String BUTTON_STYLE = "-fx-border-color: grey; -fx-border-width: 1px;  -fx-border-radius: 3px;";
 
     // Images
     private static final ImageView HELP_ICON = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
@@ -57,11 +78,44 @@ public class HistogramPane extends BorderPane {
     private static final String HELP_TOOLTIP = "Display help for Data Access";
 
     private final Button helpButton;
-    //private final HistogramTopComponent2 topComponent;
+    private final HistogramTopComponent2 topComponent;
 
     private final VBox viewPane;
 
+    private boolean isAdjusting = false;
+    private HistogramState currentHistogramState = null;
+//    private final DefaultComboBoxModel<String> propertyChoiceModel;
+//    private final DefaultComboBoxModel<BinFormatter> binFormatterChoiceModel;
+
+    private final ToggleButton vertexToggle;
+    private final ToggleButton transactionToggle;
+    private final ToggleButton edgeToggle;
+    private final ToggleButton linkToggle;
+
+    private final EnumMap<GraphElementType, ToggleButton> etToggles;
+
+    private final ComboBox categoryChoice;
+    private final ComboBox propertyChoice;
+
+    private final ComboBox binFormatterCombo;
+
+    private final ComboBox sortChoice;
+    private final ToggleButton descendingButton;
+
+    private final ComboBox selectionModeChoice;
+
+    private final Button selectButton;
+
+    private final Button filterSelectionButton;
+    private final Button clearFilterButton;
+
+    private final Button actionButton;
+
+    private final ContextMenu actionsMenu;
+
     public HistogramPane(final HistogramController histogramContoller) {
+
+        topComponent = histogramContoller.getParent();
 
         // TODO: replace set style for each button with a stylesheet
         //getStylesheets().add(getClass().getResource("resources/rule-pane-dark.css").toExternalForm());
@@ -83,26 +137,49 @@ public class HistogramPane extends BorderPane {
         ////////////////////
         // Graph Element
         ////////////////////
-        final Button nodeButton = new Button("Node", NODE_ICON);
-        final Button transactionButton = new Button("Transaction", TRANSACTION_ICON);
-        final Button edgeButton = new Button("Edge", EDGE_ICON);
-        final Button linkButton = new Button("Link", LINK_ICON);
+        vertexToggle = new ToggleButton("Node", NODE_ICON);
+        vertexToggle.setOnAction(e -> vertexToggleStateChanged());
 
-        nodeButton.setStyle(BUTTON_STYLE);
-        transactionButton.setStyle(BUTTON_STYLE);
-        edgeButton.setStyle(BUTTON_STYLE);
-        linkButton.setStyle(BUTTON_STYLE);
+        transactionToggle = new ToggleButton("Transaction", TRANSACTION_ICON);
+        transactionToggle.setOnAction(e -> transactionToggleStateChanged());
+
+        edgeToggle = new ToggleButton("Edge", EDGE_ICON);
+        edgeToggle.setOnAction(e -> edgeToggleStateChanged());
+
+        linkToggle = new ToggleButton("Link", LINK_ICON);
+        linkToggle.setOnAction(e -> linkToggleStateChanged());
+
+        vertexToggle.setStyle(BUTTON_STYLE);
+        transactionToggle.setStyle(BUTTON_STYLE);
+        edgeToggle.setStyle(BUTTON_STYLE);
+        linkToggle.setStyle(BUTTON_STYLE);
+
+        // Put all buttons in a group
+        final ToggleGroup graphElementGroup = new ToggleGroup();
+        vertexToggle.setToggleGroup(graphElementGroup);
+        transactionToggle.setToggleGroup(graphElementGroup);
+        edgeToggle.setToggleGroup(graphElementGroup);
+        linkToggle.setToggleGroup(graphElementGroup);
+
+        // Put in enum map
+        etToggles = new EnumMap<>(GraphElementType.class);
+        etToggles.put(GraphElementType.VERTEX, vertexToggle);
+        etToggles.put(GraphElementType.TRANSACTION, transactionToggle);
+        etToggles.put(GraphElementType.EDGE, edgeToggle);
+        etToggles.put(GraphElementType.LINK, linkToggle);
 
         final Label graphElementLabel = new Label("Graph Element");
 
         final HBox graphElementHBox = new HBox(4);
-        graphElementHBox.getChildren().addAll(graphElementLabel, nodeButton, transactionButton, edgeButton, linkButton);
+        graphElementHBox.getChildren().addAll(graphElementLabel, vertexToggle, transactionToggle, edgeToggle, linkToggle);
 
         ////////////////////
         // Category
         ////////////////////
-        final ComboBox categoryChoice = new ComboBox();
+        categoryChoice = new ComboBox();
         categoryChoice.getItems().addAll("");
+        categoryChoice.setOnAction(e -> categoryChoiceHandler());
+
         final Label categoryLabel = new Label("Category:");
         final HBox categoryHBox = new HBox(4);
         categoryHBox.getChildren().addAll(categoryLabel, categoryChoice);
@@ -110,8 +187,13 @@ public class HistogramPane extends BorderPane {
         ////////////////////
         // Property and Format
         ////////////////////
-        final ComboBox propertyChoice = new ComboBox();
-        propertyChoice.getItems().addAll("");
+        propertyChoice = new ComboBox();
+        propertyChoice.setOnAction(e -> propertyChoiceHandler());
+        propertyChoice.getItems().add("");
+
+        binFormatterCombo = new ComboBox();
+        binFormatterCombo.setOnAction(e -> binFormatterComboHandler());
+
         final ComboBox formatChoice = new ComboBox();
         formatChoice.getItems().addAll("");
 
@@ -122,32 +204,66 @@ public class HistogramPane extends BorderPane {
         ////////////////////
         // Sort
         ////////////////////
-        final ComboBox sortChoice = new ComboBox();
-//        for (BinComparator binComparator : BinComparator.values()) {
-//            if (binComparator.isAscending()) {
-//                sortChoice.add(binComparator);
-//            }
-//        }
+        sortChoice = new ComboBox();
+        sortChoice.setOnAction(e -> sortChoiceHandler());
+        for (final BinComparator binComparator : BinComparator.values()) {
+            if (binComparator.isAscending()) {
+                sortChoice.getItems().add(binComparator);
+            }
+        }
+
         final Label sortLabel = new Label("Sort:");
         final HBox sortHBox = new HBox(4);
         sortHBox.getChildren().addAll(sortLabel, sortChoice);
 
+        descendingButton = new ToggleButton();
+        descendingButton.setOnAction(e -> descendingButtonHandler());
+
         ////////////////////
         // Selection Mode
         ////////////////////
-        final ComboBox selectionModeChoice = new ComboBox();
+        selectionModeChoice = new ComboBox();
+        selectionModeChoice.setOnAction(e -> selectionModeChoiceHandler());
+
         final Label selectionModeLabel = new Label("Selection Mode:");
         final HBox selectionModeHBox = new HBox(4);
         selectionModeHBox.getChildren().addAll(selectionModeLabel, selectionModeChoice);
 
+        selectButton = new Button();
+        selectButton.setOnAction(e -> selectButtonHandler());
+
         ////////////////////
         // Filter
         ////////////////////
-        final Button filterOnSelectionButton = new Button("Filter On Selection");
-        final Button clearFilterButton = new Button("Clear Filter");
+        filterSelectionButton = new Button("Filter On Selection");
+        filterSelectionButton.setOnAction(e -> filterSelection());
+
+        clearFilterButton = new Button("Clear Filter");
+        clearFilterButton.setOnAction(e -> clearFilter());
+
+        actionButton = new Button("Action");
+        actionButton.setOnMouseClicked(e -> actionButtonMousePressed(e));
         final Label filterLabel = new Label("Filter:");
         final HBox filterHBox = new HBox(4);
-        filterHBox.getChildren().addAll(filterLabel, filterOnSelectionButton, clearFilterButton);
+        filterHBox.getChildren().addAll(filterLabel, filterSelectionButton, clearFilterButton, actionButton);
+
+        actionsMenu = new ContextMenu();
+
+        final MenuItem saveBinsToGraphMenuItem = new MenuItem("Save Bins to Graph");
+        saveBinsToGraphMenuItem.setOnAction(e -> saveBinsToGraph());
+        actionsMenu.getItems().add(saveBinsToGraphMenuItem);
+
+        final MenuItem saveBinsToClipboardMenuItem = new MenuItem("Save Bins to Clipboard");
+        //saveBinsToClipboardMenuItem.setOnAction(e -> topComponent.saveBinsToClipboard());
+        actionsMenu.getItems().add(saveBinsToClipboardMenuItem);
+
+        final MenuItem decreaseHeightBarMenuItem = new MenuItem("Decrease Height of Each Bin");
+        //decreaseHeightBarMenuItem.setOnAction(e -> topComponent.modifyBinHeight(-1));
+        actionsMenu.getItems().add(decreaseHeightBarMenuItem);
+
+        final MenuItem increaseHeightBarMenuItem = new MenuItem("Increase Height of Each Bin");
+        //increaseHeightBarMenuItem.setOnAction(e -> topComponent.modifyBinHeight(1));
+        actionsMenu.getItems().add(increaseHeightBarMenuItem);
 
         // Add everything to this viewPane
         viewPane = new VBox();
@@ -164,128 +280,256 @@ public class HistogramPane extends BorderPane {
         );
 
         this.setCenter(viewPane);
+
+        setHistogramState(null, null);
     }
 
-    /*
-public final void setHistogramState(HistogramState histogramState, Map<String, BinCreator> attributes) {
+    public final void setHistogramState(HistogramState histogramState, Map<String, BinCreator> attributes) {
+        System.out.println("HistogramPane setHistogramState");
 
         isAdjusting = true;
 
         if (histogramState != currentHistogramState) {
+            System.out.println("histogramState != currentHistogramState");
 
             if (histogramState == null) {
+                System.out.println("histogramState == null");
 
                 vertexToggle.setSelected(true);
-                etToggles.values().stream().forEach(toggle -> toggle.setEnabled(false));
+                etToggles.values().stream().forEach(toggle -> toggle.setDisable(true));
 
-                attributeTypeChoice.setSelectedIndex(0);
-                attributeTypeChoice.setEnabled(false);
+                categoryChoice.getSelectionModel().select(0);
+                categoryChoice.setDisable(true);
 
-                attributeChoiceModel.removeAllElements();
-                attributeChoiceModel.addElement("");
-                attributeChoice.setSelectedIndex(0);
-                attributeChoice.setEnabled(false);
+                propertyChoice.getItems().clear();
+                propertyChoice.getItems().add("");
+                propertyChoice.getSelectionModel().select(0);
+                propertyChoice.setDisable(true);
 
-                binFormatterChoiceModel.removeAllElements();
-                binFormatterChoiceModel.addElement(BinFormatter.DEFAULT_BIN_FORMATTER);
-                binFormatterCombo.setSelectedIndex(0);
-                binFormatterCombo.setEnabled(false);
+                binFormatterCombo.getItems().clear();
+                binFormatterCombo.getItems().add(BinFormatter.DEFAULT_BIN_FORMATTER);
+                binFormatterCombo.getSelectionModel().select(0);
+                binFormatterCombo.setDisable(true);
 
-                sortChoice.setSelectedIndex(0);
-                sortChoice.setEnabled(false);
+                sortChoice.getSelectionModel().select(0);
+                sortChoice.setDisable(true);
 
                 descendingButton.setSelected(false);
-                descendingButton.setEnabled(false);
+                descendingButton.setDisable(true);
 
-                selectionModeChoice.setSelectedIndex(0);
-                selectionModeChoice.setEnabled(false);
+                selectionModeChoice.getSelectionModel().select(0);
+                selectionModeChoice.setDisable(true);
 
-                selectButton.setEnabled(false);
+                selectButton.setDisable(true);
 
-                filterSelectionButton.setEnabled(false);
-                clearFilterButton.setEnabled(false);
+                filterSelectionButton.setDisable(true);
+                clearFilterButton.setDisable(true);
 
             } else {
+                System.out.println("histogramState NOT null");
 
                 if (currentHistogramState == null) {
-                    etToggles.values().stream().forEach(toggle -> toggle.setEnabled(true));
-                    attributeTypeChoice.setEnabled(true);
-                    attributeChoice.setEnabled(true);
-                    binFormatterCombo.setEnabled(true);
-                    sortChoice.setEnabled(true);
-                    descendingButton.setEnabled(true);
-                    selectionModeChoice.setEnabled(true);
+                    etToggles.values().stream().forEach(toggle -> toggle.setDisable(false));
+                    categoryChoice.setDisable(false);
+                    propertyChoice.setDisable(false);
+                    binFormatterCombo.setDisable(false);
+                    sortChoice.setDisable(false);
+                    descendingButton.setDisable(false);
+                    selectionModeChoice.setDisable(false);
                 }
 
                 etToggles.get(histogramState.getElementType()).setSelected(true);
 
-                attributeTypeChoice.removeAllItems();
-                for (AttributeType attributeType : AttributeType.values()) {
+                categoryChoice.getItems().clear();
+                for (final AttributeType attributeType : AttributeType.values()) {
                     if (attributeType.appliesToElementType(histogramState.getElementType())) {
-                        attributeTypeChoice.addItem(attributeType);
+                        categoryChoice.getItems().add(attributeType);
                     }
                 }
-                attributeTypeChoice.setSelectedItem(histogramState.getAttributeType());
+                categoryChoice.getSelectionModel().select(histogramState.getAttributeType());
 
-                attributeChoiceModel.removeAllElements();
-                attributes.keySet().stream().forEach(attribute -> attributeChoiceModel.addElement(attribute));
-                attributeChoice.setSelectedItem(histogramState.getAttribute());
+                propertyChoice.getItems().clear();
+                attributes.keySet().stream().forEach(attribute -> propertyChoice.getItems().add(attribute));
+                propertyChoice.getSelectionModel().select(histogramState.getAttribute());
 
-                binFormatterChoiceModel.removeAllElements();
+                binFormatterCombo.getItems().clear();
                 if (histogramState.getAttribute() != null) {
                     Bin checkBin = attributes.get(histogramState.getAttribute()).getBin();
                     if (checkBin != null) {
                         checkBin = checkBin.create();
-                        final ReadableGraph rg = topComponent.currentGraph.getReadableGraph();
-                        try {
+
+                        try (final ReadableGraph rg = topComponent.currentGraph.getReadableGraph()) {
                             if (histogramState.getAttributeType().getBinCreatorsGraphElementType() == null) {
                                 checkBin.init(rg, rg.getAttribute(histogramState.getElementType(), histogramState.getAttribute()));
                             } else {
                                 checkBin.init(rg, rg.getAttribute(histogramState.getAttributeType().getBinCreatorsGraphElementType(), histogramState.getAttribute()));
                             }
-                        } finally {
-                            rg.release();
                         }
                     }
-                    BinFormatter.getFormatters(checkBin).stream().forEach(formatter -> binFormatterChoiceModel.addElement(formatter));
-                    binFormatterCombo.setSelectedItem(histogramState.getBinFormatter());
+                    BinFormatter.getFormatters(checkBin).stream().forEach(formatter -> binFormatterCombo.getItems().add(formatter));
+                    binFormatterCombo.getSelectionModel().select(histogramState.getBinFormatter());
                 }
 
                 if (histogramState.getBinComparator().isAscending()) {
                     descendingButton.setSelected(false);
-                    sortChoice.setSelectedItem(histogramState.getBinComparator());
+                    sortChoice.getSelectionModel().select(histogramState.getBinComparator());
                 } else {
                     descendingButton.setSelected(true);
-                    sortChoice.setSelectedItem(histogramState.getBinComparator().getReverse());
+                    sortChoice.getSelectionModel().select(histogramState.getBinComparator().getReverse());
                 }
 
-                selectionModeChoice.setSelectedItem(histogramState.getBinSelectionMode());
+                selectionModeChoice.getSelectionModel().select(histogramState.getBinSelectionMode());
 
-                selectButton.setEnabled(histogramState.getBinSelectionMode() != BinSelectionMode.FREE_SELECTION);
+                selectButton.setDisable(histogramState.getBinSelectionMode() == BinSelectionMode.FREE_SELECTION);
 
-                filterSelectionButton.setEnabled(true);
-                clearFilterButton.setEnabled(histogramState.getFilter(histogramState.getElementType()) != null);
+                filterSelectionButton.setDisable(false);
+                clearFilterButton.setDisable(histogramState.getFilter(histogramState.getElementType()) == null);
             }
 
             currentHistogramState = histogramState;
 
         } else {
+            System.out.println("histogramState DOES EQUAL currentHistogramState");
 
-            attributeChoiceModel.removeAllElements();
+            propertyChoice.getItems().clear();
             if (attributes != null) {
-                attributes.keySet().stream().forEach(attribute -> attributeChoiceModel.addElement(attribute));
+                attributes.keySet().stream().forEach(attribute -> propertyChoice.getItems().add(attribute));
                 if (currentHistogramState != null) {
-                    attributeChoice.setSelectedItem(currentHistogramState.getAttribute());
+                    propertyChoice.getSelectionModel().select(currentHistogramState.getAttribute());
                 } else {
-                    attributeChoice.setSelectedIndex(0);
+                    propertyChoice.getSelectionModel().select(0);
                 }
             } else {
-                attributeChoiceModel.addElement("");
-                attributeChoice.setSelectedIndex(0);
+                propertyChoice.getItems().add("");
+                propertyChoice.getSelectionModel().select(0);
             }
         }
 
         isAdjusting = false;
     }
-     */
+
+    // TODO: fix all functions after adding used functions in top components
+    private void clearFilter() {
+        if (!isAdjusting) {
+            topComponent.clearFilter();
+        }
+    }
+
+    private void filterSelection() {
+        if (!isAdjusting) {
+            topComponent.filterOnSelection();
+        }
+    }
+
+    private void categoryChoiceHandler() {
+        if (!isAdjusting) {
+            topComponent.setAttributeType((AttributeType) categoryChoice.getValue());
+        }
+    }
+
+    private void selectButtonHandler() {
+        if (!isAdjusting) {
+            //currentHistogramState.getBinSelectionMode().select(topComponent);
+        }
+    }
+
+    private void selectionModeChoiceHandler() {
+        if (!isAdjusting) {
+            topComponent.setBinSelectionMode((BinSelectionMode) selectionModeChoice.getValue());
+        }
+    }
+
+    private void descendingButtonHandler() {
+        if (!isAdjusting) {
+            updateBinComparator();
+        }
+    }
+
+    private void sortChoiceHandler() {
+        if (!isAdjusting) {
+            updateBinComparator();
+        }
+    }
+
+    private void propertyChoiceHandler() {
+        if (!isAdjusting) {
+            topComponent.setAttribute((String) propertyChoice.getValue());
+        }
+    }
+
+    private void binFormatterComboHandler() {
+        if (!isAdjusting) {
+            final BinFormatter binFormatter = (BinFormatter) binFormatterCombo.getValue();
+
+            final PluginParameters parameters;
+            if (currentHistogramState != null && binFormatter.getClass() == currentHistogramState.getBinFormatter().getClass()) {
+                PluginParameters p = currentHistogramState.getBinFormatterParameters();
+                parameters = p == null ? null : p.copy();
+                binFormatter.updateParameters(parameters);
+            } else if (CURRENT_PARAMETER_IDS.containsKey(binFormatter)) {
+                parameters = CURRENT_PARAMETER_IDS.get(binFormatter).copy();
+                binFormatter.updateParameters(parameters);
+            } else {
+                parameters = binFormatter.createParameters();
+                binFormatter.updateParameters(parameters);
+            }
+
+            if (parameters != null) {
+                final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(binFormatter.getLabel(), parameters);
+                dialog.showAndWait();
+                if (PluginParametersDialog.OK.equals(dialog.getResult())) {
+                    CURRENT_PARAMETER_IDS.put(binFormatter, parameters.copy());
+                    topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getValue(), parameters);
+                } else if (currentHistogramState != null) {
+                    binFormatterCombo.getSelectionModel().select(currentHistogramState.getBinFormatter());
+                } else {
+                    // Do nothing
+                }
+            } else {
+                topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getValue(), null);
+            }
+        }
+    }
+
+    private void actionButtonMousePressed(final MouseEvent evt) {
+        actionsMenu.show(actionButton, evt.getScreenX(), evt.getScreenY());
+    }
+
+    private void vertexToggleStateChanged() {
+        if (!isAdjusting && vertexToggle.isSelected()) {
+            topComponent.setGraphElementType(GraphElementType.VERTEX);
+        }
+    }
+
+    private void transactionToggleStateChanged() {
+        if (!isAdjusting && transactionToggle.isSelected()) {
+            topComponent.setGraphElementType(GraphElementType.TRANSACTION);
+        }
+    }
+
+    private void edgeToggleStateChanged() {
+        if (!isAdjusting && edgeToggle.isSelected()) {
+            topComponent.setGraphElementType(GraphElementType.EDGE);
+        }
+    }
+
+    private void linkToggleStateChanged() {
+        if (!isAdjusting && linkToggle.isSelected()) {
+            topComponent.setGraphElementType(GraphElementType.LINK);
+        }
+    }
+
+//    private void helpButtonMousePressed() {
+//        final HelpCtx help = new HelpCtx("au.gov.asd.tac.constellation.views.histogram.HistogramTopComponent");
+//        help.display();
+//    }
+    private void saveBinsToGraph() {
+        topComponent.saveBinsToGraph();
+    }
+
+    private void updateBinComparator() {
+        BinComparator binComparator = (BinComparator) sortChoice.getValue();
+        topComponent.setBinComparator(this.descendingButton.isSelected() ? binComparator.getReverse() : binComparator);
+    }
+
 }
