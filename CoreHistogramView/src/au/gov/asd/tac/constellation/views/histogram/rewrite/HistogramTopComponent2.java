@@ -344,7 +344,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 //        }
     }
 
-    @Override
     protected void reset() {
         if (currentGraph != null) {
             try (final ReadableGraph rg = currentGraph.getReadableGraph()) {
