@@ -317,13 +317,8 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
     private void reset() {
         if (currentGraph != null) {
-            ReadableGraph rg = currentGraph.getReadableGraph();
-            try {
+            try (final ReadableGraph rg = currentGraph.getReadableGraph()){
                 reset(rg);
-            } finally {
-                if (rg != null) {
-                    rg.release();
-                }
             }
         } else {
             reset(null);
