@@ -263,10 +263,10 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
      */
     protected Set<Tuple<String, Attribute>> getRemovedAttributes(final TableViewState oldState, final TableViewState newState) {
         return new HashSet<>(CollectionUtils.subtract(
-                        oldState != null && oldState.getColumnAttributes() != null 
-                                ? oldState.getColumnAttributes() : new HashSet<>(),
-                        newState != null && newState.getColumnAttributes() != null 
-                                ? newState.getColumnAttributes() : new HashSet<>())
+                oldState != null && oldState.getColumnAttributes() != null
+                ? oldState.getColumnAttributes() : new HashSet<>(),
+                newState != null && newState.getColumnAttributes() != null
+                ? newState.getColumnAttributes() : new HashSet<>())
         );
     }
 
@@ -281,10 +281,10 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
      */
     protected Set<Tuple<String, Attribute>> getAddedAttributes(final TableViewState oldState, final TableViewState newState) {
         return new HashSet<>(CollectionUtils.subtract(
-                        newState != null && newState.getColumnAttributes() != null 
-                                ? newState.getColumnAttributes() : new HashSet<>(),
-                        oldState != null && oldState.getColumnAttributes() != null 
-                                ? oldState.getColumnAttributes() : new HashSet<>())
+                newState != null && newState.getColumnAttributes() != null
+                ? newState.getColumnAttributes() : new HashSet<>(),
+                oldState != null && oldState.getColumnAttributes() != null
+                ? oldState.getColumnAttributes() : new HashSet<>())
         );
     }
 
@@ -335,9 +335,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
     @Override
     protected String createStyle() {
-        return JavafxStyleManager.isDarkTheme() 
-            ? "resources/table-view-dark.css" 
-            : "resources/table-view-light.css";
+        return JavafxStyleManager.isDarkTheme()
+                ? "resources/table-view-dark.css"
+                : "resources/table-view-light.css";
     }
 
     @Override
@@ -413,6 +413,12 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     protected void handleGraphClosed(final Graph graph) {
         getTablePane().getActiveTableReference().updatePagination(
                 getTablePane().getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(), null, getTablePane());
+    }
+
+    @Override
+    public void handleComponentOpened() {
+        super.handleComponentOpened();
+        setFloating(0, 0);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

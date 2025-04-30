@@ -73,7 +73,7 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
         setName(Bundle.CTL_ConversationViewTopComponent());
         setToolTipText(Bundle.HINT_ConversationViewTopComponent());
         Platform.setImplicitExit(false);
-        controller = ConversationController.getDefault(); 
+        controller = ConversationController.getDefault();
         controller.getConversation().getGraphUpdateManager().setManaged(true);
         initContent();
     }
@@ -82,6 +82,7 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     protected void handleComponentOpened() {
         super.handleComponentOpened();
         controller.getConversation().getGraphUpdateManager().setManaged(needsUpdate());
+        setFloating(0, 0);
     }
 
     @Override
@@ -117,12 +118,12 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     protected ConversationBox createContent() {
         return controller.getConversationBox();
     }
-    
+
     @Override
     protected void handleNewGraph(final Graph graph) {
         controller.updateComponent();
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
