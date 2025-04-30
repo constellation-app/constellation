@@ -39,6 +39,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -51,6 +52,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -103,7 +105,7 @@ import org.openide.windows.TopComponent;
     "CTL_PlaneManagerTopComponent=Plane Manager",
     "HINT_PlaneManagerTopComponent=Plane Manager"
 })
-public final class PlaneManagerTopComponent extends TopComponent implements LookupListener, GraphChangeListener {
+public final class PlaneManagerTopComponent extends AbstractTopComponent implements LookupListener, GraphChangeListener {
 
     private static final String TITLE = "Import plane";
 
@@ -313,13 +315,14 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void componentOpened() {
+    protected void componentOpened() {
         result.addLookupListener(this);
         resultChanged(null);
+        setFloating(0, 0);
     }
 
     @Override
-    public void componentClosed() {
+    protected void componentClosed() {
         result.removeLookupListener(this);
         setNode(null);
     }
@@ -429,6 +432,16 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                                 + FileExtensionConstants.JPG + ")";
                     }
                 });
+    }
+
+    @Override
+    protected void initContent() {
+        // Required for AbstractTopComponent, intentionally left blank.
+    }
+
+    @Override
+    protected JScrollPane createContent() {
+        return jScrollPane1;
     }
 
     /**
