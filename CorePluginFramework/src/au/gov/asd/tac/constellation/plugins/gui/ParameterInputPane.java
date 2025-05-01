@@ -45,21 +45,20 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.InputValidator
  * @param <V> the Value represented by the {@link ConstellationInput}
  */
 public abstract class ParameterInputPane<T extends ParameterValue, V extends Object> extends HBox {
-    
+
     public final ConstellationInput<V> input;
     public final PluginParameter<T> parameter;
-    
     /**
      * Constructor taking in input and parameter.
+     *
      * @param input
      * @param parameter
      */
     protected ParameterInputPane(final ConstellationInput<V> input, final PluginParameter<T> parameter) {
-        
         //Set local references to the PluginParameter and the ConstellationInput
         this.input = input;
         this.parameter = parameter;
-        
+
         //Ensure the input pane is correctly vsible and enabled
         updateFieldEnablement();
         updateFieldVisibility();
@@ -76,16 +75,17 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
         
         getChildren().add(input);
     }
-    
+
     /**
-     * Gets the ConstellationInput that this ParameterInputPane uses.
-     * Ideally, this method should not have to exist. we want to protect the ConstellationInput from being accessed directly.
-     * @return 
+     * Gets the ConstellationInput that this ParameterInputPane uses. Ideally,
+     * this method should not have to exist. we want to protect the
+     * ConstellationInput from being accessed directly.
+     *
+     * @return
      */
     protected final ConstellationInput<V> getInputReference(){
         return input;
     }
-    
     /**
      * Sets the value of the input that this ParameterInputPane uses.
      * @param value Value to set in input field. 
@@ -97,11 +97,19 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
     public V getFieldValue(){
         return input.getValue();
     }
-    
-    public void setFieldHeight(final int lineCount){
+
+    public void setFieldHeight(final int lineCount) {
         input.setPrefRowCount(lineCount);
     }
-    
+
+    public void setFieldWidth(final double prefWidth) {
+        input.setPrefWidth(prefWidth);
+    }
+
+    public void setFieldMinWidth(final double prefWidth) {
+        input.setMinWidth(prefWidth);
+    }    
+
     public final void updateFieldVisibility() {
         input.setManaged(parameter.isVisible());
         this.setManaged(parameter.isVisible());
@@ -113,14 +121,19 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
     public final void updateFieldEnablement() {
         input.setDisable(!parameter.isEnabled());
     }
-    
+
     /**
-     * A {@link ConstellationInputListener} that can modify the relevant {@link PluginParameter} when a change on the {@link ConstellationInput} is found.
-     * Note: {@link ConstellationInput} will only notify {@link ConstellationInputFieldListeners} if the input input's TextProperty has 
-     * changed and the {@link ConstellationInput} has a valid value as defined by both the {@link ConstellationInput} and by the {@link PluginParameter} 
-     * via the {@link InputValidator}.
-     * 
-     * <p> Example Implementation: (T is the generic type that is supported by the respective {@link ConstellationInput})
+     * A {@link ConstellationInputListener} that can modify the relevant
+     * {@link PluginParameter} when a change on the {@link ConstellationInput}
+     * is found. Note: {@link ConstellationInput} will only notify
+     * {@link ConstellationInputFieldListeners} if the input input's
+     * TextProperty has changed and the {@link ConstellationInput} has a valid
+     * value as defined by both the {@link ConstellationInput} and by the
+     * {@link PluginParameter} via the {@link InputValidator}.
+     *
+     * <p>
+     * Example Implementation: (T is the generic type that is supported by the
+     * respective {@link ConstellationInput})
      * <pre>
      * return (ChangeListener<T>) (ObservableValue<? extends T> observable, T oldValue, T newValue) -> {
      *      if (newValue != null) {
@@ -129,41 +142,49 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
      *   };
      * </pre>
      * </p>
+     *
      * @param parameter
-     * @return A ChangeListener that can be registered to a ConstelationInputField
+     * @return A ChangeListener that can be registered to a
+     * ConstelationInputField
      */
     public abstract ConstellationInputListener getFieldChangeListener(final PluginParameter<T> parameter);
-    
-    /**
-     * A {@link PluginParameterListener} that can modify the relevant {@link ConstellationInput} when a change on 
-     * the {@link PluginParameter} is found.
-     * Note: Ensure that implementations of this method only modify the {@link ConstellationInput} if the value of the 
-     * {@link ConstellationInput} and the value of the {@link PluginParameter} differ. Failing to do so could cause the listener 
-     * implementations to call each other cyclically. 
-     * <p> Example Implementation: (T is the {@link ParameterValue} for this {@link PluginParameter})
-     * <pre>
-       return (PluginParameter<?> parameter, ParameterChange change) -> Platform.runLater(() -> {
-            //@SuppressWarnings("unchecked")
-            final PluginParameter<T> p = (PluginParameter<T>) parameter;
-            switch (change) {
-                case VALUE -> {
-                    // Don't change the value if it isn't necessary
-                    // manipulate the InputField reference accordingly
-                }
-                case PROPERTY -> {
 
-                    // Update the input if the something other than the ParameterValue has changed.
-                    //Could be options, colors, filetypes etc
-                }
-                case ENABLED -> updateFieldEnablement();
-                case VISIBLE -> updateFieldVisibility();
-                default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-            }
-        });
- </pre>
+    /**
+     * A {@link PluginParameterListener} that can modify the relevant
+     * {@link ConstellationInput} when a change on the {@link PluginParameter}
+     * is found. Note: Ensure that implementations of this method only modify
+     * the {@link ConstellationInput} if the value of the
+     * {@link ConstellationInput} and the value of the {@link PluginParameter}
+     * differ. Failing to do so could cause the listener implementations to call
+     * each other cyclically.
+     * <p>
+     * Example Implementation: (T is the {@link ParameterValue} for this
+     * {@link PluginParameter})
+     * <pre>
+     * return (PluginParameter<?> parameter, ParameterChange change) -> Platform.runLater(() -> {
+     * //@SuppressWarnings("unchecked")
+     * final PluginParameter<T> p = (PluginParameter<T>) parameter;
+     * switch (change) {
+     * case VALUE -> {
+     * // Don't change the value if it isn't necessary
+     * // manipulate the InputField reference accordingly
+     * }
+     * case PROPERTY -> {
+     *
+     * // Update the input if the something other than the ParameterValue has changed.
+     * //Could be options, colors, filetypes etc
+     * }
+     * case ENABLED -> updateFieldEnablement();
+     * case VISIBLE -> updateFieldVisibility();
+     * default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+     * }
+     * });
+     * </pre>
      * </p>
-     * @return A PluginParameterListener that can be registered to a PluginParameter
+     *
+     * @return A PluginParameterListener that can be registered to a
+     * PluginParameter
      */
     public abstract PluginParameterListener getPluginParameterListener();
-    
+
 }
