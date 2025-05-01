@@ -100,7 +100,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
     private static final int MIN_WIDTH = 425;
     private static final int MIN_HEIGHT = 400;
-    Graph currentGraph = null;
+
     //private final HistogramControls controls;
     //private final HistogramDisplay display;
     private long currentGlobalModificationCount = Long.MIN_VALUE;
@@ -220,10 +220,14 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         return graphNode == null ? null : graphNode.getUndoRedoManager();
     }
 
-    //TODO uncomment coed when we have display and controls sorted out
+    //TODO uncomment coded when we have display and controls sorted out
     @Override
     public void graphChanged(GraphChangeEvent evt) {
         super.graphChanged(evt);
+        if (evt == null) {
+            return;
+        }
+
         evt = evt.getLatest();
         if (evt.getId() > latestGraphChangeID) {
             latestGraphChangeID = evt.getId();
@@ -309,8 +313,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
                                 //display.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
                                 binCollectionModified = true;
                             }
-
-                            //controls.setHistogramState(currentHistogramState, binCreators);
+                            histogramPane.setHistogramState(currentHistogramState, binCreators);
                         }
 
                         if (selectedAttribute != Graph.NOT_FOUND) {
@@ -356,10 +359,9 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
     // TODO uncomment controls and dispaly code
     protected void reset(final GraphReadMethods graph) {
-
         if (graph == null) {
             currentHistogramState = null;
-            //controls.setHistogramState(null, null);
+            histogramPane.setHistogramState(null, null);
             //display.setBinCollection(null, BinIconMode.NONE);
             currentFilter = null;
             return;
@@ -383,8 +385,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         AttributeType binType = currentHistogramState.getAttributeType();
         binCreators.clear();
         binType.addBinCreators(graph, currentHistogramState.getElementType(), binCreators);
-
-        //controls.setHistogramState(currentHistogramState, binCreators);
+        histogramPane.setHistogramState(currentHistogramState, binCreators);
         //display.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
         currentFilter = currentHistogramState.getFilter(currentHistogramState.getElementType());
 
@@ -460,7 +461,8 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     }
 
     public void setAttributeType(final AttributeType attributeType) {
-        if (currentGraph != null && (currentHistogramState == null || attributeType != currentHistogramState.getAttributeType())) {
+        // For now comment out some of the coed below, as histogram state is kind of globally shared with old histopgram top compenent and doesnt update correclty here
+        if (currentGraph != null) {// && (currentHistogramState == null || attributeType != currentHistogramState.getAttributeType())) {
             HistogramState newHistogramState = new HistogramState(currentHistogramState);
             newHistogramState.setAttributeType(attributeType);
             newHistogramState.setAttribute("");

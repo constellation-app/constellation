@@ -35,6 +35,8 @@ import javafx.scene.control.MenuItem;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -194,12 +196,9 @@ public class HistogramPane extends BorderPane {
         binFormatterCombo = new ComboBox();
         binFormatterCombo.setOnAction(e -> binFormatterComboHandler());
 
-        final ComboBox formatChoice = new ComboBox();
-        formatChoice.getItems().addAll("");
-
         final Label propertyLabel = new Label("Property:");
         final HBox propertyHBox = new HBox(4);
-        propertyHBox.getChildren().addAll(propertyLabel, propertyChoice, formatChoice);
+        propertyHBox.getChildren().addAll(propertyLabel, propertyChoice, binFormatterCombo);
 
         ////////////////////
         // Sort
@@ -284,17 +283,12 @@ public class HistogramPane extends BorderPane {
         setHistogramState(null, null);
     }
 
-    public final void setHistogramState(HistogramState histogramState, Map<String, BinCreator> attributes) {
-        System.out.println("HistogramPane setHistogramState");
+    public final void setHistogramState(final HistogramState histogramState, final Map<String, BinCreator> attributes) {
 
         isAdjusting = true;
 
         if (histogramState != currentHistogramState) {
-            System.out.println("histogramState != currentHistogramState");
-
             if (histogramState == null) {
-                System.out.println("histogramState == null");
-
                 vertexToggle.setSelected(true);
                 etToggles.values().stream().forEach(toggle -> toggle.setDisable(true));
 
@@ -303,15 +297,18 @@ public class HistogramPane extends BorderPane {
 
                 propertyChoice.getItems().clear();
                 propertyChoice.getItems().add("");
-                propertyChoice.getSelectionModel().select(0);
+                Platform.runLater(() -> propertyChoice.getSelectionModel().select(0));
                 propertyChoice.setDisable(true);
 
-                binFormatterCombo.getItems().clear();
-                binFormatterCombo.getItems().add(BinFormatter.DEFAULT_BIN_FORMATTER);
-                binFormatterCombo.getSelectionModel().select(0);
-                binFormatterCombo.setDisable(true);
+                Platform.runLater(() -> {
+                    // Clear all items
+                    binFormatterCombo.setItems(FXCollections.observableArrayList());
+                    binFormatterCombo.getItems().add(BinFormatter.DEFAULT_BIN_FORMATTER);
+                    binFormatterCombo.getSelectionModel().select(0);
+                    binFormatterCombo.setDisable(true);
+                });
 
-                sortChoice.getSelectionModel().select(0);
+                Platform.runLater(() -> sortChoice.getSelectionModel().select(0));
                 sortChoice.setDisable(true);
 
                 descendingButton.setSelected(false);
@@ -326,7 +323,6 @@ public class HistogramPane extends BorderPane {
                 clearFilterButton.setDisable(true);
 
             } else {
-                System.out.println("histogramState NOT null");
 
                 if (currentHistogramState == null) {
                     etToggles.values().stream().forEach(toggle -> toggle.setDisable(false));
@@ -340,45 +336,54 @@ public class HistogramPane extends BorderPane {
 
                 etToggles.get(histogramState.getElementType()).setSelected(true);
 
-                categoryChoice.getItems().clear();
-                for (final AttributeType attributeType : AttributeType.values()) {
-                    if (attributeType.appliesToElementType(histogramState.getElementType())) {
-                        categoryChoice.getItems().add(attributeType);
-                    }
-                }
-                categoryChoice.getSelectionModel().select(histogramState.getAttributeType());
+                Platform.runLater(() -> {
+                    // Clear all items
+                    categoryChoice.setItems(FXCollections.observableArrayList());
 
-                propertyChoice.getItems().clear();
-                attributes.keySet().stream().forEach(attribute -> propertyChoice.getItems().add(attribute));
-                propertyChoice.getSelectionModel().select(histogramState.getAttribute());
-
-                binFormatterCombo.getItems().clear();
-                if (histogramState.getAttribute() != null) {
-                    Bin checkBin = attributes.get(histogramState.getAttribute()).getBin();
-                    if (checkBin != null) {
-                        checkBin = checkBin.create();
-
-                        try (final ReadableGraph rg = topComponent.currentGraph.getReadableGraph()) {
-                            if (histogramState.getAttributeType().getBinCreatorsGraphElementType() == null) {
-                                checkBin.init(rg, rg.getAttribute(histogramState.getElementType(), histogramState.getAttribute()));
-                            } else {
-                                checkBin.init(rg, rg.getAttribute(histogramState.getAttributeType().getBinCreatorsGraphElementType(), histogramState.getAttribute()));
-                            }
+                    for (final AttributeType attributeType : AttributeType.values()) {
+                        if (attributeType.appliesToElementType(histogramState.getElementType())) {
+                            categoryChoice.getItems().add(attributeType);
                         }
                     }
-                    BinFormatter.getFormatters(checkBin).stream().forEach(formatter -> binFormatterCombo.getItems().add(formatter));
-                    binFormatterCombo.getSelectionModel().select(histogramState.getBinFormatter());
-                }
+                    categoryChoice.getSelectionModel().select(histogramState.getAttributeType());
+
+                    // Clear all items
+                    propertyChoice.setItems(FXCollections.observableArrayList());
+
+                    attributes.keySet().stream().forEach(attribute -> propertyChoice.getItems().add(attribute));
+                    propertyChoice.getSelectionModel().select(histogramState.getAttribute());
+
+                    // Clear all items
+                    binFormatterCombo.setItems(FXCollections.observableArrayList());
+
+                    if (histogramState.getAttribute() != null) {
+                        Bin checkBin = attributes.get(histogramState.getAttribute()).getBin();
+                        if (checkBin != null) {
+                            checkBin = checkBin.create();
+
+                            try (final ReadableGraph rg = topComponent.getCurrentGraph().getReadableGraph()) {
+                                if (histogramState.getAttributeType().getBinCreatorsGraphElementType() == null) {
+                                    checkBin.init(rg, rg.getAttribute(histogramState.getElementType(), histogramState.getAttribute()));
+                                } else {
+                                    checkBin.init(rg, rg.getAttribute(histogramState.getAttributeType().getBinCreatorsGraphElementType(), histogramState.getAttribute()));
+                                }
+                            }
+                        }
+
+                        BinFormatter.getFormatters(checkBin).stream().forEach(formatter -> binFormatterCombo.getItems().add(formatter));
+                        binFormatterCombo.getSelectionModel().select(histogramState.getBinFormatter());
+                    }
+                });
 
                 if (histogramState.getBinComparator().isAscending()) {
                     descendingButton.setSelected(false);
                     sortChoice.getSelectionModel().select(histogramState.getBinComparator());
                 } else {
                     descendingButton.setSelected(true);
-                    sortChoice.getSelectionModel().select(histogramState.getBinComparator().getReverse());
+                    Platform.runLater(() -> sortChoice.getSelectionModel().select(histogramState.getBinComparator().getReverse()));
                 }
 
-                selectionModeChoice.getSelectionModel().select(histogramState.getBinSelectionMode());
+                Platform.runLater(() -> selectionModeChoice.getSelectionModel().select(histogramState.getBinSelectionMode()));
 
                 selectButton.setDisable(histogramState.getBinSelectionMode() == BinSelectionMode.FREE_SELECTION);
 
@@ -389,23 +394,26 @@ public class HistogramPane extends BorderPane {
             currentHistogramState = histogramState;
 
         } else {
-            System.out.println("histogramState DOES EQUAL currentHistogramState");
+            Platform.runLater(() -> {
+                // Clear all items
+                propertyChoice.setItems(FXCollections.observableArrayList());
 
-            propertyChoice.getItems().clear();
-            if (attributes != null) {
-                attributes.keySet().stream().forEach(attribute -> propertyChoice.getItems().add(attribute));
-                if (currentHistogramState != null) {
-                    propertyChoice.getSelectionModel().select(currentHistogramState.getAttribute());
+                if (attributes != null) {
+                    attributes.keySet().stream().forEach(attribute -> propertyChoice.getItems().add(attribute));
+                    if (currentHistogramState != null) {
+                        propertyChoice.getSelectionModel().select(currentHistogramState.getAttribute());
+                    } else {
+                        Platform.runLater(() -> propertyChoice.getSelectionModel().select(0));;
+                    }
                 } else {
-                    propertyChoice.getSelectionModel().select(0);
+                    propertyChoice.getItems().add("");
+                    Platform.runLater(() -> propertyChoice.getSelectionModel().select(0));
                 }
-            } else {
-                propertyChoice.getItems().add("");
-                propertyChoice.getSelectionModel().select(0);
-            }
+            });
         }
 
-        isAdjusting = false;
+        // Run later to avoid endless loop of updating because clear lists cause updates
+        Platform.runLater(() -> isAdjusting = false);
     }
 
     // TODO: fix all functions after adding used functions in top components
@@ -423,7 +431,10 @@ public class HistogramPane extends BorderPane {
 
     private void categoryChoiceHandler() {
         if (!isAdjusting) {
-            topComponent.setAttributeType((AttributeType) categoryChoice.getValue());
+            final AttributeType newValue = (AttributeType) categoryChoice.getValue();
+            if (newValue != null) {
+                topComponent.setAttributeType(newValue);
+            }
         }
     }
 
