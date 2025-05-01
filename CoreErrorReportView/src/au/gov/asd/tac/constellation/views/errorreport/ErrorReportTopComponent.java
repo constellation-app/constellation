@@ -124,11 +124,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         SEVERE("SEVERE"),
         WARNING("WARNING"),
         INFO("INFO"),
-        FINE("FINE"),
-        SEVERE_POPUP("POPUP SEVERE"),
-        WARNING_POPUP("POPUP WARNING"),
-        INFO_POPUP("POPUP INFO"),
-        FINE_POPUP("POPUP FINE");
+        FINE("FINE");
         private final String code;
 
         SeverityCode(final String severityCode) {
@@ -190,7 +186,8 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     private final Button helpButton = new Button("", helpImage);
 
     protected final PluginParameters params = new PluginParameters();
-    public static final String REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "report_settings");    
+    public static final String REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "report_settings");
+    public static final String POPUP_REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "popup_report_settings");
         
     ErrorReportTopComponent() {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -310,19 +307,42 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         reportSettingOptions.setDescription("Report Settings");
         MultiChoiceParameterType.setOptions(reportSettingOptions, Arrays.asList(
                 SeverityCode.SEVERE.getCode(), SeverityCode.WARNING.getCode(),
-                SeverityCode.INFO.getCode(), SeverityCode.FINE.getCode(),
-                SeverityCode.SEVERE_POPUP.getCode(),
-                SeverityCode.WARNING_POPUP.getCode(),
-                SeverityCode.INFO_POPUP.getCode(),
-                SeverityCode.FINE_POPUP.getCode()));
+                SeverityCode.INFO.getCode(), SeverityCode.FINE.getCode()));
+
         final List<String> checked = new ArrayList<>();
         checked.add(SeverityCode.SEVERE.getCode());
+        checked.add(SeverityCode.WARNING.getCode());
+        checked.add(SeverityCode.INFO.getCode());
+        checked.add(SeverityCode.FINE.getCode());
         MultiChoiceParameterType.setChoices(reportSettingOptions, checked);
         reportSettingOptions.setEnabled(true);
         
+        final PluginParameter<MultiChoiceParameterType.MultiChoiceParameterValue> popupReportSettingOptions = MultiChoiceParameterType.build(POPUP_REPORT_SETTINGS_PARAMETER_ID);
+        popupReportSettingOptions.setName("Popup Report Settings");
+        popupReportSettingOptions.setDescription("Popup Report Settings");
+        MultiChoiceParameterType.setOptions(popupReportSettingOptions, Arrays.asList(
+                SeverityCode.SEVERE.getCode(),
+                SeverityCode.WARNING.getCode(),
+                SeverityCode.INFO.getCode(),
+                SeverityCode.FINE.getCode()));
+        final List<String> popupChecked = new ArrayList<>();
+        popupChecked.add(SeverityCode.SEVERE.getCode());
+        popupChecked.add(SeverityCode.WARNING.getCode());
+        MultiChoiceParameterType.setChoices(popupReportSettingOptions, popupChecked);
+        popupReportSettingOptions.setEnabled(true);
+        
         getParams().addParameter(reportSettingOptions);
+        getParams().addParameter(popupReportSettingOptions);
         
         getParams().addController(REPORT_SETTINGS_PARAMETER_ID, (masterId, parameters, change) -> {
+            if (change == ParameterChange.VALUE) {
+                filterUpdateDate = new Date();
+                updateSettings();
+                updateSessionErrorsBox(-1);
+            }
+        });
+        
+        getParams().addController(POPUP_REPORT_SETTINGS_PARAMETER_ID, (masterId, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 filterUpdateDate = new Date();
                 updateSettings();
@@ -419,15 +439,28 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         minimizeButton.setMaxHeight(26);
 
         final ToolBar controlToolbar = new ToolBar();
+        final ToolBar controlToolbar2 = new ToolBar();
+        final Label reportSettingsLabel = new Label("Report:");
+        final Label popupReportSettingsLabel = new Label("Popup:");
         final MultiChoiceInputPane reportSettingPane = new MultiChoiceInputPane(reportSettingOptions);
-        reportSettingPane.setFieldWidth(250);
+        reportSettingPane.setFieldWidth(240);
         reportSettingPane.setFieldMinWidth(200);
-        reportSettingPane.setMaxHeight(20.0);
-        controlToolbar.getItems().addAll(settingsBox, reportSettingPane, popupControl, minimizeButton, maximizeButton, clearButton, helpButton);
-        final HBox toolboxContainer = new HBox();
+        
+        final MultiChoiceInputPane popupSettingPane = new MultiChoiceInputPane(popupReportSettingOptions);
+        popupSettingPane.setFieldWidth(240);
+        popupSettingPane.setFieldMinWidth(190);
+        
+        controlToolbar.getItems().addAll(settingsBox, minimizeButton, maximizeButton, popupControl, clearButton, helpButton);
+        controlToolbar2.getItems().addAll(reportSettingsLabel, reportSettingPane, popupReportSettingsLabel, popupSettingPane);
+        controlToolbar.setPrefHeight(20);
+        controlToolbar2.setPrefHeight(20);
+        
+        final VBox toolboxContainer = new VBox();
+        toolboxContainer.setPrefHeight(20);
+        toolboxContainer.setMaxHeight(20);
         toolboxContainer.getChildren().add(controlToolbar);
-        toolboxContainer.getChildren().add(new Label("  "));
-        GridPane.setHgrow(controlToolbar, Priority.ALWAYS);
+        toolboxContainer.getChildren().add(controlToolbar2);
+        GridPane.setHgrow(toolboxContainer, Priority.ALWAYS);
 
         componentBox.getChildren().add(toolboxContainer);
 
@@ -487,19 +520,24 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
 
         List<String> choices = new ArrayList<>();
+        List<String> choices2 = new ArrayList<>();
         if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
             MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
             choices = multiChoiceValue.getChoices();
+        }
+        if (getParams().hasParameter(POPUP_REPORT_SETTINGS_PARAMETER_ID)) {
+            MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(POPUP_REPORT_SETTINGS_PARAMETER_ID);
+            choices2 = multiChoiceValue.getChoices();
         }
         
         final boolean severeRepIsSelected = choices.contains(SeverityCode.SEVERE.getCode());
         final boolean warningRepIsSelected = choices.contains(SeverityCode.WARNING.getCode());
         final boolean infoRepIsSelected = choices.contains(SeverityCode.INFO.getCode());
         final boolean fineRepIsSelected = choices.contains(SeverityCode.FINE.getCode());
-        final boolean severePopupIsSelected = choices.contains(SeverityCode.SEVERE_POPUP.getCode());
-        final boolean warningPopupIsSelected = choices.contains(SeverityCode.WARNING_POPUP.getCode());
-        final boolean infoPopupIsSelected = choices.contains(SeverityCode.INFO_POPUP.getCode());
-        final boolean finePopupIsSelected = choices.contains(SeverityCode.FINE_POPUP.getCode());
+        final boolean severePopupIsSelected = choices2.contains(SeverityCode.SEVERE.getCode());
+        final boolean warningPopupIsSelected = choices2.contains(SeverityCode.WARNING.getCode());
+        final boolean infoPopupIsSelected = choices2.contains(SeverityCode.INFO.getCode());
+        final boolean finePopupIsSelected = choices2.contains(SeverityCode.FINE.getCode());
         
         final String severeReportBorderShade = severeRepIsSelected ? severeFill : INACTIVE_BACKGROUND;
         final String warningReportBorderShade = warningRepIsSelected ? warningFill : INACTIVE_BACKGROUND;
@@ -527,29 +565,34 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         
 
         List<String> choices = new ArrayList<>();
+        List<String> popupChoices = new ArrayList<>();        
         if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
             MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
             choices = multiChoiceValue.getChoices();
         }
        
+        if (getParams().hasParameter(POPUP_REPORT_SETTINGS_PARAMETER_ID)) {
+            MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(POPUP_REPORT_SETTINGS_PARAMETER_ID);
+            popupChoices = multiChoiceValue.getChoices();
+        }
         popupFilters.clear();
 
-        final boolean severePopupIsSelected = choices.contains(SeverityCode.SEVERE_POPUP.getCode());
-        final boolean warningPopupIsSelected = choices.contains(SeverityCode.WARNING_POPUP.getCode());
-        final boolean infoPopupIsSelected = choices.contains(SeverityCode.INFO_POPUP.getCode());
-        final boolean finePopupIsSelected = choices.contains(SeverityCode.FINE_POPUP.getCode());
+        final boolean severePopupIsSelected = popupChoices.contains(SeverityCode.SEVERE.getCode());
+        final boolean warningPopupIsSelected = popupChoices.contains(SeverityCode.WARNING.getCode());
+        final boolean infoPopupIsSelected = popupChoices.contains(SeverityCode.INFO.getCode());
+        final boolean finePopupIsSelected = popupChoices.contains(SeverityCode.FINE.getCode());
         
         if (severePopupIsSelected) {
-            popupFilters.add(SeverityCode.SEVERE_POPUP.getCode());
+            popupFilters.add(SeverityCode.SEVERE.getCode());
         }
         if (warningPopupIsSelected) {
-            popupFilters.add(SeverityCode.WARNING_POPUP.getCode());
+            popupFilters.add(SeverityCode.WARNING.getCode());
         }
         if (infoPopupIsSelected) {
-            popupFilters.add(SeverityCode.INFO_POPUP.getCode());
+            popupFilters.add(SeverityCode.INFO.getCode());
         }
         if (finePopupIsSelected) {
-            popupFilters.add(SeverityCode.FINE_POPUP.getCode());
+            popupFilters.add(SeverityCode.FINE.getCode());
         }
     }
 
@@ -583,19 +626,24 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         
         
         List<String> choices = new ArrayList<>();
+        List<String> popupChoices = new ArrayList<>();
+        
         if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
             MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
             choices = multiChoiceValue.getChoices();
         }
-        
+        if (getParams().hasParameter(POPUP_REPORT_SETTINGS_PARAMETER_ID)) {
+            MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(POPUP_REPORT_SETTINGS_PARAMETER_ID);
+            popupChoices = multiChoiceValue.getChoices();
+        }
         final boolean severeRepIsSelected = choices.contains(SeverityCode.SEVERE.getCode());
         final boolean warningRepIsSelected = choices.contains(SeverityCode.WARNING.getCode());
         final boolean infoRepIsSelected = choices.contains(SeverityCode.INFO.getCode());
         final boolean fineRepIsSelected = choices.contains(SeverityCode.FINE.getCode());
-        final boolean severePopupIsSelected = choices.contains(SeverityCode.SEVERE_POPUP.getCode());
-        final boolean warningPopupIsSelected = choices.contains(SeverityCode.WARNING_POPUP.getCode());
-        final boolean infoPopupIsSelected = choices.contains(SeverityCode.INFO_POPUP.getCode());
-        final boolean finePopupIsSelected = choices.contains(SeverityCode.FINE_POPUP.getCode());
+        final boolean severePopupIsSelected = popupChoices.contains(SeverityCode.SEVERE.getCode());
+        final boolean warningPopupIsSelected = popupChoices.contains(SeverityCode.WARNING.getCode());
+        final boolean infoPopupIsSelected = popupChoices.contains(SeverityCode.INFO.getCode());
+        final boolean finePopupIsSelected = popupChoices.contains(SeverityCode.FINE.getCode());
         
         
         if (severeRepIsSelected || severePopupIsSelected) {
@@ -669,10 +717,16 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                     MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
                     choices = multiChoiceValue.getChoices();
                 }
-                final boolean severePopupIsSelected = choices.contains(SeverityCode.SEVERE_POPUP.getCode());
-                final boolean warningPopupIsSelected = choices.contains(SeverityCode.WARNING_POPUP.getCode());
-                final boolean infoPopupIsSelected = choices.contains(SeverityCode.INFO_POPUP.getCode());
-                final boolean finePopupIsSelected = choices.contains(SeverityCode.FINE_POPUP.getCode());
+                
+                List<String> popupChoices = new ArrayList<>();
+                if (getParams().hasParameter(POPUP_REPORT_SETTINGS_PARAMETER_ID)) {
+                    MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(POPUP_REPORT_SETTINGS_PARAMETER_ID);
+                    popupChoices = multiChoiceValue.getChoices();
+                }
+                final boolean severePopupIsSelected = popupChoices.contains(SeverityCode.SEVERE.getCode());
+                final boolean warningPopupIsSelected = popupChoices.contains(SeverityCode.WARNING.getCode());
+                final boolean infoPopupIsSelected = popupChoices.contains(SeverityCode.INFO.getCode());
+                final boolean finePopupIsSelected = popupChoices.contains(SeverityCode.FINE.getCode());
         
                 for (int i = 0; i < errCount; i++) {
                     boolean allowPopupDisplay = false;
