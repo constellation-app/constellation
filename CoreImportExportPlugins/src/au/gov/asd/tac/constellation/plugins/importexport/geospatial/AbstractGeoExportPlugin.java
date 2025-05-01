@@ -120,6 +120,16 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         FileParameterType.setWarnOverwrite(outputParameter, true);
         parameters.addParameter(outputParameter);
 
+        // Check if file exists when output parameter changes, including error
+        parameters.addController(OUTPUT_PARAMETER_ID, (master, params, change) -> {
+            if (change == ParameterChange.VALUE || change == ParameterChange.ERROR) {
+                final String output = params.get(master.getId()).getStringValue();
+                if (doesFileExist(new File(output))) {
+                    NotifyDisplayer.display("Output file already exists", NotifyDescriptor.WARNING_MESSAGE);
+                }
+            }
+        });       
+
         if (includeSpatialReference()) {
             final PluginParameter<SingleChoiceParameterValue> spatialReferenceParameter = SingleChoiceParameterType.build(SPATIAL_REFERENCE_PARAMETER_ID, SpatialReferenceParameterValue.class);
             spatialReferenceParameter.setName("Spatial Reference");
@@ -161,7 +171,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                     final ReadableGraph readableGraph = activeGraph.getReadableGraph();
                     try {
                         final ParameterValue pv = params.get(master.getId()).getSingleChoice();
-                        if (pv instanceof ElementTypeParameterValue elementTypeParameterValue){
+                        if (pv instanceof ElementTypeParameterValue elementTypeParameterValue) {
                             final GraphElementType elementType = elementTypeParameterValue.getGraphElementType();
                             switch (elementType) {
                                 case TRANSACTION:
@@ -462,11 +472,11 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
             default -> throw new PluginException(PluginNotificationLevel.ERROR, "Invalid element type");
         }
 
-        try {            
+        try {
             //Check for valid path
             if (isValidPath(output)) {
-                exportGeo(parameters, GraphNode.getGraphNode(graph.getId()).getDisplayName(), shapes, attributes, output);  
-            }            
+                exportGeo(parameters, GraphNode.getGraphNode(graph.getId()).getDisplayName(), shapes, attributes, output);
+            }
         } catch (final IOException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex);
         }
@@ -478,18 +488,26 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                 ConstellationLoggerHelper.SUCCESS
         );
     }
-    
+
     private boolean isValidPath(File output) {
-        if(StringUtils.isEmpty(output.getPath())) {
+        if (StringUtils.isEmpty(output.getPath())) {
             NotifyDisplayer.display("Invalid output file provided, cannot be empty", NotifyDescriptor.ERROR_MESSAGE);
             return false;
         }
-        if(output.isDirectory() || (!output.isDirectory() 
+        if (output.isDirectory() || (!output.isDirectory()
                 && output.getParentFile() != null && output.getParentFile().exists())) {
             return true;
         } else {
             NotifyDisplayer.display("Invalid file path", NotifyDescriptor.ERROR_MESSAGE);
             return false;
-        }        
+        }
     }
-} 
+
+    protected boolean doesFileExist(final File output) {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))) {
+            return false;
+        }
+        // if file exists
+        return output.isFile();
+    }    
+}
