@@ -115,9 +115,18 @@ public class HistogramPane extends BorderPane {
 
     private final ContextMenu actionsMenu;
 
+    private final HistogramDisplay2 display;
+
     public HistogramPane(final HistogramController histogramContoller) {
 
         topComponent = histogramContoller.getParent();
+
+        // DISPLAY
+        display = new HistogramDisplay2(topComponent);
+
+//        final ScrollPane displayScroll = new ScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        //final ScrollPane displayScroll = new ScrollPane();
+        //displayScroll.getVerticalScrollBar().setUnitIncrement(HistogramDisplay.MAXIMUM_BAR_HEIGHT);
 
         // TODO: replace set style for each button with a stylesheet
         //getStylesheets().add(getClass().getResource("resources/rule-pane-dark.css").toExternalForm());
@@ -269,6 +278,7 @@ public class HistogramPane extends BorderPane {
         viewPane.prefWidthProperty().bind(this.widthProperty());
 
         viewPane.getChildren().addAll(
+                display,
                 helpButton,
                 graphElementHBox,
                 categoryHBox,

@@ -129,12 +129,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         setToolTipText(Bundle.HINT_HistogramTopComponent2());
         this.setMinimumSize(new java.awt.Dimension(MIN_WIDTH, MIN_HEIGHT));
 
-//        controls = new HistogramControls(this);
-//        add(controls, BorderLayout.SOUTH);
-//        display = new HistogramDisplay(null);
-//        final JScrollPane displayScroll = new JScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-//        displayScroll.getVerticalScrollBar().setUnitIncrement(HistogramDisplay.MAXIMUM_BAR_HEIGHT);
-        // add(displayScroll, BorderLayout.CENTER);
         histogramController = HistogramController.getDefault().init(this);
         histogramPane = new HistogramPane(histogramController);
 
