@@ -71,8 +71,10 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
             this.getStyleClass().remove(NULL_VALUE_CLASS);
             if (item != null) {           
                 final Text text = getWrappingText(item);                
-                this.setGraphic(text);               
+                this.setGraphic(text);    
+                this.setText("");
             } else {
+                this.setGraphic(null);
                 this.setText(NO_VALUE_TEXT);
                 this.getStyleClass().add(NULL_VALUE_CLASS);
             }
