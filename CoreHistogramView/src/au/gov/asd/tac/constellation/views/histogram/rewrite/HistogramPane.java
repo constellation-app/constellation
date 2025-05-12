@@ -24,12 +24,15 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.histogram.AttributeType;
 import au.gov.asd.tac.constellation.views.histogram.Bin;
+import au.gov.asd.tac.constellation.views.histogram.BinCollection;
 import au.gov.asd.tac.constellation.views.histogram.BinComparator;
 import au.gov.asd.tac.constellation.views.histogram.BinCreator;
+import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
 import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
 import static au.gov.asd.tac.constellation.views.histogram.HistogramControls.CURRENT_PARAMETER_IDS;
 import au.gov.asd.tac.constellation.views.histogram.HistogramState;
 import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.MenuItem;
 import java.util.EnumMap;
@@ -123,11 +126,12 @@ public class HistogramPane extends BorderPane {
 
         // DISPLAY
         display = new HistogramDisplay2(topComponent);
+        final ScrollPane displayScroll = new ScrollPane();
+        displayScroll.setContent(display);
 
 //        final ScrollPane displayScroll = new ScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         //final ScrollPane displayScroll = new ScrollPane();
         //displayScroll.getVerticalScrollBar().setUnitIncrement(HistogramDisplay.MAXIMUM_BAR_HEIGHT);
-
         // TODO: replace set style for each button with a stylesheet
         //getStylesheets().add(getClass().getResource("resources/rule-pane-dark.css").toExternalForm());
         ////////////////////
@@ -149,16 +153,20 @@ public class HistogramPane extends BorderPane {
         // Graph Element
         ////////////////////
         vertexToggle = new ToggleButton("Node", NODE_ICON);
-        vertexToggle.setOnAction(e -> vertexToggleStateChanged());
+        //vertexToggle.setOnAction(e -> vertexToggleStateChanged());
+        vertexToggle.setOnAction(e -> toggleStateChanged(GraphElementType.VERTEX));
 
         transactionToggle = new ToggleButton("Transaction", TRANSACTION_ICON);
-        transactionToggle.setOnAction(e -> transactionToggleStateChanged());
+        //transactionToggle.setOnAction(e -> transactionToggleStateChanged());
+        transactionToggle.setOnAction(e -> toggleStateChanged(GraphElementType.TRANSACTION));
 
         edgeToggle = new ToggleButton("Edge", EDGE_ICON);
-        edgeToggle.setOnAction(e -> edgeToggleStateChanged());
+        //edgeToggle.setOnAction(e -> edgeToggleStateChanged());
+        edgeToggle.setOnAction(e -> toggleStateChanged(GraphElementType.EDGE));
 
         linkToggle = new ToggleButton("Link", LINK_ICON);
-        linkToggle.setOnAction(e -> linkToggleStateChanged());
+        //linkToggle.setOnAction(e -> linkToggleStateChanged());
+        linkToggle.setOnAction(e -> toggleStateChanged(GraphElementType.LINK));
 
         vertexToggle.setStyle(BUTTON_STYLE);
         transactionToggle.setStyle(BUTTON_STYLE);
@@ -278,7 +286,7 @@ public class HistogramPane extends BorderPane {
         viewPane.prefWidthProperty().bind(this.widthProperty());
 
         viewPane.getChildren().addAll(
-                display,
+                displayScroll,
                 helpButton,
                 graphElementHBox,
                 categoryHBox,
@@ -289,6 +297,9 @@ public class HistogramPane extends BorderPane {
         );
 
         this.setCenter(viewPane);
+
+        // Update dispaly for initial values
+        updateDisplay();
 
         setHistogramState(null, null);
     }
@@ -426,16 +437,34 @@ public class HistogramPane extends BorderPane {
         Platform.runLater(() -> isAdjusting = false);
     }
 
+    private void updateDisplay() {
+        display.updateDisplay();
+    }
+
+    public void setBinCollection(final BinCollection binCollection, final BinIconMode binIconMode) {
+        display.setBinCollection(binCollection, binIconMode);
+    }
+
+    public void setBinSelectionMode(final BinSelectionMode binSelectionMode) {
+        display.setBinSelectionMode(binSelectionMode);
+    }
+
+    public void updateBinCollection() {
+        display.updateBinCollection();
+    }
+
     // TODO: fix all functions after adding used functions in top components
     private void clearFilter() {
         if (!isAdjusting) {
             topComponent.clearFilter();
+            updateDisplay();
         }
     }
 
     private void filterSelection() {
         if (!isAdjusting) {
             topComponent.filterOnSelection();
+            updateDisplay();
         }
     }
 
@@ -444,6 +473,7 @@ public class HistogramPane extends BorderPane {
             final AttributeType newValue = (AttributeType) categoryChoice.getValue();
             if (newValue != null) {
                 topComponent.setAttributeType(newValue);
+                updateDisplay();
             }
         }
     }
@@ -451,30 +481,35 @@ public class HistogramPane extends BorderPane {
     private void selectButtonHandler() {
         if (!isAdjusting) {
             //currentHistogramState.getBinSelectionMode().select(topComponent);
+            //updateDisplay();
         }
     }
 
     private void selectionModeChoiceHandler() {
         if (!isAdjusting) {
             topComponent.setBinSelectionMode((BinSelectionMode) selectionModeChoice.getValue());
+            updateDisplay();
         }
     }
 
     private void descendingButtonHandler() {
         if (!isAdjusting) {
             updateBinComparator();
+            updateDisplay();
         }
     }
 
     private void sortChoiceHandler() {
         if (!isAdjusting) {
             updateBinComparator();
+            updateDisplay();
         }
     }
 
     private void propertyChoiceHandler() {
         if (!isAdjusting) {
             topComponent.setAttribute((String) propertyChoice.getValue());
+            updateDisplay();
         }
     }
 
@@ -509,34 +544,19 @@ public class HistogramPane extends BorderPane {
             } else {
                 topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getValue(), null);
             }
+            updateDisplay();
         }
     }
 
     private void actionButtonMousePressed(final MouseEvent evt) {
         actionsMenu.show(actionButton, evt.getScreenX(), evt.getScreenY());
+        updateDisplay();
     }
 
-    private void vertexToggleStateChanged() {
-        if (!isAdjusting && vertexToggle.isSelected()) {
-            topComponent.setGraphElementType(GraphElementType.VERTEX);
-        }
-    }
-
-    private void transactionToggleStateChanged() {
-        if (!isAdjusting && transactionToggle.isSelected()) {
-            topComponent.setGraphElementType(GraphElementType.TRANSACTION);
-        }
-    }
-
-    private void edgeToggleStateChanged() {
-        if (!isAdjusting && edgeToggle.isSelected()) {
-            topComponent.setGraphElementType(GraphElementType.EDGE);
-        }
-    }
-
-    private void linkToggleStateChanged() {
+    private void toggleStateChanged(final GraphElementType state) {
         if (!isAdjusting && linkToggle.isSelected()) {
-            topComponent.setGraphElementType(GraphElementType.LINK);
+            topComponent.setGraphElementType(state);
+            updateDisplay();
         }
     }
 

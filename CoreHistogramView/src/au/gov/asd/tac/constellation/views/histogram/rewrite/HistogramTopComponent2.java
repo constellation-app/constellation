@@ -305,6 +305,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
                             if (currentHistogramState.getBinSelectionMode() != oldHistogramState.getBinSelectionMode() && currentBinCollection != null) {
                                 //display.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
+                                histogramPane.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
                                 binCollectionModified = true;
                             }
                             histogramPane.setHistogramState(currentHistogramState, binCreators);
@@ -323,7 +324,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
                         }
 
                         if (binCollectionModified) {
-                            //display.updateBinCollection();
+                            histogramPane.updateBinCollection();
                         }
                     }
 
@@ -353,10 +354,12 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
     // TODO uncomment controls and dispaly code
     protected void reset(final GraphReadMethods graph) {
+        System.out.println("reset");
         if (graph == null) {
             currentHistogramState = null;
             histogramPane.setHistogramState(null, null);
             //display.setBinCollection(null, BinIconMode.NONE);
+            histogramPane.setBinCollection(null, BinIconMode.NONE);
             currentFilter = null;
             return;
         }
@@ -381,6 +384,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         binType.addBinCreators(graph, currentHistogramState.getElementType(), binCreators);
         histogramPane.setHistogramState(currentHistogramState, binCreators);
         //display.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
+        histogramPane.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
         currentFilter = currentHistogramState.getFilter(currentHistogramState.getElementType());
 
         selectedAttribute = graph.getAttribute(BinSelector.getSelectionElementType(currentHistogramState.getElementType()), "selected");
@@ -390,7 +394,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
         currentBinCollection = null;
         BinIconMode binIconMode = BinIconMode.NONE;
-        BinCreator binCreator = binCreators.get(currentHistogramState.getAttribute());
+        final BinCreator binCreator = binCreators.get(currentHistogramState.getAttribute());
         binnedAttribute = Graph.NOT_FOUND;
         if (binCreator != null) {
             if (binCreator.isAttributeBased()) {
@@ -420,6 +424,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
             }
         }
         //display.setBinCollection(currentBinCollection, binIconMode);
+        histogramPane.setBinCollection(currentBinCollection, binIconMode);
     }
 
     public void setHistogramViewOptions(final GraphElementType elementType, final AttributeType attributeType, final String attribute) {

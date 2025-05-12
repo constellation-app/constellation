@@ -27,12 +27,9 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Paint;
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -44,14 +41,24 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+
 import javax.swing.event.MouseInputListener;
-import javafx.scene.layout.Pane;
-import javax.swing.JViewport;
 
 /**
  * The HistogramDisplay provides a panel the actually shows the histogram bins with their associated bars and labels.
@@ -60,9 +67,10 @@ import javax.swing.JViewport;
  * @author antares
  * @author sol695510
  */
-public class HistogramDisplay2 extends Pane implements MouseInputListener, MouseWheelListener, KeyListener, PropertyChangeListener, ComponentListener {
+public class HistogramDisplay2 extends BorderPane implements MouseInputListener, MouseWheelListener, KeyListener, PropertyChangeListener, ComponentListener {
 
-    public static final String BACKGROUND_COLOR = "#424242";
+    public static final Color BACKGROUND_COLOR = new Color(0x44, 0x44, 0x44);
+    public static final String BACKGROUND_COLOR_STRING = "#424242";
     public static final Color BAR_COLOR = new Color(0.1176F, 0.5647F, 1.0F);
     public static final Color SELECTED_COLOR = Color.RED.darker();
     public static final Color ACTIVE_COLOR = Color.YELLOW;
@@ -75,7 +83,7 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
     // The color that shows where a bar would be if it was bigger.
     // This provides a guide to the user so they can click anywhere level with a bar,
     // even if the bar is really short.
-    private static final Color CLICK_AREA_COLOR = new Color(0x44, 0x44, 0x44).brighter();
+    private static final Color CLICK_AREA_COLOR = BACKGROUND_COLOR.brighter();
     private static final Color ACTIVE_AREA_COLOR = CLICK_AREA_COLOR.brighter();
     private static final String NO_DATA = "<No Data>";
     private static final Font FONT = FontUtilities.getOutputFont();
@@ -95,6 +103,8 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
     private static final int TEXT_TO_BAR_GAP = 10;
     private static final int MAX_USER_SET_BAR_HEIGHT = 99;
     private static final int MIN_USER_SET_BAR_HEIGHT = 2;
+    private static final int ROWS_SPACING = 5;
+
     private final HistogramTopComponent2 topComponent;
     private int preferredHeight;
     private int iconPadding;
@@ -127,12 +137,16 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
         final JMenuItem copyValuesAndCountsMenuItem = new JMenuItem("Copy Selected Property Values & Counts");
         copyValuesAndCountsMenuItem.addActionListener(e -> copySelectedToClipboard(true));
         copyMenu.add(copyValuesAndCountsMenuItem);
-        System.out.println("Finished HistogramDisplay2 constructor");
+
+        setPrefHeight(PREFERRED_HEIGHT);
+        setPrefWidth(MINIMUM_TEXT_WIDTH + PREFERRED_BAR_LENGTH + TEXT_TO_BAR_GAP + 2);
+
+        //paintComponent();
     }
 
     public final void initializeSettings() {
         //setBackground(BACKGROUND_COLOR);
-        setStyle("-fx-background-color: " + BACKGROUND_COLOR + ";");
+        setStyle("-fx-background-color: " + BACKGROUND_COLOR_STRING + ";");
         //this.setFocusable(true); // Set the Histogram View able to be focused.
         requestFocus(); // Focus the Histogram View so 'key' actions can be registered.
     }
@@ -159,18 +173,21 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
         return preferredSize;
     }
 
-    public void setBinCollection(BinCollection binCollection, BinIconMode binIconMode) {
+    public void setBinCollection(final BinCollection binCollection, final BinIconMode binIconMode) {
+        System.out.println("setBinCollection " + binCollection);
         this.binCollection = binCollection;
         this.binIconMode = binIconMode;
         binCollectionOutOfDate = true;
         activeBin = -1;
         //repaint();
+        Platform.runLater(() -> updateDisplay());
     }
 
     public void updateBinCollection() {
         binCollection.deactivateBins();
         activeBin = -1;
         //repaint();
+        Platform.runLater(() -> updateDisplay());
     }
 
     public void setBinSelectionMode(BinSelectionMode binSelectionMode) {
@@ -219,12 +236,11 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
         return Math.round(size / 2F) - metrics.getMaxDescent();
     }
 
-    private int getPreferredTextWidth(Graphics g) {
-        FontMetrics metrics = g.getFontMetrics();
-        int minWidth = metrics.stringWidth(PROPERTY_VALUE);
-        for (Bin bin : binCollection.getBins()) {
-            final String label = bin.toString();
-            int width = label == null ? 0 : metrics.stringWidth(label);
+    private double getPreferredTextWidth() {
+        double minWidth = 0;
+        for (final Bin bin : binCollection.getBins()) {
+            final Label label = new Label(bin.toString());
+            double width = label.getWidth();
             if (width > minWidth) {
                 minWidth = width + 10;
             }
@@ -241,49 +257,75 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
      * if the total width is greater than the preferred text length + preferred bar length then set the text to the
      * preferred length and give the rest to the bars.**
      */
-    private void calculateTextAndBarLength(Graphics g, int padding) {
-//        final int parentWidth = getParent().getWidth();
-//        final int preferredTextWidth = getPreferredTextWidth(g);
-//        textWidth = MINIMUM_TEXT_WIDTH;
-//
-//        if (parentWidth < LEFT_MARGIN + padding + MINIMUM_TEXT_WIDTH + TEXT_TO_BAR_GAP + PREFERRED_BAR_LENGTH + RIGHT_MARGIN) {
-//            barsWidth = Math.max(1, parentWidth - LEFT_MARGIN - padding - MINIMUM_TEXT_WIDTH - TEXT_TO_BAR_GAP - RIGHT_MARGIN);
-//
-//        } else { // Bars are at desired length. Expand text space unless it is already sufficient
-//
-//            if (parentWidth < LEFT_MARGIN + padding + preferredTextWidth + TEXT_TO_BAR_GAP + PREFERRED_BAR_LENGTH + RIGHT_MARGIN) {
-//                barsWidth = PREFERRED_BAR_LENGTH;
-//                textWidth = parentWidth - LEFT_MARGIN - padding - PREFERRED_BAR_LENGTH - TEXT_TO_BAR_GAP - RIGHT_MARGIN;
-//            } else {
-//                textWidth = preferredTextWidth;
-//                barsWidth = parentWidth - LEFT_MARGIN - padding - preferredTextWidth - TEXT_TO_BAR_GAP - RIGHT_MARGIN;
-//            }
-//        }
+    private void calculateTextAndBarLength(final int padding) {
+        // !!! need to rework this function, methinks
+        final int parentWidth = topComponent.getWidth();
+        final int preferredTextWidth = (int) Math.round(getPreferredTextWidth());
+        textWidth = MINIMUM_TEXT_WIDTH;
+
+        if (parentWidth < LEFT_MARGIN + padding + MINIMUM_TEXT_WIDTH + TEXT_TO_BAR_GAP + PREFERRED_BAR_LENGTH + RIGHT_MARGIN) {
+            barsWidth = Math.max(1, parentWidth - LEFT_MARGIN - padding - MINIMUM_TEXT_WIDTH - TEXT_TO_BAR_GAP - RIGHT_MARGIN);
+
+        } else { // Bars are at desired length. Expand text space unless it is already sufficient
+
+            if (parentWidth < LEFT_MARGIN + padding + preferredTextWidth + TEXT_TO_BAR_GAP + PREFERRED_BAR_LENGTH + RIGHT_MARGIN) {
+                barsWidth = PREFERRED_BAR_LENGTH;
+                textWidth = parentWidth - LEFT_MARGIN - padding - PREFERRED_BAR_LENGTH - TEXT_TO_BAR_GAP - RIGHT_MARGIN;
+            } else {
+                textWidth = preferredTextWidth;
+                barsWidth = parentWidth - LEFT_MARGIN - padding - preferredTextWidth - TEXT_TO_BAR_GAP - RIGHT_MARGIN;
+            }
+        }
+    }
+
+    private javafx.scene.paint.Color awtColorToFXColor(final Color awtColor) {
+        final int r = awtColor.getRed();
+        final int g = awtColor.getGreen();
+        final int b = awtColor.getBlue();
+        final int a = awtColor.getAlpha();
+        final double opacity = a / 255.0;
+
+        return javafx.scene.paint.Color.rgb(r, g, b, opacity);
     }
 
     //@Override
-    public void paintComponent(Graphics g) {
+//    public void paintComponent(Graphics g) {
+    public void updateDisplay() {
+        //System.out.println("updateDisplay");
         //super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-        g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        //Graphics2D g2 = (Graphics2D) g;
+
+//        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+//        g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+//        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         if (binCollection == null) {
+            //System.out.println("updateDisplay binCollection == null");
 
             // Not have rendering hints set here is deliberate.
             // The PropertySheet does the same thing.
-            final FontMetrics fm = g2.getFontMetrics();
-            final int w = this.getParent().getWidth();
-            final int h = getParent().getHeight();
-            final Rectangle2D bounds = fm.getStringBounds(NO_DATA, g2);
-            g2.setColor(Color.LIGHT_GRAY);
+//            final FontMetrics fm = g2.getFontMetrics();
+//            final Rectangle2D bounds = fm.getStringBounds(NO_DATA, g2);
+            //final int w = this.getParent().getWidth();
+            //final int w = topComponent.getWidth();
+            //final int h = getParent().getHeight();
+            //final int h = topComponent.getHeight();
+            // !!! Seems to draw "<no data>" in the middle of the display
+//            g2.setColor(Color.LIGHT_GRAY);
+//            g2.drawString(NO_DATA, (int) (w - bounds.getWidth()) / 2, (int) (h - bounds.getHeight()) / 2);
+            final Label text = new Label("<No Data>");
+            //text.setFill(Color.LIGHT_GRAY);// Should work but i think theres something wrong with imports or cache. different now its a label
 
-            g2.drawString(NO_DATA, (int) (w - bounds.getWidth()) / 2, (int) (h - bounds.getHeight()) / 2);
+//            final VBox viewPane = new VBox();
+//            viewPane.getChildren().addAll(text);
+            this.setCenter(text);
 
         } else if (binCollection.getBins().length == 0) {
+            //System.out.println("updateDisplay binCollection.getBins().length == 0");
             // Draw nothing: there is data, but the user doesn't want to see it.
+            this.setCenter(null);
         } else {
+            //System.out.println("updateDisplay ELSE");
 
             Bin[] bins = binCollection.getBins();
 
@@ -298,17 +340,24 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
 
                 iconPadding = (int) (binIconMode.getWidth() * barHeight);
 
-                calculateTextAndBarLength(g2, iconPadding);
+                // !!! need to rework this function, methinks
+                //calculateTextAndBarLength(g2, iconPadding);
+                calculateTextAndBarLength(iconPadding);
                 binCollectionOutOfDate = false;
             }
 
             // We want to get the width of the widest text so we know how much space to reserve for text.
-            final int correction = setFontToFit(g2, barHeight);
+            //final int correction = setFontToFit(g2, barHeight);
+            final int correction = 0; // TODO remove when above is re done
 
-            g2.setColor(BACKGROUND_COLOR);
-            g2.fillRect(0, 0, getWidth(), preferredHeight - 1);
-            calculateTextAndBarLength(g2, iconPadding);
+            // !!! Seems to create the background of the display
+            //g2.setColor(BACKGROUND_COLOR);
+            //g2.fillRect(0, 0, (int) getWidth(), preferredHeight - 1);
+            // !!! need to rework this function, methinks
+            //calculateTextAndBarLength(g2, iconPadding);
+            calculateTextAndBarLength(iconPadding);
 
+            // !!! How round the edges should be
             final int arc = barHeight / 3;
 
             final int maxCount = binCollection.getMaxElementCount();
@@ -318,96 +367,191 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
                 final float scaleFactor = barsWidth / (float) maxCount;
 
                 // Only draw the bars that are visible
-                JViewport viewPort = (JViewport) getParent();
-                Rectangle viewSize = viewPort.getViewRect();
-                final int firstBar = this.getBarAtPoint(new Point(0, viewSize.y), true);
-                final int lastBar = this.getBarAtPoint(new Point(0, viewSize.y + viewSize.height), true);
+//                JViewport viewPort = (JViewport) getParent();
+//                Rectangle viewSize = viewPort.getViewRect();
+//                final int firstBar = this.getBarAtPoint(new Point(0, viewSize.y), true);
+//                final int lastBar = this.getBarAtPoint(new Point(0, viewSize.y + viewSize.height), true);
+                // !!! indexes (or maybe position) of first and last bar
+                final int firstBar = getBarAtPoint(new Point(0, topComponent.getY()), true);
+                final int lastBar = getBarAtPoint(new Point(0, topComponent.getY() + topComponent.getHeight()), true);
 
                 final int barOffset = GAP_BETWEEN_BARS + barHeight;
 
+                // !!! Position (screen position i think) of the leftmost and top most part of the bar
                 final int barLeft = LEFT_MARGIN + iconPadding + textWidth + TEXT_TO_BAR_GAP;
                 int barTop = TOP_MARGIN + barOffset * (firstBar + 1); // (firstBar+1) to account for header
 
-                Color barColor = binSelectionMode.getBarColor();
-                Color darkerBarColor = barColor.darker();
+                // TODO: These could be static, methinks
+                final Color barColor = binSelectionMode.getBarColor();
+                final Color darkerBarColor = barColor.darker();
+                System.out.println("barColor: " + barColor + " darkerBarColor: " + darkerBarColor);
 
-                Color activatedBarColor = binSelectionMode.getActivatedBarColor();
-                Color darkerActivatedBarColor = activatedBarColor.darker();
+                final Color activatedBarColor = binSelectionMode.getActivatedBarColor();
+                final Color darkerActivatedBarColor = activatedBarColor.darker();
 
-                Color selectedColor = binSelectionMode.getSelectedColor();
-                Color darkerSelectedColor = selectedColor.darker();
+                final Color selectedColor = binSelectionMode.getSelectedColor();
+                final Color darkerSelectedColor = selectedColor.darker();
 
-                Color activatedSelectedColor = binSelectionMode.getActivatedSelectedColor();
-                Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
+                final Color activatedSelectedColor = binSelectionMode.getActivatedSelectedColor();
+                final Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
 
                 // Draw the histogram headers
-                g2.setColor(Color.WHITE);
+                // !!! Set colour to white
+                //g2.setColor(Color.WHITE);
+                // !!! Seems to truncate strings that are too long
+//                final String headerStringValue = getStringToFit(PROPERTY_VALUE, textWidth, g2); // TODO find replacement, if needed
+//                final String headerStringCount = getStringToFit(COUNT, barsWidth, g2); // TODO find replacement, if needed
+//                final String headerStringTotalBins = getStringToFit(TOTAL_BINS_COUNT + binCollection.getSelectedBins().length + "/" + bins.length, barsWidth, g2); // TODO find replacement, if needed
+                //final int countTextWidth = g2.getFontMetrics().stringWidth(headerStringTotalBins);
+                // !!! draws text to header section
+                //g2.drawString(headerStringValue, LEFT_MARGIN + iconPadding, TOP_MARGIN + (barHeight / 2) + correction);
+                //g2.drawString(headerStringCount, barLeft, TOP_MARGIN + (barHeight / 2) + correction);
+//                g2.drawString(headerStringTotalBins, getParent().getWidth() - countTextWidth, TOP_MARGIN + (barHeight / 2) + correction);
+                //g2.drawString(headerStringTotalBins, topComponent.getWidth() - countTextWidth, TOP_MARGIN + (barHeight / 2) + correction);
+                final VBox rows = new VBox(ROWS_SPACING);
+                final HBox headerRow = new HBox();
 
-                final String headerStringValue = getStringToFit(PROPERTY_VALUE, textWidth, g2);
-                final String headerStringCount = getStringToFit(COUNT, barsWidth, g2);
-                final String headerStringTotalBins = getStringToFit(TOTAL_BINS_COUNT + binCollection.getSelectedBins().length + "/" + bins.length, barsWidth, g2);
+                final Label headerValue = new Label(PROPERTY_VALUE);
+                final Label headerCount = new Label(COUNT);
+                final Label headerTotalBins = new Label(TOTAL_BINS_COUNT);
 
-                final int countTextWidth = g2.getFontMetrics().stringWidth(headerStringTotalBins);
+                headerRow.setAlignment(Pos.CENTER);
+                final Pane spacer1 = new Pane();
+                final Pane spacer2 = new Pane();
+                HBox.setHgrow(spacer1, Priority.ALWAYS);
+                HBox.setHgrow(spacer2, Priority.ALWAYS);
 
-                g2.drawString(headerStringValue, LEFT_MARGIN + iconPadding, TOP_MARGIN + (barHeight / 2) + correction);
-                g2.drawString(headerStringCount, barLeft, TOP_MARGIN + (barHeight / 2) + correction);
-                g2.drawString(headerStringTotalBins, getParent().getWidth() - countTextWidth,
-                        TOP_MARGIN + (barHeight / 2) + correction);
+                // Todo: Adjust spacing and see if we still needer headerCount
+                headerRow.getChildren().addAll(headerValue, spacer1, headerCount, spacer2, headerTotalBins);
+
+//                HBox.setHgrow(headerValue, Priority.ALWAYS);
+//                HBox.setHgrow(headerCount, Priority.ALWAYS);
+//                HBox.setHgrow(headerTotalBins, Priority.ALWAYS);
+//                HBox.setHgrow(headerRow, Priority.ALWAYS);
+                rows.getChildren().add(headerRow);
 
                 // Draw the visible bars.
                 for (int bar = firstBar; bar <= lastBar; bar++) {
-                    Bin bin = bins[bar];
+                    final HBox row = new HBox();
+
+                    final Bin bin = bins[bar];
+
+                    /////// TEXT
+                    // Category label text.
+                    // TODO: reorganise with ternary if statemnts and whatnot
+                    final String category = bin.getLabel();
+                    if (category == null) {
+                        // !!! set colour for text to be yellow, sets back to grey after
+                        //g2.setColor(Color.YELLOW);
+                        // !!! fits text in dispaly or something
+                        //final String fittingString = getStringToFit(NO_VALUE, textWidth, g2);
+                        // !!! Draws text
+                        //g2.drawString(fittingString, LEFT_MARGIN + iconPadding, y);
+                        // !!! sets back to grey here
+                        //g2.setColor(Color.LIGHT_GRAY);
+
+                        final String fittingString = getStringToFit(NO_VALUE, textWidth);
+                        final Label propertyValue = new Label(fittingString);
+                        row.getChildren().add(propertyValue);
+                    } else {
+                        // !!! same here, fit text and draw, should always be grey here
+                        //final String fittingString = getStringToFit(category, textWidth, g2);
+                        //g2.drawString(fittingString, LEFT_MARGIN + iconPadding, y);
+                        final String fittingString = getStringToFit(category, textWidth);
+                        final Label propertyValue = new Label(fittingString);
+                        row.getChildren().add(propertyValue);
+
+                    }
+                    final Pane spacer = new Pane();
+                    HBox.setHgrow(spacer, Priority.ALWAYS);
+                    row.getChildren().add(spacer);
 
                     final int selectedCount = bin.selectedCount;
                     final int elementCount = bin.elementCount;
 
                     // Always draw something, even if there aren't enough pixels to draw the actual length.
                     final int barLength = Math.max((int) (elementCount * scaleFactor), MINIMUM_BAR_WIDTH);
+                    System.out.println("elementCount: " + elementCount + " scaleFactor: " + scaleFactor + " barLength: " + barLength);
 
                     // Draw the background
                     if (elementCount < maxCount) {
-                        g2.setColor(bar == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR);
+                        // !!! sets the color is active
+                        //g2.setColor(bar == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR);
                         int backgroundStart = Math.max(0, barLength - 10);
-                        g2.fillRoundRect(barLeft + backgroundStart, barTop, barsWidth - backgroundStart, barHeight, arc, arc);
+                        // !!! draws the bar (background, i assume)
+                        //g2.fillRoundRect(barLeft + backgroundStart, barTop, barsWidth - backgroundStart, barHeight, arc, arc);
+
                     }
 
                     // Calculate the length of the selected component of the bar
-                    int selectedLength = 0;
-                    if (selectedCount > 0) {
-                        selectedLength = Math.max(barLength * selectedCount / elementCount, MINIMUM_SELECTED_WIDTH);
-                    }
+                    final int selectedLength = (selectedCount > 0) ? Math.max(barLength * selectedCount / elementCount, MINIMUM_SELECTED_WIDTH) : 0;
 
                     // Draw the unselected component of the bar
                     if (selectedLength < barLength) {
-                        Paint paint = bin.activated
+                        final Paint paint = bin.activated
                                 ? new GradientPaint(0, barTop, activatedBarColor, 0, (float) barTop + barHeight, darkerActivatedBarColor)
                                 : new GradientPaint(0, barTop, barColor, 0, (float) barTop + barHeight, darkerBarColor);
-                        g2.setPaint(paint);
+                        // !!! i assume this sets the colour the next rectangle will be?
+                        //g2.setPaint(paint);
                         int unselectedStart = Math.max(0, selectedLength - 10);
-                        g2.fillRoundRect(barLeft + unselectedStart, barTop, barLength - unselectedStart, barHeight, arc, arc);
+                        // !!! draws rectangle
+                        //g2.fillRoundRect(barLeft + unselectedStart, barTop, barLength - unselectedStart, barHeight, arc, arc);
+
+                        //Setting the linear gradient 
+                        final Stop[] stops = bin.activated
+                                ? new Stop[]{new Stop(0, awtColorToFXColor(activatedBarColor)), new Stop(1, awtColorToFXColor(darkerActivatedBarColor))}
+                                : new Stop[]{new Stop(0, awtColorToFXColor(barColor)), new Stop(1, awtColorToFXColor(darkerBarColor))};
+
+                        final LinearGradient linearGradient = new LinearGradient(0, barTop, 0, barTop + barHeight, true, CycleMethod.NO_CYCLE, stops);
+
+                        //System.out.println("Double.valueOf(barLength - unselectedStart) " + Double.valueOf(barLength - unselectedStart));
+                        final Rectangle rect = new Rectangle(Double.valueOf(barLength - unselectedStart), Double.valueOf(barHeight), linearGradient);
+                        rect.setArcHeight(arc);
+                        rect.setArcWidth(arc);
+
+                        row.getChildren().add(rect);
                     }
 
                     // Draw the selected component of the bar
                     if (selectedLength > 0) {
-                        Paint paint = bin.activated
+                        final Paint paint = bin.activated
                                 ? new GradientPaint(0, barTop, activatedSelectedColor, 0, (float) barTop + barHeight, darkerActivatedSelectedColor)
                                 : new GradientPaint(0, barTop, selectedColor, 0, (float) barTop + barHeight, darkerSelectedColor);
-                        g2.setPaint(paint);
-                        g2.fillRoundRect(barLeft, barTop, selectedLength, barHeight, arc, arc);
+                        // !!! i assume this sets the colour the next rectangle will be?
+                        //g2.setPaint(paint);
+                        // !!! draws rectangle
+                        //g2.fillRoundRect(barLeft, barTop, selectedLength, barHeight, arc, arc);
+
+                        //Setting the linear gradient 
+                        final Stop[] stops = bin.activated
+                                ? new Stop[]{new Stop(0, awtColorToFXColor(activatedSelectedColor)), new Stop(1, awtColorToFXColor(darkerActivatedSelectedColor))}
+                                : new Stop[]{new Stop(0, awtColorToFXColor(selectedColor)), new Stop(1, awtColorToFXColor(darkerSelectedColor))};
+
+                        final LinearGradient linearGradient = new LinearGradient(0, barTop, 0, barTop + barHeight, true, CycleMethod.NO_CYCLE, stops);
+
+                        final Rectangle rect = new Rectangle(Double.valueOf(selectedLength), Double.valueOf(barHeight), linearGradient);
+                        rect.setArcHeight(arc);
+                        rect.setArcWidth(arc);
+
+                        row.getChildren().add(rect);
                     }
 
-                    binIconMode.draw(g2, bin, LEFT_MARGIN, barTop, barHeight);
-
+                    // !!! draws an icon to the left of row/bar/whatever, if category has an icon. so far only color is supported (i think)
+                    //binIconMode.draw(g2, bin, LEFT_MARGIN, barTop, barHeight);
                     // Move to the next bar
                     barTop += barOffset;
+
+                    // Add new row to this pane
+                    rows.getChildren().add(row);
                 }
 
+                /*
                 // Draw the text.
                 if (correction != Integer.MAX_VALUE) {
-                    final FontMetrics fm = g2.getFontMetrics();
-                    final int parentWidth = getParent().getWidth();
-                    g2.setColor(Color.LIGHT_GRAY);
-                    GraphicsEnvironment.getLocalGraphicsEnvironment();
+                    final int parentWidth = topComponent.getWidth();
+                    // !!! set colour for text?
+                    //g2.setColor(Color.LIGHT_GRAY);
+                    //GraphicsEnvironment.getLocalGraphicsEnvironment();
 
                     for (int bar = firstBar; bar <= lastBar; bar++) {
                         Bin bin = bins[bar];
@@ -415,15 +559,27 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
                         final int y = TOP_MARGIN + ((bar + 1) * barOffset) + (barHeight / 2) + correction; // (bar+1) to account for header
 
                         // Category label text.
-                        String category = bin.getLabel();
+                        // TODO: reorganise with ternary if statemnts and whatnot
+                        final String category = bin.getLabel();
                         if (category == null) {
-                            g2.setColor(Color.YELLOW);
-                            final String fittingString = getStringToFit(NO_VALUE, textWidth, g2);
-                            g2.drawString(fittingString, LEFT_MARGIN + iconPadding, y);
-                            g2.setColor(Color.LIGHT_GRAY);
+                            // !!! set colour for text to be yellow, sets back to grey after
+                            //g2.setColor(Color.YELLOW);
+                            // !!! fits text in dispaly or something
+                            //final String fittingString = getStringToFit(NO_VALUE, textWidth, g2);
+                            // !!! Draws text
+                            //g2.drawString(fittingString, LEFT_MARGIN + iconPadding, y);
+                            // !!! sets back to grey here
+                            //g2.setColor(Color.LIGHT_GRAY);
+
+                            final String fittingString = getStringToFit(NO_VALUE, textWidth);
+                            final Label propertyValue = new Label(fittingString);
                         } else {
-                            final String fittingString = getStringToFit(category, textWidth, g2);
-                            g2.drawString(fittingString, LEFT_MARGIN + iconPadding, y);
+                            // !!! same here, fit text and draw, should always be grey here
+                            //final String fittingString = getStringToFit(category, textWidth, g2);
+                            //g2.drawString(fittingString, LEFT_MARGIN + iconPadding, y);
+                            final String fittingString = getStringToFit(category, textWidth);
+                            final Label propertyValue = new Label(fittingString);
+
                         }
 
                         // Bin count text.
@@ -431,10 +587,13 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
                         if (bin.selectedCount > 0) {
                             binCount = Integer.toString(bin.selectedCount) + "/" + binCount;
                         }
-                        final Rectangle2D bounds = fm.getStringBounds(binCount, g2);
-                        g2.drawString(binCount, (int) (parentWidth - bounds.getWidth() - RIGHT_MARGIN - 2), y);
+                        // !!! write teh numbe rof bins to screen?
+                        //final Rectangle2D bounds = fm.getStringBounds(binCount, g2);
+                        //g2.drawString(binCount, (int) (parentWidth - bounds.getWidth() - RIGHT_MARGIN - 2), y);
                     }
                 }
+                 */
+                this.setCenter(rows);
             }
         }
 
@@ -443,11 +602,13 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
         //revalidate();
     }
 
-    private String getStringToFit(String original, int width, Graphics g) {
-        FontMetrics metrics = g.getFontMetrics();
+    // !! Seems to fit a given tring to the desired width, shortening if needed
+    // TODO: this function has some stink to it, take a look and fix
+    private String getStringToFit(final String original, final int width) {
 
         // Will the entire string fit?
-        int widthOfText = metrics.stringWidth(original);
+        final double widthOfText = new Label(original).getWidth();
+
         if (widthOfText <= width) {
             return original;
         }
@@ -468,7 +629,7 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
                 if (max >= original.length()) {
                     max = original.length();
                     break;
-                } else if (metrics.stringWidth(original.substring(0, max) + "...") > width) {
+                } else if (new Label(original.substring(0, max) + "...").getWidth() > width) {
                     break;
                 } else {
                     // Do nothing
@@ -478,7 +639,7 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
 
         while (min < max - 1) {
             final int mid = (min + max) >>> 1;
-            if (metrics.stringWidth(original.substring(0, mid) + "...") <= width) {
+            if (new Label(original.substring(0, mid) + "...").getWidth() <= width) {
                 min = mid;
             } else {
                 max = mid;
@@ -489,7 +650,7 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
 
         // Sometimes even 1 character is too wide
         if (min == 1) {
-            while (!result.isEmpty() && metrics.stringWidth(result) > width) {
+            while (!result.isEmpty() && new Label(result).getWidth() > width) {
                 result = result.substring(1);
             }
         }
@@ -531,6 +692,7 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
         }
         barHeight = userSetBarHeight;
         //repaint();
+        updateDisplay();
     }
 
     /**
@@ -545,6 +707,7 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
         }
         barHeight = userSetBarHeight;
         //repaint();
+        updateDisplay();
     }
 
     /**
@@ -595,6 +758,7 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
             dragEnd = bar;
             binSelectionMode.mousePressed(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd);
             //repaint();
+            updateDisplay();
         }
     }
 
@@ -609,6 +773,7 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
             binSelectionMode.mouseDragged(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, newDragEnd);
             dragEnd = newDragEnd;
             //repaint();
+            updateDisplay();
         }
     }
 
@@ -619,6 +784,7 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
             binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
             activeBin = dragStart == dragEnd ? dragStart : -1;
             //repaint();
+            updateDisplay();
         }
     }
 
@@ -659,6 +825,7 @@ public class HistogramDisplay2 extends Pane implements MouseInputListener, Mouse
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         //this.repaint();
+        updateDisplay();
     }
 
     @Override
