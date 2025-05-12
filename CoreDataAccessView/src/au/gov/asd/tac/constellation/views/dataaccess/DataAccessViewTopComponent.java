@@ -82,7 +82,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
         dataAccessPane = new DataAccessPane(this);
         dataAccessPane.addUIComponents();
-        
+
         // The data access pane that is initialized above is returned in the
         // overridden method getContent() below. That is how the initContent()
         // in the super class can reference it and add the data accees view to
@@ -106,7 +106,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
     public DataAccessPane getDataAccessPane() {
         return dataAccessPane;
     }
-    
+
     /**
      * A fixed single thread pool for execution of jobs in the data access view
      * that need to happen in an asynchronous manner.
@@ -124,8 +124,8 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     public String createStyle() {
-        return JavafxStyleManager.isDarkTheme() 
-                ? "resources/data-access-view-dark.css" 
+        return JavafxStyleManager.isDarkTheme()
+                ? "resources/data-access-view-dark.css"
                 : "resources/data-access-view-light.css";
     }
 
@@ -137,6 +137,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         super.handleComponentOpened();
         manageQualityControlListeners(true);
         QualityControlAutoVetter.getInstance().addObserver(getDataAccessPane());
+        setFloating(0, 0);
     }
 
     /**
@@ -160,12 +161,12 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         System.setProperty("dav.graph.ready", Boolean.FALSE.toString());
         if (needsUpdate() && getDataAccessPane() != null) {
             getDataAccessPane().update(graph);
-            Platform.runLater(() -> 
-                DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph)
+            Platform.runLater(()
+                    -> DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph)
             );
         }
-        Platform.runLater(() ->
-                // nested runLater so it runs after all the other triggered processes for opening a graph have been run
+        Platform.runLater(()
+                -> // nested runLater so it runs after all the other triggered processes for opening a graph have been run
                 Platform.runLater(() -> System.setProperty("dav.graph.ready", Boolean.TRUE.toString()))
         );
     }

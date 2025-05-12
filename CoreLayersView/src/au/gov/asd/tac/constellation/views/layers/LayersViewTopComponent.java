@@ -134,6 +134,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         super.handleComponentOpened();
         preparePane();
         setPaneStatus();
+        setFloating(0, 0);
     }
 
     @Override
@@ -149,19 +150,19 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         layersViewController.readState();
         layersViewController.addAttributes();
     }
-    
+
     /**
      * Sets the status of the pane dependent on if a graph is currently active.
      * The status is used to enable or disable the view when a graph exists.
      */
-    protected void setPaneStatus(){
+    protected void setPaneStatus() {
         createContent().setEnabled(GraphManager.getDefault().getActiveGraph() != null);
     }
 
     public LayersViewPane getLayersViewPane() {
         return layersViewPane;
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
