@@ -126,6 +126,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         StringParameterType.setLines(text, 15);
         text.setName("Words to Extract");
         text.setDescription("Whitelist of words to extract from content (new line delimited, extract all words if empty)");
+        text.setSpellCheckEnabled(true);
         params.addParameter(text);
 
         final PluginParameter<BooleanParameterValue> useRegex = BooleanParameterType.build(USE_REGEX_PARAMETER_ID);
