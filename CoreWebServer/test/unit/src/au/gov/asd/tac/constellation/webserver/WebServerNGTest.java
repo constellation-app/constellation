@@ -29,6 +29,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -43,6 +44,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.util.NbPreferences;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertNotEquals;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
@@ -60,7 +62,7 @@ import org.testng.annotations.Test;
 public class WebServerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(WebServerNGTest.class.getName());
-    
+
     private static final String IPYTHON = ".ipython";
     private static final String REST_FILE = "rest.json";
     private static final String TEST_TEXT = "TEST FILE";
@@ -70,14 +72,22 @@ public class WebServerNGTest {
     private static final boolean OLD_PREF_VALUE = PREFS.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws Exception {
         PREFS.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, false);
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
-    public static void tearDownClass() {
+    public static void tearDownClass() throws Exception {
         // Set the parameter back to its old value
         PREFS.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, OLD_PREF_VALUE);
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
