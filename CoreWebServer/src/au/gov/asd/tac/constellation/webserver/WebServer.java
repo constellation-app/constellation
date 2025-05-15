@@ -327,7 +327,6 @@ public class WebServer {
         // Succssfully copied files
         final String msg = String.format("'%s' downloaded to %s", CONSTELLATION_CLIENT, directory);
         StatusDisplayer.getDefault().setStatusText(msg);
-
     }
 
     private static void alertUserOfPackageFailure() {
@@ -391,7 +390,6 @@ public class WebServer {
         if (requireScriptCopy.get()) {
             showSaveClientScriptPopup();
         }
-
     }
 
     private static void showSaveClientScriptPopup() {
