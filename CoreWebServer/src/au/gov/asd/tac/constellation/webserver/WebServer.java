@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.webserver;
 import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -36,8 +37,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.security.MessageDigest;
@@ -45,11 +44,19 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
@@ -57,6 +64,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.awt.StatusDisplayer;
+import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
@@ -294,22 +302,129 @@ public class WebServer {
     public static void downloadPythonClientToDir(final File directory) {
         final File download = new File(directory, CONSTELLATION_CLIENT);
 
-        final boolean doDownload = !download.exists() || !equalScripts(download);
-
-        if (doDownload) {
-
-            try {
-                Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            } catch (final IOException e) {
-                LOGGER.log(Level.WARNING, "Error retrieving constellation_client.py:", e);
-                return;
-            }
-
-            // Succssfully copied files
-            final String msg = String.format("'%s' downloaded to %s", CONSTELLATION_CLIENT, directory);
-            StatusDisplayer.getDefault().setStatusText(msg);
-
+        // If file already exist and is latest version of script, no need to copy file
+        if (download.exists() && equalScripts(download)) {
+            return;
         }
+
+        // If we dont have file access, alert user and return
+        if (!Files.isWritable(download.toPath())) {
+            // Show popup to alert user consty doesn't have perms for the given directory
+            System.out.println("Path: " + download.toPath() + " is not writable, apparently!");
+
+            //return;
+        }
+
+        if (!download.canWrite()) {
+            System.out.println("Path: " + download.toPath() + " cant write, apparently!");
+        }
+
+        System.out.println("Files.isWritable(download.toPath()): " + Files.isWritable(download.toPath()) + " download.canWrite(): " + download.canWrite());
+
+        try {
+            throw new SecurityException(); // TODO: remove this line
+            // TODO uncomment below
+//              Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING); // problem was here, access problem that is
+//        } catch (final IOException e) {
+//            LOGGER.log(Level.WARNING, "Error retrieving constellation_client.py:", e);
+//            return;
+        } catch (final SecurityException e) {
+            System.out.println("SecurityException!!!!");
+            // call function to alert user
+            alertUserOfAccessException();
+        }
+
+        // Succssfully copied files
+        final String msg = String.format("'%s' downloaded to %s", CONSTELLATION_CLIENT, directory);
+        StatusDisplayer.getDefault().setStatusText(msg);
+
+    }
+
+    private static void alertUserOfPackageFailure() {
+
+        // Show and wait has to be called from a runlater, but the rest of code wont actually wait. Hence, the latch
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            final Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Attention");
+            alert.setHeaderText("Installation of constellation client python package has failed!");
+            alert.setContentText("A copy of the constellation client script will be created in " + getNotebookDir());
+            alert.showAndWait();
+            latch.countDown();
+        });
+
+        // Wait
+        try {
+            //latch.await(10, TimeUnit.SECONDS);
+            latch.await();
+        } catch (final InterruptedException e) {
+            // TODO: re throw interruption
+            System.out.println("Exception occured: " + e);
+        }
+    }
+
+    private static void alertUserOfAccessException() {
+
+        // Show and wait has to be called from a runlater, but the rest of code wont actually wait. Hence, the latch
+        final CountDownLatch latch = new CountDownLatch(1);
+        final AtomicBoolean requireNewFilpath = new AtomicBoolean(false);
+
+        Platform.runLater(() -> {
+            final Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Attention");
+            alert.setHeaderText("Copying constellation_client.py to " + getNotebookDir() + " has failed! (Access was denied)");
+            alert.setContentText("Do you want to save constellation_client.py somewhere else?");
+
+            final ButtonType buttonYes = new ButtonType("Yes", ButtonData.YES);
+            final ButtonType buttonCancel = new ButtonType("No", ButtonData.CANCEL_CLOSE);
+            alert.getButtonTypes().setAll(buttonYes, buttonCancel);
+
+            final Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == buttonYes) {
+                //showNewFilepathPopup();
+                requireNewFilpath.set(true);
+            }
+            latch.countDown();
+        });
+
+        // Wait
+        try {
+            //latch.await(10, TimeUnit.SECONDS);
+            latch.await();
+        } catch (final InterruptedException e) {
+            // TODO: re throw interruption
+            System.out.println("Exception occured: " + e);
+        }
+
+        if (requireNewFilpath.get()) {
+            showNewFilepathPopup();
+        }
+
+    }
+
+    private static void showNewFilepathPopup() {
+        System.out.println("showNewFilepathPopup START");
+
+        FileChooser.openSaveDialog(getFolderChooser()).thenAccept(folder -> {
+            System.out.println("folder " + folder);
+            if (folder.isEmpty()) {
+                alertUserOfAccessException();
+            }
+        });
+    }
+
+    private static final String TITLE = "Select folder";
+
+    /**
+     * Creates a new folder chooser.
+     *
+     * @return the created folder chooser.
+     */
+    private static FileChooserBuilder getFolderChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setAcceptAllFileFilterUsed(false)
+                .setDirectoriesOnly(true);
     }
 
     /**
@@ -347,9 +462,12 @@ public class WebServer {
             LOGGER.log(Level.INFO, "Python package installation finished...");
             LOGGER.log(Level.INFO, "Python install process result: {0}", processResult);
 
+            processResult = -1; // TODO: Remove this line
+
             // If not successful
             if (processResult != INSTALL_SUCCESS) {
                 LOGGER.log(Level.INFO, "Python package installation unsuccessful, copying script to notebook directory...");
+                alertUserOfPackageFailure();
                 downloadPythonClientNotebookDir();
             }
 
@@ -398,12 +516,14 @@ public class WebServer {
             // If not successful
             if (result != INSTALL_SUCCESS) {
                 LOGGER.log(Level.INFO, "Python package verification unsuccessful, copying script to notebook directory...");
+                alertUserOfPackageFailure();
                 downloadPythonClientNotebookDir();
             } else if (allLines.contains(PACKAGE_NAME)) {  // Result must be success, so if output of listed packages include constellation_client
                 LOGGER.log(Level.INFO, "Python package was installed!");
             } else {
                 LOGGER.log(Level.INFO, "Could not find python package, copying script to notebook directory...");
-                downloadPythonClientNotebookDir();
+                alertUserOfPackageFailure();
+                Platform.runLater(() -> downloadPythonClientNotebookDir());
             }
 
         } catch (final InterruptedException ex) {
@@ -423,6 +543,7 @@ public class WebServer {
         } catch (final IOException ex) {
             LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT in process for python package {0}: {1}", new Object[]{warning, ex});
             LOGGER.log(Level.INFO, "Copying python script to notebook directory instead...");
+            alertUserOfPackageFailure();
             downloadPythonClientNotebookDir();
             return null;
         }
