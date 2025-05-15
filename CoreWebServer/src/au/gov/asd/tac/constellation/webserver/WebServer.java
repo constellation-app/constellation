@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -37,6 +38,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.security.MessageDigest;
@@ -144,6 +147,8 @@ public class WebServer {
 
     private static final String[] CHECK_INSTALL = {"pip", "freeze"};
     private static final int INSTALL_SUCCESS = 0;
+
+    private static final String SELECT_FOLDER_TITLE = "Select folder";
 
     public static boolean isRunning() {
         return running;
@@ -322,15 +327,13 @@ public class WebServer {
         System.out.println("Files.isWritable(download.toPath()): " + Files.isWritable(download.toPath()) + " download.canWrite(): " + download.canWrite());
 
         try {
-            throw new SecurityException(); // TODO: remove this line
-            // TODO uncomment below
-//              Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING); // problem was here, access problem that is
-//        } catch (final IOException e) {
-//            LOGGER.log(Level.WARNING, "Error retrieving constellation_client.py:", e);
-//            return;
+            Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING); // problem was here, access problem that is
+            //throw new SecurityException(); // TODO: remove this line
+        } catch (final IOException e) {
+            LOGGER.log(Level.WARNING, "Error retrieving constellation_client.py:", e);
+            return;
         } catch (final SecurityException e) {
-            System.out.println("SecurityException!!!!");
-            // call function to alert user
+            // Alert user of exception
             alertUserOfAccessException();
         }
 
@@ -341,7 +344,6 @@ public class WebServer {
     }
 
     private static void alertUserOfPackageFailure() {
-
         // Show and wait has to be called from a runlater, but the rest of code wont actually wait. Hence, the latch
         final CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(() -> {
@@ -349,6 +351,8 @@ public class WebServer {
             alert.setTitle("Attention");
             alert.setHeaderText("Installation of constellation client python package has failed!");
             alert.setContentText("A copy of the constellation client script will be created in " + getNotebookDir());
+            alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+
             alert.showAndWait();
             latch.countDown();
         });
@@ -367,13 +371,15 @@ public class WebServer {
 
         // Show and wait has to be called from a runlater, but the rest of code wont actually wait. Hence, the latch
         final CountDownLatch latch = new CountDownLatch(1);
-        final AtomicBoolean requireNewFilpath = new AtomicBoolean(false);
+        final AtomicBoolean requireScriptCopy = new AtomicBoolean(false);
 
         Platform.runLater(() -> {
             final Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Attention");
-            alert.setHeaderText("Copying constellation_client.py to " + getNotebookDir() + " has failed! (Access was denied)");
-            alert.setContentText("Do you want to save constellation_client.py somewhere else?");
+            alert.setHeaderText("Copying constellation_client.py to " + getNotebookDir() + " has failed! (Access was denied)\nYou will need to manually place a copy of constellation_client.py");
+            alert.setContentText("Do you want to save a copy of constellation_client.py?");
+
+            alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
             final ButtonType buttonYes = new ButtonType("Yes", ButtonData.YES);
             final ButtonType buttonCancel = new ButtonType("No", ButtonData.CANCEL_CLOSE);
@@ -382,38 +388,39 @@ public class WebServer {
             final Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == buttonYes) {
                 //showNewFilepathPopup();
-                requireNewFilpath.set(true);
+                requireScriptCopy.set(true);
             }
             latch.countDown();
         });
 
         // Wait
         try {
-            //latch.await(10, TimeUnit.SECONDS);
             latch.await();
         } catch (final InterruptedException e) {
             // TODO: re throw interruption
             System.out.println("Exception occured: " + e);
         }
 
-        if (requireNewFilpath.get()) {
-            showNewFilepathPopup();
+        if (requireScriptCopy.get()) {
+            showSaveClientScriptPopup();
         }
 
     }
 
-    private static void showNewFilepathPopup() {
+    private static void showSaveClientScriptPopup() {
         System.out.println("showNewFilepathPopup START");
 
         FileChooser.openSaveDialog(getFolderChooser()).thenAccept(folder -> {
             System.out.println("folder " + folder);
-            if (folder.isEmpty()) {
+            // If a folder was chosen
+            if (!folder.isEmpty()) {
+                downloadPythonClientToDir(folder.get());
+            } else {
+                // Otherwise show previous popup
                 alertUserOfAccessException();
             }
         });
     }
-
-    private static final String TITLE = "Select folder";
 
     /**
      * Creates a new folder chooser.
@@ -421,8 +428,8 @@ public class WebServer {
      * @return the created folder chooser.
      */
     private static FileChooserBuilder getFolderChooser() {
-        return new FileChooserBuilder(TITLE)
-                .setTitle(TITLE)
+        return new FileChooserBuilder(SELECT_FOLDER_TITLE)
+                .setTitle(SELECT_FOLDER_TITLE)
                 .setAcceptAllFileFilterUsed(false)
                 .setDirectoriesOnly(true);
     }
@@ -462,8 +469,7 @@ public class WebServer {
             LOGGER.log(Level.INFO, "Python package installation finished...");
             LOGGER.log(Level.INFO, "Python install process result: {0}", processResult);
 
-            processResult = -1; // TODO: Remove this line
-
+            //processResult = -1; // TODO: Remove this line
             // If not successful
             if (processResult != INSTALL_SUCCESS) {
                 LOGGER.log(Level.INFO, "Python package installation unsuccessful, copying script to notebook directory...");
