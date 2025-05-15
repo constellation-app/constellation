@@ -309,22 +309,9 @@ public class WebServer {
 
         // If file already exist and is latest version of script, no need to copy file
         if (download.exists() && equalScripts(download)) {
+            LOGGER.log(Level.INFO, "constellation_client.py already present!");
             return;
         }
-
-        // If we dont have file access, alert user and return
-        if (!Files.isWritable(download.toPath())) {
-            // Show popup to alert user consty doesn't have perms for the given directory
-            System.out.println("Path: " + download.toPath() + " is not writable, apparently!");
-
-            //return;
-        }
-
-        if (!download.canWrite()) {
-            System.out.println("Path: " + download.toPath() + " cant write, apparently!");
-        }
-
-        System.out.println("Files.isWritable(download.toPath()): " + Files.isWritable(download.toPath()) + " download.canWrite(): " + download.canWrite());
 
         try {
             Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING); // problem was here, access problem that is
