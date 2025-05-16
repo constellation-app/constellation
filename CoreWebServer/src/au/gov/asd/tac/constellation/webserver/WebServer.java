@@ -319,7 +319,6 @@ public class WebServer {
 
         try {
             Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING); // problem was here, access problem that is
-            //throw new SecurityException(); // TODO: remove this line
         } catch (final IOException e) {
             LOGGER.log(Level.WARNING, "Error retrieving constellation_client.py:", e);
             return;
@@ -353,11 +352,10 @@ public class WebServer {
 
         // Wait
         try {
-            //latch.await(10, TimeUnit.SECONDS);
             latch.await();
         } catch (final InterruptedException e) {
-            // TODO: re throw interruption
-            System.out.println("Exception occured: " + e);
+            LOGGER.log(Level.WARNING, "Interrupted!", e);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -384,7 +382,6 @@ public class WebServer {
 
             final Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == buttonYes) {
-                //showNewFilepathPopup();
                 requireScriptCopy.set(true);
             }
             latch.countDown();
@@ -394,8 +391,8 @@ public class WebServer {
         try {
             latch.await();
         } catch (final InterruptedException e) {
-            // TODO: re throw interruption
-            System.out.println("Exception occured: " + e);
+            LOGGER.log(Level.WARNING, "Interrupted!", e);
+            Thread.currentThread().interrupt();
         }
 
         if (requireScriptCopy.get()) {
