@@ -257,6 +257,10 @@ public class WebServer {
         }
     }
 
+    private static boolean isHeadless() {
+        return Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"));
+    }
+
     public static File getScriptDir(final boolean mkdir) {
         final File homeDir = new File(System.getProperty("user.home"));
         final File ipython = new File(homeDir, IPYTHON);
@@ -330,6 +334,10 @@ public class WebServer {
     }
 
     private static void alertUserOfPackageFailure() {
+        if (isHeadless()) {
+            return;
+        }
+
         // Show and wait has to be called from a runlater, but the rest of code wont actually wait. Hence, the latch
         final CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(() -> {
@@ -354,6 +362,9 @@ public class WebServer {
     }
 
     private static void alertUserOfAccessException() {
+        if (isHeadless()) {
+            return;
+        }
 
         // Show and wait has to be called from a runlater, but the rest of code wont actually wait. Hence, the latch
         final CountDownLatch latch = new CountDownLatch(1);
@@ -393,10 +404,11 @@ public class WebServer {
     }
 
     private static void showSaveClientScriptPopup() {
-        System.out.println("showNewFilepathPopup START");
+        if (isHeadless()) {
+            return;
+        }
 
         FileChooser.openSaveDialog(getFolderChooser()).thenAccept(folder -> {
-            System.out.println("folder " + folder);
             // If a folder was chosen
             if (!folder.isEmpty()) {
                 downloadPythonClientToDir(folder.get());
