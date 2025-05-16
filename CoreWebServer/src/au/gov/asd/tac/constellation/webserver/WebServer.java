@@ -155,93 +155,95 @@ public class WebServer {
     }
 
     public static synchronized int start() {
-        if (!running) {
-            try {
-                final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        if (running) {
+            return port;
+        }
+        
+        try {
+            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
-                final InetAddress loopback = InetAddress.getLoopbackAddress();
-                port = prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT);
+            final InetAddress loopback = InetAddress.getLoopbackAddress();
+            port = prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT);
 
-                // Put the session secret and port number in a JSON file in the .CONSTELLATION directory.
-                // Get rest directory, if path to directory is empty (default), use the ipython directory
-                final String restPref = prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT);
-                final String restDir = "".equals(restPref) ? getScriptDir(true).toString() : restPref;
-                final File restFile = new File(restDir, REST_FILE);
-                cleanupRest(restFile, restDir);
+            // Put the session secret and port number in a JSON file in the .CONSTELLATION directory.
+            // Get rest directory, if path to directory is empty (default), use the ipython directory
+            final String restPref = prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT);
+            final String restDir = "".equals(restPref) ? getScriptDir(true).toString() : restPref;
+            final File restFile = new File(restDir, REST_FILE);
+            cleanupRest(restFile, restDir);
 
-                // On Posix, we can use stricter file permissions.
-                // On Windows, we just create the new file.
-                if (!isWindows()) {
-                    // Make sure the file is owner read/write.
-                    final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
-                    Files.createFile(restFile.toPath(), PosixFilePermissions.asFileAttribute(perms));
-                }
-
-                // Now write the file contents.
-                try (final PrintWriter pw = new PrintWriter(restFile)) {
-                    // Couldn't be bothered starting up a JSON writer for two simple values.
-                    pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
-                }
-
-                // Download the Python REST client if enabled.
-                final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
-                if (pythonRestClientDownload) {
-                    installPythonPackage();
-                }
-
-                // Build the server.
-                //
-                final Server server = new Server(new InetSocketAddress(loopback, port));
-                final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-                context.setContextPath("/");
-                server.setHandler(context);
-
-                // Gather the servlets and add them to the server.
-                //
-                Lookup.getDefault().lookupAll(ConstellationHttpServlet.class).forEach(servlet -> {
-                    if (servlet.getClass().isAnnotationPresent(WebServlet.class)) {
-                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).urlPatterns()) {
-                            Logger.getGlobal().info(String.format("urlpattern %s %s", servlet, urlPattern));
-                            context.addServlet(new ServletHolder(servlet), urlPattern);
-                        }
-                    }
-                });
-
-                // Make our own handler so we can log requests with the CONSTELLATION logs.
-                //
-                final RequestLog requestLog = (request, response) -> {
-                    final String log = String.format("Request at %s from %s %s, status %d", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), request.getRemoteAddr(), request.getRequestURI(), response.getStatus());
-                    LOGGER.info(log);
-                };
-                server.setRequestLog(requestLog);
-
-                LOGGER.log(Level.INFO, "{0}", String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback, port));
-                server.start();
-
-                // Wait for the server to stop (if it ever does).
-                //
-                final Thread webserver = new Thread(() -> {
-                    try {
-                        server.join();
-                    } catch (final InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                        throw new RuntimeException(ex);
-                    } finally {
-                        // Play nice and clean up (if Netbeans lets us).
-                        try {
-                            Files.delete(Path.of(restFile.getPath()));
-                        } catch (final IOException ex) {
-                            //TODO: Handle case where file not successfully deleted
-                        }
-                    }
-                });
-                webserver.setName(WEB_SERVER_THREAD_NAME);
-                webserver.start();
-
-                running = true;
-            } catch (final Exception e) {
-                throw new RuntimeException(e);
+            // On Posix, we can use stricter file permissions.
+            // On Windows, we just create the new file.
+            if (!isWindows()) {
+                // Make sure the file is owner read/write.
+                final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
+                Files.createFile(restFile.toPath(), PosixFilePermissions.asFileAttribute(perms));
             }
+
+            // Now write the file contents.
+            try (final PrintWriter pw = new PrintWriter(restFile)) {
+                // Couldn't be bothered starting up a JSON writer for two simple values.
+                pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
+            }
+
+            // Download the Python REST client if enabled.
+            final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
+            if (pythonRestClientDownload) {
+                installPythonPackage();
+            }
+
+            // Build the server.
+            //
+            final Server server = new Server(new InetSocketAddress(loopback, port));
+            final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+            context.setContextPath("/");
+            server.setHandler(context);
+
+            // Gather the servlets and add them to the server.
+            //
+            Lookup.getDefault().lookupAll(ConstellationHttpServlet.class).forEach(servlet -> {
+                if (servlet.getClass().isAnnotationPresent(WebServlet.class)) {
+                    for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).urlPatterns()) {
+                        Logger.getGlobal().info(String.format("urlpattern %s %s", servlet, urlPattern));
+                        context.addServlet(new ServletHolder(servlet), urlPattern);
+                    }
+                }
+            });
+
+            // Make our own handler so we can log requests with the CONSTELLATION logs.
+            //
+            final RequestLog requestLog = (request, response) -> {
+                final String log = String.format("Request at %s from %s %s, status %d", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), request.getRemoteAddr(), request.getRequestURI(), response.getStatus());
+                LOGGER.info(log);
+            };
+            server.setRequestLog(requestLog);
+
+            LOGGER.log(Level.INFO, "{0}", String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback, port));
+            server.start();
+
+            // Wait for the server to stop (if it ever does).
+            //
+            final Thread webserver = new Thread(() -> {
+                try {
+                    server.join();
+                } catch (final InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(ex);
+                } finally {
+                    // Play nice and clean up (if Netbeans lets us).
+                    try {
+                        Files.delete(Path.of(restFile.getPath()));
+                    } catch (final IOException ex) {
+                        //TODO: Handle case where file not successfully deleted
+                    }
+                }
+            });
+            webserver.setName(WEB_SERVER_THREAD_NAME);
+            webserver.start();
+
+            running = true;
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         }
 
         return port;
@@ -318,7 +320,7 @@ public class WebServer {
         }
 
         try {
-            Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING); // problem was here, access problem that is
+            Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (final IOException e) {
             LOGGER.log(Level.WARNING, "Error retrieving constellation_client.py:", e);
             return;
