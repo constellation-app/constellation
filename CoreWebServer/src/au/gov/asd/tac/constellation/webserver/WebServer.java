@@ -463,7 +463,6 @@ public class WebServer {
             LOGGER.log(Level.INFO, "Python package installation finished...");
             LOGGER.log(Level.INFO, "Python install process result: {0}", processResult);
 
-            //processResult = -1; // TODO: Remove this line
             // If not successful
             if (processResult != INSTALL_SUCCESS) {
                 LOGGER.log(Level.INFO, "Python package installation unsuccessful, copying script to notebook directory...");
