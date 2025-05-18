@@ -562,10 +562,11 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                 if (wholeWordOnly) {
                     word = "\\b(" + word + ")\\b";
                 } else {
-                    word = "\\b([A-Za-z0-9]*" + word + "[A-Za-z0-9]*)\\b";
+                    // Add pattern to match any alphanumeric character from any language and include any ' - _ punctuation 
+                    word = "(\\p{Alnum}|'|-|_)*" + word + "(\\p{Alnum}|'|-|_)*";
                 }
 
-                final Pattern pattern = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
+                final Pattern pattern = Pattern.compile(word, Pattern.UNICODE_CHARACTER_CLASS | Pattern.CASE_INSENSITIVE);
                 patterns.add(pattern);
             }
         }
