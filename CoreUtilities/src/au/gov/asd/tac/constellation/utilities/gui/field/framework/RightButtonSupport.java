@@ -33,6 +33,11 @@ public interface RightButtonSupport {
 
         protected RightButton(final Label label, final ButtonType type) {
             super(label, type);
+            // set the button to a narrower width if no text
+            if (label.getText().isEmpty()) {
+                setMinWidth(27.0);
+                setMaxWidth(10.0);
+            }
         }
     }
 

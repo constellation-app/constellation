@@ -123,7 +123,7 @@ import javafx.scene.effect.ColorInput;
  * for the benefit of password input field but also benefits others
  *
  * The Text of the input field should be taken as the source of truth for the
- * current value. Implementations of ConselationInput fields may implement
+ * current value. Implementations of ConstellationInput fields may implement
  * their own back end data structures and objects to simplify the text value.
  *
  * @author capricornunicorn123
@@ -612,7 +612,6 @@ public abstract class ConstellationInput<T> extends StackPane implements
     public final int getInferredCaretPosition(){
         return inferredCaretPos;
     }
-    
     // </editor-fold>  
     // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
     @Override
