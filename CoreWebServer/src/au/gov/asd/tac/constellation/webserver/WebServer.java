@@ -36,6 +36,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -158,7 +159,7 @@ public class WebServer {
         if (running) {
             return port;
         }
-        
+
         try {
             final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
@@ -321,12 +322,10 @@ public class WebServer {
 
         try {
             Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (final IOException e) {
-            LOGGER.log(Level.WARNING, "Error retrieving constellation_client.py:", e);
-            return;
-        } catch (final SecurityException e) {
-            // Alert user of exception
+        } catch (final IOException e) { // This should catch AccessDeniedException
+            LOGGER.log(Level.WARNING, "Error copying constellation_client.py into " + directory + ":", e);
             alertUserOfAccessException();
+            return;
         }
 
         // Succssfully copied files
@@ -373,7 +372,8 @@ public class WebServer {
         Platform.runLater(() -> {
             final Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Attention");
-            alert.setHeaderText("Copying constellation_client.py to " + getNotebookDir() + " has failed! (Access was denied)\nYou will need to manually place a copy of constellation_client.py");
+//            alert.setHeaderText("Copying constellation_client.py to " + getNotebookDir() + " has failed!\n" + exception + "\nYou will need to manually place a copy of constellation_client.py");
+            alert.setHeaderText("Copying constellation_client.py to " + getNotebookDir() + " has failed!\nYou will need to manually place a copy of constellation_client.py");
             alert.setContentText("Do you want to save a copy of constellation_client.py?");
 
             alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
