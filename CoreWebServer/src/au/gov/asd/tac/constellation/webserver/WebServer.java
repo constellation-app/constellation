@@ -36,7 +36,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -322,8 +321,10 @@ public class WebServer {
 
         try {
             Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (final IOException e) { // This should catch AccessDeniedException
-            LOGGER.log(Level.WARNING, "Error copying constellation_client.py into " + directory + ":", e);
+        } catch (final IOException e) {
+            // Formatted string is used both to log directory and because the exception would be shown
+            // to user if e was logged as throwable, rather than converted to string
+            LOGGER.log(Level.WARNING, String.format("Error copying constellation_client.py into %s: %s", directory, e));
             alertUserOfAccessException();
             return;
         }
