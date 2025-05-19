@@ -36,7 +36,8 @@ public class AttributeUtilities {
     }
 
     /**
-     * Return the attribute id's for a {@link GraphElementType} used by a graph
+     * Return the attribute id's for a {@link GraphElementType} used by a graph. 
+     * Only returns ids for attributes registered by the graph's schema so no custom attributes will be returned.
      *
      * @param graph The graph
      * @param graphElementType The element type
