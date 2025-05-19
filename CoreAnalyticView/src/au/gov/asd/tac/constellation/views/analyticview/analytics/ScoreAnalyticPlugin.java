@@ -81,7 +81,7 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
     }
 
     protected final StoreGraph getSubgraph(final GraphWriteMethods graph, final SchemaFactory schemaFactory, final Set<SchemaTransactionType> subgraphTransactionTypes) {
-        return SubgraphUtilities.getSubgraph(graph, schemaFactory.createSchema(), subgraphTransactionTypes, false);
+        return SubgraphUtilities.getTransactionTypeSubgraph(graph, schemaFactory.createSchema(), subgraphTransactionTypes, false);
     }
 
     protected final void copySubgraphToGraph(final GraphWriteMethods graph, final StoreGraph subgraph) {

@@ -263,7 +263,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
     {//GEN-HEADEREND:event_addButtonActionPerformed
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (graph != null) {
-            Future<?> f = PluginExecution.withPlugin(new AddPerspectivePlugin(perspectiveModel, perspectivesList)).executeLater(graph);
+            final Future<?> f = PluginExecution.withPlugin(new AddPerspectivePlugin(perspectiveModel, perspectivesList)).executeLater(graph);
             try {
                 f.get();
             } catch (final InterruptedException ex) {
