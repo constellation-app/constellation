@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.apache.commons.io.IOUtils;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
@@ -43,6 +44,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbPreferences;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertNotEquals;
@@ -174,7 +176,7 @@ public class WebServerNGTest {
         assertEquals(false, WebServer.isRunning());
 
         // Run start
-        int expResult = 1517;
+        final int expResult = 1517;
         int result = WebServer.start();
 
         // Check port number
@@ -190,6 +192,14 @@ public class WebServerNGTest {
             LOGGER.log(Level.WARNING, "Error matching files");
         }
 
+        // Also test trying to start server when server is already running
+        result = WebServer.start();
+
+        // Check port number
+        assertEquals(expResult, result);
+
+        // Check server still running
+        assertEquals(true, WebServer.isRunning());
     }
 
     @Test
@@ -506,10 +516,21 @@ public class WebServerNGTest {
 
         final Path testFilePath = createTestFile();
 
-        try (MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class)) {
+        try (MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class); MockedStatic<WebServer> webServerStaticMock = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS); MockedStatic<StatusDisplayer> statusDisplayerStaticMock = Mockito.mockStatic(StatusDisplayer.class, Mockito.CALLS_REAL_METHODS)) {
             pathsStaticMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(testFilePath);
+            webServerStaticMock.when(() -> WebServer.equalScripts(any(File.class))).thenReturn(true);
+
             WebServer.downloadPythonClientToDir(new File(pathString));
+            // Assert file was created
             assertTrue(Files.exists(filePath));
+            // Verify functions were called
+            pathsStaticMock.verify(() -> Paths.get(Mockito.anyString()), times(1));
+            statusDisplayerStaticMock.verify(StatusDisplayer::getDefault, times(1));
+
+            // Run the same function again, verify that function returned early as functions weren't called a second time
+            WebServer.downloadPythonClientToDir(new File(pathString));
+            pathsStaticMock.verify(() -> Paths.get(Mockito.anyString()), times(1));
+            statusDisplayerStaticMock.verify(StatusDisplayer::getDefault, times(1));
         }
     }
 
