@@ -149,6 +149,8 @@ public class WebServer {
     private static final int INSTALL_SUCCESS = 0;
 
     private static final String SELECT_FOLDER_TITLE = "Select folder";
+    private static final String ALERT_HEADER_TEXT = "Copying constellation_client.py to %s has failed!\n\nReason: %s\n\nYou will need to manually place a copy of constellation_client.py in %s";
+    private static final String ALERT_CONTEXT_TEXT = "Do you want to save a copy of constellation_client.py?";
 
     public static boolean isRunning() {
         return running;
@@ -325,7 +327,7 @@ public class WebServer {
             // Formatted string is used both to log directory and because the exception would be shown
             // to user if e was logged as throwable, rather than converted to string
             LOGGER.log(Level.WARNING, String.format("Error copying constellation_client.py into %s: %s", directory, e));
-            alertUserOfAccessException();
+            alertUserOfAccessException(e);
             return;
         }
 
@@ -361,7 +363,7 @@ public class WebServer {
         }
     }
 
-    private static void alertUserOfAccessException() {
+    private static void alertUserOfAccessException(final Exception exception) {
         if (isHeadless()) {
             return;
         }
@@ -373,9 +375,8 @@ public class WebServer {
         Platform.runLater(() -> {
             final Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Attention");
-//            alert.setHeaderText("Copying constellation_client.py to " + getNotebookDir() + " has failed!\n" + exception + "\nYou will need to manually place a copy of constellation_client.py");
-            alert.setHeaderText("Copying constellation_client.py to " + getNotebookDir() + " has failed!\nYou will need to manually place a copy of constellation_client.py");
-            alert.setContentText("Do you want to save a copy of constellation_client.py?");
+            alert.setHeaderText(String.format(ALERT_HEADER_TEXT, getNotebookDir(), exception, getNotebookDir()));
+            alert.setContentText(ALERT_CONTEXT_TEXT);
 
             alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
@@ -399,11 +400,11 @@ public class WebServer {
         }
 
         if (requireScriptCopy.get()) {
-            showSaveClientScriptPopup();
+            showSaveClientScriptPopup(exception);
         }
     }
 
-    private static void showSaveClientScriptPopup() {
+    private static void showSaveClientScriptPopup(final Exception exception) {
         if (isHeadless()) {
             return;
         }
@@ -414,7 +415,7 @@ public class WebServer {
                 downloadPythonClientToDir(folder.get());
             } else {
                 // Otherwise show previous popup
-                alertUserOfAccessException();
+                alertUserOfAccessException(exception);
             }
         });
     }
