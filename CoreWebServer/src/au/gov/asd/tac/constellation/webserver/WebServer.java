@@ -149,8 +149,10 @@ public class WebServer {
     private static final int INSTALL_SUCCESS = 0;
 
     private static final String SELECT_FOLDER_TITLE = "Select folder";
-    private static final String ALERT_HEADER_TEXT = "Copying constellation_client.py to %s has failed!\n\nReason: %s\n\nYou will need to manually place a copy of constellation_client.py in %s";
-    private static final String ALERT_CONTEXT_TEXT = "Do you want to save a copy of constellation_client.py?";
+    private static final String FAIL_COPY_ALERT_HEADER_TEXT = "Copying constellation_client.py to %s has failed!\n\nReason: %s\n\nYou will need to manually place a copy of constellation_client.py in %s";
+    private static final String FAIL_COPY_ALERT_CONTEXT_TEXT = "Do you want to save a copy of constellation_client.py?";
+    private static final String FAIL_INSTALL_ALERT_HEADER_TEXT = "Installation of constellation client python package has failed!";
+    private static final String FAIL_INSTALL_ALERT_CONTENT_TEXT = "A copy of the constellation client script will be created in %s";
 
     public static boolean isRunning() {
         return running;
@@ -346,8 +348,8 @@ public class WebServer {
         Platform.runLater(() -> {
             final Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Attention");
-            alert.setHeaderText("Installation of constellation client python package has failed!");
-            alert.setContentText("A copy of the constellation client script will be created in " + getNotebookDir());
+            alert.setHeaderText(FAIL_INSTALL_ALERT_HEADER_TEXT);
+            alert.setContentText(String.format(FAIL_INSTALL_ALERT_CONTENT_TEXT, getNotebookDir()));
             alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
             alert.showAndWait();
@@ -375,8 +377,8 @@ public class WebServer {
         Platform.runLater(() -> {
             final Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Attention");
-            alert.setHeaderText(String.format(ALERT_HEADER_TEXT, getNotebookDir(), exception, getNotebookDir()));
-            alert.setContentText(ALERT_CONTEXT_TEXT);
+            alert.setHeaderText(String.format(FAIL_COPY_ALERT_HEADER_TEXT, getNotebookDir(), exception, getNotebookDir()));
+            alert.setContentText(FAIL_COPY_ALERT_CONTEXT_TEXT);
 
             alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
