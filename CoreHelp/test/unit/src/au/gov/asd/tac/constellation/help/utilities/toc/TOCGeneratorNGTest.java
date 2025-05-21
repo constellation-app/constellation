@@ -139,7 +139,7 @@ public class TOCGeneratorNGTest {
         System.out.println("convertXMLMappings");
         List<File> xmlsFromFile = new ArrayList<>();
 
-        final TreeNode root = new TreeNode(new TOCItem("root", ""));
+        final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
         File tempFileTOC = null;
         try {
             tempFileTOC = File.createTempFile("tempFileTOC", ".md");
@@ -165,7 +165,7 @@ public class TOCGeneratorNGTest {
     public void testConvertXMLMappings_List_TreeNodeFail() throws IOException {
         System.out.println("convertXMLMappingsFail");
         List<File> xmlsFromFile = new ArrayList<>();
-        final TreeNode root = new TreeNode(new TOCItem("root", ""));
+        final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
         TOCGenerator.createTOCFile("incorrect/path/to/toc");
         TOCGenerator.convertXMLMappings(xmlsFromFile, root);
     }
@@ -223,7 +223,7 @@ public class TOCGeneratorNGTest {
             xmlsFromFile.add(tempFile);
             xmlsFromFile.add(tempFile2);
 
-            final TreeNode root = new TreeNode(new TOCItem("root", ""));
+            final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
 
             // try with resources
             try (final FileWriter fw = new FileWriter(tempFileTOC)) {
@@ -231,22 +231,22 @@ public class TOCGeneratorNGTest {
             }
             assertEquals(root.getChildren().size(), 1);
 
-            final TreeNode child1 = (TreeNode) root.getChildren().get(0); // Views
-            final TreeNode child11a = (TreeNode) child1.getChildren().get(0); // Layers View
-            final TreeNode child111a = (TreeNode) child11a.getChildren().get(0); // Layers View link
-            final TreeNode child11b = (TreeNode) child1.getChildren().get(1); // Notes View
-            final TreeNode child111b = (TreeNode) child11b.getChildren().get(0); // Notes View link
+            final TreeNode<TOCItem> child1 = root.getChildren().get(0); // Views
+            final TreeNode<TOCItem> child11a = child1.getChildren().get(0); // Layers View
+            final TreeNode<TOCItem> child111a = child11a.getChildren().get(0); // Layers View link
+            final TreeNode<TOCItem> child11b = child1.getChildren().get(1); // Notes View
+            final TreeNode<TOCItem> child111b = child11b.getChildren().get(0); // Notes View link
 
             assertEquals(child11a.getChildren().size(), 1);
             assertEquals(child11b.getChildren().size(), 1);
             assertEquals(child111a.getChildren().size(), 0);
             assertEquals(child111b.getChildren().size(), 0);
 
-            final TreeNode expectedChild1 = new TreeNode(new TOCItem("Views", ""));
-            final TreeNode expectedChild11a = new TreeNode(new TOCItem("Layers View", ""));
-            final TreeNode expectedChild111a = new TreeNode(new TOCItem("Layers View", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent"));
-            final TreeNode expectedChild11b = new TreeNode(new TOCItem("Notes View", ""));
-            final TreeNode expectedChild111b = new TreeNode(new TOCItem("Notes View", "au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent"));
+            final TreeNode<TOCItem> expectedChild1 = new TreeNode<>(new TOCItem("Views", ""));
+            final TreeNode<TOCItem> expectedChild11a = new TreeNode<>(new TOCItem("Layers View", ""));
+            final TreeNode<TOCItem> expectedChild111a = new TreeNode<>(new TOCItem("Layers View", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent"));
+            final TreeNode<TOCItem> expectedChild11b = new TreeNode<>(new TOCItem("Notes View", ""));
+            final TreeNode<TOCItem> expectedChild111b = new TreeNode<>(new TOCItem("Notes View", "au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent"));
 
             assertEquals(child1, expectedChild1);
             assertEquals(child11a, expectedChild11a);
