@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.utilities.text;
 
 /**
  * Populates the list of Urls of the LanguageTool Dependencies, required by the
- * LanguagetoolClassLoader.List of the jars used by Languagetool, as in
+ * LanguagetoolClassLoader. The list of the jars used by Languagetool, as in
  * LanguagetoolDependencies.txt file, are populated from the common location,
  * ignoring the version numbers. Indriya1.3 and uom-lib-common-1.1 are loaded
  * from languagetoolconf folder to avoid dependency conflicts.

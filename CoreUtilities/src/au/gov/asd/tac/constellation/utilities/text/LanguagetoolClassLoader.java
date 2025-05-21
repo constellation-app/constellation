@@ -25,6 +25,8 @@ import java.util.logging.Logger;
 /**
  * A Custom class loader to load Languagetool classes, to avoid transient
  * dependency version conflicts.
+ * TODO: This is a workaround which can be removed
+ * once the dependency clash is no longer an issue.
  *
  * @author Auriga2
  */

@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.text;
 
-//import static au.gov.asd.tac.constellation.utilities.text.LanguagetoolClassLoader.*;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -103,12 +102,10 @@ public final class SpellChecker {
 
     public SpellChecker(final SpellCheckingTextArea spellCheckingTextArea) {
         textArea = spellCheckingTextArea;
-        while (true) {
-            LANGTOOL_LOAD.thenRun(() -> {
-                initializeRules();
-            });
-            break;
-        }
+
+        LANGTOOL_LOAD.thenRun(() -> {
+            initializeRules();
+        });
 
         //initialize popup
         suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
