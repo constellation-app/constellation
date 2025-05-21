@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,9 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 600)
 @NbBundle.Messages("UtilitiesHelpProvider=Utilities Help Provider")
 public class UtilitiesHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
-    private static final String SEP = File.separator;
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreUtilities" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -42,13 +40,11 @@ public class UtilitiesHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String utilitiesModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreUtilities" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd"
-                + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "utilities" + SEP;
 
-        map.put("au.gov.asd.tac.constellation.utilities.icons", utilitiesModulePath + "icons.md");
-        map.put("au.gov.asd.tac.constellation.utilities.decorators", utilitiesModulePath + "decorators.md");
-        map.put("au.gov.asd.tac.constellation.utilities.jupyter", utilitiesModulePath + "about-jupyter-notebook-server.md");
-        map.put("au.gov.asd.tac.constellation.utilities.rest", utilitiesModulePath + "about-rest-server.md");
+        map.put("au.gov.asd.tac.constellation.utilities.icons", MODULE_PATH + "icons.md");
+        map.put("au.gov.asd.tac.constellation.utilities.decorators", MODULE_PATH + "decorators.md");
+        map.put("au.gov.asd.tac.constellation.utilities.jupyter", MODULE_PATH + "about-jupyter-notebook-server.md");
+        map.put("au.gov.asd.tac.constellation.utilities.rest", MODULE_PATH + "about-rest-server.md");
         return map;
     }
 
@@ -59,7 +55,6 @@ public class UtilitiesHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        return "ext" + SEP + "docs" + SEP + "CoreUtilities" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + 
-                SEP + "tac" + SEP + CODEBASE_NAME + SEP + "utilities" + SEP + "utilities-toc.xml";
+        return MODULE_PATH + "utilities-toc.xml";
     }
 }

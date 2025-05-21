@@ -206,12 +206,11 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String helpId = helpCtx.getHelpID();
         LOGGER.log(Level.INFO, "display help for: {0}", helpId);
 
-        final String helpDefaultPath = SEP + "ext" + SEP + "docs" + SEP + "CoreFunctionality" + SEP + "src" + SEP + "au" + SEP + "gov"
-                + SEP + "asd" + SEP + "tac" + SEP + "constellation" + SEP + "functionality" + SEP + "about-constellation.md";
+        final String helpDefaultPath = "ext" + SEP + "docs" + SEP + "CoreFunctionality" + SEP + "about-constellation.md";
 
         final String helpAddress = HelpMapper.getHelpAddress(helpId);
         // use the requested help file, or the About Constellation page if one is not given
-        String helpLink = StringUtils.isNotEmpty(helpAddress) ? helpAddress.substring(2) : helpDefaultPath;
+        String helpLink = StringUtils.isNotEmpty(helpAddress) ? helpAddress : helpDefaultPath;
 
         try {
             final String url;

@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
-import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -27,10 +25,7 @@ import org.testng.annotations.Test;
  * @author Quasar985
  */
 public class ErrorReportHelpProviderNGTest {
-
-    private static final String CODEBASE_NAME = "constellation";
-    private static final String SEP = File.separator;
-
+    
     /**
      * Test of getHelpMap method, of class ErrorReportHelpProvider.
      */
@@ -38,16 +33,16 @@ public class ErrorReportHelpProviderNGTest {
     public void testGetHelpMap() {
         System.out.println("getHelpMap");
         
-        final Map<String, String> expResult = new HashMap<>();
-        final String dataModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreErrorReportView" + SEP + "src"
-                + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "errorreport" + SEP;
-
-        expResult.put("au.gov.asd.tac.constellation.views.errorreport", dataModulePath + "error-report.md");
-
         final ErrorReportHelpProvider instance = new ErrorReportHelpProvider();
+        final Map<String, String> helpMap = instance.getHelpMap();
 
-        final Map<String, String> result = instance.getHelpMap();
-        assertTrue(expResult.equals(result));
+        assertEquals(helpMap.size(), 1);
+        //not going to go through and assert the existence of each specific item in the map 
+        //but will assert they're all correctly located within the error report view package
+        final String packageStart = "au.gov.asd.tac.constellation.views.errorreport.";
+        for (final String path : helpMap.keySet()) {
+            assertTrue(path.startsWith(packageStart));
+        }
     }
 
     /**
@@ -58,10 +53,16 @@ public class ErrorReportHelpProviderNGTest {
         System.out.println("getHelpTOC");
         
         final ErrorReportHelpProvider instance = new ErrorReportHelpProvider();
-        final String expResult = "ext" + SEP + "docs" + SEP + "CoreErrorReportView" + SEP + "src" + SEP + "au" + SEP
-                + "gov" + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "errorreport" + SEP
-                + "errorreport-toc.xml";
+        final String tocLocation = instance.getHelpTOC();
 
-        assertEquals(instance.getHelpTOC(), expResult);
+        //the file separator used will vary from OS to OS so rather than copying the
+        //exact string from the actual class and asserting what we got is the same,
+        //we'll assert that some of the keyparts of the expected filepath are present
+        assertTrue(tocLocation.contains("docs"));
+        assertTrue(tocLocation.contains("CoreErrorReportView"));
+        assertTrue(tocLocation.contains("errorreport-toc.xml"));
+
+        assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreErrorReportView"));
+        assertTrue(tocLocation.indexOf("CoreErrorReportView") < tocLocation.indexOf("errorreport-toc.xml"));
     }
 }

@@ -110,17 +110,15 @@ public class HelpServletNGTest {
             helpDisplayerStaticMock.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
 
             when(requestMock1.getRequestURI()).thenReturn("/file:/C:/Projects/constellation/build/cluster/modules/ext/docs/"
-                    + "CoreAnalyticView/src/au/gov/asd/tac/constellation/views/ext/docs/"
-                    + "CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/question-best-connects-network.md");
+                    + "CoreAnalyticView/ext/docs/CoreAnalyticView/question-best-connects-network.md");
             doNothing().when(responseMock1).sendRedirect(Mockito.eq("/file:/C:/Projects/constellation/build/cluster/modules/ext/docs/"
-                    + "CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/question-best-connects-network.md"));
+                    + "CoreAnalyticView/question-best-connects-network.md"));
             when(requestMock1.getHeader("referer")).thenReturn("/file:/C:/Projects/constellation/build/cluster/modules/ext/docs/"
-                    + "CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/analytic-view.md");
+                    + "CoreAnalyticView/analytic-view.md");
             
             final Map<String, String> mappings = new HashMap<>();
             final String sep = File.separator;
-            final String helpPagePath = ".." + sep + "constellation" + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov"
-                    + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "question-best-connects-network.md";
+            final String helpPagePath = "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "question-best-connects-network.md";
             mappings.put("test", helpPagePath);
             helpMapperStaticMock.when(() -> HelpMapper.getMappings()).thenReturn(mappings);
 
@@ -155,7 +153,7 @@ public class HelpServletNGTest {
     public void testRedirectPathNoRedirect() {
         String referer = null;
         String requestPath = "/file:/C:/Projects/constellation/build/cluster/modules/ext/docs/"
-                + "CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-view.md";
+                + "CoreAnalyticView/docs/analytic-view.md";
         final URL fileUrl = HelpServlet.redirectPath(requestPath, referer);
         assertFalse(HelpServlet.isRedirect());
         assertEquals(fileUrl, null);
@@ -168,20 +166,18 @@ public class HelpServletNGTest {
     @Test
     public void testRedirectPathRedirect() {
         String referer = "http://localhost:1517/file:/constellation/build/cluster/modules/ext/docs/"
-                + "CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/attribute-editor.md";
+                + "CoreAttributeEditorView/attribute-editor.md";
         String requestPath = "/file:/constellation/build/cluster/modules/ext/docs/"
-                + "CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/ext/docs/"
-                + "CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/analytic-view.md";
+                + "CoreAttributeEditorView/ext/docs/CoreAnalyticView/analytic-view.md";
         try (MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class)) {
             final Map<String, String> mappings = new HashMap<>();
             final String sep = File.separator;
-            final String helpPagePath = ".." + sep + "constellation" + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov"
-                    + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "analytic-view.md";
+            final String helpPagePath = "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "analytic-view.md";
             mappings.put("test", helpPagePath);
             helpMapperStaticMock.when(() -> HelpMapper.getMappings()).thenReturn(mappings);
             
             final URL fileUrl = HelpServlet.redirectPath(requestPath, referer);
-            assertTrue(fileUrl.toString().contains("CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/analytic-view.md"));
+            assertTrue(fileUrl.toString().contains("CoreAnalyticView/analytic-view.md"));
             assertTrue(HelpServlet.isRedirect());
         }
     }
@@ -193,20 +189,18 @@ public class HelpServletNGTest {
     @Test
     public void testRedirectPathRedirectWithinSameModule() {
         String referer = "http://localhost:1517/file:/constellation/build/cluster/modules/ext/docs/"
-                + "CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/analytic-view.md";
+                + "CoreAnalyticView/analytic-view.md";
         String requestPath = "/file:/constellation/build/cluster/modules/ext/docs/"
-                + "CoreAnalyticView/src/au/gov/asd/tac/constellation/views/ext/docs/"
-                + "CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/question-best-connects-network.md";
+                + "CoreAnalyticView/ext/docs/CoreAnalyticView/question-best-connects-network.md";
         try (MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class)) { 
             final Map<String, String> mappings = new HashMap<>();
             final String sep = File.separator;
-            final String helpPagePath = ".." + sep + "constellation" + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov"
-                    + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "question-best-connects-network.md";
+            final String helpPagePath = "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "question-best-connects-network.md";
             mappings.put("test", helpPagePath);
             helpMapperStaticMock.when(() -> HelpMapper.getMappings()).thenReturn(mappings);
             
             final URL fileUrl = HelpServlet.redirectPath(requestPath, referer);
-            assertTrue(fileUrl.toString().contains("CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/question-best-connects-network.md"));
+            assertTrue(fileUrl.toString().contains("CoreAnalyticView/question-best-connects-network.md"));
             assertTrue(HelpServlet.isRedirect());
         }
     }

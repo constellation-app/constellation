@@ -84,15 +84,9 @@ public class TimelineViewHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreTimelineView"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("views"));
-        assertTrue(tocLocation.contains("timeline"));
         assertTrue(tocLocation.contains("timeline-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreTimelineView"));
-        assertTrue(tocLocation.indexOf("CoreTimelineView") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("views"));
-        assertTrue(tocLocation.indexOf("views") < tocLocation.indexOf("timeline"));
-        assertTrue(tocLocation.indexOf("timeline") < tocLocation.indexOf("timeline-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreTimelineView") < tocLocation.indexOf("timeline-toc.xml"));
     }    
 }

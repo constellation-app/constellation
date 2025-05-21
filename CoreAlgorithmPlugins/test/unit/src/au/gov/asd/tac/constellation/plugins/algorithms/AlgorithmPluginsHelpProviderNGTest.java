@@ -84,15 +84,9 @@ public class AlgorithmPluginsHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreAlgorithmPlugins"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("plugins"));
-        assertTrue(tocLocation.contains("algorithms"));
         assertTrue(tocLocation.contains("algorithms-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreAlgorithmPlugins"));
-        assertTrue(tocLocation.indexOf("CoreAlgorithmPlugins") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("plugins"));
-        assertTrue(tocLocation.indexOf("plugins") < tocLocation.indexOf("algorithms"));
-        assertTrue(tocLocation.indexOf("algorithms") < tocLocation.indexOf("algorithms-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreAlgorithmPlugins") < tocLocation.indexOf("algorithms-toc.xml"));
     }   
 }

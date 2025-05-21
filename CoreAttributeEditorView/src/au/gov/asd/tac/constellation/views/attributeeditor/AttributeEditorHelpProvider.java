@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,9 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 800)
 @NbBundle.Messages("AttributeEditorHelpProvider=Attribute Editor Help Provider")
 public class AttributeEditorHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
-    private static final String SEP = File.separator;
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreAttributeEditorView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -42,10 +40,8 @@ public class AttributeEditorHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String attributeModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreAttributeEditorView" + SEP + "src" + SEP + "au" + SEP + "gov"
-                + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "attributeeditor" + SEP;
 
-        map.put("au.gov.asd.tac.constellation.views.attributeeditor.AttributeEditorPanel", attributeModulePath + "attribute-editor.md");
+        map.put("au.gov.asd.tac.constellation.views.attributeeditor.AttributeEditorPanel", MODULE_PATH + "attribute-editor.md");
         return map;
     }
 
@@ -56,11 +52,6 @@ public class AttributeEditorHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String attributeEditorViewPath;
-        attributeEditorViewPath = "ext" + SEP + "docs" + SEP + "CoreAttributeEditorView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP
-                + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "attributeeditor" + SEP + "attributeeditor-toc.xml";
-
-
-        return attributeEditorViewPath;
+        return MODULE_PATH + "attributeeditor-toc.xml";
     }
 }

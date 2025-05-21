@@ -59,11 +59,11 @@ public class HelpMapperNGTest {
      */
     @Test
     public void testGetHelpAddress() {
+        System.out.println("getHelpAddress");
         testGetMappings();
         String className = "au.gov.asd.tac.constellation.help.preferences.HelpOptionsPanelController";
         final String sep = File.separator;
-        String expResult = ".." + sep + "ext" + sep + "docs" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "help-options.md";
+        String expResult = "ext" + sep + "docs" + sep + "CoreHelp" + sep + "help-options.md";
         String result = HelpMapper.getHelpAddress(className);
         assertEquals(result, expResult);
     }

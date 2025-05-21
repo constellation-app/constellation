@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.pluginreporter;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,9 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 1800)
 @NbBundle.Messages("PluginReporterHelpProvider=Plugin Reporter Help Provider")
 public class PluginReporterHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
-    private static final String SEP = File.separator;
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CorePluginReporterView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -42,10 +40,8 @@ public class PluginReporterHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String pluginModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CorePluginReporterView" + SEP + "src" + SEP + "au" + SEP + "gov"
-                + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "pluginreporter" + SEP;
 
-        map.put("au.gov.asd.tac.constellation.views.pluginreporter.panes", pluginModulePath + "plugin-reporter-view.md");
+        map.put("au.gov.asd.tac.constellation.views.pluginreporter.panes", MODULE_PATH + "plugin-reporter-view.md");
         return map;
     }
 
@@ -56,9 +52,6 @@ public class PluginReporterHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String pluginReporterPath;
-        pluginReporterPath = "ext" + SEP + "docs" + SEP + "CorePluginReporterView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac"
-                + SEP + CODEBASE_NAME + SEP + "views" + SEP + "pluginreporter" + SEP + "pluginreporter-toc.xml";
-        return pluginReporterPath;
+        return MODULE_PATH + "pluginreporter-toc.xml";
     }
 }

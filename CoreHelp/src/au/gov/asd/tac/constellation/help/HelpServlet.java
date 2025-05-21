@@ -28,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
@@ -146,8 +147,8 @@ public class HelpServlet extends HttpServlet {
      */
     protected static URL redirectPath(final String requestPath, final String referer) {
         try {
-            if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css") || requestPath.contains(".js")
-                    || requestPath.contains(".ico"))) {
+            if (referer != null && !referer.contains("toc.md") && !requestPath.contains(".css") && !requestPath.contains(".js")
+                    && !requestPath.contains(".ico")) {
                 if (requestPath.contains(".png")) {
                     // get image referred by page itself
                     final String extText = "/ext/";
@@ -167,36 +168,33 @@ public class HelpServlet extends HttpServlet {
                     }
                 } else if (requestPath.contains(".md")) {
                     // find correct help page
-                    final String srcText = "/src/";
-                    final int firstIndex = requestPath.indexOf(srcText);
-                    if (firstIndex != -1) {
-                        final int secondIndex = requestPath.indexOf(srcText, firstIndex + srcText.length());
-                        if (secondIndex != -1) {
-                            final String pathSubstring = requestPath.substring(secondIndex + srcText.length()).replace("/", File.separator);
-                            final Collection<String> helpAddresses = HelpMapper.getMappings().values();
-                            
-                            for (final String helpAddress : helpAddresses) {
-                                // if helpAddress contains the substring, this should be the correct path
-                                // note that due to the way help page paths are constructed,
-                                // there is an assumption that the collections values (not just keys) are also unique
-                                if (helpAddress.contains(pathSubstring)) {
-                                    final File pageFile = new File(Generator.getBaseDirectory() + File.separator + helpAddress.substring(2));
-                                    final URL fileUrl = pageFile.toURI().toURL();
-                                    HelpServlet.redirect = true;
-                                    return fileUrl;
+                    final String extText = "/ext/";
+                    final int index = requestPath.lastIndexOf(extText);
+                    if (index != -1) {
+                        final String pathSubstring = requestPath.substring(index + extText.length()).replace("/", File.separator);
+                        final Collection<String> helpAddresses = HelpMapper.getMappings().values();
+
+                        for (final String helpAddress : helpAddresses) {
+                            // if helpAddress contains the substring, this should be the correct path
+                            // due to the way help page paths are constructed, the assumption is the collection's values are also unique
+                            if (helpAddress.contains(pathSubstring)) {
+                                String filePath = Generator.getBaseDirectory() + File.separator + helpAddress;
+                                // if helpAddress contains any backwards directory changes then these should be normalised first
+                                // before comparing with already-normalised requestPath
+                                if (helpAddress.contains("..")) {
+                                    filePath = Paths.get(Generator.getBaseDirectory() + File.separator + helpAddress).normalize().toString();                                  
                                 }
-                            }
-                            
-                            // did not match any toc mapped pages, try direct url after removing any repeated src path segment
-                            final int srcPosEnd = requestPath.lastIndexOf("/src/");
-                            if (srcPosEnd > firstIndex) {
-                                // remove repeated segment to recreate the target url
-                                final int colonPos = requestPath.indexOf(":");
-                                final String compactedRequestPath = requestPath.substring(colonPos + 1, firstIndex) + requestPath.substring(srcPosEnd);
-                                final File pageFile = new File(compactedRequestPath);
+                                
+                                final File pageFile = new File(filePath);
                                 final URL fileUrl = pageFile.toURI().toURL();
+                                // if these match then no redirect is required as the resulting file path is the same
+                                // check substring(1) as request path has leading /
+                                if (fileUrl.toString().equals(requestPath.substring(1))) {
+                                    return null;
+                                }
+                                
                                 HelpServlet.redirect = true;
-                                return fileUrl;                                
+                                return fileUrl;
                             }
                         }
                     }
@@ -217,14 +215,9 @@ public class HelpServlet extends HttpServlet {
      * @return the stripped path without /file:/home or drive letter within it.
      */
     protected static String stripLeadingPath(final String fullPath) {
-        String modifiedPath = fullPath;
-        final String replace1 = "\\/file:\\/[a-zA-Z]:";
-        final String replace2 = "/file:";
-        final String replace3 = "file:";
-        modifiedPath = modifiedPath.replaceAll(replace1, "");
-        modifiedPath = modifiedPath.replace(replace2, "");
-        modifiedPath = modifiedPath.replace(replace3, "");
-
-        return modifiedPath;
+        return fullPath
+                .replaceAll("\\/file:\\/[a-zA-Z]:", "")
+                .replace("/file:", "")
+                .replace("file:", "");
     }
 }

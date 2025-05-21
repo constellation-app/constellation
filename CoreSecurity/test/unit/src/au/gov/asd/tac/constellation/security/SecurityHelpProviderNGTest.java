@@ -84,13 +84,9 @@ public class SecurityHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreSecurity"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("security"));
         assertTrue(tocLocation.contains("security-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreSecurity"));
-        assertTrue(tocLocation.indexOf("CoreSecurity") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("security"));
-        assertTrue(tocLocation.indexOf("security") < tocLocation.indexOf("security-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreSecurity") < tocLocation.indexOf("security-toc.xml"));
     }   
 }

@@ -261,7 +261,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final HBox popupSettings = new HBox();
 
         helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
-        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.errorreport").display());
+        helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
 
         popupSettings.getChildren().addAll(severePopupAllowed, warnPopupAllowed, infoPopupAllowed, finePopupAllowed);
         settingsBox.getChildren().addAll(popupSettings, severeReportFilter, warnReportFilter, infoReportFilter, fineReportFilter);

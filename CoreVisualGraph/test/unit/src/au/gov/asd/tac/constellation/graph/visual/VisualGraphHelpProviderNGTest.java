@@ -84,15 +84,9 @@ public class VisualGraphHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreVisualGraph"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("graph"));
-        assertTrue(tocLocation.contains("visual"));
         assertTrue(tocLocation.contains("visualgraph-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreVisualGraph"));
-        assertTrue(tocLocation.indexOf("CoreVisualGraph") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("graph"));
-        assertTrue(tocLocation.indexOf("graph") < tocLocation.indexOf("visual"));
-        assertTrue(tocLocation.indexOf("visual") < tocLocation.indexOf("visualgraph-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreVisualGraph") < tocLocation.indexOf("visualgraph-toc.xml"));
     }   
 }

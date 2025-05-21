@@ -84,13 +84,9 @@ public class UtilitiesHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreUtilities"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("utilities"));
         assertTrue(tocLocation.contains("utilities-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreUtilities"));
-        assertTrue(tocLocation.indexOf("CoreUtilities") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("utilities"));
-        assertTrue(tocLocation.indexOf("utilities") < tocLocation.indexOf("utilities-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreUtilities") < tocLocation.indexOf("utilities-toc.xml"));
     }
 }

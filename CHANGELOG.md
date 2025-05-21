@@ -1,8 +1,11 @@
 # Constellation Changes
 
+## Changes in May 2025
+-   Updated help page system so that help pages can now be located within module folder of ext/docs to reduce use of redundant folders.
+
 ## Changes in April 2025
-- Added multichoice type ahead parameter with infrastructure for future input implementations
-- Multichoice input fields replaced with new multichoice type ahead parameter
+-   Added multichoice type ahead parameter with infrastructure for future input implementations
+-   Multichoice input fields replaced with new multichoice type ahead parameter
 
 ## Changes in March 2025
 -   Moved creation of `toc.md` for offline help to the netbeans-defined user directory.
