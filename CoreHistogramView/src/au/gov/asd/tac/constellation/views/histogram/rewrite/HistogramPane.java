@@ -128,6 +128,7 @@ public class HistogramPane extends BorderPane {
         display = new HistogramDisplay2(topComponent);
         final ScrollPane displayScroll = new ScrollPane();
         displayScroll.setContent(display);
+        display.prefWidthProperty().bind(displayScroll.widthProperty());
 
 //        final ScrollPane displayScroll = new ScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         //final ScrollPane displayScroll = new ScrollPane();
@@ -284,6 +285,8 @@ public class HistogramPane extends BorderPane {
         // Add everything to this viewPane
         viewPane = new VBox();
         viewPane.prefWidthProperty().bind(this.widthProperty());
+
+        displayScroll.prefWidthProperty().bind(viewPane.widthProperty());
 
         viewPane.getChildren().addAll(
                 displayScroll,
