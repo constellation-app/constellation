@@ -330,7 +330,7 @@ public class WebServer {
             // Formatted string is used both to log directory and because the exception would be shown
             // to user if e was logged as throwable, rather than converted to string
             LOGGER.log(Level.WARNING, String.format("Error copying constellation_client.py into %s: %s", directory, e));
-            alertUserOfAccessException(e);
+            alertUserScriptCouldNotCopy();
             return;
         }
 
@@ -339,7 +339,11 @@ public class WebServer {
         StatusDisplayer.getDefault().setStatusText(msg);
     }
 
-    private static void alertUserOfAccessException(final Exception exception) {
+    /**
+     * Create and show a popup, alerting a user that copying constellation_client.py has failed. This alert will give
+     * the user an option to save a copy of constellation_client.py to a folder of their choosing.
+     */
+    private static void alertUserScriptCouldNotCopy() {
         if (isHeadless()) {
             return;
         }
@@ -361,7 +365,7 @@ public class WebServer {
                 stage.setX(point.getX() + alert.getDialogPane().getWidth() / 2);
                 stage.setY(point.getY() + alert.getDialogPane().getHeight() / 2);
             }
-            
+
             stage.setAlwaysOnTop(true);
 
             alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
@@ -386,11 +390,11 @@ public class WebServer {
         }
 
         if (requireScriptCopy.get()) {
-            showSaveClientScriptPopup(exception);
+            showSaveClientScriptPopup();
         }
     }
 
-    private static void showSaveClientScriptPopup(final Exception exception) {
+    private static void showSaveClientScriptPopup() {
         if (isHeadless()) {
             return;
         }
@@ -401,7 +405,7 @@ public class WebServer {
                 downloadPythonClientToDir(folder.get());
             } else {
                 // Otherwise show previous popup
-                alertUserOfAccessException(exception);
+                alertUserScriptCouldNotCopy();
             }
         });
     }
