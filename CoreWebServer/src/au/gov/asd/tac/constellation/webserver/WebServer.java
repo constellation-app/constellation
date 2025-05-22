@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.webserver;
 import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
@@ -26,6 +27,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,6 +62,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
@@ -149,10 +152,8 @@ public class WebServer {
     private static final int INSTALL_SUCCESS = 0;
 
     private static final String SELECT_FOLDER_TITLE = "Select folder";
-    private static final String FAIL_COPY_ALERT_HEADER_TEXT = "Copying constellation_client.py to %s has failed!\n\nReason: %s\n\nYou will need to manually place a copy of constellation_client.py in %s";
-    private static final String FAIL_COPY_ALERT_CONTEXT_TEXT = "Do you want to save a copy of constellation_client.py?";
-    private static final String FAIL_INSTALL_ALERT_HEADER_TEXT = "Installation of constellation client python package has failed!";
-    private static final String FAIL_INSTALL_ALERT_CONTENT_TEXT = "A copy of the constellation client script will be created in %s";
+    private static final String FAIL_COPY_ALERT_HEADER_TEXT = "Unable to write the constellation_client.py file to the Jupyter Notebook directory:\n%s\n\nYou will need to manually place a copy of constellation_client.py in %s";
+    private static final String FAIL_COPY_ALERT_CONTEXT_TEXT = "Would you like to copy the constellation_client.py file to an alternative directory ?";
 
     public static boolean isRunning() {
         return running;
@@ -338,33 +339,6 @@ public class WebServer {
         StatusDisplayer.getDefault().setStatusText(msg);
     }
 
-    private static void alertUserOfPackageFailure() {
-        if (isHeadless()) {
-            return;
-        }
-
-        // Show and wait has to be called from a runlater, but the rest of code wont actually wait. Hence, the latch
-        final CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(() -> {
-            final Alert alert = new Alert(AlertType.WARNING);
-            alert.setTitle("Attention");
-            alert.setHeaderText(FAIL_INSTALL_ALERT_HEADER_TEXT);
-            alert.setContentText(String.format(FAIL_INSTALL_ALERT_CONTENT_TEXT, getNotebookDir()));
-            alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-
-            alert.showAndWait();
-            latch.countDown();
-        });
-
-        // Wait
-        try {
-            latch.await();
-        } catch (final InterruptedException e) {
-            LOGGER.log(Level.WARNING, "Interrupted!", e);
-            Thread.currentThread().interrupt();
-        }
-    }
-
     private static void alertUserOfAccessException(final Exception exception) {
         if (isHeadless()) {
             return;
@@ -377,8 +351,18 @@ public class WebServer {
         Platform.runLater(() -> {
             final Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Attention");
-            alert.setHeaderText(String.format(FAIL_COPY_ALERT_HEADER_TEXT, getNotebookDir(), exception, getNotebookDir()));
+            alert.setHeaderText(String.format(FAIL_COPY_ALERT_HEADER_TEXT, getNotebookDir(), getNotebookDir()));
             alert.setContentText(FAIL_COPY_ALERT_CONTEXT_TEXT);
+
+            // Make sure alert is centered above main consty window
+            final Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            final Point point = ScreenWindowsHelper.getMainWindowCentrePoint();
+            if (point != null) {
+                stage.setX(point.getX() + alert.getDialogPane().getWidth() / 2);
+                stage.setY(point.getY() + alert.getDialogPane().getHeight() / 2);
+            }
+            
+            stage.setAlwaysOnTop(true);
 
             alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
@@ -472,7 +456,6 @@ public class WebServer {
             // If not successful
             if (processResult != INSTALL_SUCCESS) {
                 LOGGER.log(Level.INFO, "Python package installation unsuccessful, copying script to notebook directory...");
-                alertUserOfPackageFailure();
                 downloadPythonClientNotebookDir();
             }
 
@@ -521,13 +504,11 @@ public class WebServer {
             // If not successful
             if (result != INSTALL_SUCCESS) {
                 LOGGER.log(Level.INFO, "Python package verification unsuccessful, copying script to notebook directory...");
-                alertUserOfPackageFailure();
                 downloadPythonClientNotebookDir();
             } else if (allLines.contains(PACKAGE_NAME)) {  // Result must be success, so if output of listed packages include constellation_client
                 LOGGER.log(Level.INFO, "Python package was installed!");
             } else {
                 LOGGER.log(Level.INFO, "Could not find python package, copying script to notebook directory...");
-                alertUserOfPackageFailure();
                 Platform.runLater(() -> downloadPythonClientNotebookDir());
             }
 
@@ -548,7 +529,6 @@ public class WebServer {
         } catch (final IOException ex) {
             LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT in process for python package {0}: {1}", new Object[]{warning, ex});
             LOGGER.log(Level.INFO, "Copying python script to notebook directory instead...");
-            alertUserOfPackageFailure();
             downloadPythonClientNotebookDir();
             return null;
         }
