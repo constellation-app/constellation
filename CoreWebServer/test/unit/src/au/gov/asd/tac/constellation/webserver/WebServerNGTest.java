@@ -87,7 +87,7 @@ public class WebServerNGTest {
         PREFS.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, OLD_PREF_VALUE);
         try {
             FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
+        } catch (final TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
     }
@@ -516,7 +516,7 @@ public class WebServerNGTest {
 
         final Path testFilePath = createTestFile();
 
-        try (MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class); MockedStatic<WebServer> webServerStaticMock = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS); MockedStatic<StatusDisplayer> statusDisplayerStaticMock = Mockito.mockStatic(StatusDisplayer.class, Mockito.CALLS_REAL_METHODS)) {
+        try (final MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class); final MockedStatic<WebServer> webServerStaticMock = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS); final MockedStatic<StatusDisplayer> statusDisplayerStaticMock = Mockito.mockStatic(StatusDisplayer.class, Mockito.CALLS_REAL_METHODS)) {
             pathsStaticMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(testFilePath);
             webServerStaticMock.when(() -> WebServer.equalScripts(any(File.class))).thenReturn(true);
 

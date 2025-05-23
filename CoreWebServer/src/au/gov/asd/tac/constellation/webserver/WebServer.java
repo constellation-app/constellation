@@ -152,8 +152,8 @@ public class WebServer {
     private static final int INSTALL_SUCCESS = 0;
 
     private static final String SELECT_FOLDER_TITLE = "Select folder";
-    private static final String FAIL_COPY_ALERT_HEADER_TEXT = "Unable to write the constellation_client.py file to the Jupyter Notebook directory:\n%s\n\nYou will need to manually place a copy of constellation_client.py in %s";
-    private static final String FAIL_COPY_ALERT_CONTEXT_TEXT = "Would you like to copy the constellation_client.py file to an alternative directory ?";
+    private static final String FAIL_COPY_ALERT_HEADER_TEXT = "Unable to write the constellation_client.py file to the Jupyter Notebook directory:\n%s\n\nYou may need to manually copy the file if it is required in this directory.";
+    private static final String FAIL_COPY_ALERT_CONTEXT_TEXT = "Would you like to copy the constellation_client.py file to an alternative directory?";
 
     public static boolean isRunning() {
         return running;
@@ -355,7 +355,7 @@ public class WebServer {
         Platform.runLater(() -> {
             final Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Attention");
-            alert.setHeaderText(String.format(FAIL_COPY_ALERT_HEADER_TEXT, getNotebookDir(), getNotebookDir()));
+            alert.setHeaderText(String.format(FAIL_COPY_ALERT_HEADER_TEXT, getNotebookDir()));
             alert.setContentText(FAIL_COPY_ALERT_CONTEXT_TEXT);
 
             // Make sure alert is centered above main consty window
