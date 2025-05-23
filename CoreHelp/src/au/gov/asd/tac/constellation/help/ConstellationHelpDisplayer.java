@@ -61,12 +61,80 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     private static final Logger LOGGER = Logger.getLogger(ConstellationHelpDisplayer.class.getName());
 
     private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/help";
+    
     private static final String NEWLINE = "\n";
     private static final Pattern SPLIT_REGEX = Pattern.compile("</a>");
     private static final String SEP = File.separator;
     
     // Run in a different thread, not the JavaFX thread
     private static final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
+    
+    /**
+     * Display the help page for the following HelpCtx
+     *
+     * @param helpCtx the help id to load
+     * @return whether or not a help page was successfully loaded
+     */
+    @Override
+    public boolean display(final HelpCtx helpCtx) {
+        final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
+        final boolean isOnline = prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP);
+
+        final String helpId = helpCtx.getHelpID();
+        final String helpDefaultPath = "ext" + SEP + "docs" + SEP + "CoreFunctionality" + SEP + "about-constellation.md";
+
+        final String helpAddress = HelpMapper.getHelpAddress(helpId);
+        // use the requested help file, or the About Constellation page if one is not given
+        String helpLink = StringUtils.isNotEmpty(helpAddress) ? helpAddress : helpDefaultPath;
+
+        try {
+            final String url;
+            if (isOnline) {
+                if (helpLink.contains("constellation-")) {
+                    helpLink = helpLink.substring(helpLink.indexOf("modules") + 7);
+                }
+                url = OFFICIAL_CONSTELLATION_WEBSITE + helpLink.replace(".md", ".html");
+            } else {
+                final File file = new File(Generator.getBaseDirectory() + SEP + helpLink);
+                final URL fileUrl = file.toURI().toURL();
+                final int currentPort = HelpWebServer.start();
+                url = String.format("http://localhost:%d/%s", currentPort, fileUrl);
+            }
+
+            final URI uri = new URI(url.replace("\\", "/"));
+
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                browse(uri);
+                return true;
+            }
+
+            LOGGER.log(Level.WARNING, "Help Documentation was unable to launch because Desktop "
+                    + "Browsing was not supported. Tried to navigate to: {0}", uri);
+
+        } catch (final MalformedURLException | URISyntaxException ex) {
+            LOGGER.log(Level.SEVERE, ex, () -> "Help Documentation URL/URI was invalid - Tried to display help for: " + helpId);
+        }
+        return false;
+    }
+    
+    /**
+     * Browse to the supplied URI using the desktops browser.
+     *
+     * @param uri the URI to navigate to
+     * @return true if successful, false otherwise
+     */
+    protected static Future<?> browse(final URI uri) {
+        LOGGER.log(Level.INFO, "Loading help uri {0}", uri);
+
+        return pluginExecutor.submit(() -> {
+            Thread.currentThread().setName("Browse Help");
+            try {
+                Desktop.getDesktop().browse(uri);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, String.format("Failed to load the help URI %s", uri), ex);
+            }
+        });
+    }
 
     public static void copy(final String filePath, final OutputStream out) throws IOException {
         final InputStream pageInput = getInputStream(filePath);
@@ -82,37 +150,21 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     }
 
     protected static InputStream getInputStream(final String filePath) throws FileNotFoundException {
-        final Path path = Paths.get(getPathString(filePath));
-        return new FileInputStream(path.toString());
+        return new FileInputStream(Paths.get(filePath).toString());
     }
-
-    protected static String getFileURLString(final String fileSeparator, final String baseDirectory, final String relativePath) throws MalformedURLException {
-        final File file = new File(baseDirectory + fileSeparator + relativePath);
-        final URL url = file.toURI().toURL();
-        return url.toString();
-    }
-
-    protected static String getPathString(final String helpFilePath) {
-        final String errorPathIdentifier = "src/au/gov/constellation";
-        final String errorPathEnd = "src/au/gov";
-        if (helpFilePath.contains(errorPathIdentifier)) {
-            final int lastIndex = helpFilePath.indexOf(errorPathEnd) + 11;
-            final String removedFirstHalf = helpFilePath.substring(lastIndex, helpFilePath.length());
-            final String coreRepo = "constellation";
-            final String localPath = Generator.getBaseDirectory().substring(0, Generator.getBaseDirectory().indexOf(coreRepo));
-            return localPath + removedFirstHalf;
-        } else {
-            return helpFilePath;
-        }
+    
+    protected static String getFileURLString(final String relativePath) throws MalformedURLException {
+        return new File(Generator.getBaseDirectory() + SEP + relativePath)
+                .toURI().toURL().toString();
     }
 
     /**
      * Generate a String which represents the table of contents, the currently displayed page, and the necessary html
      * tags for formatting.
      *
-     * @param tocInput
-     * @param pageInput
-     * @return
+     * @param tocInput the streamed toc file
+     * @param pageInput the streamed help page path
+     * @return a html output of the give page
      * @throws IOException
      */
     protected static String generateHTMLOutput(final InputStream tocInput, final InputStream pageInput) throws IOException {
@@ -126,20 +178,20 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String stylesheetLink = "<link href=\"\\%s\" rel='stylesheet'></link>";
         final String javascriptText = "<script type=\"text/javascript\" src=\"\\%s\" ></script>";
         
-        final String css = String.format(stylesheetLink, getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/assets/css/app.css"));
-        final String noScript = String.format(stylesheetLink, getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/assets/css/noscript.css"));
-        final String cssBootstrap = String.format(stylesheetLink, getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/css/bootstrap.css"));
-        final String searchcss = String.format(stylesheetLink, getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/assets/css/search.css"));
-        final String jquery = String.format("<script src=\"\\%s\" ></script>", getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/jquery.min.js"));
-        final String dropotron = String.format(javascriptText, getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/jquery.dropotron.min.js"));
-        final String scrolly = String.format(javascriptText, getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/jquery.scrolly.min.js"));
-        final String scrollex = String.format(javascriptText, getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/jquery.scrollex.min.js"));
-        final String browser = String.format(javascriptText, getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/browser.min.js"));
-        final String breakpoints = String.format(javascriptText, getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/breakpoints.min.js"));
-        final String appJS = String.format(javascriptText, getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/app.js"));
-        final String bootstrapjs = String.format(javascriptText, getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/js/bootstrap.js"));
-        final String cookiejs = String.format("<script src=\"\\%s\" ></script>", getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/js/js.cookie.min.js"));
-        final String searchjs = String.format(javascriptText, getFileURLString(SEP, Generator.getBaseDirectory(), "ext/bootstrap/js/index.min.js"));
+        final String css = String.format(stylesheetLink, getFileURLString("ext/bootstrap/assets/css/app.css"));
+        final String noScript = String.format(stylesheetLink, getFileURLString("ext/bootstrap/assets/css/noscript.css"));
+        final String cssBootstrap = String.format(stylesheetLink, getFileURLString("ext/bootstrap/css/bootstrap.css"));
+        final String searchcss = String.format(stylesheetLink, getFileURLString("ext/bootstrap/assets/css/search.css"));
+        final String jquery = String.format("<script src=\"\\%s\" ></script>", getFileURLString("ext/bootstrap/assets/js/jquery.min.js"));
+        final String dropotron = String.format(javascriptText, getFileURLString("ext/bootstrap/assets/js/jquery.dropotron.min.js"));
+        final String scrolly = String.format(javascriptText, getFileURLString("ext/bootstrap/assets/js/jquery.scrolly.min.js"));
+        final String scrollex = String.format(javascriptText, getFileURLString("ext/bootstrap/assets/js/jquery.scrollex.min.js"));
+        final String browser = String.format(javascriptText, getFileURLString("ext/bootstrap/assets/js/browser.min.js"));
+        final String breakpoints = String.format(javascriptText, getFileURLString("ext/bootstrap/assets/js/breakpoints.min.js"));
+        final String appJS = String.format(javascriptText, getFileURLString("ext/bootstrap/assets/js/app.js"));
+        final String bootstrapjs = String.format(javascriptText, getFileURLString("ext/bootstrap/js/bootstrap.js"));
+        final String cookiejs = String.format("<script src=\"\\%s\" ></script>", getFileURLString("ext/bootstrap/js/js.cookie.min.js"));
+        final String searchjs = String.format(javascriptText, getFileURLString("ext/bootstrap/js/index.min.js"));
         
         final StringBuilder scripts = new StringBuilder();      
         scripts.append(css).append(NEWLINE);
@@ -191,86 +243,19 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
         return html.toString();
     }
-
-    /**
-     * Display the help page for the following HelpCtx
-     *
-     * @param helpCtx
-     * @return
-     */
-    @Override
-    public boolean display(final HelpCtx helpCtx) {
-        final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
-        final boolean isOnline = prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP);
-
-        final String helpId = helpCtx.getHelpID();
-        LOGGER.log(Level.INFO, "display help for: {0}", helpId);
-
-        final String helpDefaultPath = "ext" + SEP + "docs" + SEP + "CoreFunctionality" + SEP + "about-constellation.md";
-
-        final String helpAddress = HelpMapper.getHelpAddress(helpId);
-        // use the requested help file, or the About Constellation page if one is not given
-        String helpLink = StringUtils.isNotEmpty(helpAddress) ? helpAddress : helpDefaultPath;
-
-        try {
-            final String url;
-            if (isOnline) {
-                if (helpLink.contains("constellation-")) {
-                    helpLink = helpLink.substring(helpLink.indexOf("modules") + 7);
-                }
-                url = OFFICIAL_CONSTELLATION_WEBSITE + helpLink.replace(".md", ".html");
-            } else {
-                final File file = new File(Generator.getBaseDirectory() + SEP + helpLink);
-                final URL fileUrl = file.toURI().toURL();
-                final int currentPort = HelpWebServer.start();
-                url = String.format("http://localhost:%d/%s", currentPort, fileUrl);
-            }
-
-            final URI uri = new URI(url.replace("\\", "/"));
-
-            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                browse(uri);
-                return true;
-            }
-
-            LOGGER.log(Level.WARNING, "Help Documentation was unable to launch because Desktop "
-                    + "Browsing was not supported. Tried to navigate to: {0}", uri);
-
-        } catch (final MalformedURLException | URISyntaxException ex) {
-            LOGGER.log(Level.WARNING, ex, () -> "Help Documentation URL/URI was invalid - Tried to display help for: " + helpId);
-        }
-        return false;
-    }
-
-    /**
-     * Browse to the supplied URI using the desktops browser.
-     *
-     * @param uri the URI to navigate to
-     * @return true if successful, false otherwise
-     */
-    public static Future<?> browse(final URI uri) {
-        LOGGER.log(Level.INFO, "Loading help uri {0}", uri);
-
-        return pluginExecutor.submit(() -> {
-            Thread.currentThread().setName("Browse Help");
-            try {
-                Desktop.getDesktop().browse(uri);
-            } catch (final IOException ex) {
-                LOGGER.log(Level.SEVERE, String.format("Failed to load the help URI %s", uri), ex);
-            }
-        });
-    }
     
-    public static List<String> createSearchDocument(final String toc) {
-        // Creates json file of documents to search 
-        // Each entry has an id, title, category and link 
+    /**
+     * Creates json file of documents to search. Each entry has an id, title, category and link.
+     * 
+     * @param toc the toc file to base off
+     * @return a list of json-formatted page entries
+     */
+    private static List<String> createSearchDocument(final String toc) {
         final List<String> documents = new ArrayList<>();
 
         final String[] elements = SPLIT_REGEX.split(toc);
         int index = 0;
         String category = "";
-        String pageName = "";
-        String link = "";
         
         for (final String element : elements) {
             if (element.contains("data-target")) {
@@ -285,10 +270,9 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                 final String linkString = element.substring(hrefIndex + 7);
                 final int quoteIndex = linkString.indexOf("\"");
                 final int endIndex = linkString.indexOf(">");
-                link = linkString.substring(quoteIndex + 1, endIndex - 1);
-                // Changing this to a replace instead of replaceAll stops the search from working as the links require double \ 
-                link = link.replaceAll("\\\\", "\\\\\\\\");
-                pageName = linkString.substring(endIndex + 1);
+                // replaceAll to replace stops the search from working as the links require double \
+                final String link = linkString.substring(quoteIndex + 1, endIndex - 1).replaceAll("\\\\", "\\\\\\\\");
+                final String pageName = linkString.substring(endIndex + 1);
                 
                 final String page = String.format("""
                                     {
@@ -325,9 +309,8 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                 }
                 documentString.append("]");
                 search.write(documentString.toString());
-
             } catch (final IOException ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
 

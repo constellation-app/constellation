@@ -282,26 +282,6 @@ public class TOCGeneratorNGTest {
     }
 
     /**
-     * Test of generateLink method, of class TOCGenerator.
-     */
-    @Test
-    public void testGenerateLink() {
-        System.out.println("generateLink");
-
-        final String title = "click here";
-        final String url = "www.link.com/to/follow.aspx";
-        final String expResult = String.format("[%s](%s)", title, url);
-        final String result = TOCGenerator.generateLink(title, url);
-        assertEquals(result, expResult);
-
-        final String title1 = null;
-        final String url1 = null;
-        final String expResult1 = String.format("[%s](%s)", title1, url1);
-        final String result1 = TOCGenerator.generateLink(title1, url1);
-        assertEquals(result1, expResult1);
-    }
-
-    /**
      * Test of generateHTMLLink method, of class TOCGenerator.
      */
     @Test
@@ -320,19 +300,7 @@ public class TOCGeneratorNGTest {
         final String result1 = TOCGenerator.generateHTMLLink(title1, url1);
         assertEquals(result1, expResult1);
     }
-
-    /**
-     * Test of writeAccordionItem method, of class TOCGenerator. TODO: This test
-     * method is not implemented as the implementation of the method is not
-     * finalised.
-     */
-    @Test
-    public void testWriteAccordionItem() {
-        System.out.println("writeAccordionItem");
-        System.out.println("TODO: This test method is not implemented as the "
-                + "implementation of the method is not finalised");
-    }
-
+    
     /**
      * Test of writeText method, of class TOCGenerator.
      * @throws java.io.IOException

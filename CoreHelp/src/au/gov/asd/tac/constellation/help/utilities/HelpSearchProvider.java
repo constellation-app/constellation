@@ -41,14 +41,13 @@ public class HelpSearchProvider implements SearchProvider {
      */
     @Override
     public void evaluate(final SearchRequest request, final SearchResponse response) {
-        final QuickSearchUtils qs = new QuickSearchUtils();
         // Check the request is valid
-        final String text;
-        if (request != null && StringUtils.isNotBlank(request.getText())) {
-            text = qs.restoreBrackets(request.getText());
-        } else {
+        if (request == null || StringUtils.isBlank(request.getText())) {
             return;
         }
+        
+        final QuickSearchUtils qs = new QuickSearchUtils();
+        final String text = qs.restoreBrackets(request.getText());
         String helpFileName = "";
         // Locally defined Recent searches will start with a specific unicode left bracket in the search term
         if (text.startsWith(QuickSearchUtils.LEFT_BRACKET)) {
@@ -65,7 +64,7 @@ public class HelpSearchProvider implements SearchProvider {
         }
 
         // Get the names of all of the help files
-        List<String> distinctValues = new ArrayList<>(new HashSet<>(HelpMapper.getMappings().values()));
+        final List<String> distinctValues = new ArrayList<>(new HashSet<>(HelpMapper.getMappings().values()));
 
         // Match the search to values in the map
         for (final String value : distinctValues) {
@@ -90,14 +89,14 @@ public class HelpSearchProvider implements SearchProvider {
         }
     }
 
-    public class QuickSearchUtils {
-        // Cannot import the QuickSearchUtilities class due to cyclic dependency issues,
+    protected static class QuickSearchUtils {
+        // Cannot import the QuickSearchUtilities class in Utilities due to cyclic dependency issues,
         // so the required functions have been put into this stripped down local version of the class.
 
-        public static final String LEFT_BRACKET = "\u276a"; // bold left parenthesis
-        public static final String RIGHT_BRACKET = "\u276b"; // bold right parenthesis
-        public static final String SMALL_SPACE = "\u2005";
-        public static final String CIRCLED_H = LEFT_BRACKET + "\uff28" + RIGHT_BRACKET + SMALL_SPACE; // (H) - prefix for HELP results
+        protected static final String LEFT_BRACKET = "\u276a"; // bold left parenthesis
+        protected static final String RIGHT_BRACKET = "\u276b"; // bold right parenthesis
+        protected static final String SMALL_SPACE = "\u2005";
+        protected static final String CIRCLED_H = LEFT_BRACKET + "\uff28" + RIGHT_BRACKET + SMALL_SPACE; // (H) - prefix for HELP results
 
         // Substitution characters for angled brackets and round brackets, used to address a Netbeans issue
         private static final String LT_FULL = "\uff1c"; // <
@@ -113,5 +112,4 @@ public class HelpSearchProvider implements SearchProvider {
             return source.replace(LT_FULL, "<").replace(GT_FULL, ">").replace(OB_FULL, "(").replace(CB_FULL, ")");
         }
     }
-
 }

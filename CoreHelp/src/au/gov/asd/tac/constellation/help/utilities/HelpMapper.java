@@ -66,7 +66,7 @@ public class HelpMapper {
      * Update the cached mappings via calls to lookup all active providers
      *
      */
-    public static void updateMappings() {
+    private static void updateMappings() {
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> mappings.putAll(provider.getHelpMap()));
     }
 }

@@ -85,16 +85,16 @@ public class TOCParserNGTest {
                 fw.append(fileContents);
             }
 
-            final TreeNode root = new TreeNode(new TOCItem("root", ""));
+            final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
             TOCParser.parse(tempFile, root);
 
-            final TreeNode child1 = (TreeNode) root.getChildren().get(0); // Views
-            final TreeNode child11 = (TreeNode) child1.getChildren().get(0); // Layers View
-            final TreeNode child111 = (TreeNode) child11.getChildren().get(0); // Layers View (Experimental)
+            final TreeNode<TOCItem> child1 = root.getChildren().get(0); // Views
+            final TreeNode<TOCItem> child11 = child1.getChildren().get(0); // Layers View
+            final TreeNode<TOCItem> child111 = child11.getChildren().get(0); // Layers View (Experimental)
 
-            final TreeNode expectedChild1 = new TreeNode(new TOCItem("Views", ""));
-            final TreeNode expectedChild11 = new TreeNode(new TOCItem("Layers View", ""));
-            final TreeNode expectedChild111 = new TreeNode(new TOCItem("Layers View", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent"));
+            final TreeNode<TOCItem> expectedChild1 = new TreeNode<>(new TOCItem("Views", ""));
+            final TreeNode<TOCItem> expectedChild11 = new TreeNode<>(new TOCItem("Layers View", ""));
+            final TreeNode<TOCItem> expectedChild111 = new TreeNode<>(new TOCItem("Layers View", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent"));
 
             // Check amount of children
             assertEquals(root.getChildren().size(), 1);
@@ -151,22 +151,22 @@ public class TOCParserNGTest {
                 fw.append(fileContents);
             }
 
-            final TreeNode root = new TreeNode(new TOCItem("root", ""));
+            final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
             TOCParser.parse(tempFile, root);
 
-            final TreeNode child1 = (TreeNode) root.getChildren().get(0); // Views
-            final TreeNode child11 = (TreeNode) child1.getChildren().get(0); // Layers View
-            final TreeNode child111 = (TreeNode) child11.getChildren().get(0); // Layers View (Experimental)
-            final TreeNode child2 = (TreeNode) root.getChildren().get(1); // Jupyter
-            final TreeNode child21 = (TreeNode) child2.getChildren().get(0); // About The Jupyter Notebook Server
-            final TreeNode child22 = (TreeNode) child2.getChildren().get(1); // About The Constellation REST Server
+            final TreeNode<TOCItem> child1 = root.getChildren().get(0); // Views
+            final TreeNode<TOCItem> child11 = child1.getChildren().get(0); // Layers View
+            final TreeNode<TOCItem> child111 = child11.getChildren().get(0); // Layers View (Experimental)
+            final TreeNode<TOCItem> child2 = root.getChildren().get(1); // Jupyter
+            final TreeNode<TOCItem> child21 = child2.getChildren().get(0); // About The Jupyter Notebook Server
+            final TreeNode<TOCItem> child22 = child2.getChildren().get(1); // About The Constellation REST Server
 
-            final TreeNode expectedChild1 = new TreeNode(new TOCItem("Views", ""));
-            final TreeNode expectedChild11 = new TreeNode(new TOCItem("Layers View", ""));
-            final TreeNode expectedChild111 = new TreeNode(new TOCItem("Layers View", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent"));
-            final TreeNode expectedChild2 = new TreeNode(new TOCItem("Jupyter", "")); // Jupyter
-            final TreeNode expectedChild21 = new TreeNode(new TOCItem("About The Jupyter Notebook Server", "au.gov.asd.tac.constellation.utilities.jupyter")); // About The Jupyter Notebook Server
-            final TreeNode expectedChild22 = new TreeNode(new TOCItem("About The Constellation REST Server", "au.gov.asd.tac.constellation.utilities.rest")); // About The Constellation REST Server
+            final TreeNode<TOCItem> expectedChild1 = new TreeNode<>(new TOCItem("Views", ""));
+            final TreeNode<TOCItem> expectedChild11 = new TreeNode<>(new TOCItem("Layers View", ""));
+            final TreeNode<TOCItem> expectedChild111 = new TreeNode<>(new TOCItem("Layers View", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent"));
+            final TreeNode<TOCItem> expectedChild2 = new TreeNode<>(new TOCItem("Jupyter", "")); // Jupyter
+            final TreeNode<TOCItem> expectedChild21 = new TreeNode<>(new TOCItem("About The Jupyter Notebook Server", "au.gov.asd.tac.constellation.utilities.jupyter")); // About The Jupyter Notebook Server
+            final TreeNode<TOCItem> expectedChild22 = new TreeNode<>(new TOCItem("About The Constellation REST Server", "au.gov.asd.tac.constellation.utilities.rest")); // About The Constellation REST Server
 
             // Check amount of children
             assertEquals(root.getChildren().size(), 2);
@@ -280,7 +280,7 @@ public class TOCParserNGTest {
                 fw.append(fileContents4);
             }
 
-            final TreeNode root = new TreeNode(new TOCItem("root", ""));
+            final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
 
             // Parse files into root node
             TOCParser.parse(tempFile, root);
@@ -288,32 +288,32 @@ public class TOCParserNGTest {
             TOCParser.parse(tempFile3, root);
             TOCParser.parse(tempFile4, root);
 
-            final TreeNode child1a = (TreeNode) root.getChildren().get(0); // Views
-            final TreeNode child1b = (TreeNode) root.getChildren().get(1); // Features
+            final TreeNode<TOCItem> child1a = root.getChildren().get(0); // Views
+            final TreeNode<TOCItem> child1b = root.getChildren().get(1); // Features
 
-            final TreeNode child11a = (TreeNode) child1a.getChildren().get(0); // Layers View
-            final TreeNode child111a = (TreeNode) child11a.getChildren().get(0); // Layers View link
-            final TreeNode child111aa = (TreeNode) child11a.getChildren().get(1); // Layers View Extra
-            final TreeNode child111aaa = (TreeNode) child11a.getChildren().get(2); // Layers View Extra2
+            final TreeNode<TOCItem> child11a = child1a.getChildren().get(0); // Layers View
+            final TreeNode<TOCItem> child111a = child11a.getChildren().get(0); // Layers View link
+            final TreeNode<TOCItem> child111aa = child11a.getChildren().get(1); // Layers View Extra
+            final TreeNode<TOCItem> child111aaa = child11a.getChildren().get(2); // Layers View Extra2
 
-            final TreeNode child11b = (TreeNode) child1a.getChildren().get(1); // Notes View
-            final TreeNode child111b = (TreeNode) child11b.getChildren().get(0); // Notes View link
+            final TreeNode<TOCItem> child11b = child1a.getChildren().get(1); // Notes View
+            final TreeNode<TOCItem> child111b = child11b.getChildren().get(0); // Notes View link
 
-            final TreeNode child11c = (TreeNode) child1b.getChildren().get(0); // Selection
-            final TreeNode child111c = (TreeNode) child11c.getChildren().get(0); // node selection link
-            final TreeNode child111d = (TreeNode) child11c.getChildren().get(1); // transaction selection link
+            final TreeNode<TOCItem> child11c = child1b.getChildren().get(0); // Selection
+            final TreeNode<TOCItem> child111c = child11c.getChildren().get(0); // node selection link
+            final TreeNode<TOCItem> child111d = child11c.getChildren().get(1); // transaction selection link
 
-            final TreeNode expectedChild1a = new TreeNode(new TOCItem("Views", ""));
-            final TreeNode expectedChild1b = new TreeNode(new TOCItem("Features", ""));
-            final TreeNode expectedChild11a = new TreeNode(new TOCItem("Layers View", ""));
-            final TreeNode expectedChild11b = new TreeNode(new TOCItem("Notes View", ""));
-            final TreeNode expectedChild11c = new TreeNode(new TOCItem("Selection", ""));
-            final TreeNode expectedChild111a = new TreeNode(new TOCItem("Layers View", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent"));
-            final TreeNode expectedChild111aa = new TreeNode(new TOCItem("Layers View Extra", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent.Extra"));
-            final TreeNode expectedChild111aaa = new TreeNode(new TOCItem("Layers View Extra2", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent.Extra2"));
-            final TreeNode expectedChild111b = new TreeNode(new TOCItem("Notes View", "au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent"));
-            final TreeNode expectedChild111c = new TreeNode(new TOCItem("Node Selection", "nodeselectiontarget"));
-            final TreeNode expectedChild111d = new TreeNode(new TOCItem("Transaction Selection", "transactionselectiontarget"));
+            final TreeNode<TOCItem> expectedChild1a = new TreeNode<>(new TOCItem("Views", ""));
+            final TreeNode<TOCItem> expectedChild1b = new TreeNode<>(new TOCItem("Features", ""));
+            final TreeNode<TOCItem> expectedChild11a = new TreeNode<>(new TOCItem("Layers View", ""));
+            final TreeNode<TOCItem> expectedChild11b = new TreeNode<>(new TOCItem("Notes View", ""));
+            final TreeNode<TOCItem> expectedChild11c = new TreeNode<>(new TOCItem("Selection", ""));
+            final TreeNode<TOCItem> expectedChild111a = new TreeNode<>(new TOCItem("Layers View", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent"));
+            final TreeNode<TOCItem> expectedChild111aa = new TreeNode<>(new TOCItem("Layers View Extra", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent.Extra"));
+            final TreeNode<TOCItem> expectedChild111aaa = new TreeNode<>(new TOCItem("Layers View Extra2", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent.Extra2"));
+            final TreeNode<TOCItem> expectedChild111b = new TreeNode<>(new TOCItem("Notes View", "au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent"));
+            final TreeNode<TOCItem> expectedChild111c = new TreeNode<>(new TOCItem("Node Selection", "nodeselectiontarget"));
+            final TreeNode<TOCItem> expectedChild111d = new TreeNode<>(new TOCItem("Transaction Selection", "transactionselectiontarget"));
 
             // Check amount of children
             assertEquals(root.getChildren().size(), 2);
@@ -370,13 +370,13 @@ public class TOCParserNGTest {
         System.out.println("parse null file");
 
         File tempFile = null;
-        final TreeNode root = new TreeNode(new TOCItem("root", ""));
+        final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
         final int childrenBefore = root.getChildren().size();
 
         TOCParser.parse(tempFile, root);
 
         // Ensure root has no extra elements
-        assertEquals(root, new TreeNode(new TOCItem("root", "")));
+        assertEquals(root, new TreeNode<>(new TOCItem("root", "")));
         assertEquals(root.getChildren().size(), childrenBefore);
     }
 
@@ -392,7 +392,7 @@ public class TOCParserNGTest {
         System.out.println("parse failed file");
 
         File tempFile = new File("invalid/path");
-        final TreeNode root = new TreeNode(new TOCItem("root", ""));
+        final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
 
         TOCParser.parse(tempFile, root);
     }

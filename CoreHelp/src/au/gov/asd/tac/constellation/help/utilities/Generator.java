@@ -45,6 +45,7 @@ import org.openide.windows.OnShowing;
 public class Generator implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(Generator.class.getName());
+    
     private static String baseDirectory = "";
     private static String onlineTocDirectory = "";
     public static final String TOC_FILE_NAME = "toc.md";
@@ -55,10 +56,6 @@ public class Generator implements Runnable {
      * thread run in headless mode for tests, etc.
      */
     private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
-
-    public Generator() {
-        // Intentionally left blank
-    }
 
     /**
      * Generate a table of contents in dev versions of code
@@ -81,7 +78,7 @@ public class Generator implements Runnable {
             // First: create the TOCFile in the base directory for ONLINE help
             // Create the online root node for application-wide table of contents
             TOCGenerator.createTOCFile(onlineTocDirectory);
-            final TreeNode<?> root = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
+            final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
             final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
             try {
                 TOCGenerator.convertXMLMappings(tocXMLFiles, root);
@@ -94,7 +91,7 @@ public class Generator implements Runnable {
         // Second: Create TOCFile for OFFLINE help with the location of the resources file
         // Create the offline root node for application-wide table of contents
         TOCGenerator.createTOCFile(getTOCDirectory());
-        final TreeNode<?> rootOffline = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
+        final TreeNode<TOCItem> rootOffline = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
         final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
         try {
             TOCGenerator.convertXMLMappings(tocXMLFiles, rootOffline);

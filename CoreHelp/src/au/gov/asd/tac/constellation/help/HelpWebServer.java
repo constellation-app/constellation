@@ -41,22 +41,14 @@ public class HelpWebServer {
     private static final Logger LOGGER = Logger.getLogger(HelpWebServer.class.getName());
 
     private static boolean running = false;
-    private static int port = 0;
     private static final String WEB_SERVER_THREAD_NAME = "Help Web Server";
 
     private HelpWebServer() {
         // Intentionally left blank 
     }
-
-    public static boolean isRunning() {
-        return running;
-    }
-
-    public static int getPort() {
-        return port;
-    }
-
+    
     public static synchronized int start() {
+        int port = 0;
         if (!running) {
             try {
                 final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
@@ -81,13 +73,11 @@ public class HelpWebServer {
 
                 // Make our own handler so we can log requests with the CONSTELLATION logs.
                 final RequestLog requestLog = (request, response) -> {
-                    final String log = String.format("Request at %s from %s %s, status %d", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), request.getRemoteAddr(), request.getRequestURI(), response.getStatus());
-                    LOGGER.info(log);
+                    LOGGER.info(String.format("Request at %s from %s %s, status %d", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), request.getRemoteAddr(), request.getRequestURI(), response.getStatus()));
                 };
                 server.setRequestLog(requestLog);
-
-                final String loggingMessage = String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback.toString(), port);
-                LOGGER.log(Level.INFO, loggingMessage);
+                
+                LOGGER.log(Level.INFO, String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback.toString(), port));
                 server.start();
 
                 // Wait for the server to stop (if it ever does).
