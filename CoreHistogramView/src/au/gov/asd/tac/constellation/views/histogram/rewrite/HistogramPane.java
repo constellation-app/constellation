@@ -305,6 +305,11 @@ public class HistogramPane extends BorderPane {
         updateDisplay();
 
         setHistogramState(null, null);
+        
+        // Update the dispaly whenever the user resizes the pane
+        this.widthProperty().addListener((obs, oldVal, newVal) -> {
+            updateDisplay();
+        });
     }
 
     public final void setHistogramState(final HistogramState histogramState, final Map<String, BinCreator> attributes) {

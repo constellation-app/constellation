@@ -238,7 +238,8 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
         double minWidth = 0;
         for (final Bin bin : binCollection.getBins()) {
             final Label label = new Label(bin.toString());
-            double width = label.getWidth();
+            final double width = label.getWidth();
+            //System.out.println("Label width: " + width);
             if (width > minWidth) {
                 minWidth = width + 10;
             }
@@ -256,16 +257,18 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
      * preferred length and give the rest to the bars.**
      */
     private void calculateTextAndBarLength(final int padding) {
+        System.out.println("calculateTextAndBarLength");
         // !!! need to rework this function, methinks
         final int parentWidth = topComponent.getWidth();
         final int preferredTextWidth = (int) Math.round(getPreferredTextWidth());
+        System.out.println("parentWidth: " + parentWidth);
+        System.out.println("preferredTextWidth: " + preferredTextWidth);
         textWidth = MINIMUM_TEXT_WIDTH;
 
         if (parentWidth < LEFT_MARGIN + padding + MINIMUM_TEXT_WIDTH + TEXT_TO_BAR_GAP + PREFERRED_BAR_LENGTH + RIGHT_MARGIN) {
             barsWidth = Math.max(1, parentWidth - LEFT_MARGIN - padding - MINIMUM_TEXT_WIDTH - TEXT_TO_BAR_GAP - RIGHT_MARGIN);
 
         } else { // Bars are at desired length. Expand text space unless it is already sufficient
-
             if (parentWidth < LEFT_MARGIN + padding + preferredTextWidth + TEXT_TO_BAR_GAP + PREFERRED_BAR_LENGTH + RIGHT_MARGIN) {
                 barsWidth = PREFERRED_BAR_LENGTH;
                 textWidth = parentWidth - LEFT_MARGIN - padding - PREFERRED_BAR_LENGTH - TEXT_TO_BAR_GAP - RIGHT_MARGIN;
@@ -274,6 +277,11 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
                 barsWidth = parentWidth - LEFT_MARGIN - padding - preferredTextWidth - TEXT_TO_BAR_GAP - RIGHT_MARGIN;
             }
         }
+
+        if (textWidth < MINIMUM_TEXT_WIDTH) {
+            textWidth = MINIMUM_TEXT_WIDTH;
+        }
+        //System.out.println("textWidth: " + textWidth);
     }
 
     private javafx.scene.paint.Color awtColorToFXColor(final Color awtColor) {
@@ -359,11 +367,11 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
             final int arc = barHeight / 3;
 
             final int maxCount = binCollection.getMaxElementCount();
-            System.out.println("maxCount: " + maxCount);
+            //System.out.println("maxCount: " + maxCount);
             if (maxCount > 0) {
 
                 // the scale factor from histogram count to bar length in pixels
-                final float scaleFactor = barsWidth / (float) maxCount;
+                final float scaleFactor = (barsWidth - textWidth) / (float) maxCount;
 
                 // !!! indexes (or maybe position) of first and last bar
                 final int firstBar = getBarAtPoint(new Point(0, topComponent.getY()), true);
@@ -456,11 +464,13 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
 
                     // Rectangle will be a stack pane with the different sections layer on top of each other
                     final StackPane rectBar = new StackPane();
+
                     // Draw the background of the bar
                     if (elementCount < maxCount) {
                         int backgroundStart = Math.max(0, barLength - 10);
                         //final Rectangle rect = new Rectangle(Double.valueOf(barsWidth - backgroundStart), Double.valueOf(barHeight));
-                        final Rectangle rect = new Rectangle(Double.valueOf(barsWidth), Double.valueOf(barHeight));
+                        final Rectangle rect = new Rectangle(Double.valueOf(barsWidth - textWidth), Double.valueOf(barHeight));
+                        //System.out.println("barsWidth: " + barsWidth + " textWidth:" + textWidth);
                         rect.setArcHeight(arc);
                         rect.setArcWidth(arc);
                         rect.setFill(awtColorToFXColor(bar == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR));
