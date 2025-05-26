@@ -47,7 +47,6 @@ public class Generator implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Generator.class.getName());
     
     private static String baseDirectory = "";
-    private static String onlineTocDirectory = "";
     public static final String TOC_FILE_NAME = "toc.md";
     public static final String ROOT_NODE_NAME = "Constellation Documentation";
 
@@ -65,7 +64,6 @@ public class Generator implements Runnable {
         if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
             return;
         }
-        baseDirectory = getBaseDirectory();
         
         // To update the online help TOC file change the boolean to true
         // Must also run adaptors when updating online help so those links aren't removed from the TOC
@@ -73,13 +71,13 @@ public class Generator implements Runnable {
         final boolean updateOnlineHelp = false;
  
         if (updateOnlineHelp) {
-            onlineTocDirectory = getOnlineHelpTOCDirectory(baseDirectory) + TOC_FILE_NAME;
-
+            baseDirectory = getBaseDirectory();
+            
             // First: create the TOCFile in the base directory for ONLINE help
             // Create the online root node for application-wide table of contents
-            TOCGenerator.createTOCFile(onlineTocDirectory);
+            TOCGenerator.createTOCFile(getOnlineHelpTOCDirectory() + TOC_FILE_NAME);
             final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
-            final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
+            final List<File> tocXMLFiles = getXMLFiles();
             try {
                 TOCGenerator.convertXMLMappings(tocXMLFiles, root);
             } catch (final IOException ex) {
@@ -92,7 +90,7 @@ public class Generator implements Runnable {
         // Create the offline root node for application-wide table of contents
         TOCGenerator.createTOCFile(getTOCDirectory());
         final TreeNode<TOCItem> rootOffline = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
-        final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
+        final List<File> tocXMLFiles = getXMLFiles();
         try {
             TOCGenerator.convertXMLMappings(tocXMLFiles, rootOffline);
         } catch (final IOException ex) {
@@ -113,10 +111,11 @@ public class Generator implements Runnable {
     /**
      * Get a list of the xml files using a lookup
      *
-     * @param baseDirectory
-     * @return
+     * @return a list of TOC files
      */
-    protected static List<File> getXMLFiles(final String baseDirectory) {
+    protected static List<File> getXMLFiles() {
+        baseDirectory = getBaseDirectory();
+        
         // Loop all providers and add files to the tocXMLFiles list
         final List<File> tocXMLFiles = new ArrayList<>();
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
@@ -134,6 +133,9 @@ public class Generator implements Runnable {
      * @return
      */
     public static String getBaseDirectory() {
+        if (StringUtils.isNotBlank(baseDirectory)) {
+            return baseDirectory;
+        }
         try {
             final String sep = File.separator;
 
@@ -163,14 +165,10 @@ public class Generator implements Runnable {
         return newPath != null ? newPath + File.separator + "ext" : "";
     }
     
-    public static String getOnlineHelpTOCDirectory(final String filePath) {
-        // include "modules" in the check, because looking for "constellation" alone can match earlier in the path
-        // ie. /home/constellation/test/rc1/constellation/modules/ext/
-        int index = filePath.indexOf("constellation" + File.separator + "modules");
-        if (index <= 0) {
-            index = filePath.indexOf("constellation" + File.separator);
-        }
-        return index <= 0 ? filePath : filePath.substring(0, index + 14);
+    public static String getOnlineHelpTOCDirectory() {
+        baseDirectory = getBaseDirectory();
+        final int index = baseDirectory.lastIndexOf("constellation" + File.separator);
+        return baseDirectory.substring(0, index + 14);
     }
 
 }

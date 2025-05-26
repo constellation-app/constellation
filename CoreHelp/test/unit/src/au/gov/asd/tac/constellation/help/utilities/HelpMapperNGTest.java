@@ -60,11 +60,12 @@ public class HelpMapperNGTest {
     @Test
     public void testGetHelpAddress() {
         System.out.println("getHelpAddress");
+        
         testGetMappings();
-        String className = "au.gov.asd.tac.constellation.help.preferences.HelpOptionsPanelController";
+        final String className = "au.gov.asd.tac.constellation.help.preferences.HelpOptionsPanelController";
         final String sep = File.separator;
-        String expResult = "ext" + sep + "docs" + sep + "CoreHelp" + sep + "help-options.md";
-        String result = HelpMapper.getHelpAddress(className);
+        final String expResult = "ext" + sep + "docs" + sep + "CoreHelp" + sep + "help-options.md";
+        final String result = HelpMapper.getHelpAddress(className);
         assertEquals(result, expResult);
     }
 
@@ -72,12 +73,12 @@ public class HelpMapperNGTest {
      * Test of getMappings method, of class HelpMapper.
      */
     public void testGetMappings() {
-        Map<String, String> expResult = new HashMap<>();
+        final Map<String, String> expResult = new HashMap<>();
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
             expResult.putAll(provider.getHelpMap());
         });
 
-        Map<String, String> result = HelpMapper.getMappings();
+        final Map<String, String> result = HelpMapper.getMappings();
         assertEquals(result, expResult);
     }
 }

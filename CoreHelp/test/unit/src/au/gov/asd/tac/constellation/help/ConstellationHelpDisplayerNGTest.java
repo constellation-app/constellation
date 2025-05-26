@@ -46,6 +46,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -87,23 +88,23 @@ public class ConstellationHelpDisplayerNGTest {
         System.out.println("display mocking online");
 
         final String helpId = "helpID";
-        HelpCtx helpCtx = new HelpCtx(helpId);
+        final HelpCtx helpCtx = new HelpCtx(helpId);
 
         // mock some methods of the instance, call real display method
-        ConstellationHelpDisplayer instance = mock(ConstellationHelpDisplayer.class);
+        final ConstellationHelpDisplayer instance = mock(ConstellationHelpDisplayer.class);
         when(instance.display(Mockito.any())).thenCallRealMethod();
 
         final String key = HelpPreferenceKeys.HELP_KEY;
-        boolean onlineReturnValue = true;
-        Preferences prefs = mock(Preferences.class);
+        final boolean onlineReturnValue = true;
+        final Preferences prefs = mock(Preferences.class);
         when(prefs.getBoolean(Mockito.eq(key), Mockito.anyBoolean())).thenReturn(onlineReturnValue);
 
         // Create static mock of NbPreferences to return the preferences mock
-        try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class);
-                MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class);
-                MockedStatic<HelpMapper> mockedHelpMapperStatic = Mockito.mockStatic(HelpMapper.class);
-                MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class);
-                MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class)) {
+        try (final MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class);
+                final MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class);
+                final MockedStatic<HelpMapper> mockedHelpMapperStatic = Mockito.mockStatic(HelpMapper.class);
+                final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class);
+                final MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class)) {
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(HelpPreferenceKeys.class))).thenReturn(prefs);
 
             mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.browse(Mockito.any())).thenReturn(null);
@@ -121,10 +122,7 @@ public class ConstellationHelpDisplayerNGTest {
             desktopStaticMock.when(() -> Desktop.isDesktopSupported()).thenReturn(true);
             desktopStaticMock.when(() -> Desktop.getDesktop()).thenReturn(mockDesktop);
 
-            boolean expResult = true;
-            boolean result = instance.display(helpCtx);
-
-            assertEquals(result, expResult);
+            assertTrue(instance.display(helpCtx));
 
             // verify mock interactions
             verify(prefs, times(1)).getBoolean(Mockito.eq(key), Mockito.anyBoolean());
@@ -145,23 +143,23 @@ public class ConstellationHelpDisplayerNGTest {
         System.out.println("display mocking onlineUnsupportedDesktop");
         
         final String helpId = "helpID";
-        HelpCtx helpCtx = new HelpCtx(helpId);
+        final HelpCtx helpCtx = new HelpCtx(helpId);
 
         // mock some methods of the instance, call real display method
-        ConstellationHelpDisplayer instance = mock(ConstellationHelpDisplayer.class);
+        final ConstellationHelpDisplayer instance = mock(ConstellationHelpDisplayer.class);
         when(instance.display(Mockito.any())).thenCallRealMethod();
 
         final String key = HelpPreferenceKeys.HELP_KEY;
-        boolean onlineReturnValue = true;
-        Preferences prefs = mock(Preferences.class);
+        final boolean onlineReturnValue = true;
+        final Preferences prefs = mock(Preferences.class);
         when(prefs.getBoolean(Mockito.eq(key), Mockito.anyBoolean())).thenReturn(onlineReturnValue);
 
         // Create static mock of NbPreferences to return the preferences mock
-        try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class);
-                MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class);
-                MockedStatic<HelpMapper> mockedHelpMapperStatic = Mockito.mockStatic(HelpMapper.class);
-                MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class);
-                MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class)) {
+        try (final MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class);
+                final MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class);
+                final MockedStatic<HelpMapper> mockedHelpMapperStatic = Mockito.mockStatic(HelpMapper.class);
+                final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class);
+                final MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class)) {
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(HelpPreferenceKeys.class))).thenReturn(prefs);
 
             mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.browse(Mockito.any())).thenReturn(null);
@@ -179,10 +177,7 @@ public class ConstellationHelpDisplayerNGTest {
             desktopStaticMock.when(() -> Desktop.isDesktopSupported()).thenReturn(false);
             desktopStaticMock.when(() -> Desktop.getDesktop()).thenReturn(mockDesktop);
 
-            boolean expResult = false;
-            boolean result = instance.display(helpCtx);
-
-            assertEquals(result, expResult);
+            assertFalse(instance.display(helpCtx));
 
             // verify mock interactions
             verify(prefs, times(1)).getBoolean(Mockito.eq(key), Mockito.anyBoolean());
@@ -202,24 +197,24 @@ public class ConstellationHelpDisplayerNGTest {
         System.out.println("display mocking offline");
 
         final String helpId = "helpID";
-        HelpCtx helpCtx = new HelpCtx(helpId);
+        final HelpCtx helpCtx = new HelpCtx(helpId);
 
         // mock some methods of the instance, call real display method
-        ConstellationHelpDisplayer instance = mock(ConstellationHelpDisplayer.class);
+        final ConstellationHelpDisplayer instance = mock(ConstellationHelpDisplayer.class);
         when(instance.display(Mockito.any())).thenCallRealMethod();
 
         final String key = HelpPreferenceKeys.HELP_KEY;
-        boolean onlineReturnValue = false;
-        Preferences prefs = mock(Preferences.class);
+        final boolean onlineReturnValue = false;
+        final Preferences prefs = mock(Preferences.class);
         when(prefs.getBoolean(Mockito.eq(key), Mockito.anyBoolean())).thenReturn(onlineReturnValue);
 
         // Create static mock of NbPreferences to return the preferences mock
-        try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class);
-                MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class);
-                MockedStatic<HelpMapper> mockedHelpMapperStatic = Mockito.mockStatic(HelpMapper.class);
-                MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class);
-                MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class);
-                MockedStatic<HelpWebServer> webServerStaticMock = Mockito.mockStatic(HelpWebServer.class)) {
+        try (final MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class);
+                final MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class);
+                final MockedStatic<HelpMapper> mockedHelpMapperStatic = Mockito.mockStatic(HelpMapper.class);
+                final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class);
+                final MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class);
+                final MockedStatic<HelpWebServer> webServerStaticMock = Mockito.mockStatic(HelpWebServer.class)) {
 
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(HelpPreferenceKeys.class))).thenReturn(prefs);
 
@@ -243,10 +238,7 @@ public class ConstellationHelpDisplayerNGTest {
                 final int expectedPort = 8888;
                 webServerStaticMock.when(() -> HelpWebServer.start()).thenReturn(expectedPort);
 
-                boolean expResult = true;
-                boolean result = instance.display(helpCtx);
-
-                assertEquals(result, expResult);
+                assertTrue(instance.display(helpCtx));
 
                 // verify mock interactions
                 verify(prefs, times(1)).getBoolean(Mockito.eq(key), Mockito.anyBoolean());
@@ -260,66 +252,20 @@ public class ConstellationHelpDisplayerNGTest {
             }
         }
     }
-    
-    /**
-     * Test of browse method, of class ConstellationHelpDisplayer. TODO: This
-     * will need revision when static mocking of global threads works
-     */
-//    @Test
-//    public void testBrowse() throws IOException, InterruptedException, ExecutionException, URISyntaxException {
-//        System.out.println("browse");
-//
-//        //TODO: This below test does not carry static mocks between threads globally.
-//        // Needs revision
-//        CompletableFuture fut = CompletableFuture.runAsync(() -> {
-//            try {
-//                URI uri = new URI("https://localhost:8888/file/c:/users/filename.txt");
-//
-//                try (MockedStatic<Desktop> desktopStaticMock = Mockito.mockStatic(Desktop.class)) {
-//                    final Desktop mockDesktop = mock(Desktop.class);
-//                    doNothing().when(mockDesktop).browse(Mockito.any());
-//                    desktopStaticMock.when(() -> Desktop.getDesktop()).thenReturn(mockDesktop);
-//                    System.out.println("inside test1" + Desktop.getDesktop().toString());
-//                    Future<?> result = ConstellationHelpDisplayer.browse(uri);
-//                    result.get();
-//
-//                    // verify mock interactions
-//                    desktopStaticMock.verify(() -> Desktop.getDesktop(), times(1));
-//                    verify(mockDesktop, times(1)).browse(Mockito.any());
-//
-//                } catch (IOException ex) {
-//                    Exceptions.printStackTrace(ex);
-//                } catch (InterruptedException ex) {
-//                    Exceptions.printStackTrace(ex);
-//                } catch (ExecutionException ex) {
-//                    Exceptions.printStackTrace(ex);
-//                }
-//            } catch (URISyntaxException ex) {
-//                Exceptions.printStackTrace(ex);
-//            }
-//        });
-//        fut.get();
-//        assertEquals(fut.isCompletedExceptionally(), false);
-//    }
 
     /**
      * Test of copy method, of class ConstellationHelpDisplayer.
+     * @throws java.io.IOException
      */
     @Test
-    public void testCopy() {
+    public void testCopy() throws IOException {
         System.out.println("copy");
-
-        String filePath;
+        
         File tempFile = null;
-        File tocFile;
+        File tocFile = null;
         File outputFile = null;
 
-        try {
-            tempFile = File.createTempFile("testfile", ".md");
-            filePath = tempFile.getAbsolutePath();
-            tocFile = new File(Generator.getTOCDirectory());
-            tocFile.createNewFile();
-
+        try {           
             // contents of file
             final String text = "This should be written into the file.\n";
             final String text2 = "this is the second line\n";
@@ -330,27 +276,36 @@ public class ConstellationHelpDisplayerNGTest {
             fileContents.add(text2);
             fileContents.add(text3);
 
+            tempFile = File.createTempFile("testfile", ".md");
+            final String filePath = tempFile.getAbsolutePath();
+            
             // try with resources
             try (final FileWriter fw = new FileWriter(tempFile)) {
                 fileContents.forEach(str -> {
                     try {
                         fw.write(str);
-                    } catch (IOException ex) {
+                    } catch (final IOException ex) {
                         Exceptions.printStackTrace(ex);
                     }
                 });
             }
+            
             outputFile = new File("tempFile1.txt");
             if (outputFile.exists()) {
                 outputFile.delete();
             }
             assertTrue(outputFile.length() == 0);
-            OutputStream out = new FileOutputStream(outputFile);
+            
+            tocFile = File.createTempFile("toc", ".md");
+            
+            final OutputStream out = new FileOutputStream(outputFile);
             final String returnHTML = text + text2 + text3;
-            try (MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
+            try (final MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class);
+                    final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
                 mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenCallRealMethod();
                 mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString())).thenCallRealMethod();
                 mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.generateHTMLOutput(Mockito.any(), Mockito.any())).thenReturn(returnHTML);
+                generatorStaticMock.when(Generator::getTOCDirectory).thenReturn(tocFile.toString());
 
                 ConstellationHelpDisplayer.copy(filePath, out);
                 out.flush();
@@ -359,15 +314,13 @@ public class ConstellationHelpDisplayerNGTest {
             }
 
             // assert that output file now has the correct contents
-            BufferedReader reader = new BufferedReader(new FileReader(outputFile));
+            final BufferedReader reader = new BufferedReader(new FileReader(outputFile));
             String line;
 
             int linecount = 0;
             while ((line = reader.readLine()) != null) {
                 assertEquals(line, fileContents.get(linecount++).replace("\n", ""));
             }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
@@ -375,6 +328,9 @@ public class ConstellationHelpDisplayerNGTest {
             }
             if (outputFile != null && outputFile.exists()) {
                 outputFile.delete();
+            }
+            if (tocFile != null && tocFile.exists()) {
+                tocFile.delete();
             }
         }
 
@@ -388,14 +344,14 @@ public class ConstellationHelpDisplayerNGTest {
     public void testCopyReturnEarly() throws IOException {
         System.out.println("copy Return early");
 
-        OutputStream os = mock(OutputStream.class);
+        final OutputStream os = mock(OutputStream.class);
         doNothing().when(os).write(Mockito.any());
 
-        byte[] arr = new byte[1];
+        final byte[] arr = new byte[1];
         FileInputStream fis = mock(FileInputStream.class);
         when(fis.readAllBytes()).thenReturn(arr);
 
-        try (MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic2 = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
+        try (final MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic2 = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
             mockedHelpDisplayerStatic2.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenCallRealMethod();
             mockedHelpDisplayerStatic2.when(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString())).thenReturn(fis);
             mockedHelpDisplayerStatic2.when(() -> ConstellationHelpDisplayer.generateHTMLOutput(Mockito.any(), Mockito.any())).thenReturn("");
@@ -406,7 +362,7 @@ public class ConstellationHelpDisplayerNGTest {
             Mockito.verify(fis, times(1)).readAllBytes();
         }
 
-        try (MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic3 = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
+        try (final MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic3 = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
             mockedHelpDisplayerStatic3.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenCallRealMethod();
             mockedHelpDisplayerStatic3.when(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString())).thenReturn(fis);
             mockedHelpDisplayerStatic3.when(() -> ConstellationHelpDisplayer.generateHTMLOutput(Mockito.any(), Mockito.any())).thenReturn("");

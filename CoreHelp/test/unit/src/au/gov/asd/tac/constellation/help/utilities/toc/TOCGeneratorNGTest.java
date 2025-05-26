@@ -85,6 +85,7 @@ public class TOCGeneratorNGTest {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testCreateTOCFileFail() {
         System.out.println("createTOCFileFail");
+        
         final String invalidPath = null;
         TOCGenerator.createTOCFile(invalidPath);
     }
@@ -137,7 +138,8 @@ public class TOCGeneratorNGTest {
     @Test
     public void testConvertXMLMappings_List_TreeNode() throws IOException {
         System.out.println("convertXMLMappings");
-        List<File> xmlsFromFile = new ArrayList<>();
+        
+        final List<File> xmlsFromFile = new ArrayList<>();
 
         final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
         File tempFileTOC = null;
@@ -164,7 +166,8 @@ public class TOCGeneratorNGTest {
     @Test(expectedExceptions = IOException.class)
     public void testConvertXMLMappings_List_TreeNodeFail() throws IOException {
         System.out.println("convertXMLMappingsFail");
-        List<File> xmlsFromFile = new ArrayList<>();
+        
+        final List<File> xmlsFromFile = new ArrayList<>();
         final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
         TOCGenerator.createTOCFile("incorrect/path/to/toc");
         TOCGenerator.convertXMLMappings(xmlsFromFile, root);
@@ -257,7 +260,7 @@ public class TOCGeneratorNGTest {
             assertNotNull(tempFileTOC);
             assertTrue(tempFileTOC.exists());
 
-            BufferedReader reader = new BufferedReader(new FileReader(tempFileTOC));
+            final BufferedReader reader = new BufferedReader(new FileReader(tempFileTOC));
 
             assertEquals(reader.readLine(), String.format("<div class=\"%s\">", "container"));
             assertEquals(reader.readLine(), String.format("<div id=\"%s\">", "accordion"));
@@ -308,6 +311,7 @@ public class TOCGeneratorNGTest {
     @Test
     public void testWriteText() throws IOException {
         System.out.println("writeText");
+        
         File tempFile = null;
         try {
             tempFile = File.createTempFile("testfile", ".xml");
@@ -329,7 +333,7 @@ public class TOCGeneratorNGTest {
                 });
             }
 
-            BufferedReader reader = new BufferedReader(new FileReader(tempFile));
+            final BufferedReader reader = new BufferedReader(new FileReader(tempFile));
             String line;
 
             int linecount = 0;
@@ -348,7 +352,7 @@ public class TOCGeneratorNGTest {
     public void testWriteTextFail() throws IOException {
         System.out.println("testWriteText Fail");
 
-        File tempFile = new File("invalid/path");
+        final File tempFile = new File("invalid/path");
         // try with resources
         try (final FileWriter fw = new FileWriter(tempFile)) {
             TOCGenerator.writeText(fw, "text");
@@ -362,6 +366,7 @@ public class TOCGeneratorNGTest {
     @Test
     public void testWriteItem() throws IOException {
         System.out.println("writeItem");
+        
         File tempFile = null;
         try {
             tempFile = File.createTempFile("testfile", ".xml");
@@ -383,7 +388,7 @@ public class TOCGeneratorNGTest {
                 });
             }
 
-            BufferedReader reader = new BufferedReader(new FileReader(tempFile));
+            final BufferedReader reader = new BufferedReader(new FileReader(tempFile));
             String line;
 
             int linecount = 0;
@@ -405,6 +410,7 @@ public class TOCGeneratorNGTest {
     @Test
     public void testWriteItemMultipleIndents() throws IOException {
         System.out.println("writeItem");
+        
         File tempFile = null;
         try {
             tempFile = File.createTempFile("testfile", ".xml");
@@ -426,7 +432,7 @@ public class TOCGeneratorNGTest {
                 });
             }
 
-            BufferedReader reader = new BufferedReader(new FileReader(tempFile));
+            final BufferedReader reader = new BufferedReader(new FileReader(tempFile));
             String line;
 
             int linecount = 0;
@@ -449,7 +455,7 @@ public class TOCGeneratorNGTest {
     public void testWriteItemFail() throws IOException {
         System.out.println("testWriteItem Fail");
 
-        File tempFile = new File("invalid/path");
+        final File tempFile = new File("invalid/path");
         // try with resources
         try (final FileWriter fw = new FileWriter(tempFile)) {
             TOCGenerator.writeItem(fw, "text", 0);

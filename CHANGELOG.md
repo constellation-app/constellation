@@ -2,6 +2,7 @@
 
 ## Changes in May 2025
 -   Updated help page system so that help pages can now be located within module folder of ext/docs to reduce use of redundant folders.
+-   Updated `Generator.getOnlineTOCDirectory()` to no longer pass a parameter. It now just calculates relative to the base directory.
 
 ## Changes in April 2025
 -   Added multichoice type ahead parameter with infrastructure for future input implementations

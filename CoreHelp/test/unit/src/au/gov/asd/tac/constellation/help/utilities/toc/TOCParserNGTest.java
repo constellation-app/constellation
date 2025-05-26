@@ -113,7 +113,6 @@ public class TOCParserNGTest {
                 tempFile.delete();
             }
         }
-
     }
 
     /**
@@ -369,7 +368,7 @@ public class TOCParserNGTest {
     public void testParseNull() throws SAXException, IOException, ParserConfigurationException {
         System.out.println("parse null file");
 
-        File tempFile = null;
+        final File tempFile = null;
         final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
         final int childrenBefore = root.getChildren().size();
 
@@ -391,7 +390,7 @@ public class TOCParserNGTest {
     public void testParseFail() throws SAXException, IOException, ParserConfigurationException {
         System.out.println("parse failed file");
 
-        File tempFile = new File("invalid/path");
+        final File tempFile = new File("invalid/path");
         final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
 
         TOCParser.parse(tempFile, root);

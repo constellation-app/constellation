@@ -75,17 +75,19 @@ public class HelpServletNGTest {
      */
     @Test
     public void testDoGet() throws ServletException {
-        try (MockedStatic<ConstellationHelpDisplayer> helpDisplayerStaticMock = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
+        System.out.println("doGet");
+        
+        try (final MockedStatic<ConstellationHelpDisplayer> helpDisplayerStaticMock = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
             helpDisplayerStaticMock.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
 
-            HttpServletRequest requestMock = mock(HttpServletRequest.class);
-            HttpServletResponse responseMock = mock(HttpServletResponse.class);
+            final HttpServletRequest requestMock = mock(HttpServletRequest.class);
+            final HttpServletResponse responseMock = mock(HttpServletResponse.class);
 
             when(requestMock.getRequestURI()).thenReturn("/file:/C:/Projects/constellation/build/cluster/modules/ext/docs/"
                     + "CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-view.md");
             when(requestMock.getHeader("referer")).thenReturn(null);
 
-            HelpServlet instance = new HelpServlet();
+            final HelpServlet instance = new HelpServlet();
             instance.doGet(requestMock, responseMock);
 
             helpDisplayerStaticMock.verify(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any()), times(1));
@@ -95,18 +97,20 @@ public class HelpServletNGTest {
     }
 
     /**
-     * Test of doGet method, of class HelpServlet, where a redirect is required
+     * Test of doGet method, of class HelpServlet. redirect is required
      *
      * @throws java.io.IOException
      * @throws jakarta.servlet.ServletException
      */
     @Test
     public void testDoGetRedirect() throws IOException, ServletException {
-        HttpServletRequest requestMock1 = mock(HttpServletRequest.class);
-        HttpServletResponse responseMock1 = mock(HttpServletResponse.class);
+        System.out.println("doGetRedirect");
+        
+        final HttpServletRequest requestMock1 = mock(HttpServletRequest.class);
+        final HttpServletResponse responseMock1 = mock(HttpServletResponse.class);
 
-        try (MockedStatic<ConstellationHelpDisplayer> helpDisplayerStaticMock = Mockito.mockStatic(ConstellationHelpDisplayer.class);
-             MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class)) {
+        try (final MockedStatic<ConstellationHelpDisplayer> helpDisplayerStaticMock = Mockito.mockStatic(ConstellationHelpDisplayer.class);
+             final MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class)) {
             helpDisplayerStaticMock.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
 
             when(requestMock1.getRequestURI()).thenReturn("/file:/C:/Projects/constellation/build/cluster/modules/ext/docs/"
@@ -122,7 +126,7 @@ public class HelpServletNGTest {
             mappings.put("test", helpPagePath);
             helpMapperStaticMock.when(() -> HelpMapper.getMappings()).thenReturn(mappings);
 
-            HelpServlet instance = new HelpServlet();
+            final HelpServlet instance = new HelpServlet();
             instance.doGet(requestMock1, responseMock1);
 
             verify(responseMock1, times(1)).sendRedirect(Mockito.anyString());
@@ -133,26 +137,29 @@ public class HelpServletNGTest {
     }
 
     /**
-     * Test of doGet method, of class HelpServlet, to throw an exception
+     * Test of doGet method, of class HelpServlet. throw an exception
      *
      * @throws jakarta.servlet.ServletException
      */
     @Test(expectedExceptions = Exception.class)
     public void doGetException() throws ServletException {
-        HttpServletRequest request = null;
-        HttpServletResponse response = null;
-        HelpServlet instance = new HelpServlet();
+        System.out.println("doGetException");
+        
+        final HttpServletRequest request = null;
+        final HttpServletResponse response = null;
+        final HelpServlet instance = new HelpServlet();
         instance.doGet(request, response);
     }
 
     /**
-     * Test of redirectPath method, of class HelpServlet. Test case where no
-     * redirect is required
+     * Test of redirectPath method, of class HelpServlet. no redirect is required
      */
     @Test
     public void testRedirectPathNoRedirect() {
-        String referer = null;
-        String requestPath = "/file:/C:/Projects/constellation/build/cluster/modules/ext/docs/"
+        System.out.println("redirectPathNoRedirect");
+        
+        final String referer = null;
+        final String requestPath = "/file:/C:/Projects/constellation/build/cluster/modules/ext/docs/"
                 + "CoreAnalyticView/docs/analytic-view.md";
         final URL fileUrl = HelpServlet.redirectPath(requestPath, referer);
         assertFalse(HelpServlet.isRedirect());
@@ -160,16 +167,17 @@ public class HelpServletNGTest {
     }
 
     /**
-     * Test of redirectPath method, of class HelpServlet Test case where a
-     * redirect is required
+     * Test of redirectPath method, of class HelpServlet. redirect is required
      */
     @Test
     public void testRedirectPathRedirect() {
-        String referer = "http://localhost:1517/file:/constellation/build/cluster/modules/ext/docs/"
+        System.out.println("redirectPathRedirect");
+        
+        final String referer = "http://localhost:1517/file:/constellation/build/cluster/modules/ext/docs/"
                 + "CoreAttributeEditorView/attribute-editor.md";
-        String requestPath = "/file:/constellation/build/cluster/modules/ext/docs/"
+        final String requestPath = "/file:/constellation/build/cluster/modules/ext/docs/"
                 + "CoreAttributeEditorView/ext/docs/CoreAnalyticView/analytic-view.md";
-        try (MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class)) {
+        try (final MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class)) {
             final Map<String, String> mappings = new HashMap<>();
             final String sep = File.separator;
             final String helpPagePath = "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "analytic-view.md";
@@ -183,16 +191,17 @@ public class HelpServletNGTest {
     }
 
     /**
-     * Test of redirectPath method, of class HelpServlet Test case where a
-     * redirect is required within the same module
+     * Test of redirectPath method, of class HelpServlet. redirect is required within the same module
      */
     @Test
     public void testRedirectPathRedirectWithinSameModule() {
-        String referer = "http://localhost:1517/file:/constellation/build/cluster/modules/ext/docs/"
+        System.out.println("redirectPathRedirectWithinSameModule");
+        
+        final String referer = "http://localhost:1517/file:/constellation/build/cluster/modules/ext/docs/"
                 + "CoreAnalyticView/analytic-view.md";
-        String requestPath = "/file:/constellation/build/cluster/modules/ext/docs/"
+        final String requestPath = "/file:/constellation/build/cluster/modules/ext/docs/"
                 + "CoreAnalyticView/ext/docs/CoreAnalyticView/question-best-connects-network.md";
-        try (MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class)) { 
+        try (final MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class)) { 
             final Map<String, String> mappings = new HashMap<>();
             final String sep = File.separator;
             final String helpPagePath = "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "question-best-connects-network.md";
@@ -204,15 +213,33 @@ public class HelpServletNGTest {
             assertTrue(HelpServlet.isRedirect());
         }
     }
+    
+    /**
+     * Test of redirectPath method, of class HelpServlet. redirect of image is required
+     */
+    @Test
+    public void testRedirectPathRedirectImage() {
+        System.out.println("redirectPathRedirectImage");
+        
+        final String referer = "http://localhost:1517/file:/constellation/build/cluster/modules/ext/docs/"
+                + "CoreAttributeEditorView/resources/attribute-editor.md";
+        final String requestPath = "/file:/constellation/build/cluster/modules/ext/docs/"
+                + "CoreAttributeEditorView/ext/docs/CoreAttributeEditorView/resources/AttributeEditor.png";
+            
+        final URL fileUrl = HelpServlet.redirectPath(requestPath, referer);
+        assertTrue(fileUrl.toString().contains("CoreAttributeEditorView/resources/AttributeEditor.png"));
+        assertTrue(HelpServlet.isRedirect());
+    }
 
     /**
-     * Test of redirectPath method, of class HelpServlet Test of when null
-     * parameters are entered, should not be redirected
+     * Test of redirectPath method, of class HelpServlet. null parameters are entered, should not be redirected
      */
     @Test
     public void testRedirectPathNull() {
-        String referer = null;
-        String requestPath = null;
+        System.out.println("redirectPathNull");
+        
+        final String referer = null;
+        final String requestPath = null;
         HelpServlet.setWasRedirect(true);
         final URL fileUrl = HelpServlet.redirectPath(requestPath, referer);
         assertEquals(fileUrl, null);
@@ -221,7 +248,7 @@ public class HelpServletNGTest {
 
     @Test
     public void testStripLeadingPath() {
-        System.out.println("running testStripLeadingPath");
+        System.out.println("stripLeadingPath");
 
         final String referer = "/file:/C:/Projects/Constellation/constellation/CoreHelp/path/to/toc.md";
         final String expectedResult = "/Projects/Constellation/constellation/CoreHelp/path/to/toc.md";

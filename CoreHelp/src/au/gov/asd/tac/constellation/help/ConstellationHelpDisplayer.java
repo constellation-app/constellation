@@ -31,7 +31,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -295,7 +294,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         
         if (updateOnlineHelp) {
             // Create a json file for the online help search
-            final String path = Generator.getOnlineHelpTOCDirectory(Generator.getBaseDirectory()) + "search.json";
+            final String path = Generator.getOnlineHelpTOCDirectory() + "search.json";
             try (final FileWriter search = new FileWriter(path)) {
                 final List<String> documentsHtml = documents;
                 final StringBuilder documentString = new StringBuilder();

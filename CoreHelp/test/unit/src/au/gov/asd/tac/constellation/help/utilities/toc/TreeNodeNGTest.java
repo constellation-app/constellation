@@ -59,13 +59,13 @@ public class TreeNodeNGTest {
 
         final String data = "data";
         final String childData = "childData";
-        TreeNode<String> instance = new TreeNode<>(data);
-        TreeNode<String> childInstance = new TreeNode<>(childData);
+        final TreeNode<String> instance = new TreeNode<>(data);
+        final TreeNode<String> childInstance = new TreeNode<>(childData);
 
         instance.addChild(childInstance);
 
         assertEquals(instance.getChildren().size(), 1);
-        TreeNode<String> result = instance.getChildren().get(0);
+        final TreeNode<String> result = instance.getChildren().get(0);
         assertEquals(result.getData(), childData);
 
         assertEquals(childInstance.getParent(), instance);
@@ -79,10 +79,10 @@ public class TreeNodeNGTest {
         System.out.println("addChildren");
 
         final String data = "data";
-        TreeNode<String> instance = new TreeNode<>(data);
-        TreeNode<String> childInstance1 = new TreeNode<>(null);
-        TreeNode<String> childInstance2 = new TreeNode<>(null);
-        TreeNode<String> childInstance3 = new TreeNode<>(null);
+        final TreeNode<String> instance = new TreeNode<>(data);
+        final TreeNode<String> childInstance1 = new TreeNode<>(null);
+        final TreeNode<String> childInstance2 = new TreeNode<>(null);
+        final TreeNode<String> childInstance3 = new TreeNode<>(null);
 
         final List<TreeNode<String>> children = new ArrayList<>();
         children.add(childInstance1);
@@ -113,17 +113,8 @@ public class TreeNodeNGTest {
 
         final StringBuilder builder = new StringBuilder();
 
-        String appender = " ";
+        final String appender = " ";
         assertEquals(stringTree, TreeNode.printTree(root, appender, builder).toString());
-    }
-
-    /**
-     * Test of writeTree method, of class TreeNode. TODO: The output of
-     * WriteTree is not finalised and therefore has not been tested.
-     */
-    @Test
-    public void testWriteTree() {
-        System.out.println("TODO: Skipping testWriteTree as output is not finalised.");
     }
 
     /**
@@ -152,26 +143,26 @@ public class TreeNodeNGTest {
     }
 
     private TreeNode<Integer> getNestedTree() {
-        TreeNode<Integer> root = new TreeNode<>(0);
+        final TreeNode<Integer> root = new TreeNode<>(0);
 
-        TreeNode<Integer> one0 = new TreeNode<>(10);
-        TreeNode<Integer> two0 = new TreeNode<>(20);
+        final  TreeNode<Integer> one0 = new TreeNode<>(10);
+        final TreeNode<Integer> two0 = new TreeNode<>(20);
         one0.addChild(two0);
 
-        TreeNode<Integer> one1 = new TreeNode<>(11);
-        TreeNode<Integer> two1 = new TreeNode<>(21);
-        TreeNode<Integer> two2 = new TreeNode<>(22);
+        final TreeNode<Integer> one1 = new TreeNode<>(11);
+        final TreeNode<Integer> two1 = new TreeNode<>(21);
+        final TreeNode<Integer> two2 = new TreeNode<>(22);
         one1.addChild(two1);
         one1.addChild(two2);
 
-        TreeNode<Integer> three0 = new TreeNode<>(30);
+        final TreeNode<Integer> three0 = new TreeNode<>(30);
         two2.addChild(three0);
 
-        TreeNode<Integer> one2 = new TreeNode<>(12);
-        TreeNode<Integer> two3 = new TreeNode<>(23);
+        final TreeNode<Integer> one2 = new TreeNode<>(12);
+        final TreeNode<Integer> two3 = new TreeNode<>(23);
         one2.addChild(two3);
 
-        TreeNode<Integer> three1 = new TreeNode<>(31);
+        final TreeNode<Integer> three1 = new TreeNode<>(31);
         three1.addChild(new TreeNode<>(41));
         two3.addChild(three1);
 
@@ -190,20 +181,20 @@ public class TreeNodeNGTest {
 
     private TreeNode<TOCItem> getNestedTOCTree() {
         final TOCItem rootItem = new TOCItem("0", "zero");
-        TreeNode<TOCItem> root = new TreeNode<>(rootItem);
+        final TreeNode<TOCItem> root = new TreeNode<>(rootItem);
 
         final TOCItem one0Item = new TOCItem("10", "onezero");
         final TOCItem two0Item = new TOCItem("20", "twozero");
-        TreeNode<TOCItem> one0 = new TreeNode<>(one0Item);
-        TreeNode<TOCItem> two0 = new TreeNode<>(two0Item);
+        final TreeNode<TOCItem> one0 = new TreeNode<>(one0Item);
+        final TreeNode<TOCItem> two0 = new TreeNode<>(two0Item);
         one0.addChild(two0);
 
         final TOCItem one1Item = new TOCItem("11", "oneone");
         final TOCItem two1Item = new TOCItem("21", "twoone");
         final TOCItem two2Item = new TOCItem("22", "twotwo");
-        TreeNode<TOCItem> one1 = new TreeNode<>(one1Item);
-        TreeNode<TOCItem> two1 = new TreeNode<>(two1Item);
-        TreeNode<TOCItem> two2 = new TreeNode<>(two2Item);
+        final TreeNode<TOCItem> one1 = new TreeNode<>(one1Item);
+        final TreeNode<TOCItem> two1 = new TreeNode<>(two1Item);
+        final TreeNode<TOCItem> two2 = new TreeNode<>(two2Item);
         one1.addChild(two1);
         one1.addChild(two2);
 
