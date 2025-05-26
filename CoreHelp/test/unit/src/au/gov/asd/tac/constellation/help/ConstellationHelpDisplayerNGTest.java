@@ -110,8 +110,7 @@ public class ConstellationHelpDisplayerNGTest {
             mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.browse(Mockito.any())).thenReturn(null);
 
             final String sep = File.separator;
-            final String helpModulePath = ".." + sep + "constellation" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "docs" + sep;
+            final String helpModulePath = "ext" + sep + "docs" + sep + "CoreHelp" + sep;
             mockedHelpMapperStatic.when(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId))).thenReturn(helpModulePath + "help-options.md");
 
             generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenReturn("C://Users/anyperson");
@@ -165,8 +164,7 @@ public class ConstellationHelpDisplayerNGTest {
             mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.browse(Mockito.any())).thenReturn(null);
 
             final String sep = File.separator;
-            final String helpModulePath = ".." + sep + "constellation" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "docs" + sep;
+            final String helpModulePath = "ext" + sep + "docs" + sep + "CoreHelp" + sep;
             mockedHelpMapperStatic.when(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId))).thenReturn(helpModulePath + "help-options.md");
 
             generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenReturn("C://Users/anyperson");
@@ -221,8 +219,7 @@ public class ConstellationHelpDisplayerNGTest {
             mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.browse(Mockito.any())).thenReturn(null);
 
             final String sep = File.separator;
-            final String helpModulePath = ".." + sep + "constellation" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
-                    + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "docs" + sep;
+            final String helpModulePath = "ext" + sep + "docs" + sep + "CoreHelp" + sep;
             mockedHelpMapperStatic.when(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId))).thenReturn(helpModulePath + "help-options.md");
 
             for (final File file : File.listRoots()) {
@@ -247,7 +244,7 @@ public class ConstellationHelpDisplayerNGTest {
                 desktopStaticMock.verify(() -> Desktop.isDesktopSupported(), times(1));
                 desktopStaticMock.verify(() -> Desktop.getDesktop(), times(1));
                 final String expectedNavigationURL = String.format("http://localhost:%d/%s", expectedPort,
-                        ("file:/" + file.getPath() + "Users/anyperson/constellation/CoreHelp/src/au/gov/asd/tac/constellation/help/docs/help-options.md").replace("//", "/").replace("\\", "/"));
+                        ("file:/" + file.getPath() + "Users/anyperson/ext/docs/CoreHelp/help-options.md").replace("//", "/").replace("\\", "/"));
                 mockedHelpDisplayerStatic.verify(() -> ConstellationHelpDisplayer.browse(Mockito.eq(new URI(expectedNavigationURL))), times(1));
             }
         }
