@@ -69,6 +69,8 @@ public class JsonIO {
     private static final String PREFERENCE_FILE_SAVED_MSG_FORMAT
             = "Preference saved to %s.";
 
+    private static final String FILE_READ_ERROR = "An error occured reading file %s";
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
@@ -77,7 +79,7 @@ public class JsonIO {
     private JsonIO() {
         throw new IllegalStateException("Invalid call to private default constructor");
     }
-   
+
     /**
      * Save the supplied JSON data in a file, within an allocated subdirectory
      * of the users configuration directory. The filename can optionally be
@@ -124,13 +126,12 @@ public class JsonIO {
      * @param filePrefix prefix to be pre-pended to the file name the user
      * provides or empty if no prefix to be provided
      *
-     */   
-     
+     */
     public static void saveJsonPreferences(final Optional<String> saveDir,
             final Optional<String> filePrefix,
             final Object rootNode,
             final ObjectMapper mapper) {
-       
+
         final File preferenceDirectory = getPrefereceFileDirectory(saveDir);
 
         // If the preference directory cannot be accessed then return
@@ -159,7 +160,7 @@ public class JsonIO {
         // Pre-pend filePrefix
         final String prefixedFileName = filePrefix.orElse("").concat(fileName);
 
-        final File preferenceFile = new File(preferenceDirectory, 
+        final File preferenceFile = new File(preferenceDirectory,
                 FilenameEncoder.encode(prefixedFileName + FileExtensionConstants.JSON));
 
         boolean go = true;
@@ -182,10 +183,10 @@ public class JsonIO {
 
                 mapper.writeValue(preferenceFile, rootNode);
 
-                StatusDisplayer.getDefault().setStatusText(String.format(PREFERENCE_FILE_SAVED_MSG_FORMAT, 
+                StatusDisplayer.getDefault().setStatusText(String.format(PREFERENCE_FILE_SAVED_MSG_FORMAT,
                         preferenceFile.getPath()));
             } catch (final IOException ex) {
-                NotifyDisplayer.display(String.format("Can't save preference file: %s", ex.getMessage()), 
+                NotifyDisplayer.display(String.format("Can't save preference file: %s", ex.getMessage()),
                         NotifyDescriptor.ERROR_MESSAGE);
             }
         }
@@ -196,9 +197,7 @@ public class JsonIO {
         for (int index = 1; index <= 5; index++) {
 
             final var fi = index;
-            final FilenameFilter filenameFilter = (d, s) -> {
-                return s.startsWith("[Ctrl " + fi + "]");
-            };
+            final FilenameFilter filenameFilter = (d, s) -> s.startsWith("[Ctrl " + fi + "]");
 
             if (ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
                 return Optional.of("Ctrl " + index);
@@ -207,6 +206,7 @@ public class JsonIO {
 
         return Optional.empty();
     }
+
     /**
      * Save the supplied JSON data in a file, within an allocated subdirectory
      * of the users configuration directory.
@@ -238,10 +238,10 @@ public class JsonIO {
             final Object rootNode) {
         saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER);
     }
-    
+
     public static void saveJsonPreferencesWithKeyboardShortcut(final Optional<String> saveDir,
-            final Object rootNode) {        
-        
+            final Object rootNode) {
+
         ObjectMapper mapper = OBJECT_MAPPER;
         final File preferenceDirectory = getPrefereceFileDirectory(saveDir);
 
@@ -255,10 +255,9 @@ public class JsonIO {
             return;
         }
 
-         //Record keyboard shortcut
+        //Record keyboard shortcut
         Optional<String> ks = getDefaultKeyboardShortcut(preferenceDirectory);
-        
-        
+
         // Ask the user to provide a file name        
         Optional<String> userInputWithKs;
 
@@ -292,7 +291,7 @@ public class JsonIO {
                 : userInput.get();
 
         final String fileNameWithKeyboardShortcut = ks.orElse("").concat(" " + fileName);
-        
+
         final File preferenceFile = new File(
                 preferenceDirectory,
                 FilenameEncoder.encode(fileNameWithKeyboardShortcut + FileExtensionConstants.JSON)
@@ -334,12 +333,13 @@ public class JsonIO {
                 );
             }
         }
-        
+
     }
 
     public static Alert getAlert(final AlertType alertType) {
         return new Alert(alertType);
     }
+
     /**
      * Save the supplied JSON data in a file, within an allocated subdirectory
      * of the users configuration directory.
@@ -384,7 +384,7 @@ public class JsonIO {
                 LOGGER.log(
                         Level.WARNING,
                         String.format(
-                                "An error occured reading file %s",
+                                FILE_READ_ERROR,
                                 file.getName()
                         ),
                         ioe
@@ -438,7 +438,7 @@ public class JsonIO {
                 LOGGER.log(
                         Level.WARNING,
                         String.format(
-                                "An error occured reading file %s",
+                                FILE_READ_ERROR,
                                 file.getName()
                         ),
                         ioe
@@ -465,28 +465,28 @@ public class JsonIO {
         return loadJsonPreferences(loadDir, Optional.empty(), expectedFormat, OBJECT_MAPPER);
     }
 
-     public static <T> T loadJsonPreferencesWithFilePrefix(final Optional<String> loadDir,Optional<String> filePrefix,
+    public static <T> T loadJsonPreferencesWithFilePrefix(final Optional<String> loadDir, Optional<String> filePrefix,
             final TypeReference<T> expectedFormat) {
-         
-         return loadJsonPreferencesForFile(loadDir, filePrefix, file -> {
+
+        return loadJsonPreferencesForFile(loadDir, filePrefix, file -> {
             try {
                 return OBJECT_MAPPER.readValue(file, expectedFormat);
             } catch (final IOException ioe) {
                 LOGGER.log(
                         Level.WARNING,
                         String.format(
-                                "An error occured reading file %s",
+                                FILE_READ_ERROR,
                                 file.getName()
                         ),
                         ioe
                 );
             }
             return null;
-        });      
-        
+        });
+
     }
-     
-     protected static <T> T loadJsonPreferencesForFile(final Optional<String> loadDir,
+
+    protected static <T> T loadJsonPreferencesForFile(final Optional<String> loadDir,
             final Optional<String> filePrefix,
             final Function<File, T> deserializationFunction) {
         final File preferenceDirectory = getPrefereceFileDirectory(loadDir);
@@ -505,18 +505,19 @@ public class JsonIO {
         }
 
         // Remove the prefix and suffix from the names and pass to the selection dialog        
-        final Optional<String> selectedFileName =ArrayUtils.isEmpty(names) ? Optional.empty() : Optional.of(names[0]);
+        final Optional<String> selectedFileName = ArrayUtils.isEmpty(names) ? Optional.empty() : Optional.of(names[0]);
 
         // Re-add the prefix and suffix, then serialize the preferences to the file
-        if (selectedFileName.isPresent()) {            
+        if (selectedFileName.isPresent()) {
             return deserializationFunction.apply(new File(
-                            preferenceDirectory,
-                            FilenameEncoder.encode(selectedFileName.get())
-                    )
+                    preferenceDirectory,
+                    FilenameEncoder.encode(selectedFileName.get())
+            )
             );
         }
         return null;
-    }   
+    }
+
     /**
      * Allow user to select a preference file to load from the supplied
      * directory. If filePrefix was provided, then only files prefixed with this
@@ -623,15 +624,14 @@ public class JsonIO {
             final String prefixedFilename = filePrefix.orElse("")
                     .concat(selectedFileName.get());
             return deserializationFunction.apply(new File(
-                            preferenceDirectory,
-                            FilenameEncoder.encode(prefixedFilename) + FileExtensionConstants.JSON
-                    )
+                    preferenceDirectory,
+                    FilenameEncoder.encode(prefixedFilename) + FileExtensionConstants.JSON
+            )
             );
         }
         return null;
-    }  
-    
-     
+    }
+
     /**
      * Gets the preference file directory and appends the passed sub directory
      * path to it. If the complete directory path is not present, it will

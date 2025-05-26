@@ -388,7 +388,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
     
     public KeyCombination createCombo(final KeyEvent event) {
-        List<KeyCombination.Modifier> modifiers = new ArrayList<KeyCombination.Modifier>();
+        List<KeyCombination.Modifier> modifiers = new ArrayList<>();
         if (event.isControlDown()) {
             modifiers.add(KeyCombination.CONTROL_DOWN);
         }

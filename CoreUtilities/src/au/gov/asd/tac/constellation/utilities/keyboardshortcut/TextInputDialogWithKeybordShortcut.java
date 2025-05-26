@@ -40,7 +40,9 @@ import javafx.scene.image.ImageView;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Customised TextInputDialog to read pressed keyboard shortcut with options buttons
+ * Customised TextInputDialog to read pressed keyboard shortcut with options
+ * buttons
+ *
  * @author spica
  */
 public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
@@ -69,14 +71,16 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
      *
      **************************************************************************/
     /**
-     * Creates a new TextInputDialog without a default value entered into the dialog {@link TextField}.
+     * Creates a new TextInputDialog without a default value entered into the
+     * dialog {@link TextField}.
      */
     public TextInputDialogWithKeybordShortcut(final File preferenceDirectory, final Optional<String> ks) {
         this("", preferenceDirectory, ks);
     }
 
     /**
-     * Creates a new TextInputDialog with the default value entered into the dialog {@link TextField}.
+     * Creates a new TextInputDialog with the default value entered into the
+     * dialog {@link TextField}.
      *
      * @param defaultValue the default value entered into the dialog
      */
@@ -167,7 +171,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
         updateGrid();
 
-        setResultConverter((dialogButton) -> {
+        setResultConverter(dialogButton -> {
             ButtonBar.ButtonData data = dialogButton == null ? null : dialogButton.getButtonData();
 
             if (data == ButtonBar.ButtonData.OK_DONE) {
@@ -254,9 +258,8 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         this.keyboardShortcutLabel.setText(ks);
     }
 
-    public static Optional<KeyboardShortcutSelectionResult> getKeyboardShortcut(final File preferenceDirectory,  final RecordKeyboardShortcut rk) {
-        final Optional<KeyboardShortcutSelectionResult> ks = rk.start(preferenceDirectory);
-        return ks;
+    public static Optional<KeyboardShortcutSelectionResult> getKeyboardShortcut(final File preferenceDirectory, final RecordKeyboardShortcut rk) {
+        return rk.start(preferenceDirectory);
     }
 
     public KeyboardShortcutSelectionResult getKeyboardShortcutSelectionResult() {

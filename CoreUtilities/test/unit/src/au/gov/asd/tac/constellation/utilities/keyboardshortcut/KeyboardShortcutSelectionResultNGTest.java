@@ -119,13 +119,13 @@ public class KeyboardShortcutSelectionResultNGTest {
             assertEquals(ksResult, actualResult.get());
             assertTrue(actualResult.get().isAlreadyAssigned());
             assertTrue(actualResult.get().getExisitngTemplateWithKs() != null);
-            
+
             ksResult.setAlreadyAssigned(false);
             ksResult.setExisitngTemplateWithKs(null);
-            
+
             Mockito.when(rks.start(outputFile)).thenReturn(Optional.of(ksResult));
             actualResult = rks.start(outputFile);
-            
+
             assertTrue(!actualResult.get().isAlreadyAssigned());
             assertTrue(actualResult.get().getExisitngTemplateWithKs() == null);
 

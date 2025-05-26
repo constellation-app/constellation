@@ -44,7 +44,6 @@ public class RecordKeyboardShortcutNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(RecordKeyboardShortcutNGTest.class.getName());
 
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -80,13 +79,12 @@ public class RecordKeyboardShortcutNGTest {
             when(keyPressLabelDialog.getDialogPane()).thenReturn(dialogPane);
 
             keyPressLabelDialog.setResultConverter(dialogButton -> {
-                String result = "ctrl 1";
-                return result;
+                return "ctrl 1";
             });
 
             final RecordKeyboardShortcut rk = new RecordKeyboardShortcut(keyPressLabelDialog);
             final Optional<KeyboardShortcutSelectionResult> ksResult = rk.start(outputFile);
-            assertTrue(ksResult.isPresent());            
+            assertTrue(ksResult.isPresent());
 
         } finally {
             Files.deleteIfExists(outputFile.toPath());
@@ -113,8 +111,7 @@ public class RecordKeyboardShortcutNGTest {
             when(keyPressLabelDialog.getDialogPane()).thenReturn(dialogPane);
 
             keyPressLabelDialog.setResultConverter(dialogButton -> {
-                String result = "ctrl+1";
-                return result;
+                return "ctrl+1";
             });
 
             final RecordKeyboardShortcut rk = new RecordKeyboardShortcut(keyPressLabelDialog);
@@ -161,5 +158,5 @@ public class RecordKeyboardShortcutNGTest {
         label.setPrefWidth(360);
         return label;
     }
-  
+
 }

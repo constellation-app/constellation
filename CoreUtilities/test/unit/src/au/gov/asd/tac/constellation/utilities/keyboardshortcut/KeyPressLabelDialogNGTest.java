@@ -53,16 +53,15 @@ public class KeyPressLabelDialogNGTest {
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
         }
     }
-    
+
     @Test
     public void testKeyPressLabelDialog() throws Exception {
-        
+
         Platform.runLater(() -> {
             KeyPressLabelDialog kl = new KeyPressLabelDialog("test");
             assertEquals(kl.getDefaultValue(), "test");
             assertEquals(kl.getLabel().getText(), "test");
-            
-            
+
             assertEquals(kl.getDefaultValue(), "test");
             assertEquals(kl.getLabel().getText(), "test");
         });
@@ -70,20 +69,19 @@ public class KeyPressLabelDialogNGTest {
         KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
         when(keyPressLabelDialog.getDefaultValue()).thenReturn(StringUtils.EMPTY);
         when(keyPressLabelDialog.getLabel()).thenReturn(createContentLabel(StringUtils.EMPTY));
-         when(keyPressLabelDialog.getResult()).thenReturn("ctrl 1");
-        
-        DialogPane dialogPane = mock(DialogPane.class);        
+        when(keyPressLabelDialog.getResult()).thenReturn("ctrl 1");
+
+        DialogPane dialogPane = mock(DialogPane.class);
         when(keyPressLabelDialog.getDialogPane()).thenReturn(dialogPane);
-        
-        keyPressLabelDialog.setResultConverter(dialogButton -> {            
-            String result = "ctrl 1";
-            return result;
+
+        keyPressLabelDialog.setResultConverter(dialogButton -> {
+            return "ctrl 1";
         });
         assertEquals(keyPressLabelDialog.getDefaultValue(), StringUtils.EMPTY);
-        assertEquals(keyPressLabelDialog.getResult(), "ctrl 1");       
-        
+        assertEquals(keyPressLabelDialog.getResult(), "ctrl 1");
+
     }
-    
+
     private static Label createContentLabel(final String text) {
         Label label = new Label(text);
         label.setMaxWidth(Double.MAX_VALUE);
@@ -93,7 +91,5 @@ public class KeyPressLabelDialogNGTest {
         label.setPrefWidth(360);
         return label;
     }
-    
 
-   
 }

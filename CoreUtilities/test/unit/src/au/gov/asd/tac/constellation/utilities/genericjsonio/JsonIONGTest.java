@@ -223,7 +223,7 @@ public class JsonIONGTest {
 
             final TypeReference<MyPreferences> type = new TypeReference<MyPreferences>() {
             };
-            
+
             File testFile = new File("testfile");
             testFile.setReadable(false);
 
@@ -231,7 +231,7 @@ public class JsonIONGTest {
                     .thenReturn(testFile);
 
             JsonIO.loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, type);
-            
+
         }
     }
 
@@ -253,7 +253,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void saveJsonPreferences_with_keyboardshortcut() throws URISyntaxException, FileNotFoundException, IOException {
+    public void saveJsonPreferences_with_keyboardshortcut() throws URISyntaxException, IOException {
 
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
@@ -266,8 +266,6 @@ public class JsonIONGTest {
             jsonIoMockedStatic.when(() -> JsonIO
                     .saveJsonPreferencesWithKeyboardShortcut(any(Optional.class), any(Object.class)))
                     .thenCallRealMethod();
-
-            final ObjectMapper mapper = new ObjectMapper();
 
             JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());
 
@@ -374,7 +372,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void test_getDefaultKeyboardShortcut() throws URISyntaxException, FileNotFoundException, IOException {
+    public void test_getDefaultKeyboardShortcut() throws URISyntaxException, IOException {
         final File prefDir = new File(System.getProperty("java.io.tmpdir"));
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
         final File outputFile1 = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl 1] my-preferences.json");
