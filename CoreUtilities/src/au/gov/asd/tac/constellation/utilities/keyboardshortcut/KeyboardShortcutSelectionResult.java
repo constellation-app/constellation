@@ -22,20 +22,20 @@ import java.io.File;
  * @author spica
  */
 public class KeyboardShortcutSelectionResult {
-    
+
     private String keyboardShortcut;
     private boolean alreadyAssigned;
     private File exisitngTemplateWithKs;
     private String fileName;
-    
+
     public KeyboardShortcutSelectionResult(final String keyboardShortcut, final boolean alreadyAssigned, final File exisitngTemplateWithKs) {
         this.keyboardShortcut = keyboardShortcut;
         this.alreadyAssigned = alreadyAssigned;
-        this.exisitngTemplateWithKs = exisitngTemplateWithKs;        
+        this.exisitngTemplateWithKs = exisitngTemplateWithKs;
     }
-    
-     public KeyboardShortcutSelectionResult() {         
-     }
+
+    public KeyboardShortcutSelectionResult() {
+    }
 
     public String getKeyboardShortcut() {
         return keyboardShortcut;
@@ -68,6 +68,5 @@ public class KeyboardShortcutSelectionResult {
     public void setExisitngTemplateWithKs(final File exisitngTemplateWithKs) {
         this.exisitngTemplateWithKs = exisitngTemplateWithKs;
     }
-    
-    
+
 }

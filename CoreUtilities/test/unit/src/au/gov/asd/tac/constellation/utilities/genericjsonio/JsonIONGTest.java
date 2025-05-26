@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -52,14 +51,11 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -455,8 +451,6 @@ public class JsonIONGTest {
                     .saveJsonPreferences(any(Optional.class), any()))
                     .thenCallRealMethod();
 
-            final ObjectMapper mapper = new ObjectMapper();
-
             JsonIO.saveJsonPreferences(SUB_DIRECTORY, fixture());
 
             jsonIoMockedStatic.verify(() -> JsonIO
@@ -601,7 +595,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void saveJsonPreferences_withks_user_cancels() throws URISyntaxException, FileNotFoundException, IOException {
+    public void saveJsonPreferences_withks_user_cancels() throws URISyntaxException, IOException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try (
@@ -617,7 +611,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void deleteJsonPreferences() throws URISyntaxException, FileNotFoundException, IOException {
+    public void deleteJsonPreferences() throws URISyntaxException, IOException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {

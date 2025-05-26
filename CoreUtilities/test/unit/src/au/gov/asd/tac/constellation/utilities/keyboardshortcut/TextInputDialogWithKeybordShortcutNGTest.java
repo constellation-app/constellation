@@ -37,6 +37,7 @@ import static org.testfx.util.NodeQueryUtils.hasText;
 import org.testfx.util.WaitForAsyncUtils;
 import org.testng.Assert;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -112,7 +113,7 @@ public class TextInputDialogWithKeybordShortcutNGTest {
         final Optional<String> ks = Optional.of("ctrl 1");
         final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
-        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
+        WaitForAsyncUtils.asyncFx(
                 () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
 
         final Stage dialog = getDialog(robot);
