@@ -68,6 +68,8 @@ public class JsonIO {
 
     private static final String PREFERENCE_FILE_SAVED_MSG_FORMAT
             = "Preference saved to %s.";
+    
+    private static final String FILE_READ_ERROR = "An error occured reading file %s";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -196,9 +198,7 @@ public class JsonIO {
         for (int index = 1; index <= 5; index++) {
 
             final var fi = index;
-            final FilenameFilter filenameFilter = (d, s) -> {
-                return s.startsWith("[Ctrl " + fi + "]");
-            };
+            final FilenameFilter filenameFilter = (d, s) -> s.startsWith("[Ctrl " + fi + "]");            
 
             if (ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
                 return Optional.of("Ctrl " + index);
@@ -384,7 +384,7 @@ public class JsonIO {
                 LOGGER.log(
                         Level.WARNING,
                         String.format(
-                                "An error occured reading file %s",
+                                FILE_READ_ERROR,
                                 file.getName()
                         ),
                         ioe
@@ -438,7 +438,7 @@ public class JsonIO {
                 LOGGER.log(
                         Level.WARNING,
                         String.format(
-                                "An error occured reading file %s",
+                                FILE_READ_ERROR,
                                 file.getName()
                         ),
                         ioe
@@ -475,7 +475,7 @@ public class JsonIO {
                 LOGGER.log(
                         Level.WARNING,
                         String.format(
-                                "An error occured reading file %s",
+                                FILE_READ_ERROR,
                                 file.getName()
                         ),
                         ioe

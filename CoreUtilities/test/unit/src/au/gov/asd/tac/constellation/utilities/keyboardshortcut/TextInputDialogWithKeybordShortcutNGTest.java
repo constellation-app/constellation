@@ -72,9 +72,7 @@ public class TextInputDialogWithKeybordShortcutNGTest {
 
         final File outputFile = new File(System.getProperty("java.io.tmpdir"));
 
-        try {
-
-            outputFile.createNewFile();
+        outputFile.createNewFile();
 
             TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = mock(TextInputDialogWithKeybordShortcut.class);
             when(textInputDialogWithKeybordShortcut.getDefaultValue()).thenReturn(StringUtils.EMPTY);            
@@ -91,9 +89,6 @@ public class TextInputDialogWithKeybordShortcutNGTest {
 
             assertEquals(actualResponse, ksResult);
 
-        } finally {
-
-        }
     }
 
     @Test
@@ -114,12 +109,7 @@ public class TextInputDialogWithKeybordShortcutNGTest {
     
     @Test
     public void testClickOnShortcutButton() throws Exception {
-        final Optional<String> ks = Optional.of("ctrl 1");
-        final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
-
-        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
-
+        
         final Stage dialog = getDialog(robot);
         dialog.setX(0);
         dialog.setY(0);
