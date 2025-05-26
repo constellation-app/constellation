@@ -361,6 +361,7 @@ public class WebServerNGTest {
             try {
                 verify(processMock, times(1)).waitFor();
             } catch (final InterruptedException ex) {
+                System.out.println("Caught InterruptedException in testVerifyPythonPackage");
             }
 
             // Assert function was NOT called to download script
