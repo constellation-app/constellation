@@ -370,6 +370,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      * Determines if the execute button should be enabled or disabled. It should
      * only be disabled if there are currently no queries running and the tab
      * pane can be executed.
+     * <p/>
      * If plugins are running the executeButton (actually the stop button) must
      * remain enabled.
      *
@@ -387,7 +388,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
     
     public KeyCombination createCombo(final KeyEvent event) {
-        List<KeyCombination.Modifier> modifiers = new ArrayList<>();
+        List<KeyCombination.Modifier> modifiers = new ArrayList<KeyCombination.Modifier>();
         if (event.isControlDown()) {
             modifiers.add(KeyCombination.CONTROL_DOWN);
         }
