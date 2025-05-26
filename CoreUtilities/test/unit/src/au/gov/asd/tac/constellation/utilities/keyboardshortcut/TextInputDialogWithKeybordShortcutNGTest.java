@@ -74,20 +74,20 @@ public class TextInputDialogWithKeybordShortcutNGTest {
 
         outputFile.createNewFile();
 
-            TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = mock(TextInputDialogWithKeybordShortcut.class);
-            when(textInputDialogWithKeybordShortcut.getDefaultValue()).thenReturn(StringUtils.EMPTY);            
+        TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = mock(TextInputDialogWithKeybordShortcut.class);
+        when(textInputDialogWithKeybordShortcut.getDefaultValue()).thenReturn(StringUtils.EMPTY);
 
-            final DialogPane dialogPane = mock(DialogPane.class);
-            when(textInputDialogWithKeybordShortcut.getDialogPane()).thenReturn(dialogPane);
-            assertEquals(textInputDialogWithKeybordShortcut.getDefaultValue(), StringUtils.EMPTY);
+        final DialogPane dialogPane = mock(DialogPane.class);
+        when(textInputDialogWithKeybordShortcut.getDialogPane()).thenReturn(dialogPane);
+        assertEquals(textInputDialogWithKeybordShortcut.getDefaultValue(), StringUtils.EMPTY);
 
-            final  Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null));
-            final RecordKeyboardShortcut rk = mock(RecordKeyboardShortcut.class);
-            when(rk.start(outputFile)).thenReturn(ksResult);
+        final Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null));
+        final RecordKeyboardShortcut rk = mock(RecordKeyboardShortcut.class);
+        when(rk.start(outputFile)).thenReturn(ksResult);
 
-            final Optional<KeyboardShortcutSelectionResult> actualResponse = TextInputDialogWithKeybordShortcut.getKeyboardShortcut(outputFile, rk);
+        final Optional<KeyboardShortcutSelectionResult> actualResponse = TextInputDialogWithKeybordShortcut.getKeyboardShortcut(outputFile, rk);
 
-            assertEquals(actualResponse, ksResult);
+        assertEquals(actualResponse, ksResult);
 
     }
 
@@ -106,10 +106,10 @@ public class TextInputDialogWithKeybordShortcutNGTest {
         });
 
     }
-    
+
     @Test
     public void testClickOnShortcutButton() throws Exception {
-        
+
         final Stage dialog = getDialog(robot);
         dialog.setX(0);
         dialog.setY(0);
@@ -129,21 +129,20 @@ public class TextInputDialogWithKeybordShortcutNGTest {
                         .queryAs(Button.class)
         );
 
-          robot.clickOn(
+        robot.clickOn(
                 robot.from(dialog.getScene().getRoot())
                         .lookup(".button")
                         .lookup(hasText("Cancel"))
                         .queryAs(Button.class)
         );
-          
-          robot.clickOn(
+
+        robot.clickOn(
                 robot.from(dialog.getScene().getRoot())
                         .lookup(".button")
                         .lookup(hasText("OK"))
                         .queryAs(Button.class)
         );
-          
-    
+
     }
 
     private Stage getDialog(final FxRobot robot) {
