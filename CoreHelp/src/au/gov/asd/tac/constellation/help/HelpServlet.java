@@ -182,7 +182,7 @@ public class HelpServlet extends HttpServlet {
                                 // if helpAddress contains any backwards directory changes then these should be normalised first
                                 // before comparing with already-normalised requestPath
                                 if (helpAddress.contains("..")) {
-                                    filePath = Paths.get(Generator.getBaseDirectory() + File.separator + helpAddress).normalize().toString();                                  
+                                    filePath = Paths.get(filePath).normalize().toString();                                  
                                 }
                                 
                                 final File pageFile = new File(filePath);

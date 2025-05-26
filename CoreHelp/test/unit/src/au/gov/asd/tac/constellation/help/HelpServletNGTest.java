@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.help;
 
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -110,7 +111,8 @@ public class HelpServletNGTest {
         final HttpServletResponse responseMock1 = mock(HttpServletResponse.class);
 
         try (final MockedStatic<ConstellationHelpDisplayer> helpDisplayerStaticMock = Mockito.mockStatic(ConstellationHelpDisplayer.class);
-             final MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class)) {
+                final MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class);
+                final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class)) {
             helpDisplayerStaticMock.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
 
             when(requestMock1.getRequestURI()).thenReturn("/file:/C:/Projects/constellation/build/cluster/modules/ext/docs/"
@@ -124,7 +126,8 @@ public class HelpServletNGTest {
             final String sep = File.separator;
             final String helpPagePath = "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "question-best-connects-network.md";
             mappings.put("test", helpPagePath);
-            helpMapperStaticMock.when(() -> HelpMapper.getMappings()).thenReturn(mappings);
+            helpMapperStaticMock.when(HelpMapper::getMappings).thenReturn(mappings);
+            generatorStaticMock.when(Generator::getBaseDirectory).thenReturn("constellation" + sep + "build" + "sep" + "cluster" + sep + "modules");
 
             final HelpServlet instance = new HelpServlet();
             instance.doGet(requestMock1, responseMock1);
@@ -177,12 +180,14 @@ public class HelpServletNGTest {
                 + "CoreAttributeEditorView/attribute-editor.md";
         final String requestPath = "/file:/constellation/build/cluster/modules/ext/docs/"
                 + "CoreAttributeEditorView/ext/docs/CoreAnalyticView/analytic-view.md";
-        try (final MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class)) {
+        try (final MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class);
+                final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class)) {
             final Map<String, String> mappings = new HashMap<>();
             final String sep = File.separator;
             final String helpPagePath = "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "analytic-view.md";
             mappings.put("test", helpPagePath);
-            helpMapperStaticMock.when(() -> HelpMapper.getMappings()).thenReturn(mappings);
+            helpMapperStaticMock.when(HelpMapper::getMappings).thenReturn(mappings);
+            generatorStaticMock.when(Generator::getBaseDirectory).thenReturn("constellation" + sep + "build" + "sep" + "cluster" + sep + "modules");
             
             final URL fileUrl = HelpServlet.redirectPath(requestPath, referer);
             assertTrue(fileUrl.toString().contains("CoreAnalyticView/analytic-view.md"));
@@ -201,12 +206,14 @@ public class HelpServletNGTest {
                 + "CoreAnalyticView/analytic-view.md";
         final String requestPath = "/file:/constellation/build/cluster/modules/ext/docs/"
                 + "CoreAnalyticView/ext/docs/CoreAnalyticView/question-best-connects-network.md";
-        try (final MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class)) { 
+        try (final MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class);
+                final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class)) { 
             final Map<String, String> mappings = new HashMap<>();
             final String sep = File.separator;
             final String helpPagePath = "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "question-best-connects-network.md";
             mappings.put("test", helpPagePath);
-            helpMapperStaticMock.when(() -> HelpMapper.getMappings()).thenReturn(mappings);
+            helpMapperStaticMock.when(HelpMapper::getMappings).thenReturn(mappings);
+            generatorStaticMock.when(Generator::getBaseDirectory).thenReturn("constellation" + sep + "build" + "sep" + "cluster" + sep + "modules");
             
             final URL fileUrl = HelpServlet.redirectPath(requestPath, referer);
             assertTrue(fileUrl.toString().contains("CoreAnalyticView/question-best-connects-network.md"));

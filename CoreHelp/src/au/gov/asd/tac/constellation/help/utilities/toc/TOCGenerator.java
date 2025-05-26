@@ -40,7 +40,6 @@ public class TOCGenerator {
 
     private static File toc;
     private static final Logger LOGGER = Logger.getLogger(TOCGenerator.class.getName());
-    private static final String MARKDOWN_LINK_FORMAT = "[%s](%s)";
     private static final String HTML_LINK_FORMAT = "<a href=\"%s\">%s</a><br/>";
     private static final String BLANK_STRING = " ";
     private static final String WRITE_FAIL_MESSAGE = "Failed to write to file";

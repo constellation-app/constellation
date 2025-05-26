@@ -72,12 +72,11 @@ public class HelpWebServer {
                 });
 
                 // Make our own handler so we can log requests with the CONSTELLATION logs.
-                final RequestLog requestLog = (request, response) -> {
-                    LOGGER.info(String.format("Request at %s from %s %s, status %d", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), request.getRemoteAddr(), request.getRequestURI(), response.getStatus()));
-                };
+                final RequestLog requestLog = (request, response) ->
+                    LOGGER.log(Level.INFO, "Request at {0} from {1} {2}, status {3}", new Object[]{LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), request.getRemoteAddr(), request.getRequestURI(), response.getStatus()});
                 server.setRequestLog(requestLog);
                 
-                LOGGER.log(Level.INFO, String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback.toString(), port));
+                LOGGER.log(Level.INFO, "Starting Jetty version {0} on {1}:{2}...", new Object[]{Server.getVersion(), loopback.toString(), port});
                 server.start();
 
                 // Wait for the server to stop (if it ever does).
