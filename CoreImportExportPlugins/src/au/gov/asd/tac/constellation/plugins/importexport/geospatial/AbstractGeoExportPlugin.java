@@ -118,17 +118,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         FileParameterType.setKind(outputParameter, FileParameterType.FileParameterKind.SAVE);
         FileParameterType.setFileFilters(outputParameter, getExportType());
         FileParameterType.setWarnOverwrite(outputParameter, true);
-        parameters.addParameter(outputParameter);
-
-        // Check if file exists when output parameter changes, including error
-        parameters.addController(OUTPUT_PARAMETER_ID, (master, params, change) -> {
-            if (change == ParameterChange.VALUE || change == ParameterChange.ERROR) {
-                final String output = params.get(master.getId()).getStringValue();
-                if (doesFileExist(new File(output))) {
-                    NotifyDisplayer.display("Output file already exists", NotifyDescriptor.WARNING_MESSAGE);
-                }
-            }
-        });       
+        parameters.addParameter(outputParameter);      
 
         if (includeSpatialReference()) {
             final PluginParameter<SingleChoiceParameterValue> spatialReferenceParameter = SingleChoiceParameterType.build(SPATIAL_REFERENCE_PARAMETER_ID, SpatialReferenceParameterValue.class);
@@ -489,7 +479,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         );
     }
 
-    private boolean isValidPath(File output) {
+    protected boolean isValidPath(File output) {
         if (StringUtils.isEmpty(output.getPath())) {
             NotifyDisplayer.display("Invalid output file provided, cannot be empty", NotifyDescriptor.ERROR_MESSAGE);
             return false;
