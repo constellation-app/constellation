@@ -82,10 +82,10 @@ public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoicePa
                     final List<ParameterValue> paramOptions = MultiChoiceParameterType.getOptionsData(mcPluginParameter);
                     if (!((MultiChoiceInput) input).getOptions().equals(paramOptions)) {
                         ((MultiChoiceInput) input).setOptions(paramOptions);
-                        final List<ParameterValue> choicesData = MultiChoiceParameterType.getChoicesData(mcPluginParameter);
+                        final List<ParameterValue> choicesData = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter);
                         // Only keep the value if it's in the new choices.
                         if (paramOptions.stream().anyMatch(choicesData::contains)) {
-                            setFieldValue(MultiChoiceParameterType.getChoicesData(mcPluginParameter));
+                            setFieldValue((List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter));
                         } else {
                             setFieldValue(null);
                         }

@@ -443,12 +443,13 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final Label reportSettingsLabel = new Label("Report:");
         final Label popupReportSettingsLabel = new Label("Popup:");
         final MultiChoiceInputPane reportSettingPane = new MultiChoiceInputPane(reportSettingOptions);
-        reportSettingPane.setFieldWidth(240);
-        reportSettingPane.setFieldMinWidth(200);
+        reportSettingPane.setPrefWidth(240);
+        reportSettingPane.setMaxWidth(240);
         
         final MultiChoiceInputPane popupSettingPane = new MultiChoiceInputPane(popupReportSettingOptions);
-        popupSettingPane.setFieldWidth(240);
-        popupSettingPane.setFieldMinWidth(190);
+        popupSettingPane.setPrefWidth(150);
+        popupSettingPane.setMaxWidth(240);
+        HBox.setHgrow(popupSettingPane, Priority.ALWAYS);
         
         controlToolbar.getItems().addAll(settingsBox, minimizeButton, maximizeButton, popupControl, clearButton, helpButton);
         controlToolbar2.getItems().addAll(reportSettingsLabel, reportSettingPane, popupReportSettingsLabel, popupSettingPane);
