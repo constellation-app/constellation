@@ -84,15 +84,9 @@ public class MapViewHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreMapView"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("views"));
-        assertTrue(tocLocation.contains("mapview"));
         assertTrue(tocLocation.contains("mapview-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreMapView"));
-        assertTrue(tocLocation.indexOf("CoreMapView") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("views"));
-        assertTrue(tocLocation.indexOf("views") < tocLocation.indexOf("mapview"));
-        assertTrue(tocLocation.indexOf("mapview") < tocLocation.indexOf("mapview-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreMapView") < tocLocation.indexOf("mapview-toc.xml"));
     }   
 }

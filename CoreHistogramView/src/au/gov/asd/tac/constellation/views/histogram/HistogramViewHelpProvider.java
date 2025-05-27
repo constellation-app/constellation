@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.histogram;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 1200)
 @NbBundle.Messages("HistogramViewHelpProvider=Histogram View Help Provider")
 public class HistogramViewHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreHistogramView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,11 +40,8 @@ public class HistogramViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String histogramModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "histogram" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.histogram.HistogramTopComponent", histogramModulePath + "histogram-view.md");
+        map.put("au.gov.asd.tac.constellation.views.histogram.HistogramTopComponent", MODULE_PATH + "histogram-view.md");
         return map;
     }
 
@@ -56,10 +52,6 @@ public class HistogramViewHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String histogramViewPath;
-        histogramViewPath = "ext" + sep + "docs" + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "views" + sep + "histogram" + sep + "histogram-toc.xml";
-        return histogramViewPath;
+        return MODULE_PATH + "histogram-toc.xml";
     }
 }

@@ -79,16 +79,15 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
 
     @Override
     public boolean isValid() {
-        final HelpOptionsPanel helpOptionsPanel = getPanel();
-        return helpOptionsPanel.getOfflineHelpPort() > 0;
+        return getPanel().getOfflineHelpPort() > 0;
     }
 
     @Override
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
         final HelpOptionsPanel helpOptionsPanel = getPanel();
-        return !(helpOptionsPanel.isOnlineHelpSelected() == prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP)
-                && helpOptionsPanel.getOfflineHelpPort() == prefs.getInt(HelpPreferenceKeys.OFFLINE_HELP_PORT, HelpPreferenceKeys.OFFLINE_HELP_PORT_DEFAULT));
+        return helpOptionsPanel.isOnlineHelpSelected() != prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP)
+                || helpOptionsPanel.getOfflineHelpPort() != prefs.getInt(HelpPreferenceKeys.OFFLINE_HELP_PORT, HelpPreferenceKeys.OFFLINE_HELP_PORT_DEFAULT);
     }
 
     @Override

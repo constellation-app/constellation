@@ -84,17 +84,9 @@ public class VisualSchemaHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreVisualSchema"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("graph"));
-        assertTrue(tocLocation.contains("schema"));
-        assertTrue(tocLocation.contains("visual"));
         assertTrue(tocLocation.contains("visualschema-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreVisualSchema"));
-        assertTrue(tocLocation.indexOf("CoreVisualSchema") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("graph"));
-        assertTrue(tocLocation.indexOf("graph") < tocLocation.indexOf("schema"));
-        assertTrue(tocLocation.indexOf("schema") < tocLocation.indexOf("visual"));
-        assertTrue(tocLocation.indexOf("visual") < tocLocation.indexOf("visualschema-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreVisualSchema") < tocLocation.indexOf("visualschema-toc.xml"));
     }   
 }

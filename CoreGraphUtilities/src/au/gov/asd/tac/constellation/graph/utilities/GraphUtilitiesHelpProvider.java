@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.utilities;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 1700)
 @NbBundle.Messages("GraphUtilitiesHelpProvider=Graph Utilities Help Provider")
 public class GraphUtilitiesHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreGraphUtilities" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file
@@ -42,11 +41,8 @@ public class GraphUtilitiesHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String graphUtilitiesModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "utilities" + sep;
 
-        map.put("au.gov.asd.tac.constellation.graph.utilities.perspectives.PerspectiveBookmarkTopComponent", graphUtilitiesModulePath + "perspective-bookmarks-view.md");
+        map.put("au.gov.asd.tac.constellation.graph.utilities.perspectives.PerspectiveBookmarkTopComponent", MODULE_PATH + "perspective-bookmarks-view.md");
         return map;
     }
 
@@ -57,10 +53,6 @@ public class GraphUtilitiesHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String graphUtilitiesPath;
-        graphUtilitiesPath = "ext" + sep + "docs" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "graph" + sep + "utilities" + sep + "graphutilities-toc.xml";
-        return graphUtilitiesPath;
+        return MODULE_PATH + "graphutilities-toc.xml";
     }
 }

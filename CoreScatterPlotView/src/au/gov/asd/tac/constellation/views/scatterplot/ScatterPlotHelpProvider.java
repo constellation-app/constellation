@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.scatterplot;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,9 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 2000)
 @NbBundle.Messages("ScatterPlotHelpProvider=Scatter Plot Help Provider")
 public class ScatterPlotHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
-    private static final String SEP = File.separator;
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreScatterPlotView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -42,10 +40,8 @@ public class ScatterPlotHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String scatterModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreScatterPlotView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP
-                + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "scatterplot" + SEP;
 
-        map.put("au.gov.asd.tac.constellation.views.scatterplot.ScatterPlotTopComponent", scatterModulePath + "scatter-plot-view.md");
+        map.put("au.gov.asd.tac.constellation.views.scatterplot.ScatterPlotTopComponent", MODULE_PATH + "scatter-plot-view.md");
         return map;
     }
 
@@ -56,7 +52,6 @@ public class ScatterPlotHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        return "ext" + SEP + "docs" + SEP + "CoreScatterPlotView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
-                + CODEBASE_NAME + SEP + "views" + SEP + "scatterplot" + SEP + "scatterplot-toc.xml";
+        return MODULE_PATH + "scatterplot-toc.xml";
     }
 }

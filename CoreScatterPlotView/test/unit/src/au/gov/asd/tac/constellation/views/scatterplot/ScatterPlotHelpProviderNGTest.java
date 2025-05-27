@@ -84,15 +84,9 @@ public class ScatterPlotHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreScatterPlotView"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("views"));
-        assertTrue(tocLocation.contains("scatterplot"));
         assertTrue(tocLocation.contains("scatterplot-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreScatterPlotView"));
-        assertTrue(tocLocation.indexOf("CoreScatterPlotView") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("views"));
-        assertTrue(tocLocation.indexOf("views") < tocLocation.indexOf("scatterplot"));
-        assertTrue(tocLocation.indexOf("scatterplot") < tocLocation.indexOf("scatterplot-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreScatterPlotView") < tocLocation.indexOf("scatterplot-toc.xml"));
     }    
 }

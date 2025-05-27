@@ -84,15 +84,9 @@ public class GraphFileHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreGraphFile"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("graph"));
-        assertTrue(tocLocation.contains("file"));
         assertTrue(tocLocation.contains("file-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreGraphFile"));
-        assertTrue(tocLocation.indexOf("CoreGraphFile") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("graph"));
-        assertTrue(tocLocation.indexOf("graph") < tocLocation.indexOf("file"));
-        assertTrue(tocLocation.indexOf("file") < tocLocation.indexOf("file-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreGraphFile") < tocLocation.indexOf("file-toc.xml"));
     }    
 }

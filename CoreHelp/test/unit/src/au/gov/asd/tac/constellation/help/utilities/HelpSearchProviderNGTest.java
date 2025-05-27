@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.help.utilities;
 
+import static au.gov.asd.tac.constellation.help.utilities.HelpSearchProvider.QuickSearchUtils.CIRCLED_H;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -64,13 +65,15 @@ public class HelpSearchProviderNGTest {
      */
     @Test
     public void testEvaluateFail() {
+        System.out.println("evaluateFail");
+        
         request = mock(SearchRequest.class);
         response = mock(SearchResponse.class);
 
         when(request.getText()).thenReturn("nothingshouldmatchthisstring");
         when(response.addResult(Mockito.any(), Mockito.anyString())).thenReturn(true);
 
-        HelpSearchProvider instance = new HelpSearchProvider();
+        final HelpSearchProvider instance = new HelpSearchProvider();
         instance.evaluate(request, response);
 
         verify(response, never()).addResult(Mockito.any(), Mockito.anyString());
@@ -81,13 +84,15 @@ public class HelpSearchProviderNGTest {
      */
     @Test
     public void testEvaluateNull() {
+        System.out.println("evaluateNull");
+        
         request = mock(SearchRequest.class);
         response = mock(SearchResponse.class);
 
         when(request.getText()).thenReturn(null);
         when(response.addResult(Mockito.any(), Mockito.anyString())).thenReturn(true);
 
-        HelpSearchProvider instance = new HelpSearchProvider();
+        final HelpSearchProvider instance = new HelpSearchProvider();
         instance.evaluate(request, response);
 
         verify(response, never()).addResult(Mockito.any(), Mockito.anyString());
@@ -102,11 +107,30 @@ public class HelpSearchProviderNGTest {
         response = mock(SearchResponse.class);
 
         when(request.getText()).thenReturn("help");
-        when(response.addResult(Mockito.any(), Mockito.eq(HelpSearchProvider.QuickSearchUtils.CIRCLED_H + "  help options"))).thenReturn(true);
+        when(response.addResult(Mockito.any(), Mockito.eq(CIRCLED_H + "  help options"))).thenReturn(true);
 
-        HelpSearchProvider instance = new HelpSearchProvider();
+        final HelpSearchProvider instance = new HelpSearchProvider();
         instance.evaluate(request, response);
 
-        verify(response, times(1)).addResult(Mockito.any(), Mockito.eq(HelpSearchProvider.QuickSearchUtils.CIRCLED_H + "  help options"));
+        verify(response, times(1)).addResult(Mockito.any(), Mockito.eq(CIRCLED_H + "  help options"));
     }
+    
+    /**
+     * Test of evaluate method, of class HelpSearchProvider. Pass in a valid string for a recent search
+     */
+    @Test
+    public void testEvaluateSuccessRecentSearch() {
+        System.out.println("evaluateSuccessRecentSearch");
+        
+        request = mock(SearchRequest.class);
+        response = mock(SearchResponse.class);
+
+        when(request.getText()).thenReturn(CIRCLED_H + "  help options");
+        when(response.addResult(Mockito.any(), Mockito.eq(CIRCLED_H + "  help options"))).thenReturn(true);
+
+        final HelpSearchProvider instance = new HelpSearchProvider();
+        instance.evaluate(request, response);
+
+        verify(response, times(1)).addResult(Mockito.any(), Mockito.eq(CIRCLED_H + "  help options"));
+    }   
 }

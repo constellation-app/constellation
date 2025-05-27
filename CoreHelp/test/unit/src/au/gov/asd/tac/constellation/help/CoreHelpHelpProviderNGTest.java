@@ -84,13 +84,9 @@ public class CoreHelpHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreHelp"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("help"));
         assertTrue(tocLocation.contains("help-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreHelp"));
-        assertTrue(tocLocation.indexOf("CoreHelp") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("help"));
-        assertTrue(tocLocation.indexOf("help") < tocLocation.indexOf("help-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreHelp") < tocLocation.indexOf("help-toc.xml"));
     } 
 }

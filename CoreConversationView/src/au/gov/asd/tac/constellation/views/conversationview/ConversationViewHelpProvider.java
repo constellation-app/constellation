@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,9 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 900)
 @NbBundle.Messages("ConversationViewHelpProvider=Conversation View Help Provider")
 public class ConversationViewHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
-    private static final String SEP = File.separator;
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreConversationView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -42,10 +40,8 @@ public class ConversationViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String conversationModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreConversationView" + SEP + "src" + SEP + "au" + SEP + "gov"
-                + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "conversationview" + SEP;
 
-        map.put("au.gov.asd.tac.constellation.views.conversationview.ConversationBox", conversationModulePath + "conversation-view.md");
+        map.put("au.gov.asd.tac.constellation.views.conversationview.ConversationBox", MODULE_PATH + "conversation-view.md");
         return map;
     }
 
@@ -56,9 +52,6 @@ public class ConversationViewHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String conversationViewPath;
-        conversationViewPath = "ext" + SEP + "docs" + SEP + "CoreConversationView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP
-                + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "conversationview" + SEP + "conversationview-toc.xml";
-        return conversationViewPath;
+        return MODULE_PATH + "conversationview-toc.xml";
     }
 }

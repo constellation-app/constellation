@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,9 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 1900)
 @NbBundle.Messages("QualityControlHelpProvider=Quality Control Help Provider")
 public class QualityControlHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
-    private static final String SEP = File.separator;
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreQualityControlView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -43,10 +41,7 @@ public class QualityControlHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
 
-        final String qualityModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreQualityControlView" + SEP + "src" + SEP + "au" + SEP + "gov"
-                + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "qualitycontrol" + SEP;
-
-        map.put("au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewTopComponent", qualityModulePath + "quality-control-view.md");
+        map.put("au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewTopComponent", MODULE_PATH + "quality-control-view.md");
         return map;
     }
 
@@ -57,9 +52,6 @@ public class QualityControlHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String qualityControlPath;
-        qualityControlPath = "ext" + SEP + "docs" + SEP + "CoreQualityControlView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP
-                + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "qualitycontrol" + SEP + "qualitycontrol-toc.xml";
-        return qualityControlPath;
+        return MODULE_PATH + "qualitycontrol-toc.xml";
     }
 }

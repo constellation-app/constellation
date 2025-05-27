@@ -84,15 +84,9 @@ public class GraphUtilitiesHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreGraphUtilities"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("graph"));
-        assertTrue(tocLocation.contains("utilities"));
         assertTrue(tocLocation.contains("graphutilities-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreGraphUtilities"));
-        assertTrue(tocLocation.indexOf("CoreGraphUtilities") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("graph"));
-        assertTrue(tocLocation.indexOf("graph") < tocLocation.indexOf("utilities"));
-        assertTrue(tocLocation.indexOf("utilities") < tocLocation.indexOf("graphutilities-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreGraphUtilities") < tocLocation.indexOf("graphutilities-toc.xml"));
     }   
 }

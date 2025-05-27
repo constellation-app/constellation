@@ -84,15 +84,9 @@ public class NamedSelectionHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreNamedSelectionView"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("views"));
-        assertTrue(tocLocation.contains("namedselection"));
         assertTrue(tocLocation.contains("namedselection-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreNamedSelectionView"));
-        assertTrue(tocLocation.indexOf("CoreNamedSelectionView") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("views"));
-        assertTrue(tocLocation.indexOf("views") < tocLocation.indexOf("namedselection"));
-        assertTrue(tocLocation.indexOf("namedselection") < tocLocation.indexOf("namedselection-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreNamedSelectionView") < tocLocation.indexOf("namedselection-toc.xml"));
     }   
 }

@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.namedselection;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 1500)
 @NbBundle.Messages("NamedSelectionHelpProvider=Named Selection Help Provider")
 public class NamedSelectionHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreNamedSelectionView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,11 +40,8 @@ public class NamedSelectionHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String namedModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreNamedSelectionView" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "namedselection" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.namedselection.NamedSelectionTopComponent", namedModulePath + "named-selections-view.md");
+        map.put("au.gov.asd.tac.constellation.views.namedselection.NamedSelectionTopComponent", MODULE_PATH + "named-selections-view.md");
         return map;
     }
 
@@ -56,10 +52,6 @@ public class NamedSelectionHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String namedViewPath;
-        namedViewPath = "ext" + sep + "docs" + sep + "CoreNamedSelectionView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "views" + sep + "namedselection" + sep + "namedselection-toc.xml";
-        return namedViewPath;
+        return MODULE_PATH + "namedselection-toc.xml";
     }
 }
