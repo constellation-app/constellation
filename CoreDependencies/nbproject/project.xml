@@ -81,8 +81,6 @@
                 <package>com.fasterxml.jackson.databind.type</package>
                 <package>com.fasterxml.jackson.databind.util</package>
                 <package>com.fasterxml.jackson.databind.util.internal</package>
-                <package>com.github.rjeschke.txtmark</package>
-                <package>com.github.rjeschke.txtmark.cmd</package>
                 <package>com.google.api</package>
                 <package>com.google.cloud</package>
                 <package>com.google.cloud.audit</package>
@@ -647,7 +645,6 @@
                 <package>it.geosolutions.jaiext.warp</package>
                 <package>it.geosolutions.jaiext.zonal</package>
                 <package>it.geosolutions.rendered.viewer</package>
-                <package>jakarta.inject</package>
                 <package>jakarta.servlet</package>
                 <package>jakarta.servlet.annotation</package>
                 <package>jakarta.servlet.descriptor</package>
@@ -1456,7 +1453,6 @@
                 <package>org.apache.xmlbeans.soap</package>
                 <package>org.apache.xmlbeans.xml.stream</package>
                 <package>org.apache.xmlbeans.xml.stream.events</package>
-                <package>org.apiguardian.api</package>
                 <package>org.assertj.core.annotations</package>
                 <package>org.assertj.core.api</package>
                 <package>org.assertj.core.api.exception</package>
@@ -1477,42 +1473,6 @@
                 <package>org.assertj.core.extractor</package>
                 <package>org.assertj.core.groups</package>
                 <package>org.assertj.core.internal</package>
-                <package>org.assertj.core.internal.bytebuddy</package>
-                <package>org.assertj.core.internal.bytebuddy.agent.builder</package>
-                <package>org.assertj.core.internal.bytebuddy.asm</package>
-                <package>org.assertj.core.internal.bytebuddy.build</package>
-                <package>org.assertj.core.internal.bytebuddy.description</package>
-                <package>org.assertj.core.internal.bytebuddy.description.annotation</package>
-                <package>org.assertj.core.internal.bytebuddy.description.enumeration</package>
-                <package>org.assertj.core.internal.bytebuddy.description.field</package>
-                <package>org.assertj.core.internal.bytebuddy.description.method</package>
-                <package>org.assertj.core.internal.bytebuddy.description.modifier</package>
-                <package>org.assertj.core.internal.bytebuddy.description.type</package>
-                <package>org.assertj.core.internal.bytebuddy.dynamic</package>
-                <package>org.assertj.core.internal.bytebuddy.dynamic.loading</package>
-                <package>org.assertj.core.internal.bytebuddy.dynamic.scaffold</package>
-                <package>org.assertj.core.internal.bytebuddy.dynamic.scaffold.inline</package>
-                <package>org.assertj.core.internal.bytebuddy.dynamic.scaffold.subclass</package>
-                <package>org.assertj.core.internal.bytebuddy.implementation</package>
-                <package>org.assertj.core.internal.bytebuddy.implementation.attribute</package>
-                <package>org.assertj.core.internal.bytebuddy.implementation.auxiliary</package>
-                <package>org.assertj.core.internal.bytebuddy.implementation.bind</package>
-                <package>org.assertj.core.internal.bytebuddy.implementation.bind.annotation</package>
-                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode</package>
-                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode.assign</package>
-                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode.assign.primitive</package>
-                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode.assign.reference</package>
-                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode.collection</package>
-                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode.constant</package>
-                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode.member</package>
-                <package>org.assertj.core.internal.bytebuddy.jar.asm</package>
-                <package>org.assertj.core.internal.bytebuddy.jar.asm.commons</package>
-                <package>org.assertj.core.internal.bytebuddy.jar.asm.signature</package>
-                <package>org.assertj.core.internal.bytebuddy.matcher</package>
-                <package>org.assertj.core.internal.bytebuddy.pool</package>
-                <package>org.assertj.core.internal.bytebuddy.utility</package>
-                <package>org.assertj.core.internal.bytebuddy.utility.privilege</package>
-                <package>org.assertj.core.internal.bytebuddy.utility.visitor</package>
                 <package>org.assertj.core.matcher</package>
                 <package>org.assertj.core.presentation</package>
                 <package>org.assertj.core.util</package>
@@ -2825,20 +2785,14 @@
                 <package>systems.uom.common</package>
                 <package>systems.uom.common.ancient</package>
                 <package>systems.uom.common.spi</package>
-                <package>tec.uom.lib.common</package>
-                <package>tec.uom.lib.common.function</package>
-                <package>tec.uom.lib.common.util</package>
                 <package>tech.units.indriya</package>
                 <package>tech.units.indriya.format</package>
                 <package>tech.units.indriya.function</package>
-                <package>tech.units.indriya.internal</package>
                 <package>tech.units.indriya.internal.format</package>
                 <package>tech.units.indriya.internal.format.l10n</package>
-                <package>tech.units.indriya.internal.function</package>
                 <package>tech.units.indriya.internal.function.calc</package>
                 <package>tech.units.indriya.internal.function.radix</package>
                 <package>tech.units.indriya.internal.function.simplify</package>
-                <package>tech.units.indriya.internal.simplify</package>
                 <package>tech.units.indriya.quantity</package>
                 <package>tech.units.indriya.quantity.time</package>
                 <package>tech.units.indriya.spi</package>

@@ -64,11 +64,17 @@ for Python scripts in Jupyter notebooks.
 This is where the user is able to set their preferred default font and
 default font size for the Constellation application.
 
-## Spell checking in Constellation
+## Colorblind Mode
 
-Spell checking is available in specified text areas of Constellation. 
-E.g. Data access view (Extract Types and Extract Words Plugins). 
-It can be added in other text areas as requested.
+The user is able to set a colorblind mode for Constellation. When a 
+colorblind mode is set, nodes drawn are automatically generated with
+colorblind-friendly colors, and existing graphs can be adjusted to 
+the new color scheme using Tools -> Complete with Schema.
+
+## Spell Checking
+
+Spell checking is available in some text areas of Constellation. 
+E.g. Data Access View (Extract Types and Extract Words Plugins). 
 
 When this option is enabled, incorrect spellings and some grammar errors 
 are highlighted and underlined. Left Clicking on a highlighted word/phrase 
@@ -79,12 +85,3 @@ current text area.
 When this option is set, the right click context menu option "Turn On Spell
 Checking" will be available on fields where it has been enabled, and it 
 can be used to toggle on/off spell checking dynamically.
-
-
-## Colorblind Mode
-
-The user is able to set a colorblind mode for constellation. When a 
-colorblind mode is set, nodes drawn are automatically generated with
-colorblind-friendly colors, and existing graphs can be adjusted to 
-the new color scheme using Tools -> Complete with Schema.
-
