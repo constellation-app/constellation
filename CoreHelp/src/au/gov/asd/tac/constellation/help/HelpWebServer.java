@@ -76,7 +76,7 @@ public class HelpWebServer {
                     LOGGER.log(Level.INFO, "Request at {0} from {1} {2}, status {3}", new Object[]{LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), request.getRemoteAddr(), request.getRequestURI(), response.getStatus()});
                 server.setRequestLog(requestLog);
                 
-                LOGGER.log(Level.INFO, "Starting Jetty version {0} on {1}:{2}...", new Object[]{Server.getVersion(), loopback.toString(), port});
+                LOGGER.log(Level.INFO, "Starting Jetty version {0} on {1}:{2}...", new Object[]{Server.getVersion(), loopback, port});
                 server.start();
 
                 // Wait for the server to stop (if it ever does).
