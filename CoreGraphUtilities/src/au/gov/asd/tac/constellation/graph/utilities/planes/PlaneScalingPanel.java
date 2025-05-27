@@ -16,12 +16,13 @@
 package au.gov.asd.tac.constellation.graph.utilities.planes;
 
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Plane;
+import javax.swing.JPanel;
 
 /**
  *
  * @author algol
  */
-public class PlaneScalingPanel extends javax.swing.JPanel {
+public class PlaneScalingPanel extends JPanel {
 
     private final Plane plane;
     private final float originalScale;

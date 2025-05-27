@@ -56,24 +56,9 @@ public class SaveGraphUtilities {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void saveGraphToTemporaryDirectory(final Graph graph, final String filename, boolean makeInteractable) throws IOException, InterruptedException {
+    public static void saveGraphToTemporaryDirectory(final Graph graph, final String filename, final boolean makeInteractable) throws IOException, InterruptedException {
         final File saveCreatedGraph = File.createTempFile(filename, FileExtensionConstants.STAR);
-        final WritableGraph wg = graph.getWritableGraph("make graph interactable", true);
-        try {
-            if (makeInteractable) {
-                makeGraphInteractable(wg);
-            }
-        } finally {
-            wg.commit();
-        }
-
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
-            final GraphJsonWriter writer = new GraphJsonWriter();
-            writer.writeGraphToZip(rg, saveCreatedGraph.getPath(), new TextIoProgress(false));
-        } finally {
-            rg.release();
-        }
+        saveGraphToTemporaryDirectory(graph, saveCreatedGraph, makeInteractable);
     }
 
     /**
@@ -90,22 +75,19 @@ public class SaveGraphUtilities {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void saveGraphToTemporaryDirectory(final Graph graph, final File file, boolean makeInteractable) throws IOException, InterruptedException {
-        final WritableGraph wg = graph.getWritableGraph("make graph interactable", true);
-        try {
-            if (makeInteractable) {
+    public static void saveGraphToTemporaryDirectory(final Graph graph, final File file, final boolean makeInteractable) throws IOException, InterruptedException {
+        if (makeInteractable) {
+            final WritableGraph wg = graph.getWritableGraph("make graph interactable", true);
+            try {            
                 makeGraphInteractable(wg);
+            } finally {
+                wg.commit();
             }
-        } finally {
-            wg.commit();
         }
-
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final GraphJsonWriter writer = new GraphJsonWriter();
             writer.writeGraphToZip(rg, file.getPath(), new TextIoProgress(false));
-        } finally {
-            rg.release();
         }
     }
 
@@ -122,11 +104,7 @@ public class SaveGraphUtilities {
      */
     public static void saveGraphToTemporaryDirectory(final StoreGraph graph, final String filename) throws IOException {
         final File saveCreatedGraph = File.createTempFile(filename, FileExtensionConstants.STAR);
-
-        makeGraphInteractable(graph);
-
-        final GraphJsonWriter writer = new GraphJsonWriter();
-        writer.writeGraphToZip(graph, saveCreatedGraph.getPath(), new TextIoProgress(false));
+        saveGraphToTemporaryDirectory(graph, saveCreatedGraph);
     }
 
     /**

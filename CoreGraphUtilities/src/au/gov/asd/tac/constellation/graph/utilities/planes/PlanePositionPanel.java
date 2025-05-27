@@ -15,11 +15,13 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.planes;
 
+import javax.swing.JPanel;
+
 /**
  *
  * @author algol
  */
-public class PlanePositionPanel extends javax.swing.JPanel {
+public class PlanePositionPanel extends JPanel {
 
     public PlanePositionPanel() {
         initComponents();
