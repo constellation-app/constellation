@@ -25,5 +25,3 @@ jacoco*
 
 CoreDependencies/release/modules/ext
 CoreDependencies/nbproject/project_old.xml
-
-constellation_client.py
