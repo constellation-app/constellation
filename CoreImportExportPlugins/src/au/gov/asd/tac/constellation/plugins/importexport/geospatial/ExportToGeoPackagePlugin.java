@@ -46,12 +46,10 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("ExportToGeoPackagePlugin=Export to GeoPackage")
 public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
 
-    final PluginParameters parameters = new PluginParameters();
-
     @Override
     public PluginParameters createParameters() {
 
-        PluginParameters parametersCreated = super.createParameters();
+        final PluginParameters parametersCreated = super.createParameters();
 
         // Add "listener" on output parameter to check file overwrite
         parametersCreated.addController(OUTPUT_PARAMETER_ID, (master, params, change) -> {
