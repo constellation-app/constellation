@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 import java.io.File;
 
 /**
- *
+ * Stores selected keyboard shortcut result for the workflow template
  * @author spica
  */
 public class KeyboardShortcutSelectionResult {

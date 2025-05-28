@@ -124,7 +124,7 @@ public class KeyPressLabelDialog extends Dialog<String> {
     
     
     private static Label createContentLabel(final String text) {
-        Label label = new Label(text);
+        final Label label = new Label(text);
         label.setMaxWidth(Double.MAX_VALUE);
         label.setMaxHeight(Double.MAX_VALUE);
         label.getStyleClass().add("content");

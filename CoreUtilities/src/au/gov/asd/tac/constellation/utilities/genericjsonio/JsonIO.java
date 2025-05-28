@@ -127,11 +127,8 @@ public class JsonIO {
      * provides or empty if no prefix to be provided
      *
      */
-    public static void saveJsonPreferences(final Optional<String> saveDir,
-            final Optional<String> filePrefix,
-            final Object rootNode,
-            final ObjectMapper mapper) {
-
+    public static void saveJsonPreferences(final Optional<String> saveDir, final Optional<String> filePrefix,
+            final Object rootNode, final ObjectMapper mapper) {
         final File preferenceDirectory = getPrefereceFileDirectory(saveDir);
 
         // If the preference directory cannot be accessed then return
@@ -218,9 +215,7 @@ public class JsonIO {
      * written
      * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional)
      */
-    public static void saveJsonPreferences(final Optional<String> saveDir,
-            final Object rootNode,
-            final ObjectMapper mapper) {
+    public static void saveJsonPreferences(final Optional<String> saveDir, final Object rootNode, final ObjectMapper mapper) {
         saveJsonPreferences(saveDir, Optional.empty(), rootNode, mapper);
     }
 
@@ -234,13 +229,11 @@ public class JsonIO {
      * written
      * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional)
      */
-    public static void saveJsonPreferences(final Optional<String> saveDir,
-            final Object rootNode) {
+    public static void saveJsonPreferences(final Optional<String> saveDir, final Object rootNode) {
         saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER);
     }
 
-    public static void saveJsonPreferencesWithKeyboardShortcut(final Optional<String> saveDir,
-            final Object rootNode) {
+    public static void saveJsonPreferencesWithKeyboardShortcut(final Optional<String> saveDir, final Object rootNode) {
 
         ObjectMapper mapper = OBJECT_MAPPER;
         final File preferenceDirectory = getPrefereceFileDirectory(saveDir);
@@ -352,8 +345,7 @@ public class JsonIO {
      * written
      * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional)
      */
-    public static void saveJsonPreferences(final Optional<String> saveDir,
-            final Optional<String> filePrefix,
+    public static void saveJsonPreferences(final Optional<String> saveDir, final Optional<String> filePrefix, 
             final Object rootNode) {
         saveJsonPreferences(saveDir, filePrefix, rootNode, OBJECT_MAPPER);
     }
@@ -375,20 +367,12 @@ public class JsonIO {
      * instead
      */
     @Deprecated(since = "2.4")
-    public static JsonNode loadJsonPreferences(final Optional<String> loadDir,
-            final Optional<String> filePrefix) {
+    public static JsonNode loadJsonPreferences(final Optional<String> loadDir, final Optional<String> filePrefix) {
         return loadJsonPreferences(loadDir, filePrefix, file -> {
             try {
                 return OBJECT_MAPPER.readTree(file);
             } catch (final IOException ioe) {
-                LOGGER.log(
-                        Level.WARNING,
-                        String.format(
-                                FILE_READ_ERROR,
-                                file.getName()
-                        ),
-                        ioe
-                );
+                LOGGER.log(Level.WARNING, String.format(FILE_READ_ERROR, file.getName()), ioe);
             }
             return null;
         });
@@ -427,22 +411,13 @@ public class JsonIO {
      * @return the de-serialized JSON in the requested format
      * @see #loadJsonPreferences(Optional, Optional, Function)
      */
-    public static <T> T loadJsonPreferences(final Optional<String> loadDir,
-            final Optional<String> filePrefix,
-            final TypeReference<T> expectedFormat,
-            final ObjectMapper objectMapper) {
+    public static <T> T loadJsonPreferences(final Optional<String> loadDir, final Optional<String> filePrefix, 
+            final TypeReference<T> expectedFormat, final ObjectMapper objectMapper) {
         return loadJsonPreferences(loadDir, filePrefix, file -> {
             try {
                 return objectMapper.readValue(file, expectedFormat);
             } catch (final IOException ioe) {
-                LOGGER.log(
-                        Level.WARNING,
-                        String.format(
-                                FILE_READ_ERROR,
-                                file.getName()
-                        ),
-                        ioe
-                );
+                LOGGER.log(Level.WARNING, String.format(FILE_READ_ERROR, file.getName()), ioe);
             }
             return null;
         });
@@ -460,8 +435,7 @@ public class JsonIO {
      * @return the de-serialized JSON in the requested format
      * @see #loadJsonPreferences(Optional, Optional, Function)
      */
-    public static <T> T loadJsonPreferences(final Optional<String> loadDir,
-            final TypeReference<T> expectedFormat) {
+    public static <T> T loadJsonPreferences(final Optional<String> loadDir, final TypeReference<T> expectedFormat) {
         return loadJsonPreferences(loadDir, Optional.empty(), expectedFormat, OBJECT_MAPPER);
     }
 
@@ -534,8 +508,7 @@ public class JsonIO {
      * @return the de-serialized JSON in the requested format
      * @see #loadJsonPreferences(Optional, Optional, Function)
      */
-    public static <T> T loadJsonPreferences(final Optional<String> loadDir,
-            final Optional<String> filePrefix,
+    public static <T> T loadJsonPreferences(final Optional<String> loadDir, final Optional<String> filePrefix,
             final TypeReference<T> expectedFormat) {
         return loadJsonPreferences(loadDir, filePrefix, expectedFormat, OBJECT_MAPPER);
     }
@@ -550,15 +523,12 @@ public class JsonIO {
      * name of the preference file being deleted or empty if no prefix filter is
      * required
      */
-    public static void deleteJsonPreference(final String filename,
-            final Optional<String> loadDir,
-            final Optional<String> filePrefix) {
+    public static void deleteJsonPreference(final String filename, final Optional<String> loadDir, final Optional<String> filePrefix) {
         final File preferenceDirectory = getPrefereceFileDirectory(loadDir);
 
         if (filename != null) {
             // Re-add the prefix and extension
-            final File fileToDelete = new File(
-                    preferenceDirectory,
+            final File fileToDelete = new File(preferenceDirectory, 
                     FilenameEncoder.encode(filePrefix.orElse("").concat(filename)) + FileExtensionConstants.JSON
             );
 
@@ -566,10 +536,8 @@ public class JsonIO {
             try {
                 Files.deleteIfExists(fileToDelete.toPath());
             } catch (final SecurityException | IOException ex) {
-                NotifyDisplayer.display(
-                        String.format("Failed to delete file %s from disk", fileToDelete.getName()),
-                        NotifyDescriptor.ERROR_MESSAGE
-                );
+                NotifyDisplayer.display(String.format("Failed to delete file %s from disk", fileToDelete.getName()),
+                        NotifyDescriptor.ERROR_MESSAGE);
             }
         }
     }
