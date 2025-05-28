@@ -120,9 +120,8 @@ public class DataAccessPaneNGTest {
     }
 
     /**
-     * I suspect this doesn't work because the action handler is initialized
-     * during the constructor and the spy is not applied until after the
-     * construction is complete.
+     * I suspect this doesn't work because the action handler is initialized during the constructor and the spy is not
+     * applied until after the construction is complete.
      */
     @Test(enabled = false)
     public void searchTextFieldListener() {
@@ -138,9 +137,8 @@ public class DataAccessPaneNGTest {
     }
 
     /**
-     * I suspect this doesn't work because the action handler is initialized
-     * during the constructor and the spy is not applied until after the
-     * construction is complete.
+     * I suspect this doesn't work because the action handler is initialized during the constructor and the spy is not
+     * applied until after the construction is complete.
      */
     @Test(enabled = false)
     public void contextMenuEvent() {
@@ -444,15 +442,12 @@ public class DataAccessPaneNGTest {
     }
 
     /**
-     * Verifies the updateExecuteButtonEnablement method. If queryIsRunning and
-     * canExecuteTabPane are false then the button is disabled other wise it is
-     * enabled.
+     * Verifies the updateExecuteButtonEnablement method. If queryIsRunning and canExecuteTabPane are false then the
+     * button is disabled other wise it is enabled.
      *
-     * @param queryIsRunning true if there are queries running for the current
-     * graph
+     * @param queryIsRunning true if there are queries running for the current graph
      * @param canExecuteTabPane the can execute parameter passed into the method
-     * @param expected true if the execute button should be disabled, false
-     * otherwise
+     * @param expected true if the execute button should be disabled, false otherwise
      */
     private void verifyUpdateExecuteButtonEnablement(final boolean queryIsRunning,
             final boolean canExecuteTabPane,
@@ -464,14 +459,12 @@ public class DataAccessPaneNGTest {
     }
 
     /**
-     * Verifies the graph ID is set and the correct execute button setting is
-     * made.
+     * Verifies the graph ID is set and the correct execute button setting is made.
      *
      * @param graphId the graph ID
      * @param tabPaneValid
      * @param queriesRunning true if the queries are running, false otherwise
-     * @param verification a function with verifications to make after the code
-     * is run
+     * @param verification a function with verifications to make after the code is run
      */
     private void verifyUpdateWithGraphId(final String graphId,
             final boolean disableExecuteButton,
