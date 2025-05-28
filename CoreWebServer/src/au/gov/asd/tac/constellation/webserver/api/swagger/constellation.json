@@ -32,12 +32,6 @@
                         "SelectTopNPlugin.type": "\n\u2713 Online Location\n",
                         "SelectTopNPlugin.limit": 2
                     }
-                },
-                "response": {
-                    "200": {
-                        "type": "string",
-                        "example": "Success"
-                    }                    
                 }
             },
             "runPluginsExampleObject":

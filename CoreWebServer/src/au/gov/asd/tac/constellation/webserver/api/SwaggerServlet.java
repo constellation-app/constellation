@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
@@ -160,29 +161,38 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     final ObjectNode responses = httpMethod.putObject("responses");
                     
                     pluginParameters.getParameters().entrySet().forEach(entry -> {
+                        
                         final PluginParameter<?> pp = entry.getValue();
                         
                         final ObjectNode success = responses.putObject("200");
-                        success.put(DESCRIPTION, rs.getDescription());
-
-                        if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
-                            final ObjectNode content = success.putObject("content");
-                            final ObjectNode mime = content.putObject(rs.getMimeType());
-                            final ObjectNode schema = mime.putObject(SCHEMA);
-                            // Make a wild guess about the response.
-                            if (serviceKey.name.toLowerCase(Locale.ENGLISH).startsWith("list")) {
-                                schema.put("type", "array");
-                                final ObjectNode items = schema.putObject("items");
-                                items.put("type", OBJECT);
-                                schema.put("$ref", pp.getSuccessResponseBodyExampleJson());
+                        success.put(DESCRIPTION, "Success");
+                        
+                        if (Objects.nonNull(pp.getSuccessResponseBodyExampleJson())) {
+                            if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
+                                final ObjectNode content = success.putObject("content");
+                                final ObjectNode mime = content.putObject(rs.getMimeType());
+                                final ObjectNode schema = mime.putObject(SCHEMA);
+                                // Make a wild guess about the response.
+                                if (serviceKey.name.toLowerCase(Locale.ENGLISH).startsWith("list")) {
+                                    schema.put("type", "array");
+                                    final ObjectNode items = schema.putObject("items");
+                                    items.put("type", OBJECT);
+                                    schema.put("$ref", pp.getSuccessResponseBodyExampleJson());
+                                } else {
+                                    schema.put("type", OBJECT);
+                                    schema.put("$ref", pp.getSuccessResponseBodyExampleJson());
+                                }
                             } else {
-                                schema.put("type", OBJECT);
-                                schema.put("$ref", pp.getSuccessResponseBodyExampleJson());
+                                // Do nothing
                             }
                         } else {
                             // Do nothing
                         }
+                        
                     });
+                    
+                    final ObjectNode unauthorised = responses.putObject("401");
+                    unauthorised.put(DESCRIPTION, "Error: Unauthorized");
                     
                 });
 
