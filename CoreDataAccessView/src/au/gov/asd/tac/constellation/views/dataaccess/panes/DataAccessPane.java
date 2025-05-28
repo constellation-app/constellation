@@ -87,7 +87,6 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         ); 
 
         // Plugins are now needed, so wait until the load is complete
-        
         final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins;
         try {
             plugins = DataAccessPaneState.getPlugins();
@@ -101,7 +100,6 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                     + "Data Access View cannot be created."); // NOSONAR
         }
         
-
         this.dataAccessTabPane = new DataAccessTabPane(this, plugins);
         this.dataAccessTabPane.newTab();
 

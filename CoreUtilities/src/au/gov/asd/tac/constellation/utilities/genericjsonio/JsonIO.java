@@ -446,14 +446,7 @@ public class JsonIO {
             try {
                 return OBJECT_MAPPER.readValue(file, expectedFormat);
             } catch (final IOException ioe) {
-                LOGGER.log(
-                        Level.WARNING,
-                        String.format(
-                                FILE_READ_ERROR,
-                                file.getName()
-                        ),
-                        ioe
-                );
+                LOGGER.log(Level.WARNING, String.format(FILE_READ_ERROR, file.getName()), ioe);               
             }
             return null;
         });

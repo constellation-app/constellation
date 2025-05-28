@@ -32,15 +32,12 @@ import javafx.scene.control.TabPane;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Save and load data access view plugin parameters. The parameters are saved in
- * JSON format on disk.
+ * Save and load data access view plugin parameters. The parameters are saved in JSON format on disk.
  * <p>
- * Parameters are saved using their names as keys. Therefore, having two plugins
- * with the same parameter names is a bad idea. Parameter names should be
- * qualified with their simple class name: using the fully qualified name
- * (including the package) would cause saved parameters to be useless if classes
- * are refactored into different packages. Note that refactoring the class name
- * will also break a saved file, but we'll take our chances.
+ * Parameters are saved using their names as keys. Therefore, having two plugins with the same parameter names is a bad
+ * idea. Parameter names should be qualified with their simple class name: using the fully qualified name (including the
+ * package) would cause saved parameters to be useless if classes are refactored into different packages. Note that
+ * refactoring the class name will also break a saved file, but we'll take our chances.
  *
  * @author algol
  */
@@ -55,9 +52,8 @@ public class DataAccessParametersIoProvider {
     }
 
     /**
-     * Saves the global and plugin parameters from the passed tabs that belong
-     * to the {@link DataAccessPane}. The parameters will be saved to a JSON
-     * file as an array with each element representing one tab.
+     * Saves the global and plugin parameters from the passed tabs that belong to the {@link DataAccessPane}. The
+     * parameters will be saved to a JSON file as an array with each element representing one tab.
      *
      * @param tabs the tabs to extract the global and plugin parameters from
      * @see JsonIO#saveJsonPreferences(Optional, ObjectMapper, Object)
@@ -83,10 +79,8 @@ public class DataAccessParametersIoProvider {
     }
 
     /**
-     * Loads global and plugin parameters from a JSON file into the passed
-     * {@link DataAccessPane}. If the JSON is loaded then all existing tabs will
-     * be removed and then new tabs added for each entry in the loaded JSON
-     * array.
+     * Loads global and plugin parameters from a JSON file into the passed {@link DataAccessPane}. If the JSON is loaded
+     * then all existing tabs will be removed and then new tabs added for each entry in the loaded JSON array.
      *
      * @param dataAccessPane the pane to load the JSON parameter file into
      * @see JsonIO#loadJsonPreferences(Optional, TypeReference)
@@ -137,7 +131,6 @@ public class DataAccessParametersIoProvider {
     }
 
     public static void loadParameters(final DataAccessPane dataAccessPane) {
-
         final List<DataAccessUserPreferences> loadedParameters = JsonIO
                 .loadJsonPreferences(
                         Optional.of(DATA_ACCESS_DIR),
@@ -184,8 +177,7 @@ public class DataAccessParametersIoProvider {
     }
 
     /**
-     * Generates the JSON 'enabled' property name for the plugin associated to
-     * the passed {@link DataSourceTitledPane}.
+     * Generates the JSON 'enabled' property name for the plugin associated to the passed {@link DataSourceTitledPane}.
      *
      * @param pane the pane that contains the plugin
      * @return the generated property name
