@@ -88,7 +88,8 @@ public class RunPlugin extends RestService {
         final PluginParameter<StringParameterValue> argsParam = StringParameterType.build(ARGS_PARAMETER_ID);
         argsParam.setName("Plugin arguments (body)");
         argsParam.setDescription("A JSON object containing parameter names and values to be passed to the plugin.");
-        argsParam.setRequestBodyExampleJson("#/components/examples/runPluginExample");
+        argsParam.setRequestBodyExampleJson("#/components/examples/runPluginExample/request");
+        argsParam.setSuccessResponseBodyExampleJson("#/components/examples/runPluginExample/response/200");
         parameters.addParameter(argsParam);
 
         return parameters;

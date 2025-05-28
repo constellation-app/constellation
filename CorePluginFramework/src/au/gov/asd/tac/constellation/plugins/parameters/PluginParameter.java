@@ -69,6 +69,7 @@ public class PluginParameter<V extends ParameterValue> {
     private String helpID;
     private boolean isSuppressed = false;
     private String requestBodyExample;
+    private String successResponseBodyExample;
     private boolean required = false;
     private boolean isSpellCheckEnabled = false;
 
@@ -777,6 +778,25 @@ public class PluginParameter<V extends ParameterValue> {
         }
     }
 
+    /**
+     * Get the swagger Success Response Body Example value.
+     *
+     */
+    public final String getSuccessResponseBodyExampleJson() {
+        return successResponseBodyExample;
+    }
+
+    /**
+     * Set the swagger Success Response Body Example value.
+     *
+     * @param successResponseBodyExample The Success Response Body Example in Json format.
+     */
+    public final void setSuccessResponseBodyExampleJson(final String successResponseBodyExample) {
+        if (!Objects.equals(successResponseBodyExample, this.successResponseBodyExample)) {
+            this.successResponseBodyExample = successResponseBodyExample;
+        }
+    }
+    
     /**
      * Is the parameter required?
      *

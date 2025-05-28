@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.webserver.api;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
@@ -77,6 +78,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
     private static final String SCHEMA = "schema";
     private static final String REQUIRED = "required";
     private static final String OBJECT = "object";
+    private static final String DETAILS = "Details";
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
@@ -123,7 +125,8 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     // parameter name. These will be dummy parameters,
                     // unused except for their swagger description.
                     final ArrayNode params = httpMethod.putArray("parameters");
-                    rs.createParameters().getParameters().entrySet().forEach(entry -> {
+                    PluginParameters pluginParameters = rs.createParameters();
+                    pluginParameters.getParameters().entrySet().forEach(entry -> {
                         final PluginParameter<?> pp = entry.getValue();
 
                         if (pp.getName().toLowerCase(Locale.ENGLISH).contains("(body)")) {
@@ -155,24 +158,32 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     secretSchema.put("type", "string");
 
                     final ObjectNode responses = httpMethod.putObject("responses");
-                    final ObjectNode success = responses.putObject("200");
-                    success.put(DESCRIPTION, rs.getDescription());
+                    
+                    pluginParameters.getParameters().entrySet().forEach(entry -> {
+                        final PluginParameter<?> pp = entry.getValue();
+                        
+                        final ObjectNode success = responses.putObject("200");
+                        success.put(DESCRIPTION, rs.getDescription());
 
-                    if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
-                        final ObjectNode content = success.putObject("content");
-                        final ObjectNode mime = content.putObject(rs.getMimeType());
-                        final ObjectNode schema = mime.putObject(SCHEMA);
-                        // Make a wild guess about the response.
-                        if (serviceKey.name.toLowerCase(Locale.ENGLISH).startsWith("list")) {
-                            schema.put("type", "array");
-                            final ObjectNode items = schema.putObject("items");
-                            items.put("type", OBJECT);
+                        if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
+                            final ObjectNode content = success.putObject("content");
+                            final ObjectNode mime = content.putObject(rs.getMimeType());
+                            final ObjectNode schema = mime.putObject(SCHEMA);
+                            // Make a wild guess about the response.
+                            if (serviceKey.name.toLowerCase(Locale.ENGLISH).startsWith("list")) {
+                                schema.put("type", "array");
+                                final ObjectNode items = schema.putObject("items");
+                                items.put("type", OBJECT);
+                                schema.put("$ref", pp.getSuccessResponseBodyExampleJson());
+                            } else {
+                                schema.put("type", OBJECT);
+                                schema.put("$ref", pp.getSuccessResponseBodyExampleJson());
+                            }
                         } else {
-                            schema.put("type", OBJECT);
+                            // Do nothing
                         }
-                    } else {
-                        // Do nothing
-                    }
+                    });
+                    
                 });
 
                 final OutputStream out = response.getOutputStream();
