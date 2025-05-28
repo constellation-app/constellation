@@ -39,19 +39,23 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.openide.util.HelpCtx;
 
@@ -105,7 +109,7 @@ public class HistogramPane extends BorderPane {
     private final ComboBox binFormatterCombo;
 
     private final ComboBox sortChoice;
-    private final ToggleButton descendingButton;
+    private final ToggleButton descendingButton = new ToggleButton();
 
     private final ComboBox selectionModeChoice;
 
@@ -120,6 +124,9 @@ public class HistogramPane extends BorderPane {
 
     private final HistogramDisplay2 display;
 
+    private static final int SELECT_BUTTON_WIDTH = 100;
+    private static final int DESCENDING_BUTTON_WIDTH = 100;
+
     public HistogramPane(final HistogramController histogramContoller) {
 
         topComponent = histogramContoller.getParent();
@@ -128,7 +135,13 @@ public class HistogramPane extends BorderPane {
         display = new HistogramDisplay2(topComponent);
         final ScrollPane displayScroll = new ScrollPane();
         displayScroll.setContent(display);
-        display.prefWidthProperty().bind(displayScroll.widthProperty());
+        //display.prefWidthProperty().bind(displayScroll.widthProperty());
+
+        // Binds the width of the display to the width of viewable content in the scroll pane
+        displayScroll.viewportBoundsProperty().addListener((obs, oldVal, newVal) -> display.setPrefWidth(newVal.getWidth()));
+
+        display.setPadding(new Insets(0, 10, 0, 10)); // padding of 10 on left and right TODO: make cleaner
+        displayScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
 
 //        final ScrollPane displayScroll = new ScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         //final ScrollPane displayScroll = new ScrollPane();
@@ -199,9 +212,12 @@ public class HistogramPane extends BorderPane {
         categoryChoice = new ComboBox();
         categoryChoice.getItems().addAll("");
         categoryChoice.setOnAction(e -> categoryChoiceHandler());
+        categoryChoice.setMaxWidth(Double.MAX_VALUE);
 
         final Label categoryLabel = new Label("Category:");
         final HBox categoryHBox = new HBox(4);
+        HBox.setHgrow(categoryChoice, Priority.ALWAYS);
+        HBox.setHgrow(categoryHBox, Priority.ALWAYS);
         categoryHBox.getChildren().addAll(categoryLabel, categoryChoice);
 
         ////////////////////
@@ -210,9 +226,13 @@ public class HistogramPane extends BorderPane {
         propertyChoice = new ComboBox();
         propertyChoice.setOnAction(e -> propertyChoiceHandler());
         propertyChoice.getItems().add("");
+        propertyChoice.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(propertyChoice, Priority.ALWAYS);
 
         binFormatterCombo = new ComboBox();
         binFormatterCombo.setOnAction(e -> binFormatterComboHandler());
+        binFormatterCombo.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(binFormatterCombo, Priority.ALWAYS);
 
         final Label propertyLabel = new Label("Property:");
         final HBox propertyHBox = new HBox(4);
@@ -222,6 +242,8 @@ public class HistogramPane extends BorderPane {
         // Sort
         ////////////////////
         sortChoice = new ComboBox();
+        sortChoice.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(sortChoice, Priority.ALWAYS);
         sortChoice.setOnAction(e -> sortChoiceHandler());
         for (final BinComparator binComparator : BinComparator.values()) {
             if (binComparator.isAscending()) {
@@ -231,23 +253,39 @@ public class HistogramPane extends BorderPane {
 
         final Label sortLabel = new Label("Sort:");
         final HBox sortHBox = new HBox(4);
-        sortHBox.getChildren().addAll(sortLabel, sortChoice);
 
-        descendingButton = new ToggleButton();
+        final Image unselected = new Image("/au/gov/asd/tac/constellation/views/histogram/resources/down.png");
+        final Image selected = new Image("/au/gov/asd/tac/constellation/views/histogram/resources/up.png");
+        final ImageView toggleImage = new ImageView();
+
+        toggleImage.imageProperty().bind(Bindings
+                .when(descendingButton.selectedProperty())
+                .then(selected)
+                .otherwise(unselected)
+        );
+
+        descendingButton.setGraphic(toggleImage);
+        descendingButton.setMinWidth(DESCENDING_BUTTON_WIDTH);
         descendingButton.setOnAction(e -> descendingButtonHandler());
+
+        sortHBox.getChildren().addAll(sortLabel, sortChoice, descendingButton);
 
         ////////////////////
         // Selection Mode
         ////////////////////
         selectionModeChoice = new ComboBox();
+        selectionModeChoice.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(selectionModeChoice, Priority.ALWAYS);
         selectionModeChoice.setOnAction(e -> selectionModeChoiceHandler());
 
         final Label selectionModeLabel = new Label("Selection Mode:");
         final HBox selectionModeHBox = new HBox(4);
-        selectionModeHBox.getChildren().addAll(selectionModeLabel, selectionModeChoice);
 
-        selectButton = new Button();
+        selectButton = new Button("Select");
+        selectButton.setMinWidth(SELECT_BUTTON_WIDTH);
         selectButton.setOnAction(e -> selectButtonHandler());
+
+        selectionModeHBox.getChildren().addAll(selectionModeLabel, selectionModeChoice, selectButton);
 
         ////////////////////
         // Filter
@@ -305,7 +343,7 @@ public class HistogramPane extends BorderPane {
         updateDisplay();
 
         setHistogramState(null, null);
-        
+
         // Update the dispaly whenever the user resizes the pane
         this.widthProperty().addListener((obs, oldVal, newVal) -> {
             updateDisplay();

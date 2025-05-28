@@ -42,6 +42,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -122,6 +123,9 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
     private boolean binCollectionOutOfDate = true;
     private final JPopupMenu copyMenu = new JPopupMenu();
 
+    final VBox propertyColumn = new VBox();
+    final VBox barColumn = new VBox();
+
     public HistogramDisplay2(HistogramTopComponent2 topComponent) {
         this.topComponent = topComponent;
 
@@ -139,6 +143,12 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
         setPrefHeight(PREFERRED_HEIGHT);
         setPrefWidth(MINIMUM_TEXT_WIDTH + PREFERRED_BAR_LENGTH + TEXT_TO_BAR_GAP + 2);
 
+//        barColumn.widthProperty().addListener((obs, oldVal, newVal) -> {
+//            drawBars(binCollection.getBins(), binCollection.getMaxElementCount());
+//        });
+//        propertyColumn.widthProperty().addListener((obs, oldVal, newVal) -> {
+//            drawBars(binCollection.getBins(), binCollection.getMaxElementCount());
+//        });
         //paintComponent();
     }
 
@@ -257,12 +267,12 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
      * preferred length and give the rest to the bars.**
      */
     private void calculateTextAndBarLength(final int padding) {
-        System.out.println("calculateTextAndBarLength");
+        //System.out.println("calculateTextAndBarLength");
         // !!! need to rework this function, methinks
         final int parentWidth = topComponent.getWidth();
         final int preferredTextWidth = (int) Math.round(getPreferredTextWidth());
-        System.out.println("parentWidth: " + parentWidth);
-        System.out.println("preferredTextWidth: " + preferredTextWidth);
+//        System.out.println("parentWidth: " + parentWidth);
+//        System.out.println("preferredTextWidth: " + preferredTextWidth);
         textWidth = MINIMUM_TEXT_WIDTH;
 
         if (parentWidth < LEFT_MARGIN + padding + MINIMUM_TEXT_WIDTH + TEXT_TO_BAR_GAP + PREFERRED_BAR_LENGTH + RIGHT_MARGIN) {
@@ -297,44 +307,19 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
     //@Override
 //    public void paintComponent(Graphics g) {
     public void updateDisplay() {
-        //System.out.println("updateDisplay");
-        //super.paintComponent(g);
-        //Graphics2D g2 = (Graphics2D) g;
-
-//        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-//        g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-//        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        System.out.println("updateDisplay");
         if (binCollection == null) {
-            //System.out.println("updateDisplay binCollection == null");
-
-            // Not have rendering hints set here is deliberate.
-            // The PropertySheet does the same thing.
-//            final FontMetrics fm = g2.getFontMetrics();
-//            final Rectangle2D bounds = fm.getStringBounds(NO_DATA, g2);
-            //final int w = this.getParent().getWidth();
-            //final int w = topComponent.getWidth();
-            //final int h = getParent().getHeight();
-            //final int h = topComponent.getHeight();
-            // !!! Seems to draw "<no data>" in the middle of the display
-//            g2.setColor(Color.LIGHT_GRAY);
-//            g2.drawString(NO_DATA, (int) (w - bounds.getWidth()) / 2, (int) (h - bounds.getHeight()) / 2);
+            // No data, so just have text saying so
             final Label text = new Label("<No Data>");
-            //text.setFill(Color.LIGHT_GRAY);// Should work but i think theres something wrong with imports or cache. different now its a label
-
-//            final VBox viewPane = new VBox();
-//            viewPane.getChildren().addAll(text);
             this.setCenter(text);
-
         } else if (binCollection.getBins().length == 0) {
-            //System.out.println("updateDisplay binCollection.getBins().length == 0");
             // Draw nothing: there is data, but the user doesn't want to see it.
             this.setCenter(null);
         } else {
-            //System.out.println("updateDisplay ELSE");
+            // There is data and the user wants to see it
+            final Bin[] bins = binCollection.getBins();
 
-            Bin[] bins = binCollection.getBins();
-
+            // If bin collection out of date, recalculate lengths TODO: double check this is actaully what it does
             if (binCollectionOutOfDate) {
 
                 final int[] dims = calculateHeightAndBarWidth();
@@ -347,7 +332,6 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
                 iconPadding = (int) (binIconMode.getWidth() * barHeight);
 
                 // !!! need to rework this function, methinks
-                //calculateTextAndBarLength(g2, iconPadding);
                 calculateTextAndBarLength(iconPadding);
                 binCollectionOutOfDate = false;
             }
@@ -368,8 +352,8 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
 
             final int maxCount = binCollection.getMaxElementCount();
             //System.out.println("maxCount: " + maxCount);
-            if (maxCount > 0) {
 
+            if (maxCount > 0) {
                 // the scale factor from histogram count to bar length in pixels
                 final float scaleFactor = (barsWidth - textWidth) / (float) maxCount;
 
@@ -398,17 +382,26 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
                 final Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
 
                 // Draw the histogram headers
-                final VBox rows = new VBox(ROWS_SPACING);
-                final HBox headerRow = new HBox();
-
+                //final VBox rows = new VBox(ROWS_SPACING);
+                //final HBox headerRow = new HBox();
                 // ALT SETUP: Two columns, property values and bars
                 final HBox columns = new HBox();
-                final VBox propertyColumn = new VBox();
-                final VBox barColumn = new VBox();
+                //final VBox propertyColumn = new VBox();
+                //final VBox barColumn = new VBox();
+                HBox.setHgrow(columns, Priority.ALWAYS);
+
+                barColumn.getChildren().clear();
+                propertyColumn.getChildren().clear();
 
                 propertyColumn.setMinWidth(MINIMUM_TEXT_WIDTH);
+                propertyColumn.setPrefWidth(MINIMUM_TEXT_WIDTH * 1.5);
                 propertyColumn.setSpacing(ROWS_SPACING);
                 barColumn.setSpacing(ROWS_SPACING);
+
+//                HBox.setHgrow(propertyColumn, Priority.SOMETIMES);
+//                HBox.setHgrow(barColumn, Priority.SOMETIMES);
+                HBox.setHgrow(barColumn, Priority.ALWAYS);
+                //               HBox.setHgrow(columns, Priority.ALWAYS);
 
                 columns.getChildren().addAll(propertyColumn, barColumn);
 
@@ -416,32 +409,24 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
                 final Label headerCount = new Label(COUNT);
                 final Label headerTotalBins = new Label(TOTAL_BINS_COUNT);
 
-                headerRow.setAlignment(Pos.CENTER);
-                final Pane spacer1 = new Pane();
+                //headerRow.setAlignment(Pos.CENTER);
+                //final Pane spacer1 = new Pane();
+                //HBox.setHgrow(spacer1, Priority.ALWAYS);
                 final Pane spacer2 = new Pane();
-                HBox.setHgrow(spacer1, Priority.ALWAYS);
                 HBox.setHgrow(spacer2, Priority.ALWAYS);
-
                 // Todo: Adjust spacing and see if we still needer headerCount
-                headerRow.getChildren().addAll(headerValue, spacer1, headerCount, spacer2, headerTotalBins);
-
+                //headerRow.getChildren().addAll(headerValue, spacer1, headerCount, spacer2, headerTotalBins);
                 propertyColumn.getChildren().add(headerValue);
                 final HBox headerRow2 = new HBox();
                 headerRow2.getChildren().addAll(headerCount, spacer2, headerTotalBins);
                 barColumn.getChildren().add(headerRow2);
 
-//                HBox.setHgrow(headerValue, Priority.ALWAYS);
-//                HBox.setHgrow(headerCount, Priority.ALWAYS);
-//                HBox.setHgrow(headerTotalBins, Priority.ALWAYS);
-//                HBox.setHgrow(headerRow, Priority.ALWAYS);
-                rows.getChildren().add(headerRow);
-
+                //rows.getChildren().add(headerRow);
                 // Draw the visible bars.
-                for (int bar = firstBar; bar <= lastBar; bar++) {
+//                System.out.println("firstBar: " + firstBar + " lastBar: " + lastBar);
+                for (final Bin bin : bins) {
+
                     final HBox row = new HBox();
-
-                    final Bin bin = bins[bar];
-
                     /////// TEXT
                     // Category label text.
                     // TODO: Check if color needs to be implemented or whatver
@@ -451,10 +436,11 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
                     propertyValue.setMinHeight(barHeight);
                     row.getChildren().add(propertyValue);
                     propertyColumn.getChildren().add(propertyValue);
-
-//                    final Pane spacer = new Pane();
-//                    HBox.setHgrow(spacer, Priority.ALWAYS);
-//                    row.getChildren().add(spacer);
+                    /*
+                    
+                    //                    final Pane spacer = new Pane();
+                    //                    HBox.setHgrow(spacer, Priority.ALWAYS);
+                    //                    row.getChildren().add(spacer);
                     final int selectedCount = bin.selectedCount;
                     final int elementCount = bin.elementCount;
 
@@ -467,15 +453,15 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
 
                     // Draw the background of the bar
                     if (elementCount < maxCount) {
-                        int backgroundStart = Math.max(0, barLength - 10);
-                        //final Rectangle rect = new Rectangle(Double.valueOf(barsWidth - backgroundStart), Double.valueOf(barHeight));
-                        final Rectangle rect = new Rectangle(Double.valueOf(barsWidth - textWidth), Double.valueOf(barHeight));
-                        //System.out.println("barsWidth: " + barsWidth + " textWidth:" + textWidth);
-                        rect.setArcHeight(arc);
-                        rect.setArcWidth(arc);
-                        rect.setFill(awtColorToFXColor(bar == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR));
-
-                        rectBar.getChildren().add(rect);
+                    int backgroundStart = Math.max(0, barLength - 10);
+                    //final Rectangle rect = new Rectangle(Double.valueOf(barsWidth - backgroundStart), Double.valueOf(barHeight));
+                    final Rectangle rect = new Rectangle(Double.valueOf(barsWidth - textWidth), Double.valueOf(barHeight));
+                    //System.out.println("barsWidth: " + barsWidth + " textWidth:" + textWidth);
+                    rect.setArcHeight(arc);
+                    rect.setArcWidth(arc);
+                    rect.setFill(awtColorToFXColor(bar == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR));
+                    
+                    rectBar.getChildren().add(rect);
                     }
 
                     // Calculate the length of the selected component of the bar
@@ -483,43 +469,43 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
 
                     // Draw the unselected component of the bar
                     if (selectedLength < barLength) {
-                        int unselectedStart = Math.max(0, selectedLength - 10);
-
-                        //Setting the linear gradient 
-                        final Stop[] stops = bin.activated
-                                ? new Stop[]{new Stop(0, awtColorToFXColor(activatedBarColor)), new Stop(1, awtColorToFXColor(darkerActivatedBarColor))}
-                                : new Stop[]{new Stop(0, awtColorToFXColor(barColor)), new Stop(1, awtColorToFXColor(darkerBarColor))};
-
-                        //final LinearGradient linearGradient = new LinearGradient(0, barTop, 0, barTop + barHeight, true, CycleMethod.NO_CYCLE, stops);
-                        final LinearGradient linearGradient = new LinearGradient(0, 0, 0, barHeight, true, CycleMethod.NO_CYCLE, stops);
-
-                        //System.out.println("Double.valueOf(barLength - unselectedStart) " + Double.valueOf(barLength - unselectedStart));
-                        //final Rectangle rect = new Rectangle(Double.valueOf(barLength - unselectedStart), Double.valueOf(barHeight), linearGradient);
-                        final Rectangle rect = new Rectangle(Double.valueOf(barLength), Double.valueOf(barHeight), linearGradient);
-                        rect.setArcHeight(arc);
-                        rect.setArcWidth(arc);
-
-                        //row.getChildren().add(rect);
-                        rectBar.getChildren().add(rect);
-                        StackPane.setAlignment(rect, Pos.CENTER_LEFT);
+                    int unselectedStart = Math.max(0, selectedLength - 10);
+                    
+                    //Setting the linear gradient
+                    final Stop[] stops = bin.activated
+                    ? new Stop[]{new Stop(0, awtColorToFXColor(activatedBarColor)), new Stop(1, awtColorToFXColor(darkerActivatedBarColor))}
+                    : new Stop[]{new Stop(0, awtColorToFXColor(barColor)), new Stop(1, awtColorToFXColor(darkerBarColor))};
+                    
+                    //final LinearGradient linearGradient = new LinearGradient(0, barTop, 0, barTop + barHeight, true, CycleMethod.NO_CYCLE, stops);
+                    final LinearGradient linearGradient = new LinearGradient(0, 0, 0, barHeight, true, CycleMethod.NO_CYCLE, stops);
+                    
+                    //System.out.println("Double.valueOf(barLength - unselectedStart) " + Double.valueOf(barLength - unselectedStart));
+                    //final Rectangle rect = new Rectangle(Double.valueOf(barLength - unselectedStart), Double.valueOf(barHeight), linearGradient);
+                    final Rectangle rect = new Rectangle(Double.valueOf(barLength), Double.valueOf(barHeight), linearGradient);
+                    rect.setArcHeight(arc);
+                    rect.setArcWidth(arc);
+                    
+                    //row.getChildren().add(rect);
+                    rectBar.getChildren().add(rect);
+                    StackPane.setAlignment(rect, Pos.CENTER_LEFT);
                     }
 
                     // Draw the selected component of the bar
                     if (selectedLength > 0) {
-                        //Setting the linear gradient 
-                        final Stop[] stops = bin.activated
-                                ? new Stop[]{new Stop(0, awtColorToFXColor(activatedSelectedColor)), new Stop(1, awtColorToFXColor(darkerActivatedSelectedColor))}
-                                : new Stop[]{new Stop(0, awtColorToFXColor(selectedColor)), new Stop(1, awtColorToFXColor(darkerSelectedColor))};
-
-                        final LinearGradient linearGradient = new LinearGradient(0, barTop, 0, barTop + barHeight, true, CycleMethod.NO_CYCLE, stops);
-
-                        final Rectangle rect = new Rectangle(Double.valueOf(selectedLength), Double.valueOf(barHeight), linearGradient);
-                        rect.setArcHeight(arc);
-                        rect.setArcWidth(arc);
-
-                        //row.getChildren().add(rect);
-                        rectBar.getChildren().add(rect);
-                        StackPane.setAlignment(rect, Pos.CENTER_LEFT);
+                    //Setting the linear gradient
+                    final Stop[] stops = bin.activated
+                    ? new Stop[]{new Stop(0, awtColorToFXColor(activatedSelectedColor)), new Stop(1, awtColorToFXColor(darkerActivatedSelectedColor))}
+                    : new Stop[]{new Stop(0, awtColorToFXColor(selectedColor)), new Stop(1, awtColorToFXColor(darkerSelectedColor))};
+                    
+                    final LinearGradient linearGradient = new LinearGradient(0, barTop, 0, barTop + barHeight, true, CycleMethod.NO_CYCLE, stops);
+                    
+                    final Rectangle rect = new Rectangle(Double.valueOf(selectedLength), Double.valueOf(barHeight), linearGradient);
+                    rect.setArcHeight(arc);
+                    rect.setArcWidth(arc);
+                    
+                    //row.getChildren().add(rect);
+                    rectBar.getChildren().add(rect);
+                    StackPane.setAlignment(rect, Pos.CENTER_LEFT);
                     }
 
                     // !!! draws an icon to the left of row/bar/whatever, if category has an icon. so far only color is supported (i think)
@@ -530,65 +516,144 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
                     row.getChildren().add(rectBar);
                     barColumn.getChildren().add(rectBar);
                     // Add new row to this pane
-                    rows.getChildren().add(row);
+                    //rows.getChildren().add(row);
+                     */
                 }
 
-                /*
-                // Draw the text.
-                if (correction != Integer.MAX_VALUE) {
-                    final int parentWidth = topComponent.getWidth();
-                    // !!! set colour for text?
-                    //g2.setColor(Color.LIGHT_GRAY);
-                    //GraphicsEnvironment.getLocalGraphicsEnvironment();
-
-                    for (int bar = firstBar; bar <= lastBar; bar++) {
-                        Bin bin = bins[bar];
-
-                        final int y = TOP_MARGIN + ((bar + 1) * barOffset) + (barHeight / 2) + correction; // (bar+1) to account for header
-
-                        // Category label text.
-                        // TODO: reorganise with ternary if statemnts and whatnot
-                        final String category = bin.getLabel();
-                        if (category == null) {
-                            // !!! set colour for text to be yellow, sets back to grey after
-                            //g2.setColor(Color.YELLOW);
-                            // !!! fits text in dispaly or something
-                            //final String fittingString = getStringToFit(NO_VALUE, textWidth, g2);
-                            // !!! Draws text
-                            //g2.drawString(fittingString, LEFT_MARGIN + iconPadding, y);
-                            // !!! sets back to grey here
-                            //g2.setColor(Color.LIGHT_GRAY);
-
-                            final String fittingString = getStringToFit(NO_VALUE, textWidth);
-                            final Label propertyValue = new Label(fittingString);
-                        } else {
-                            // !!! same here, fit text and draw, should always be grey here
-                            //final String fittingString = getStringToFit(category, textWidth, g2);
-                            //g2.drawString(fittingString, LEFT_MARGIN + iconPadding, y);
-                            final String fittingString = getStringToFit(category, textWidth);
-                            final Label propertyValue = new Label(fittingString);
-
-                        }
-
-                        // Bin count text.
-                        String binCount = Integer.toString(bin.elementCount);
-                        if (bin.selectedCount > 0) {
-                            binCount = Integer.toString(bin.selectedCount) + "/" + binCount;
-                        }
-                        // !!! write teh numbe rof bins to screen?
-                        //final Rectangle2D bounds = fm.getStringBounds(binCount, g2);
-                        //g2.drawString(binCount, (int) (parentWidth - bounds.getWidth() - RIGHT_MARGIN - 2), y);
-                    }
-                }
-                 */
                 //this.setCenter(rows);
                 this.setCenter(columns);
             }
         }
 
+        Platform.runLater(() -> {
+            if (binCollection != null) {
+                drawBars(binCollection.getBins(), binCollection.getMaxElementCount());
+            }
+        });
+
         // We need to revalidate here because it's entirely possible that the number of bars has changed since the
         // previous paintComponent(), so the vertical scrollbar may need to be rejiggered.
         //revalidate();
+    }
+
+    private void drawBars(final Bin[] bins, final int maxCount) {
+        final double width = barColumn.getWidth();
+        System.out.println("DRAW BARS propertyColumn width: " + propertyColumn.getWidth() + " barColumn width: " + barColumn.getWidth() + " width: " + width);
+
+        final float lengthPerElement = (float) width / (float) maxCount; //(barsWidth - textWidth) / (float) maxCount;
+        final int arc = barHeight / 3;
+        //final Node header =  barColumn.getChildren().get(0);
+        //barColumn.getChildren().clear();
+        //barColumn.getChildren().add(header);
+
+//        final Label headerCount = new Label(COUNT);
+//        final Label headerTotalBins = new Label(TOTAL_BINS_COUNT);
+//        final Pane spacer2 = new Pane();
+//        HBox.setHgrow(spacer2, Priority.ALWAYS);
+//        final HBox headerRow2 = new HBox();
+//        headerRow2.getChildren().addAll(headerCount, spacer2, headerTotalBins);
+//        barColumn.getChildren().add(headerRow2);
+        //for (int bar = firstBar; bar <= lastBar; bar++) {
+        for (int bar = 0; bar < bins.length; bar++) {
+            final HBox row = new HBox();
+
+            final Bin bin = bins[bar];
+//                    final Pane spacer = new Pane();
+//                    HBox.setHgrow(spacer, Priority.ALWAYS);
+//                    row.getChildren().add(spacer);
+            final int selectedCount = bin.selectedCount;
+            final int elementCount = bin.elementCount;
+
+            // TODO: These could be static, methinks
+            final Color barColor = binSelectionMode.getBarColor();
+            final Color darkerBarColor = barColor.darker();
+            //System.out.println("barColor: " + barColor + " darkerBarColor: " + darkerBarColor);
+
+            final Color activatedBarColor = binSelectionMode.getActivatedBarColor();
+            final Color darkerActivatedBarColor = activatedBarColor.darker();
+
+            final Color selectedColor = binSelectionMode.getSelectedColor();
+            final Color darkerSelectedColor = selectedColor.darker();
+
+            final Color activatedSelectedColor = binSelectionMode.getActivatedSelectedColor();
+            final Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
+
+            // Always draw something, even if there aren't enough pixels to draw the actual length.
+            final int barLength = Math.max((int) (elementCount * lengthPerElement), MINIMUM_BAR_WIDTH);
+            //System.out.println("elementCount: " + elementCount + " scaleFactor: " + scaleFactor + " barLength: " + barLength);
+
+            // Rectangle will be a stack pane with the different sections layer on top of each other
+            final StackPane rectBar = new StackPane();
+
+            // Draw the background of the bar
+            if (elementCount < maxCount) {
+                int backgroundStart = Math.max(0, barLength - 10);
+                //final Rectangle rect = new Rectangle(Double.valueOf(barsWidth - backgroundStart), Double.valueOf(barHeight));
+//                final Rectangle rect = new Rectangle(Double.valueOf(barsWidth - textWidth), Double.valueOf(barHeight));
+                final Rectangle rect = new Rectangle(width, Double.valueOf(barHeight));
+
+                //System.out.println("barsWidth: " + barsWidth + " textWidth:" + textWidth);
+                rect.setArcHeight(arc);
+                rect.setArcWidth(arc);
+                rect.setFill(awtColorToFXColor(bar == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR));
+
+                rectBar.getChildren().add(rect);
+            }
+
+            // Calculate the length of the selected component of the bar
+            final int selectedLength = (selectedCount > 0) ? Math.max(barLength * selectedCount / elementCount, MINIMUM_SELECTED_WIDTH) : 0;
+
+            // Draw the unselected component of the bar
+            if (selectedLength < barLength) {
+                int unselectedStart = Math.max(0, selectedLength - 10);
+
+                //Setting the linear gradient 
+                final Stop[] stops = bin.activated
+                        ? new Stop[]{new Stop(0, awtColorToFXColor(activatedBarColor)), new Stop(1, awtColorToFXColor(darkerActivatedBarColor))}
+                        : new Stop[]{new Stop(0, awtColorToFXColor(barColor)), new Stop(1, awtColorToFXColor(darkerBarColor))};
+
+                final LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+
+                //System.out.println("Double.valueOf(barLength - unselectedStart) " + Double.valueOf(barLength - unselectedStart));
+                //final Rectangle rect = new Rectangle(Double.valueOf(barLength - unselectedStart), Double.valueOf(barHeight), linearGradient);
+                final Rectangle rect = new Rectangle(Double.valueOf(barLength), Double.valueOf(barHeight), linearGradient);
+                rect.setArcHeight(arc);
+                rect.setArcWidth(arc);
+
+                //row.getChildren().add(rect);
+                rectBar.getChildren().add(rect);
+                StackPane.setAlignment(rect, Pos.CENTER_LEFT);
+            }
+
+            // Draw the selected component of the bar
+            if (selectedLength > 0) {
+                //Setting the linear gradient 
+                final Stop[] stops = bin.activated
+                        ? new Stop[]{new Stop(0, awtColorToFXColor(activatedSelectedColor)), new Stop(1, awtColorToFXColor(darkerActivatedSelectedColor))}
+                        : new Stop[]{new Stop(0, awtColorToFXColor(selectedColor)), new Stop(1, awtColorToFXColor(darkerSelectedColor))};
+
+                final LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+
+                final Rectangle rect = new Rectangle(Double.valueOf(selectedLength), Double.valueOf(barHeight), linearGradient);
+                rect.setArcHeight(arc);
+                rect.setArcWidth(arc);
+
+                //row.getChildren().add(rect);
+                rectBar.getChildren().add(rect);
+                StackPane.setAlignment(rect, Pos.CENTER_LEFT);
+            }
+
+            // !!! draws an icon to the left of row/bar/whatever, if category has an icon. so far only color is supported (i think)
+            //binIconMode.draw(g2, bin, LEFT_MARGIN, barTop, barHeight);
+            // Move to the next bar
+            //barTop += barOffset;
+            row.getChildren().add(rectBar);
+
+            barColumn.getChildren().add(rectBar);
+
+            // Add new row to this pane
+            //rows.getChildren().add(row);
+        }
     }
 
     // !! Seems to fit a given tring to the desired width, shortening if needed
