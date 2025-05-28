@@ -64,11 +64,13 @@ public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
                     if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
                         return;
                     } else {
-                        params.get(master.getId()).setError(String.format("The file %s already exists.", file.getName()));
+                        params.get(master.getId()).setError(String.format("The file %s already exists.", file.getName()));                        
                     }
                 }
             } else if (change == ParameterChange.ERROR) {
                 params.get(master.getId()).getParameterValue().setStringValue(output);
+                // If an error occurs, assume the user has typed in the inputbox
+                fileParamValue.setFileChooserSelected(false);
             }
         });
         return parametersCreated;
