@@ -70,6 +70,10 @@ public class JsonIO {
             = "Preference saved to %s.";
 
     private static final String FILE_READ_ERROR = "An error occured reading file %s";
+    
+    private static final String PREFERENCE_DIRECTORY_CREATE_ERROR = "Can't create preference directory '%s'.";
+    
+    private static final String PREFERENCE_FILE_SAVE_ERROR = "Can't save preference file: %s";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -134,7 +138,7 @@ public class JsonIO {
         // If the preference directory cannot be accessed then return
         if (!preferenceDirectory.isDirectory()) {
             NotifyDisplayer.display(
-                    String.format("Can't create preference directory '%s'.", preferenceDirectory),
+                    String.format(PREFERENCE_DIRECTORY_CREATE_ERROR, preferenceDirectory),
                     NotifyDescriptor.ERROR_MESSAGE
             );
 
@@ -183,16 +187,19 @@ public class JsonIO {
                 StatusDisplayer.getDefault().setStatusText(String.format(PREFERENCE_FILE_SAVED_MSG_FORMAT,
                         preferenceFile.getPath()));
             } catch (final IOException ex) {
-                NotifyDisplayer.display(String.format("Can't save preference file: %s", ex.getMessage()),
+                NotifyDisplayer.display(String.format(PREFERENCE_FILE_SAVE_ERROR, ex.getMessage()),
                         NotifyDescriptor.ERROR_MESSAGE);
             }
         }
     }
 
+    /**
+     * Get default keyboard shortcut. They are [Ctrl 1],[Ctrl 2],[Ctrl 3]...[Ctrl 5]     
+     * @param preferenceDirectory
+     * @return 
+     */
     public static Optional<String> getDefaultKeyboardShortcut(final File preferenceDirectory) {
-
         for (int index = 1; index <= 5; index++) {
-
             final var fi = index;
             final FilenameFilter filenameFilter = (d, s) -> s.startsWith("[Ctrl " + fi + "]");
 
@@ -234,17 +241,16 @@ public class JsonIO {
     }
 
     public static void saveJsonPreferencesWithKeyboardShortcut(final Optional<String> saveDir, final Object rootNode) {
-
-        ObjectMapper mapper = OBJECT_MAPPER;
+        final ObjectMapper mapper = OBJECT_MAPPER;
         final File preferenceDirectory = getPrefereceFileDirectory(saveDir);
 
         // If the preference directory cannot be accessed then return
         if (!preferenceDirectory.isDirectory()) {
             NotifyDisplayer.display(
-                    String.format("Can't create preference directory '%s'.", preferenceDirectory),
+                    String.format(PREFERENCE_DIRECTORY_CREATE_ERROR, preferenceDirectory),
                     NotifyDescriptor.ERROR_MESSAGE
             );
-
+            LOGGER.log(Level.WARNING, String.format(PREFERENCE_DIRECTORY_CREATE_ERROR, preferenceDirectory));
             return;
         }
 
@@ -265,23 +271,21 @@ public class JsonIO {
 
         } else {
             return;
-        }
-
-        final Optional<String> userInput = userInputWithKs;
+        }        
 
         // Cancel was pressed. So stop the save.
-        if (userInput.isEmpty()) {
+        if (userInputWithKs.isEmpty()) {
             return;
         }
 
         // If the user hit ok but provided an empty string, then generate one
-        final String fileName = StringUtils.isBlank(userInput.get())
+        final String fileName = StringUtils.isBlank(userInputWithKs.get())
                 ? String.format(
                         "%s at %s",
                         System.getProperty("user.name"),
                         TIMESTAMP_FORMAT.format(Instant.now())
                 )
-                : userInput.get();
+                : userInputWithKs.get();
 
         final String fileNameWithKeyboardShortcut = ks.orElse("").concat(" " + fileName);
 
@@ -321,9 +325,10 @@ public class JsonIO {
                 );
             } catch (final IOException ex) {
                 NotifyDisplayer.display(
-                        String.format("Can't save preference file: %s", ex.getMessage()),
+                        String.format(PREFERENCE_FILE_SAVE_ERROR, ex.getMessage()),
                         NotifyDescriptor.ERROR_MESSAGE
                 );
+                LOGGER.log(Level.WARNING, String.format(PREFERENCE_FILE_SAVE_ERROR, fileName), ex);
             }
         }
 

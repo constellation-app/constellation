@@ -132,9 +132,9 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
         keyboardShortcutButton.setOnAction(e -> {//NOSONAR
             final RecordKeyboardShortcut rk = new RecordKeyboardShortcut();
-            Optional<KeyboardShortcutSelectionResult> keyboardShortcut = getKeyboardShortcut(preferenceDirectory, rk);
+            final Optional<KeyboardShortcutSelectionResult> keyboardShortcut = getKeyboardShortcut(preferenceDirectory, rk);
             if (keyboardShortcut.isPresent()) {
-                KeyboardShortcutSelectionResult ksResult = keyboardShortcut.get();
+                final KeyboardShortcutSelectionResult ksResult = keyboardShortcut.get();
                 keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
                 keyboardShortcutLabel.setText(ksResult.getKeyboardShortcut());
                 keyboardShortcutSelectionResult.setKeyboardShortcut(ksResult.getKeyboardShortcut());
@@ -177,7 +177,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
             if (data == ButtonBar.ButtonData.OK_DONE) {
                 if (keyboardShortcutSelectionResult.isAlreadyAssigned() && keyboardShortcutSelectionResult.getExisitngTemplateWithKs() != null) {
                     //remove shortcut from existing template to be re-assign to new template
-                    String rename = keyboardShortcutSelectionResult.getExisitngTemplateWithKs()
+                    final String rename = keyboardShortcutSelectionResult.getExisitngTemplateWithKs()
                             .getName().replaceAll("\\[" + keyboardShortcutSelectionResult.getKeyboardShortcut() + "\\]", StringUtils.EMPTY);
                     keyboardShortcutSelectionResult.getExisitngTemplateWithKs().renameTo(new File(preferenceDirectory, FilenameEncoder.encode(rename.trim())));
                 }
@@ -244,8 +244,8 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         return label;
     }
 
-    static Label createLabel() {
-        Label label = new Label();
+    private static Label createLabel() {
+        final Label label = new Label();
         label.setMaxWidth(Double.MAX_VALUE);
         label.setMaxHeight(Double.MAX_VALUE);
         label.getStyleClass().add("content");

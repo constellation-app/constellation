@@ -48,7 +48,7 @@ public class RecordKeyboardShortcut  {
     public static final String YES = "Yes";
     public static final String NO = "No";
     
-    final KeyPressLabelDialog td;
+    private final KeyPressLabelDialog td;
 
     public RecordKeyboardShortcut() {
         this.td = new KeyPressLabelDialog();
@@ -74,13 +74,13 @@ public class RecordKeyboardShortcut  {
         
         Optional<KeyboardShortcutSelectionResult> ksOptional = Optional.empty();
         
-        if(StringUtils.isNotEmpty(keyboardShortcut)) {            
+        if (StringUtils.isNotEmpty(keyboardShortcut)) {       
             boolean alreadyAssigned = false;
             
                         
             final File exisitngTemplateWithKs = keyboardShortCutAlreadyAssigned(preferenceDirectory, keyboardShortcut);
             
-            if(exisitngTemplateWithKs != null) {
+            if (exisitngTemplateWithKs != null) {
                 alreadyAssigned = true;
             }
             
