@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
@@ -41,8 +42,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -103,6 +106,9 @@ public class AnalyticConfigurationPane extends VBox {
     private final Map<String, List<SelectableAnalyticPlugin>> categoryToPluginsMap;
     private final Map<AnalyticQuestionDescription<?>, List<SelectableAnalyticPlugin>> questionToPluginsMap;
     private final PluginParameters globalAnalyticParameters = new PluginParameters();
+
+    private final Set<PluginParameters> removeEntrys = new HashSet<>();
+    private final List<PluginParameterListener> removeListeners = new ArrayList<>();
 
     public AnalyticConfigurationPane() {
 
@@ -468,8 +474,9 @@ public class AnalyticConfigurationPane extends VBox {
         if (categoryListPane.isExpanded()) {
             @SuppressWarnings("unchecked") //return type of getResultType is actually Class<? extends AnalyticResult<?>>
             final Class<? extends AnalyticResult<?>> pluginResultType = pluginList.getItems().get(0).getPlugin().getResultType();
-            AnalyticUtilities.lookupAnalyticAggregators(pluginResultType)
-                    .forEach(aggregator -> aggregators.add(new AnalyticAggregatorParameterValue(aggregator)));
+
+            AnalyticUtilities.lookupAnalyticAggregators(pluginResultType).forEach(aggregator -> aggregators.add(new AnalyticAggregatorParameterValue(aggregator)));
+
             SingleChoiceParameterType.setOptionsData(aggregatorParameter, aggregators);
             SingleChoiceParameterType.setChoiceData(aggregatorParameter, aggregators.get(0));
         } else if (questionListPane.isExpanded() && currentQuestion != null) {
@@ -483,17 +490,67 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
+     * Remove all listeners gained from populating the parameters plane
+     *
+     */
+    private void cleanupListeners() {
+        // For each PluginParameters that populateParameterPane() has encountered
+        for (final PluginParameters pluginParameters : removeEntrys) {
+            // Collect all listeners that need to be removed
+            final ArrayList<PluginParameterListener> toRemove = new ArrayList<>();
+            for (final var entry : pluginParameters.getParameters().entrySet()) {
+                for (final PluginParameterListener listener : removeListeners) {
+                    // Remove listener from pane
+                    if (entry.getValue().removeListener(listener)) {
+                        // Add to list, to remove from global list
+                        toRemove.add(listener);
+                    }
+                }
+            }
+
+            removeListeners.removeAll(toRemove);
+        }
+    }
+
+    /**
      * Populate the parameter pane based on the selected plugins
      *
      * @param pluginParameters
      */
     private void populateParameterPane(final PluginParameters pluginParameters) {
+
+        cleanupListeners();
+
+        // Add this PluginParameters to cleaning list
+        removeEntrys.add(pluginParameters);
+
+        final List<PluginParameterListener> originalListeners = new ArrayList<>();
+        final List<PluginParameterListener> updatedListeners = new ArrayList<>();
+
+        // Collect list of listeners, before updating parameter pane 
+        for (final var entry : pluginParameters.getParameters().entrySet()) {
+            originalListeners.addAll(entry.getValue().getListeners());
+        }
+
+        // Build new pane
         final PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(pluginParameters, null);
+
+        // Collect list of all listeners, now updated
+        for (final var entry : pluginParameters.getParameters().entrySet()) {
+            updatedListeners.addAll(entry.getValue().getListeners());
+        }
+
+        // Find which listeners have been added, add to list to remove next update
+        for (final PluginParameterListener listener : updatedListeners) {
+            if (!originalListeners.contains(listener)) {
+                removeListeners.add(listener);
+            }
+        }
+
         // The parameters should only be editable if we are looking at a category rather than a question.
         // TODO: Find out if users need to edit question parameters, 
         // or if we can uncommented below code to disable editing parameters as intended
         //pluginParametersPane.setDisable(questionListPane.isExpanded());
-
         final ScrollPane pluginParametersPaneScrollPane = new ScrollPane();
         pluginParametersPaneScrollPane.setFitToWidth(true);
         pluginParametersPaneScrollPane.setContent(pluginParametersPane);
@@ -518,7 +575,7 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.setItems(FXCollections.observableArrayList(selectablePlugins));
         pluginList.getSelectionModel().clearSelection();
         updateSelectablePluginsParameters();
-        updateGlobalParameters();
+
         setSuppressedFlag(false);
     }
 
@@ -542,7 +599,6 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.setItems(FXCollections.observableArrayList(selectablePlugins));
         pluginList.getSelectionModel().clearSelection();
         updateSelectablePluginsParameters();
-        updateGlobalParameters();
         AnalyticViewController.getDefault().setCurrentQuestion(selectedQuestion);
     }
 
