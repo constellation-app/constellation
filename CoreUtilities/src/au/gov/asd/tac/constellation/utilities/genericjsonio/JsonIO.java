@@ -69,9 +69,7 @@ public class JsonIO {
     private static final String PREFERENCE_FILE_SAVED_MSG_FORMAT
             = "Preference saved to %s.";
 
-    private static final String FILE_READ_ERROR = "An error occured reading file %s";
-    
-    private static final String PREFERENCE_DIRECTORY_CREATE_ERROR = "Can't create preference directory '%s'.";
+    private static final String FILE_READ_ERROR = "An error occured reading file %s";    
     
     private static final String PREFERENCE_FILE_SAVE_ERROR = "Can't save preference file: %s";
 
@@ -138,7 +136,7 @@ public class JsonIO {
         // If the preference directory cannot be accessed then return
         if (!preferenceDirectory.isDirectory()) {
             NotifyDisplayer.display(
-                    String.format(PREFERENCE_DIRECTORY_CREATE_ERROR, preferenceDirectory),
+                    String.format("Can't create preference directory '%s'.", preferenceDirectory),
                     NotifyDescriptor.ERROR_MESSAGE
             );
 
@@ -247,10 +245,10 @@ public class JsonIO {
         // If the preference directory cannot be accessed then return
         if (!preferenceDirectory.isDirectory()) {
             NotifyDisplayer.display(
-                    String.format(PREFERENCE_DIRECTORY_CREATE_ERROR, preferenceDirectory),
+                    String.format("Can't create preference directory '%s'.", preferenceDirectory),
                     NotifyDescriptor.ERROR_MESSAGE
             );
-            LOGGER.log(Level.WARNING, String.format(PREFERENCE_DIRECTORY_CREATE_ERROR, preferenceDirectory));
+            LOGGER.log(Level.WARNING, String.format("Can't create preference directory {}.", preferenceDirectory));
             return;
         }
 
