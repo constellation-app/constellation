@@ -62,7 +62,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
     private final Label shorcutWarningLabel;
     private final Label shorcutWarningIconLabel;
-    private KeyboardShortcutSelectionResult keyboardShortcutSelectionResult;
+    private final KeyboardShortcutSelectionResult keyboardShortcutSelectionResult;
 
 
     /* ************************************************************************
@@ -172,7 +172,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         updateGrid();
 
         setResultConverter(dialogButton -> {
-            ButtonBar.ButtonData data = dialogButton == null ? null : dialogButton.getButtonData();
+            final ButtonBar.ButtonData data = dialogButton == null ? null : dialogButton.getButtonData();
 
             if (data == ButtonBar.ButtonData.OK_DONE) {
                 if (keyboardShortcutSelectionResult.isAlreadyAssigned() && keyboardShortcutSelectionResult.getExisitngTemplateWithKs() != null) {
@@ -235,7 +235,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
     }
 
     private static Label createContentLabel(final String text) {
-        Label label = new Label(text);
+        final Label label = new Label(text);
         label.setMaxWidth(Double.MAX_VALUE);
         label.setMaxHeight(Double.MAX_VALUE);
         label.getStyleClass().add("content");

@@ -71,7 +71,7 @@ public class JsonIONGTest {
 
     @Test
     public void loadJsonPreferences_get_pojo_without_prefix() throws URISyntaxException, FileNotFoundException, IOException {
-        try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
+        try (final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
             jsonIoMockedStatic.when(() -> JsonIO
                     .loadJsonPreferences(any(Optional.class), any(TypeReference.class)))
                     .thenCallRealMethod();

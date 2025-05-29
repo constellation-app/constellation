@@ -69,7 +69,7 @@ public class RecordKeyboardShortcutNGTest {
 
             outputFile.createNewFile();
 
-            KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
+            final KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
             when(keyPressLabelDialog.getDefaultValue()).thenReturn(StringUtils.EMPTY);
             when(keyPressLabelDialog.getLabel()).thenReturn(createContentLabel("ctrl+1"));
             when(keyPressLabelDialog.getResult()).thenReturn("ctrl 1");
@@ -101,7 +101,7 @@ public class RecordKeyboardShortcutNGTest {
         try {
             outputFile.createNewFile();
 
-            KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
+            final KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
             when(keyPressLabelDialog.getDefaultValue()).thenReturn(StringUtils.EMPTY);
             when(keyPressLabelDialog.getLabel()).thenReturn(createContentLabel("ctrl+1"));
             when(keyPressLabelDialog.getResult()).thenReturn("ctrl+1");

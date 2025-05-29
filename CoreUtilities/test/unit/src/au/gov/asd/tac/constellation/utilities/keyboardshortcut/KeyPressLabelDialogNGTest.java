@@ -58,7 +58,7 @@ public class KeyPressLabelDialogNGTest {
     public void testKeyPressLabelDialog() throws Exception {
 
         Platform.runLater(() -> {
-            KeyPressLabelDialog kl = new KeyPressLabelDialog("test");
+            final KeyPressLabelDialog kl = new KeyPressLabelDialog("test");
             assertEquals(kl.getDefaultValue(), "test");
             assertEquals(kl.getLabel().getText(), "test");
 
@@ -66,12 +66,12 @@ public class KeyPressLabelDialogNGTest {
             assertEquals(kl.getLabel().getText(), "test");
         });
 
-        KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
+        final KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
         when(keyPressLabelDialog.getDefaultValue()).thenReturn(StringUtils.EMPTY);
         when(keyPressLabelDialog.getLabel()).thenReturn(createContentLabel(StringUtils.EMPTY));
         when(keyPressLabelDialog.getResult()).thenReturn("ctrl 1");
 
-        DialogPane dialogPane = mock(DialogPane.class);
+        final DialogPane dialogPane = mock(DialogPane.class);
         when(keyPressLabelDialog.getDialogPane()).thenReturn(dialogPane);
 
         keyPressLabelDialog.setResultConverter(dialogButton -> {
@@ -83,7 +83,7 @@ public class KeyPressLabelDialogNGTest {
     }
 
     private static Label createContentLabel(final String text) {
-        Label label = new Label(text);
+        final Label label = new Label(text);
         label.setMaxWidth(Double.MAX_VALUE);
         label.setMaxHeight(Double.MAX_VALUE);
         label.getStyleClass().add("content");

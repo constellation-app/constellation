@@ -80,7 +80,7 @@ public class KeyPressLabelDialog extends Dialog<String> {
 
         setResultConverter(dialogButton -> { // NOSONAR
             final ButtonBar.ButtonData data = dialogButton == null ? null : dialogButton.getButtonData();
-            String result = data == ButtonBar.ButtonData.OK_DONE ? label.getText() : StringUtils.EMPTY;            
+            final String result = data == ButtonBar.ButtonData.OK_DONE ? label.getText() : StringUtils.EMPTY;            
             label.setText(result);
             return result;
         });

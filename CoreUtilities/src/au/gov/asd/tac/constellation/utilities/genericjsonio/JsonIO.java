@@ -187,6 +187,7 @@ public class JsonIO {
             } catch (final IOException ex) {
                 NotifyDisplayer.display(String.format(PREFERENCE_FILE_SAVE_ERROR, ex.getMessage()),
                         NotifyDescriptor.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, String.format(PREFERENCE_FILE_SAVE_ERROR, prefixedFileName), ex);
             }
         }
     }
@@ -442,7 +443,7 @@ public class JsonIO {
         return loadJsonPreferences(loadDir, Optional.empty(), expectedFormat, OBJECT_MAPPER);
     }
 
-    public static <T> T loadJsonPreferencesWithFilePrefix(final Optional<String> loadDir, Optional<String> filePrefix,
+    public static <T> T loadJsonPreferencesWithFilePrefix(final Optional<String> loadDir, final Optional<String> filePrefix,
             final TypeReference<T> expectedFormat) {
 
         return loadJsonPreferencesForFile(loadDir, filePrefix, file -> {

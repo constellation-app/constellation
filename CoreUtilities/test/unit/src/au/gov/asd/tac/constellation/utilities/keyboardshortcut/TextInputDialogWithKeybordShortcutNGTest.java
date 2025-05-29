@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIODialog;
 import java.io.File;
 import java.util.Optional;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +36,6 @@ import static org.testfx.util.NodeQueryUtils.hasText;
 import org.testfx.util.WaitForAsyncUtils;
 import org.testng.Assert;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -75,7 +73,7 @@ public class TextInputDialogWithKeybordShortcutNGTest {
 
         outputFile.createNewFile();
 
-        TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = mock(TextInputDialogWithKeybordShortcut.class);
+        final TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = mock(TextInputDialogWithKeybordShortcut.class);
         when(textInputDialogWithKeybordShortcut.getDefaultValue()).thenReturn(StringUtils.EMPTY);
 
         final DialogPane dialogPane = mock(DialogPane.class);

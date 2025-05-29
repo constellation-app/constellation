@@ -68,7 +68,7 @@ public class KeyboardShortcutSelectionResultNGTest {
     @Test
     public void testKeyboardShortcutSelectionResult() {
 
-        Optional<String> ks = Optional.of("ctrl 1");
+        final Optional<String> ks = Optional.of("ctrl 1");
         final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
