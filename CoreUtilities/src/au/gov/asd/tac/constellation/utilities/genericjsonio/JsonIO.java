@@ -248,7 +248,7 @@ public class JsonIO {
                     String.format("Can't create preference directory '%s'.", preferenceDirectory),
                     NotifyDescriptor.ERROR_MESSAGE
             );
-            LOGGER.log(Level.WARNING, String.format("Can't create preference directory {}.", preferenceDirectory));
+            LOGGER.log(Level.WARNING, "Can't create preference directory {}.", preferenceDirectory);
             return;
         }
 
