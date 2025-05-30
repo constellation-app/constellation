@@ -102,8 +102,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
                 if (e.getClickCount() == 2) {
                     retrieveSelection();
                 }
-                
-            // Right click: open context menu on the named selection 'under' the mouse pointer:
+
+                // Right click: open context menu on the named selection 'under' the mouse pointer:
             } else if (e.getButton() == MouseEvent.BUTTON3) {
                 lstNamedSelections.setSelectedIndex(lstNamedSelections.locationToIndex(e.getPoint()));
 
@@ -197,6 +197,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
         // Ensure the manager is initialised and determine whether it is managing a graph:
         final boolean isEnabled = NamedSelectionManager.getDefault().isManagingActiveGraph();
         toggleUI(isEnabled);
+        setFloating(0, 0);
     }
 
     /**

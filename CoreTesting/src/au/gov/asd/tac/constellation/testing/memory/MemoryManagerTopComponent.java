@@ -19,8 +19,10 @@ import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager.ClassStats;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManagerListener;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.swing.JScrollPane;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -57,7 +59,7 @@ import org.openide.windows.TopComponent;
     "CTL_MemoryManagerTopComponent=Memory Manager",
     "HINT_MemoryManagerTopComponent=Memory Manager"
 })
-public final class MemoryManagerTopComponent extends TopComponent implements MemoryManagerListener {
+public final class MemoryManagerTopComponent extends AbstractTopComponent implements MemoryManagerListener {
 
     public MemoryManagerTopComponent() {
         initComponents();
@@ -102,6 +104,7 @@ public final class MemoryManagerTopComponent extends TopComponent implements Mem
     public void componentOpened() {
         MemoryManager.addMemoryManagerListener(this);
         updateObjectCounts();
+        setFloating(0, 0);
     }
 
     @Override
@@ -145,5 +148,15 @@ public final class MemoryManagerTopComponent extends TopComponent implements Mem
         }
 
         objectCountsTextArea.setText(result.toString());
+    }
+
+    @Override
+    protected void initContent() {
+        // Required for AbstractTopComponent, intentionally left blank.
+    }
+
+    @Override
+    protected JScrollPane createContent() {
+        return jScrollPane1;
     }
 }

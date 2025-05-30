@@ -136,7 +136,6 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
         };
 
-
         GraphManager.getDefault().addGraphManagerListener(AttributeEditorTopComponent.this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
         initContent();
@@ -175,12 +174,14 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
 
         PreferenceUtilities.addPreferenceChangeListener(prefs.absolutePath(), this);
-        
+
         // Ensure that all the 'Show Empty' buttons are toggled on when panel
         // is re-displayed
         if (attributePanel != null) {
             attributePanel.refreshShowEmpty();
         }
+
+        setFloating(0, 0);
     }
 
     @Override
@@ -267,7 +268,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     protected AttributeEditorPanel createContent() {
         return attributePanel;
     }
-    
+
     @Override
     protected void handlePreferenceChange(final PreferenceChangeEvent event) {
         if (reader != null) {

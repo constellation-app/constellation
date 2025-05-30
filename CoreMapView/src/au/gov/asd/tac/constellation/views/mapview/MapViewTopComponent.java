@@ -153,7 +153,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     private int cachedWidth;
     private int cachedHeight;
     private final Consumer<Graph> updateMarkers;
-    
+
     private static final Pattern COMMA_SEPARATED_REGEX = Pattern.compile("[,\\s]+", Pattern.UNICODE_CHARACTER_CLASS);
 
     public MapViewTopComponent() {
@@ -216,7 +216,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             if (currentGraph != null) {
                 final String zoomAction = (String) event.getSource();
                 switch (zoomAction) {
-                    case ZOOM_ALL -> renderer.zoomToMarkers(markerState);
+                    case ZOOM_ALL ->
+                        renderer.zoomToMarkers(markerState);
                     case ZOOM_SELECTION -> {
                         final MarkerState selectedOnlyState = new MarkerState();
                         selectedOnlyState.setShowSelectedOnly(true);
@@ -412,7 +413,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                     NotifyDisplayer.display("Invalid coordinate data provided, radius should be greater than or equal to 0", NotifyDescriptor.ERROR_MESSAGE);
                     return;
                 }
-                
+
                 final Location coordinateLocation = new Location(latitude, longitude);
                 if (radius > 0) {
                     final float radiusDD = (float) Distance.Haversine.kilometersToDecimalDegrees(radius);
@@ -442,7 +443,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                 final ConstellationPointFeature mgrsFeature = new ConstellationPointFeature(mgrsLocation);
                 marker = renderer.addCustomMarker(mgrsFeature);
             }
-            default -> marker = null;
+            default ->
+                marker = null;
         }
         renderer.zoomToLocation(marker == null ? null : marker.getLocation());
     }
@@ -467,12 +469,15 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             @SuppressWarnings("unchecked") //master will need to be of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> typedMaster = (PluginParameter<SingleChoiceParameterValue>) master;
             switch (SingleChoiceParameterType.getChoice(typedMaster)) {
-                case GEO_TYPE_COORDINATE -> params.get(PARAMETER_LOCATION)
+                case GEO_TYPE_COORDINATE ->
+                    params.get(PARAMETER_LOCATION)
                             .setDescription("Enter a coordinate in decimal degrees (and optionally a radius "
                                     + "in kilometers) with components separated by spaces or commas");
-                case GEO_TYPE_GEOHASH -> params.get(PARAMETER_LOCATION)
+                case GEO_TYPE_GEOHASH ->
+                    params.get(PARAMETER_LOCATION)
                             .setDescription("Enter a base-16 geohash value");
-                case GEO_TYPE_MGRS -> params.get(PARAMETER_LOCATION)
+                case GEO_TYPE_MGRS ->
+                    params.get(PARAMETER_LOCATION)
                             .setDescription("Enter an MGRS value");
                 default -> {
                     // do nothing
@@ -535,6 +540,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     protected void handleComponentOpened() {
         super.handleComponentOpened();
         resetContent();
+        setFloating(0, 0);
     }
 
     @Override
