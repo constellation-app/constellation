@@ -42,6 +42,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
@@ -52,9 +53,9 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.openide.util.HelpCtx;
@@ -127,6 +128,9 @@ public class HistogramPane extends BorderPane {
     private static final int SELECT_BUTTON_WIDTH = 100;
     private static final int DESCENDING_BUTTON_WIDTH = 100;
 
+    private static final int MIN_LABEL_WIDTH = 90;
+    private static final int PREF_LABEL_WIDTH = 90;
+
     public HistogramPane(final HistogramController histogramContoller) {
 
         topComponent = histogramContoller.getParent();
@@ -148,6 +152,10 @@ public class HistogramPane extends BorderPane {
         //displayScroll.getVerticalScrollBar().setUnitIncrement(HistogramDisplay.MAXIMUM_BAR_HEIGHT);
         // TODO: replace set style for each button with a stylesheet
         //getStylesheets().add(getClass().getResource("resources/rule-pane-dark.css").toExternalForm());
+        // Make a VBox for labels, and one for controls and buttons
+        final VBox labelsVBox = new VBox();
+        final VBox controlsVBox = new VBox();
+
         ////////////////////
         // Help Button
         ////////////////////
@@ -161,8 +169,7 @@ public class HistogramPane extends BorderPane {
             actionEvent.consume();
         });
 
-        AnchorPane.setRightAnchor(helpButton, 5.0);
-
+        //AnchorPane.setRightAnchor(helpButton, 5.0);
         ////////////////////
         // Graph Element
         ////////////////////
@@ -202,10 +209,16 @@ public class HistogramPane extends BorderPane {
         etToggles.put(GraphElementType.LINK, linkToggle);
 
         final Label graphElementLabel = new Label("Graph Element");
+        graphElementLabel.setMinWidth(MIN_LABEL_WIDTH);
+        graphElementLabel.setPrefWidth(PREF_LABEL_WIDTH);
 
         final HBox graphElementHBox = new HBox(4);
-        graphElementHBox.getChildren().addAll(graphElementLabel, vertexToggle, transactionToggle, edgeToggle, linkToggle);
+        final Pane elementBoxSpacer = new Pane();
+        HBox.setHgrow(elementBoxSpacer, Priority.ALWAYS);
+        graphElementHBox.getChildren().addAll(graphElementLabel, vertexToggle, transactionToggle, edgeToggle, linkToggle, elementBoxSpacer, helpButton);
 
+//        labelsVBox.getChildren().add(graphElementLabel);
+//        controlsVBox.getChildren().add(graphElementHBox);
         ////////////////////
         // Category
         ////////////////////
@@ -215,11 +228,15 @@ public class HistogramPane extends BorderPane {
         categoryChoice.setMaxWidth(Double.MAX_VALUE);
 
         final Label categoryLabel = new Label("Category:");
+        categoryLabel.setMinWidth(MIN_LABEL_WIDTH);
+        categoryLabel.setPrefWidth(PREF_LABEL_WIDTH);
         final HBox categoryHBox = new HBox(4);
         HBox.setHgrow(categoryChoice, Priority.ALWAYS);
-        HBox.setHgrow(categoryHBox, Priority.ALWAYS);
+        //HBox.setHgrow(categoryHBox, Priority.ALWAYS);
         categoryHBox.getChildren().addAll(categoryLabel, categoryChoice);
 
+//        labelsVBox.getChildren().add(categoryLabel);
+//        controlsVBox.getChildren().add(categoryChoice);
         ////////////////////
         // Property and Format
         ////////////////////
@@ -235,9 +252,13 @@ public class HistogramPane extends BorderPane {
         HBox.setHgrow(binFormatterCombo, Priority.ALWAYS);
 
         final Label propertyLabel = new Label("Property:");
+        propertyLabel.setMinWidth(MIN_LABEL_WIDTH);
+        propertyLabel.setPrefWidth(PREF_LABEL_WIDTH);
         final HBox propertyHBox = new HBox(4);
         propertyHBox.getChildren().addAll(propertyLabel, propertyChoice, binFormatterCombo);
 
+//        labelsVBox.getChildren().add(propertyLabel);
+//        controlsVBox.getChildren().add(propertyHBox);
         ////////////////////
         // Sort
         ////////////////////
@@ -252,6 +273,8 @@ public class HistogramPane extends BorderPane {
         }
 
         final Label sortLabel = new Label("Sort:");
+        sortLabel.setMinWidth(MIN_LABEL_WIDTH);
+        sortLabel.setPrefWidth(PREF_LABEL_WIDTH);
         final HBox sortHBox = new HBox(4);
 
         final Image unselected = new Image("/au/gov/asd/tac/constellation/views/histogram/resources/down.png");
@@ -270,6 +293,8 @@ public class HistogramPane extends BorderPane {
 
         sortHBox.getChildren().addAll(sortLabel, sortChoice, descendingButton);
 
+//        labelsVBox.getChildren().add(sortLabel);
+//        controlsVBox.getChildren().add(sortHBox);
         ////////////////////
         // Selection Mode
         ////////////////////
@@ -278,7 +303,11 @@ public class HistogramPane extends BorderPane {
         HBox.setHgrow(selectionModeChoice, Priority.ALWAYS);
         selectionModeChoice.setOnAction(e -> selectionModeChoiceHandler());
 
+        selectionModeChoice.getItems().addAll((Object[]) BinSelectionMode.values());
+
         final Label selectionModeLabel = new Label("Selection Mode:");
+        selectionModeLabel.setMinWidth(MIN_LABEL_WIDTH);
+        selectionModeLabel.setPrefWidth(PREF_LABEL_WIDTH);
         final HBox selectionModeHBox = new HBox(4);
 
         selectButton = new Button("Select");
@@ -287,6 +316,8 @@ public class HistogramPane extends BorderPane {
 
         selectionModeHBox.getChildren().addAll(selectionModeLabel, selectionModeChoice, selectButton);
 
+//        labelsVBox.getChildren().add(selectionModeLabel);
+//        controlsVBox.getChildren().add(selectionModeHBox);
         ////////////////////
         // Filter
         ////////////////////
@@ -299,8 +330,12 @@ public class HistogramPane extends BorderPane {
         actionButton = new Button("Action");
         actionButton.setOnMouseClicked(e -> actionButtonMousePressed(e));
         final Label filterLabel = new Label("Filter:");
+        filterLabel.setMinWidth(MIN_LABEL_WIDTH);
+        filterLabel.setPrefWidth(PREF_LABEL_WIDTH);
         final HBox filterHBox = new HBox(4);
-        filterHBox.getChildren().addAll(filterLabel, filterSelectionButton, clearFilterButton, actionButton);
+        final Pane filterSpacer = new Pane();
+        HBox.setHgrow(filterSpacer, Priority.ALWAYS);
+        filterHBox.getChildren().addAll(filterLabel, filterSelectionButton, clearFilterButton, filterSpacer, actionButton);
 
         actionsMenu = new ContextMenu();
 
@@ -320,21 +355,45 @@ public class HistogramPane extends BorderPane {
         //increaseHeightBarMenuItem.setOnAction(e -> topComponent.modifyBinHeight(1));
         actionsMenu.getItems().add(increaseHeightBarMenuItem);
 
+//        labelsVBox.getChildren().add(filterLabel);
+//        controlsVBox.getChildren().add(filterHBox);
+//
+        //// END Filter
+//        // Make an hbox to seperate labels from actual controls
+//        final HBox controlsBox = new HBox();
+//        HBox.setHgrow(labelsVBox, Priority.ALWAYS);
+//        HBox.setHgrow(controlsVBox, Priority.ALWAYS);
+//
+//        VBox.setVgrow(controlsBox, Priority.ALWAYS);
+//        controlsBox.getChildren().addAll(labelsVBox, controlsVBox);
+//
+//        labelsVBox.minHeightProperty().bind(controlsBox.heightProperty());
+//        controlsVBox.minHeightProperty().bind(controlsBox.heightProperty());
+//
+//        // Make all children of label vbox expand to fill height
+//        for (final Node child : labelsVBox.getChildren()) {
+//            VBox.setVgrow(child, Priority.ALWAYS);
+//        }
+//        // Make all children of controls vbox expand to fill height
+//        for (final Node child : controlsVBox.getChildren()) {
+//            VBox.setVgrow(child, Priority.ALWAYS);
+//        }
         // Add everything to this viewPane
-        viewPane = new VBox();
+        viewPane = new VBox(4);
         viewPane.prefWidthProperty().bind(this.widthProperty());
 
         displayScroll.prefWidthProperty().bind(viewPane.widthProperty());
+        //controlsBox.prefWidthProperty().bind(viewPane.widthProperty());
 
         viewPane.getChildren().addAll(
                 displayScroll,
-                helpButton,
                 graphElementHBox,
                 categoryHBox,
                 propertyHBox,
                 sortHBox,
                 selectionModeHBox,
                 filterHBox
+        // controlsBox
         );
 
         this.setCenter(viewPane);
@@ -526,8 +585,8 @@ public class HistogramPane extends BorderPane {
 
     private void selectButtonHandler() {
         if (!isAdjusting) {
-            //currentHistogramState.getBinSelectionMode().select(topComponent);
-            //updateDisplay();
+            currentHistogramState.getBinSelectionMode().select(topComponent);
+            updateDisplay();
         }
     }
 
@@ -560,38 +619,43 @@ public class HistogramPane extends BorderPane {
     }
 
     private void binFormatterComboHandler() {
-        if (!isAdjusting) {
-            final BinFormatter binFormatter = (BinFormatter) binFormatterCombo.getValue();
-
-            final PluginParameters parameters;
-            if (currentHistogramState != null && binFormatter.getClass() == currentHistogramState.getBinFormatter().getClass()) {
-                PluginParameters p = currentHistogramState.getBinFormatterParameters();
-                parameters = p == null ? null : p.copy();
-                binFormatter.updateParameters(parameters);
-            } else if (CURRENT_PARAMETER_IDS.containsKey(binFormatter)) {
-                parameters = CURRENT_PARAMETER_IDS.get(binFormatter).copy();
-                binFormatter.updateParameters(parameters);
-            } else {
-                parameters = binFormatter.createParameters();
-                binFormatter.updateParameters(parameters);
-            }
-
-            if (parameters != null) {
-                final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(binFormatter.getLabel(), parameters);
-                dialog.showAndWait();
-                if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-                    CURRENT_PARAMETER_IDS.put(binFormatter, parameters.copy());
-                    topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getValue(), parameters);
-                } else if (currentHistogramState != null) {
-                    binFormatterCombo.getSelectionModel().select(currentHistogramState.getBinFormatter());
-                } else {
-                    // Do nothing
-                }
-            } else {
-                topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getValue(), null);
-            }
-            updateDisplay();
+        if (isAdjusting) {
+            return;
         }
+
+        final BinFormatter binFormatter = (BinFormatter) binFormatterCombo.getValue();
+        if (binFormatter == null) {
+            return;
+        }
+
+        final PluginParameters parameters;
+        if (currentHistogramState != null && binFormatter.getClass() == currentHistogramState.getBinFormatter().getClass()) {
+            PluginParameters p = currentHistogramState.getBinFormatterParameters();
+            parameters = p == null ? null : p.copy();
+            binFormatter.updateParameters(parameters);
+        } else if (CURRENT_PARAMETER_IDS.containsKey(binFormatter)) {
+            parameters = CURRENT_PARAMETER_IDS.get(binFormatter).copy();
+            binFormatter.updateParameters(parameters);
+        } else {
+            parameters = binFormatter.createParameters();
+            binFormatter.updateParameters(parameters);
+        }
+
+        if (parameters != null) {
+            final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(binFormatter.getLabel(), parameters);
+            dialog.showAndWait();
+            if (PluginParametersDialog.OK.equals(dialog.getResult())) {
+                CURRENT_PARAMETER_IDS.put(binFormatter, parameters.copy());
+                topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getValue(), parameters);
+            } else if (currentHistogramState != null) {
+                binFormatterCombo.getSelectionModel().select(currentHistogramState.getBinFormatter());
+            } else {
+                // Do nothing
+            }
+        } else {
+            topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getValue(), null);
+        }
+        updateDisplay();
     }
 
     private void actionButtonMousePressed(final MouseEvent evt) {
@@ -600,7 +664,7 @@ public class HistogramPane extends BorderPane {
     }
 
     private void toggleStateChanged(final GraphElementType state) {
-        if (!isAdjusting && linkToggle.isSelected()) {
+        if (!isAdjusting) {
             topComponent.setGraphElementType(state);
             updateDisplay();
         }

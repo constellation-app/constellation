@@ -126,6 +126,12 @@ public enum BinSelectionMode {
         public void select(HistogramTopComponent topComponent) {
             // Intentionally left blank
         }
+        
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void select(HistogramTopComponent2 topComponent) {
+            // Intentionally left blank
+        } 
     },
     /**
      * Selections in the histogram are recorded as the user clicks and drags
@@ -204,6 +210,12 @@ public enum BinSelectionMode {
         public void select(HistogramTopComponent topComponent) {
             topComponent.filterSelection();
         }
+        
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void select(HistogramTopComponent2 topComponent) {
+            topComponent.expandSelection();
+        } 
     },
     /**
      * Selections in the histogram are recorded as the user clicks and drags
@@ -282,6 +294,12 @@ public enum BinSelectionMode {
         public void select(HistogramTopComponent topComponent) {
             topComponent.expandSelection();
         }
+        
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void select(HistogramTopComponent2 topComponent) {
+            topComponent.expandSelection();
+        } 
     };
 
     private final String label;
@@ -308,6 +326,9 @@ public enum BinSelectionMode {
     public abstract void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent2 topComponent);
 
     public abstract void select(HistogramTopComponent topComponent);
+    
+    // TODO: Remove this function when Histogram rewrite is fully merged
+    public abstract void select(HistogramTopComponent2 topComponent);
 
     @Override
     public String toString() {
