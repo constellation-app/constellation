@@ -76,7 +76,7 @@ public class PluginReporterPaneNGTest {
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(PluginReporterPane.class))).thenReturn(prefs);
 
-            instance.onChanged(c);
+            instance.onChanged();
 
             verify(prefs, times(1)).put(Mockito.eq(key), Mockito.eq(returnValue));
         }
