@@ -173,13 +173,10 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
     @Override
     protected String createStyle() {
-//        return JavafxStyleManager.isDarkTheme()
-//                ? "resources/data-access-view-dark.css"
-//                : "resources/data-access-view-light.css";
-        return null;
+        //return "resources/histogram-view.css"; // Uncomment when histogram rewrite fully replaces old histogram
+        return "histogram-view.css";// Remove this when histogram rewrite fully replaces old histogram
     }
 
-// These two cont be overriden, gotta figure out how to sort this out TRY handleComponentOpened()
     @Override
     public void handleComponentOpened() {
         super.handleComponentOpened();
