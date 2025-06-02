@@ -613,7 +613,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
         return inferredCaretPos;
     }
     
-    public final void setCaretPosition(int position){
+    public final void setCaretPosition(final int position){
         textArea.setCaretPosition(position);
     }
     

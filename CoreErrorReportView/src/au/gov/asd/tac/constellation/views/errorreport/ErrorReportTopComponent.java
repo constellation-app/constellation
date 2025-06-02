@@ -573,13 +573,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     public void updateFilterData() {
         
 
-        List<String> choices = new ArrayList<>();
         List<String> popupChoices = new ArrayList<>();        
-        if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
-            MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
-            choices = multiChoiceValue.getChoices();
-        }
-       
         if (getParams().hasParameter(POPUP_REPORT_SETTINGS_PARAMETER_ID)) {
             MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(POPUP_REPORT_SETTINGS_PARAMETER_ID);
             popupChoices = multiChoiceValue.getChoices();
@@ -720,13 +714,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 // rebuild                
                 sessionErrorsBox.getChildren().clear();
                 
-                // check popup selection
-                List<String> choices = new ArrayList<>();
-                if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
-                    MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
-                    choices = multiChoiceValue.getChoices();
-                }
-                
+                // check popup selection               
                 List<String> popupChoices = new ArrayList<>();
                 if (getParams().hasParameter(POPUP_REPORT_SETTINGS_PARAMETER_ID)) {
                     MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(POPUP_REPORT_SETTINGS_PARAMETER_ID);

@@ -256,7 +256,7 @@ public class PluginReporterPane extends BorderPane {
         if (graphReport != null) {
             final List<String> tags = new ArrayList<>(graphReport.getUTags());
             final List<String> selectedIndices = new ArrayList<>();
-            for (String tag : tags) {
+            for (final String tag : tags) {
                 alltags.add(tag);
                 if (!availableTags.contains(tag)) {
                     availableTags.add(tag);
