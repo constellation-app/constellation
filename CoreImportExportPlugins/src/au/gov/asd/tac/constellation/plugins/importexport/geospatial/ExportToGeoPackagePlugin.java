@@ -55,15 +55,13 @@ public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
         parametersCreated.addController(OUTPUT_PARAMETER_ID, (master, params, change) -> {
             final String output = params.get(master.getId()).getStringValue();
             final File file = new File(output);
-            FileParameterType.FileParameterValue fileParamValue = (FileParameterType.FileParameterValue) params.get(master.getId()).getParameterValue();
+            final FileParameterType.FileParameterValue fileParamValue = (FileParameterType.FileParameterValue) params.get(master.getId()).getParameterValue();
             // do a doesFileExist check if value changed, path is valid and filechooser dialog not previously opened
             if (change == ParameterChange.VALUE && super.isValidPath(file) && !fileParamValue.isFileChooserSelected()) {
                 if (doesFileExist(new File(output))) {
                     String msg = String.format("The file %s already exists. Do you want to replace the existing file?", file.getName());
-                    final NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, "Overwrite file", NotifyDescriptor.YES_NO_CANCEL_OPTION, NotifyDescriptor.QUESTION_MESSAGE);
-                    if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
-                        return;
-                    } else {
+                    final NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, "Overwrite file", NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE);
+                    if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.NO_OPTION) {
                         params.get(master.getId()).setError(String.format("The file %s already exists.", file.getName()));                        
                     }
                 }
