@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.security.proxy;
 
 import java.awt.Component;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -26,7 +27,7 @@ import javax.swing.event.DocumentListener;
  * @author algol
  * @author cygnus_x-1
  */
-public class ProxyOptionsPanel extends javax.swing.JPanel {
+public class ProxyOptionsPanel extends JPanel {
 
     public ProxyOptionsPanel() {
         initComponents();
@@ -66,11 +67,11 @@ public class ProxyOptionsPanel extends javax.swing.JPanel {
         }
     }
 
-    boolean isUseDefaultSettingsSelected() {
+    protected boolean isUseDefaultSettingsSelected() {
         return useDefaultSettingsCheck.isSelected();
     }
 
-    void setUseDefaultSettings(final boolean useDefaultSettings) {
+    protected void setUseDefaultSettings(final boolean useDefaultSettings) {
         useDefaultSettingsCheck.setSelected(useDefaultSettings);
         if (useDefaultSettings) {
             final ConstellationHttpProxy defaultProxy = ConstellationHttpProxy.getDefault();

@@ -32,7 +32,7 @@ import java.security.InvalidParameterException;
  */
 public class ObfuscatedPassword {
 
-    protected String password;
+    private final String password;
 
     /**
      * Store an obfuscated password. This is a string containing a even number

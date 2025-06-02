@@ -38,6 +38,7 @@ public class PasswordUtilitiesNGTest {
     @Test
     public void testGetIV() {
         System.out.println("getIV");
+        
         PasswordUtilities.reset();
 
         final byte[] firstResult = PasswordUtilities.getIV();
@@ -52,6 +53,7 @@ public class PasswordUtilitiesNGTest {
     @Test(expectedExceptions = NoSuchElementException.class)
     public void testGetIVException() {
         System.out.println("getIV Exception");
+        
         PasswordUtilities.reset();
 
         // Exception can only be tested first
@@ -72,6 +74,7 @@ public class PasswordUtilitiesNGTest {
     @Test
     public void testGetKey() {
         System.out.println("getKey");
+        
         PasswordUtilities.reset();
 
         final byte[] firstResult = PasswordUtilities.getKey();
@@ -86,6 +89,7 @@ public class PasswordUtilitiesNGTest {
     @Test(expectedExceptions = NoSuchElementException.class)
     public void testGetKeyException() {
         System.out.println("getKey Exception");
+        
         PasswordUtilities.reset();
 
         // Exception can only be tested first
@@ -110,6 +114,5 @@ public class PasswordUtilitiesNGTest {
 
         final byte[] result = PasswordUtilities.generateKey();
         assertNotNull(result);
-
     }
 }

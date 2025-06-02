@@ -74,7 +74,7 @@ public class PasswordUtilities {
         return secretKey.getEncoded();
     }
 
-    public static void reset() {
+    protected static void reset() {
         iv = null;
         key = null;
     }
