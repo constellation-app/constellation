@@ -84,6 +84,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
             localList.retainAll(getOptions());
             //Single Modification
             this.setText(listToString(localList));
+            this.setCaretPosition(0);
         } else {
             this.setText("");
         }
