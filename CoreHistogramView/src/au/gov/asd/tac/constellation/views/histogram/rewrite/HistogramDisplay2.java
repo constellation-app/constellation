@@ -309,7 +309,7 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
     public void updateDisplay() {
         if (binCollection == null) {
             // No data, so just have text saying so
-            final Label text = new Label("<No Data>");
+            final Label text = new Label(NO_DATA);
             this.setCenter(text);
         } else if (binCollection.getBins().length == 0) {
             // Draw nothing: there is data, but the user doesn't want to see it.
@@ -335,50 +335,11 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
                 binCollectionOutOfDate = false;
             }
 
-            // We want to get the width of the widest text so we know how much space to reserve for text.
-            //final int correction = setFontToFit(g2, barHeight);
-            final int correction = 0; // TODO remove when above is re done
-
-            // !!! Seems to create the background of the display
-            //g2.setColor(BACKGROUND_COLOR);
-            //g2.fillRect(0, 0, (int) getWidth(), preferredHeight - 1);
-            // !!! need to rework this function, methinks
-            //calculateTextAndBarLength(g2, iconPadding);
             calculateTextAndBarLength(iconPadding);
 
-            // !!! How round the edges should be
-            final int arc = barHeight / 3;
-
             final int maxCount = binCollection.getMaxElementCount();
-            //System.out.println("maxCount: " + maxCount);
 
             if (maxCount > 0) {
-                // the scale factor from histogram count to bar length in pixels
-                final float scaleFactor = (barsWidth - textWidth) / (float) maxCount;
-
-                // !!! indexes (or maybe position) of first and last bar
-                final int firstBar = getBarAtPoint(new Point(0, topComponent.getY()), true);
-                final int lastBar = getBarAtPoint(new Point(0, topComponent.getY() + topComponent.getHeight()), true);
-
-                final int barOffset = GAP_BETWEEN_BARS + barHeight;
-
-                // !!! Position (screen position i think) of the leftmost and top most part of the bar
-                int barTop = TOP_MARGIN + barOffset * (firstBar + 1); // (firstBar+1) to account for header
-
-                // TODO: These could be static, methinks
-                final Color barColor = binSelectionMode.getBarColor();
-                final Color darkerBarColor = barColor.darker();
-                //System.out.println("barColor: " + barColor + " darkerBarColor: " + darkerBarColor);
-
-                final Color activatedBarColor = binSelectionMode.getActivatedBarColor();
-                final Color darkerActivatedBarColor = activatedBarColor.darker();
-
-                final Color selectedColor = binSelectionMode.getSelectedColor();
-                final Color darkerSelectedColor = selectedColor.darker();
-
-                final Color activatedSelectedColor = binSelectionMode.getActivatedSelectedColor();
-                final Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
-
                 // Two columns, property values and bars
                 final HBox columns = new HBox();
 
@@ -457,25 +418,24 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
 //        final HBox headerRow2 = new HBox();
 //        headerRow2.getChildren().addAll(headerCount, spacer2, headerTotalBins);
 //        barColumn.getChildren().add(headerRow2);
-        //for (int bar = firstBar; bar <= lastBar; bar++) {
+        // Setup bar colours
+        final Color barColor = binSelectionMode.getBarColor();
+        final Color darkerBarColor = barColor.darker();
+
+        final Color activatedBarColor = binSelectionMode.getActivatedBarColor();
+        final Color darkerActivatedBarColor = activatedBarColor.darker();
+
+        final Color selectedColor = binSelectionMode.getSelectedColor();
+        final Color darkerSelectedColor = selectedColor.darker();
+
+        final Color activatedSelectedColor = binSelectionMode.getActivatedSelectedColor();
+        final Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
+
         for (int bar = 0; bar < bins.length; bar++) {
             final Bin bin = bins[bar];
 
             final int selectedCount = bin.selectedCount;
             final int elementCount = bin.elementCount;
-
-            // TODO: These could be static, methinks
-            final Color barColor = binSelectionMode.getBarColor();
-            final Color darkerBarColor = barColor.darker();
-
-            final Color activatedBarColor = binSelectionMode.getActivatedBarColor();
-            final Color darkerActivatedBarColor = activatedBarColor.darker();
-
-            final Color selectedColor = binSelectionMode.getSelectedColor();
-            final Color darkerSelectedColor = selectedColor.darker();
-
-            final Color activatedSelectedColor = binSelectionMode.getActivatedSelectedColor();
-            final Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
 
             // Always draw something, even if there aren't enough pixels to draw the actual length.
             final int barLength = Math.max((int) (elementCount * lengthPerElement), MINIMUM_BAR_WIDTH);
