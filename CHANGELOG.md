@@ -3,6 +3,15 @@
 ## Changes in June 2025
 -   Removed `Auth` and `AuthPanel` classes as they were unused.
 
+## Changes in May 2025
+-   Removed `AttributeUtilities.getDateTimeAttributes()` and `AttributeUtilities.getTypesUsedByGraph()` which were unused.
+-   Removed all the classes in `au.gov.asd.tac.constellation.graph.utilities.wrapper` which were all unused.
+-   Removed all the classes in `au.gov.asd.tac.constellation.graph.utilities.widgets` other than `AttributeSelectionPanel`, which were unused.
+-   Removed `PlaceholderDominanceCalculator` since there was no place it would be used over `AnalyticDominanceCalculator`.
+-   Removed `PlaceholderUtilities` and `StoreGraphRecordStore` which were unused.
+-   Removed `PlanesPanel` which was unused.
+-   Renamed `SubgraphUtilities.getSubgraph()` to `SubgraphUtilities.getTransactionTypeSubgraph()` to reflect its functionality.
+
 ## Changes in April 2025
 -   Added multichoice type ahead parameter with infrastructure for future input implementations
 -   Multichoice input fields replaced with new multichoice type ahead parameter
@@ -11,7 +20,7 @@
 -   Moved creation of `toc.md` for offline help to the netbeans-defined user directory.
 
 ## Changes in January 2025
--   Removed classes `VideoCreator` and `VideoFrame` from Core Utilities as they are unused. 
+-   Removed classes `VideoCreator` and `VideoFrame` from Core Utilities as they are unused.
 
 ## Changes in December 2024
 -   Refactored animation framework to update graph attributes and hold write locks for minimal durations to enable graph interction.
