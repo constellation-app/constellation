@@ -172,10 +172,7 @@
             <public-packages>
                 <package>au.gov.asd.tac.constellation.graph.utilities</package>
                 <package>au.gov.asd.tac.constellation.graph.utilities.io</package>
-                <package>au.gov.asd.tac.constellation.graph.utilities.matrix</package>
-                <package>au.gov.asd.tac.constellation.graph.utilities.placeholder</package>
                 <package>au.gov.asd.tac.constellation.graph.utilities.widgets</package>
-                <package>au.gov.asd.tac.constellation.graph.utilities.wrapper</package>
             </public-packages>
         </data>
     </configuration>

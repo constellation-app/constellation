@@ -32,6 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class GraphUtilitiesHelpProvider extends HelpPageProvider {
 
     private static final String CODEBASE_NAME = "constellation";
+    private static final String SEP = File.separator;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file
@@ -42,9 +43,8 @@ public class GraphUtilitiesHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String graphUtilitiesModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "utilities" + sep;
+        final String graphUtilitiesModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreGraphUtilities" + SEP + "src" + SEP + "au" + SEP + "gov"
+                + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "graph" + SEP + "utilities" + SEP;
 
         map.put("au.gov.asd.tac.constellation.graph.utilities.perspectives.PerspectiveBookmarkTopComponent", graphUtilitiesModulePath + "perspective-bookmarks-view.md");
         return map;
@@ -57,10 +57,7 @@ public class GraphUtilitiesHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String graphUtilitiesPath;
-        graphUtilitiesPath = "ext" + sep + "docs" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "graph" + sep + "utilities" + sep + "graphutilities-toc.xml";
-        return graphUtilitiesPath;
+        return "ext" + SEP + "docs" + SEP + "CoreGraphUtilities" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac"
+                + SEP + CODEBASE_NAME + SEP + "graph" + SEP + "utilities" + SEP + "graphutilities-toc.xml";
     }
 }

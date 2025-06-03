@@ -73,7 +73,7 @@ final class DragDropList extends JList<MyElement> {
         if (planes != null) {
             final String[] labels = new String[planes.size()];
             int i = 0;
-            for (Plane plane : planes) {
+            for (final Plane plane : planes) {
                 labels[i++] = plane.getLabel();
             }
 
@@ -119,8 +119,8 @@ final class DragDropList extends JList<MyElement> {
 
     static class MyListModel implements ListModel<MyElement> {
 
-        private final ArrayList<MyElement> elements;
-        private final ArrayList<ListDataListener> listeners;
+        private final List<MyElement> elements;
+        private final List<ListDataListener> listeners;
 
         public MyListModel(final String[] names) {
             elements = new ArrayList<>();
@@ -157,14 +157,14 @@ final class DragDropList extends JList<MyElement> {
 
         public void addMyElement(final MyElement element) {
             elements.add(element);
-            for (ListDataListener l : listeners) {
+            for (final ListDataListener l : listeners) {
                 l.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, getSize() - 1));
             }
         }
 
         public void addMyElement(final int index, final MyElement element) {
             elements.add(index, element);
-            for (ListDataListener l : listeners) {
+            for (final ListDataListener l : listeners) {
                 l.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, getSize() - 1));
             }
         }
@@ -172,7 +172,7 @@ final class DragDropList extends JList<MyElement> {
         public MyElement removeMyElement(final int index) {
             final MyElement element = elements.get(index);
             elements.remove(index);
-            for (ListDataListener l : listeners) {
+            for (final ListDataListener l : listeners) {
                 l.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, getSize() - 1));
             }
 
@@ -235,7 +235,7 @@ final class DragDropList extends JList<MyElement> {
 
         @Override
         public void dragGestureRecognized(final DragGestureEvent dge) {
-            StringSelection transferable = new StringSelection(Integer.toString(list.getSelectedIndex()));
+            final StringSelection transferable = new StringSelection(Integer.toString(list.getSelectedIndex()));
             ds.startDrag(dge, DragSource.DefaultCopyDrop, transferable, this);
         }
     }
@@ -254,7 +254,7 @@ final class DragDropList extends JList<MyElement> {
                 return false;
             }
 
-            JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
+            final JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
 
             return dl.getIndex() != -1;
         }
@@ -269,12 +269,12 @@ final class DragDropList extends JList<MyElement> {
             String indexString;
             try {
                 indexString = (String) transferable.getTransferData(DataFlavor.stringFlavor);
-            } catch (UnsupportedFlavorException | IOException ex) {
+            } catch (final UnsupportedFlavorException | IOException ex) {
                 return false;
             }
 
             final int index = Integer.parseInt(indexString);
-            JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
+            final JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
             final int dropTargetIndex = dl.getIndex();
 
             // Drop the dragged element into the correct place.
