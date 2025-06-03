@@ -349,13 +349,10 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
     }
 
-    // TODO uncomment controls and dispaly code
     protected void reset(final GraphReadMethods graph) {
-        System.out.println("reset");
         if (graph == null) {
             currentHistogramState = null;
             histogramPane.setHistogramState(null, null);
-            //display.setBinCollection(null, BinIconMode.NONE);
             histogramPane.setBinCollection(null, BinIconMode.NONE);
             currentFilter = null;
             return;
@@ -380,7 +377,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         binCreators.clear();
         binType.addBinCreators(graph, currentHistogramState.getElementType(), binCreators);
         histogramPane.setHistogramState(currentHistogramState, binCreators);
-        //display.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
         histogramPane.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
         currentFilter = currentHistogramState.getFilter(currentHistogramState.getElementType());
 
@@ -420,7 +416,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
                 currentBinCollection.sort(currentHistogramState.getBinComparator());
             }
         }
-        //display.setBinCollection(currentBinCollection, binIconMode);
         histogramPane.setBinCollection(currentBinCollection, binIconMode);
     }
 
@@ -517,6 +512,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     }
 
     public void selectOnlyBins(final int firstBin, final int lastBin) {
+        System.out.println("selectOnlyBins: " + firstBin + " " + lastBin);
         if (currentGraph != null) {
             PluginExecution.withPlugin(new HistogramSelectOnlyBins(firstBin, lastBin)).executeLater(currentGraph);
         }

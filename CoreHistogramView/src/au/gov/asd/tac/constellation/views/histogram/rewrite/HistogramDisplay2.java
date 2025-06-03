@@ -32,10 +32,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.beans.PropertyChangeEvent;
@@ -43,7 +41,10 @@ import java.beans.PropertyChangeListener;
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.geometry.Pos;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -51,13 +52,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
-
-import javax.swing.event.MouseInputListener;
 
 /**
  * The HistogramDisplay provides a panel the actually shows the histogram bins with their associated bars and labels.
@@ -66,7 +63,7 @@ import javax.swing.event.MouseInputListener;
  * @author antares
  * @author sol695510
  */
-public class HistogramDisplay2 extends BorderPane implements MouseInputListener, MouseWheelListener, KeyListener, PropertyChangeListener, ComponentListener {
+public class HistogramDisplay2 extends BorderPane implements MouseWheelListener, KeyListener, PropertyChangeListener, ComponentListener {
 
     public static final Color BACKGROUND_COLOR = new Color(0x44, 0x44, 0x44);
     public static final String BACKGROUND_COLOR_STRING = "#424242";
@@ -121,25 +118,25 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
     private boolean shiftDown;
     private boolean controlDown;
     private boolean binCollectionOutOfDate = true;
-    private final JPopupMenu copyMenu = new JPopupMenu();
+    private final ContextMenu copyMenu = new ContextMenu();
 
     final VBox propertyColumn = new VBox();
     final VBox barColumn = new VBox();
 
     //private final static javafx.scene.paint.Color LIGHT_GREY = javafx.scene.paint.Color.color(192, 192, 192);
-    public HistogramDisplay2(HistogramTopComponent2 topComponent) {
+    public HistogramDisplay2(final HistogramTopComponent2 topComponent) {
         this.topComponent = topComponent;
 
         initializeSettings();
         initializeListeners();
 
-        final JMenuItem copyValuesMenuItem = new JMenuItem("Copy Selected Property Values");
-        copyValuesMenuItem.addActionListener(e -> copySelectedToClipboard(false));
-        copyMenu.add(copyValuesMenuItem);
+        final MenuItem copyValuesMenuItem = new MenuItem("Copy Selected Property Values");
+        copyValuesMenuItem.setOnAction(e -> copySelectedToClipboard(false));
+        copyMenu.getItems().add(copyValuesMenuItem);
 
-        final JMenuItem copyValuesAndCountsMenuItem = new JMenuItem("Copy Selected Property Values & Counts");
-        copyValuesAndCountsMenuItem.addActionListener(e -> copySelectedToClipboard(true));
-        copyMenu.add(copyValuesAndCountsMenuItem);
+        final MenuItem copyValuesAndCountsMenuItem = new MenuItem("Copy Selected Property Values & Counts");
+        copyValuesAndCountsMenuItem.setOnAction(e -> copySelectedToClipboard(true));
+        copyMenu.getItems().add(copyValuesAndCountsMenuItem);
 
         setPrefHeight(PREFERRED_HEIGHT);
         setPrefWidth(MINIMUM_TEXT_WIDTH + PREFERRED_BAR_LENGTH + TEXT_TO_BAR_GAP + 2);
@@ -150,7 +147,12 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
 //        propertyColumn.widthProperty().addListener((obs, oldVal, newVal) -> {
 //            drawBars(binCollection.getBins(), binCollection.getMaxElementCount());
 //        });
-        //paintComponent();
+        // Set up mouse listeners
+        this.setOnMouseClicked(e -> handleMouseClicked(e));
+        this.setOnMousePressed(e -> handleMousePressed(e));
+        this.setOnMouseDragged(e -> handleMouseDragged(e));
+        this.setOnMouseReleased(e -> handleMouseReleased(e));
+        this.setOnMouseEntered(e -> handleMouseEntered(e));
     }
 
     public final void initializeSettings() {
@@ -183,12 +185,11 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
     }
 
     public void setBinCollection(final BinCollection binCollection, final BinIconMode binIconMode) {
-        System.out.println("setBinCollection " + binCollection);
+        //System.out.println("setBinCollection " + binCollection);
         this.binCollection = binCollection;
         this.binIconMode = binIconMode;
         binCollectionOutOfDate = true;
         activeBin = -1;
-        //repaint();
         Platform.runLater(() -> updateDisplay());
     }
 
@@ -490,6 +491,7 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
 
                 rect.setArcHeight(arc);
                 rect.setArcWidth(arc);
+                //System.out.println("bar == activeBin: " + (bar == activeBin));
                 rect.setFill(awtColorToFXColor(bar == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR));
 
                 rectBar.getChildren().add(rect);
@@ -615,7 +617,7 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
      *
      * @return The index of the prospective bar under the Point, even if that bar doesn't exist.
      */
-    private int getBarAtPoint(Point p, boolean bounded) {
+    private int getBarAtPoint(final Point p, final boolean bounded) {
         int n = (int) ((p.y - 2 + GAP_BETWEEN_BARS / 2F) / (GAP_BETWEEN_BARS + barHeight)) - 1;
         if (bounded) {
             n = Math.min(Math.max(n, 0), binCollection.getBins().length - 1);
@@ -681,18 +683,15 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
         clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-//        if (binCollection != null && e.getButton() == MouseEvent.BUTTON3) {
-//            copyMenu.show(this, e.getX(), e.getY());
-//        }
+    private void handleMouseClicked(final javafx.scene.input.MouseEvent e) {
+        if (binCollection != null && e.getButton() == MouseButton.SECONDARY) {
+            copyMenu.show(this, e.getScreenX(), e.getScreenY());
+        }
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-        if (binCollection != null
-                && e.getButton() == MouseEvent.BUTTON1) {
-            final Point pointOnHistogram = e.getPoint();
+    private void handleMousePressed(final javafx.scene.input.MouseEvent e) {
+        if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
+            final Point pointOnHistogram = new Point((int) Math.round(e.getX()), (int) Math.round(e.getY())); // May need to be getScreenX(), no actually
             final int bar = getBarAtPoint(pointOnHistogram, false);
 
             shiftDown = e.isShiftDown();
@@ -701,50 +700,37 @@ public class HistogramDisplay2 extends BorderPane implements MouseInputListener,
             dragStart = (shiftDown && activeBin >= 0) ? activeBin : bar;
             dragEnd = bar;
             binSelectionMode.mousePressed(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd);
-            //repaint();
+
             updateDisplay();
         }
     }
 
-    @Override
-    public void mouseDragged(final MouseEvent e) {
-        if (binCollection != null
-                && e.getModifiersEx() == InputEvent.BUTTON1_DOWN_MASK) {
-            final Point pointOnHistogram = e.getPoint();
+    // TODO: Not working properly
+    private void handleMouseDragged(final javafx.scene.input.MouseEvent e) {
+        System.out.println("handleMouseDragged");
+        if (binCollection != null && e.isPrimaryButtonDown()) { // Not sure if same as e.getModifiersEx() == InputEvent.BUTTON1_DOWN_MASK
+            final Point pointOnHistogram = new Point((int) Math.round(e.getX()), (int) Math.round(e.getY())); // May need to be getScreenX()
             final int bar = getBarAtPoint(pointOnHistogram, false);
 
             final int newDragEnd = bar;
             binSelectionMode.mouseDragged(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, newDragEnd);
             dragEnd = newDragEnd;
-            //repaint();
+
             updateDisplay();
         }
     }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        if (binCollection != null
-                && e.getButton() == MouseEvent.BUTTON1) {
+    private void handleMouseReleased(final javafx.scene.input.MouseEvent e) {
+        if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
             binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
             activeBin = dragStart == dragEnd ? dragStart : -1;
-            //repaint();
+
             updateDisplay();
         }
     }
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
+    private void handleMouseEntered(final javafx.scene.input.MouseEvent e) {
         this.requestFocus(); // Focus the Histogram View so 'key' actions can be registered.
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        // Override required, intentionally left blank
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        // Override required, intentionally left blank
     }
 
     @Override
