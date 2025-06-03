@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.concurrent.ExecutionException;
@@ -43,6 +44,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
@@ -89,7 +91,7 @@ import org.openide.windows.TopComponent;
     "MSG_AddPerspective=Add perspective",
     "MSG_RemovePerspective=Remove perspective"
 })
-public final class PerspectiveBookmarkTopComponent extends TopComponent implements GraphManagerListener {
+public final class PerspectiveBookmarkTopComponent extends AbstractTopComponent implements GraphManagerListener {
 
     private static final Logger LOGGER = Logger.getLogger(PerspectiveBookmarkTopComponent.class.getName());
 
@@ -331,13 +333,14 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void componentOpened() {
+    protected void componentOpened() {
         enableUI(GraphManager.getDefault().getActiveGraph() != null);
         GraphManager.getDefault().addGraphManagerListener(this);
+        setFloating(0, 0);
     }
 
     @Override
-    public void componentClosed() {
+    protected void componentClosed() {
         GraphManager.getDefault().removeGraphManagerListener(this);
     }
 
@@ -363,7 +366,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
     public void newActiveGraph(final Graph graph) {
         enableUI(graph != null);
         if (graph != null) {
-            try (final ReadableGraph rg = graph.getReadableGraph()){
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
                 final int pId = rg.getAttribute(GraphElementType.META, PerspectiveAttributeDescription.ATTRIBUTE_NAME);
                 if (pId != Graph.NOT_FOUND) {
                     perspectiveModel = (PerspectiveModel) rg.getObjectValue(pId, 0);
@@ -379,8 +382,13 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
     }
 
     @Override
-    public HelpCtx getHelpCtx() {
-        return new HelpCtx("au.gov.asd.tac.constellation.functionality.perspectives.Perspective");
+    protected void initContent() {
+        // Required for AbstractTopComponent, intentionally left blank.
+    }
+
+    @Override
+    protected JScrollPane createContent() {
+        return jScrollPane1;
     }
 
     /**

@@ -16,7 +16,14 @@
 package au.gov.asd.tac.constellation.views;
 
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
+import au.gov.asd.tac.constellation.preferences.ViewPreferenceKeys;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Point;
+import java.awt.Window;
+import java.util.prefs.Preferences;
 import org.openide.util.HelpCtx;
+import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -159,5 +166,38 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     public final HelpCtx getHelpCtx() {
         return new HelpCtx(getClass().getName());
+    }
+
+    /**
+     * Sets the view as floating based on the preference selection.
+     *
+     * @param floatingWidth
+     * @param floatingHeight
+     */
+    protected final void setFloating(final int floatingWidth, final int floatingHeight) {
+        final Preferences prefs = NbPreferences.forModule(ViewPreferenceKeys.class);
+        final Boolean isFloating = prefs.getBoolean(this.getName(), ViewPreferenceKeys.DEFAULT_VIEW_OPTIONS.get(this.getName()));
+        WindowManager.getDefault().setTopComponentFloating(this, isFloating);
+
+        if (isFloating) {
+            // This loops through all the current windows and compares this top component's top level ancestor
+            // with the window's parent. Sets the size and location for the floating component if a match is found.
+            for (final Window window : Window.getWindows()) {
+                if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
+                    final Frame mainWindow = WindowManager.getDefault().getMainWindow();
+                    final int orientationBasedWidth = mainWindow.getWidth() > mainWindow.getHeight()
+                            ? Math.round(mainWindow.getWidth() * 0.3f)
+                            : Math.round(mainWindow.getWidth() * 0.4f);
+                    final Dimension size = new Dimension(
+                            floatingWidth == 0 ? orientationBasedWidth : floatingWidth,
+                            floatingHeight == 0 ? mainWindow.getHeight() - 110 : floatingHeight);
+                    window.setMinimumSize(size);
+                    window.setSize(size);
+                    window.setLocation(new Point(mainWindow.getX(), mainWindow.getY() + 110));
+                }
+            }
+
+            this.setRequestFocusEnabled(true);
+        }
     }
 }
