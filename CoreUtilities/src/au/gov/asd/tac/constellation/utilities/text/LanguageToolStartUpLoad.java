@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.utilities.wrapper;
+package au.gov.asd.tac.constellation.utilities.text;
 
-import au.gov.asd.tac.constellation.graph.Graph;
+import java.util.concurrent.Future;
+import org.openide.modules.OnStart;
 
 /**
+ * The purpose of this class is to trigger the SpellChecker.LANGTOOL_LOAD to run
+ * on startup.
  *
- * @author capella
+ * @author Auriga2
  */
-public enum GraphDirection {
+@OnStart
+public class LanguageToolStartUpLoad implements Runnable {
 
-    OUTGOING(Graph.OUTGOING),
-    INCOMING(Graph.INCOMING),
-    UNDIRECTED(Graph.UNDIRECTED),
-    LOOPBACK(9999),
-    START(9998);
-
-    private final int value;
-
-    private GraphDirection(int value) {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return value;
+    @Override
+    public void run() {
+        final Future<Void> f = SpellChecker.LANGTOOL_LOAD;
     }
 }

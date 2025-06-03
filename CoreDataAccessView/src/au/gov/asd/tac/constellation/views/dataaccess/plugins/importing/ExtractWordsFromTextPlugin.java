@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,6 +126,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         StringParameterType.setLines(text, 15);
         text.setName("Words to Extract");
         text.setDescription("Whitelist of words to extract from content (new line delimited, extract all words if empty)");
+        text.setSpellCheckEnabled(true);
         params.addParameter(text);
 
         final PluginParameter<BooleanParameterValue> useRegex = BooleanParameterType.build(USE_REGEX_PARAMETER_ID);
