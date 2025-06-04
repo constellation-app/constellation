@@ -247,4 +247,18 @@ public class FileParameterTypeNGTest {
         final FileParameterValue fileValue2 = new FileParameterValue(Arrays.asList("file1", "file2", "file3"));
         assertEquals(fileValue2.toString(), "file1;file2;file3");
     }
+
+    /**
+     * Test of setFileChooserSelected method, of class FileParameterValue.
+     */
+    @Test
+    public void testIsFileChooserSelected() {
+        System.out.println("isFileChooserSelected");
+
+        final PluginParameter<FileParameterValue> fileParam = FileParameterType.build("My File");
+        assertEquals(fileParam.getParameterValue().isFileChooserSelected(), false);
+
+        fileParam.getParameterValue().setFileChooserSelected(true);
+        assertEquals(fileParam.getParameterValue().isFileChooserSelected(), true);
+    }
 }
