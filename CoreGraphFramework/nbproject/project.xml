@@ -71,8 +71,6 @@
                 <package>au.gov.asd.tac.constellation.graph.attribute.io</package>
                 <package>au.gov.asd.tac.constellation.graph.attribute.utilities</package>
                 <package>au.gov.asd.tac.constellation.graph.construction</package>
-                <package>au.gov.asd.tac.constellation.graph.docs</package>
-                <package>au.gov.asd.tac.constellation.graph.docs.resources</package>
                 <package>au.gov.asd.tac.constellation.graph.locking</package>
                 <package>au.gov.asd.tac.constellation.graph.manager</package>
                 <package>au.gov.asd.tac.constellation.graph.mergers</package>

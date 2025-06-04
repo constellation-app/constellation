@@ -25,7 +25,9 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -33,7 +35,7 @@ import javax.swing.border.TitledBorder;
  *
  * @author algol
  */
-public final class AttributeSelectionPanel extends javax.swing.JPanel implements ActionListener {
+public final class AttributeSelectionPanel extends JPanel implements ActionListener {
 
     public static final String ELEMENT_TYPE_ACTION = "elementtype";
     public static final String ATTRIBUTE_ACTION = "attribute";
@@ -87,14 +89,14 @@ public final class AttributeSelectionPanel extends javax.swing.JPanel implements
         this.dataTypes = dataTypes != null ? Collections.unmodifiableCollection(dataTypes) : null;
         this.excluded = excluded != null ? Collections.unmodifiableCollection(excluded) : null;
 
-        final ArrayList<String> et = new ArrayList<>();
+        final List<String> et = new ArrayList<>();
         if (elementTypes == null || elementTypes.contains(GraphElementType.VERTEX)) {
             et.add(VERTEX);
         }
         if (elementTypes == null || elementTypes.contains(GraphElementType.TRANSACTION)) {
             et.add(TRANSACTION);
         }
-        final String[] elementTypesModel = et.toArray(new String[et.size()]);
+        final String[] elementTypesModel = et.toArray(String[]::new);
         elementTypeCombo.setModel(new DefaultComboBoxModel<>(elementTypesModel));
 
         setAttributeElements();
@@ -104,11 +106,10 @@ public final class AttributeSelectionPanel extends javax.swing.JPanel implements
         final GraphElementType graphElementType = getElementType();
 
         // Always add a blank name so we don't give the user a default attribute.
-        final ArrayList<String> attributeNames = new ArrayList<>();
+        final List<String> attributeNames = new ArrayList<>();
         attributeNames.add("");
-
-        ReadableGraph rg = graph.getReadableGraph();
-        try {
+        
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int attributeCount = rg.getAttributeCount(graphElementType);
             for (int position = 0; position < attributeCount; position++) {
                 final int attrId = rg.getAttribute(graphElementType, position);
@@ -119,14 +120,12 @@ public final class AttributeSelectionPanel extends javax.swing.JPanel implements
                     attributeNames.add(attr.getName());
                 }
             }
-        } finally {
-            rg.release();
         }
 
         // Sort into a consistent order.
         Collections.sort(attributeNames);
 
-        attributeCombo.setModel(new DefaultComboBoxModel<>(attributeNames.toArray(new String[attributeNames.size()])));
+        attributeCombo.setModel(new DefaultComboBoxModel<>(attributeNames.toArray(String[]::new)));
     }
 
     /**
@@ -137,19 +136,13 @@ public final class AttributeSelectionPanel extends javax.swing.JPanel implements
     public int getAttributeId() {
         final GraphElementType et = getElementType();
         final String item = (String) attributeCombo.getSelectedItem();
-        final int attrId;
         if (!item.isEmpty()) {
-            ReadableGraph rg = graph.getReadableGraph();
-            try {
-                attrId = rg.getAttribute(et, item);
-            } finally {
-                rg.release();
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
+                return rg.getAttribute(et, item);
             }
         } else {
-            attrId = Graph.NOT_FOUND;
+            return Graph.NOT_FOUND;
         }
-
-        return attrId;
     }
 
     /**
@@ -171,14 +164,7 @@ public final class AttributeSelectionPanel extends javax.swing.JPanel implements
      */
     private GraphElementType getElementType() {
         final String elementTypeChoice = (String) elementTypeCombo.getSelectedItem();
-        final GraphElementType graphElementType;
-        if (elementTypeChoice.equals(VERTEX)) {
-            graphElementType = GraphElementType.VERTEX;
-        } else {
-            graphElementType = GraphElementType.TRANSACTION;
-        }
-
-        return graphElementType;
+        return elementTypeChoice.equals(VERTEX) ? GraphElementType.VERTEX : GraphElementType.TRANSACTION;
     }
 
     /**
