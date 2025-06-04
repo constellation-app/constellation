@@ -70,6 +70,10 @@ public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
                 // If an error occurs, assume the user has typed in the inputbox
                 fileParamValue.setFileChooserSelected(false);
             }
+            // reset the FileChooserSelected flag after processing
+            if (fileParamValue.isFileChooserSelected()) {
+                fileParamValue.setFileChooserSelected(false);
+            }
         });
         return parametersCreated;
     }
