@@ -67,7 +67,7 @@ import javafx.scene.shape.Rectangle;
  */
 public final class ConstellationTextArea extends StackPane implements ContextMenuContributor {
 
-    private final Insets insets = new Insets(4, 8, 4, 8);
+    private final Insets insets = new Insets(4, 8, 4, 4);
     private List<MenuItem> menuItems = null;
 
     private final TextInputControl primaryInput;
