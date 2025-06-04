@@ -59,7 +59,7 @@ public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
             // do a doesFileExist check if value changed, path is valid and filechooser dialog not previously opened
             if (change == ParameterChange.VALUE && super.isValidPath(file) && !fileParamValue.isFileChooserSelected()) {
                 if (doesFileExist(new File(output))) {
-                    String msg = String.format("The file %s already exists. Do you want to replace the existing file?", file.getName());
+                    final String msg = String.format("The file %s already exists. Do you want to replace the existing file?", file.getName());
                     final NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, "Overwrite file", NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE);
                     if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.NO_OPTION) {
                         params.get(master.getId()).setError(String.format("The file %s already exists.", file.getName()));                        
@@ -67,13 +67,9 @@ public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
                 }
             } else if (change == ParameterChange.ERROR) {
                 params.get(master.getId()).getParameterValue().setStringValue(output);
-                // If an error occurs, assume the user has typed in the inputbox
-                fileParamValue.setFileChooserSelected(false);
             }
             // reset the FileChooserSelected flag after processing
-            if (fileParamValue.isFileChooserSelected()) {
-                fileParamValue.setFileChooserSelected(false);
-            }
+            fileParamValue.setFileChooserSelected(false);
         });
         return parametersCreated;
     }

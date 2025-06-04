@@ -479,7 +479,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         );
     }
 
-    protected boolean isValidPath(File output) {
+    protected boolean isValidPath(final File output) {
         if (StringUtils.isEmpty(output.getPath())) {
             NotifyDisplayer.display("Invalid output file provided, cannot be empty", NotifyDescriptor.ERROR_MESSAGE);
             return false;
