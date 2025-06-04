@@ -40,6 +40,7 @@ public class HelpWebServer {
 
     private static final Logger LOGGER = Logger.getLogger(HelpWebServer.class.getName());
 
+    private static int port = 0;
     private static boolean running = false;
     private static final String WEB_SERVER_THREAD_NAME = "Help Web Server";
 
@@ -48,7 +49,6 @@ public class HelpWebServer {
     }
     
     public static synchronized int start() {
-        int port = 0;
         if (!running) {
             try {
                 final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
