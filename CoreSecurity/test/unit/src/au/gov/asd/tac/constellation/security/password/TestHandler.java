@@ -39,8 +39,8 @@ public class TestHandler extends Handler {
     }
 
     @Override
-    public void publish(final LogRecord record) {
-        records.add(record);
+    public void publish(final LogRecord logRecord) {
+        records.add(logRecord);
     }
 
     @Override

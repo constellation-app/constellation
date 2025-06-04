@@ -80,13 +80,13 @@ public class ProxyUtilitiesNGTest {
                                =my.other.proxy:8888""";
         
         final List<Pair<String, Pair<String, Integer>>> result = ProxyUtilities.parseProxies(proxies, false);
-        final List<Pair<String, Pair<String, Integer>>> IgnoreIssuesResult = ProxyUtilities.parseProxies(proxies, true);
+        final List<Pair<String, Pair<String, Integer>>> ignoreIssuesResult = ProxyUtilities.parseProxies(proxies, true);
         
         // when issues can be ignored, any properly formatted proxies should still be parsed (with ones that aren't ignored)
         // when issues can't be ignored, any errors in any proxy should result in the whole thing returning null
         assertNull(result);
-        assertEquals(IgnoreIssuesResult.size(), 1);
-        assertEquals(IgnoreIssuesResult.get(0), new Pair<>(".test", new Pair<>("my.fun.proxy", 8080)));
+        assertEquals(ignoreIssuesResult.size(), 1);
+        assertEquals(ignoreIssuesResult.get(0), new Pair<>(".test", new Pair<>("my.fun.proxy", 8080)));
     }
     
     /**
@@ -101,13 +101,13 @@ public class ProxyUtilitiesNGTest {
                                .another.site=my.other.proxy8888""";
         
         final List<Pair<String, Pair<String, Integer>>> result = ProxyUtilities.parseProxies(proxies, false);
-        final List<Pair<String, Pair<String, Integer>>> IgnoreIssuesResult = ProxyUtilities.parseProxies(proxies, true);
+        final List<Pair<String, Pair<String, Integer>>> ignoreIssuesResult = ProxyUtilities.parseProxies(proxies, true);
         
         // when issues can be ignored, any properly formatted proxies should still be parsed (with ones that aren't ignored)
         // when issues can't be ignored, any errors in any proxy should result in the whole thing returning null
         assertNull(result);
-        assertEquals(IgnoreIssuesResult.size(), 1);
-        assertEquals(IgnoreIssuesResult.get(0), new Pair<>(".test", new Pair<>("my.fun.proxy", 8080)));
+        assertEquals(ignoreIssuesResult.size(), 1);
+        assertEquals(ignoreIssuesResult.get(0), new Pair<>(".test", new Pair<>("my.fun.proxy", 8080)));
     }
     
     /**
@@ -122,13 +122,13 @@ public class ProxyUtilitiesNGTest {
                                .another.sitemy.other.proxy:8888""";
         
         final List<Pair<String, Pair<String, Integer>>> result = ProxyUtilities.parseProxies(proxies, false);
-        final List<Pair<String, Pair<String, Integer>>> IgnoreIssuesResult = ProxyUtilities.parseProxies(proxies, true);
+        final List<Pair<String, Pair<String, Integer>>> ignoreIssuesResult = ProxyUtilities.parseProxies(proxies, true);
         
         // when issues can be ignored, any properly formatted proxies should still be parsed (with ones that aren't ignored)
         // when issues can't be ignored, any errors in any proxy should result in the whole thing returning null
         assertNull(result);
-        assertEquals(IgnoreIssuesResult.size(), 1);
-        assertEquals(IgnoreIssuesResult.get(0), new Pair<>(".test", new Pair<>("my.fun.proxy", 8080)));
+        assertEquals(ignoreIssuesResult.size(), 1);
+        assertEquals(ignoreIssuesResult.get(0), new Pair<>(".test", new Pair<>("my.fun.proxy", 8080)));
     }
 
     /**

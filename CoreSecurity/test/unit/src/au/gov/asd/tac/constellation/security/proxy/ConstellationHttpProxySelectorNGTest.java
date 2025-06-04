@@ -53,7 +53,7 @@ public class ConstellationHttpProxySelectorNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         // set up by ensuring Preferences for this test do not exist
         p = Preferences.userNodeForPackage(ConstellationHttpProxySelectorNGTest.class);
     }

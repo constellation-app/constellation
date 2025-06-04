@@ -84,10 +84,10 @@ public class PasswordDeobfuscatorNGTest {
             logger.addHandler(handler);
             
             PasswordDeobfuscator.main(new String[0]);
-            final LogRecord record = handler.getLastLog();
+            final LogRecord logRecord = handler.getLastLog();
                        
             // the result of providing input into the program should match the original string
-            assertEquals(String.valueOf(record.getParameters()[0]), TEST_STRING);
+            assertEquals(String.valueOf(logRecord.getParameters()[0]), TEST_STRING);
             
             // restore logger
             logger.removeHandler(handler);

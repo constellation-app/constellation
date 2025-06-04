@@ -80,12 +80,12 @@ public class PasswordObfuscatorNGTest {
             logger.addHandler(handler);
             
             PasswordObfuscator.main(new String[0]);
-            final LogRecord record = handler.getLastLog();
+            final LogRecord logRecord = handler.getLastLog();
             
             final ObfuscatedPassword op = PasswordObfuscator.obfuscate(TEST_STRING);
             
             // the result of providing input into the program should match what you get passing that same input directly into the function
-            assertEquals(String.valueOf(record.getParameters()[0]), op.toString());
+            assertEquals(String.valueOf(logRecord.getParameters()[0]), op.toString());
             
             // restore logger
             logger.removeHandler(handler);
@@ -123,15 +123,15 @@ public class PasswordObfuscatorNGTest {
             logger.addHandler(handler);
             
             PasswordObfuscator.main(new String[0]);
-            final List<LogRecord> records = handler.getLogs();
+            final List<LogRecord> logRecords = handler.getLogs();
             
             // now we go through the logs and assert that it logs the way we expect it to
             // the actual key it generates will be different each time 
-            assertEquals(records.get(1).getMessage(), "new byte[] {");
-            for (int i = 2; i < records.size(); i += 17) {
+            assertEquals(logRecords.get(1).getMessage(), "new byte[] {");
+            for (int i = 2; i < logRecords.size(); i += 17) {
                 for (int j = 0; j < 17; j++) {
-                    final String logMessage = records.get(i + j).getMessage();
-                    if (i + j == records.size() - 1) {
+                    final String logMessage = logRecords.get(i + j).getMessage();
+                    if (i + j == logRecords.size() - 1) {
                         // the last byte is unique in that it prints out one less comma and so we need to break out of the loop before we hit an array out of bounds
                         assertEquals(logMessage, "next byte");
                         break;
