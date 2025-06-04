@@ -512,7 +512,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     }
 
     public void selectOnlyBins(final int firstBin, final int lastBin) {
-        System.out.println("selectOnlyBins: " + firstBin + " " + lastBin);
         if (currentGraph != null) {
             PluginExecution.withPlugin(new HistogramSelectOnlyBins(firstBin, lastBin)).executeLater(currentGraph);
         }

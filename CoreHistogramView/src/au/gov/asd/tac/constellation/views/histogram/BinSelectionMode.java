@@ -42,7 +42,7 @@ public enum BinSelectionMode {
             }
 
             if (!shiftDown && !controlDown) {
-                for (Bin bin : bins) {
+                for (final Bin bin : bins) {
                     bin.selectedCount = 0;
                 }
             }
