@@ -100,7 +100,7 @@ NOTE: Layers View does not allow for the use of the assignment operator
 = or keyword assign.
 
 Click
-[here](../ext/docs/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/expressions-framework.md)
+[here](../ext/docs/CoreGraphFramework/expressions-framework.md)
 for more information on the structure of the expression framework
 
 
@@ -119,7 +119,7 @@ When this is unchecked, only the currently displayed graph elements will be affe
 
 ## Union and Intersection Modes  
   
-At the top right of the Layers View you can switch between <img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/UnionMode.png" alt="Layers View : Union Mode" /> and <img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/IntersectionMode.png" alt="Layers View : Intersection Mode" />  
+At the top right of the Layers View you can switch between <img src="../ext/docs/CoreLayersView/resources/UnionMode.png" alt="Layers View : Union Mode" /> and <img src="../ext/docs/CoreLayersView/resources/IntersectionMode.png" alt="Layers View : Intersection Mode" />  
 In Union Mode, when multiple layers are selected/active, then __all__ graph elements belonging to __any__ active layer will be displayed.  
 In Intersection Mode, when multiple layers are selected/active, then __only__ graph elements belonging to __every__ active layer will be displayed.  
 

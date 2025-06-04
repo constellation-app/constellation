@@ -32,7 +32,7 @@ at different severity levels.
 Example:
 <br />
 <div style="text-align: center">
-    <img height=500 src="../ext/docs/CoreErrorReportView/errorreport/resources/errorReport.png" alt="Error Report" />
+    <img height=500 src="../ext/docs/CoreErrorReportView/resources/errorReport.png" alt="Error Report" />
 </div>
 <br />
 

@@ -75,19 +75,23 @@ drivers example" />
     -   If the username and password are not required, leave them blank.
 
         <img src="../ext/docs/CoreImportExportPlugins/resources/DBConnections.png" alt="Database Importer Connection example" />
-<br />
+
 3.  Select the connection from the "Connection" drop-down in the main
     Import window.
-4.  Enter the username and password if the connection requires them.
-5.  Enter the SQL Query and Click the "Query" button to retrieve data.
-6.  Select your destination graph.
-7.  Drag and drop attributes from the bottom pane onto your columns (Shown in the image below).
-8.  Right click an attribute for more options.
-9.  Click on the "Import" button to import the data to your destination
-    graph.
 
-    <img width=575 src="../ext/docs/CoreImportExportPlugins/resources/dragging_attributes_jdbc_import.png" alt="Database
-    Importer" />
+4.  Enter the username and password if the connection requires them.
+
+5.  Enter the SQL Query and Click the "Query" button to retrieve data.
+
+6.  Select your destination graph.
+
+7.  Drag and drop attributes from the bottom pane onto your columns (Shown in the image below).
+
+8.  Right click an attribute for more options.
+
+9.  Click on the "Import" button to import the data to your destination graph.
+
+    <img src="../ext/docs/CoreImportExportPlugins/resources/dragging_attributes_jdbc_import.png" alt="Database Importer" width=575 />
 
 Hints:
 

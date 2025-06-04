@@ -223,7 +223,7 @@ public class ConstellationHelpDisplayerNGTest {
             mockedHelpMapperStatic.when(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId))).thenReturn(helpModulePath + "help-options.md");
 
             for (final File file : File.listRoots()) {
-                final String expectedFileLocation = file.getPath() + "Users/anyperson";//
+                final String expectedFileLocation = file.getPath() + "Users/anyperson";
                 generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenReturn(expectedFileLocation);
 
                 final Desktop mockDesktop = mock(Desktop.class);
@@ -244,7 +244,7 @@ public class ConstellationHelpDisplayerNGTest {
                 desktopStaticMock.verify(() -> Desktop.isDesktopSupported(), times(1));
                 desktopStaticMock.verify(() -> Desktop.getDesktop(), times(1));
                 final String expectedNavigationURL = String.format("http://localhost:%d/%s", expectedPort,
-                        ("file:/" + file.getPath() + "Users/anyperson/ext/docs/CoreHelp/help-options.md").replace("//", "/").replace("\\", "/"));
+                        ("file:/" + expectedFileLocation + "/ext/docs/CoreHelp/help-options.md").replace("//", "/").replace("\\", "/"));
                 mockedHelpDisplayerStatic.verify(() -> ConstellationHelpDisplayer.browse(Mockito.eq(new URI(expectedNavigationURL))), times(1));
             }
         }
