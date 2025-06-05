@@ -1,6 +1,7 @@
 # Constellation Changes
 
 ## Changes in June 2025
+-   Removed `Auth` and `AuthPanel` classes as they were unused.
 -   Removed `DragElementsPlugin` and `LineDragger` classes which were unused.
 
 ## Changes in May 2025
