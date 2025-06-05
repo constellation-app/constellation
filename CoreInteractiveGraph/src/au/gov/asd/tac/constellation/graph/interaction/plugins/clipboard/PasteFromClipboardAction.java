@@ -29,17 +29,12 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-import org.openide.util.NbBundle;
 
 /**
  * Paste to clipboard action.
  *
  * @author algol
  */
-@NbBundle.Messages({
-    "# {0} - nodes pasted",
-    "# {1} - transactions pasted",
-    "MSG_Pasted=Nodes pasted: {0}; Transactions pasted {1}"})
 public final class PasteFromClipboardAction extends AbstractAction {
 
     private final GraphNode context;

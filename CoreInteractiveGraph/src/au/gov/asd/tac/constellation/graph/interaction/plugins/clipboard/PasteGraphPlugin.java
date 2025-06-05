@@ -40,15 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twinkle2_little
  */
 @ServiceProvider(service = Plugin.class)
-@Messages({
-    "PasteGraphPlugin=Paste Graph",
-    "# {0} - Graph to paste",
-    "MSG_Param=Must provide {0} argument",
-    "MSG_VxKeys=Node keys don't match",
-    "MSG_TxKeys=Transaction keys don't match",
-    "MSG_VxAttrs=Node attributes don't match",
-    "MSG_TxAttrs=Transaction attributes don't match"
-})
+@Messages("PasteGraphPlugin=Paste Graph")
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 public final class PasteGraphPlugin extends SimpleEditPlugin {
 
@@ -63,7 +55,7 @@ public final class PasteGraphPlugin extends SimpleEditPlugin {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<ObjectParameterValue> pasterParam = ObjectParameterType.build(RECORDSTORE_PARAMETER_ID);
-        pasterParam.setName("RecordStore");
+        pasterParam.setName("Record Store");
         pasterParam.setDescription("The RecordStore object to be pasted onto the current graph");
         parameters.addParameter(pasterParam);
 
@@ -83,7 +75,7 @@ public final class PasteGraphPlugin extends SimpleEditPlugin {
     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final Object paramPaster = parameters.getParameters().get(RECORDSTORE_PARAMETER_ID).getObjectValue();
         if (!(paramPaster instanceof RecordStore paster)) {
-            throw new IllegalArgumentException(Bundle.MSG_Param(RECORDSTORE_PARAMETER_ID));
+            throw new IllegalArgumentException("Must provide a record store!");
         }
 
         synchronized (paster) {

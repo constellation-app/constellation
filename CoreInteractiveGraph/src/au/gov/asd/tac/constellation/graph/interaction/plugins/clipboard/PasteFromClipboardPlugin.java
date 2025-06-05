@@ -37,10 +37,10 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Paste the contents of the clipboard into a graph.
+ * Paste the graph contents of the clipboard into a graph.
  * <p>
- * This plugin will determine what is on the clipboard (graph or text), and call
- * the appropriate graph/text plugin to deal with it.
+ * This plugin will determine what is on the clipboard (graph or otherwise), and call
+ * the appropriate plugin to handle if a graph is detected.
  *
  * @author algol
  */
@@ -70,8 +70,10 @@ public class PasteFromClipboardPlugin extends SimpleEditPlugin {
                             .executeNow(wg);
                 }
             }
-        } catch (final UnsupportedFlavorException | IOException ex) {
+        } catch (final UnsupportedFlavorException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, "The graph was no longer available to be copied over", ex);
         }
     }
 }

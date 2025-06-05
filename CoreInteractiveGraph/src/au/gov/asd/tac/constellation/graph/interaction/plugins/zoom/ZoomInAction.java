@@ -17,9 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -40,21 +38,9 @@ import org.openide.util.NbBundle;
     @ActionReference(path = "Shortcuts", name = "D-ADD")
 })
 @NbBundle.Messages("CTL_ZoomIn=Zoom In")
-public final class ZoomInAction implements ActionListener {
-
-    private final GraphNode context;
-
-    /**
-     * Construct a new ZoomInAction.
-     *
-     * @param context GraphNode.
-     */
+public final class ZoomInAction extends SimplePluginAction {
+    
     public ZoomInAction(final GraphNode context) {
-        this.context = context;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_IN).executeLater(context.getGraph());
+        super(context, InteractiveGraphPluginRegistry.ZOOM_IN);
     }
 }

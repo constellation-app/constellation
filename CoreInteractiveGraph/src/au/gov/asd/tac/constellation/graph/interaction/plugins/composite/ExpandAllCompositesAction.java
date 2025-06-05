@@ -17,12 +17,10 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.composite;
 
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import org.openide.util.NbBundle.Messages;
@@ -36,25 +34,14 @@ import org.openide.util.actions.Presenter;
  * @author twilight_sparkle
  */
 @Messages("CTL_ExpandAllCompositeAction=Expand all Composites")
-public class ExpandAllCompositesAction extends AbstractAction implements Presenter.Toolbar {
-
-    private final GraphNode context;
-
-    /**
-     * Construct a new action.
-     *
-     * @param context Graph Node.
-     */
+public class ExpandAllCompositesAction extends SimplePluginAction implements Presenter.Toolbar {
+    
     public ExpandAllCompositesAction(final GraphNode context) {
-        this.context = context;
+        super(context, InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES);
+        
         putValue(Action.SMALL_ICON, UserInterfaceIconProvider.EXPAND.buildIcon(16, Color.BLACK));
         putValue(Action.SHORT_DESCRIPTION, "Expand all Composites");
         putValue(Action.SELECTED_KEY, true);
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent ev) {
-        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES).executeLater(context.getGraph());
     }
 
     @Override

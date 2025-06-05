@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
@@ -32,9 +31,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.functionality.composite.CreateCompositesFromDominantNodesAction")
 @ActionRegistration(displayName = "#CTL_CreateCompositesFromDominantNodesAction",
         iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/composite/resources/compositeCorrelatedNodes.png")
-@ActionReferences({
-    @ActionReference(path = "Menu/Tools", position = 800)
-})
+@ActionReference(path = "Menu/Tools", position = 800)
 @Messages("CTL_CreateCompositesFromDominantNodesAction=Composite Correlated Nodes")
 public class CreateCompositesFromDominantNodesAction extends SimplePluginAction {
 

@@ -34,6 +34,10 @@ import java.util.stream.Stream;
  * CameraUtiltities.zoom with what info plugins are able to access.
  */
 public class ZoomUtilities {
+    
+    private ZoomUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Function for zooming a camera's view by a given amount in a given direction.
@@ -87,7 +91,6 @@ public class ZoomUtilities {
         }
 
         final Camera camera = VisualGraphUtilities.getCamera(graph);
-
         if (camera == null) {
             return null;
         }

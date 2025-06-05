@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
@@ -34,9 +33,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.functionality.composite.CreateCompositeFromSelectionAction")
 @ActionRegistration(displayName = "#CTL_CreateCompositeFromSelectionAction",
         iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/composite/resources/compositeSelectedNodes.png")
-@ActionReferences({
-    @ActionReference(path = "Menu/Tools", position = 700)
-})
+@ActionReference(path = "Menu/Tools", position = 700)
 @Messages("CTL_CreateCompositeFromSelectionAction=Composite Selected Nodes")
 public class CreateCompositeFromSelectionAction extends SimplePluginAction {
 

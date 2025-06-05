@@ -3,6 +3,7 @@
 ## Changes in June 2025
 -   Removed `Auth` and `AuthPanel` classes as they were unused.
 -   Removed `DragElementsPlugin` and `LineDragger` classes which were unused.
+-   Removed `PasteTextPlugin` which was unused and didn't otherwise work.
 
 ## Changes in May 2025
 -   Removed `AttributeUtilities.getDateTimeAttributes()` and `AttributeUtilities.getTypesUsedByGraph()` which were unused.
