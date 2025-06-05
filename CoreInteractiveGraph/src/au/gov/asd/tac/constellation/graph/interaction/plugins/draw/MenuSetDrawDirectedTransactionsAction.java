@@ -37,10 +37,7 @@ import org.openide.util.NbBundle.Messages;
     "CTL_MenuSetDrawDirectedTransactionsAction=Draw Directed Transactions"
 })
 public class MenuSetDrawDirectedTransactionsAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuSetDrawDirectedTransactionsAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuSetDrawDirectedTransactionsAction(), true);

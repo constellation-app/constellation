@@ -91,8 +91,6 @@ public class RecentGraphScreenshotUtilities {
             final String msg = String.format("Recent graph screenshots directory '%s' is not a directory", SCREENSHOTS_DIR);
             LOGGER.warning(msg);
             return null;
-        } else {
-            return saveDir;
         }
 
         return saveDir;
@@ -233,8 +231,7 @@ public class RecentGraphScreenshotUtilities {
      */
     public static synchronized void resizeAndSave(final BufferedImage originalImage, final Path target, final int height, final int width) throws IOException {
         // create a new BufferedImage for drawing
-        final BufferedImage newResizedImage
-                = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage newResizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         final Graphics2D g = newResizedImage.createGraphics();
 
         g.setComposite(AlphaComposite.Src);
@@ -262,7 +259,6 @@ public class RecentGraphScreenshotUtilities {
      * Refresh stored screenshots of recent files to match the recent files stored in history.
      */
     public static synchronized void refreshScreenshotsDir() {
-
         final List<String> filesInHistory = new ArrayList<>();
         final List<File> filesInDirectory = new ArrayList<>();
         final File screenShotsDir = getScreenshotsDir();

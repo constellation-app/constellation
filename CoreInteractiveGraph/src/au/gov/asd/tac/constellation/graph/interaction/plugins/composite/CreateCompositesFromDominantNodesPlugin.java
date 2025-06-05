@@ -99,10 +99,10 @@ public class CreateCompositesFromDominantNodesPlugin extends SimpleEditPlugin {
                         if (correlationGroup.size() > 1) {
                             final Optional<SchemaVertexType> leadType = correlationGroup.stream().map(v -> (SchemaVertexType) graph.getObjectValue(vxTypeAttr, v)).sorted(comparator).findFirst();
                             if (leadType.isPresent()) {
-                                Optional<Integer> leadVertex = correlationGroup.stream().filter(v -> leadType.get().equals((SchemaVertexType) graph.getObjectValue(vxTypeAttr, v))).findFirst();
+                                final Optional<Integer> leadVertex = correlationGroup.stream().filter(v -> leadType.get().equals((SchemaVertexType) graph.getObjectValue(vxTypeAttr, v))).findFirst();
                                 if (leadVertex.isPresent()) {
                                     final int leadVertexId = leadVertex.get();
-                                    Set<Integer> comprisingIds = correlationGroup.stream().collect(Collectors.toSet());
+                                    final Set<Integer> comprisingIds = correlationGroup.stream().collect(Collectors.toSet());
                                     CompositeUtilities.makeComposite(graph, comprisingIds, leadVertexId);
                                     correlationsFound = true;
                                     break;

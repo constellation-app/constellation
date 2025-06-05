@@ -100,14 +100,11 @@ public final class Autosaver implements Runnable {
                     final Graph graph = GraphNode.getGraph(id);
 
                     // Get the modification count
-                    Long lastAutosaveModificationCounter = LAST_AUTOSAVE.get(id);
+                    final Long lastAutosaveModificationCounter = LAST_AUTOSAVE.get(id);
 
                     long newAutosaveModificationCounter;
-                    final ReadableGraph rg = graph.getReadableGraph();
-                    try {
+                    try (final ReadableGraph rg = graph.getReadableGraph()) {
                         newAutosaveModificationCounter = rg.getGlobalModificationCounter();
-                    } finally {
-                        rg.release();
                     }
 
                     if (lastAutosaveModificationCounter == null || lastAutosaveModificationCounter != newAutosaveModificationCounter) {

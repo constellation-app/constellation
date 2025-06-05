@@ -67,9 +67,8 @@ public final class PasteFromClipboardAction extends AbstractAction {
 
         @Override
         protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            boolean isEmpty = wg.getVertexCount() == 0;
             PluginExecution.withPlugin(InteractiveGraphPluginRegistry.PASTE).executeNow(wg);
-            if (isEmpty) {
+            if (wg.getVertexCount() == 0) {
                 PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(wg);
             }
         }

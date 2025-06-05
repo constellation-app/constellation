@@ -47,7 +47,6 @@ public class DestroyAllCompositesPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         final boolean anythingDestroyed = CompositeUtilities.destroyAllComposites(graph);
         if (anythingDestroyed) {
             PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);

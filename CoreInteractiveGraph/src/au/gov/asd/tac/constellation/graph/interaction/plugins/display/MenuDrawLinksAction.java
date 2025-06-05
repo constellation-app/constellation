@@ -39,10 +39,7 @@ import org.openide.util.NbBundle.Messages;
     "CTL_MenuDrawLinksAction=Links"
 })
 public class MenuDrawLinksAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuDrawLinksAction() {
         super();
         this.initRadioButton(Bundle.CTL_MenuDrawLinksAction(), "ConnectionMode", false);
@@ -58,7 +55,7 @@ public class MenuDrawLinksAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         final Graph graph = getContext().getGraph();
-        boolean flag = VisualGraphUtilities.getConnectionMode(graph) == ConnectionMode.LINK;
+        final boolean flag = VisualGraphUtilities.getConnectionMode(graph) == ConnectionMode.LINK;
         menuButton.setSelected(flag);
     }
 }

@@ -45,5 +45,4 @@ public class ToggleDrawDirectedPlugin extends SimpleEditPlugin {
             graph.setBooleanValue(drawDirectedAttribute, 0, !graph.getBooleanValue(drawDirectedAttribute, 0));
         }
     }
-
 }

@@ -56,18 +56,12 @@ public final class Toggle3DAction extends AbstractAction implements Presenter.To
     public Toggle3DAction(final GraphNode context, final ButtonGroup buttonGroup) {
         this.context = context;
         this.buttonGroup = buttonGroup;
-        final ReadableGraph rg = context.getGraph().getReadableGraph();
         final boolean isDisplayMode3D;
-        try {
+        try (final ReadableGraph rg = context.getGraph().getReadableGraph()) {
             final int displayMode3DAttribute = VisualConcept.GraphAttribute.DISPLAY_MODE_3D.get(rg);
             isDisplayMode3D = displayMode3DAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(displayMode3DAttribute, 0) : VisualGraphDefaults.DEFAULT_DISPLAY_MODE_3D;
-        } finally {
-            rg.release();
         }
-        putValue(
-                Action.SMALL_ICON,
-                isDisplayMode3D ? MODE_3D_ICON : MODE_2D_ICON
-        );
+        putValue(Action.SMALL_ICON, isDisplayMode3D ? MODE_3D_ICON : MODE_2D_ICON);
         putValue(Action.SHORT_DESCRIPTION, Bundle.CTL_Toggle3DAction());
         putValue(Action.SELECTED_KEY, isDisplayMode3D);
     }

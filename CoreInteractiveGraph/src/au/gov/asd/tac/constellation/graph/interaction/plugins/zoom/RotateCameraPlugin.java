@@ -66,25 +66,21 @@ public final class RotateCameraPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> xaxisParam = FloatParameterType.build(X_PARAMETER_ID);
         xaxisParam.setName("xAxis");
         xaxisParam.setDescription("Rotation in degrees around the x axis");
-        xaxisParam.setFloatValue(0F);
         parameters.addParameter(xaxisParam);
 
         final PluginParameter<FloatParameterValue> yaxisParam = FloatParameterType.build(Y_PARAMETER_ID);
         yaxisParam.setName("yAxis");
         yaxisParam.setDescription("Rotation in degrees around the y axis");
-        yaxisParam.setFloatValue(0F);
         parameters.addParameter(yaxisParam);
 
         final PluginParameter<FloatParameterValue> zaxisParam = FloatParameterType.build(Z_PARAMETER_ID);
         zaxisParam.setName("zAxis");
         zaxisParam.setDescription("Rotation in degrees around the z axis");
-        zaxisParam.setFloatValue(0F);
         parameters.addParameter(zaxisParam);
 
         final PluginParameter<BooleanParameterValue> animateParam = BooleanParameterType.build(ANIMATE_PARAMETER_ID);
         animateParam.setName("animate");
         animateParam.setDescription("Animate the rotation asynchronously");
-        animateParam.setBooleanValue(false);
         parameters.addParameter(animateParam);
 
         return parameters;
@@ -92,7 +88,6 @@ public final class RotateCameraPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         final float xrot = parameters.getFloatValue(X_PARAMETER_ID);
         final float yrot = parameters.getFloatValue(Y_PARAMETER_ID);
         final float zrot = parameters.getFloatValue(Z_PARAMETER_ID);

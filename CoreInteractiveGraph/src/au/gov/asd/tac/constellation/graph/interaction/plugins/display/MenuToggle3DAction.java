@@ -37,10 +37,7 @@ import org.openide.util.NbBundle.Messages;
     "CTL_MenuToggle3DAction=3D"
 })
 public class MenuToggle3DAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuToggle3DAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuToggle3DAction(), true);

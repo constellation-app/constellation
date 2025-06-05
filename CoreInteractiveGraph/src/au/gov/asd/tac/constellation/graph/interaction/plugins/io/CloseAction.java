@@ -37,7 +37,7 @@ import org.openide.util.NbBundle.Messages;
  */
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.functionality.CloseAction")
 @ActionRegistration(displayName = "#CTL_CloseAction",
-        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/io/closeGraph.png",
+        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/io/resources/closeGraph.png",
         surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/File", position = 500),

@@ -44,7 +44,6 @@ public class ExpandAllCompositesPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         final boolean anythingExpanded = CompositeUtilities.expandAllComposites(graph);
         if (anythingExpanded) {
             PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);

@@ -194,7 +194,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
                             Bundle.MSG_SaveAsFailed(
                                     file.getName(),
                                     ioE.getLocalizedMessage()));
-                    LOGGER.log(Level.SEVERE, null, ioE);
+                    LOGGER.log(Level.SEVERE, ioE.getLocalizedMessage(), ioE);
                 }
                 isSaved = true;
             }));
@@ -212,9 +212,9 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         try {
             Iterator<Graph> iter = GraphNode.getAllGraphs().values().iterator();
             while (!fileInUse && iter.hasNext()) {
-                GraphNode node = GraphNode.getGraphNode(iter.next());
+                final GraphNode node = GraphNode.getGraphNode(iter.next());
                 if (!node.getDataObject().isInMemory()) {
-                    File existingFile = new File(node.getDataObject().getPrimaryFile().getPath());
+                    final File existingFile = new File(node.getDataObject().getPrimaryFile().getPath());
 
                     fileInUse = filename.getCanonicalPath().equalsIgnoreCase(existingFile.getCanonicalPath());
                 }
@@ -239,8 +239,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     @Override
     public synchronized void removePropertyChangeListener(final PropertyChangeListener listener) {
         super.removePropertyChangeListener(listener);
-        Mutex.EVENT.readAccess(this::refreshListeners // might be called off EQ by WeakListeners
-        );
+        Mutex.EVENT.readAccess(this::refreshListeners); // might be called off EQ by WeakListeners
     }
 
     private PropertyChangeListener createRegistryListener() {
@@ -259,8 +258,8 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             lkpInfo = context.lookup(tpl);
         }
 
-        TopComponent tc = TopComponent.getRegistry().getActivated();
-        boolean isEditorWindowActivated = tc != null && WindowManager.getDefault().isEditorTopComponent(tc);
+        final TopComponent tc = TopComponent.getRegistry().getActivated();
+        final boolean isEditorWindowActivated = tc != null && WindowManager.getDefault().isEditorTopComponent(tc);
         setEnabled(lkpInfo != null && !lkpInfo.allItems().isEmpty() && isEditorWindowActivated);
         isDirty = false;
     }

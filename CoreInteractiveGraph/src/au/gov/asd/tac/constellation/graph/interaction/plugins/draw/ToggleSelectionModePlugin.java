@@ -45,5 +45,4 @@ public class ToggleSelectionModePlugin extends SimpleEditPlugin {
             graph.setBooleanValue(drawingModeAttribute, 0, !graph.getBooleanValue(drawingModeAttribute, 0));
         }
     }
-
 }

@@ -32,7 +32,7 @@ import org.openide.util.NbBundle.Messages;
  */
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.functionality.composite.DestroyAllCompositesAction")
 @ActionRegistration(displayName = "#CTL_DestroyAllCompositesAction",
-        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/composite/destroyCompositeNodes.png")
+        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/composite/resources/destroyCompositeNodes.png")
 @ActionReferences({
     @ActionReference(path = "Menu/Tools", position = 1000)
 })

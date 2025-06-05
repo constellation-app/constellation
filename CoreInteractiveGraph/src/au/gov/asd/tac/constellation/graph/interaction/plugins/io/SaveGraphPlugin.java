@@ -97,9 +97,7 @@ public class SaveGraphPlugin extends SimplePlugin {
             }
 
         } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
-
     }
-
 }

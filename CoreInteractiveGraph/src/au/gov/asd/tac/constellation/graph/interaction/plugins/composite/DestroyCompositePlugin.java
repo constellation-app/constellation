@@ -61,7 +61,6 @@ public class DestroyCompositePlugin extends SimpleEditPlugin implements ContextM
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         final int compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(graph);
         final int uniqueIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.get(graph);
         CompositeUtilities.destroyComposite(graph, compositeAttr, uniqueIdAttr, selectedItem);
@@ -69,7 +68,7 @@ public class DestroyCompositePlugin extends SimpleEditPlugin implements ContextM
     }
 
     @Override
-    public void selectItem(String item, final Graph graph, GraphElementType elementType, int elementId, final Vector3f unprojected) {
+    public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
         selectedItem = elementId;
         PluginExecution.withPlugin(this).executeLater(graph);
     }
@@ -86,11 +85,9 @@ public class DestroyCompositePlugin extends SimpleEditPlugin implements ContextM
             final CompositeNodeState compositeNodeState = (CompositeNodeState) graph.getObjectValue(compositeAttr, entity);
             if (compositeNodeState != null) {
                 return Arrays.asList("Destroy Composite");
-            } else {
-                return Collections.emptyList();
             }
-        } else {
-            return Collections.emptyList();
         }
+        
+        return Collections.emptyList();
     }
 }

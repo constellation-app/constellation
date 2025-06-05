@@ -55,19 +55,13 @@ public final class ToggleDrawDirectedAction extends AbstractAction implements Pr
     public ToggleDrawDirectedAction(final GraphNode context, final ButtonGroup buttonGroup) {
         this.context = context;
         this.buttonGroup = buttonGroup;
-
-        final ReadableGraph rg = context.getGraph().getReadableGraph();
+        
         final boolean drawDirected;
-        try {
+        try (final ReadableGraph rg = context.getGraph().getReadableGraph()) {
             final int drawDirectedAttribute = VisualConcept.GraphAttribute.DRAW_DIRECTED_TRANSACTIONS.get(rg);
             drawDirected = drawDirectedAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(drawDirectedAttribute, 0) : VisualGraphDefaults.DEFAULT_DRAWING_DIRECTED_TRANSACTIONS;
-        } finally {
-            rg.release();
         }
-        putValue(
-                Action.SMALL_ICON,
-                drawDirected ? DIRECTED_ICON : UNDIRECTED_ICON
-        );
+        putValue(Action.SMALL_ICON, drawDirected ? DIRECTED_ICON : UNDIRECTED_ICON);
         putValue(Action.SHORT_DESCRIPTION, Bundle.CTL_ToggleDrawDirectedAction());
         putValue(Action.SELECTED_KEY, drawDirected);
     }

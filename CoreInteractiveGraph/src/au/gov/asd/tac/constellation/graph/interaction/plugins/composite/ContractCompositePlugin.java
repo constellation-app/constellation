@@ -60,14 +60,13 @@ public class ContractCompositePlugin extends SimpleEditPlugin implements Context
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         final int compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(graph);
         CompositeUtilities.contractComposite(graph, compositeAttr, selectedItem);
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }
 
     @Override
-    public void selectItem(String item, final Graph graph, GraphElementType elementType, int elementId, final Vector3f unprojected) {
+    public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
         selectedItem = elementId;
         PluginExecution.withPlugin(this).executeLater(graph);
     }
@@ -84,11 +83,9 @@ public class ContractCompositePlugin extends SimpleEditPlugin implements Context
             final CompositeNodeState compositeNodeState = (CompositeNodeState) graph.getObjectValue(compositeAttr, entity);
             if (compositeNodeState != null && compositeNodeState.comprisesAComposite()) {
                 return Arrays.asList("Contract Composite");
-            } else {
-                return Arrays.asList();
             }
-        } else {
-            return Collections.emptyList();
         }
+        
+        return Collections.emptyList();
     }
 }

@@ -47,39 +47,44 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
     private final boolean isAdd;
     private final boolean isToggle;
     private final Camera camera;
+    private final float[] box; // left, right, top, bottom in camera coordinates
     private final Float[] transformedVertices;
     private final int numVertices;
-    private final float[] box; // left, right, top, bottom in camera coordinates
 
-    public FreeformSelectionPlugin(final boolean isAdd, final boolean isToggle, final Camera camera, final float[] box, Float[] transformedVertices, int numVertices) {
+    public FreeformSelectionPlugin(final boolean isAdd, final boolean isToggle, final Camera camera, final float[] box, final Float[] transformedVertices, final int numVertices) {
         this.isAdd = isAdd;
         this.isToggle = isToggle;
         this.camera = camera;
+        this.box = box;
         this.transformedVertices = transformedVertices;
         this.numVertices = numVertices;
-        this.box = box;
     }
-
-    // From https://stackoverflow.com/questions/11716268/point-in-polygon-algorithm
-    private boolean inFreeformPolygons(float xPoint, float yPoint) {
-
+    
+    /**
+     * From https://stackoverflow.com/questions/11716268/point-in-polygon-algorithm
+     * 
+     * @param xPoint
+     * @param yPoint
+     * @return 
+     */
+    private boolean inFreeformPolygons(final float xPoint, final float yPoint) {
         boolean locatedInPolygon = false;
 
         for (int i = 0; i < numVertices; i++) {
             final int j = (i == numVertices - 1) ? 0 : i + 1;
 
-            final float vertY_i = transformedVertices[i * 2 + 1];
-            final float vertX_i = transformedVertices[i * 2];
-            final float vertY_j = transformedVertices[j * 2 + 1];
-            final float vertX_j = transformedVertices[j * 2];
+            final float vertYI = transformedVertices[i * 2 + 1];
+            final float vertXI = transformedVertices[i * 2];
+            final float vertYJ = transformedVertices[j * 2 + 1];
+            final float vertXJ = transformedVertices[j * 2];
 
-            final boolean belowLowY = vertY_i > yPoint;
-            final boolean belowHighY = vertY_j > yPoint;
+            final boolean belowLowY = vertYI > yPoint;
+            final boolean belowHighY = vertYJ > yPoint;
             final boolean withinYsEdges = belowLowY != belowHighY;
 
             if (withinYsEdges) {
-                final float slopeOfLine = (vertX_j - vertX_i) / (vertY_j - vertY_i);
-                final float pointOnLine = (slopeOfLine * (yPoint - vertY_i)) + vertX_i;
+                final float slopeOfLine = (vertXJ - vertXI) / (vertYJ - vertYI);
+                final float pointOnLine = (slopeOfLine * (yPoint - vertYI)) + vertXI;
                 final boolean isLeftToLine = xPoint < pointOnLine;
 
                 if (isLeftToLine) {
@@ -92,7 +97,6 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
         final float mix = camera.getMix();
         final float inverseMix = 1.0F - mix;
         final Vector3f centre = new Vector3f(camera.lookAtCentre);
@@ -148,8 +152,6 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
             yAttr = y2Attr;
             zAttr = z2Attr;
             requiresMix = false;
-        } else {
-            // Do nothing
         }
 
         final BitSet vxIncluded = new BitSet();
@@ -179,7 +181,7 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
             }
 
             // Convert world coordinates to camera coordinates.
-            final Vector3f sceneLocation = convertWorldToScene(x, y, z, centre, rotationMatrix, cameraDistance);
+            final Vector3f sceneLocation = SelectionUtilities.convertWorldToScene(x, y, z, centre, rotationMatrix, cameraDistance);
             final int rAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(graph);
             final float r = graph.getFloatValue(rAttr, vxId);
 
@@ -273,10 +275,8 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
                         verticalOffsetHi = hi.getY();
                     }
 
-                    final boolean intersects = lineSegmentIntersectsRectangle(
-                            horizontalOffsetLo, verticalOffsetLo,
-                            horizontalOffsetHi, verticalOffsetHi,
-                            left, bottom, right, top);
+                    final boolean intersects = SelectionUtilities.lineSegmentIntersectsRectangle(horizontalOffsetLo, verticalOffsetLo,
+                            horizontalOffsetHi, verticalOffsetHi, left, bottom, right, top);
 
                     if (intersects) {
                         final int linkTxCount = graph.getLinkTransactionCount(linkId);
@@ -293,7 +293,6 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
 
         if (txIncluded.isEmpty()) {
             if (isAdd) {
-
                 if (vxSelectedAttr != Graph.NOT_FOUND) {
                     for (int vxId = vxIncluded.nextSetBit(0); vxId >= 0; vxId = vxIncluded.nextSetBit(vxId + 1)) {
                         if (!graph.getBooleanValue(vxSelectedAttr, vxId)) {
@@ -317,7 +316,6 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
                     }
                 }
             } else if (isToggle) {
-
                 if (vxSelectedAttr != Graph.NOT_FOUND) {
                     for (int vertex = vxIncluded.nextSetBit(0); vertex >= 0; vertex = vxIncluded.nextSetBit(vertex + 1)) {
                         selectVerticesOperation.setValue(vertex, !graph.getBooleanValue(vxSelectedAttr, vertex));
@@ -338,9 +336,7 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
                         }
                     }
                 }
-
             } else {
-
                 if (vxSelectedAttr != Graph.NOT_FOUND) {
                     for (int position = 0; position < vxCount; position++) {
                         final int vxId = graph.getVertex(position);
@@ -410,57 +406,5 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
 
         graph.executeGraphOperation(selectVerticesOperation);
         graph.executeGraphOperation(selectTransactionsOperation);
-    }
-
-    private static boolean lineSegmentIntersectsRectangle(
-            final float x1, final float y1,
-            final float x2, final float y2,
-            final float minX, final float minY, final float maxX, final float maxY) {
-        // Completely outside.
-        if ((x1 <= minX && x2 <= minX) || (y1 <= minY && y2 <= minY) || (x1 >= maxX && x2 >= maxX) || (y1 >= maxY && y2 >= maxY)) {
-            return false;
-        }
-
-        if (x1 == x2) {
-            // At this point minX <= x1 is always true
-            return x1 <= maxX;
-        }
-
-        // Slope of line segment.
-        final float m = (y2 - y1) / (x2 - x1);
-
-        float y = m * (minX - x1) + y1;
-        if (y > minY && y < maxY) {
-            return true;
-        }
-
-        y = m * (maxX - x1) + y1;
-        if (y > minY && y < maxY) {
-            return true;
-        }
-
-        float x = (minY - y1) / m + x1;
-        if (x > minX && x < maxX) {
-            return true;
-        }
-
-        x = (maxY - y1) / m + x1;
-
-        return x > minX && x < maxX;
-    }
-
-    /*
-     * Takes the x,y,z coordinate of a point in the world and translates it into
-     * the equivalent coordinate in the current scene.
-     */
-    private Vector3f convertWorldToScene(final float x, final float y, final float z, final Vector3f centre, final Matrix33f rotationMatrix, final float cameraDistance) {
-        // Convert world coordinates to camera coordinates.
-        final Vector3f worldLocation = new Vector3f();
-        final Vector3f sceneLocation = new Vector3f();
-        worldLocation.set(x, y, z);
-        worldLocation.subtract(centre);
-        sceneLocation.rotate(worldLocation, rotationMatrix);
-        sceneLocation.setZ(sceneLocation.getZ() - cameraDistance);
-        return sceneLocation;
     }
 }

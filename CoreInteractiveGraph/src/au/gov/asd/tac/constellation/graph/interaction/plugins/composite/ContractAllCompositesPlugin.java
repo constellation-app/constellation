@@ -44,7 +44,6 @@ public class ContractAllCompositesPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         final boolean anythingContracted = CompositeUtilities.contractAllComposites(graph);
         if (anythingContracted) {
             PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);

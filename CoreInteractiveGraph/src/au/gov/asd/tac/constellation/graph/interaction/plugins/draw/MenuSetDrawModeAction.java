@@ -40,10 +40,7 @@ import org.openide.util.NbBundle.Messages;
     "CTL_MenuSetDrawModeAction=Draw Mode"
 })
 public class MenuSetDrawModeAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuSetDrawModeAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuSetDrawModeAction(), false);

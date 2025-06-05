@@ -73,6 +73,5 @@ public class PasteFromClipboardPlugin extends SimpleEditPlugin {
         } catch (final UnsupportedFlavorException | IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
-
     }
 }

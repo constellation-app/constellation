@@ -113,7 +113,8 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         assertEquals(mockGraphNode.getVisualManager(), vm);
 
         //GraphNode.getGraphNode
-        try (MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class); MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class); MockedConstruction<Semaphore> mockSemaphoreConstructor = Mockito.mockConstruction(Semaphore.class)) {
+        try (MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class); 
+                MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class)) {
             mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
             // Assert mocks work
             assertEquals(GraphManager.getDefault(), gm);
@@ -369,9 +370,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
             // test InvocationTargetException
             mockedEventQueue.when(() -> EventQueue.invokeAndWait(any())).thenThrow(new InvocationTargetException(new Throwable()));
 
-            assertThrows(() -> EventQueue.invokeAndWait(() -> {
-                ((VisualGraphTopComponent) tc).requestActive();
-            }));
+            assertThrows(() -> EventQueue.invokeAndWait(() -> tc.requestActive()));
 
             testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC, semaphore);
 

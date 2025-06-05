@@ -62,7 +62,6 @@ public class CloseGraphPlugin extends SimplePlugin {
         final PluginParameter<BooleanParameterValue> forcedParameter = BooleanParameterType.build(FORCED_PARAMETER_ID);
         forcedParameter.setName("forced");
         forcedParameter.setDescription("Whether the graph will be force closed or not");
-        forcedParameter.setBooleanValue(false);
         parameters.addParameter(forcedParameter);
 
         return parameters;

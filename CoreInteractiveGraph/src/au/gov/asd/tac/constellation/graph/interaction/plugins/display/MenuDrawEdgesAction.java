@@ -39,10 +39,7 @@ import org.openide.util.NbBundle.Messages;
     "CTL_MenuDrawEdgesAction=Edges"
 })
 public class MenuDrawEdgesAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuDrawEdgesAction() {
         super();
         this.initRadioButton(Bundle.CTL_MenuDrawEdgesAction(), "ConnectionMode", true);
@@ -58,7 +55,7 @@ public class MenuDrawEdgesAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         final Graph graph = getContext().getGraph();
-        boolean flag = VisualGraphUtilities.getConnectionMode(graph) == ConnectionMode.EDGE;
+        final boolean flag = VisualGraphUtilities.getConnectionMode(graph) == ConnectionMode.EDGE;
         menuButton.setSelected(flag);
     }
 }

@@ -39,10 +39,7 @@ import org.openide.util.NbBundle.Messages;
     "CTL_MenuDrawBlazesAction=Blazes"
 })
 public class MenuDrawBlazesAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuDrawBlazesAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuDrawBlazesAction(), true);
@@ -58,7 +55,7 @@ public class MenuDrawBlazesAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         final Graph graph = getContext().getGraph();
-        boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.BLAZES) != 0;
+        final boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.BLAZES) != 0;
         menuButton.setSelected(flag);
     }
 }

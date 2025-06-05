@@ -61,7 +61,6 @@ public class ToggleDrawFlagPlugin extends SimpleEditPlugin {
         final int flag = parameters.getIntegerValue(FLAG_PARAMETER_ID);
 
         final int drawFlagsAttribute = VisualConcept.GraphAttribute.DRAW_FLAGS.get(graph);
-
         if (drawFlagsAttribute != Graph.NOT_FOUND) {
             int drawFlags = graph.getIntValue(drawFlagsAttribute, 0);
             drawFlags ^= flag;

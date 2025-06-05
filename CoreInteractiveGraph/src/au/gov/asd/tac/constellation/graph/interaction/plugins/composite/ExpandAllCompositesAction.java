@@ -30,7 +30,7 @@ import org.openide.util.actions.Presenter;
 
 /**
  * Action for expanding all composites. It is accessed as an icon on
- * CONSTELLATION's graph sidebar.
+ * Constellation's graph sidebar.
  *
  * @see ExpandAllCompositesPlugin
  * @author twilight_sparkle

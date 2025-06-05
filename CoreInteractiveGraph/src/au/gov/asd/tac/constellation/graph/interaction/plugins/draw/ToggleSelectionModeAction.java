@@ -55,19 +55,13 @@ public final class ToggleSelectionModeAction extends AbstractAction implements P
     public ToggleSelectionModeAction(final GraphNode context, final ButtonGroup buttonGroup) {
         this.context = context;
         this.buttonGroup = buttonGroup;
-
-        final ReadableGraph rg = context.getGraph().getReadableGraph();
+        
         final boolean drawingMode;
-        try {
+        try (final ReadableGraph rg = context.getGraph().getReadableGraph()) {
             final int drawingModeAttribute = VisualConcept.GraphAttribute.DRAWING_MODE.get(rg);
             drawingMode = drawingModeAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(drawingModeAttribute, 0) : VisualGraphDefaults.DEFAULT_DRAWING_MODE;
-        } finally {
-            rg.release();
         }
-        putValue(
-                Action.SMALL_ICON,
-                drawingMode ? DRAWING_MODE_ICON : SELECT_MODE_ICON
-        );
+        putValue(Action.SMALL_ICON, drawingMode ? DRAWING_MODE_ICON : SELECT_MODE_ICON);
         putValue(Action.SHORT_DESCRIPTION, Bundle.CTL_ToggleSelectionModeAction());
         putValue(Action.SELECTED_KEY, drawingMode);
     }

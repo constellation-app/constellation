@@ -39,10 +39,7 @@ import org.openide.util.NbBundle.Messages;
     "CTL_MenuDrawNodeLabelsAction=Node Labels"
 })
 public class MenuDrawNodeLabelsAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuDrawNodeLabelsAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuDrawNodeLabelsAction(), true);
@@ -58,7 +55,7 @@ public class MenuDrawNodeLabelsAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         final Graph graph = getContext().getGraph();
-        boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.NODE_LABELS) != 0;
+        final boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.NODE_LABELS) != 0;
         menuButton.setSelected(flag);
     }
 }

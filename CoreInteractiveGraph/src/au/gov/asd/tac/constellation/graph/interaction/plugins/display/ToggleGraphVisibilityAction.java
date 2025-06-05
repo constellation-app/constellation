@@ -77,14 +77,11 @@ public final class ToggleGraphVisibilityAction extends AbstractAction implements
 
     private boolean isCurrentVisibility(final Graph graph) {
         boolean visibleAboveThreshold = VisualGraphDefaults.DEFAULT_GRAPH_VISIBILITY;
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int visibleAboveThresholdAttr = VisualConcept.GraphAttribute.VISIBLE_ABOVE_THRESHOLD.get(rg);
             if (visibleAboveThresholdAttr != Graph.NOT_FOUND) {
                 visibleAboveThreshold = rg.getBooleanValue(visibleAboveThresholdAttr, 0);
             }
-        } finally {
-            rg.release();
         }
         return visibleAboveThreshold;
     }

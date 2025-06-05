@@ -30,7 +30,7 @@ import org.openide.util.actions.Presenter;
 
 /**
  * Action for contracting all composites. It is accessed as an icon on
- * CONSTELLATION's graph sidebar.
+ * Constellation's graph sidebar.
  *
  * @see ContractAllCompositesPlugin
  * @author twilight_sparkle

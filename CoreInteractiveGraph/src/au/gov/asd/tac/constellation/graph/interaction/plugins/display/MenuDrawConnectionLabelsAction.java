@@ -39,10 +39,7 @@ import org.openide.util.NbBundle.Messages;
     "CTL_MenuDrawConnectionLabelsAction=Connection Labels"
 })
 public class MenuDrawConnectionLabelsAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuDrawConnectionLabelsAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuDrawConnectionLabelsAction(), true);
@@ -58,7 +55,7 @@ public class MenuDrawConnectionLabelsAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         final Graph graph = getContext().getGraph();
-        boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.CONNECTION_LABELS) != 0;
+        final boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.CONNECTION_LABELS) != 0;
         menuButton.setSelected(flag);
     }
 }
