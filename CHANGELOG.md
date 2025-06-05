@@ -1,6 +1,7 @@
 # Constellation Changes
 
 ## Changes in June 2025
+-   Removed `Auth` and `AuthPanel` classes as they were unused.
 -   Updated help page system so that help pages can now be located within module folder of ext/docs to reduce use of redundant folders.
 -   Updated `Generator.getOnlineTOCDirectory()` to no longer pass a parameter. It now just calculates relative to the base directory.
 
