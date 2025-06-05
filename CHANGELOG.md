@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## Changes in June 2025
+-   Removed `Auth` and `AuthPanel` classes as they were unused.
+
 ## Changes in May 2025
 -   Removed `AttributeUtilities.getDateTimeAttributes()` and `AttributeUtilities.getTypesUsedByGraph()` which were unused.
 -   Removed all the classes in `au.gov.asd.tac.constellation.graph.utilities.wrapper` which were all unused.
