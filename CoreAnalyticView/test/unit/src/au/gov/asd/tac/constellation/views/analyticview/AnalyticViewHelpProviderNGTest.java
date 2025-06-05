@@ -84,15 +84,9 @@ public class AnalyticViewHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreAnalyticView"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("views"));
-        assertTrue(tocLocation.contains("analyticview"));
         assertTrue(tocLocation.contains("analyticview-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreAnalyticView"));
-        assertTrue(tocLocation.indexOf("CoreAnalyticView") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("views"));
-        assertTrue(tocLocation.indexOf("views") < tocLocation.indexOf("analyticview"));
-        assertTrue(tocLocation.indexOf("analyticview") < tocLocation.indexOf("analyticview-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreAnalyticView") < tocLocation.indexOf("analyticview-toc.xml"));
     }  
 }

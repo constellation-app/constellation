@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.interaction;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 400)
 @NbBundle.Messages("InteractiveGraphHelpProvider=Interactive Graph Help Provider")
 public class InteractiveGraphHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreInteractiveGraph" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,14 +40,11 @@ public class InteractiveGraphHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String interactiveModulePath =  ".." + sep + "ext" + sep + "docs" + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "interaction" + sep;
 
-        map.put("au.gov.asd.tac.constellation.graph.interaction.addselectmode", interactiveModulePath + "add-and-selection-modes.md");
-        map.put("au.gov.asd.tac.constellation.graph.interaction.cutcopypaste", interactiveModulePath + "cut-copy-paste.md");
-        map.put("au.gov.asd.tac.constellation.graph.interaction.compositedSelectedNodes", interactiveModulePath + "composite-nodes.md");
-        map.put("au.gov.asd.tac.constellation.graph.interaction.generalanimation", interactiveModulePath + "general-animation.md");
+        map.put("au.gov.asd.tac.constellation.graph.interaction.addselectmode", MODULE_PATH + "add-and-selection-modes.md");
+        map.put("au.gov.asd.tac.constellation.graph.interaction.cutcopypaste", MODULE_PATH + "cut-copy-paste.md");
+        map.put("au.gov.asd.tac.constellation.graph.interaction.compositedSelectedNodes", MODULE_PATH + "composite-nodes.md");
+        map.put("au.gov.asd.tac.constellation.graph.interaction.generalanimation", MODULE_PATH + "general-animation.md");
         return map;
     }
 
@@ -59,10 +55,6 @@ public class InteractiveGraphHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String interactiveGraphPath;
-        interactiveGraphPath = "ext" + sep + "docs" + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "graph" + sep + "interaction" + sep + "interactivegraph-toc.xml";
-        return interactiveGraphPath;
+        return MODULE_PATH + "interactivegraph-toc.xml";
     }
 }

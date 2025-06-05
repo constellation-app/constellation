@@ -84,15 +84,9 @@ public class AttributeEditorHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreAttributeEditorView"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("views"));
-        assertTrue(tocLocation.contains("attributeeditor"));
         assertTrue(tocLocation.contains("attributeeditor-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreAttributeEditorView"));
-        assertTrue(tocLocation.indexOf("CoreAttributeEditorView") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("views"));
-        assertTrue(tocLocation.indexOf("views") < tocLocation.indexOf("attributeeditor"));
-        assertTrue(tocLocation.indexOf("attributeeditor") < tocLocation.indexOf("attributeeditor-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreAttributeEditorView") < tocLocation.indexOf("attributeeditor-toc.xml"));
     }   
 }

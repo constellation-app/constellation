@@ -84,15 +84,9 @@ public class DataAccessViewHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreDataAccessView"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("views"));
-        assertTrue(tocLocation.contains("dataaccess"));
         assertTrue(tocLocation.contains("dataaccess-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreDataAccessView"));
-        assertTrue(tocLocation.indexOf("CoreDataAccessView") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("views"));
-        assertTrue(tocLocation.indexOf("views") < tocLocation.indexOf("dataaccess"));
-        assertTrue(tocLocation.indexOf("dataaccess") < tocLocation.indexOf("dataaccess-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreDataAccessView") < tocLocation.indexOf("dataaccess-toc.xml"));
     }   
 }

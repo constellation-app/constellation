@@ -84,15 +84,9 @@ public class PluginReporterHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CorePluginReporterView"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("views"));
-        assertTrue(tocLocation.contains("pluginreporter"));
         assertTrue(tocLocation.contains("pluginreporter-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CorePluginReporterView"));
-        assertTrue(tocLocation.indexOf("CorePluginReporterView") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("views"));
-        assertTrue(tocLocation.indexOf("views") < tocLocation.indexOf("pluginreporter"));
-        assertTrue(tocLocation.indexOf("pluginreporter") < tocLocation.indexOf("pluginreporter-toc.xml"));
+        assertTrue(tocLocation.indexOf("CorePluginReporterView") < tocLocation.indexOf("pluginreporter-toc.xml"));
     }    
 }

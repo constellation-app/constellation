@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.help;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 
@@ -24,6 +25,8 @@ import java.util.Map;
  * @author Delphinus8821
  */
 public abstract class HelpPageProvider {
+    
+    protected static final String SEP = File.separator;
     
     protected HelpPageProvider() {
         // Intentionally left blank

@@ -84,15 +84,9 @@ public class ImportExportPluginsHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreImportExportPlugins"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("plugins"));
-        assertTrue(tocLocation.contains("importexport"));
         assertTrue(tocLocation.contains("importexport-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreImportExportPlugins"));
-        assertTrue(tocLocation.indexOf("CoreImportExportPlugins") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("plugins"));
-        assertTrue(tocLocation.indexOf("plugins") < tocLocation.indexOf("importexport"));
-        assertTrue(tocLocation.indexOf("importexport") < tocLocation.indexOf("importexport-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreImportExportPlugins") < tocLocation.indexOf("importexport-toc.xml"));
     }
 }

@@ -84,13 +84,9 @@ public class FunctionalityHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreFunctionality"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("functionality"));
         assertTrue(tocLocation.contains("core-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreFunctionality"));
-        assertTrue(tocLocation.indexOf("CoreFindView") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("functionality"));
-        assertTrue(tocLocation.indexOf("functionality") < tocLocation.indexOf("core-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreFunctionality") < tocLocation.indexOf("core-toc.xml"));
     }    
 }

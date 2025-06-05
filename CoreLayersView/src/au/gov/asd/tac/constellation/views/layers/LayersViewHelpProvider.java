@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -28,8 +27,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 1300)
 @NbBundle.Messages("LayersViewHelpProvider=Layers View Help Provider")
 public class LayersViewHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreLayersView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -39,11 +38,8 @@ public class LayersViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String layersModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "layers" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent", layersModulePath + "layers-view.md");
+        map.put("au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent", MODULE_PATH + "layers-view.md");
         return map;
     }
 
@@ -54,11 +50,6 @@ public class LayersViewHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String layersViewPath;
-        layersViewPath = "ext" + sep + "docs" + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "layers" + sep + "layers-toc.xml";
-
-        return layersViewPath;
+        return MODULE_PATH + "layers-toc.xml";
     }
 }
