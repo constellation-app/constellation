@@ -89,7 +89,7 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
     private static final int PREFERRED_BAR_LENGTH = 250;
     private static final int MINIMUM_BAR_WIDTH = 4;
     private static final int MINIMUM_SELECTED_WIDTH = 3;
-    private static final int MINIMUM_TEXT_WIDTH = 100;
+    private static final int MINIMUM_TEXT_WIDTH = 150;
     private static final int PREFERRED_HEIGHT = 600;
     private static final int MIN_FONT_SIZE = FontUtilities.getApplicationFontSize();
     private static final int TOP_MARGIN = 3;
@@ -113,8 +113,7 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
     private BinIconMode binIconMode = BinIconMode.NONE;
     private BinSelectionMode binSelectionMode;
     private int activeBin = -1;
-    private int prevDragStart = -2; // Set to -2, so value is different to dragStart
-    private int prevDragEnd = -2; // Ditto
+    private int prevDragEnd = -2; // Set to -2, so value is different to dragEnd
     private int dragStart = -1;
     private int dragEnd = -1;
     private boolean shiftDown;
@@ -124,6 +123,13 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
 
     final VBox propertyColumn = new VBox();
     final VBox barColumn = new VBox();
+    final HBox columns = new HBox();
+    private final VBox barsVbox = new VBox();
+
+    final StackPane stackPane = new StackPane();
+
+    private static final int COLUMNS_SPACING = 5;
+    private double prevWidth = 0;
 
     //private final static javafx.scene.paint.Color LIGHT_GREY = javafx.scene.paint.Color.color(192, 192, 192);
     public HistogramDisplay2(final HistogramTopComponent2 topComponent) {
@@ -141,14 +147,31 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
         copyMenu.getItems().add(copyValuesAndCountsMenuItem);
 
         setPrefHeight(PREFERRED_HEIGHT);
-        setPrefWidth(MINIMUM_TEXT_WIDTH + PREFERRED_BAR_LENGTH + TEXT_TO_BAR_GAP + 2);
+        //setPrefWidth(MINIMUM_TEXT_WIDTH + PREFERRED_BAR_LENGTH + TEXT_TO_BAR_GAP + 2);
 
-//        barColumn.widthProperty().addListener((obs, oldVal, newVal) -> {
-//            drawBars(binCollection.getBins(), binCollection.getMaxElementCount());
-//        });
-//        propertyColumn.widthProperty().addListener((obs, oldVal, newVal) -> {
-//            drawBars(binCollection.getBins(), binCollection.getMaxElementCount());
-//        });
+        barColumn.widthProperty().addListener((obs, oldVal, newVal) -> {
+            drawBars((double) newVal);
+        });
+
+        columns.getChildren().addAll(propertyColumn, barColumn);
+        columns.setMouseTransparent(true);
+        columns.setSpacing(COLUMNS_SPACING);
+        HBox.setHgrow(columns, Priority.ALWAYS);
+
+        propertyColumn.setMinWidth(MINIMUM_TEXT_WIDTH);
+        propertyColumn.setSpacing(ROWS_SPACING);
+
+        barColumn.setSpacing(ROWS_SPACING);
+        HBox.setHgrow(barColumn, Priority.ALWAYS);
+
+        stackPane.getChildren().addAll(columns, barsVbox);
+
+        barsVbox.setSpacing(ROWS_SPACING);
+        barsVbox.setMouseTransparent(true);
+        StackPane.setAlignment(barsVbox, Pos.CENTER_RIGHT);
+
+        this.setCenter(stackPane);
+
         initializeListeners();
     }
 
@@ -199,7 +222,6 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
     public void updateBinCollection() {
         binCollection.deactivateBins();
         activeBin = -1;
-        //repaint();
         Platform.runLater(() -> updateDisplay());
     }
 
@@ -299,18 +321,13 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
         //System.out.println("textWidth: " + textWidth);
     }
 
-    private void setDragStart(final int newValue) {
-        prevDragStart = dragStart;
-        dragStart = newValue;
-    }
-
     private void setDragEnd(final int newValue) {
         prevDragEnd = dragEnd;
         dragEnd = newValue;
     }
 
     private boolean requireUpdate() {
-        return prevDragStart == dragStart && prevDragEnd == dragEnd;
+        return prevDragEnd != dragEnd;// drag start doesnt change per mouseDragged fire
     }
 
     private javafx.scene.paint.Color awtColorToFXColor(final Color awtColor) {
@@ -323,16 +340,12 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
         return javafx.scene.paint.Color.rgb(r, g, b, opacity);
     }
 
-    int numCalls = 0;
-
     public void updateDisplay() {
-        System.out.println("updateDisplay " + numCalls);
-        // If nothing has changed, dont need to update
-        if (!requireUpdate()) {
-            return;
-        }
-        numCalls++;
+        updateDisplayText();
+        requestRedrawBars();
+    }
 
+    private void updateDisplayText() {
         if (binCollection == null) {
             // No data, so just have text saying so
             final Label text = new Label(NO_DATA);
@@ -346,7 +359,6 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
 
             // If bin collection out of date, recalculate lengths TODO: double check this is actaully what it does
             if (binCollectionOutOfDate) {
-
                 final int[] dims = calculateHeightAndBarWidth();
                 preferredHeight = dims[0];
                 barHeight = dims[1];
@@ -367,22 +379,8 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
 
             if (maxCount > 0) {
                 // Two columns, property values and bars
-                final HBox columns = new HBox();
-                columns.setMouseTransparent(true);
-
-                HBox.setHgrow(columns, Priority.ALWAYS);
-
                 barColumn.getChildren().clear();
                 propertyColumn.getChildren().clear();
-
-                propertyColumn.setMinWidth(MINIMUM_TEXT_WIDTH);
-                propertyColumn.setPrefWidth(MINIMUM_TEXT_WIDTH * 1.5);
-                propertyColumn.setSpacing(ROWS_SPACING);
-                barColumn.setSpacing(ROWS_SPACING);
-
-                HBox.setHgrow(barColumn, Priority.ALWAYS);
-
-                columns.getChildren().addAll(propertyColumn, barColumn);
 
                 final Label headerValue = new Label(PROPERTY_VALUE);
                 final Label headerCount = new Label(COUNT);
@@ -392,12 +390,15 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
                 HBox.setHgrow(spacer, Priority.ALWAYS);
 
                 propertyColumn.getChildren().add(headerValue);
-                final HBox headerRow2 = new HBox();
-                headerRow2.getChildren().addAll(headerCount, spacer, headerTotalBins);
-                barColumn.getChildren().add(headerRow2);
+                final HBox headerRow = new HBox();
+                headerRow.getChildren().addAll(headerCount, spacer, headerTotalBins);
+                barColumn.getChildren().add(headerRow);
+
+                final Label[] propertyValuesArray = new Label[bins.length];
 
                 // Populate category text column
-                for (final Bin bin : bins) {
+                for (int bar = 0; bar < bins.length; bar++) {
+                    final Bin bin = bins[bar];
                     final String category = bin.getLabel();
                     final Label propertyValue;
 
@@ -413,51 +414,62 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
                     }
 
                     propertyValue.setMinHeight(barHeight);
-                    propertyColumn.getChildren().add(propertyValue);
+                    propertyValuesArray[bar] = propertyValue;
                 }
-
-                this.setCenter(columns);
+                propertyColumn.getChildren().addAll(propertyValuesArray);
+                this.setCenter(stackPane);
             }
         }
-
-        // Run function to draw the histogram bars later as currently the widths of columns are 0, in code
-        Platform.runLater(() -> {
-            if (binCollection != null) {
-                drawBars(binCollection.getBins(), binCollection.getMaxElementCount());
-            }
-        });
     }
 
-    private void drawBars(final Bin[] bins, final int maxCount) {
-        final double width = barColumn.getWidth();
-        //System.out.println("DRAW BARS propertyColumn width: " + propertyColumn.getWidth() + " barColumn width: " + barColumn.getWidth() + " width: " + width);
+    private void requestRedrawBars() {
+        // If nothing has changed, dont need to update
+        if (!requireUpdate()) {
+            System.out.println("drawBars NO UPDATE");
+            return;
+        }
+
+        drawBars();
+    }
+
+    private void drawBars() {
+        drawBars(prevWidth);
+    }
+
+    private void drawBars(final double width) {
+        if (binCollection == null) {
+            return;
+        }
+
+        final Bin[] bins = binCollection.getBins();
+        final int maxCount = binCollection.getMaxElementCount();
+        prevWidth = width;
 
         final float lengthPerElement = (float) width / (float) maxCount; //(barsWidth - textWidth) / (float) maxCount;
         final int arc = barHeight / 3;
-        //final Node header =  barColumn.getChildren().get(0);
-        //barColumn.getChildren().clear();
-        //barColumn.getChildren().add(header);
 
-//        final Label headerCount = new Label(COUNT);
-//        final Label headerTotalBins = new Label(TOTAL_BINS_COUNT);
-//        final Pane spacer2 = new Pane();
-//        HBox.setHgrow(spacer2, Priority.ALWAYS);
-//        final HBox headerRow2 = new HBox();
-//        headerRow2.getChildren().addAll(headerCount, spacer2, headerTotalBins);
-//        barColumn.getChildren().add(headerRow2);
         // Setup bar colours
-        final Color barColor = binSelectionMode.getBarColor();
-        final Color darkerBarColor = barColor.darker();
+        final javafx.scene.paint.Color barColor = awtColorToFXColor(binSelectionMode.getBarColor());
+        final javafx.scene.paint.Color darkerBarColor = barColor.darker();
 
-        final Color activatedBarColor = binSelectionMode.getActivatedBarColor();
-        final Color darkerActivatedBarColor = activatedBarColor.darker();
+        final javafx.scene.paint.Color activatedBarColor = awtColorToFXColor(binSelectionMode.getActivatedBarColor());
+        final javafx.scene.paint.Color darkerActivatedBarColor = activatedBarColor.darker();
 
-        final Color selectedColor = binSelectionMode.getSelectedColor();
-        final Color darkerSelectedColor = selectedColor.darker();
+        final javafx.scene.paint.Color selectedColor = awtColorToFXColor(binSelectionMode.getSelectedColor());
+        final javafx.scene.paint.Color darkerSelectedColor = selectedColor.darker();
 
-        final Color activatedSelectedColor = binSelectionMode.getActivatedSelectedColor();
-        final Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
+        final javafx.scene.paint.Color activatedSelectedColor = awtColorToFXColor(binSelectionMode.getActivatedSelectedColor());
+        final javafx.scene.paint.Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
 
+        final StackPane[] barsArray = new StackPane[bins.length + 1]; // one extra for blank (could replace with header)
+
+        // Create an empty rectangle to pad the bars array
+        final Rectangle emptyRect = new Rectangle(0, Double.valueOf(barHeight));
+        final StackPane emptyPane = new StackPane();
+        emptyPane.getChildren().add(emptyRect);
+        barsArray[0] = emptyPane;// empty
+
+        // For each bar
         for (int bar = 0; bar < bins.length; bar++) {
             final Bin bin = bins[bar];
 
@@ -466,20 +478,16 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
 
             // Always draw something, even if there aren't enough pixels to draw the actual length.
             final int barLength = Math.max((int) (elementCount * lengthPerElement), MINIMUM_BAR_WIDTH);
-            //System.out.println("elementCount: " + elementCount + " scaleFactor: " + scaleFactor + " barLength: " + barLength);
 
             // Rectangle will be a stack pane with the different sections layer on top of each other
             final StackPane rectBar = new StackPane();
-//            rectBar.setMouseTransparent(true);
 
             // Draw the background of the bar
             if (elementCount < maxCount) {
-                //int backgroundStart = Math.max(0, barLength - 10);
                 final Rectangle rect = new Rectangle(width, Double.valueOf(barHeight));
 
                 rect.setArcHeight(arc);
                 rect.setArcWidth(arc);
-                //System.out.println("bar == activeBin: " + (bar == activeBin));
                 rect.setFill(awtColorToFXColor(bar == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR));
 
                 rectBar.getChildren().add(rect);
@@ -490,12 +498,10 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
 
             // Draw the unselected component of the bar
             if (selectedLength < barLength) {
-                //int unselectedStart = Math.max(0, selectedLength - 10);
-
                 //Setting the linear gradient 
                 final Stop[] stops = bin.activated
-                        ? new Stop[]{new Stop(0, awtColorToFXColor(activatedBarColor)), new Stop(1, awtColorToFXColor(darkerActivatedBarColor))}
-                        : new Stop[]{new Stop(0, awtColorToFXColor(barColor)), new Stop(1, awtColorToFXColor(darkerBarColor))};
+                        ? new Stop[]{new Stop(0, activatedBarColor), new Stop(1, darkerActivatedBarColor)}
+                        : new Stop[]{new Stop(0, barColor), new Stop(1, darkerBarColor)};
 
                 final LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
 
@@ -511,8 +517,8 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
             if (selectedLength > 0) {
                 //Setting the linear gradient 
                 final Stop[] stops = bin.activated
-                        ? new Stop[]{new Stop(0, awtColorToFXColor(activatedSelectedColor)), new Stop(1, awtColorToFXColor(darkerActivatedSelectedColor))}
-                        : new Stop[]{new Stop(0, awtColorToFXColor(selectedColor)), new Stop(1, awtColorToFXColor(darkerSelectedColor))};
+                        ? new Stop[]{new Stop(0, activatedSelectedColor), new Stop(1, darkerActivatedSelectedColor)}
+                        : new Stop[]{new Stop(0, selectedColor), new Stop(1, darkerSelectedColor)};
 
                 final LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
 
@@ -531,9 +537,13 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
             rectBar.getChildren().add(binCountlabel);
             StackPane.setAlignment(binCountlabel, Pos.CENTER_RIGHT);
 
-//            row.getChildren().add(rectBar);
-            barColumn.getChildren().add(rectBar);
+            // Finally, put the bar in array
+            barsArray[bar + 1] = rectBar;
         }
+
+        barsVbox.getChildren().clear();
+        barsVbox.getChildren().addAll(barsArray);
+        barsVbox.setMaxWidth(width);
     }
 
     // !! Seems to fit a given tring to the desired width, shortening if needed
@@ -625,7 +635,7 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
             userSetBarHeight -= 2;
         }
         barHeight = userSetBarHeight;
-        //repaint();
+
         updateDisplay();
     }
 
@@ -640,7 +650,7 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
             userSetBarHeight += 2;
         }
         barHeight = userSetBarHeight;
-        //repaint();
+
         updateDisplay();
     }
 
@@ -687,11 +697,12 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
             shiftDown = e.isShiftDown();
             controlDown = e.isControlDown();
 
-            setDragStart((shiftDown && activeBin >= 0) ? activeBin : bar);
+            dragStart = (shiftDown && activeBin >= 0) ? activeBin : bar;
             setDragEnd(bar);
             binSelectionMode.mousePressed(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd);
 
-            updateDisplay();
+            // Only need to update bars
+            requestRedrawBars();
         }
     }
 
@@ -705,7 +716,8 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
             binSelectionMode.mouseDragged(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, newDragEnd);
             setDragEnd(newDragEnd);
 
-            updateDisplay();
+            // Only need to update bars
+            requestRedrawBars();
         }
     }
 
@@ -715,7 +727,8 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
             binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
             activeBin = dragStart == dragEnd ? dragStart : -1;
 
-            updateDisplay();
+            // Only need to update bars
+            requestRedrawBars();
         }
     }
 
@@ -745,7 +758,8 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        //this.repaint();
+        System.out.println("display2 propertyChange");
+
         updateDisplay();
     }
 
