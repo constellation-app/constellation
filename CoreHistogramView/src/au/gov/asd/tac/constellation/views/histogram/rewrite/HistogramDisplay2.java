@@ -24,8 +24,6 @@ import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -147,7 +145,6 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
         copyMenu.getItems().add(copyValuesAndCountsMenuItem);
 
         setPrefHeight(PREFERRED_HEIGHT);
-        //setPrefWidth(MINIMUM_TEXT_WIDTH + PREFERRED_BAR_LENGTH + TEXT_TO_BAR_GAP + 2);
 
         barColumn.widthProperty().addListener((obs, oldVal, newVal) -> {
             drawBars((double) newVal);
@@ -201,15 +198,6 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
         return new Dimension(0, 0);
     }
 
-//    @Override
-    public Dimension getPreferredSize() {
-        if (binCollection != null) {
-            preferredHeight = preferredSize.height = calculateHeightAndBarWidth()[0];
-        }
-
-        return preferredSize;
-    }
-
     public void setBinCollection(final BinCollection binCollection, final BinIconMode binIconMode) {
         //System.out.println("setBinCollection " + binCollection);
         this.binCollection = binCollection;
@@ -253,72 +241,6 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
         }
 
         return result;
-    }
-
-    private int setFontToFit(final Graphics g, final int barSize) {
-        int fontSize = MAXIMUM_BAR_HEIGHT - 4;
-        int size;
-        Font font;
-        FontMetrics metrics;
-
-        do {
-            font = FONT.deriveFont((float) fontSize);
-            metrics = g.getFontMetrics(font);
-            size = metrics.getMaxAscent() + metrics.getMaxDescent();
-        } while (--fontSize > MIN_FONT_SIZE && size > barSize - 4);
-
-        g.setFont(font);
-        return Math.round(size / 2F) - metrics.getMaxDescent();
-    }
-
-    private double getPreferredTextWidth() {
-        double minWidth = 0;
-        for (final Bin bin : binCollection.getBins()) {
-            final Label label = new Label(bin.toString());
-            final double width = label.getWidth();
-            //System.out.println("Label width: " + width);
-            if (width > minWidth) {
-                minWidth = width + 10;
-            }
-        }
-
-        return minWidth;
-    }
-
-    /**
-     * * calculate how large to draw the bars and the text. If the total width is not wide enough for the minimum text
-     * length and the preferred bar length then draw the text at minimum length and give the rest to the bars. If the
-     * total width is greater than the minimum text length + preferred bar length but not long enough for the preferred
-     * text length + preferred bar length then set the bars to preferred length and give the rest to the text. Finally
-     * if the total width is greater than the preferred text length + preferred bar length then set the text to the
-     * preferred length and give the rest to the bars.**
-     */
-    private void calculateTextAndBarLength(final int padding) {
-        //System.out.println("calculateTextAndBarLength");
-        // !!! need to rework this function, methinks
-        final int parentWidth = topComponent.getWidth();
-        final int preferredTextWidth = (int) Math.round(getPreferredTextWidth());
-//        System.out.println("parentWidth: " + parentWidth);
-//        System.out.println("preferredTextWidth: " + preferredTextWidth);
-        textWidth = MINIMUM_TEXT_WIDTH;
-
-        if (parentWidth < LEFT_MARGIN + padding + MINIMUM_TEXT_WIDTH + TEXT_TO_BAR_GAP + PREFERRED_BAR_LENGTH + RIGHT_MARGIN) {
-            barsWidth = Math.max(1, parentWidth - LEFT_MARGIN - padding - MINIMUM_TEXT_WIDTH - TEXT_TO_BAR_GAP - RIGHT_MARGIN);
-
-        } else { // Bars are at desired length. Expand text space unless it is already sufficient
-            if (parentWidth < LEFT_MARGIN + padding + preferredTextWidth + TEXT_TO_BAR_GAP + PREFERRED_BAR_LENGTH + RIGHT_MARGIN) {
-                barsWidth = PREFERRED_BAR_LENGTH;
-                textWidth = parentWidth - LEFT_MARGIN - padding - PREFERRED_BAR_LENGTH - TEXT_TO_BAR_GAP - RIGHT_MARGIN;
-            } else {
-                textWidth = preferredTextWidth;
-                barsWidth = parentWidth - LEFT_MARGIN - padding - preferredTextWidth - TEXT_TO_BAR_GAP - RIGHT_MARGIN;
-            }
-        }
-
-        if (textWidth < MINIMUM_TEXT_WIDTH) {
-            textWidth = MINIMUM_TEXT_WIDTH;
-        }
-        //System.out.println("textWidth: " + textWidth);
     }
 
     private void setDragEnd(final int newValue) {
@@ -368,12 +290,8 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
 
                 iconPadding = (int) (binIconMode.getWidth() * barHeight);
 
-                // !!! need to rework this function, methinks
-                calculateTextAndBarLength(iconPadding);
                 binCollectionOutOfDate = false;
             }
-
-            calculateTextAndBarLength(iconPadding);
 
             final int maxCount = binCollection.getMaxElementCount();
 
@@ -404,12 +322,12 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
 
                     if (category == null) {
                         // Make text yellow, and <no value>
-                        propertyValue = new Label(getStringToFit(NO_VALUE, textWidth));
+                        propertyValue = new Label(NO_VALUE);
                         // Sets a psuedo class for css that changes the text colour to yellow
                         propertyValue.pseudoClassStateChanged(PseudoClass.getPseudoClass("no-value"), true);
                     } else {
                         // Regular grey text
-                        propertyValue = new Label(getStringToFit(category, textWidth));
+                        propertyValue = new Label(category);
                         propertyValue.setTextFill(javafx.scene.paint.Color.grayRgb(192));
                     }
 
@@ -544,62 +462,6 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
         barsVbox.getChildren().clear();
         barsVbox.getChildren().addAll(barsArray);
         barsVbox.setMaxWidth(width);
-    }
-
-    // !! Seems to fit a given tring to the desired width, shortening if needed
-    // TODO: this function has some stink to it, take a look and fix
-    private String getStringToFit(final String original, final int width) {
-
-        // Will the entire string fit?
-        final double widthOfText = new Label(original).getWidth();
-
-        if (widthOfText <= width) {
-            return original;
-        }
-
-        // The largest length that we know will fit
-        int min = 1;
-
-        // The smallest length that we know is too big
-        int max;
-
-        if (original.length() < 1000) {
-            max = original.length();
-        } else {
-            max = 1;
-            while (true) {
-                min = max;
-                max <<= 1;
-                if (max >= original.length()) {
-                    max = original.length();
-                    break;
-                } else if (new Label(original.substring(0, max) + "...").getWidth() > width) {
-                    break;
-                } else {
-                    // Do nothing
-                }
-            }
-        }
-
-        while (min < max - 1) {
-            final int mid = (min + max) >>> 1;
-            if (new Label(original.substring(0, mid) + "...").getWidth() <= width) {
-                min = mid;
-            } else {
-                max = mid;
-            }
-        }
-
-        String result = original.substring(0, min) + "...";
-
-        // Sometimes even 1 character is too wide
-        if (min == 1) {
-            while (!result.isEmpty() && new Label(result).getWidth() > width) {
-                result = result.substring(1);
-            }
-        }
-
-        return result;
     }
 
     /**
