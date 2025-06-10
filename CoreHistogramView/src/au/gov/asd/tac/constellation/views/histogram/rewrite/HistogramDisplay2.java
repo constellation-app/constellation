@@ -28,13 +28,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import javafx.scene.input.KeyEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.geometry.Pos;
@@ -62,7 +56,7 @@ import javafx.scene.paint.Stop;
  * @author antares
  * @author sol695510
  */
-public class HistogramDisplay2 extends BorderPane implements MouseWheelListener, PropertyChangeListener, ComponentListener {
+public class HistogramDisplay2 extends BorderPane {
 
     public static final Color BACKGROUND_COLOR = new Color(0x44, 0x44, 0x44);
     public static final String BACKGROUND_COLOR_STRING = "#424242";
@@ -191,9 +185,6 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
         this.setOnKeyPressed(e -> handleKeyPressed(e));
 //        addMouseListener(this);
 //        addMouseMotionListener(this);
-//        addMouseWheelListener(this);
-//        addComponentListener(this);
-//        addKeyListener(this);
     }
 
 //    @Override
@@ -602,45 +593,5 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
                 && ((e.isControlDown()) && (e.getCode() == KeyCode.C))) {
             copySelectedToClipboard(false);
         }
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        updateDisplay();
-    }
-
-    @Override
-    public void componentResized(ComponentEvent e) {
-        binCollectionOutOfDate = true;
-    }
-
-    @Override
-    public void componentMoved(ComponentEvent e) {
-        // Override required, intentionally left blank
-    }
-
-    @Override
-    public void componentShown(ComponentEvent e) {
-        binCollectionOutOfDate = true;
-    }
-
-    @Override
-    public void componentHidden(ComponentEvent e) {
-        // Override required, intentionally left blank
-    }
-
-    @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
-//        final JViewport scrollpane = (JViewport) getParent();
-//        final Point pos = scrollpane.getViewPosition();
-//        final int y;
-//        final int SCROLL_HEIGHT = 50;
-//        if (e.getWheelRotation() < 0) {
-//            y = pos.y - (e.getScrollAmount() * SCROLL_HEIGHT);
-//        } else {
-//            y = pos.y + (e.getScrollAmount() * SCROLL_HEIGHT);
-//        }
-//
-//        scrollpane.setViewPosition(new Point(0, Math.max(0, y)));
     }
 }
