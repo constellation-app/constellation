@@ -43,6 +43,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -201,7 +202,6 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
     }
 
     public void setBinCollection(final BinCollection binCollection, final BinIconMode binIconMode) {
-        //System.out.println("setBinCollection " + binCollection);
         this.binCollection = binCollection;
         this.binIconMode = binIconMode;
         binCollectionOutOfDate = true;
@@ -345,7 +345,6 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
     private void requestRedrawBars() {
         // If nothing has changed, dont need to update
         if (!requireUpdate()) {
-            System.out.println("drawBars NO UPDATE");
             return;
         }
 
@@ -527,7 +526,6 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
      * @param includeCounts True if the counts corresponding to the values are also to be copied to the clipboard.
      */
     private void copySelectedToClipboard(final boolean includeCounts) {
-        System.out.println("copySelectedToClipboard " + includeCounts);
         final StringBuilder buf = new StringBuilder();
         for (final Bin bin : binCollection.getBins()) {
             // Check if the bar(s) on the Histogram are selected.
@@ -546,15 +544,13 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
         clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
     }
 
-    private void handleMouseClicked(final javafx.scene.input.MouseEvent e) {
-        System.out.println("handleMouseClicked display2");
+    private void handleMouseClicked(final MouseEvent e) {
         if (binCollection != null && e.getButton() == MouseButton.SECONDARY) {
             copyMenu.show(this, e.getScreenX(), e.getScreenY());
         }
     }
 
-    private void handleMousePressed(final javafx.scene.input.MouseEvent e) {
-        System.out.println("handleMousePressed display2");
+    private void handleMousePressed(final MouseEvent e) {
         if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
             final Point pointOnHistogram = new Point((int) Math.round(e.getX()), (int) Math.round(e.getY())); // May need to be getScreenX(), no actually
             final int bar = getBarAtPoint(pointOnHistogram, false);
@@ -571,8 +567,7 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
         }
     }
 
-    private void handleMouseDragged(final javafx.scene.input.MouseEvent e) {
-        System.out.println("handleMouseDragged display2");
+    private void handleMouseDragged(final MouseEvent e) {
         if (binCollection != null && e.isPrimaryButtonDown()) { // Not sure if same as e.getModifiersEx() == InputEvent.BUTTON1_DOWN_MASK
             final Point pointOnHistogram = new Point((int) Math.round(e.getX()), (int) Math.round(e.getY())); // May need to be getScreenX()
             final int bar = getBarAtPoint(pointOnHistogram, false);
@@ -586,8 +581,7 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
         }
     }
 
-    private void handleMouseReleased(final javafx.scene.input.MouseEvent e) {
-        System.out.println("handleMouseReleased display2");
+    private void handleMouseReleased(final MouseEvent e) {
         this.requestFocus();
         if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
             binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
@@ -598,15 +592,11 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
         }
     }
 
-    // TODO: check if this works
-    private void handleMouseEntered(final javafx.scene.input.MouseEvent e) {
-        System.out.println("handleMouseEntered display2");
+    private void handleMouseEntered(final MouseEvent e) {
         this.requestFocus(); // Focus the Histogram View so 'key' actions can be registered.
-        //this.setFocused(true);
     }
 
     private void handleKeyPressed(final KeyEvent e) {
-        System.out.println("!!! keyPressed display2 " + e);
         if (binCollection != null
                 && this.isFocused() // Check if Histogram Display is focused before allowing Ctrl + C to be registered.
                 && ((e.isControlDown()) && (e.getCode() == KeyCode.C))) {
@@ -616,8 +606,6 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        System.out.println("display2 propertyChange");
-
         updateDisplay();
     }
 
