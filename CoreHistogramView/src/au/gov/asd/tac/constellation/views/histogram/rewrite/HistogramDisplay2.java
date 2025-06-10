@@ -355,7 +355,7 @@ public class HistogramDisplay2 extends BorderPane {
         final int maxCount = binCollection.getMaxElementCount();
         prevWidth = width;
 
-        final float lengthPerElement = (float) width / (float) maxCount; //(barsWidth - textWidth) / (float) maxCount;
+        final float lengthPerElement = (float) width / (float) maxCount;
         final int arc = barHeight / 3;
 
         // Setup bar colours

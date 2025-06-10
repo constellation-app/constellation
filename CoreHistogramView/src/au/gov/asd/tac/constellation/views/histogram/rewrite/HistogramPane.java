@@ -42,7 +42,6 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
@@ -344,15 +343,15 @@ public class HistogramPane extends BorderPane {
         actionsMenu.getItems().add(saveBinsToGraphMenuItem);
 
         final MenuItem saveBinsToClipboardMenuItem = new MenuItem("Save Bins to Clipboard");
-        //saveBinsToClipboardMenuItem.setOnAction(e -> topComponent.saveBinsToClipboard());
+        saveBinsToClipboardMenuItem.setOnAction(e -> topComponent.saveBinsToClipboard());
         actionsMenu.getItems().add(saveBinsToClipboardMenuItem);
 
         final MenuItem decreaseHeightBarMenuItem = new MenuItem("Decrease Height of Each Bin");
-        //decreaseHeightBarMenuItem.setOnAction(e -> topComponent.modifyBinHeight(-1));
+        decreaseHeightBarMenuItem.setOnAction(e -> topComponent.modifyBinHeight(-1));
         actionsMenu.getItems().add(decreaseHeightBarMenuItem);
 
         final MenuItem increaseHeightBarMenuItem = new MenuItem("Increase Height of Each Bin");
-        //increaseHeightBarMenuItem.setOnAction(e -> topComponent.modifyBinHeight(1));
+        increaseHeightBarMenuItem.setOnAction(e -> topComponent.modifyBinHeight(1));
         actionsMenu.getItems().add(increaseHeightBarMenuItem);
 
 //        labelsVBox.getChildren().add(filterLabel);
@@ -541,6 +540,14 @@ public class HistogramPane extends BorderPane {
         display.updateDisplay();
     }
 
+    public void decreaseBarHeight() {
+        display.decreaseBarHeight();
+    }
+
+    public void increaseBarHeight() {
+        display.increaseBarHeight();
+    }
+
     public void setBinCollection(final BinCollection binCollection, final BinIconMode binIconMode) {
         display.setBinCollection(binCollection, binIconMode);
     }
@@ -665,10 +672,6 @@ public class HistogramPane extends BorderPane {
         }
     }
 
-//    private void helpButtonMousePressed() {
-//        final HelpCtx help = new HelpCtx("au.gov.asd.tac.constellation.views.histogram.HistogramTopComponent");
-//        help.display();
-//    }
     private void saveBinsToGraph() {
         topComponent.saveBinsToGraph();
     }
