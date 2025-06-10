@@ -30,8 +30,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import javafx.scene.input.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.beans.PropertyChangeEvent;
@@ -42,6 +41,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -61,7 +61,7 @@ import javafx.scene.paint.Stop;
  * @author antares
  * @author sol695510
  */
-public class HistogramDisplay2 extends BorderPane implements MouseWheelListener, KeyListener, PropertyChangeListener, ComponentListener {
+public class HistogramDisplay2 extends BorderPane implements MouseWheelListener, PropertyChangeListener, ComponentListener {
 
     public static final Color BACKGROUND_COLOR = new Color(0x44, 0x44, 0x44);
     public static final String BACKGROUND_COLOR_STRING = "#424242";
@@ -186,6 +186,8 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
         this.setOnMouseDragged(e -> handleMouseDragged(e));
         this.setOnMouseReleased(e -> handleMouseReleased(e));
         this.setOnMouseEntered(e -> handleMouseEntered(e));
+
+        this.setOnKeyPressed(e -> handleKeyPressed(e));
 //        addMouseListener(this);
 //        addMouseMotionListener(this);
 //        addMouseWheelListener(this);
@@ -525,6 +527,7 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
      * @param includeCounts True if the counts corresponding to the values are also to be copied to the clipboard.
      */
     private void copySelectedToClipboard(final boolean includeCounts) {
+        System.out.println("copySelectedToClipboard " + includeCounts);
         final StringBuilder buf = new StringBuilder();
         for (final Bin bin : binCollection.getBins()) {
             // Check if the bar(s) on the Histogram are selected.
@@ -585,6 +588,7 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
 
     private void handleMouseReleased(final javafx.scene.input.MouseEvent e) {
         System.out.println("handleMouseReleased display2");
+        this.requestFocus();
         if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
             binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
             activeBin = dragStart == dragEnd ? dragStart : -1;
@@ -596,26 +600,18 @@ public class HistogramDisplay2 extends BorderPane implements MouseWheelListener,
 
     // TODO: check if this works
     private void handleMouseEntered(final javafx.scene.input.MouseEvent e) {
+        System.out.println("handleMouseEntered display2");
         this.requestFocus(); // Focus the Histogram View so 'key' actions can be registered.
+        //this.setFocused(true);
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-        // Override required, intentionally left blank
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-//        if (binCollection != null
-//                && this.isFocusOwner() // Check if Histogram Display is focused before allowing Ctrl + C to be registered.
-//                && ((e.isControlDown()) && (e.getKeyCode() == KeyEvent.VK_C))) {
-//            copySelectedToClipboard(false);
-//        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        // Override required, intentionally left blank
+    private void handleKeyPressed(final KeyEvent e) {
+        System.out.println("!!! keyPressed display2 " + e);
+        if (binCollection != null
+                && this.isFocused() // Check if Histogram Display is focused before allowing Ctrl + C to be registered.
+                && ((e.isControlDown()) && (e.getCode() == KeyCode.C))) {
+            copySelectedToClipboard(false);
+        }
     }
 
     @Override
