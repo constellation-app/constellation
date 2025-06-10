@@ -105,9 +105,8 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
         final ImageView warningImage = new ImageView(UserInterfaceIconProvider.WARNING.buildImage(20, new java.awt.Color(255, 128, 0)));
         final Tooltip warningToolTip = new Tooltip("This shortcut is currently assigned to another template");
-        if (!StringUtils.isBlank(keyboardShortcutLabel.getText())) {
-            keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
-        }
+                
+        keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
         keyboardShortcutLabel.setPadding(new Insets(2, 10, 2, 10));
         keyboardShortcutLabel.setGraphic(null);
         keyboardShortcutLabel.setTooltip(null);
@@ -115,11 +114,12 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
         shorcutWarningLabel = createLabel();
         shorcutWarningLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        shorcutWarningLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 11.5px; -fx-text-fill: " + ConstellationColor.DARK_ORANGE.getHtmlColor() + ";");
         GridPane.setHgrow(shorcutWarningLabel, Priority.ALWAYS);
         GridPane.setFillWidth(shorcutWarningLabel, true);
 
         shorcutWarningIconLabel = createLabel();
-        shorcutWarningIconLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        shorcutWarningIconLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);        
 
         keyboardShortcutSelectionResult = new KeyboardShortcutSelectionResult();
 
@@ -223,9 +223,9 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
         grid.add(textField, 0, 0, 7, 1);
 
-        grid.add(keyboardShortcutButton, 0, 1, 2, 1);
-        grid.add(keyboardShortcutLabel, 2, 1, 4, 1);
-        grid.add(shorcutWarningIconLabel, 6, 1, 1, 1);
+        grid.add(keyboardShortcutButton, 0, 1);
+        grid.add(keyboardShortcutLabel, 2, 1);
+        grid.add(shorcutWarningIconLabel, 6, 1);
 
         grid.add(shorcutWarningLabel, 0, 2, 7, 1);
 
