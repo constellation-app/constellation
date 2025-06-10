@@ -88,8 +88,7 @@ public class RecentGraphScreenshotUtilities {
         if (!saveDir.exists()) {
             saveDir.mkdir();
         } else if (!saveDir.isDirectory()) {
-            final String msg = String.format("Recent graph screenshots directory '%s' is not a directory", SCREENSHOTS_DIR);
-            LOGGER.warning(msg);
+            LOGGER.log(Level.WARNING, "Recent graph screenshots directory '{0}' is not a directory", SCREENSHOTS_DIR);
             return null;
         }
 
@@ -102,10 +101,9 @@ public class RecentGraphScreenshotUtilities {
      * @param filepath The filepath of the graph
      * @return MD5 hash of filepath
      */
-    protected static String hashFilePath(final String filepath) {
-        final MessageDigest md;
+    protected static String hashFilePath(final String filepath) { 
         try {
-            md = MessageDigest.getInstance("SHA-256");
+            final MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(filepath.getBytes(StandardCharsets.UTF_8));
             final byte[] digest = md.digest();
             return DatatypeConverter.printHexBinary(digest).toUpperCase();

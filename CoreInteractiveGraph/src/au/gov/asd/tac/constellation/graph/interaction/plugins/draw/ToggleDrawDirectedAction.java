@@ -19,18 +19,16 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.JToggleButton;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.actions.Presenter;
 
 /**
@@ -38,12 +36,12 @@ import org.openide.util.actions.Presenter;
  *
  * @author algol
  */
-@NbBundle.Messages("CTL_ToggleDrawDirectedAction=Toggle Draw Directed Transactions")
-public final class ToggleDrawDirectedAction extends AbstractAction implements Presenter.Toolbar {
+@Messages("CTL_ToggleDrawDirectedAction=Toggle Draw Directed Transactions")
+public final class ToggleDrawDirectedAction extends SimplePluginAction implements Presenter.Toolbar {
 
     private static final Icon DIRECTED_ICON = UserInterfaceIconProvider.DIRECTED.buildIcon(16);
     private static final Icon UNDIRECTED_ICON = UserInterfaceIconProvider.UNDIRECTED.buildIcon(16);
-    private final GraphNode context;
+    
     private final ButtonGroup buttonGroup;
 
     /**
@@ -53,7 +51,8 @@ public final class ToggleDrawDirectedAction extends AbstractAction implements Pr
      * @param buttonGroup The button group to which this action belongs.
      */
     public ToggleDrawDirectedAction(final GraphNode context, final ButtonGroup buttonGroup) {
-        this.context = context;
+        super(context, InteractiveGraphPluginRegistry.TOGGLE_DRAW_DIRECTED);
+        
         this.buttonGroup = buttonGroup;
         
         final boolean drawDirected;
@@ -64,12 +63,6 @@ public final class ToggleDrawDirectedAction extends AbstractAction implements Pr
         putValue(Action.SMALL_ICON, drawDirected ? DIRECTED_ICON : UNDIRECTED_ICON);
         putValue(Action.SHORT_DESCRIPTION, Bundle.CTL_ToggleDrawDirectedAction());
         putValue(Action.SELECTED_KEY, drawDirected);
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent ev) {
-        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.TOGGLE_DRAW_DIRECTED)
-                .executeLater(context.getGraph());
     }
 
     @Override

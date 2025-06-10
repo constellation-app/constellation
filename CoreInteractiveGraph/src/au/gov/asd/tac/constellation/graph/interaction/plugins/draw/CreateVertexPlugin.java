@@ -42,9 +42,9 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
 public final class CreateVertexPlugin extends SimpleEditPlugin {
 
-    public static final String X_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, VisualConcept.VertexAttribute.X.getName());
-    public static final String Y_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, VisualConcept.VertexAttribute.Y.getName());
-    public static final String Z_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, VisualConcept.VertexAttribute.Z.getName());
+    public static final String X_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, "x");
+    public static final String Y_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, "y");
+    public static final String Z_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, "z");
 
     @Override
     public PluginParameters createParameters() {
@@ -89,7 +89,7 @@ public final class CreateVertexPlugin extends SimpleEditPlugin {
         // add layer mask attributes
         if (graphLayerAttrId != Graph.NOT_FOUND && vxLayerAttrId != Graph.NOT_FOUND) {
             int layer = graph.getIntValue(graphLayerAttrId, 0);
-            layer = layer == 1 ? 1 : layer | (1 << 0);
+            layer = layer == 1 ? 1 : layer | 1;
             graph.setIntValue(vxLayerAttrId, vxId, layer);
         }
 

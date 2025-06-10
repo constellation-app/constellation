@@ -26,7 +26,7 @@ import javax.swing.Icon;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 
 /**
  *
@@ -35,7 +35,7 @@ import org.openide.util.NbBundle;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.zoom.ResetToYAxisAction")
 @ActionRegistration(displayName = "#CTL_ResetToYAxisAction", iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/zoom/resources/axis_y.png", surviveFocusChange = true)
 @ActionReference(path = "Menu/Display/Reset View by Axis", position = 300)
-@NbBundle.Messages("CTL_ResetToYAxisAction=Y Axis")
+@Messages("CTL_ResetToYAxisAction=Y Axis")
 public class ResetToYAxisAction extends AbstractAction {
 
     private final GraphNode context;

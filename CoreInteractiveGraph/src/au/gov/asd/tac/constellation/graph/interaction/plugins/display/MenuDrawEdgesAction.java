@@ -27,7 +27,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * This class produces a menu action for the 'record video' action available on
+ * This class produces a menu action for the 'set draw edges' action available on
  * the graph toolbar.
  *
  * @author altair
@@ -35,9 +35,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.display.MenuDrawEdgesAction")
 @ActionRegistration(displayName = "#CTL_MenuDrawEdgesAction", lazy = false)
 @ActionReference(path = "Menu/Display/Connection Types", position = 200)
-@Messages({
-    "CTL_MenuDrawEdgesAction=Edges"
-})
+@Messages("CTL_MenuDrawEdgesAction=Edges")
 public class MenuDrawEdgesAction extends MenuBaseAction {
     
     public MenuDrawEdgesAction() {

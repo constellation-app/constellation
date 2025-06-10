@@ -84,7 +84,7 @@ public final class CreateTransactionPlugin extends SimpleEditPlugin {
         // add layer mask attributes
         if (graphLayerAttrId != Graph.NOT_FOUND && txLayerAttrId != Graph.NOT_FOUND) {
             int layer = graph.getIntValue(graphLayerAttrId, 0);
-            layer = layer == 1 ? 1 : layer | (1 << 0);
+            layer = layer == 1 ? 1 : layer | 1;
             graph.setIntValue(txLayerAttrId, txId, layer);
         }
         graph.getSchema().newTransaction(graph, txId);

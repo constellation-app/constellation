@@ -38,7 +38,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataFolder;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -46,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author antares
  */
 @ServiceProvider(service = Plugin.class)
-@NbBundle.Messages("SaveGraphPlugin=Save Graph")
+@Messages("SaveGraphPlugin=Save Graph")
 @PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
 public class SaveGraphPlugin extends SimplePlugin {
 

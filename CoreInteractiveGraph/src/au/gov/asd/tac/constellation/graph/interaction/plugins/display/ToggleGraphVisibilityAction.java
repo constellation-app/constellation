@@ -46,6 +46,7 @@ public final class ToggleGraphVisibilityAction extends AbstractAction implements
 
     private static final Icon HIDDEN_ICON = UserInterfaceIconProvider.HIDDEN.buildIcon(16, Color.BLACK);
     private static final Icon VISIBLE_ICON = UserInterfaceIconProvider.VISIBLE.buildIcon(16, Color.BLACK);
+    
     private final GraphNode context;
 
     /**
@@ -67,7 +68,7 @@ public final class ToggleGraphVisibilityAction extends AbstractAction implements
         final boolean visibleAboveThreshold = isCurrentVisibility(context.getGraph());
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.SET_VISIBLE_ABOVE_THRESHOLD)
                 .withParameter(SetVisibleAboveThresholdPlugin.FLAG_PARAMETER_ID, !visibleAboveThreshold)
-                .executeLater(this.context.getGraph());
+                .executeLater(context.getGraph());
     }
 
     @Override

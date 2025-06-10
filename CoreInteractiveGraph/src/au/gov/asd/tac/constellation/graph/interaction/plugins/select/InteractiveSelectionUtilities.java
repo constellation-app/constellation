@@ -23,9 +23,9 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
  *
  * @author antares
  */
-public class SelectionUtilities {
+public class InteractiveSelectionUtilities {
     
-    private SelectionUtilities() {
+    private InteractiveSelectionUtilities() {
         throw new IllegalStateException("Utility class");
     }
     

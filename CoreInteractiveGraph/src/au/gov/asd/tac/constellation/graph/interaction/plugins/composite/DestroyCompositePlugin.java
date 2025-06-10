@@ -38,7 +38,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
@@ -53,7 +53,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = ContextMenuProvider.class, position = 600),
     @ServiceProvider(service = Plugin.class)
 })
-@NbBundle.Messages("DestroyCompositePlugin=Destroy Composite")
+@Messages("DestroyCompositePlugin=Destroy Composite")
 @PluginInfo(pluginType = PluginType.DELETE, tags = {PluginTags.DELETE})
 public class DestroyCompositePlugin extends SimpleEditPlugin implements ContextMenuProvider {
 

@@ -35,9 +35,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.display.MenuDrawNodesAction")
 @ActionRegistration(displayName = "#CTL_MenuDrawNodesAction", lazy = false)
 @ActionReference(path = "Menu/Display/Element Visibility", position = 100)
-@Messages({
-    "CTL_MenuDrawNodesAction=Nodes"
-})
+@Messages("CTL_MenuDrawNodesAction=Nodes")
 public class MenuDrawNodesAction extends MenuBaseAction {
     
     public MenuDrawNodesAction() {

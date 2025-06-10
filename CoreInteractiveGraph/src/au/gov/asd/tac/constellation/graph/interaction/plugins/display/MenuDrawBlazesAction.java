@@ -27,7 +27,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * This class produces a menu action for the 'set draw nodes' action available
+ * This class produces a menu action for the 'set draw blazes' action available
  * on the graph toolbar.
  *
  * @author altair
@@ -35,9 +35,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.display.MenuDrawBlazesAction")
 @ActionRegistration(displayName = "#CTL_MenuDrawBlazesAction", lazy = false)
 @ActionReference(path = "Menu/Display/Element Visibility", position = 500)
-@Messages({
-    "CTL_MenuDrawBlazesAction=Blazes"
-})
+@Messages("CTL_MenuDrawBlazesAction=Blazes")
 public class MenuDrawBlazesAction extends MenuBaseAction {
     
     public MenuDrawBlazesAction() {

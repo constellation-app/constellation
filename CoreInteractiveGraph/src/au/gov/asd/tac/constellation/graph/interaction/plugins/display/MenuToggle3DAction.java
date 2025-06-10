@@ -33,15 +33,12 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.display.Menu3DAction")
 @ActionRegistration(displayName = "#CTL_MenuToggle3DAction", lazy = false)
 @ActionReference(path = "Menu/Display", position = 100)
-@Messages({
-    "CTL_MenuToggle3DAction=3D"
-})
+@Messages("CTL_MenuToggle3DAction=3D")
 public class MenuToggle3DAction extends MenuBaseAction {
     
     public MenuToggle3DAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuToggle3DAction(), true);
-
     }
 
     @Override

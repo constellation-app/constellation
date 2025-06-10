@@ -147,7 +147,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
             }
 
             // Convert world coordinates to camera coordinates.
-            final Vector3f sceneLocation = SelectionUtilities.convertWorldToScene(x, y, z, centre, rotationMatrix, cameraDistance);
+            final Vector3f sceneLocation = InteractiveSelectionUtilities.convertWorldToScene(x, y, z, centre, rotationMatrix, cameraDistance);
             final int rAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(graph);
             final float r = graph.getFloatValue(rAttr, vxId);
 
@@ -254,7 +254,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         verticalOffsetHi = hi.getY();
                     }
 
-                    final boolean intersects = SelectionUtilities.lineSegmentIntersectsRectangle(horizontalOffsetLo, verticalOffsetLo,
+                    final boolean intersects = InteractiveSelectionUtilities.lineSegmentIntersectsRectangle(horizontalOffsetLo, verticalOffsetLo,
                             horizontalOffsetHi, verticalOffsetHi, left, bottom, right, top);
 
                     if (intersects) {

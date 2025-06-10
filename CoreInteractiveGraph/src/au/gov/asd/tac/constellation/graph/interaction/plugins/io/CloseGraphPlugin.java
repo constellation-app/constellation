@@ -34,7 +34,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import javax.swing.SwingUtilities;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -43,7 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author antares
  */
 @ServiceProvider(service = Plugin.class)
-@NbBundle.Messages("CloseGraphPlugin=Close Graph")
+@Messages("CloseGraphPlugin=Close Graph")
 @PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.LOW_LEVEL})
 public class CloseGraphPlugin extends SimplePlugin {
 

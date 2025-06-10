@@ -96,13 +96,13 @@ public final class Autosaver implements Runnable {
             public void run() {
                 setName(AUTOSAVE_THREAD_NAME);
                 final List<String> graphIds = GraphNode.getGraphIDs();
-                for (String id : graphIds) {
+                for (final String id : graphIds) {
                     final Graph graph = GraphNode.getGraph(id);
 
                     // Get the modification count
                     final Long lastAutosaveModificationCounter = LAST_AUTOSAVE.get(id);
 
-                    long newAutosaveModificationCounter;
+                    final long newAutosaveModificationCounter;
                     try (final ReadableGraph rg = graph.getReadableGraph()) {
                         newAutosaveModificationCounter = rg.getGlobalModificationCounter();
                     }

@@ -27,7 +27,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * This class produces a menu action for the 'set draw nodes' action available
+ * This class produces a menu action for the 'set draw connection labels' action available
  * on the graph toolbar.
  *
  * @author altair
@@ -35,9 +35,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.display.MenuDrawConnectionLabelsAction")
 @ActionRegistration(displayName = "#CTL_MenuDrawConnectionLabelsAction", lazy = false)
 @ActionReference(path = "Menu/Display/Element Visibility", position = 400)
-@Messages({
-    "CTL_MenuDrawConnectionLabelsAction=Connection Labels"
-})
+@Messages("CTL_MenuDrawConnectionLabelsAction=Connection Labels")
 public class MenuDrawConnectionLabelsAction extends MenuBaseAction {
     
     public MenuDrawConnectionLabelsAction() {

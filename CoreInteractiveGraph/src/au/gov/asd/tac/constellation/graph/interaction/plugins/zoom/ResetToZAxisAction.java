@@ -26,7 +26,7 @@ import javax.swing.Icon;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 
 /**
  *
@@ -35,7 +35,7 @@ import org.openide.util.NbBundle;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.zoom.ResetToZAxisAction")
 @ActionRegistration(displayName = "#CTL_ResetToZAxisAction", iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/zoom/resources/axis_z.png", surviveFocusChange = true)
 @ActionReference(path = "Menu/Display/Reset View by Axis", position = 500)
-@NbBundle.Messages("CTL_ResetToZAxisAction=Z Axis")
+@Messages("CTL_ResetToZAxisAction=Z Axis")
 public class ResetToZAxisAction extends AbstractAction {
 
     private final GraphNode context;

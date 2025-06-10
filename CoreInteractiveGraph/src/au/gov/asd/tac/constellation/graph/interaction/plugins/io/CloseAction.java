@@ -36,9 +36,7 @@ import org.openide.util.NbBundle.Messages;
  * @author antares
  */
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.functionality.CloseAction")
-@ActionRegistration(displayName = "#CTL_CloseAction",
-        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/io/resources/closeGraph.png",
-        surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_CloseAction", iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/io/resources/closeGraph.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/File", position = 500),
     @ActionReference(path = "Shortcuts", name = "C-W")
@@ -63,8 +61,7 @@ public final class CloseAction extends AbstractAction {
     @Override
     public void actionPerformed(final ActionEvent e) {
         try {
-            PluginExecution
-                    .withPlugin(InteractiveGraphPluginRegistry.CLOSE_GRAPH)
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.CLOSE_GRAPH)
                     .withParameter(CloseGraphPlugin.GRAPH_PARAMETER_ID, context.getGraph().getId())
                     .executeNow(context.getGraph());
         } catch (final InterruptedException ex) {

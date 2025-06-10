@@ -22,7 +22,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 
 /**
  * Zoom the camera inwards
@@ -37,7 +37,7 @@ import org.openide.util.NbBundle;
     @ActionReference(path = "Shortcuts", name = "D-EQUALS"),
     @ActionReference(path = "Shortcuts", name = "D-ADD")
 })
-@NbBundle.Messages("CTL_ZoomIn=Zoom In")
+@Messages("CTL_ZoomIn=Zoom In")
 public final class ZoomInAction extends SimplePluginAction {
     
     public ZoomInAction(final GraphNode context) {

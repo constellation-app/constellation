@@ -29,7 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author arcturus
  */
 @ServiceProvider(service = Plugin.class)
-@NbBundle.Messages("ToggleDrawFlagPlugin=Toggle Draw Flag")
+@Messages("ToggleDrawFlagPlugin=Toggle Draw Flag")
 @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.LOW_LEVEL})
 public class ToggleDrawFlagPlugin extends SimpleEditPlugin {
 

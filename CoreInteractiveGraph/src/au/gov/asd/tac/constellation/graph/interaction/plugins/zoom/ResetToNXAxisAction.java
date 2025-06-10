@@ -26,7 +26,7 @@ import javax.swing.Icon;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 
 /**
  *
@@ -35,7 +35,7 @@ import org.openide.util.NbBundle;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.zoom.ResetToNXAxisAction")
 @ActionRegistration(displayName = "#CTL_ResetToNXAxisAction", iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/zoom/resources/axis_x_negative.png", surviveFocusChange = true)
 @ActionReference(path = "Menu/Display/Reset View by Axis", position = 200)
-@NbBundle.Messages("CTL_ResetToNXAxisAction=-X Axis")
+@Messages("CTL_ResetToNXAxisAction=-X Axis")
 public class ResetToNXAxisAction extends AbstractAction {
 
     private final GraphNode context;
