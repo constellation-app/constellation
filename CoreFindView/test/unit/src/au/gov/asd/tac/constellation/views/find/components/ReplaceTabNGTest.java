@@ -212,12 +212,14 @@ public class ReplaceTabNGTest {
         final TextField findTextField = new TextField("test");
         final TextField repalceTextField = new TextField("replace");
         final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
+        final CheckBox replaceEmptyCheckBox = new CheckBox("With Nothing?");
 
         //Mock the getters to return the newly made java fx element.
         when(replaceMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(replaceMock.getFindTextField()).thenReturn(findTextField);
         when(replaceMock.getReplaceTextField()).thenReturn(repalceTextField);
         when(replaceMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        when(replaceMock.getReplaceEmptyCheckBox()).thenReturn(replaceEmptyCheckBox);
         zoomToSelectionCheckBox.setSelected(false);
 
         //Do nothing on saveSelected() and updateBasicFindParamters()
@@ -268,12 +270,14 @@ public class ReplaceTabNGTest {
         final TextField findTextField = new TextField("test");
         final TextField repalceTextField = new TextField("replace");
         final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
+        final CheckBox replaceEmptyCheckBox = new CheckBox("With Nothing?");
 
         //Mock the getters to return the newly made java fx element.
         when(replaceMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(replaceMock.getFindTextField()).thenReturn(findTextField);
         when(replaceMock.getReplaceTextField()).thenReturn(repalceTextField);
         when(replaceMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        when(replaceMock.getReplaceEmptyCheckBox()).thenReturn(replaceEmptyCheckBox);
         zoomToSelectionCheckBox.setSelected(false);
 
         //Do nothing on saveSelected() and updateBasicFindParamters()
