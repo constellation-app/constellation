@@ -161,7 +161,7 @@ public class TreeNode<T> {
      * @param searchNode the node to look within
      * @return the node within searchNode that matches nodeToFind
      */
-    public static TreeNode search(final TOCItem findItem, final TreeNode<?> searchNode) {
+    public static TreeNode<?> search(final TOCItem findItem, final TreeNode<?> searchNode) {
         if (searchNode != null) {
             final TOCItem searchTOC = (TOCItem) searchNode.getData();
             if (searchTOC != null && searchTOC.equals(findItem)) {
@@ -189,14 +189,12 @@ public class TreeNode<T> {
      */
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof TreeNode && ((((TreeNode) (obj)).getData() == null && data == null)
-                || ((TreeNode) (obj)).getData() != null && (((TreeNode) (obj)).getData().equals(data)));
+        return obj instanceof TreeNode treeNode && ((treeNode.getData() == null && data == null)
+                || treeNode.getData() != null && treeNode.getData().equals(data));
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + Objects.hashCode(this.data);
-        return hash;
+        return 37 * 7 + Objects.hashCode(this.data);
     }
 }

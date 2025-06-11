@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.scripting;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,9 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 2200)
 @NbBundle.Messages("ScriptingViewHelpProvider=Scripting View Help Provider")
 public class ScriptingViewHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
-    private static final String SEP = File.separator;
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreScriptingView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -42,11 +40,9 @@ public class ScriptingViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String scriptingModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreScriptingView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP
-                + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "scripting" + SEP;
 
-        map.put("au.gov.asd.tac.constellation.views.scripting.javadocs", scriptingModulePath + "docs" + SEP + "javadoc" + SEP + "help-doc.md");
-        map.put("au.gov.asd.tac.constellation.views.scripting.ScriptingViewTopComponent", scriptingModulePath + "scripting-view.md");
+        map.put("au.gov.asd.tac.constellation.views.scripting.javadocs", MODULE_PATH + "docs" + SEP + "javadoc" + SEP + "help-doc.md");
+        map.put("au.gov.asd.tac.constellation.views.scripting.ScriptingViewTopComponent", MODULE_PATH + "scripting-view.md");
         return map;
     }
 
@@ -57,7 +53,6 @@ public class ScriptingViewHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        return "ext" + SEP + "docs" + SEP + "CoreScriptingView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
-                + CODEBASE_NAME + SEP + "views" + SEP + "scripting" + SEP + "scripting-toc.xml";
+        return MODULE_PATH + "scripting-toc.xml";
     }
 }
