@@ -211,7 +211,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         return graphNode == null ? null : graphNode.getUndoRedoManager();
     }
 
-    //TODO uncomment coded when we have display and controls sorted out
     @Override
     public void graphChanged(GraphChangeEvent evt) {
         super.graphChanged(evt);
@@ -220,113 +219,116 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
 
         evt = evt.getLatest();
-        if (evt.getId() > latestGraphChangeID) {
-            latestGraphChangeID = evt.getId();
+        if (evt.getId() <= latestGraphChangeID) {
+            return;
+        }
 
-            if (currentGraph != null) {
+        latestGraphChangeID = evt.getId();
 
-                boolean binCollectionModified = false;
-                try (final ReadableGraph rg = currentGraph.getReadableGraph()) {
+        if (currentGraph == null) {
+            return;
+        }
 
-                    long oldGlobalModificationCount = currentGlobalModificationCount;
-                    currentGlobalModificationCount = rg.getGlobalModificationCounter();
+        boolean binCollectionModified = false;
+        try (final ReadableGraph rg = currentGraph.getReadableGraph()) {
 
-                    long oldAttributeModificationCount = currentAttributeModificationCount;
-                    currentAttributeModificationCount = rg.getAttributeModificationCounter();
+            final long oldGlobalModificationCount = currentGlobalModificationCount;
+            currentGlobalModificationCount = rg.getGlobalModificationCounter();
 
-                    long oldStructureModificationCount = currentStructureModificationCount;
-                    currentStructureModificationCount = rg.getStructureModificationCounter();
+            if (currentGlobalModificationCount == oldGlobalModificationCount) {
+                return;
+            }
 
-                    if (currentGlobalModificationCount != oldGlobalModificationCount) {
+            final long oldAttributeModificationCount = currentAttributeModificationCount;
+            currentAttributeModificationCount = rg.getAttributeModificationCounter();
 
-                        if (currentAttributeModificationCount != oldAttributeModificationCount
-                                || currentStructureModificationCount != oldStructureModificationCount) {
-                            reset(rg);
-                            return;
-                        }
+            final long oldStructureModificationCount = currentStructureModificationCount;
+            currentStructureModificationCount = rg.getStructureModificationCounter();
 
-                        if (CURRENT_TIME_ZONE_ATTRIBUTE != Graph.NOT_FOUND && currentTimeZoneModificationCount != rg.getValueModificationCounter(CURRENT_TIME_ZONE_ATTRIBUTE)) {
-                            currentTimeZoneModificationCount = rg.getValueModificationCounter(CURRENT_TIME_ZONE_ATTRIBUTE);
-                            reset(rg);
-                            return;
-                        }
+            if (currentAttributeModificationCount != oldAttributeModificationCount
+                    || currentStructureModificationCount != oldStructureModificationCount) {
+                reset(rg);
+                return;
+            }
 
-                        if (binnedAttribute != Graph.NOT_FOUND) {
-                            long oldBinnedModificationCount = currentBinnedModificationCount;
-                            currentBinnedModificationCount = rg.getValueModificationCounter(binnedAttribute);
-                            if (currentBinnedModificationCount != oldBinnedModificationCount) {
-                                reset();
-                                return;
-                            }
-                        }
+            if (CURRENT_TIME_ZONE_ATTRIBUTE != Graph.NOT_FOUND && currentTimeZoneModificationCount != rg.getValueModificationCounter(CURRENT_TIME_ZONE_ATTRIBUTE)) {
+                currentTimeZoneModificationCount = rg.getValueModificationCounter(CURRENT_TIME_ZONE_ATTRIBUTE);
+                reset(rg);
+                return;
+            }
 
-                        HistogramState oldHistogramState = currentHistogramState;
-                        if (histogramStateAttribute != Graph.NOT_FOUND) {
-                            currentHistogramState = (HistogramState) rg.getObjectValue(histogramStateAttribute, 0);
-                            if (currentHistogramState == null) {
-                                currentHistogramState = new HistogramState();
-                            }
-                        } else {
-                            currentHistogramState = new HistogramState();
-                        }
-
-                        // Ensure that the HistogramState is compatible with the current graph.
-                        currentHistogramState.validate(rg);
-
-                        if (currentHistogramState != oldHistogramState) {
-
-                            if (oldHistogramState == null || currentHistogramState.getElementType() != oldHistogramState.getElementType()
-                                    || currentHistogramState.getAttributeType() != oldHistogramState.getAttributeType()
-                                    || currentHistogramState.getBinFormatter() != oldHistogramState.getBinFormatter()
-                                    || currentHistogramState.getBinFormatterParameters() != oldHistogramState.getBinFormatterParameters()) {
-                                reset(rg);
-                                return;
-                            }
-
-                            String currentAttribute = currentHistogramState.getAttribute();
-                            if (currentAttribute == null ? oldHistogramState.getAttribute() != null : !currentAttribute.equals(oldHistogramState.getAttribute())) {
-                                reset(rg);
-                                return;
-                            }
-
-                            if ((currentFilter == null && currentHistogramState.getFilter(currentHistogramState.getElementType()) != null)
-                                    || (currentFilter != null && currentFilter != currentHistogramState.getFilter(currentHistogramState.getElementType()))) {
-                                reset(rg);
-                                return;
-                            }
-
-                            if (currentHistogramState.getBinComparator() != oldHistogramState.getBinComparator() && currentBinCollection != null) {
-                                currentBinCollection.sort(currentHistogramState.getBinComparator());
-                                binCollectionModified = true;
-                            }
-
-                            if (currentHistogramState.getBinSelectionMode() != oldHistogramState.getBinSelectionMode() && currentBinCollection != null) {
-                                //display.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
-                                histogramPane.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
-                                binCollectionModified = true;
-                            }
-                            histogramPane.setHistogramState(currentHistogramState, binCreators);
-                        }
-
-                        if (selectedAttribute != Graph.NOT_FOUND) {
-                            long oldSelectedModificationCount = currentSelectedModificationCount;
-                            currentSelectedModificationCount = rg.getValueModificationCounter(selectedAttribute);
-                            if (currentSelectedModificationCount != oldSelectedModificationCount && currentBinCollection != null) {
-                                currentBinCollection.updateSelection(rg);
-                                if (currentHistogramState.getBinComparator().usesSelection()) {
-                                    currentBinCollection.sort(currentHistogramState.getBinComparator());
-                                }
-                                binCollectionModified = true;
-                            }
-                        }
-
-                        if (binCollectionModified) {
-                            histogramPane.updateBinCollection();
-                        }
-                    }
-
+            if (binnedAttribute != Graph.NOT_FOUND) {
+                long oldBinnedModificationCount = currentBinnedModificationCount;
+                currentBinnedModificationCount = rg.getValueModificationCounter(binnedAttribute);
+                if (currentBinnedModificationCount != oldBinnedModificationCount) {
+                    reset();
+                    return;
                 }
             }
+
+            HistogramState oldHistogramState = currentHistogramState;
+            if (histogramStateAttribute != Graph.NOT_FOUND) {
+                currentHistogramState = (HistogramState) rg.getObjectValue(histogramStateAttribute, 0);
+                if (currentHistogramState == null) {
+                    currentHistogramState = new HistogramState();
+                }
+            } else {
+                currentHistogramState = new HistogramState();
+            }
+
+            // Ensure that the HistogramState is compatible with the current graph.
+            currentHistogramState.validate(rg);
+
+            if (currentHistogramState != oldHistogramState) {
+
+                if (oldHistogramState == null || currentHistogramState.getElementType() != oldHistogramState.getElementType()
+                        || currentHistogramState.getAttributeType() != oldHistogramState.getAttributeType()
+                        || currentHistogramState.getBinFormatter() != oldHistogramState.getBinFormatter()
+                        || currentHistogramState.getBinFormatterParameters() != oldHistogramState.getBinFormatterParameters()) {
+                    reset(rg);
+                    return;
+                }
+
+                String currentAttribute = currentHistogramState.getAttribute();
+                if (currentAttribute == null ? oldHistogramState.getAttribute() != null : !currentAttribute.equals(oldHistogramState.getAttribute())) {
+                    reset(rg);
+                    return;
+                }
+
+                if ((currentFilter == null && currentHistogramState.getFilter(currentHistogramState.getElementType()) != null)
+                        || (currentFilter != null && currentFilter != currentHistogramState.getFilter(currentHistogramState.getElementType()))) {
+                    reset(rg);
+                    return;
+                }
+
+                if (currentHistogramState.getBinComparator() != oldHistogramState.getBinComparator() && currentBinCollection != null) {
+                    currentBinCollection.sort(currentHistogramState.getBinComparator());
+                    binCollectionModified = true;
+                }
+
+                if (currentHistogramState.getBinSelectionMode() != oldHistogramState.getBinSelectionMode() && currentBinCollection != null) {
+                    histogramPane.setBinSelectionMode(currentHistogramState.getBinSelectionMode());
+                    binCollectionModified = true;
+                }
+                histogramPane.setHistogramState(currentHistogramState, binCreators);
+            }
+
+            if (selectedAttribute != Graph.NOT_FOUND) {
+                long oldSelectedModificationCount = currentSelectedModificationCount;
+                currentSelectedModificationCount = rg.getValueModificationCounter(selectedAttribute);
+                if (currentSelectedModificationCount != oldSelectedModificationCount && currentBinCollection != null) {
+                    currentBinCollection.updateSelection(rg);
+                    if (currentHistogramState.getBinComparator().usesSelection()) {
+                        currentBinCollection.sort(currentHistogramState.getBinComparator());
+                    }
+                    binCollectionModified = true;
+                }
+            }
+
+            if (binCollectionModified) {
+                histogramPane.updateBinCollection();
+            }
+
         }
     }
 
