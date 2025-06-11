@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
 import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -75,7 +74,6 @@ public class HistogramDisplay2 extends BorderPane {
     private static final Color CLICK_AREA_COLOR = BACKGROUND_COLOR.brighter();
     private static final Color ACTIVE_AREA_COLOR = CLICK_AREA_COLOR.brighter();
     private static final String NO_DATA = "<No Data>";
-    private static final Font FONT = FontUtilities.getOutputFont();
     private static final int GAP_BETWEEN_BARS = 5;
     public static final int MINIMUM_BAR_HEIGHT = FontUtilities.getApplicationFontSize() <= 18 ? 18 : FontUtilities.getApplicationFontSize(); // Set back to private after histogram rewrite fully replaces old version
     public static final int MAXIMUM_BAR_HEIGHT = FontUtilities.getApplicationFontSize() <= 18 ? 18 : FontUtilities.getApplicationFontSize() + 10; // Set back to private after histogram rewrite fully replaces old version
@@ -84,7 +82,6 @@ public class HistogramDisplay2 extends BorderPane {
     private static final int MINIMUM_SELECTED_WIDTH = 3;
     private static final int MINIMUM_TEXT_WIDTH = 150;
     private static final int PREFERRED_HEIGHT = 600;
-    private static final int MIN_FONT_SIZE = FontUtilities.getApplicationFontSize();
     private static final int TOP_MARGIN = 3;
     private static final int BOTTOM_MARGIN = 3;
     private static final int LEFT_MARGIN = 3;
@@ -124,6 +121,8 @@ public class HistogramDisplay2 extends BorderPane {
     private static final int COLUMNS_SPACING = 5;
     private double prevWidth = 0;
 
+    private static final float FONT_SCALE_FACTOR = 0.66f;
+
     //private final static javafx.scene.paint.Color LIGHT_GREY = javafx.scene.paint.Color.color(192, 192, 192);
     public HistogramDisplay2(final HistogramTopComponent2 topComponent) {
         this.topComponent = topComponent;
@@ -152,6 +151,7 @@ public class HistogramDisplay2 extends BorderPane {
 
         propertyColumn.setMinWidth(MINIMUM_TEXT_WIDTH);
         propertyColumn.setSpacing(ROWS_SPACING);
+        propertyColumn.setAlignment(Pos.CENTER_LEFT);
 
         barColumn.setSpacing(ROWS_SPACING);
         HBox.setHgrow(barColumn, Priority.ALWAYS);
@@ -168,9 +168,7 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     public final void initializeSettings() {
-        //setBackground(BACKGROUND_COLOR);
         setStyle("-fx-background-color: " + BACKGROUND_COLOR_STRING + ";");
-        //this.setFocusable(true); // Set the Histogram View able to be focused.
         requestFocus(); // Focus the Histogram View so 'key' actions can be registered.
     }
 
@@ -183,13 +181,6 @@ public class HistogramDisplay2 extends BorderPane {
         this.setOnMouseEntered(e -> handleMouseEntered(e));
 
         this.setOnKeyPressed(e -> handleKeyPressed(e));
-//        addMouseListener(this);
-//        addMouseMotionListener(this);
-    }
-
-//    @Override
-    public Dimension getMinimumSize() {
-        return new Dimension(0, 0);
     }
 
     public void setBinCollection(final BinCollection binCollection, final BinIconMode binIconMode) {
@@ -297,11 +288,20 @@ public class HistogramDisplay2 extends BorderPane {
                 final Label headerCount = new Label(COUNT);
                 final Label headerTotalBins = new Label(TOTAL_BINS_COUNT + binCollection.getSelectedBins().length + "/" + bins.length);
 
+                final double fontSize = barHeight * FONT_SCALE_FACTOR;
+                headerValue.setStyle("-fx-font-size: " + fontSize);
+                headerCount.setStyle("-fx-font-size: " + fontSize);
+                headerTotalBins.setStyle("-fx-font-size: " + fontSize);
+
+                headerValue.setMinHeight(barHeight);
+
                 final Pane spacer = new Pane();
                 HBox.setHgrow(spacer, Priority.ALWAYS);
 
                 propertyColumn.getChildren().add(headerValue);
                 final HBox headerRow = new HBox();
+                headerRow.setAlignment(Pos.CENTER_RIGHT);
+                headerRow.setMinHeight(barHeight);
                 headerRow.getChildren().addAll(headerCount, spacer, headerTotalBins);
                 barColumn.getChildren().add(headerRow);
 
@@ -324,6 +324,8 @@ public class HistogramDisplay2 extends BorderPane {
                         propertyValue.setTextFill(javafx.scene.paint.Color.grayRgb(192));
                     }
 
+                    // For some reason, setting font size with setFont() doesn't work. So the styling is set like this
+                    propertyValue.setStyle("-fx-font-size: " + fontSize);
                     propertyValue.setMinHeight(barHeight);
                     propertyValuesArray[bar] = propertyValue;
                 }
