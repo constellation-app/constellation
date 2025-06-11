@@ -150,7 +150,7 @@ public class ReplaceTab extends BasicFindTab {
      * FindViewController to call the replacePlugin.
      */
     public void replaceAllAction() {
-        if (!getFindTextField().getText().isEmpty() && (getReplaceTextField().getText().isEmpty() && getReplaceEmptyCheckBox().isSelected())) {
+        if (!getFindTextField().getText().isEmpty() && (!getReplaceTextField().getText().isEmpty() || getReplaceEmptyCheckBox().isSelected())) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
             FindViewController.getDefault().replaceMatchingElements(true, false, getZoomToSelection().isSelected());
@@ -165,7 +165,7 @@ public class ReplaceTab extends BasicFindTab {
      * FindViewController to call the replacePlugin.
      */
     public void replaceNextAction() {
-        if (!getFindTextField().getText().isEmpty() && (getReplaceTextField().getText().isEmpty() && getReplaceEmptyCheckBox().isSelected())) {
+        if (!getFindTextField().getText().isEmpty() && (!getReplaceTextField().getText().isEmpty() || getReplaceEmptyCheckBox().isSelected())) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
             FindViewController.getDefault().replaceMatchingElements(false, true, getZoomToSelection().isSelected());
