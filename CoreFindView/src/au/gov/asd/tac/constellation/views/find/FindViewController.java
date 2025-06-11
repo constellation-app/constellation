@@ -337,8 +337,8 @@ public class FindViewController {
      * @param replaceAll true if replacing all matching elements
      * @param replaceNext true if replacing just the next element
      */
-    public void replaceMatchingElements(final boolean replaceAll, final boolean replaceNext, final boolean zoomToSelection) {
-        final ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, replaceAll, replaceNext, zoomToSelection);
+    public void replaceMatchingElements(final boolean replaceAll, final boolean replaceNext, final boolean zoomToSelection, final boolean replaceEmpty) {
+        final ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, replaceAll, replaceNext, zoomToSelection, replaceEmpty);
 
         /**
          * If search all graphs is true, execute the replace plugin on all open

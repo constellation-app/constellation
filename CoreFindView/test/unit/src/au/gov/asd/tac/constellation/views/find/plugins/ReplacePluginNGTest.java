@@ -126,7 +126,7 @@ public class ReplacePluginNGTest {
         setupGraph();
         attributeList.addAll(getAttributes());
 
-        ReplacePlugin replacePlugin = new ReplacePlugin(parameters, true, false, false);
+        ReplacePlugin replacePlugin = new ReplacePlugin(parameters, true, false, false, false);
         PluginExecution.withPlugin(replacePlugin).executeNow(graph);
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             /**
@@ -143,7 +143,7 @@ public class ReplacePluginNGTest {
          * Testing replacing next for the word "replaced" and replacing it with
          * "next". vxId1 label should now be "next"
          */
-        replacePlugin = new ReplacePlugin(parametersReplaceNext, false, true, false);
+        replacePlugin = new ReplacePlugin(parametersReplaceNext, false, true, false, false);
         PluginExecution.withPlugin(replacePlugin).executeNow(graph);
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             assertEquals(rg.getStringValue(labelV, vxId1), "next");
@@ -167,7 +167,7 @@ public class ReplacePluginNGTest {
          * Replace anything with "ne*" in regEx format with "test" vxId1 and 2
          * labels should convert from "next" to "testxt"
          */
-        replacePlugin = new ReplacePlugin(parametersReplaceRegEx, true, false, false);
+        replacePlugin = new ReplacePlugin(parametersReplaceRegEx, true, false, false, false);
         PluginExecution.withPlugin(replacePlugin).executeNow(graph);
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             assertEquals(rg.getStringValue(labelV, vxId1), "testxt");
@@ -190,7 +190,7 @@ public class ReplacePluginNGTest {
             wg.commit();
         }
 
-        replacePlugin = new ReplacePlugin(parametersReplaceIgnoreCase, true, false, false);
+        replacePlugin = new ReplacePlugin(parametersReplaceIgnoreCase, true, false, false, false);
         PluginExecution.withPlugin(replacePlugin).executeNow(graph);
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             assertEquals(rg.getStringValue(labelV, vxId1), "test");
@@ -213,7 +213,7 @@ public class ReplacePluginNGTest {
             wg.commit();
         }
 
-        replacePlugin = new ReplacePlugin(parametersReplaceInSelected, true, false, false);
+        replacePlugin = new ReplacePlugin(parametersReplaceInSelected, true, false, false, false);
         PluginExecution.withPlugin(replacePlugin).executeNow(graph);
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             assertEquals(rg.getStringValue(labelV, vxId1), "replaced");
@@ -230,7 +230,7 @@ public class ReplacePluginNGTest {
     public void testGetName() {
         System.out.println("getName");
 
-        ReplacePlugin instance = new ReplacePlugin(parameters, true, false, false);
+        ReplacePlugin instance = new ReplacePlugin(parameters, true, false, false, false);
         String expResult = "Find/Replaces String attribute values";
         String result = instance.getName();
         assertEquals(result, expResult);

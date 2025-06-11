@@ -199,7 +199,7 @@ public class ReplaceTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
+        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false), Mockito.eq(false));
 
         /**
          * Create a basicFindMock and adds a temporary choice box and textFild
@@ -240,7 +240,7 @@ public class ReplaceTabNGTest {
 
             verify(replaceMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(replaceMock, times(1)).updateBasicReplaceParamters();
-            verify(mockController, times(1)).replaceMatchingElements(true, false, false);
+            verify(mockController, times(1)).replaceMatchingElements(true, false, false, false);
         }
 
     }
@@ -257,7 +257,7 @@ public class ReplaceTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
+        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
 
         /**
          * Create a basicFindMock and adds a temporary choice box and textFild
@@ -298,7 +298,7 @@ public class ReplaceTabNGTest {
 
             verify(replaceMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(replaceMock, times(1)).updateBasicReplaceParamters();
-            verify(mockController, times(1)).replaceMatchingElements(false, true, false);
+            verify(mockController, times(1)).replaceMatchingElements(false, true, false, false);
         }
     }
 

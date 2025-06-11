@@ -44,15 +44,16 @@ public class ReplacePlugin extends SimpleEditPlugin {
     private final GraphElementType elementType;
     private final List<Attribute> selectedAttributes;
     private String findString;
-    private final String replaceString;
+    private String replaceString;
     private boolean regex;
     private final boolean ignorecase;
     private final boolean replaceNext;
     private final boolean currentSelection;
     private final boolean searchAllGraphs;
     private final boolean zoomToSelection;
+    private final boolean replaceEmpty;
 
-    public ReplacePlugin(final BasicFindReplaceParameters parameters, final boolean replaceAll, final boolean replaceNext, final boolean zoomToSelection) {
+    public ReplacePlugin(final BasicFindReplaceParameters parameters, final boolean replaceAll, final boolean replaceNext, final boolean zoomToSelection, final boolean replaceEmpty) {
         this.elementType = parameters.getGraphElement();
         this.selectedAttributes = parameters.getAttributeList();
         this.findString = parameters.getFindString();
@@ -63,6 +64,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
         this.searchAllGraphs = parameters.isSearchAllGraphs();
         this.currentSelection = parameters.isCurrentSelection();
         this.zoomToSelection = zoomToSelection;
+        this.replaceEmpty = replaceEmpty;
     }
 
     @Override
@@ -70,6 +72,10 @@ public class ReplacePlugin extends SimpleEditPlugin {
         if (findString.isEmpty()) {
             findString = "^$";
             regex = true;
+        }
+        
+        if (replaceEmpty) {
+            replaceString = "";
         }
 
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());

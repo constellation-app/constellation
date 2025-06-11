@@ -153,7 +153,7 @@ public class ReplaceTab extends BasicFindTab {
         if (!getFindTextField().getText().isEmpty() && (!getReplaceTextField().getText().isEmpty() || getReplaceEmptyCheckBox().isSelected())) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
-            FindViewController.getDefault().replaceMatchingElements(true, false, getZoomToSelection().isSelected());
+            FindViewController.getDefault().replaceMatchingElements(true, false, getZoomToSelection().isSelected(), getReplaceEmptyCheckBox().isSelected());
         }
     }
 
@@ -168,7 +168,7 @@ public class ReplaceTab extends BasicFindTab {
         if (!getFindTextField().getText().isEmpty() && (!getReplaceTextField().getText().isEmpty() || getReplaceEmptyCheckBox().isSelected())) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
-            FindViewController.getDefault().replaceMatchingElements(false, true, getZoomToSelection().isSelected());
+            FindViewController.getDefault().replaceMatchingElements(false, true, getZoomToSelection().isSelected(), getReplaceEmptyCheckBox().isSelected());
         }
     }
     
