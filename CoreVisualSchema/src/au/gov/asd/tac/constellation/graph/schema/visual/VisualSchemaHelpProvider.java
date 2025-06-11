@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.schema.visual;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,7 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("VisualSchemaHelpProvider=Visual Schema Help Provider")
 public class VisualSchemaHelpProvider extends HelpPageProvider {
     
-    private static final String CODEBASE_NAME = "constellation";
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreVisualSchema" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -40,12 +39,8 @@ public class VisualSchemaHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String visualSchemaModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreVisualSchema" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "schema" + sep + "visual" + sep;
         
-        map.put("au.gov.asd.tac.constellation.graph.schema.visual.CompleteWithSchema", visualSchemaModulePath + "complete-with-schema.md");
-
+        map.put("au.gov.asd.tac.constellation.graph.schema.visual.CompleteWithSchema", MODULE_PATH + "complete-with-schema.md");
         return map;
     }
 
@@ -56,11 +51,6 @@ public class VisualSchemaHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String visualSchemaPath;
-        visualSchemaPath = "ext" + sep + "docs" + sep + "CoreVisualSchema" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "schema" + sep + "visual" + sep + "visualschema-toc.xml";
-        return visualSchemaPath;
+        return MODULE_PATH + "visualschema-toc.xml";
     }
-    
 }

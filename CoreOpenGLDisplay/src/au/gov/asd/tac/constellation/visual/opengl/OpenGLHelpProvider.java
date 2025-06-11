@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.visual.opengl;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 2900)
 @NbBundle.Messages("OpenGLHelpProvider=Open GL Help Provider")
 public class OpenGLHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreOpenGLDisplay" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,11 +40,8 @@ public class OpenGLHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String openGLModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreOpenGLDisplay" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "visual" + sep + "opengl" + sep;
 
-        map.put("au.gov.asd.tac.constellation.visual.opengl.labelfonts", openGLModulePath + "label-fonts-preferences.md");
+        map.put("au.gov.asd.tac.constellation.visual.opengl.labelfonts", MODULE_PATH + "label-fonts-preferences.md");
         return map;
     }
 
@@ -56,10 +52,6 @@ public class OpenGLHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String openGLPath;
-        openGLPath = "ext" + sep + "docs" + sep + "CoreOpenGLDisplay" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                + "tac" + sep + CODEBASE_NAME + sep + "visual" + sep + "opengl" + sep + "opengl-toc.xml";
-        return openGLPath;
+        return MODULE_PATH + "opengl-toc.xml";
     }
 }
