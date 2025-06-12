@@ -38,32 +38,38 @@ Example:
 
 ## Report Settings
 <div style="text-align: center">
-    <img width=400 src="../ext/docs/CoreErrorReportView/resources/ReportSettings.png" alt="Report Settings" />
+    <img width=200 src="../ext/docs/CoreErrorReportView/resources/ReportSettings.png" alt="Report Settings" />
+</div>
+<br />
+
+The "Display Reports" options, when selected, allows error messages of the 
+corresponding severity to appear in the Error Report Window. You may type in the
+severity level required in the input box, and/or select from the filtered list
+which appears as you type; or check the severity level checkbox in the dropdown
+list which is displayed when you click on the down arrow next to the input
+box. If a level is unchecked, the message is simply hidden and can be brought
+back into view by checking the box again. The default settings to display
+reports at all severity levels (ie. SEVERE, WARNING, INFO, FINE).
+
+<br />
+
+## Popup Settings
+<div style="text-align: center">
+    <img width=200 src="../ext/docs/CoreErrorReportView/resources/PopupSettings.png" alt="Popup Settings" />
 </div>
 <br />
 
 The "Allow Popups" options, when checked, allow errors message popups of the 
-respective severity. If unchecked, an error of the corresponding severity will 
+respective severity. You may type in the
+severity level required in the input box, and/or select from the filtered list
+which appears as you type; or check the severity level checkbox in the dropdown
+list which is displayed when you click on the down arrow next to the input
+box. If unchecked, an error of the corresponding severity will 
 not appear as a popup.
 The popup mode set in the Error Report View 
 is still enforced, even if the view is closed. However, if the Error Report View 
 has not been opened, the default popup settings will be used. The default 
 settings allow SEVERE and WARNING level popups.
-
-- Allow SEVERE Popups
-- Allow WARNING Popups
-- Allow INFO Popups
-- Allow FINE Popups
-
-The "Display Reports" options, when checked, allows error messages of the 
-corresponding severity to appear in the Error Report Window. If unchecked, 
-the message is simply hidden and can be brought back into view by checking the 
-box again.
-
-- Display SEVERE Reports
-- Display WARNING Reports
-- Display INFO Reports
-- Display FINE Reports
 
 <br />
 
