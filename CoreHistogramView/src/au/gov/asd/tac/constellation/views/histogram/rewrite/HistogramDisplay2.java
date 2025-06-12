@@ -150,7 +150,6 @@ public class HistogramDisplay2 extends BorderPane {
         columns.setSpacing(COLUMNS_SPACING);
         HBox.setHgrow(columns, Priority.ALWAYS);
 
-        iconColumn.setPrefWidth(ICON_WIDTH);
         iconColumn.setSpacing(ROWS_SPACING);
 
         propertyColumn.setMinWidth(MINIMUM_TEXT_WIDTH);
@@ -288,20 +287,22 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private void updateIcons() {
+        iconColumn.getChildren().clear();
+
         if (binIconMode == BinIconMode.NONE) {
             return;
         }
 
-        iconColumn.getChildren().clear();
-        
         // Create an empty rectangle to pad the icons down one
         final Rectangle emptyIcon = new Rectangle(0, Double.valueOf(barHeight));
         iconColumn.getChildren().add(emptyIcon);
-        
+
         // For each bin, add icon to column
         for (final Bin bin : binCollection.getBins()) {
-            final Node icon = binIconMode.createFXIcon(bin, barHeight, 3);
-            iconColumn.getChildren().add(icon);
+            final Node icon = binIconMode.createFXIcon(bin, barHeight);
+            if (icon != null) {
+                iconColumn.getChildren().add(icon);
+            }
         }
     }
 

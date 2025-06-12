@@ -24,7 +24,10 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -44,7 +47,7 @@ public enum BinIconMode {
         }
 
         @Override
-        public Node createFXIcon(final Bin bin, final int height, final int arcRatio) {
+        public Node createFXIcon(final Bin bin, final int height) {
             return null;
         }
     },
@@ -72,7 +75,31 @@ public enum BinIconMode {
         }
 
         @Override
-        public Node createFXIcon(final Bin bin, final int height, final int arcRatio) {
+        public Node createFXIcon(final Bin bin, final int height) {
+            if (bin instanceof ObjectBin objectBin) {
+                final Object key = objectBin.getKeyAsObject();
+
+                if (key == null) {
+                    return null;
+                }
+
+                final String iconLabel = ((ConstellationIcon) key).getName();
+                BufferedImage icon = iconCache.get(iconLabel);
+                if (icon == null) {
+                    icon = IconManager.getIcon(iconLabel).buildBufferedImage();
+                    iconCache.put(iconLabel, icon);
+                }
+                if (icon != null) {
+                    // convert icon into javafx image
+                    final Image image = SwingFXUtils.toFXImage(icon, null);
+                    final ImageView imageView = new ImageView(image);
+                    imageView.setFitHeight(height);
+                    imageView.setFitWidth(height);
+
+                    return imageView;
+                }
+
+            }
             return null;
         }
     },
@@ -94,7 +121,7 @@ public enum BinIconMode {
         }
 
         @Override
-        public Node createFXIcon(final Bin bin, final int height, final int arcRatio) {
+        public Node createFXIcon(final Bin bin, final int height) {
             if (bin instanceof ObjectBin objectBin) {
                 final Object key = objectBin.getKeyAsObject();
                 final ConstellationColor colorValue = (ConstellationColor) key;
@@ -104,7 +131,7 @@ public enum BinIconMode {
                     return null;
                 }
 
-                final int arc = height / arcRatio;
+                final int arc = height / 3;
                 final Rectangle rect = new Rectangle(Double.valueOf(height), Double.valueOf(height), JavaFxUtilities.awtColorToFXColor(colorValue.getJavaColor()));
                 rect.setArcHeight(arc);
                 rect.setArcWidth(arc);
@@ -127,7 +154,7 @@ public enum BinIconMode {
 
     public abstract void draw(final Graphics2D graphics, final Bin bin, final int left, final int top, final int height);
 
-    public abstract Node createFXIcon(final Bin bin, final int height, final int arcRatio);
+    public abstract Node createFXIcon(final Bin bin, final int height);
 
     private static Map<String, BufferedImage> iconCache = new HashMap<>();
 
