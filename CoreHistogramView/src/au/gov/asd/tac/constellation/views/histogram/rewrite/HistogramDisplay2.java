@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.histogram.rewrite;
 
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
+import au.gov.asd.tac.constellation.utilities.javafx.JavaFxUtilities;
 import au.gov.asd.tac.constellation.views.histogram.Bin;
 import au.gov.asd.tac.constellation.views.histogram.BinCollection;
 import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
@@ -29,6 +30,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -87,6 +89,8 @@ public class HistogramDisplay2 extends BorderPane {
     private static final int TEXT_TO_BAR_GAP = 10;
     private static final int ROWS_SPACING = 5;
 
+    private static final int ICON_WIDTH = 3;
+
     private final HistogramTopComponent2 topComponent;
 //    private int preferredHeight;
 //    private int iconPadding;
@@ -108,6 +112,7 @@ public class HistogramDisplay2 extends BorderPane {
 
     final VBox propertyColumn = new VBox();
     final VBox barColumn = new VBox();
+    final VBox iconColumn = new VBox();
     final HBox columns = new HBox();
     private final VBox barsVbox = new VBox(); // Holds just the bars, width of bars are based on barColum width
 
@@ -140,10 +145,13 @@ public class HistogramDisplay2 extends BorderPane {
             drawBars((double) newVal);
         });
 
-        columns.getChildren().addAll(propertyColumn, barColumn);
+        columns.getChildren().addAll(iconColumn, propertyColumn, barColumn);
         columns.setMouseTransparent(true);
         columns.setSpacing(COLUMNS_SPACING);
         HBox.setHgrow(columns, Priority.ALWAYS);
+
+        iconColumn.setPrefWidth(ICON_WIDTH);
+        iconColumn.setSpacing(ROWS_SPACING);
 
         propertyColumn.setMinWidth(MINIMUM_TEXT_WIDTH);
         propertyColumn.setSpacing(ROWS_SPACING);
@@ -204,17 +212,8 @@ public class HistogramDisplay2 extends BorderPane {
         return prevDragEnd != dragEnd;// drag start doesnt change per mouseDragged fire
     }
 
-    private javafx.scene.paint.Color awtColorToFXColor(final Color awtColor) {
-        final int r = awtColor.getRed();
-        final int g = awtColor.getGreen();
-        final int b = awtColor.getBlue();
-        final int a = awtColor.getAlpha();
-        final double opacity = a / 255.0;
-
-        return javafx.scene.paint.Color.rgb(r, g, b, opacity);
-    }
-
     public void updateDisplay() {
+        updateIcons();
         updateDisplayText();
         requestRedrawBars();
     }
@@ -288,6 +287,24 @@ public class HistogramDisplay2 extends BorderPane {
         }
     }
 
+    private void updateIcons() {
+        if (binIconMode == BinIconMode.NONE) {
+            return;
+        }
+
+        iconColumn.getChildren().clear();
+        
+        // Create an empty rectangle to pad the icons down one
+        final Rectangle emptyIcon = new Rectangle(0, Double.valueOf(barHeight));
+        iconColumn.getChildren().add(emptyIcon);
+        
+        // For each bin, add icon to column
+        for (final Bin bin : binCollection.getBins()) {
+            final Node icon = binIconMode.createFXIcon(bin, barHeight, 3);
+            iconColumn.getChildren().add(icon);
+        }
+    }
+
     private void requestRedrawBars() {
         // If nothing has changed, dont need to update
         if (!requireUpdate()) {
@@ -314,16 +331,16 @@ public class HistogramDisplay2 extends BorderPane {
         final int arc = barHeight / 3;
 
         // Setup bar colours
-        final javafx.scene.paint.Color barColor = awtColorToFXColor(binSelectionMode.getBarColor());
+        final javafx.scene.paint.Color barColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getBarColor());
         final javafx.scene.paint.Color darkerBarColor = barColor.darker();
 
-        final javafx.scene.paint.Color activatedBarColor = awtColorToFXColor(binSelectionMode.getActivatedBarColor());
+        final javafx.scene.paint.Color activatedBarColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getActivatedBarColor());
         final javafx.scene.paint.Color darkerActivatedBarColor = activatedBarColor.darker();
 
-        final javafx.scene.paint.Color selectedColor = awtColorToFXColor(binSelectionMode.getSelectedColor());
+        final javafx.scene.paint.Color selectedColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getSelectedColor());
         final javafx.scene.paint.Color darkerSelectedColor = selectedColor.darker();
 
-        final javafx.scene.paint.Color activatedSelectedColor = awtColorToFXColor(binSelectionMode.getActivatedSelectedColor());
+        final javafx.scene.paint.Color activatedSelectedColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getActivatedSelectedColor());
         final javafx.scene.paint.Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
 
         final StackPane[] barsArray = new StackPane[bins.length + 1]; // one extra for blank (could replace with header)
@@ -353,7 +370,7 @@ public class HistogramDisplay2 extends BorderPane {
 
                 rect.setArcHeight(arc);
                 rect.setArcWidth(arc);
-                rect.setFill(awtColorToFXColor(bar == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR));
+                rect.setFill(JavaFxUtilities.awtColorToFXColor(bar == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR));
 
                 rectBar.getChildren().add(rect);
             }

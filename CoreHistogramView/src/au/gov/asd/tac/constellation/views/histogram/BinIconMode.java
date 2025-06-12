@@ -18,15 +18,18 @@ package au.gov.asd.tac.constellation.views.histogram;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.javafx.JavaFxUtilities;
 import au.gov.asd.tac.constellation.views.histogram.bins.ObjectBin;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
+import javafx.scene.Node;
+import javafx.scene.shape.Rectangle;
 
 /**
- * A BinIconMode represents the different ways that a bin can be annotated with
- * an icon when it is rendered in the histogram.
+ * A BinIconMode represents the different ways that a bin can be annotated with an icon when it is rendered in the
+ * histogram.
  *
  * @author sirius
  */
@@ -39,10 +42,14 @@ public enum BinIconMode {
         @Override
         public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
         }
+
+        @Override
+        public Node createFXIcon(final Bin bin, final int height, final int arcRatio) {
+            return null;
+        }
     },
     /**
-     * An standard icon is added to the bin when it is rendered. This typically
-     * comes from an attribute on the element.
+     * An standard icon is added to the bin when it is rendered. This typically comes from an attribute on the element.
      */
     ICON(1.5F) {
         @Override
@@ -63,11 +70,15 @@ public enum BinIconMode {
                 }
             }
         }
+
+        @Override
+        public Node createFXIcon(final Bin bin, final int height, final int arcRatio) {
+            return null;
+        }
     },
     /**
-     * An icon is created from a color by simply creating a plain square filled
-     * with that color. The color typically comes from a color attribute on the
-     * element.
+     * An icon is created from a color by simply creating a plain square filled with that color. The color typically
+     * comes from a color attribute on the element.
      */
     COLOR(1.5F) {
         @Override
@@ -81,6 +92,27 @@ public enum BinIconMode {
                 graphics.fillRoundRect(left, top, height, height, height / 2, height / 2);
             }
         }
+
+        @Override
+        public Node createFXIcon(final Bin bin, final int height, final int arcRatio) {
+            if (bin instanceof ObjectBin objectBin) {
+                final Object key = objectBin.getKeyAsObject();
+                final ConstellationColor colorValue = (ConstellationColor) key;
+
+                // Make rectangle of that colour
+                if (colorValue == null) {
+                    return null;
+                }
+
+                final int arc = height / arcRatio;
+                final Rectangle rect = new Rectangle(Double.valueOf(height), Double.valueOf(height), JavaFxUtilities.awtColorToFXColor(colorValue.getJavaColor()));
+                rect.setArcHeight(arc);
+                rect.setArcWidth(arc);
+                return rect;
+            }
+            return null;
+        }
+
     };
 
     private final float width;
@@ -94,6 +126,8 @@ public enum BinIconMode {
     }
 
     public abstract void draw(final Graphics2D graphics, final Bin bin, final int left, final int top, final int height);
+
+    public abstract Node createFXIcon(final Bin bin, final int height, final int arcRatio);
 
     private static Map<String, BufferedImage> iconCache = new HashMap<>();
 
