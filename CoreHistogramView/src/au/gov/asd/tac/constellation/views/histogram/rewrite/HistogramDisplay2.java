@@ -16,13 +16,11 @@
 package au.gov.asd.tac.constellation.views.histogram.rewrite;
 
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.histogram.Bin;
 import au.gov.asd.tac.constellation.views.histogram.BinCollection;
 import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
 import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -75,30 +73,28 @@ public class HistogramDisplay2 extends BorderPane {
     private static final Color ACTIVE_AREA_COLOR = CLICK_AREA_COLOR.brighter();
     private static final String NO_DATA = "<No Data>";
     private static final int GAP_BETWEEN_BARS = 5;
-    public static final int MINIMUM_BAR_HEIGHT = FontUtilities.getApplicationFontSize() <= 18 ? 18 : FontUtilities.getApplicationFontSize(); // Set back to private after histogram rewrite fully replaces old version
-    public static final int MAXIMUM_BAR_HEIGHT = FontUtilities.getApplicationFontSize() <= 18 ? 18 : FontUtilities.getApplicationFontSize() + 10; // Set back to private after histogram rewrite fully replaces old version
+    public static final int MINIMUM_BAR_HEIGHT = 2; // Set back to private after histogram rewrite fully replaces old version
+    public static final int MAXIMUM_BAR_HEIGHT = 99;// Set back to private after histogram rewrite fully replaces old version
     private static final int PREFERRED_BAR_LENGTH = 250;
     private static final int MINIMUM_BAR_WIDTH = 4;
     private static final int MINIMUM_SELECTED_WIDTH = 3;
     private static final int MINIMUM_TEXT_WIDTH = 150;
     private static final int PREFERRED_HEIGHT = 600;
-    private static final int TOP_MARGIN = 3;
-    private static final int BOTTOM_MARGIN = 3;
-    private static final int LEFT_MARGIN = 3;
-    private static final int RIGHT_MARGIN = 3;
+//    private static final int TOP_MARGIN = 3;
+//    private static final int BOTTOM_MARGIN = 3;
+//    private static final int LEFT_MARGIN = 3;
+//    private static final int RIGHT_MARGIN = 3;
     private static final int TEXT_TO_BAR_GAP = 10;
-    private static final int MAX_USER_SET_BAR_HEIGHT = 99;
-    private static final int MIN_USER_SET_BAR_HEIGHT = 2;
     private static final int ROWS_SPACING = 5;
 
     private final HistogramTopComponent2 topComponent;
-    private int preferredHeight;
-    private int iconPadding;
-    private int barHeight;   // the vertical thickness of the bars
-    private int userSetBarHeight = -1;   // the vertical thickness of the bars as set by the user
-    private int barsWidth; // the length of the longest bar
-    private int textWidth; // the width of the space allocated to text
-    private final Dimension preferredSize = new Dimension(MINIMUM_TEXT_WIDTH + PREFERRED_BAR_LENGTH + TEXT_TO_BAR_GAP + 2, PREFERRED_HEIGHT);
+//    private int preferredHeight;
+//    private int iconPadding;
+    private int barHeight = 18;   // the vertical thickness of the bars
+    //private int userSetBarHeight = -1;   // the vertical thickness of the bars as set by the user
+//    private int barsWidth; // the length of the longest bar
+//    private int textWidth; // the width of the space allocated to text
+    //private final Dimension preferredSize = new Dimension(MINIMUM_TEXT_WIDTH + PREFERRED_BAR_LENGTH + TEXT_TO_BAR_GAP + 2, PREFERRED_HEIGHT);
     private BinCollection binCollection = null;
     private BinIconMode binIconMode = BinIconMode.NONE;
     private BinSelectionMode binSelectionMode;
@@ -108,14 +104,14 @@ public class HistogramDisplay2 extends BorderPane {
     private int dragEnd = -1;
     private boolean shiftDown;
     private boolean controlDown;
-    private boolean binCollectionOutOfDate = true;
     private final ContextMenu copyMenu = new ContextMenu();
 
     final VBox propertyColumn = new VBox();
     final VBox barColumn = new VBox();
     final HBox columns = new HBox();
-    private final VBox barsVbox = new VBox();
+    private final VBox barsVbox = new VBox(); // Holds just the bars, width of bars are based on barColum width
 
+    // Pane that holds everything, stacks the bars on top
     final StackPane stackPane = new StackPane();
 
     private static final int COLUMNS_SPACING = 5;
@@ -186,7 +182,6 @@ public class HistogramDisplay2 extends BorderPane {
     public void setBinCollection(final BinCollection binCollection, final BinIconMode binIconMode) {
         this.binCollection = binCollection;
         this.binIconMode = binIconMode;
-        binCollectionOutOfDate = true;
         activeBin = -1;
         Platform.runLater(() -> updateDisplay());
     }
@@ -199,32 +194,6 @@ public class HistogramDisplay2 extends BorderPane {
 
     public void setBinSelectionMode(BinSelectionMode binSelectionMode) {
         this.binSelectionMode = binSelectionMode;
-    }
-
-    /**
-     *
-     *
-     * @return {height,barwidth}
-     */
-    private int[] calculateHeightAndBarWidth() {
-        int[] result = new int[2];
-        int n = binCollection.getBins().length + 1;
-
-        int sizeAtMinBarThickness = TOP_MARGIN + (n * MINIMUM_BAR_HEIGHT) + ((n - 1) * GAP_BETWEEN_BARS) + BOTTOM_MARGIN;
-        if (sizeAtMinBarThickness > PREFERRED_HEIGHT) {
-            result[0] = sizeAtMinBarThickness;
-            result[1] = MINIMUM_BAR_HEIGHT;
-        } else {
-            result[0] = PREFERRED_HEIGHT;
-            if (n == 0) {
-                result[1] = 0;
-            } else {
-                int barThickness = ((PREFERRED_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN) - (n * GAP_BETWEEN_BARS)) / n;
-                result[1] = Math.min(MAXIMUM_BAR_HEIGHT, barThickness);
-            }
-        }
-
-        return result;
     }
 
     private void setDragEnd(final int newValue) {
@@ -252,6 +221,7 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private void updateDisplayText() {
+        System.out.println("updateDisplayText");
         if (binCollection == null) {
             // No data, so just have text saying so
             final Label text = new Label(NO_DATA);
@@ -262,21 +232,6 @@ public class HistogramDisplay2 extends BorderPane {
         } else {
             // There is data and the user wants to see it
             final Bin[] bins = binCollection.getBins();
-
-            // If bin collection out of date, recalculate lengths TODO: double check this is actaully what it does
-            if (binCollectionOutOfDate) {
-                final int[] dims = calculateHeightAndBarWidth();
-                preferredHeight = dims[0];
-                barHeight = dims[1];
-                if (userSetBarHeight != -1) {
-                    barHeight = userSetBarHeight;
-                }
-
-                iconPadding = (int) (binIconMode.getWidth() * barHeight);
-
-                binCollectionOutOfDate = false;
-            }
-
             final int maxCount = binCollection.getMaxElementCount();
 
             if (maxCount > 0) {
@@ -485,12 +440,10 @@ public class HistogramDisplay2 extends BorderPane {
      *
      */
     public void decreaseBarHeight() {
-        if (userSetBarHeight == -1 && barHeight > 2) {
-            userSetBarHeight = barHeight - 2;
-        } else if (userSetBarHeight > MIN_USER_SET_BAR_HEIGHT) {
-            userSetBarHeight -= 2;
+        barHeight -= 2;
+        if (barHeight < MINIMUM_BAR_HEIGHT) {
+            barHeight = MINIMUM_BAR_HEIGHT;
         }
-        barHeight = userSetBarHeight;
 
         updateDisplay();
     }
@@ -500,12 +453,10 @@ public class HistogramDisplay2 extends BorderPane {
      *
      */
     public void increaseBarHeight() {
-        if (userSetBarHeight == -1) {
-            userSetBarHeight = barHeight + 2;
-        } else if (userSetBarHeight < MAX_USER_SET_BAR_HEIGHT) {
-            userSetBarHeight += 2;
+        barHeight += 2;
+        if (barHeight > MAXIMUM_BAR_HEIGHT) {
+            barHeight = MAXIMUM_BAR_HEIGHT;
         }
-        barHeight = userSetBarHeight;
 
         updateDisplay();
     }
