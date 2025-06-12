@@ -42,7 +42,6 @@ public class ReplaceTab extends BasicFindTab {
 
     private final Button replaceNextButton = new Button("Replace Next");
     private final Button replaceAllButton = new Button("Replace All");
-    private final CheckBox replaceEmptyCheckBox = new CheckBox("With Nothing?");
     private final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
     private final Button helpButton = new Button("", helpImage);
     
@@ -56,8 +55,6 @@ public class ReplaceTab extends BasicFindTab {
         replaceNextButton.setOnAction(action -> replaceNextAction());
         helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
         helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.find.FindViewTopComponent").display());
-        replaceEmptyCheckBox.setOnAction(action -> replaceEmptyAction());
-
     }
 
     /**
@@ -69,7 +66,6 @@ public class ReplaceTab extends BasicFindTab {
         // Add the replace text box and label
         textGrid.add(replaceLabel, 0, 1);
         textGrid.add(replaceTextField, 1, 1);
-        textGrid.add(replaceEmptyCheckBox, 2, 1);
 
         // remove the buttons at the bottom of the pane
         buttonsHBox.getChildren().clear();
@@ -150,10 +146,10 @@ public class ReplaceTab extends BasicFindTab {
      * FindViewController to call the replacePlugin.
      */
     public void replaceAllAction() {
-        if (!getFindTextField().getText().isEmpty() && (!getReplaceTextField().getText().isEmpty() || getReplaceEmptyCheckBox().isSelected())) {
+        if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
-            FindViewController.getDefault().replaceMatchingElements(true, false, getZoomToSelection().isSelected(), getReplaceEmptyCheckBox().isSelected());
+            FindViewController.getDefault().replaceMatchingElements(true, false, getZoomToSelection().isSelected());
         }
     }
 
@@ -165,21 +161,13 @@ public class ReplaceTab extends BasicFindTab {
      * FindViewController to call the replacePlugin.
      */
     public void replaceNextAction() {
-        if (!getFindTextField().getText().isEmpty() && (!getReplaceTextField().getText().isEmpty() || getReplaceEmptyCheckBox().isSelected())) {
+        if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
-            FindViewController.getDefault().replaceMatchingElements(false, true, getZoomToSelection().isSelected(), getReplaceEmptyCheckBox().isSelected());
+            FindViewController.getDefault().replaceMatchingElements(false, true, getZoomToSelection().isSelected());
         }
     }
     
-    /**
-     * If the checkbox is selected, then disable the text field
-     */
-    public void replaceEmptyAction() {
-        final boolean isActive = getReplaceEmptyCheckBox().isSelected();
-        replaceTextField.setDisable(isActive);
-    }
-
     /**
      * Gets the replaceTextField
      *
@@ -205,15 +193,6 @@ public class ReplaceTab extends BasicFindTab {
      */
     public Button getReplaceAllButton() {
         return replaceAllButton;
-    }
-    
-    /**
-     * Gets the replaceEmptyCheckbox
-     * 
-     * @return replaceEmptyCheckBox
-     */
-    public CheckBox getReplaceEmptyCheckBox() {
-        return replaceEmptyCheckBox;
     }
 
 }

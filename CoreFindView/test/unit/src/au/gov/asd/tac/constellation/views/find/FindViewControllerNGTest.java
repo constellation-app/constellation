@@ -321,7 +321,7 @@ public class FindViewControllerNGTest {
                 when(pluginExecution.executeLater(Mockito.eq(graph))).thenReturn(null);
                 mockedStaticPlugin.when(() -> PluginExecution.withPlugin(Mockito.any(Plugin.class))).thenReturn(pluginExecution);
 
-                instance.replaceMatchingElements(true, false, false, false);
+                instance.replaceMatchingElements(true, false, false);
                 verify(pluginExecution).executeLater(Mockito.eq(graph));
 
                 /**
@@ -334,7 +334,7 @@ public class FindViewControllerNGTest {
                 when(pluginExecution.executeLater(Mockito.any(Graph.class))).thenReturn(null);
                 mockedStaticPlugin.when(() -> PluginExecution.withPlugin(Mockito.any(Plugin.class))).thenReturn(pluginExecution);
 
-                instance.replaceMatchingElements(true, false, false, false);
+                instance.replaceMatchingElements(true, false, false);
                 verify(pluginExecution, times(2)).executeLater(Mockito.eq(graph));
                 verify(pluginExecution).executeLater(Mockito.eq(graph2));
             }
