@@ -147,7 +147,6 @@ public class HistogramDisplay2 extends BorderPane {
 
         propertyColumn.setMinWidth(MINIMUM_TEXT_WIDTH);
         propertyColumn.setSpacing(ROWS_SPACING);
-        propertyColumn.setAlignment(Pos.CENTER_LEFT);
 
         barColumn.setSpacing(ROWS_SPACING);
         HBox.setHgrow(barColumn, Priority.ALWAYS);
@@ -221,7 +220,6 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private void updateDisplayText() {
-        System.out.println("updateDisplayText");
         if (binCollection == null) {
             // No data, so just have text saying so
             final Label text = new Label(NO_DATA);
