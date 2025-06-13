@@ -18,11 +18,12 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -32,17 +33,21 @@ import org.testng.annotations.Test;
 
 /**
  *
- * @author aldebaran30701
+ * @author antares
  */
-public class PreviousViewPluginNGTest {
+public class ZoomToSelectionPluginNGTest {
     
-    private int vertexIdentifierAttribute;
+    private StoreGraph graph;
+    
     private int cameraAttribute;
+    private int xAttribute;
+    private int yAttribute;
+    private int zAttribute;
+    private int selectedAttribute;
     
     private int vxId1;
     private int vxId2;
-    
-    private StoreGraph graph;
+    private int vxId3;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -56,21 +61,34 @@ public class PreviousViewPluginNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        // create an analytic graph
-        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
         graph = new StoreGraph(schema);
 
         // add attributes
-        vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         cameraAttribute = VisualConcept.GraphAttribute.CAMERA.ensure(graph);
-
-        // add vertices
+        xAttribute = VisualConcept.VertexAttribute.X.ensure(graph);
+        yAttribute = VisualConcept.VertexAttribute.Y.ensure(graph);
+        zAttribute = VisualConcept.VertexAttribute.Z.ensure(graph);
+        selectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        
         vxId1 = graph.addVertex();
         vxId2 = graph.addVertex();
-
-        // set the identifier of the vertices 
-        graph.setStringValue(vertexIdentifierAttribute, vxId1, "VERTEX_1");
-        graph.setStringValue(vertexIdentifierAttribute, vxId2, "VERTEX_2");
+        vxId3 = graph.addVertex();
+        
+        graph.setFloatValue(xAttribute, vxId1, 0F);
+        graph.setFloatValue(yAttribute, vxId1, 1F);
+        graph.setFloatValue(zAttribute, vxId1, 2F);
+        
+        graph.setFloatValue(xAttribute, vxId2, -5F);
+        graph.setFloatValue(yAttribute, vxId2, -6F);
+        graph.setFloatValue(zAttribute, vxId2, -7F);
+        
+        graph.setFloatValue(xAttribute, vxId3, 10F);
+        graph.setFloatValue(yAttribute, vxId3, 11F);
+        graph.setFloatValue(zAttribute, vxId3, 12F);
+        
+        graph.setBooleanValue(selectedAttribute, vxId1, true);
+        graph.setBooleanValue(selectedAttribute, vxId2, true);
     }
 
     @AfterMethod
@@ -79,7 +97,8 @@ public class PreviousViewPluginNGTest {
     }
 
     /**
-     * Test of edit method, of class PreviousViewPlugin.
+     * Test of edit method, of class ZoomToSelectionPlugin.
+     * 
      * @throws java.lang.InterruptedException
      * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
@@ -87,35 +106,15 @@ public class PreviousViewPluginNGTest {
     public void testEdit() throws InterruptedException, PluginException {
         System.out.println("edit");
         
-        // Create some vecs to add to the original camera
-        final Vector3f lookAtCentre = new Vector3f(10, 10, 10);
-        final Vector3f lookAtEye = new Vector3f(5, 10, 5);
-        final Vector3f lookAtUp = new Vector3f(2, 2, 2);
+        final Camera beforeCamera = graph.getObjectValue(cameraAttribute, 0);
+        assertTrue(beforeCamera.areSame(new Camera()));
         
-        // Start with a default camera
-        final Camera originalCamera = new Camera();
-        graph.setObjectValue(cameraAttribute, 0, originalCamera);
-        assertTrue(originalCamera.areSame(graph.getObjectValue(cameraAttribute, 0)));
-        
-        // Deep copy the default camera before adding vecs to it
-        final Camera clonedCamera = new Camera(originalCamera);
-        clonedCamera.lookAtCentre.add(lookAtCentre);
-        clonedCamera.lookAtEye.add(lookAtEye);
-        clonedCamera.lookAtUp.add(lookAtUp);
-        
-        // Set the previous positions to the original camera
-        clonedCamera.lookAtPreviousEye.set(originalCamera.lookAtEye);
-        clonedCamera.lookAtPreviousCentre.set(originalCamera.lookAtCentre);
-        clonedCamera.lookAtPreviousUp.set(originalCamera.lookAtUp);
-        
-        graph.setObjectValue(cameraAttribute, 0, clonedCamera);
-        
-        // Assert that the camera is set correctly to the cloned, changed camera
-        assertTrue(clonedCamera.areSame(graph.getObjectValue(cameraAttribute, 0)));
-        
-        // Create a plugin and run it, asserting that the camera is now back to the original camera
-        final PreviousViewPlugin instance = new PreviousViewPlugin();
+        final ZoomToSelectionPlugin instance = new ZoomToSelectionPlugin();
         instance.edit(graph, null, null);
-        assertTrue(originalCamera.areSame(graph.getObjectValue(cameraAttribute, 0)));
+        
+        final Camera afterCamera = graph.getObjectValue(cameraAttribute, 0);
+        assertFalse(afterCamera.areSame(new Camera()));
+        assertTrue(afterCamera.lookAtCentre.areSame(new Vector3f(-2.5F, -2.5F, -2.5F)));
+        assertTrue(afterCamera.lookAtEye.areSame(new Vector3f(-2.5F, -2.5F, 17.24302F)));
     }
 }

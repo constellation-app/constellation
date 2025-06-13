@@ -64,22 +64,22 @@ public final class RotateCameraPlugin extends SimpleEditPlugin {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<FloatParameterValue> xaxisParam = FloatParameterType.build(X_PARAMETER_ID);
-        xaxisParam.setName("xAxis");
+        xaxisParam.setName("X Axis");
         xaxisParam.setDescription("Rotation in degrees around the x axis");
         parameters.addParameter(xaxisParam);
 
         final PluginParameter<FloatParameterValue> yaxisParam = FloatParameterType.build(Y_PARAMETER_ID);
-        yaxisParam.setName("yAxis");
+        yaxisParam.setName("Y Axis");
         yaxisParam.setDescription("Rotation in degrees around the y axis");
         parameters.addParameter(yaxisParam);
 
         final PluginParameter<FloatParameterValue> zaxisParam = FloatParameterType.build(Z_PARAMETER_ID);
-        zaxisParam.setName("zAxis");
+        zaxisParam.setName("Z Axis");
         zaxisParam.setDescription("Rotation in degrees around the z axis");
         parameters.addParameter(zaxisParam);
 
         final PluginParameter<BooleanParameterValue> animateParam = BooleanParameterType.build(ANIMATE_PARAMETER_ID);
-        animateParam.setName("animate");
+        animateParam.setName("Animate");
         animateParam.setDescription("Animate the rotation asynchronously");
         parameters.addParameter(animateParam);
 

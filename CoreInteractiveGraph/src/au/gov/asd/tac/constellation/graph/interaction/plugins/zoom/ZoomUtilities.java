@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.visual.InteractiveGLVisualProcessor;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
-import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
@@ -46,10 +45,8 @@ public class ZoomUtilities {
      * @param zoomMagnitude the amount of units to zoom by
      * @param zoomDirection the direction to zoom to as a 3d vector
      * @param distanceToClosestNode the distance to the closest node, used to influence zoom amount
-     * @throws InterruptedException
-     * @throws PluginException
      */
-    public static void zoom(final GraphWriteMethods graph, final int zoomMagnitude, final Vector3f zoomDirection, final float distanceToClosestNode) throws InterruptedException, PluginException {
+    public static void zoom(final GraphWriteMethods graph, final int zoomMagnitude, final Vector3f zoomDirection, final float distanceToClosestNode) {
         final Camera oldCamera = VisualGraphUtilities.getCamera(graph);
         // Screen wont update for some reason unless you do this
         final Camera camera = new Camera(oldCamera);
@@ -67,10 +64,8 @@ public class ZoomUtilities {
      * @param graph the graph that holds the camera
      * @param zoomMagnitude the amount of units to zoom by
      * @param zoomDirection the direction to zoom to as a 3d vector
-     * @throws InterruptedException
-     * @throws PluginException
      */
-    public static void zoom(final GraphWriteMethods graph, final int zoomMagnitude, final Vector3f zoomDirection) throws InterruptedException, PluginException {
+    public static void zoom(final GraphWriteMethods graph, final int zoomMagnitude, final Vector3f zoomDirection) {
         final Camera camera = VisualGraphUtilities.getCamera(graph);
 
         final Vector3f closestNode = closestNodeCameraCoordinates(graph);

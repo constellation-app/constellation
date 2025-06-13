@@ -16,13 +16,15 @@
 package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import static au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.SetCameraVisibilityRange.VISIBILITY_HIGH_ID;
+import static au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.SetCameraVisibilityRange.VISIBILITY_LOW_ID;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
-import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -33,12 +35,13 @@ import org.testng.annotations.Test;
 
 /**
  *
- * @author Quasar985
+ * @author antares
  */
-public class ZoomOutPluginNGTest {
-
-    private int cameraAttribute;
+public class SetCameraVisibilityRangeNGTest {
+    
     private StoreGraph graph;
+    
+    private int cameraAttribute;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -51,11 +54,10 @@ public class ZoomOutPluginNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() throws Exception {       
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
         graph = new StoreGraph(schema);
-
-        // add attributes
+        
         cameraAttribute = VisualConcept.GraphAttribute.CAMERA.ensure(graph);
     }
 
@@ -63,28 +65,45 @@ public class ZoomOutPluginNGTest {
     public void tearDownMethod() throws Exception {
         // Not currently required
     }
+    
+    /**
+     * Test of createParameters method, of class SetCameraVisibilityRange.
+     */
+    @Test
+    public void testCreateParameters() {
+        System.out.println("createParameters");
+        
+        final SetCameraVisibilityRange instance = new SetCameraVisibilityRange();
+        
+        final PluginParameters params = instance.createParameters();
+        assertEquals(params.getParameters().size(), 2);
+        assertTrue(params.getParameters().containsKey(VISIBILITY_LOW_ID));
+        assertTrue(params.getParameters().containsKey(VISIBILITY_HIGH_ID));
+    }
 
     /**
-     * Test of edit method, of class ZoomOutPlugin.
+     * Test of edit method, of class SetCameraVisibilityRange.
+     * 
      * @throws java.lang.InterruptedException
      * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
     public void testEdit() throws InterruptedException, PluginException {
         System.out.println("edit");
-
-        // Start with a default camera
-        final Camera originalCamera = new Camera();
-        graph.setObjectValue(cameraAttribute, 0, originalCamera);
-        assertTrue(originalCamera.areSame(graph.getObjectValue(cameraAttribute, 0)));
-
-        // Create a plugin and run it, asserting that the camera has moved 10 units
-        final ZoomOutPlugin instance = new ZoomOutPlugin();
-        instance.edit(graph, null, null);
-
-        final Camera c = graph.getObjectValue(cameraAttribute, 0);
-        final Vector3f expectedVec = new Vector3f(0F, 0F, 2F);
-        // Compare coords, as float arrays
-        assertEquals(c.lookAtCentre.a, expectedVec.a);
+        
+        final SetCameraVisibilityRange instance = new SetCameraVisibilityRange();
+        final PluginParameters parameters = instance.createParameters();
+        parameters.setFloatValue(VISIBILITY_LOW_ID, 0.2F);
+        parameters.setFloatValue(VISIBILITY_HIGH_ID, 0.7F);
+        
+        final Camera beforeCamera = graph.getObjectValue(cameraAttribute, 0);
+        assertEquals(beforeCamera.getVisibilityLow(), 0F);
+        assertEquals(beforeCamera.getVisibilityHigh(), 1F);
+        
+        instance.edit(graph, null, parameters);
+        
+        final Camera afterCamera = graph.getObjectValue(cameraAttribute, 0);
+        assertEquals(afterCamera.getVisibilityLow(), 0.2);
+        assertEquals(afterCamera.getVisibilityHigh(), 0.7);
     }
 }
