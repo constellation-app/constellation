@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.histogram.rewrite;
 
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavaFxUtilities;
 import au.gov.asd.tac.constellation.views.histogram.Bin;
 import au.gov.asd.tac.constellation.views.histogram.BinCollection;
@@ -91,10 +92,13 @@ public class HistogramDisplay2 extends BorderPane {
 
     private static final int ICON_WIDTH = 3;
 
+    private static final int DEFAULT_FONT_SIZE = 12;
+
     private final HistogramTopComponent2 topComponent;
 //    private int preferredHeight;
 //    private int iconPadding;
-    private int barHeight = 18;   // the vertical thickness of the bars
+    private int barHeightBase = 18;
+    private int barHeight = (barHeightBase * FontUtilities.getApplicationFontSize()) / DEFAULT_FONT_SIZE;   // the vertical thickness of the bars
     //private int userSetBarHeight = -1;   // the vertical thickness of the bars as set by the user
 //    private int barsWidth; // the length of the longest bar
 //    private int textWidth; // the width of the space allocated to text
@@ -165,6 +169,8 @@ public class HistogramDisplay2 extends BorderPane {
         StackPane.setAlignment(barsVbox, Pos.CENTER_RIGHT);
 
         this.setCenter(stackPane);
+
+        updateBarHeight();
 
         initializeListeners();
     }
@@ -348,6 +354,8 @@ public class HistogramDisplay2 extends BorderPane {
         final javafx.scene.paint.Color activatedSelectedColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getActivatedSelectedColor());
         final javafx.scene.paint.Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
 
+        final double fontSize = barHeight * FONT_SCALE_FACTOR;
+
         final StackPane[] barsArray = new StackPane[bins.length + 1]; // one extra for blank (could replace with header)
 
         // Create an empty rectangle to pad the bars array
@@ -421,6 +429,8 @@ public class HistogramDisplay2 extends BorderPane {
             final String binCount = (bin.selectedCount > 0) ? Integer.toString(bin.selectedCount) + "/" + Integer.toString(bin.elementCount) : Integer.toString(bin.elementCount);
             final Label binCountlabel = new Label(binCount);
             binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count"), true); // Set styling
+            binCountlabel.setStyle("-fx-font-size: " + fontSize);
+            
             rectBar.getChildren().add(binCountlabel);
             StackPane.setAlignment(binCountlabel, Pos.CENTER_RIGHT);
 
@@ -455,15 +465,21 @@ public class HistogramDisplay2 extends BorderPane {
         return n;
     }
 
+    private void updateBarHeight() {
+        barHeight = (barHeightBase * FontUtilities.getApplicationFontSize()) / DEFAULT_FONT_SIZE;
+    }
+
     /**
      * Decrease height of barHeight
      *
      */
     public void decreaseBarHeight() {
-        barHeight -= 2;
-        if (barHeight < MINIMUM_BAR_HEIGHT) {
-            barHeight = MINIMUM_BAR_HEIGHT;
+        barHeightBase -= 2;
+        if (barHeightBase < MINIMUM_BAR_HEIGHT) {
+            barHeightBase = MINIMUM_BAR_HEIGHT;
         }
+
+        updateBarHeight();
 
         updateDisplay();
     }
@@ -473,10 +489,12 @@ public class HistogramDisplay2 extends BorderPane {
      *
      */
     public void increaseBarHeight() {
-        barHeight += 2;
-        if (barHeight > MAXIMUM_BAR_HEIGHT) {
-            barHeight = MAXIMUM_BAR_HEIGHT;
+        barHeightBase += 2;
+        if (barHeightBase > MAXIMUM_BAR_HEIGHT) {
+            barHeightBase = MAXIMUM_BAR_HEIGHT;
         }
+
+        updateBarHeight();
 
         updateDisplay();
     }
