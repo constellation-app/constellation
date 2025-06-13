@@ -151,7 +151,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                     if (value != null) {
 
                         // Determine if the find string matches the attribute string
-                        Matcher match = searchPattern.matcher(value);
+                        final Matcher match = searchPattern.matcher(value);
                         found = matchWholeWord ? match.matches() : match.find();
                         if (found) {
                             // get the UID of the element and the graph
