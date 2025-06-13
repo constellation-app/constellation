@@ -44,7 +44,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
     private final GraphElementType elementType;
     private final List<Attribute> selectedAttributes;
     private String findString;
-    private String replaceString;
+    private final String replaceString;
     private boolean regex;
     private final boolean ignorecase;
     private final boolean replaceNext;
