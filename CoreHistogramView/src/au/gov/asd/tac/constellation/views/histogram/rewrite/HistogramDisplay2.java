@@ -302,6 +302,10 @@ public class HistogramDisplay2 extends BorderPane {
             final Node icon = binIconMode.createFXIcon(bin, barHeight);
             if (icon != null) {
                 iconColumn.getChildren().add(icon);
+            } else {
+                // Create an empty rectangle to pad the icons down one
+                final Rectangle empty = new Rectangle(0, Double.valueOf(barHeight));
+                iconColumn.getChildren().add(empty);
             }
         }
     }
