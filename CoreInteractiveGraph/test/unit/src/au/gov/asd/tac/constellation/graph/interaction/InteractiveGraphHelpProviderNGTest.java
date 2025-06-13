@@ -84,15 +84,9 @@ public class InteractiveGraphHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreInteractiveGraph"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("graph"));
-        assertTrue(tocLocation.contains("interaction"));
         assertTrue(tocLocation.contains("interactivegraph-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreInteractiveGraph"));
-        assertTrue(tocLocation.indexOf("CoreInteractiveGraph") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("graph"));
-        assertTrue(tocLocation.indexOf("graph") < tocLocation.indexOf("interaction"));
-        assertTrue(tocLocation.indexOf("interaction") < tocLocation.indexOf("interactivegraph-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreInteractiveGraph") < tocLocation.indexOf("interactivegraph-toc.xml"));
     }    
 }

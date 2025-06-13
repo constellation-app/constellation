@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.help;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -29,8 +28,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 3000)
 @NbBundle.Messages("CoreHelpHelpProvider=Core Help Help Provider")
 public class CoreHelpHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreHelp" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -40,11 +39,8 @@ public class CoreHelpHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String helpModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "help" +  sep;
 
-        map.put("au.gov.asd.tac.constellation.help.preferences.HelpOptionsPanelController", helpModulePath + "help-options.md");
+        map.put("au.gov.asd.tac.constellation.help.preferences.HelpOptionsPanelController", MODULE_PATH + "help-options.md");
         return map;
     }
 
@@ -55,8 +51,6 @@ public class CoreHelpHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        return "ext" + sep + "docs" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                + "tac" + sep + CODEBASE_NAME + sep + "help" + sep + "help-toc.xml";
+        return MODULE_PATH + "help-toc.xml";
     }
 }

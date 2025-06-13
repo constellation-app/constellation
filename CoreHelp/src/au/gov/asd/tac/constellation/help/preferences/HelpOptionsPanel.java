@@ -15,12 +15,14 @@
  */
 package au.gov.asd.tac.constellation.help.preferences;
 
+import javax.swing.JPanel;
+
 /**
  * An options panel allowing customisation of help settings.
  *
  * @author Delphinus8821
  */
-public class HelpOptionsPanel extends javax.swing.JPanel {
+public class HelpOptionsPanel extends JPanel {
 
     public HelpOptionsPanel() {
         initComponents();

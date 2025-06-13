@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 1600)
 @NbBundle.Messages("NotesViewHelpProvider=Notes View Help Provider")
 public class NotesViewHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreNotesView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,11 +40,8 @@ public class NotesViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String notesModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreNotesView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "notes" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent", notesModulePath + "notes-view.md");
+        map.put("au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent", MODULE_PATH + "notes-view.md");
         return map;
     }
 
@@ -56,10 +52,6 @@ public class NotesViewHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String notesViewPath;
-        notesViewPath = "ext" + sep + "docs" + sep + "CoreNotesView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "notes" + sep + "notes-toc.xml";
-        return notesViewPath;
+        return MODULE_PATH + "notes-toc.xml";
     }
 }

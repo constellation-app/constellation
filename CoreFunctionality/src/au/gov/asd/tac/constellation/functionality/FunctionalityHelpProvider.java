@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.functionality;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,9 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 100)
 @NbBundle.Messages("FunctionalityHelpProvider=Functionality Help Provider")
 public class FunctionalityHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
-    private static final String SEP = File.separator;
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreFunctionality" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -42,12 +40,10 @@ public class FunctionalityHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();       
-        final String functionalityModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreFunctionality" + SEP + "src" + SEP + "au" + SEP + "gov"
-                + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "functionality" + SEP;
 
-        map.put("au.gov.asd.tac.constellation.functionality.about", functionalityModulePath + "about-constellation.md");
-        map.put("au.gov.asd.tac.constellation.functionality.gettingstarted", functionalityModulePath + "getting-started.md");
-        map.put("au.gov.asd.tac.constellation.functionality.graphwindow", functionalityModulePath + "the-graph-window.md");
+        map.put("au.gov.asd.tac.constellation.functionality.about", MODULE_PATH + "about-constellation.md");
+        map.put("au.gov.asd.tac.constellation.functionality.gettingstarted", MODULE_PATH + "getting-started.md");
+        map.put("au.gov.asd.tac.constellation.functionality.graphwindow", MODULE_PATH + "the-graph-window.md");
         return map;
     }
 
@@ -58,7 +54,6 @@ public class FunctionalityHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        return "ext" + SEP + "docs" + SEP + "CoreFunctionality" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" 
-                + SEP + CODEBASE_NAME + SEP + "functionality" + SEP + "core-toc.xml";
+        return MODULE_PATH + "core-toc.xml";
     }
 }
