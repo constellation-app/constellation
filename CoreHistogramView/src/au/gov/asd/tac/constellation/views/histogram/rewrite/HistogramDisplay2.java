@@ -114,11 +114,14 @@ public class HistogramDisplay2 extends BorderPane {
     private boolean controlDown;
     private final ContextMenu copyMenu = new ContextMenu();
 
-    final VBox propertyColumn = new VBox();
-    final VBox barColumn = new VBox();
-    final VBox iconColumn = new VBox();
-    final HBox columns = new HBox();
+    private final VBox propertyColumn = new VBox();
+    private final VBox barColumn = new VBox();
+    private final VBox iconColumn = new VBox();
+    private final HBox columns = new HBox();
+
+    private final VBox barsHbox = new VBox();
     private final VBox barsVbox = new VBox(); // Holds just the bars, width of bars are based on barColum width
+    private final Pane barSpacer = new Pane();
 
     // Pane that holds everything, stacks the bars on top
     final StackPane stackPane = new StackPane();
@@ -145,9 +148,7 @@ public class HistogramDisplay2 extends BorderPane {
 
         setPrefHeight(PREFERRED_HEIGHT);
 
-        barColumn.widthProperty().addListener((obs, oldVal, newVal) -> {
-            drawBars((double) newVal);
-        });
+        barColumn.widthProperty().addListener((obs, oldVal, newVal) -> drawBars((double) newVal));
 
         columns.getChildren().addAll(iconColumn, propertyColumn, barColumn);
         columns.setMouseTransparent(true);
@@ -162,11 +163,18 @@ public class HistogramDisplay2 extends BorderPane {
         barColumn.setSpacing(ROWS_SPACING);
         HBox.setHgrow(barColumn, Priority.ALWAYS);
 
-        stackPane.getChildren().addAll(columns, barsVbox);
+        //stackPane.getChildren().addAll(columns, barsVbox);
+        stackPane.getChildren().addAll(columns, barsHbox);
 
         barsVbox.setSpacing(ROWS_SPACING);
         barsVbox.setMouseTransparent(true);
-        StackPane.setAlignment(barsVbox, Pos.CENTER_RIGHT);
+        //StackPane.setAlignment(barsVbox, Pos.CENTER_RIGHT);
+
+        HBox.setHgrow(barSpacer, Priority.ALWAYS);
+        barsHbox.setAlignment(Pos.CENTER_RIGHT);
+        barsHbox.getChildren().addAll(barSpacer, barsVbox);
+
+        propertyColumn.widthProperty().addListener((obs, oldVal, newVal) -> barSpacer.setMaxWidth((double) newVal));
 
         this.setCenter(stackPane);
 
@@ -430,7 +438,7 @@ public class HistogramDisplay2 extends BorderPane {
             final Label binCountlabel = new Label(binCount);
             binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count"), true); // Set styling
             binCountlabel.setStyle("-fx-font-size: " + fontSize);
-            
+
             rectBar.getChildren().add(binCountlabel);
             StackPane.setAlignment(binCountlabel, Pos.CENTER_RIGHT);
 
