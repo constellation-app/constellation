@@ -130,8 +130,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
             keyboardShortcutSelectionResult.setKeyboardShortcut(ks.get());
         }
 
-        keyboardShortcutButton = new Button("Shortcut");
-        //keyboardShortcutButton.setMinWidth(Control.USE_PREF_SIZE);
+        keyboardShortcutButton = new Button("Shortcut");        
 
         keyboardShortcutButton.setOnAction(e -> {//NOSONAR
             final RecordKeyboardShortcut rk = new RecordKeyboardShortcut();
@@ -226,7 +225,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
         grid.add(textField, 0, 0, 7, 1);
 
-         grid.add(keyboardShortcutButton, 0, 1, 2, 1);
+        grid.add(keyboardShortcutButton, 0, 1, 2, 1);
         grid.add(keyboardShortcutLabel, 2, 1, 4, 1);
         grid.add(shorcutWarningIconLabel, 6, 1, 1, 1);
 
