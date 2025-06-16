@@ -196,6 +196,7 @@ public class BasicFindTab extends Tab {
          */
         findLabel.setMinWidth(LABEL_WIDTH);
         textGrid.setVgap(5);
+        textGrid.setHgap(5);
         textGrid.add(findLabel, 0, 0);
         textGrid.add(findTextField, 1, 0);
         textGrid.getColumnConstraints().addAll(neverGrow, alwaysGrow);
