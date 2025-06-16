@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import javafx.geometry.Insets;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Control;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import org.apache.commons.lang3.StringUtils;
@@ -101,8 +102,9 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
         // Leyboard shortcut label. Showing existing/ptoposed shortcut assigned to the template
         keyboardShortcutLabel = createLabel();
-        keyboardShortcutLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);
-
+        keyboardShortcutLabel.setMinWidth(Control.USE_PREF_SIZE);
+        keyboardShortcutLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);        
+ 
         final ImageView warningImage = new ImageView(UserInterfaceIconProvider.WARNING.buildImage(20, new java.awt.Color(255, 128, 0)));
         final Tooltip warningToolTip = new Tooltip("This shortcut is currently assigned to another template");
                 
@@ -129,6 +131,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         }
 
         keyboardShortcutButton = new Button("Shortcut");
+        //keyboardShortcutButton.setMinWidth(Control.USE_PREF_SIZE);
 
         keyboardShortcutButton.setOnAction(e -> {//NOSONAR
             final RecordKeyboardShortcut rk = new RecordKeyboardShortcut();
@@ -223,9 +226,9 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
         grid.add(textField, 0, 0, 7, 1);
 
-        grid.add(keyboardShortcutButton, 0, 1);
-        grid.add(keyboardShortcutLabel, 2, 1);
-        grid.add(shorcutWarningIconLabel, 6, 1);
+         grid.add(keyboardShortcutButton, 0, 1, 2, 1);
+        grid.add(keyboardShortcutLabel, 2, 1, 4, 1);
+        grid.add(shorcutWarningIconLabel, 6, 1, 1, 1);
 
         grid.add(shorcutWarningLabel, 0, 2, 7, 1);
 
