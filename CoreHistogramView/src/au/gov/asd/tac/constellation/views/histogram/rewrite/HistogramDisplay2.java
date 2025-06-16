@@ -119,9 +119,9 @@ public class HistogramDisplay2 extends BorderPane {
     private final VBox iconColumn = new VBox();
     private final HBox columns = new HBox();
 
-    private final VBox barsHbox = new VBox();
+    private final VBox barsHbox = new VBox(); // Holds the spacer and vbox containing the bars
+    private final Pane barSpacer = new Pane(); // Matches the width of the property value column
     private final VBox barsVbox = new VBox(); // Holds just the bars, width of bars are based on barColum width
-    private final Pane barSpacer = new Pane();
 
     // Pane that holds everything, stacks the bars on top
     final StackPane stackPane = new StackPane();
