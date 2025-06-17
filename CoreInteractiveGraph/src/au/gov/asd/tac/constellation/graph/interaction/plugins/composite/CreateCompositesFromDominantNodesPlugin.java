@@ -49,33 +49,7 @@ import org.openide.util.lookup.ServiceProvider;
 @Messages("CreateCompositesFromDominantNodesPlugin=Composite Correlated Nodes")
 @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
 public class CreateCompositesFromDominantNodesPlugin extends SimpleEditPlugin {
-
-    private void findCorrelations(final GraphReadMethods graph, final int vxTypeAttr, final int txTypeAttr, final int vxId, final Set<Integer> allCorrelatedVerts, final Set<Integer> correlationGroup) {
-        for (int i = 0; i < graph.getVertexNeighbourCount(vxId); i++) {
-            final int nxId = graph.getVertexNeighbour(vxId, i);
-
-            if (!allCorrelatedVerts.contains(nxId)) {
-                final int lxId = graph.getLink(vxId, nxId);
-                boolean neighbourCorrelated = false;
-                for (int j = 0; j < graph.getLinkTransactionCount(lxId); j++) {
-                    final int txId = graph.getLinkTransaction(lxId, j);
-                    final SchemaTransactionType txType = (SchemaTransactionType) graph.getObjectValue(txTypeAttr, txId);
-                    if (txType != null && txType.isSubTypeOf(AnalyticConcept.TransactionType.CORRELATION)) {
-                        correlationGroup.add(nxId);
-                        allCorrelatedVerts.add(nxId);
-                        neighbourCorrelated = true;
-                        break;
-                    }
-                }
-
-                if (neighbourCorrelated) {
-                    findCorrelations(graph, vxTypeAttr, txTypeAttr, nxId, allCorrelatedVerts, correlationGroup);
-                }
-            }
-        }
-
-    }
-
+    
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         @SuppressWarnings("unchecked") //the default VertexDominanceCalculator extends VertexDominanceCalculator<SchemaVertexType>
@@ -114,6 +88,31 @@ public class CreateCompositesFromDominantNodesPlugin extends SimpleEditPlugin {
             }
 
             PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+        }
+    }
+    
+    private void findCorrelations(final GraphReadMethods graph, final int vxTypeAttr, final int txTypeAttr, final int vxId, final Set<Integer> allCorrelatedVerts, final Set<Integer> correlationGroup) {
+        for (int i = 0; i < graph.getVertexNeighbourCount(vxId); i++) {
+            final int nxId = graph.getVertexNeighbour(vxId, i);
+
+            if (!allCorrelatedVerts.contains(nxId)) {
+                final int lxId = graph.getLink(vxId, nxId);
+                boolean neighbourCorrelated = false;
+                for (int j = 0; j < graph.getLinkTransactionCount(lxId); j++) {
+                    final int txId = graph.getLinkTransaction(lxId, j);
+                    final SchemaTransactionType txType = (SchemaTransactionType) graph.getObjectValue(txTypeAttr, txId);
+                    if (txType != null && txType.isSubTypeOf(AnalyticConcept.TransactionType.CORRELATION)) {
+                        correlationGroup.add(nxId);
+                        allCorrelatedVerts.add(nxId);
+                        neighbourCorrelated = true;
+                        break;
+                    }
+                }
+
+                if (neighbourCorrelated) {
+                    findCorrelations(graph, vxTypeAttr, txTypeAttr, nxId, allCorrelatedVerts, correlationGroup);
+                }
+            }
         }
     }
 }
