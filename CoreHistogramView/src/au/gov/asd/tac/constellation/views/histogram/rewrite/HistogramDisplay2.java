@@ -83,10 +83,7 @@ public class HistogramDisplay2 extends BorderPane {
     private static final int MINIMUM_SELECTED_WIDTH = 3;
     private static final int MINIMUM_TEXT_WIDTH = 150;
     private static final int PREFERRED_HEIGHT = 600;
-//    private static final int TOP_MARGIN = 3;
-//    private static final int BOTTOM_MARGIN = 3;
-//    private static final int LEFT_MARGIN = 3;
-//    private static final int RIGHT_MARGIN = 3;
+
     private static final int TEXT_TO_BAR_GAP = 10;
     private static final int ROWS_SPACING = 5;
 
@@ -95,8 +92,6 @@ public class HistogramDisplay2 extends BorderPane {
     private static final int DEFAULT_FONT_SIZE = 12;
 
     private final HistogramTopComponent2 topComponent;
-//    private int preferredHeight;
-//    private int iconPadding;
     private int barHeightBase = 18;
     private int barHeight = (barHeightBase * FontUtilities.getApplicationFontSize()) / DEFAULT_FONT_SIZE;   // the vertical thickness of the bars
     //private int userSetBarHeight = -1;   // the vertical thickness of the bars as set by the user
@@ -122,6 +117,8 @@ public class HistogramDisplay2 extends BorderPane {
     private final VBox barsHbox = new VBox(); // Holds the spacer and vbox containing the bars
     private final Pane barSpacer = new Pane(); // Matches the width of the property value column
     private final VBox barsVbox = new VBox(); // Holds just the bars, width of bars are based on barColum width
+
+    private final VBox binCountsVbox = new VBox(); // Holds 
 
     // Pane that holds everything, stacks the bars on top
     final StackPane stackPane = new StackPane();
@@ -163,8 +160,7 @@ public class HistogramDisplay2 extends BorderPane {
         barColumn.setSpacing(ROWS_SPACING);
         HBox.setHgrow(barColumn, Priority.ALWAYS);
 
-        //stackPane.getChildren().addAll(columns, barsVbox);
-        stackPane.getChildren().addAll(columns, barsHbox);
+        stackPane.getChildren().addAll(columns, barsHbox, binCountsVbox);
 
         barsVbox.setSpacing(ROWS_SPACING);
         barsVbox.setMouseTransparent(true);
@@ -175,6 +171,10 @@ public class HistogramDisplay2 extends BorderPane {
         barsHbox.getChildren().addAll(barSpacer, barsVbox);
 
         propertyColumn.widthProperty().addListener((obs, oldVal, newVal) -> barSpacer.setMaxWidth((double) newVal));
+
+        StackPane.setAlignment(binCountsVbox, Pos.TOP_RIGHT);
+        binCountsVbox.setAlignment(Pos.TOP_RIGHT);
+        binCountsVbox.setSpacing(ROWS_SPACING);
 
         this.setCenter(stackPane);
 
@@ -227,11 +227,11 @@ public class HistogramDisplay2 extends BorderPane {
 
     public void updateDisplay() {
         updateIcons();
-        updateDisplayText();
-        requestRedrawBars();
+        updatePropertyText();
+        updateBars(true);
     }
 
-    private void updateDisplayText() {
+    private void updatePropertyText() {
         if (binCollection == null) {
             // No data, so just have text saying so
             final Label text = new Label(NO_DATA);
@@ -324,20 +324,28 @@ public class HistogramDisplay2 extends BorderPane {
         }
     }
 
-    private void requestRedrawBars() {
+    private void updateBars() {
+        updateBars(false);
+    }
+
+    private void updateBars(final boolean updateBinCounts) {
         // If nothing has changed, dont need to update
         if (!requireUpdate()) {
             return;
         }
 
-        drawBars();
-    }
-
-    private void drawBars() {
-        drawBars(prevWidth);
+        drawBars(updateBinCounts);
     }
 
     private void drawBars(final double width) {
+        drawBars(false, width);
+    }
+
+    private void drawBars(final boolean updateBinCounts) {
+        drawBars(updateBinCounts, prevWidth);
+    }
+
+    private void drawBars(final boolean updateBinCounts, final double width) {
         if (binCollection == null) {
             return;
         }
@@ -371,6 +379,13 @@ public class HistogramDisplay2 extends BorderPane {
         final StackPane emptyPane = new StackPane();
         emptyPane.getChildren().add(emptyRect);
         barsArray[0] = emptyPane;// empty
+
+        if (updateBinCounts) {
+            binCountsVbox.getChildren().clear();
+            final Label emptyLabel = new Label();
+            emptyLabel.setMinHeight(barHeight);
+            binCountsVbox.getChildren().add(emptyLabel);
+        }
 
         // For each bar
         for (int bar = 0; bar < bins.length; bar++) {
@@ -434,13 +449,16 @@ public class HistogramDisplay2 extends BorderPane {
             }
 
             // Draw bin count text
-            final String binCount = (bin.selectedCount > 0) ? Integer.toString(bin.selectedCount) + "/" + Integer.toString(bin.elementCount) : Integer.toString(bin.elementCount);
-            final Label binCountlabel = new Label(binCount);
-            binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count"), true); // Set styling
-            binCountlabel.setStyle("-fx-font-size: " + fontSize);
+            if (updateBinCounts) {
+                final String binCount = (bin.selectedCount > 0) ? Integer.toString(bin.selectedCount) + "/" + Integer.toString(bin.elementCount) : Integer.toString(bin.elementCount);
+                final Label binCountlabel = new Label(binCount);
+                binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count"), true); // Set styling
+                binCountlabel.setStyle("-fx-font-size: " + fontSize);
 
-            rectBar.getChildren().add(binCountlabel);
-            StackPane.setAlignment(binCountlabel, Pos.CENTER_RIGHT);
+                binCountlabel.setMinHeight(barHeight);
+                binCountsVbox.getChildren().add(binCountlabel);
+                StackPane.setAlignment(binCountlabel, Pos.CENTER_RIGHT);
+            }
 
             // Finally, put the bar in array
             barsArray[bar + 1] = rectBar;
@@ -553,7 +571,7 @@ public class HistogramDisplay2 extends BorderPane {
             binSelectionMode.mousePressed(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd);
 
             // Only need to update bars
-            requestRedrawBars();
+            updateBars();
         }
     }
 
@@ -567,7 +585,7 @@ public class HistogramDisplay2 extends BorderPane {
             setDragEnd(newDragEnd);
 
             // Only need to update bars
-            requestRedrawBars();
+            updateBars();
         }
     }
 
@@ -578,7 +596,7 @@ public class HistogramDisplay2 extends BorderPane {
             activeBin = dragStart == dragEnd ? dragStart : -1;
 
             // Only need to update bars
-            requestRedrawBars();
+            updateBars();
         }
     }
 
