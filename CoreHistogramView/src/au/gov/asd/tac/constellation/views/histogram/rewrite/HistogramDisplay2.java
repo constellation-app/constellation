@@ -78,26 +78,16 @@ public class HistogramDisplay2 extends BorderPane {
     private static final int GAP_BETWEEN_BARS = 5;
     public static final int MINIMUM_BAR_HEIGHT = 2; // Set back to private after histogram rewrite fully replaces old version
     public static final int MAXIMUM_BAR_HEIGHT = 99;// Set back to private after histogram rewrite fully replaces old version
-    private static final int PREFERRED_BAR_LENGTH = 250;
     private static final int MINIMUM_BAR_WIDTH = 4;
     private static final int MINIMUM_SELECTED_WIDTH = 3;
     private static final int MINIMUM_TEXT_WIDTH = 150;
     private static final int PREFERRED_HEIGHT = 600;
-
-    private static final int TEXT_TO_BAR_GAP = 10;
     private static final int ROWS_SPACING = 5;
-
-    private static final int ICON_WIDTH = 3;
-
     private static final int DEFAULT_FONT_SIZE = 12;
 
     private final HistogramTopComponent2 topComponent;
     private int barHeightBase = 18;
     private int barHeight = (barHeightBase * FontUtilities.getApplicationFontSize()) / DEFAULT_FONT_SIZE;   // the vertical thickness of the bars
-    //private int userSetBarHeight = -1;   // the vertical thickness of the bars as set by the user
-//    private int barsWidth; // the length of the longest bar
-//    private int textWidth; // the width of the space allocated to text
-    //private final Dimension preferredSize = new Dimension(MINIMUM_TEXT_WIDTH + PREFERRED_BAR_LENGTH + TEXT_TO_BAR_GAP + 2, PREFERRED_HEIGHT);
     private BinCollection binCollection = null;
     private BinIconMode binIconMode = BinIconMode.NONE;
     private BinSelectionMode binSelectionMode;
@@ -125,10 +115,8 @@ public class HistogramDisplay2 extends BorderPane {
 
     private static final int COLUMNS_SPACING = 5;
     private double prevWidth = 0;
-
     private static final float FONT_SCALE_FACTOR = 0.66f;
 
-    //private final static javafx.scene.paint.Color LIGHT_GREY = javafx.scene.paint.Color.color(192, 192, 192);
     public HistogramDisplay2(final HistogramTopComponent2 topComponent) {
         this.topComponent = topComponent;
 
