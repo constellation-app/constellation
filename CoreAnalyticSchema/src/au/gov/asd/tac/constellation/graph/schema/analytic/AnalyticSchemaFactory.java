@@ -65,7 +65,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
     private static final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.GRAPH;
     private static final ConstellationColor ICON_COLOR = ConstellationColor.CARROT;
     
-    // A custom type is essentially a modified default type (its a renamed copy).
+    // A custom type is essentially a modified default type (its just a renamed copy).
     // It should be processed (or not) in exactly the same that is done for a default type.
     boolean modifiedDefaultVtxType = false;
     boolean modifiedDefaultTxnType = false;
@@ -191,7 +191,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                     updateStoredType = true;
                 }
             } else {
-                SchemaVertexType resolvedType = SchemaVertexTypeUtilities.getType(type.toString());
+                final SchemaVertexType resolvedType = SchemaVertexTypeUtilities.getType(type.toString());
                 if (SchemaConceptUtilities.getDefaultVertexType().equals(resolvedType)) {
                     type = graph.getSchema().resolveVertexType(type.toString());
                     modifiedDefaultVtxType = true;
@@ -332,10 +332,9 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 }
             } else {
                 // current directed value doesn't match expected setting for the type.
-                SchemaTransactionType resolvedType = SchemaTransactionTypeUtilities.getType(type.getName());
+                final SchemaTransactionType resolvedType = SchemaTransactionTypeUtilities.getType(type.getName());
                 if (SchemaTransactionTypeUtilities.getDefaultType().equals(resolvedType)) {
                     type = resolveTransactionType(type.getName());
-                    // retain current settings for unknown/custom types
                     modifiedDefaultTxnType = true;
                 }
             }
