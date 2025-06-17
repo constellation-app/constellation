@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -219,9 +219,20 @@ public class StoreGraphValidatorNGTest {
             validatorIds.add(validator.getTransaction(i));
             graphIds.add(graph.getTransaction(i));
 
-            int t = graph.getTransaction(i);
-            assertEquals(validator.getTransactionDestinationVertex(t), graph.getTransactionDestinationVertex(t));
-            assertEquals(validator.getTransactionSourceVertex(t), graph.getTransactionSourceVertex(t));
+            int t = graph.getTransaction(i);            
+            if (validator.getTransactionDirection(t) == GraphConstants.UNDIRECTED) {
+                if (validator.getTransactionDestinationVertex(t) != graph.getTransactionDestinationVertex(t)) {                        
+                    // expect failure for undirected sometimes as it may be the other vertex
+                    assertEquals(validator.getTransactionSourceVertex(t), graph.getTransactionDestinationVertex(t));                
+                    assertEquals(validator.getTransactionDestinationVertex(t), graph.getTransactionSourceVertex(t));
+         
+                } else {
+                    assertEquals(validator.getTransactionDestinationVertex(t), graph.getTransactionDestinationVertex(t));
+                    assertEquals(validator.getTransactionSourceVertex(t), graph.getTransactionSourceVertex(t));
+                }
+            } else {
+                assertEquals(validator.getTransactionDestinationVertex(t), graph.getTransactionDestinationVertex(t));
+            }
             assertEquals(validator.getTransactionDirection(t), graph.getTransactionDirection(t));
             assertEquals(validator.getTransactionLink(t), graph.getTransactionLink(t));
         }

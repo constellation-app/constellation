@@ -1,11 +1,15 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2025-06-16 Replace with Empty Text
+<p>The Find View has been updated to allow values of attributes to be replaced with an empty string.</p>
+<p>For example, when Node identifiers have values such as phone numbers, like +6140000000, using the find and replace you could remove the '+' and replace it with an empty string.</p>
+
 == 2025-06-17 Shortcuts for Data Access View Workflow templates
 <p>Data Access View Workflow templates can now be saved with keyboard shortcuts
 <p>Allocated keyboard shortcut can be used to load up the workflow template instead of clicking the menu items.
 
-== 2025-06-16 Replace with Empty Text 
+== 2025-06-16 Replace with Empty Text
 <p>The Find View has been updated to allow values of attributes to be replaced with an empty string.</p>
 <p>For example, when Node identifiers have values such as phone numbers, like +6140000000, using the find and replace you could remove the '+' and replace it with an empty string.</p>
 

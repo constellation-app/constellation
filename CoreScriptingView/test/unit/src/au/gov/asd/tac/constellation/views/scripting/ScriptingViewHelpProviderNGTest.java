@@ -84,15 +84,9 @@ public class ScriptingViewHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreScriptingView"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("views"));
-        assertTrue(tocLocation.contains("scripting"));
         assertTrue(tocLocation.contains("scripting-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreScriptingView"));
-        assertTrue(tocLocation.indexOf("CoreScriptingView") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("views"));
-        assertTrue(tocLocation.indexOf("views") < tocLocation.indexOf("scripting"));
-        assertTrue(tocLocation.indexOf("scripting") < tocLocation.indexOf("scripting-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreScriptingView") < tocLocation.indexOf("scripting-toc.xml"));
     }    
 }

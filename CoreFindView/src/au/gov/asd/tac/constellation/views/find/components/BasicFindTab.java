@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -196,6 +196,7 @@ public class BasicFindTab extends Tab {
          */
         findLabel.setMinWidth(LABEL_WIDTH);
         textGrid.setVgap(5);
+        textGrid.setHgap(5);
         textGrid.add(findLabel, 0, 0);
         textGrid.add(findTextField, 1, 0);
         textGrid.getColumnConstraints().addAll(neverGrow, alwaysGrow);

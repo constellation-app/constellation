@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,6 @@ public class ReplaceTab extends BasicFindTab {
         replaceNextButton.setOnAction(action -> replaceNextAction());
         helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
         helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.find.FindViewTopComponent").display());
-
     }
 
     /**
@@ -146,7 +145,7 @@ public class ReplaceTab extends BasicFindTab {
      * FindViewController to call the replacePlugin.
      */
     public void replaceAllAction() {
-        if (!getFindTextField().getText().isEmpty() && !getReplaceTextField().getText().isEmpty()) {
+        if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
             FindViewController.getDefault().replaceMatchingElements(true, false, getZoomToSelection().isSelected());
@@ -161,13 +160,13 @@ public class ReplaceTab extends BasicFindTab {
      * FindViewController to call the replacePlugin.
      */
     public void replaceNextAction() {
-        if (!getFindTextField().getText().isEmpty() && !getReplaceTextField().getText().isEmpty()) {
+        if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
             FindViewController.getDefault().replaceMatchingElements(false, true, getZoomToSelection().isSelected());
         }
     }
-
+    
     /**
      * Gets the replaceTextField
      *

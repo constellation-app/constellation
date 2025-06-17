@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -151,7 +151,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                     if (value != null) {
 
                         // Determine if the find string matches the attribute string
-                        Matcher match = searchPattern.matcher(value);
+                        final Matcher match = searchPattern.matcher(value);
                         found = matchWholeWord ? match.matches() : match.find();
                         if (found) {
                             // get the UID of the element and the graph

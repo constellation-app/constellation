@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,15 @@ package au.gov.asd.tac.constellation.security.proxy;
  */
 class ProxyPreferenceKeys {
 
-    static final String USE_DEFAULTS = "proxy.use_defaults";
-    static final String DEFAULT = "proxy.default";
-    static final String ADDITIONAL = "proxy.proxies";
-    static final String BYPASS = "proxy.local_hosts";
-
-    // Default values.
-    static final boolean USE_DEFAULTS_DEFAULT = true;
-    static final String DEFAULT_DEFAULT = ConstellationHttpProxy.getDefault().getDefaultProxyString();
-    static final String ADDITIONAL_DEFAULT = ConstellationHttpProxy.getDefault().getAdditionalProxiesString();
-    static final String BYPASS_DEFAULT = ConstellationHttpProxy.getDefault().getBypassProxyHostsString();
+    protected static final String USE_DEFAULTS = "proxy.use_defaults";
+    protected static final boolean USE_DEFAULTS_DEFAULT = true;
+    
+    protected static final String DEFAULT = "proxy.default";
+    protected static final String DEFAULT_DEFAULT = ConstellationHttpProxy.getDefault().getDefaultProxyString();
+    
+    protected static final String ADDITIONAL = "proxy.proxies";
+    protected static final String ADDITIONAL_DEFAULT = ConstellationHttpProxy.getDefault().getAdditionalProxiesString();
+    
+    protected static final String BYPASS = "proxy.local_hosts";
+    protected static final String BYPASS_DEFAULT = ConstellationHttpProxy.getDefault().getBypassProxyHostsString();
 }
