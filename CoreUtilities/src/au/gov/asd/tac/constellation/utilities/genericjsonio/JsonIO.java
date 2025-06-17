@@ -33,6 +33,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -475,17 +476,28 @@ public class JsonIO {
             names = ArrayUtils.EMPTY_STRING_ARRAY;
         }
 
-        // Remove the prefix and suffix from the names and pass to the selection dialog        
-        final Optional<String> selectedFileName = ArrayUtils.isEmpty(names) ? Optional.empty() : Optional.of(names[0]);
+        // Remove the prefix and suffix from the names      
+        final int filePrefixLength = filePrefix.orElse("").length();
+
+        final List<String> encodedNames = Arrays.stream(names)
+                        .map(name -> FilenameEncoder.decode(name.substring(0, name.length() - 5)))
+                        .filter(StringUtils::isNotBlank)
+                        .map(name -> name.substring(filePrefixLength))
+                        .collect(Collectors.toList());
+         
+        final Optional<String> selectedFileName = encodedNames.isEmpty() ? Optional.empty() : Optional.of(encodedNames.get(0));
 
         // Re-add the prefix and suffix, then serialize the preferences to the file
         if (selectedFileName.isPresent()) {
+            final String prefixedFilename = filePrefix.orElse("")
+                    .concat(selectedFileName.get());
             return deserializationFunction.apply(new File(
                     preferenceDirectory,
-                    FilenameEncoder.encode(selectedFileName.get())
+                    FilenameEncoder.encode(prefixedFilename) + FileExtensionConstants.JSON
             )
             );
         }
+
         return null;
     }
 
