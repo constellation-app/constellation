@@ -164,15 +164,13 @@ public class HistogramDisplay2 extends BorderPane {
 
         barsVbox.setSpacing(ROWS_SPACING);
         barsVbox.setMouseTransparent(true);
-        //StackPane.setAlignment(barsVbox, Pos.CENTER_RIGHT);
 
         HBox.setHgrow(barSpacer, Priority.ALWAYS);
-        barsHbox.setAlignment(Pos.CENTER_RIGHT);
+        barsHbox.setAlignment(Pos.TOP_RIGHT);
         barsHbox.getChildren().addAll(barSpacer, barsVbox);
 
         propertyColumn.widthProperty().addListener((obs, oldVal, newVal) -> barSpacer.setMaxWidth((double) newVal));
 
-        StackPane.setAlignment(binCountsVbox, Pos.TOP_RIGHT);
         binCountsVbox.setAlignment(Pos.TOP_RIGHT);
         binCountsVbox.setSpacing(ROWS_SPACING);
 
