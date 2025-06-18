@@ -75,8 +75,7 @@ public class RecordKeyboardShortcut  {
         Optional<KeyboardShortcutSelectionResult> ksOptional = Optional.empty();
         
         if (StringUtils.isNotEmpty(keyboardShortcut)) {       
-            boolean alreadyAssigned = false;
-            
+            boolean alreadyAssigned = false;            
                         
             final File exisitngTemplateWithKs = keyboardShortCutAlreadyAssigned(preferenceDirectory, keyboardShortcut);
             

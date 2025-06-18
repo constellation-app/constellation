@@ -199,9 +199,8 @@ public class JsonIO {
      * @return 
      */
     public static Optional<String> getDefaultKeyboardShortcut(final File preferenceDirectory) {
-        for (int index = 1; index <= 5; index++) {
-            final var fi = index;
-            final FilenameFilter filenameFilter = (d, s) -> s.startsWith("[Ctrl " + fi + "]");
+        for (int index = 1; index <= 5; index++) {            
+            final FilenameFilter filenameFilter = (d, s) -> s.startsWith("[Ctrl " + index + "]");
 
             if (ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
                 return Optional.of("Ctrl " + index);
@@ -258,7 +257,7 @@ public class JsonIO {
         Optional<String> ks = getDefaultKeyboardShortcut(preferenceDirectory);
 
         // Ask the user to provide a file name        
-        Optional<String> userInputWithKs;
+        final Optional<String> userInputWithKs;
 
         final Optional<KeyboardShortcutSelectionResult> ksResult = JsonIODialog.getPreferenceFileName(ks, preferenceDirectory);
         if (ksResult.isPresent()) {
@@ -467,7 +466,7 @@ public class JsonIO {
         // and if filePrefix was supplied, start with the provided prefix.
         final String[] names;
         if (preferenceDirectory.isDirectory()) {
-            names = preferenceDirectory.list((File dir, String name)
+            names = preferenceDirectory.list((final File dir, final String name)
                     -> StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON)
                     && (filePrefix.isEmpty() || StringUtils.startsWithIgnoreCase(name, filePrefix.get()))
             );
