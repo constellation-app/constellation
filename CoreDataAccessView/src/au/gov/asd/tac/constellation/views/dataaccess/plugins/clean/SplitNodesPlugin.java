@@ -197,20 +197,20 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         );
         
         //Determine the positions of the selected nodes
-        final List<Integer> selectedVerticies = new ArrayList<>();    
+        final List<Integer> selectedVertexPositions = new ArrayList<>();
         final int graphVertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < graphVertexCount; vertexPosition++) {
             final int currentVertexId = graph.getVertex(vertexPosition);
             if (graph.getBooleanValue(vertexSelectedAttributeId, currentVertexId)) {
-                selectedVerticies.add(vertexPosition);
+                selectedVertexPositions.add(vertexPosition);
             }
         }
         
-        totalProcessSteps = selectedVerticies.size();
+        totalProcessSteps = selectedVertexPositions.size();
         
         // Loop through the selected vertices and determine how many new verticies need to be added to the graph
         final List<Integer> newVertices = new ArrayList<>();
-        for (final int position : selectedVerticies) {
+        for (final int position : selectedVertexPositions) {
             interaction.setProgress(
                     ++currentProcessStep, 
                     totalProcessSteps, 
@@ -239,7 +239,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                     leftNodeIdentifier = substrings[0];
 
                     for (int i = 1; i < substrings.length; i++) {
-                        newVertices.add(createNewNode(graph, position, substrings[i], linkType, splitIntoSameLevel));
+                        newVertices.add(createNewNode(graph, currentVertexId, substrings[i], linkType, splitIntoSameLevel));
                         createdNodesCount++;
                     }
 
@@ -250,7 +250,8 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
 
                     // There was text found on the left side of the split so ignore it and set the node for the right side
                     if (StringUtils.isNotBlank(leftNodeIdentifier)) {
-                        leftNodeIdentifier = identifier.substring(0, i);newVertices.add(createNewNode(graph, position, identifier.substring(i + 1), linkType, splitIntoSameLevel));
+                        leftNodeIdentifier = identifier.substring(0, i);
+                        newVertices.add(createNewNode(graph, currentVertexId, identifier.substring(i + 1), linkType, splitIntoSameLevel));
                         createdNodesCount++;
 
                     // There was no text on the left side of the split so set the leftNodeIdentifier to the right side. 
