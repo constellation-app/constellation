@@ -220,7 +220,7 @@ public class GraphRecordStoreUtilities {
             directed = !"False".equalsIgnoreCase(directedValue);
         } else {
             final SchemaTransactionType transactionType = SchemaTransactionTypeUtilities.getType(type);
-            if (transactionType != null && !transactionType.getName().equalsIgnoreCase("Unknown")) {
+            if (transactionType != null && !"Unknown".equalsIgnoreCase(transactionType.getName())) {
                 directed = transactionType.isDirected();
             } else {
                 // When its an Unknown transaction type we should use the current directed setting if available.
