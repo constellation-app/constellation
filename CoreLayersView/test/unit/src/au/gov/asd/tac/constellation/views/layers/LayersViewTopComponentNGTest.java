@@ -192,8 +192,7 @@ public class LayersViewTopComponentNGTest {
         final GraphManager graphManager = mock(GraphManager.class);
         final Graph graph = mock(Graph.class);
         when(graphManager.getActiveGraph()).thenReturn(graph);
-
-       
+    
         final LayersViewTopComponent mockedTopComponent = mock(LayersViewTopComponent.class);
         final LayersViewPane lvp = mock(LayersViewPane.class);
         doNothing().when(lvp).setDefaultLayers();
@@ -260,7 +259,6 @@ public class LayersViewTopComponentNGTest {
     public void testComponentActivated() {
         System.out.println("testComponentActivated");
 
-        final LayersViewController controller = mock(LayersViewController.class);
         final LayersViewTopComponent mockedTopComponent = mock(LayersViewTopComponent.class);
 
         try {
@@ -302,4 +300,36 @@ public class LayersViewTopComponentNGTest {
             assertFalse(true);
         }        
     }
+    
+     /**
+     * Test of handleComponentOpened method, of class LayersViewTopComponent.
+     */
+    @Test
+    public void testHandleComponentOpened() {
+        System.out.println("testHandleComponentOpened");
+             
+        final LayersViewTopComponent mockedTopComponent = mock(LayersViewTopComponent.class);
+        final LayersViewPane lvp = mock(LayersViewPane.class);
+        doNothing().when(lvp).setDefaultLayers();
+        doNothing().when(lvp).setEnabled(Mockito.anyBoolean());
+        when(mockedTopComponent.createContent()).thenReturn(lvp);
+
+        final LayersViewController controller = mock(LayersViewController.class);
+        when(mockedTopComponent.getLayersViewController()).thenReturn(controller);
+
+        doCallRealMethod().when(mockedTopComponent).setPaneStatus();
+        doCallRealMethod().when(mockedTopComponent).preparePane();
+        doCallRealMethod().when(mockedTopComponent).handleComponentOpened();
+
+        when(mockedTopComponent.getLayersViewController()).thenReturn(controller);
+        doNothing().when(controller).readState();
+        doNothing().when(controller).addAttributes();        
+
+        mockedTopComponent.handleComponentOpened();
+        verify(mockedTopComponent, times(1)).preparePane();
+        // called once in preparePane() and once in setPaneStatus()
+        verify(mockedTopComponent, times(2)).createContent();
+        verify(mockedTopComponent, times(1)).setPaneStatus();
+    }
+
 }
