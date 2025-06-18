@@ -49,6 +49,7 @@ public class RunPlugin extends RestService {
     private static final String PLUGIN_NAME_PARAMETER_ID = "plugin_name";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
     private static final String ARGS_PARAMETER_ID = "args";
+    private static final String EXAMPLE_RESPONSES_PARAMETER_ID = "resps";
 
     @Override
     public String getName() {
@@ -88,8 +89,15 @@ public class RunPlugin extends RestService {
         final PluginParameter<StringParameterValue> argsParam = StringParameterType.build(ARGS_PARAMETER_ID);
         argsParam.setName("Plugin arguments (body)");
         argsParam.setDescription("A JSON object containing parameter names and values to be passed to the plugin.");
-        argsParam.setRequestBodyExampleJson("#/components/examples/runPluginExample");
+        argsParam.setRequestBodyExampleJson("#/components/examples/runPluginExample/request");
         parameters.addParameter(argsParam);
+        
+        //for example responses
+        final PluginParameter<StringParameterValue> exampleResponsesParam = StringParameterType.build(EXAMPLE_RESPONSES_PARAMETER_ID);
+        exampleResponsesParam.setName("Example responses (responses)");
+        exampleResponsesParam.setDescription("A JSON object containing example responses.");
+        exampleResponsesParam.setRequestBodyExampleJson("#/components/examples/runPluginExample/responses");
+        parameters.addParameter(exampleResponsesParam);
 
         return parameters;
     }

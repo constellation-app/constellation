@@ -19,9 +19,13 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
+import au.gov.asd.tac.constellation.webserver.api.swagger.ExampleResponse;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -32,8 +36,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.prefs.Preferences;
+import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -134,6 +142,47 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                             final ObjectNode mime = content.putObject(RestServiceUtilities.APPLICATION_JSON);
                             final ObjectNode schema = mime.putObject(SCHEMA);
                             schema.put("$ref", pp.getRequestBodyExampleJson());
+                            
+                        } else if (pp.getName().toLowerCase(Locale.ENGLISH).contains("(responses)")) {
+                            
+                            final ObjectNode responses = httpMethod.putObject("responses");                          
+                            
+                            final JsonNode dataNode = root.at("/components/examples/runPluginExample/responses");
+                            
+                            try {
+                                
+                                final List<ExampleResponse> exampleResponses = mapper.treeToValue(dataNode, new TypeReference<List<ExampleResponse>>(){});
+                                
+                                exampleResponses.stream().forEach(resp -> {
+                     
+                                    final ObjectNode respNode = responses.putObject(resp.code());
+                                    respNode.put(DESCRIPTION, resp.description());
+
+                                    if (Objects.nonNull(resp.content()) && rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
+                                        final ObjectNode content = respNode.putObject("content");
+                                        final ObjectNode mime = content.putObject(rs.getMimeType());
+                                        final ObjectNode schema = mime.putObject(SCHEMA);
+                                        // Make a wild guess about the response.
+                                        if (serviceKey.name.toLowerCase(Locale.ENGLISH).startsWith("list")) {
+                                            schema.put("type", "array");
+                                            final ObjectNode items = schema.putObject("items");
+                                            items.put("type", OBJECT);
+                                            schema.put("$ref", resp.content());
+                                        } else {
+                                            schema.put("type", OBJECT);
+                                            schema.put("$ref", resp.content());
+                                        }
+                                    } else {
+                                        // Do nothing
+                                    }
+                                });
+                                
+                            } catch (IllegalArgumentException ex) {
+                                Exceptions.printStackTrace(ex);
+                            } catch (JsonProcessingException ex) {
+                                Exceptions.printStackTrace(ex);
+                            }                            
+                           
                         } else {
                             final ObjectNode param = params.addObject();
                             param.put("name", pp.getId());
@@ -154,7 +203,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     final ObjectNode secretSchema = secretParam.putObject(SCHEMA);
                     secretSchema.put("type", "string");
 
-                    final ObjectNode responses = httpMethod.putObject("responses");
+                    /*final ObjectNode responses = httpMethod.putObject("responses");
                     final ObjectNode success = responses.putObject("200");
                     success.put(DESCRIPTION, rs.getDescription());
 
@@ -172,7 +221,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         }
                     } else {
                         // Do nothing
-                    }
+                    }*/
                 });
 
                 final OutputStream out = response.getOutputStream();

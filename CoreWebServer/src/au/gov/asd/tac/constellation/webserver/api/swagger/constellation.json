@@ -9,28 +9,45 @@
     },
     "components":{        
         "examples":{
-            "runPluginExample":{
-                "type": "object",
-                "properties":{
-                    "SelectTopNPlugin.mode": {
-                        "type": "string"
+            "runPluginExample": {
+                "request": {
+                    "type": "object",
+                    "properties": {
+                        "SelectTopNPlugin.mode": {
+                            "type": "string"
+                        },
+                        "SelectTopNPlugin.type_category": {
+                            "type": "string"
+                        },
+                        "SelectTopNPlugin.type": {
+                            "type": "string"
+                        },
+                        "SelectTopNPlugin.limit": {
+                            "type": "integer"
+                        }
                     },
-                    "SelectTopNPlugin.type_category": {
-                        "type": "string"
-                    },
-                    "SelectTopNPlugin.type": {
-                        "type": "string"
-                    },
-                    "SelectTopNPlugin.limit": {
-                        "type": "integer"
+                    "example": {
+                        "SelectTopNPlugin.mode": "Node",
+                        "SelectTopNPlugin.type_category": "Online Location",
+                        "SelectTopNPlugin.type": "\n\u2713 Online Location\n",
+                        "SelectTopNPlugin.limit": 2
                     }
                 },
-                "example":{
-                    "SelectTopNPlugin.mode": "Node",
-                    "SelectTopNPlugin.type_category": "Online Location",
-                    "SelectTopNPlugin.type": "\n\u2713 Online Location\n",
-                    "SelectTopNPlugin.limit": 2
-                }
+                "responses": [
+                    {
+                        "code": "200",
+                        "description": "Success"
+                    },
+                    {
+                        "code": "401",
+                        "description": "Un-Authorised"
+                    },
+                    {
+                        "code": "422",
+                        "description": "Validation error"
+                    }
+                ]
+                
             },
             "runPluginsExampleObject":
             {
