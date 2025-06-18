@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.layers.components.LayersViewPane;
@@ -30,6 +31,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * The Layers View Top Component. This class provides the Layers View window and
@@ -61,6 +63,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     private final LayersViewController layersViewController;
     private final LayersViewPane layersViewPane;
+    private boolean showingFlag;
 
     public LayersViewTopComponent() {
         setName(Bundle.CTL_LayersViewTopComponent());
@@ -69,7 +72,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
         layersViewController = LayersViewController.getDefault().init(LayersViewTopComponent.this);
         layersViewPane = new LayersViewPane(layersViewController);
-
+        showingFlag = false;
         initContent();
 
         addAttributeValueChangeHandler(LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE, graph -> {
@@ -107,7 +110,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        if (needsUpdate() && graph != null) {
+        if (graph != null) {
             preparePane();
         }
         setPaneStatus();
@@ -115,7 +118,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        if (needsUpdate() && graph != null) {
+        if (graph != null) {
             preparePane();
         }
         setPaneStatus();
@@ -123,7 +126,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected void handleGraphClosed(final Graph graph) {
-        if (needsUpdate() && graph != null) {
+        if (graph != null) {
             preparePane();
         }
         setPaneStatus();
@@ -138,12 +141,36 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected void componentShowing() {
-        super.componentShowing();
+        componentActivated();
         layersViewController.readState();
         layersViewController.addAttributes();
         setPaneStatus();
     }
 
+    @Override
+    protected void componentActivated() {
+        setComponentVisible(true);
+        if (!showingFlag) {
+            if (WindowManager.getDefault().isTopComponentFloating(this)) {
+                ConstellationLogger.getDefault().viewInfo(this, "Activated / Floating");
+            } 
+            if (WindowManager.getDefault().isTopComponentMinimized(this)) {
+                ConstellationLogger.getDefault().viewInfo(this, "Activated / Minimised");            
+            }
+            if (!WindowManager.getDefault().isTopComponentMinimized(this) &&
+                !WindowManager.getDefault().isTopComponentFloating(this)) {
+                ConstellationLogger.getDefault().viewInfo(this, "Activated / Docked");
+            }
+            showingFlag = true;        
+        }
+    }
+    
+    @Override
+    protected void componentHidden() {
+        setComponentVisible(false);
+        showingFlag = false;
+    }
+        
     protected void preparePane() {
         createContent().setDefaultLayers();
         layersViewController.readState();
