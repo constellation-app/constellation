@@ -30,6 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.windows.WindowManager;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -301,7 +302,7 @@ public class LayersViewTopComponentNGTest {
         }        
     }
     
-     /**
+    /**
      * Test of handleComponentOpened method, of class LayersViewTopComponent.
      */
     @Test
@@ -331,5 +332,18 @@ public class LayersViewTopComponentNGTest {
         verify(mockedTopComponent, times(2)).createContent();
         verify(mockedTopComponent, times(1)).setPaneStatus();
     }
-
+    
+    /**
+     * Test of showingFlag methods, of class LayersViewTopComponent.
+     */
+    @Test
+    public void testShowingFlag() {
+        final LayersViewTopComponent mockedTopComponent = mock(LayersViewTopComponent.class);
+        doCallRealMethod().when(mockedTopComponent).setShowingFlag(Mockito.anyBoolean());
+        doCallRealMethod().when(mockedTopComponent).isShowingFlag();
+        mockedTopComponent.setShowingFlag(true);
+        assertTrue(mockedTopComponent.isShowingFlag());
+        mockedTopComponent.setShowingFlag(false);
+        assertFalse(mockedTopComponent.isShowingFlag());
+    }
 }
