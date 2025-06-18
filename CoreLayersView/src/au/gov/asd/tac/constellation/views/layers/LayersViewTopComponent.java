@@ -71,7 +71,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         initComponents();
 
         layersViewController = LayersViewController.getDefault().init(LayersViewTopComponent.this);
-        layersViewPane = new LayersViewPane(layersViewController);
+        layersViewPane = new LayersViewPane(getLayersViewController());
         showingFlag = false;
         initContent();
 
@@ -92,8 +92,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     public synchronized List<AttributeValueMonitor> setChangeListeners(final List<SchemaAttribute> changeListeners) {
         final List<AttributeValueMonitor> valueMonitors = new ArrayList<>();
-        changeListeners.forEach(attribute -> valueMonitors.add(
-                addAttributeValueChangeHandler(attribute, changedGraph -> layersViewController.updateQueries(changedGraph))
+        changeListeners.forEach(attribute -> valueMonitors.add(addAttributeValueChangeHandler(attribute, changedGraph -> getLayersViewController().updateQueries(changedGraph))
         ));
         return List.copyOf(valueMonitors);
     }
@@ -142,15 +141,15 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     @Override
     protected void componentShowing() {
         componentActivated();
-        layersViewController.readState();
-        layersViewController.addAttributes();
+        getLayersViewController().readState();
+        getLayersViewController().addAttributes();
         setPaneStatus();
     }
 
     @Override
     protected void componentActivated() {
         setComponentVisible(true);
-        if (!showingFlag) {
+        if (!isShowingFlag()) {
             if (WindowManager.getDefault().isTopComponentFloating(this)) {
                 ConstellationLogger.getDefault().viewInfo(this, "Activated / Floating");
             } 
@@ -161,20 +160,20 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
                 !WindowManager.getDefault().isTopComponentFloating(this)) {
                 ConstellationLogger.getDefault().viewInfo(this, "Activated / Docked");
             }
-            showingFlag = true;        
+            setShowingFlag(true);        
         }
     }
     
     @Override
     protected void componentHidden() {
         setComponentVisible(false);
-        showingFlag = false;
+        setShowingFlag(false);
     }
         
     protected void preparePane() {
         createContent().setDefaultLayers();
-        layersViewController.readState();
-        layersViewController.addAttributes();
+        getLayersViewController().readState();
+        getLayersViewController().addAttributes();
     }
     
     /**
@@ -188,6 +187,28 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     public LayersViewPane getLayersViewPane() {
         return layersViewPane;
     }
+    
+    /**
+     * @return the layersViewController
+     */
+    protected LayersViewController getLayersViewController() {
+        return layersViewController;
+    }
+
+    /**
+     * @return the showingFlag
+     */
+    protected boolean isShowingFlag() {
+        return showingFlag;
+    }
+
+    /**
+     * @param showingFlag the showingFlag to set
+     */
+    protected void setShowingFlag(final boolean showingFlag) {
+        this.showingFlag = showingFlag;
+    }
+
     
     /**
      * This method is called from within the constructor to initialize the form.
