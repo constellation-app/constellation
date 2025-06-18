@@ -199,8 +199,9 @@ public class JsonIO {
      * @return 
      */
     public static Optional<String> getDefaultKeyboardShortcut(final File preferenceDirectory) {
-        for (int index = 1; index <= 5; index++) {            
-            final FilenameFilter filenameFilter = (d, s) -> s.startsWith("[Ctrl " + index + "]");
+        for (int index = 1; index <= 5; index++) {
+            final String fileNameStartsWith = "[Ctrl " + index + "]";
+            final FilenameFilter filenameFilter = (d, s) -> s.startsWith(fileNameStartsWith);
 
             if (ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
                 return Optional.of("Ctrl " + index);
