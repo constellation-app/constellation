@@ -64,25 +64,41 @@
             },
             "runPluginsExample":
             {
-                "type": "array", 
-                "items": {
-                    "$ref":"#/components/examples/runPluginsExampleObject"
-                },  
-                "example":[
-                    {                      
-                        "plugin_name": "SELECTALL"                  
+                "request": {
+                    "type": "array",
+                    "items": {
+                        "$ref":"#/components/examples/runPluginsExampleObject"
                     },
-                    {                      
-                        "plugin_name": "DESELECTBLAZES"                  
+                    "example": [
+                        {
+                            "plugin_name": "SELECTALL"
+                        },
+                        {
+                            "plugin_name": "DESELECTBLAZES"
+                        },
+                        {
+                            "plugin_name": "SELECTTOPN",
+                            "plugin_args": {
+                                "SelectTopNPlugin.mode": "Node",
+                                "SelectTopNPlugin.type_category": "Online Location",
+                                "SelectTopNPlugin.type": "\n\u2713 Online Location\n",
+                                "SelectTopNPlugin.limit": 2
+                            }
+                        }
+                    ]
+                },
+                "responses": [
+                    {
+                        "code": "200",
+                        "description": "Success"
                     },
                     {
-                        "plugin_name": "SELECTTOPN",
-                        "plugin_args":{                               
-                            "SelectTopNPlugin.mode": "Node",
-                            "SelectTopNPlugin.type_category": "Online Location",
-                            "SelectTopNPlugin.type": "\n\u2713 Online Location\n",
-                            "SelectTopNPlugin.limit": 2
-                        }  
+                        "code": "401",
+                        "description": "Un-Authorised"
+                    },
+                    {
+                        "code": "422",
+                        "description": "Validation error"
                     }
                 ]
             },

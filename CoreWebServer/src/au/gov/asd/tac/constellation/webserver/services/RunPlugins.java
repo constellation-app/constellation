@@ -63,7 +63,7 @@ public class RunPlugins extends RestService {
     // Plugin argument keys.
     //
     private static final String PLUGIN_NAME = "plugin_name";
-    private static final String PLUGIN_ARGS = "plugin_args";
+    private static final String PLUGIN_ARGS = "plugin_args";    
 
     @Override
     public String getName() {
@@ -103,10 +103,11 @@ public class RunPlugins extends RestService {
         final PluginParameter<StringParameterValue> pluginsParam = StringParameterType.build(PLUGINS_PARAMETER_ID);
         pluginsParam.setName("Plugins and arguments (body)");
         pluginsParam.setDescription("A JSON list containing objects with 'plugin_name' and 'plugin_args' arguments.");
-        pluginsParam.setRequestBodyExampleJson("#/components/examples/runPluginsExample");
+        pluginsParam.setRequestBodyExampleJson("#/components/examples/runPluginsExample/request");
+        pluginsParam.setResponseBodyExample("/components/examples/runPluginsExample/responses");
         pluginsParam.setRequired(true);
-        parameters.addParameter(pluginsParam);
-
+        parameters.addParameter(pluginsParam);        
+       
         return parameters;
     }
 

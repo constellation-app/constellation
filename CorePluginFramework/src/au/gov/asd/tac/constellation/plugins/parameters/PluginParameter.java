@@ -69,6 +69,7 @@ public class PluginParameter<V extends ParameterValue> {
     private String helpID;
     private boolean isSuppressed = false;
     private String requestBodyExample;
+    private String responseBodyExample;
     private boolean required = false;
     private boolean isSpellCheckEnabled = false;
 
@@ -777,6 +778,17 @@ public class PluginParameter<V extends ParameterValue> {
         }
     }
 
+    public String getResponseBodyExample() {
+        return responseBodyExample;
+    }
+
+    public void setResponseBodyExample(String responseBodyExample) {
+        if (!Objects.equals(responseBodyExample, this.responseBodyExample)) {
+            this.responseBodyExample = responseBodyExample;
+        }        
+    }
+
+    
     /**
      * Is the parameter required?
      *

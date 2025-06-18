@@ -143,18 +143,28 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                             final ObjectNode schema = mime.putObject(SCHEMA);
                             schema.put("$ref", pp.getRequestBodyExampleJson());
                             
-                        } else if (pp.getName().toLowerCase(Locale.ENGLISH).contains("(responses)")) {
-                            
-                            final ObjectNode responses = httpMethod.putObject("responses");                          
-                            
-                            final JsonNode dataNode = root.at("/components/examples/runPluginExample/responses");
-                            
+                        } else {
+                            final ObjectNode param = params.addObject();
+                            param.put("name", pp.getId());
+                            param.put("in", "query");
+                            param.put(REQUIRED, pp.isRequired());
+                            param.put(DESCRIPTION, pp.getDescription());
+                            final ObjectNode schema = param.putObject(SCHEMA);
+                            schema.put("type", pp.getType().getId());
+                        }
+                        
+                        if (Objects.nonNull(pp.getResponseBodyExample())) {
+
+                            final ObjectNode responses = httpMethod.putObject("responses");
+                            final JsonNode dataNode = root.at(pp.getResponseBodyExample());
+
                             try {
-                                
-                                final List<ExampleResponse> exampleResponses = mapper.treeToValue(dataNode, new TypeReference<List<ExampleResponse>>(){});
-                                
+
+                                final List<ExampleResponse> exampleResponses = mapper.treeToValue(dataNode, new TypeReference<List<ExampleResponse>>() {
+                                });
+
                                 exampleResponses.stream().forEach(resp -> {
-                     
+
                                     final ObjectNode respNode = responses.putObject(resp.code());
                                     respNode.put(DESCRIPTION, resp.description());
 
@@ -176,21 +186,13 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                                         // Do nothing
                                     }
                                 });
-                                
+
                             } catch (IllegalArgumentException ex) {
                                 Exceptions.printStackTrace(ex);
                             } catch (JsonProcessingException ex) {
                                 Exceptions.printStackTrace(ex);
-                            }                            
-                           
-                        } else {
-                            final ObjectNode param = params.addObject();
-                            param.put("name", pp.getId());
-                            param.put("in", "query");
-                            param.put(REQUIRED, pp.isRequired());
-                            param.put(DESCRIPTION, pp.getDescription());
-                            final ObjectNode schema = param.putObject(SCHEMA);
-                            schema.put("type", pp.getType().getId());
+                            }
+
                         }
                     });
 
