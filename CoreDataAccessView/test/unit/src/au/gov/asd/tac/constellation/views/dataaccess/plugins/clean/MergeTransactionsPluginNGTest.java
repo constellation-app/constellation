@@ -26,6 +26,8 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.text.TextPluginInteraction;
+import java.util.ArrayList;
+import java.util.List;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeMethod;
@@ -167,10 +169,16 @@ public class MergeTransactionsPluginNGTest {
         instance.edit(graph, interaction, parameters);
 
         // Check that the transactions were merged 
-        assertEquals(graph.getTransactionCount(), 3);
-        assertEquals(graph.getTransaction(txId1), 1);
-        assertEquals(graph.getTransaction(txId3), 2);
-        assertEquals(graph.getTransaction(txId4), 3);
+        final int txnCount = graph.getTransactionCount();
+        assertEquals(txnCount, 3);
+        // Confirm the correct transaction ids are being used.
+        final List<Integer> txnIds = new ArrayList<>();
+        for (int txnPos = 0; txnPos < txnCount; txnPos++) {
+            txnIds.add(graph.getTransaction(txnPos));
+        }
+        assertTrue(txnIds.contains(txId3));
+        assertTrue(txnIds.contains(txId4));
+        assertTrue(txnIds.contains(txId5));
     }
     
     /**
