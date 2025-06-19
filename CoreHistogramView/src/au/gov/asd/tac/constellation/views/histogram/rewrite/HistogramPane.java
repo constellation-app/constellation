@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.histogram.rewrite;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -57,6 +56,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.openide.DialogDescriptor;
 import org.openide.util.HelpCtx;
 
 /**
@@ -645,15 +645,20 @@ public class HistogramPane extends BorderPane {
 
         if (parameters != null) {
             final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(binFormatter.getLabel(), parameters);
-            dialog.showAndWait();
-            if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-                CURRENT_PARAMETER_IDS.put(binFormatter, parameters.copy());
-                topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getValue(), parameters);
-            } else if (currentHistogramState != null) {
-                binFormatterCombo.getSelectionModel().select(currentHistogramState.getBinFormatter());
-            } else {
-                // Do nothing
-            }
+
+            final Thread newThread = new Thread(() -> {
+                final Object r = dialog.showAndReturnDisplay(true);
+
+                if (r == DialogDescriptor.OK_OPTION) {
+                    dialog.storeRecentParameterValues();
+                    CURRENT_PARAMETER_IDS.put(binFormatter, parameters.copy());
+                    topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getValue(), parameters);
+                } else if (currentHistogramState != null) {
+                    binFormatterCombo.getSelectionModel().select(currentHistogramState.getBinFormatter());
+                }
+            });
+
+            newThread.start();
         } else {
             topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getValue(), null);
         }
