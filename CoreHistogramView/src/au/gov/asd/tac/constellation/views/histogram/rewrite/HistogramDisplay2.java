@@ -239,6 +239,11 @@ public class HistogramDisplay2 extends BorderPane {
                 final Label headerCount = new Label(COUNT);
                 final Label headerTotalBins = new Label(TOTAL_BINS_COUNT + binCollection.getSelectedBins().length + "/" + bins.length);
 
+                // Set styling
+                headerValue.pseudoClassStateChanged(PseudoClass.getPseudoClass("header-row"), true);
+                headerCount.pseudoClassStateChanged(PseudoClass.getPseudoClass("header-row"), true);
+                headerTotalBins.pseudoClassStateChanged(PseudoClass.getPseudoClass("header-row"), true);
+
                 final double fontSize = barHeight * FONT_SCALE_FACTOR;
                 headerValue.setStyle("-fx-font-size: " + fontSize);
                 headerCount.setStyle("-fx-font-size: " + fontSize);
@@ -273,6 +278,7 @@ public class HistogramDisplay2 extends BorderPane {
                         // Regular grey text
                         propertyValue = new Label(category);
                         propertyValue.setTextFill(javafx.scene.paint.Color.grayRgb(192));
+                        propertyValue.pseudoClassStateChanged(PseudoClass.getPseudoClass("histogram-text"), true);
                     }
 
                     // For some reason, setting font size with setFont() doesn't work. So the styling is set like this

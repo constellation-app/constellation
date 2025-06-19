@@ -17,9 +17,19 @@
     Author     : Quasar985
 */
 .label:no-value {
-    -fx-text-fill: #FFFF00;
+    -fx-text-fill: #FFFF00;/*Yellow*/
 }
 
 .label:bar-bin-count {
+    -fx-text-fill: #C0C0C0;/*Silver*/
     -fx-padding: 0 0.5em 0 0;
+}
+
+.label:header-row{
+    -fx-text-fill: #FFFFFF;/*White*/
+
+}
+
+.label:histogram-text{
+    -fx-text-fill: #C0C0C0;/*Silver*/
 }
