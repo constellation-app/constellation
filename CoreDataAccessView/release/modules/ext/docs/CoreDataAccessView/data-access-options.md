@@ -18,13 +18,25 @@ you want to overwrite it. Preferences are saved by default in the
 directory &lt;HOME_DIRECTORY&gt;/.CONSTELLATION/DataAccessView. (The name of the
 file in which the preference is saved is encoded so it doesn't clash
 with file system limitations.) Files in this directory can be copied and
-deleted using your favourite file management utility.
+deleted using your favourite file management utility. 
+
+Preferences are being saved with assigned keyboard shortcuts. 
+Default keyboard shortcuts are 'ctrl 1', 'ctrl 2', ... , 'ctrl 5'. 
+Users can save preferences with the keyboard shortcut of their choice. 
+
+<img src="../ext/docs/CoreDataAccessView/resources/DataAccessSaveTemplateWithKeyboardShortcut.png" alt="Save Template Button" />
+
+Click on 'Shortcut' button to map keyboard shortcut of users' choice.
+
+<img src="../ext/docs/CoreDataAccessView/resources/DataAccessSaveTemplateWithKeyboardShortcutChoice.png" alt="Save Template Button" />
 
 When you select "Load Templates", you will be presented with a list of saved
 preferences. Select one from the list and select OK. The preference will
 be loaded and will appear exactly as it was when it was saved. You can
 also remove a saved preference from here by selecting one from the list
 and selecting Remove.
+
+Alternatively, when use press a keyboard shortcut, mapped template gets loaded.
 
 ## Saving data access results
 
