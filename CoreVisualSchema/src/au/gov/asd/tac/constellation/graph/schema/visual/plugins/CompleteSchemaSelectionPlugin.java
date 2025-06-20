@@ -52,7 +52,7 @@ public class CompleteSchemaSelectionPlugin extends SimpleEditPlugin {
             final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
             final String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
-            // Local process-tracking varables (Process is indeteminate until node and transaction quantity is needed.)
+            // Local process-tracking variables (Process is indeterminate until node and transaction quantity is needed.)
             int currentProgress = 0;
             int maxProgress = -1;
             interaction.setProgress(currentProgress, maxProgress, "Completing schema...", true, parameters);
@@ -63,16 +63,24 @@ public class CompleteSchemaSelectionPlugin extends SimpleEditPlugin {
             final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
             final int txSelectedAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
             
+            int selectedVertexCount = 0;
+            for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+                final int vertexId = graph.getVertex(vertexPosition);
+                if (graph.getBooleanValue(vxSelectedAttr, vertexId)) {
+                    selectedVertexCount++;
+                }
+            }       
 
             // Process Vertices
-            maxProgress = vertexCount;
+            maxProgress = selectedVertexCount;
             interaction.setProgress(currentProgress,
                     maxProgress,
                     String.format("Completing %s.",
-                            PluginReportUtilities.getNodeCountString(vertexCount)
+                            PluginReportUtilities.getNodeCountString(selectedVertexCount)
                     ),
                     true
             );
+            
             for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                 final int vertexId = graph.getVertex(vertexPosition);
                 if (graph.getBooleanValue(vxSelectedAttr, vertexId)) {
@@ -82,17 +90,27 @@ public class CompleteSchemaSelectionPlugin extends SimpleEditPlugin {
                 interaction.setProgress(++currentProgress, maxProgress, true);
             }
 
+            int selectedTransactionCount = 0;
+            for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                final int transactionId = graph.getTransaction(transactionPosition);
+                if (graph.getBooleanValue(txSelectedAttr, transactionId)) {
+                    selectedTransactionCount++;
+                }
+            }
+            
             // Process Transactions
-            maxProgress = transactionCount;
+            maxProgress = selectedTransactionCount;
             currentProgress = 0;
             interaction.setProgress(currentProgress,
                     maxProgress,
                     String.format("Completing %s.",
-                            PluginReportUtilities.getTransactionCountString(transactionCount)
+                            PluginReportUtilities.getTransactionCountString(selectedTransactionCount)
                     ),
                     true
             );
+            
             interaction.setProgress(currentProgress, maxProgress, "Completing transaction(s)...", true);
+            
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                 final int transactionId = graph.getTransaction(transactionPosition);
                 if (graph.getBooleanValue(txSelectedAttr, transactionId)) {
@@ -122,7 +140,6 @@ public class CompleteSchemaSelectionPlugin extends SimpleEditPlugin {
                 graph.removeAttribute(txColorblindAttr);
             }
 
-            graph.getSchema().completeGraph(graph);
         }
     }
 }
