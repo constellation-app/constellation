@@ -32,14 +32,14 @@ import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Completes the graph with its schema.
+ * Completes the selection on the graph with its schema.
  *
- * @author twinkle2_little
+ * @author Delphinus8821
  */
 @ServiceProvider(service = Plugin.class)
-@NbBundle.Messages("CompleteSchemaPlugin=Complete Graph Plugin")
+@NbBundle.Messages("CompleteSchemaSelectionPlugin=Complete Graph Selection Plugin")
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
-public class CompleteSchemaPlugin extends SimpleEditPlugin {
+public class CompleteSchemaSelectionPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
@@ -60,36 +60,62 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
             final int vxColorblindAttr = VisualConcept.VertexAttribute.COLORBLIND_LAYER.ensure(graph);
             final int txColorblindAttr = VisualConcept.TransactionAttribute.COLORBLIND_LAYER.ensure(graph);
             
+            final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+            final int txSelectedAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
+            
+            int selectedVertexCount = 0;
+            for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+                final int vertexId = graph.getVertex(vertexPosition);
+                if (graph.getBooleanValue(vxSelectedAttr, vertexId)) {
+                    selectedVertexCount++;
+                }
+            }       
 
             // Process Vertices
-            maxProgress = vertexCount;
+            maxProgress = selectedVertexCount;
             interaction.setProgress(currentProgress,
                     maxProgress,
                     String.format("Completing %s.",
-                            PluginReportUtilities.getNodeCountString(vertexCount)
+                            PluginReportUtilities.getNodeCountString(selectedVertexCount)
                     ),
                     true
             );
+            
             for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                 final int vertexId = graph.getVertex(vertexPosition);
-                graph.getSchema().completeVertex(graph, vertexId);
+                if (graph.getBooleanValue(vxSelectedAttr, vertexId)) {
+                    graph.getSchema().completeVertex(graph, vertexId);
+                }
+                
                 interaction.setProgress(++currentProgress, maxProgress, true);
             }
 
+            int selectedTransactionCount = 0;
+            for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                final int transactionId = graph.getTransaction(transactionPosition);
+                if (graph.getBooleanValue(txSelectedAttr, transactionId)) {
+                    selectedTransactionCount++;
+                }
+            }
+            
             // Process Transactions
-            maxProgress = transactionCount;
+            maxProgress = selectedTransactionCount;
             currentProgress = 0;
             interaction.setProgress(currentProgress,
                     maxProgress,
                     String.format("Completing %s.",
-                            PluginReportUtilities.getTransactionCountString(transactionCount)
+                            PluginReportUtilities.getTransactionCountString(selectedTransactionCount)
                     ),
                     true
             );
+            
             interaction.setProgress(currentProgress, maxProgress, "Completing transaction(s)...", true);
+            
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                 final int transactionId = graph.getTransaction(transactionPosition);
-                graph.getSchema().completeTransaction(graph, transactionId);
+                if (graph.getBooleanValue(txSelectedAttr, transactionId)) {
+                    graph.getSchema().completeTransaction(graph, transactionId);
+                }
                 interaction.setProgress(++currentProgress, maxProgress, true);
             }
 
@@ -103,8 +129,7 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
                     ),
                     true
             );
-          
-            
+             
             if (!"None".equals(colorMode)) {
                 final int vxColorRefAttribute = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(graph);
                 final int txColorRefAttribute = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(graph);
@@ -115,8 +140,6 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
                 graph.removeAttribute(txColorblindAttr);
             }
 
-            graph.getSchema().completeGraph(graph);
         }
     }
-
 }

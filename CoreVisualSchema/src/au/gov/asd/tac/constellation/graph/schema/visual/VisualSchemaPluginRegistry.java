@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.schema.visual;
 
 import au.gov.asd.tac.constellation.graph.schema.visual.plugins.CompleteSchemaPlugin;
+import au.gov.asd.tac.constellation.graph.schema.visual.plugins.CompleteSchemaSelectionPlugin;
 
 /**
  * Visual Schema Plugin Registry.
@@ -25,4 +26,5 @@ import au.gov.asd.tac.constellation.graph.schema.visual.plugins.CompleteSchemaPl
 public class VisualSchemaPluginRegistry {
 
     public static final String COMPLETE_SCHEMA = CompleteSchemaPlugin.class.getName();
+    public static final String COMPLETE_SELECTION_SCHEMA = CompleteSchemaSelectionPlugin.class.getName();
 }

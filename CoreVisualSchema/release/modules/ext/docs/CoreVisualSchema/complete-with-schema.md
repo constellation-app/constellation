@@ -22,6 +22,12 @@
 <td>Tools -&gt; Complete With Schema</td>
 <td style="text-align: center;"><img src="../ext/docs/CoreVisualSchema/resources/completeWithSchema.png" alt="Complete with Schema Icon" /></td>
 </tr>
+<tr class="even">
+<td>Run Complete with Schema on Selection</td>
+<td>Shift + F5</td>
+<td>Tools -&gt; Complete With Schema on Selection</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreVisualSchema/resources/completeWithSchema.png" alt="Complete with Schema Icon" /></td>
+</tr>
 </tbody>
 </table>
 
@@ -43,6 +49,9 @@ is when the Type of a Node is changed, running Complete with Schema
 will update the Node's Label, Color and Icon to match the defined attributes for 
 that Type in the schema on an Analytic Graph. 
 
+Running Complete With Schema will also update the colors on the graph with the 
+current colorblind option if this had been changed.
+
 Example of using the Complete with Schema plugin
 <div style="text-align: center">
     <figure style="display: inline-block">
@@ -54,3 +63,11 @@ Example of using the Complete with Schema plugin
         <figcaption>After Complete with Schema</figcaption>
     </figure>
 </div>
+
+## Complete With Schema on Selection
+
+Complete With Schema on Selection works the same as Complete With Schema but 
+it will only run on the nodes and transactions in the graph that are currently selected. 
+
+Complete With Schema on Selection will also update the selected parts of the graph
+with the colors of the current colorblind option. 
