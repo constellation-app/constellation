@@ -241,6 +241,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         private ExtensionFilter filter;
         private boolean acceptAllFileFilterUsed;
         private boolean warnOverwrite;
+        private boolean fileChooserSelected;
 
         /**
          * Constructs a new FileParameterValue
@@ -251,6 +252,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             filter = null;
             acceptAllFileFilterUsed = false;
             warnOverwrite = false;
+            fileChooserSelected = false;
         }
 
         /**
@@ -265,6 +267,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             filter = null;
             acceptAllFileFilterUsed = false;
             warnOverwrite = false;
+            fileChooserSelected = false;
         }
 
         /**
@@ -278,6 +281,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             filter = fpv.filter;
             acceptAllFileFilterUsed = fpv.acceptAllFileFilterUsed;
             warnOverwrite = fpv.warnOverwrite;
+            fileChooserSelected = fpv.fileChooserSelected;
         }
 
         /**
@@ -293,6 +297,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
                 final List<File> nf = newFiles != null ? newFiles : Collections.emptyList();
                 files.clear();
                 nf.forEach(f -> files.add(f.getAbsolutePath()));
+                setFileChooserSelected(true);
                 return true;
             }
 
@@ -379,6 +384,23 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         public boolean isWarningOverwriteUsed() {
             return warnOverwrite;
         }
+        
+        /**
+         * Check to see if save button has already been selected.
+         * @return the fileChooserSelected
+         */
+        public boolean isFileChooserSelected() {
+            return fileChooserSelected;
+        }
+
+        /**
+         * @param fileChooserSelected the fileChooserSelected to set
+         */
+        public void setFileChooserSelected(final boolean fileChooserSelected) {
+            this.fileChooserSelected = fileChooserSelected;
+        }
+
+
 
         @Override
         public String validateString(final String s) {

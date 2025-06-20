@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.layers.components.LayersViewPane;
@@ -30,6 +31,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * The Layers View Top Component. This class provides the Layers View window and
@@ -61,6 +63,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     private final LayersViewController layersViewController;
     private final LayersViewPane layersViewPane;
+    private boolean showingFlag;
 
     public LayersViewTopComponent() {
         setName(Bundle.CTL_LayersViewTopComponent());
@@ -68,8 +71,8 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         initComponents();
 
         layersViewController = LayersViewController.getDefault().init(LayersViewTopComponent.this);
-        layersViewPane = new LayersViewPane(layersViewController);
-
+        layersViewPane = new LayersViewPane(getLayersViewController());
+        showingFlag = false;
         initContent();
 
         addAttributeValueChangeHandler(LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE, graph -> {
@@ -89,8 +92,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     public synchronized List<AttributeValueMonitor> setChangeListeners(final List<SchemaAttribute> changeListeners) {
         final List<AttributeValueMonitor> valueMonitors = new ArrayList<>();
-        changeListeners.forEach(attribute -> valueMonitors.add(
-                addAttributeValueChangeHandler(attribute, changedGraph -> layersViewController.updateQueries(changedGraph))
+        changeListeners.forEach(attribute -> valueMonitors.add(addAttributeValueChangeHandler(attribute, changedGraph -> getLayersViewController().updateQueries(changedGraph))
         ));
         return List.copyOf(valueMonitors);
     }
@@ -107,7 +109,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        if (needsUpdate() && graph != null) {
+        if (graph != null) {
             preparePane();
         }
         setPaneStatus();
@@ -115,7 +117,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        if (needsUpdate() && graph != null) {
+        if (graph != null) {
             preparePane();
         }
         setPaneStatus();
@@ -123,7 +125,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected void handleGraphClosed(final Graph graph) {
-        if (needsUpdate() && graph != null) {
+        if (graph != null) {
             preparePane();
         }
         setPaneStatus();
@@ -138,16 +140,40 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected void componentShowing() {
-        super.componentShowing();
-        layersViewController.readState();
-        layersViewController.addAttributes();
+        componentActivated();
+        getLayersViewController().readState();
+        getLayersViewController().addAttributes();
         setPaneStatus();
     }
 
+    @Override
+    protected void componentActivated() {
+        setComponentVisible(true);
+        if (!isShowingFlag()) {
+            if (WindowManager.getDefault().isTopComponentFloating(this)) {
+                ConstellationLogger.getDefault().viewInfo(this, "Activated / Floating");
+            } 
+            if (WindowManager.getDefault().isTopComponentMinimized(this)) {
+                ConstellationLogger.getDefault().viewInfo(this, "Activated / Minimised");            
+            }
+            if (!WindowManager.getDefault().isTopComponentMinimized(this) &&
+                !WindowManager.getDefault().isTopComponentFloating(this)) {
+                ConstellationLogger.getDefault().viewInfo(this, "Activated / Docked");
+            }
+            setShowingFlag(true);        
+        }
+    }
+    
+    @Override
+    protected void componentHidden() {
+        setComponentVisible(false);
+        setShowingFlag(false);
+    }
+        
     protected void preparePane() {
         createContent().setDefaultLayers();
-        layersViewController.readState();
-        layersViewController.addAttributes();
+        getLayersViewController().readState();
+        getLayersViewController().addAttributes();
     }
     
     /**
@@ -161,6 +187,28 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     public LayersViewPane getLayersViewPane() {
         return layersViewPane;
     }
+    
+    /**
+     * @return the layersViewController
+     */
+    protected LayersViewController getLayersViewController() {
+        return layersViewController;
+    }
+
+    /**
+     * @return the showingFlag
+     */
+    protected boolean isShowingFlag() {
+        return showingFlag;
+    }
+
+    /**
+     * @param showingFlag the showingFlag to set
+     */
+    protected void setShowingFlag(final boolean showingFlag) {
+        this.showingFlag = showingFlag;
+    }
+
     
     /**
      * This method is called from within the constructor to initialize the form.

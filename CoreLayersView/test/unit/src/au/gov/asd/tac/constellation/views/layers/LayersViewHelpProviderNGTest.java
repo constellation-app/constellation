@@ -84,15 +84,9 @@ public class LayersViewHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreLayersView"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("views"));
-        assertTrue(tocLocation.contains("layers"));
         assertTrue(tocLocation.contains("layers-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreLayersView"));
-        assertTrue(tocLocation.indexOf("CoreLayersView") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("views"));
-        assertTrue(tocLocation.indexOf("views") < tocLocation.indexOf("layers"));
-        assertTrue(tocLocation.indexOf("layers") < tocLocation.indexOf("layers-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreLayersView") < tocLocation.indexOf("layers-toc.xml"));
     }    
 }

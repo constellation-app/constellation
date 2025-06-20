@@ -55,9 +55,9 @@ public class TOCItem {
      */
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof TOCItem
-                && StringUtils.equals(text, ((TOCItem) obj).getText())
-                && StringUtils.equals(target, ((TOCItem) obj).getTarget());
+        return obj instanceof TOCItem tocItem
+                && StringUtils.equals(text, tocItem.getText())
+                && StringUtils.equals(target, tocItem.getTarget());
     }
 
     @Override
@@ -67,5 +67,4 @@ public class TOCItem {
         hash = 97 * hash + Objects.hashCode(this.text);
         return hash;
     }
-
 }

@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.errorreport;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -27,12 +26,11 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Quasar985
  */
-@ServiceProvider(service = HelpPageProvider.class, position = 1000)
+@ServiceProvider(service = HelpPageProvider.class, position = 1050)
 @NbBundle.Messages("ErrorReportHelpProvider=Error Report Help Provider")
 public class ErrorReportHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
-    private static final String SEP = File.separator;
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreErrorReportView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -42,10 +40,8 @@ public class ErrorReportHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String dataModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreErrorReportView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd"
-                + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "errorreport" + SEP;
 
-        map.put("au.gov.asd.tac.constellation.views.errorreport", dataModulePath + "error-report.md");
+        map.put("au.gov.asd.tac.constellation.views.errorreport.ErrorReportTopComponent", MODULE_PATH + "error-report.md");
         return map;
     }
 
@@ -56,9 +52,6 @@ public class ErrorReportHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String dataViewPath;
-        dataViewPath = "ext" + SEP + "docs" + SEP + "CoreErrorReportView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
-                + CODEBASE_NAME + SEP + "views" + SEP + "errorreport" + SEP + "errorreport-toc.xml";
-        return dataViewPath;
+        return MODULE_PATH + "errorreport-toc.xml";
     }
 }

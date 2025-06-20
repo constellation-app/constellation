@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.visual;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,9 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 500)
 @NbBundle.Messages("VisualGraphHelpProvider=Visual Graph Help Provider")
 public class VisualGraphHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
-    private static final String SEP = File.separator;
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreVisualGraph" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -42,17 +40,15 @@ public class VisualGraphHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String visualModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreVisualGraph" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd"
-                + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "graph" + SEP + "visual" + SEP;
 
-        map.put("au.gov.asd.tac.constellation.graph.visual.inducedSubgraph", visualModulePath + "induced-subgraph.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.hopOut", visualModulePath + "hop-out.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.mergeNodes", visualModulePath + "merge-nodes-tool.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.generalSelection", visualModulePath + "general-selection.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.dimmedSelection", visualModulePath + "dimmed-selection.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.structureSelection", visualModulePath + "structure-selection.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.blazeSelection", visualModulePath + "blaze-selection.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.compare", visualModulePath + "compare-graph.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.inducedSubgraph", MODULE_PATH + "induced-subgraph.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.hopOut", MODULE_PATH + "hop-out.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.mergeNodes", MODULE_PATH + "merge-nodes-tool.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.generalSelection", MODULE_PATH + "general-selection.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.dimmedSelection", MODULE_PATH + "dimmed-selection.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.structureSelection", MODULE_PATH + "structure-selection.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.blazeSelection", MODULE_PATH + "blaze-selection.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.compare", MODULE_PATH + "compare-graph.md");
         return map;
     }
 
@@ -63,7 +59,6 @@ public class VisualGraphHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        return "ext" + SEP + "docs" + SEP + "CoreVisualGraph" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
-                + CODEBASE_NAME + SEP + "graph" + SEP + "visual" + SEP + "visualgraph-toc.xml";
+        return MODULE_PATH + "visualgraph-toc.xml";
     }
 }

@@ -510,7 +510,8 @@ public class AttributePrimaryKeysNGTest {
         int txId4 = graph.addTransaction(vxId2, vxId3, true);
         int txId5 = graph.addTransaction(vxId2, vxId3, true);
 
+        //same attr6 value will throw exception if only attr6 is set as primary key
         graph.setStringValue(attr6, txId4, "a1");
-        graph.setStringValue(attr6, txId5, "a2");
+        graph.setStringValue(attr6, txId5, "a1");
     }
 }
