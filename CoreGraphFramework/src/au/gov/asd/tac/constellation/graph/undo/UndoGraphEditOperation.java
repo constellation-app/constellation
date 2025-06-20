@@ -320,7 +320,7 @@ public enum UndoGraphEditOperation {
         @Override
         public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             // If the high bit of the current id has been set then the transaction source and destination vertices will have been swapped during the execute phase
-            // to keep the source vertex <= the destination vertex. This means that the undo step must operate on the source vertex instead of the source vertex.
+            // to keep the source vertex <= the destination vertex. This means that the undo step must operate on the source vertex instead of the destination vertex.
             if (state.getCurrentId() >= 0) {
                 graph.setTransactionDestinationVertex(state.getCurrentId(), state.getCurrentInt() ^ graph.getTransactionDestinationVertex(state.getCurrentId()));
             } else {
