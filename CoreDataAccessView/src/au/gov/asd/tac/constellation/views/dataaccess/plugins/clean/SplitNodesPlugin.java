@@ -197,20 +197,20 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         );
         
         //Determine the positions of the selected nodes
-        final List<Integer> selectedVertexPositions = new ArrayList<>();
+        final List<Integer> selectedVertexIds = new ArrayList<>();
         final int graphVertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < graphVertexCount; vertexPosition++) {
             final int currentVertexId = graph.getVertex(vertexPosition);
             if (graph.getBooleanValue(vertexSelectedAttributeId, currentVertexId)) {
-                selectedVertexPositions.add(vertexPosition);
+                selectedVertexIds.add(currentVertexId);
             }
         }
         
-        totalProcessSteps = selectedVertexPositions.size();
+        totalProcessSteps = selectedVertexIds.size();
         
         // Loop through the selected vertices and determine how many new verticies need to be added to the graph
         final List<Integer> newVertices = new ArrayList<>();
-        for (final int position : selectedVertexPositions) {
+        for (final int currentVertexId : selectedVertexIds) {
             interaction.setProgress(
                     ++currentProcessStep, 
                     totalProcessSteps, 
@@ -218,7 +218,6 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
             );
             
             // Check that the current vertex contains the split string being searched for.
-            final int currentVertexId = graph.getVertex(position);
             final String identifier = graph.getStringValue(vertexIdentifierAttributeId, currentVertexId);
             if (identifier != null && identifier.contains(character) && identifier.indexOf(character) <= identifier.length() - character.length()) {
                 int createdNodesCount = 0;
