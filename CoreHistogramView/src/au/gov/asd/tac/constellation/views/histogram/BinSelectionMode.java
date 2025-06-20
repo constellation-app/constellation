@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.histogram;
 
+import au.gov.asd.tac.constellation.views.histogram.rewrite.HistogramTopComponent2;
 import java.awt.Color;
 
 /**
@@ -41,7 +42,7 @@ public enum BinSelectionMode {
             }
 
             if (!shiftDown && !controlDown) {
-                for (Bin bin : bins) {
+                for (final Bin bin : bins) {
                     bin.selectedCount = 0;
                 }
             }
@@ -101,11 +102,36 @@ public enum BinSelectionMode {
                 topComponent.selectOnlyBins(firstBar, lastBar);
             }
         }
+        
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent2 topComponent) {
+            int firstBar = Math.max(0, Math.min(dragStart, dragEnd));
+            int lastBar = Math.min(bins.length - 1, Math.max(dragStart, dragEnd));
+
+            if (firstBar >= bins.length || lastBar < 0) {
+                return;
+            }
+
+            if (controlDown) {
+                topComponent.completeBins(firstBar, lastBar);
+            } else if (shiftDown) {
+                topComponent.selectBins(firstBar, lastBar, true);
+            } else {
+                topComponent.selectOnlyBins(firstBar, lastBar);
+            }
+        }
 
         @Override
         public void select(HistogramTopComponent topComponent) {
             // Intentionally left blank
         }
+        
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void select(HistogramTopComponent2 topComponent) {
+            // Intentionally left blank
+        } 
     },
     /**
      * Selections in the histogram are recorded as the user clicks and drags
@@ -173,11 +199,23 @@ public enum BinSelectionMode {
         public void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent topComponent) {
             // Do nothing
         }
+        
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent2 topComponent) {
+            // Do nothing
+        }
 
         @Override
         public void select(HistogramTopComponent topComponent) {
             topComponent.filterSelection();
         }
+        
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void select(HistogramTopComponent2 topComponent) {
+            topComponent.expandSelection();
+        } 
     },
     /**
      * Selections in the histogram are recorded as the user clicks and drags
@@ -245,11 +283,23 @@ public enum BinSelectionMode {
         public void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent topComponent) {
             // Do nothing
         }
+        
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent2 topComponent) {
+            // Do nothing
+        }
 
         @Override
         public void select(HistogramTopComponent topComponent) {
             topComponent.expandSelection();
         }
+        
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void select(HistogramTopComponent2 topComponent) {
+            topComponent.expandSelection();
+        } 
     };
 
     private final String label;
@@ -271,8 +321,14 @@ public enum BinSelectionMode {
     public abstract void mouseDragged(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int oldDragEnd, int newDragEnd);
 
     public abstract void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent topComponent);
+    
+    // TODO: Remove this function when Histogram rewrite is fully merged
+    public abstract void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent2 topComponent);
 
     public abstract void select(HistogramTopComponent topComponent);
+    
+    // TODO: Remove this function when Histogram rewrite is fully merged
+    public abstract void select(HistogramTopComponent2 topComponent);
 
     @Override
     public String toString() {
