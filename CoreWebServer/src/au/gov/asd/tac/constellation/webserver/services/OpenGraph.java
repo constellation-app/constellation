@@ -88,6 +88,7 @@ public class OpenGraph extends RestService {
         fileParam.setName("File path");
         fileParam.setDescription("The fully qualified path of a .star file.");
         fileParam.setRequired(true);
+        fileParam.setResponseBodyExample("/components/examples/openGrapthExample/responses");
         parameters.addParameter(fileParam);
 
         return parameters;

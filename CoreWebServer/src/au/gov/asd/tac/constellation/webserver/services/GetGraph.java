@@ -19,7 +19,10 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -37,6 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class GetGraph extends RestService {
 
     private static final String NAME = "get_graph";
+    private static final String EXAMPLE_RESPONSE_PARAMETER_ID = "rsps";
 
     @Override
     public String getName() {
@@ -53,6 +57,18 @@ public class GetGraph extends RestService {
         return new String[]{"graph", "schema"};
     }
 
+    @Override
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
+
+        final PluginParameter<StringParameterValue> argsParam = StringParameterType.build(EXAMPLE_RESPONSE_PARAMETER_ID);
+        argsParam.setName("Example response");        
+        argsParam.setResponseBodyExample("/components/examples/getGrapthExample/responses");
+        parameters.addParameter(argsParam);
+
+        return parameters;
+    }
+    
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
@@ -72,7 +88,7 @@ public class GetGraph extends RestService {
         root.put("id", id);
         root.put("name", name);
         root.put("schema", schemaName);
-
+        
         mapper.writeValue(out, root);
     }
 }

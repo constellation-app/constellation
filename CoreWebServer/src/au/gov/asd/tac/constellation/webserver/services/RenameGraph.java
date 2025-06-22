@@ -80,8 +80,9 @@ public class RenameGraph extends RestService {
 
         final PluginParameter<StringParameterValue> graphNameParam = StringParameterType.build(NEW_GRAPH_NAME_PARAMETER_ID);
         graphNameParam.setName("New graph name");
-        graphNameParam.setDescription("The new graph name");
+        graphNameParam.setDescription("The new graph name");        
         graphNameParam.setRequired(true);
+        graphIdParam.setResponseBodyExample("/components/examples/renameGrapthExample/responses");
         parameters.addParameter(graphNameParam);
 
         return parameters;

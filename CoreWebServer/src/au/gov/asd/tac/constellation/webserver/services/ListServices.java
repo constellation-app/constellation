@@ -15,7 +15,10 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ListServices extends RestService {
 
     private static final String NAME = "list_services";
+    private static final String EXAMPLE_RESPONSE_PARAMETER_ID = "rsps";
 
     @Override
     public String getName() {
@@ -51,6 +55,17 @@ public class ListServices extends RestService {
         return new String[]{"service"};
     }
 
+    @Override
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
+        
+        final PluginParameter<StringParameterValue> argsParam = StringParameterType.build(EXAMPLE_RESPONSE_PARAMETER_ID);
+        argsParam.setName("Example response");        
+        argsParam.setResponseBodyExample("/components/examples/listServicesExample/responses");
+        parameters.addParameter(argsParam);
+
+        return parameters;
+    }
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
 

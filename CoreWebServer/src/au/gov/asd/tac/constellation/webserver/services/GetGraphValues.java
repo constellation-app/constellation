@@ -67,6 +67,7 @@ public class GetGraphValues extends RestService {
         final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphIdParam.setName("Graph id");
         graphIdParam.setDescription("The id of the graph to get the values of. (Default is the active graph)");
+        graphIdParam.setResponseBodyExample("/components/examples/getGrapthValuesExample/responses");
         parameters.addParameter(graphIdParam);
 
         return parameters;

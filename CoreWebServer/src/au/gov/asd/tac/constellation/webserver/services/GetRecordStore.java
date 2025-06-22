@@ -62,6 +62,7 @@ public class GetRecordStore extends RestService {
     private static final String VX_PARAMETER_ID = "vx";
     private static final String TX_PARAMETER_ID = "tx";
     private static final String ATTRS_PARAMETER_ID = "attrs";
+    private static final String EXAMPLE_RESPONSES_PARAMETER_ID = "resps";    
 
     @Override
     public String getName() {
@@ -109,6 +110,11 @@ public class GetRecordStore extends RestService {
         attrsParam.setName("Attribute list");
         attrsParam.setDescription("Include only these comma-separated attributes in the recordstore. Use this for much greater efficiency. (optional)");
         parameters.addParameter(attrsParam);
+        
+        final PluginParameter<StringParameterValue> argsParam = StringParameterType.build(EXAMPLE_RESPONSES_PARAMETER_ID);
+        argsParam.setName("Get Recordstore example responses");        
+        argsParam.setResponseBodyExample("/components/examples/getRecordsStoreExample/responses");
+        parameters.addParameter(argsParam);
 
         return parameters;
     }

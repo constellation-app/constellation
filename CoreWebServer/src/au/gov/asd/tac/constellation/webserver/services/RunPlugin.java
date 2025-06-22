@@ -48,7 +48,7 @@ public class RunPlugin extends RestService {
     private static final String NAME = "run_plugin";
     private static final String PLUGIN_NAME_PARAMETER_ID = "plugin_name";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
-    private static final String ARGS_PARAMETER_ID = "args";    
+    private static final String ARGS_PARAMETER_ID = "args";
 
     @Override
     public String getName() {

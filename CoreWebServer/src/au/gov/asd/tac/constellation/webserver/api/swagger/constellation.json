@@ -33,21 +33,17 @@
                         "SelectTopNPlugin.limit": 2
                     }
                 },
-                "responses": [
-                    {
-                        "code": "200",
-                        "description": "Success"
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/examples/SuccessResponse"
                     },
-                    {
-                        "code": "401",
-                        "description": "Un-Authorised"
+                    "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
                     },
-                    {
-                        "code": "422",
-                        "description": "Validation error"
+                    "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
                     }
-                ]
-                
+                }                
             },
             "runPluginsExampleObject":
             {
@@ -87,20 +83,17 @@
                         }
                     ]
                 },
-                "responses": [
-                    {
-                        "code": "200",
-                        "description": "Success"
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/examples/SuccessResponse"
                     },
-                    {
-                        "code": "401",
-                        "description": "Un-Authorised"
+                    "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
                     },
-                    {
-                        "code": "422",
-                        "description": "Validation error"
+                    "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
                     }
-                ]
+                }
             },
             "addRecordStoreExampleObject":
             {
@@ -108,7 +101,7 @@
                 "properties":{
                     "columns":{
                         "type": "array"
-                    },                  
+                    },
                     "data":{
                         "type": "array"                        
                     }
@@ -116,52 +109,267 @@
             },
             "addRecordStoreExample":
             {
-                "type": "array", 
-                "items": {
-                    "$ref":"#/components/examples/addRecordStoreExampleObject"
-                },  
-                "example":{                    
-                    "columns": [
-                        "source.Label",   
-                        "source.visibility",   
-                        "source.dim",    
-                        "source.Identifier", 
-                        "source.selected"
-                    ],
-                    "data":[ 
-                        [
+                "request": {
+                    "type": "array",
+                    "items": {
+                        "$ref":"#/components/examples/addRecordStoreExampleObject"
+                    },
+                    "example":{
+                        "columns": [
+                            "source.Label",
+                            "source.visibility",
+                            "source.dim",
+                            "source.Identifier",
+                            "source.selected"
+                        ],
+                        "data":[
                             "New Node1",
                             true,
                             true,
                             "New Node1",
                             true
                         ]
-                    ]                    
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/examples/SuccessResponse"
+                    },
+                    "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                    },
+                    "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                    }
                 }
             },
+            "getRecordsStoreExample": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "columns": [
+                                            "blaze_size",   
+                                            "highlight_color",   
+                                            "draw_directed_transactions",    
+                                            "custom_attribute_1", 
+                                            "custom_attribute_2"
+                                        ],
+                                        "data": [ 
+                                            [
+                                                0.5,
+                                                "Carrot",
+                                                true,
+                                                "custom value 1",
+                                                "custom value 2"
+                                            ]
+                                        ]   
+                                    }                                    
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                    },
+                    "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                    }
+                }            
+            },
             "setGraphAttributesExample" : {
-                "type": "array", 
-                "items": {
-                    "$ref":"#/components/examples/addRecordStoreExampleObject"
-                },  
-                "example":{                    
-                    "columns": [
-                        "blaze_size",   
-                        "highlight_color",   
-                        "draw_directed_transactions",    
-                        "custom_attribute_1", 
-                        "custom_attribute_2"
-                    ],
-                    "data":[ 
-                        [
-                            0.5,
-                            "Carrot",
-                            true,
-                            "custom value 1",
-                            "custom value 2"
+                "request": {
+                    "type": "array", 
+                    "items": {
+                        "$ref": "#/components/examples/addRecordStoreExampleObject"
+                    },
+                    "example": {
+                        "columns": [
+                            "blaze_size",   
+                            "highlight_color",   
+                            "draw_directed_transactions",    
+                            "custom_attribute_1", 
+                            "custom_attribute_2"
+                        ],
+                        "data": [ 
+                            [
+                                0.5,
+                                "Carrot",
+                                true,
+                                "custom value 1",
+                                "custom value 2"
+                            ]
                         ]
-                    ]                    
+                    }
+                },
+                "responses": { 
+                     "200": {
+                        "$ref": "#/components/examples/SuccessResponse"
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
                 }
+            },
+            "listServicesExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": [
+                                        {
+                                            "name": "get_plugin_description",
+                                            "httpMethod": "GET"
+                                        },
+                                        {
+                                            "name": "open_graph",
+                                            "httpMethod": "POST"
+                                        },
+                                        {
+                                            "name": "get_type_description",
+                                            "httpMethod": "GET"
+                                        }
+                                    ]
+                                                              
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "openGrapthExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "id": "1a7046cf-66fd-4d49-a131-b73f0762314c",
+                                        "name": "Cornell_Movie-Dialogs_Corpus",
+                                        "schema": "au.gov.asd.tac.constellation.graph.schema.AnalyticSchemaFactory"
+                                    }                                                             
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "getGrapthExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                          "id": "23b4e80e-512f-43c3-b4a5-1ad40ed0f770",
+                                        "name": "soc-redditHyperlinks-body",
+                                        "schema": "au.gov.asd.tac.constellation.graph.schema.AnalyticSchemaFactory"
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "getGrapthValuesExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "columns": [
+                                            "3d_display|boolean",
+                                            "blaze_opacity|float",
+                                            "blaze_size|float",
+                                            "max_transactions|integer"
+                                        ],
+                                        "data": [
+                                            true,
+                                            1,
+                                            0.3,
+                                            8
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "renameGrapthExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success"                        
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "description": "A graph with the name newGrapth already exists."
+                     }
+                }
+            },
+            "defaultResponses": {
+              "responses": { 
+                     "200": {
+                        "$ref": "#/components/examples/SuccessResponse"
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }  
+            },          
+            "UnAuthorisedErrorResponse": {
+                "description": "Un-Authorised"
+            },
+            "ValidationErrorResponse": {
+                "description": "Validation error"
+            },
+            "SuccessResponse": {
+                "description": "Success"
             }
         }
     }
