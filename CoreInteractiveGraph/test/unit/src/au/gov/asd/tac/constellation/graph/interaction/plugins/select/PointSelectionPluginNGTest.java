@@ -15,14 +15,15 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.select;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -49,29 +50,25 @@ import org.testng.annotations.Test;
 public class PointSelectionPluginNGTest {
 
     private StoreGraph storeGraph;
-
-    // Vertex and transaction attribute IDs respectively.
+    
     private int vAttrId;
     private int tAttrId;
-
-    // Vertex and transaction IDs respectively.
+    private int connectionModeAttrId;
+    
     private int vxId1;
     private int vxId2;
     private int vxId3;
+    private int vxId4;
     
     private int txId1;
     private int txId2;
     private int txId3;
-
-    // Arrays used by the PointSelectionPlugin that contain the selected graph elements during plugin execution.
+    private int txId4;
+    private int txId5;
+    
     private IntArray vxIds;
     private IntArray txIds;
-
-    public PointSelectionPluginNGTest() {
-        vxIds = new IntArray();
-        txIds = new IntArray();
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         // Not currently required
@@ -83,435 +80,293 @@ public class PointSelectionPluginNGTest {
     }
 
     /**
-     * Creates a basic graph with 3 vertices and 3 transactions with selection
+     * Creates a basic graph with 4 vertices and 5 transactions with selection
      * attributes added for testing.
      *
      * @throws Exception
      */
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        storeGraph = new StoreGraph();
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
+        storeGraph = new StoreGraph(schema);
 
         vAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(storeGraph);
         tAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(storeGraph);
+        connectionModeAttrId = VisualConcept.GraphAttribute.CONNECTION_MODE.ensure(storeGraph);
+        
+        storeGraph.setObjectValue(connectionModeAttrId, 0, ConnectionMode.TRANSACTION);
 
         vxId1 = storeGraph.addVertex();
         vxId2 = storeGraph.addVertex();
         vxId3 = storeGraph.addVertex();
+        vxId4 = storeGraph.addVertex();
 
         txId1 = storeGraph.addTransaction(vxId1, vxId2, false);
         txId2 = storeGraph.addTransaction(vxId2, vxId3, false);
         txId3 = storeGraph.addTransaction(vxId3, vxId1, false);
-
-        // Ensures arrays don't contain IDs from previous tests when going into a subsequent test.
+        txId4 = storeGraph.addTransaction(vxId3, vxId2, false);
+        txId5 = storeGraph.addTransaction(vxId2, vxId3, false);
+        
+        storeGraph.setBooleanValue(vAttrId, vxId2, true);
+        storeGraph.setBooleanValue(vAttrId, vxId3, true);
+        storeGraph.setBooleanValue(tAttrId, txId2, true);
+        storeGraph.setBooleanValue(tAttrId, txId3, true);
+        
         vxIds = new IntArray();
         txIds = new IntArray();
-
-        selectAllAndAssert(null, false);
+        
+        vxIds.add(vxId1, vxId2);
+        txIds.add(txId1, txId2);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
         // Not currently required
     }
-
+    
     /**
-     * Tests selections with both the toggleSelection and clearSelection options
-     * on a graph that begins with no elements selected.
+     * Test of PointSelectionPlugin. Toggle and Clear Selection enabled
      *
      * @throws java.lang.InterruptedException
      * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testNoElementsSelectedOnGraph() throws InterruptedException, PluginException {
-        // Select vertex vxId1 with clearSelection. All other elements should remain deselected.
-        vxIds.add(vxId1);
-
-        Plugin selectPoint1 = new PointSelectionPlugin(vxIds, txIds, false, true);
-        PluginExecution.withPlugin(selectPoint1).executeNow(storeGraph);
-
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
-
-        vxIds.clear();
-        txIds.clear();
-
-        // Select vertex vxId2 with clearSelection. Should deselect vertex vxId1.
-        vxIds.add(vxId2);
-
-        Plugin selectPoint2 = new PointSelectionPlugin(vxIds, txIds, false, true);
-        PluginExecution.withPlugin(selectPoint2).executeNow(storeGraph);
-
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
-
-        vxIds.clear();
-        txIds.clear();
-
-        // Select transaction txId3 with toggleSelection. Vertex vxId2 should remain selected.
-        txIds.add(txId3);
-
-        Plugin selectPoint3 = new PointSelectionPlugin(vxIds, txIds, true, false);
-        PluginExecution.withPlugin(selectPoint3).executeNow(storeGraph);
-
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
-
-        vxIds.clear();
-        txIds.clear();
-
-        // Reselect vertex vxId2 with toggleSelection. Should deselect vertex vxId2 and transaction txId3 should remain selected.
-        vxIds.add(vxId2);
-
-        Plugin selectPoint4 = new PointSelectionPlugin(vxIds, txIds, true, false);
-        PluginExecution.withPlugin(selectPoint4).executeNow(storeGraph);
-
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
-    }
-
-    /**
-     * Tests selections with both the toggleSelection and clearSelection options
-     * on a graph that begins with all elements selected.
-     *
-     * @throws java.lang.InterruptedException
-     * @throws au.gov.asd.tac.constellation.plugins.PluginException
-     */
-    @Test
-    public void testAllElementsSelectedOnGraph() throws InterruptedException, PluginException {
-        selectAllAndAssert(null, true);
-
-        // Select vertex vxId1 with toggleSelection. All other elements should remain selected.
-        vxIds.add(vxId1);
-
-        Plugin selectPoint1 = new PointSelectionPlugin(vxIds, txIds, true, false);
-        PluginExecution.withPlugin(selectPoint1).executeNow(storeGraph);
+    public void testToggleAndClearSelection() throws InterruptedException, PluginException {
+        System.out.println("toggleAndClearSelection");
 
         assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
         assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
         assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
+        
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
         assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
         assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
 
-        vxIds.clear();
-        txIds.clear();
-
-        // Select vertex vxId2 with toggleSelection. Vertex vxId1 should remain deselected and all other elements should remain selected.
-        vxIds.add(vxId2);
-
-        Plugin selectPoint2 = new PointSelectionPlugin(vxIds, txIds, true, false);
-        PluginExecution.withPlugin(selectPoint2).executeNow(storeGraph);
+        final PointSelectionPlugin instance = new PointSelectionPlugin(vxIds, txIds, true, true);
+        PluginExecution.withPlugin(instance).executeNow(storeGraph);
+        
+        // vxId1, txId1 become true because of selection
+        // vxId2, txId2 become false because of selection + toggle
+        // vxId3, txId3 become false because of clear selection
+        // vxId4, txId4, txId5 remain false
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
+        
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
+    }
+    
+    /**
+     * Test of PointSelectionPlugin. Toggle enabled. Clear selection not enabled.
+     *
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
+     */
+    @Test
+    public void testToggleAndNoClearSelection() throws InterruptedException, PluginException {
+        System.out.println("toggleAndNoClearSelection");
 
         assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
+        
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
+
+        final PointSelectionPlugin instance = new PointSelectionPlugin(vxIds, txIds, true, false);
+        PluginExecution.withPlugin(instance).executeNow(storeGraph);
+        
+        // vxId1, txId1 become true because of selection
+        // vxId2, txId2 become false because of selection + toggle
+        // vxId3, txId3 remain true
+        // vxId4, txId4, txId5 remain false
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId1));
         assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
         assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
+        
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
+    }
+    
+    /**
+     * Test of PointSelectionPlugin. Toggle not enabled. Clear selection enabled.
+     *
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
+     */
+    @Test
+    public void testNoToggleAndClearSelection() throws InterruptedException, PluginException {
+        System.out.println("noToggleAndClearSelection");
+
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
+        
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
+
+        final PointSelectionPlugin instance = new PointSelectionPlugin(vxIds, txIds, false, true);
+        PluginExecution.withPlugin(instance).executeNow(storeGraph);
+        
+        // vxId1, txId1 become true because of selection
+        // vxId2, txId2 remain true because of selection
+        // vxId3, txId3 become false because of clear selection
+        // vxId4, txId4, txId5 remain false
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
+        
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
+    }
+    
+    /**
+     * Test of PointSelectionPlugin. Toggle and Clear selection not enabled.
+     *
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
+     */
+    @Test
+    public void testNoToggleAndNoClearSelection() throws InterruptedException, PluginException {
+        System.out.println("noToggleAndNoClearSelection");
+
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
+        
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
+
+        final PointSelectionPlugin instance = new PointSelectionPlugin(vxIds, txIds, false, false);
+        PluginExecution.withPlugin(instance).executeNow(storeGraph);
+        
+        // vxId1, txId1 become true because of selection
+        // vxId2, txId2 remain true because of selection
+        // vxId3, txId3 remain true
+        // vxId4, txId4, txId5 remain false
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
+        
         assertTrue(storeGraph.getBooleanValue(tAttrId, txId1));
         assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
         assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
-
-        vxIds.clear();
-        txIds.clear();
-
-        // Select transaction txId3 with clearSelection. All other elements should be deselected.
-        txIds.add(txId3);
-
-        Plugin selectPoint3 = new PointSelectionPlugin(vxIds, txIds, false, true);
-        PluginExecution.withPlugin(selectPoint3).executeNow(storeGraph);
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
+    }
+    
+    /**
+     * Test of PointSelectionPlugin. Edge Connection Mode
+     *
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
+     */
+    @Test
+    public void testEdgeConnectionMode() throws InterruptedException, PluginException {
+        System.out.println("edgeConnectionMode");
+        
+        storeGraph.setObjectValue(connectionModeAttrId, 0, ConnectionMode.LINK);
 
         assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
+        
         assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
         assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
 
-        vxIds.clear();
-        txIds.clear();
-
-        // Select no elements with clearSelection. Should deselect all elements as this simulates clicking on an empty space on the graph.
-        Plugin selectPoint4 = new PointSelectionPlugin(vxIds, txIds, false, true);
-        PluginExecution.withPlugin(selectPoint4).executeNow(storeGraph);
-
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
-    }
-
-    /**
-     * Tests when a vertex is selected and; all vertices and transaction are
-     * unselected, toggle selection is true, and clear selection is true.
-     *
-     * @throws java.lang.InterruptedException
-     * @throws au.gov.asd.tac.constellation.plugins.PluginException
-     */
-    @Test
-    public void testNoElementsSelectedAndVertexSelected() throws InterruptedException, PluginException {
-        vxIds.add(vxId1);
-
-        Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, true, true);
-        PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
-
+        final PointSelectionPlugin instance = new PointSelectionPlugin(vxIds, txIds, false, true);
+        PluginExecution.withPlugin(instance).executeNow(storeGraph);
+        
+        // vxId1, txId1 become true because of selection
+        // vxId2, txId2 remain true because of selection
+        // vxId3, txId3 become false because of clear selection
+        // vxId4, txId4 remains false
+        // txId5 becomes true due to being on the same edge as selected txId2
         assertTrue(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
         assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
+        
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
         assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId5));
     }
-
+    
     /**
-     * Tests when a transaction is selected and; all vertices and transaction
-     * are unselected, toggle selection is true, and clear selection is true.
+     * Test of PointSelectionPlugin. Link Connection Mode
      *
      * @throws java.lang.InterruptedException
      * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testNoElementsSelectedAndTransactionSelected() throws InterruptedException, PluginException {
-        txIds.add(txId1);
-
-        Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, true, true);
-        PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
+    public void testLinkConnectionMode() throws InterruptedException, PluginException {
+        System.out.println("linkConnectionMode");
+        
+        storeGraph.setObjectValue(connectionModeAttrId, 0, ConnectionMode.LINK);
 
         assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
-    }
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
+        
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
 
-    /**
-     * Tests when a vertex is selected and; all vertices and transactions are
-     * selected, toggle selection is true, and clear selection is true.
-     *
-     * @throws java.lang.InterruptedException
-     * @throws au.gov.asd.tac.constellation.plugins.PluginException
-     */
-    @Test
-    public void testAllElementsSelectedAndVertexSelected() throws InterruptedException, PluginException {
-        selectAllAndAssert(null, true);
-
-        vxIds.add(vxId1);
-
-        Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, true, true);
-        PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
-
+        final PointSelectionPlugin instance = new PointSelectionPlugin(vxIds, txIds, false, true);
+        PluginExecution.withPlugin(instance).executeNow(storeGraph);
+        
+        // vxId1, txId1 become true because of selection
+        // vxId2, txId2 remain true because of selection
+        // vxId3, txId3 become false because of clear selection
+        // vxId4 remains false
+        // txId4, txId5 become true due to being on the same link as selected txId2
         assertTrue(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
         assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
-    }
-
-    /**
-     * Tests when a transaction is selected and; all vertices and transactions
-     * are selected, toggle selection is true, and clear selection is true.
-     *
-     * @throws java.lang.InterruptedException
-     * @throws au.gov.asd.tac.constellation.plugins.PluginException
-     */
-    @Test
-    public void testAllElementsSelectedAndTransactionSelected() throws InterruptedException, PluginException {
-        selectAllAndAssert(null, true);
-
-        txIds.add(txId1);
-
-        Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, true, true);
-        PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
-
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
+        
         assertTrue(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
         assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
-    }
-
-    /**
-     * Tests when a vertex is selected and; only vertices are selected, toggle
-     * selection is true, and clear selection is true.
-     *
-     * @throws java.lang.InterruptedException
-     * @throws au.gov.asd.tac.constellation.plugins.PluginException
-     */
-    @Test
-    public void testOnlyVerticesSelectedAndVertexSelected() throws InterruptedException, PluginException {
-        selectAllAndAssert(GraphElementType.VERTEX, true);
-
-        vxIds.add(vxId1);
-
-        Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, true, true);
-        PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
-
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
-    }
-
-    /**
-     * Tests when a transaction is selected and; only vertices are selected,
-     * toggle selection is true, and clear selection is true.
-     *
-     * @throws java.lang.InterruptedException
-     * @throws au.gov.asd.tac.constellation.plugins.PluginException
-     */
-    @Test
-    public void testOnlyVerticesSelectedAndTransactionSelected() throws InterruptedException, PluginException {
-
-        selectAllAndAssert(GraphElementType.VERTEX, true);
-
-        txIds.add(txId1);
-
-        Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, true, true);
-        PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
-
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
-    }
-
-    /**
-     * Tests when a vertex is selected and; only transactions are selected,
-     * toggle selection is true, and clear selection is true.
-     *
-     * @throws java.lang.InterruptedException
-     * @throws au.gov.asd.tac.constellation.plugins.PluginException
-     */
-    @Test
-    public void testOnlyTransactionsSelectedAndVertexSelected() throws InterruptedException, PluginException {
-        selectAllAndAssert(GraphElementType.TRANSACTION, true);
-
-        vxIds.add(vxId1);
-
-        Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, true, true);
-        PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
-
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
-    }
-
-    /**
-     * Tests when a transaction is selected and; only transactions are selected,
-     * toggle selection is true, and clear selection is true.
-     *
-     * @throws java.lang.InterruptedException
-     * @throws au.gov.asd.tac.constellation.plugins.PluginException
-     */
-    @Test
-    public void testOnlyTransactionsSelectedAndTransactionSelected() throws InterruptedException, PluginException {
-        selectAllAndAssert(GraphElementType.TRANSACTION, true);
-
-        txIds.add(txId1);
-
-        Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, true, true);
-        PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
-
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
-    }
-
-    /**
-     * Selects all of given type of graph element or all graph elements, and
-     * asserts whether the selections have been made correctly.
-     *
-     * @param type The type of graph element being selected, or null if all
-     * graph elements are to be selected.
-     * @param selectAll Whether the selection attribute for a graph element will
-     * be set to true; selected, or false; unselected.
-     */
-    private void selectAllAndAssert(final GraphElementType type, final boolean selectAll) {
-        if (type == null) {
-            storeGraph.setBooleanValue(vAttrId, vxId1, selectAll);
-            storeGraph.setBooleanValue(vAttrId, vxId2, selectAll);
-            storeGraph.setBooleanValue(vAttrId, vxId3, selectAll);
-
-            storeGraph.setBooleanValue(tAttrId, txId1, selectAll);
-            storeGraph.setBooleanValue(tAttrId, txId2, selectAll);
-            storeGraph.setBooleanValue(tAttrId, txId3, selectAll);
-
-            assertEquals(storeGraph.getBooleanValue(vAttrId, vxId1), selectAll);
-            assertEquals(storeGraph.getBooleanValue(vAttrId, vxId2), selectAll);
-            assertEquals(storeGraph.getBooleanValue(vAttrId, vxId3), selectAll);
-
-            assertEquals(storeGraph.getBooleanValue(tAttrId, txId1), selectAll);
-            assertEquals(storeGraph.getBooleanValue(tAttrId, txId2), selectAll);
-            assertEquals(storeGraph.getBooleanValue(tAttrId, txId3), selectAll);
-        } else {
-            switch (type) {
-                case VERTEX -> {
-                    storeGraph.setBooleanValue(vAttrId, vxId1, selectAll);
-                    storeGraph.setBooleanValue(vAttrId, vxId2, selectAll);
-                    storeGraph.setBooleanValue(vAttrId, vxId3, selectAll);
-
-                    storeGraph.setBooleanValue(tAttrId, txId1, !selectAll);
-                    storeGraph.setBooleanValue(tAttrId, txId2, !selectAll);
-                    storeGraph.setBooleanValue(tAttrId, txId3, !selectAll);
-
-                    assertEquals(storeGraph.getBooleanValue(vAttrId, vxId1), selectAll);
-                    assertEquals(storeGraph.getBooleanValue(vAttrId, vxId2), selectAll);
-                    assertEquals(storeGraph.getBooleanValue(vAttrId, vxId3), selectAll);
-
-                    assertEquals(storeGraph.getBooleanValue(tAttrId, txId1), !selectAll);
-                    assertEquals(storeGraph.getBooleanValue(tAttrId, txId2), !selectAll);
-                    assertEquals(storeGraph.getBooleanValue(tAttrId, txId3), !selectAll);
-                }
-                case TRANSACTION -> {
-                    storeGraph.setBooleanValue(vAttrId, vxId1, !selectAll);
-                    storeGraph.setBooleanValue(vAttrId, vxId2, !selectAll);
-                    storeGraph.setBooleanValue(vAttrId, vxId3, !selectAll);
-
-                    storeGraph.setBooleanValue(tAttrId, txId1, selectAll);
-                    storeGraph.setBooleanValue(tAttrId, txId2, selectAll);
-                    storeGraph.setBooleanValue(tAttrId, txId3, selectAll);
-
-                    assertEquals(storeGraph.getBooleanValue(vAttrId, vxId1), !selectAll);
-                    assertEquals(storeGraph.getBooleanValue(vAttrId, vxId2), !selectAll);
-                    assertEquals(storeGraph.getBooleanValue(vAttrId, vxId3), !selectAll);
-
-                    assertEquals(storeGraph.getBooleanValue(tAttrId, txId1), selectAll);
-                    assertEquals(storeGraph.getBooleanValue(tAttrId, txId2), selectAll);
-                    assertEquals(storeGraph.getBooleanValue(tAttrId, txId3), selectAll);
-                }
-                default -> {
-                    //Do Nothing
-                }
-            }
-        }
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId4));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId5));
     }
 }

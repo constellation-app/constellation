@@ -189,7 +189,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                 float yLo = yAttr != Graph.NOT_FOUND ? graph.getFloatValue(yAttr, vxLo) : VisualGraphDefaults.getDefaultY(vxLo);
                 float zLo = zAttr != Graph.NOT_FOUND ? graph.getFloatValue(zAttr, vxLo) : VisualGraphDefaults.getDefaultZ(vxLo);
 
-                // Get the main location of the lo vertex.
+                // Get the main location of the hi vertex.
                 float xHi = xAttr != Graph.NOT_FOUND ? graph.getFloatValue(xAttr, vxHi) : VisualGraphDefaults.getDefaultX(vxHi);
                 float yHi = yAttr != Graph.NOT_FOUND ? graph.getFloatValue(yAttr, vxHi) : VisualGraphDefaults.getDefaultY(vxHi);
                 float zHi = zAttr != Graph.NOT_FOUND ? graph.getFloatValue(zAttr, vxHi) : VisualGraphDefaults.getDefaultZ(vxHi);

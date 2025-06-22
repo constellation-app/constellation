@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2025 Australian Signals Directorate
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,9 +34,9 @@ import org.testng.annotations.Test;
 
 /**
  *
- * @author aldebaran30701
+ * @author antares
  */
-public class BoxSelectionPluginNGTest {
+public class FreeformSelectionPluginNGTest {
     
     private Camera camera;
     
@@ -109,9 +109,9 @@ public class BoxSelectionPluginNGTest {
     public void tearDownMethod() throws Exception {
         // Not currently required
     }
-    
+
     /**
-     * Test of edit method, of class BoxSelectionPlugin. Nothing Selected
+     * Test of edit method, of class FreeformSelectionPlugin. Nothing Selected
      * 
      * @throws java.lang.InterruptedException
      * @throws au.gov.asd.tac.constellation.plugins.PluginException
@@ -122,7 +122,8 @@ public class BoxSelectionPluginNGTest {
 
         beginningAsserts();
         
-        final BoxSelectionPlugin instance = new BoxSelectionPlugin(false, false, camera, new float[]{-0.25F, -0.2F, 0.1F, 0F});
+        final Float[] transformedVertices = new Float[]{-0.25F, 0.1F, -0.25F, 0F, -0.2F, 0F, -0.2F, 0.1F};
+        final FreeformSelectionPlugin instance = new FreeformSelectionPlugin(false, false, camera, new float[]{-0.25F, -0.2F, 0.1F, 0F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
         // Should remain false after running
@@ -136,7 +137,7 @@ public class BoxSelectionPluginNGTest {
     }
     
     /**
-     * Test of edit method, of class BoxSelectionPlugin. Append to existing selection
+     * Test of edit method, of class FreeformSelectionPlugin. Append to existing selection
      * 
      * @throws java.lang.InterruptedException
      * @throws au.gov.asd.tac.constellation.plugins.PluginException
@@ -150,10 +151,11 @@ public class BoxSelectionPluginNGTest {
         
         beginningAsserts();
 
-        BoxSelectionPlugin instance = new BoxSelectionPlugin(true, false, camera, new float[]{-0.1F, 0.1F, 0.1F, -0.1F});
+        Float[] transformedVertices = new Float[]{-0.1F, 0.1F, -0.1F, -0.1F, 0.1F, -0.1F, 0.1F, 0.1F};
+        FreeformSelectionPlugin instance = new FreeformSelectionPlugin(true, false, camera, new float[]{-0.1F, 0.1F, 0.1F, -0.1F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
-        // txId2 should be within the box -0.1, 0.1, 0.1, -0.1
+        // txId2 should be within the freeform polygon
         assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId1));
         assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId2));
         assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
@@ -162,10 +164,11 @@ public class BoxSelectionPluginNGTest {
         assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
         assertTrue(graph.getBooleanValue(tSelectedAttrId, txId2));
         
-        instance = new BoxSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
+        transformedVertices = new Float[]{-0.3F, 0.25F, -0.3F, 0.15F, 0.3F, 0.15F, 0.3F, 0.25F};
+        instance = new FreeformSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
-        // vx1 and vx2 should be within the box -0.3, 0.3, 0.25, 0.15. tx1 also gets selected consequently
+        // vx1 and vx2 should be within the freeform polygon. tx1 also gets selected consequently
         // tx2 remains selected
         assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId1));
         assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId2));
@@ -177,7 +180,7 @@ public class BoxSelectionPluginNGTest {
     }
     
     /**
-     * Test of edit method, of class BoxSelectionPlugin. Toggle selection
+     * Test of edit method, of class FreeformSelectionPlugin. Toggle selection
      * 
      * @throws java.lang.InterruptedException
      * @throws au.gov.asd.tac.constellation.plugins.PluginException
@@ -199,10 +202,11 @@ public class BoxSelectionPluginNGTest {
         assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
         assertTrue(graph.getBooleanValue(tSelectedAttrId, txId2));
 
-        BoxSelectionPlugin instance = new BoxSelectionPlugin(false, true, camera, new float[]{-0.1F, 0.1F, 0.1F, -0.1F});
+        Float[] transformedVertices = new Float[]{-0.1F, 0.1F, -0.1F, -0.1F, 0.1F, -0.1F, 0.1F, 0.1F};
+        FreeformSelectionPlugin instance = new FreeformSelectionPlugin(false, true, camera, new float[]{-0.1F, 0.1F, 0.1F, -0.1F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
-        // txId2 should be within the box -0.1, 0.1, 0.1, -0.1. Toggle will turn this false
+        // txId2 should be within the freeform polygon. Toggle will turn this false
         assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId1));
         assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId2));
         assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
@@ -211,10 +215,11 @@ public class BoxSelectionPluginNGTest {
         assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
         assertFalse(graph.getBooleanValue(tSelectedAttrId, txId2));
         
-        instance = new BoxSelectionPlugin(false, true, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
+        transformedVertices = new Float[]{-0.3F, 0.25F, -0.3F, 0.15F, 0.3F, 0.15F, 0.3F, 0.25F};
+        instance = new FreeformSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
-        // vx1 and vx2 should be within the box -0.3, 0.3, 0.25, 0.15. tx1 also gets selected consequently
+        // vx1 and vx2 should be within the freeform polygon. tx1 also gets selected consequently
         assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId1));
         assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId2));
         assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
@@ -225,7 +230,7 @@ public class BoxSelectionPluginNGTest {
     }
     
     /**
-     * Test of edit method, of class BoxSelectionPlugin. Replace selection
+     * Test of edit method, of class FreeformSelectionPlugin. Replace selection
      * 
      * @throws java.lang.InterruptedException
      * @throws au.gov.asd.tac.constellation.plugins.PluginException
@@ -239,10 +244,11 @@ public class BoxSelectionPluginNGTest {
         
         beginningAsserts();
 
-        BoxSelectionPlugin instance = new BoxSelectionPlugin(false, false, camera, new float[]{-0.1F, 0.1F, 0.1F, -0.1F});
+        Float[] transformedVertices = new Float[]{-0.1F, 0.1F, -0.1F, -0.1F, 0.1F, -0.1F, 0.1F, 0.1F};
+        FreeformSelectionPlugin instance = new FreeformSelectionPlugin(false, false, camera, new float[]{-0.1F, 0.1F, 0.1F, -0.1F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
-        // txId2 should be within a box -0.1, 0.1, 0.1, -0.1
+        // txId2 should be within the freeform polygon
         assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId1));
         assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId2));
         assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
@@ -251,10 +257,11 @@ public class BoxSelectionPluginNGTest {
         assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
         assertTrue(graph.getBooleanValue(tSelectedAttrId, txId2));
         
-        instance = new BoxSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
+        transformedVertices = new Float[]{-0.3F, 0.25F, -0.3F, 0.15F, 0.3F, 0.15F, 0.3F, 0.25F};
+        instance = new FreeformSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
-        // vx1 and vx2 should be within the box -0.3, 0.3, 0.25, 0.15. tx1 also gets selected consequently
+        // vx1 and vx2 should be within the freeform polygon. tx1 also gets selected consequently
         // tx2 is deselected
         assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId1));
         assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId2));
@@ -266,7 +273,7 @@ public class BoxSelectionPluginNGTest {
     }
     
     /**
-     * Test of edit method, of class BoxSelectionPlugin. Alternate coordinates present but not used, no mix required
+     * Test of edit method, of class FreeformSelectionPlugin. Alternate coordinates present but not used, no mix required
      * 
      * @throws java.lang.InterruptedException
      * @throws au.gov.asd.tac.constellation.plugins.PluginException
@@ -278,10 +285,11 @@ public class BoxSelectionPluginNGTest {
         setupAltCoords();
         beginningAsserts();
         
-        final BoxSelectionPlugin instance = new BoxSelectionPlugin(false, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
+        final Float[] transformedVertices = new Float[]{-0.3F, 0.25F, -0.3F, 0.15F, 0.3F, 0.15F, 0.3F, 0.25F};
+        final FreeformSelectionPlugin instance = new FreeformSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
-        // vxId1 and vxId2  + tx1 should be within the box -0.3, 0.3, 0.25, 0.15
+        // vxId1 and vxId2  + tx1 should be within the freeform polygon
         assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId1));
         assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId2));
         assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
@@ -292,7 +300,7 @@ public class BoxSelectionPluginNGTest {
     }
     
     /**
-     * Test of edit method, of class BoxSelectionPlugin. Alternate coordinates used with mix
+     * Test of edit method, of class FreeformSelectionPlugin. Alternate coordinates used with mix
      * 
      * @throws java.lang.InterruptedException
      * @throws au.gov.asd.tac.constellation.plugins.PluginException
@@ -306,10 +314,11 @@ public class BoxSelectionPluginNGTest {
         
         camera.setMixRatio(10);
         
-        final BoxSelectionPlugin instance = new BoxSelectionPlugin(false, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
+        final Float[] transformedVertices = new Float[]{-0.3F, 0.25F, -0.3F, 0.15F, 0.3F, 0.15F, 0.3F, 0.25F};
+        final FreeformSelectionPlugin instance = new FreeformSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
-        // vxId1 and vxId2  + tx1 should be within the box -0.3, 0.3, 0.25, 0.15 normally.
+        // vxId1 and vxId2  + tx1 should be within the freeform polygon.
         // With alternate coordiantes and mixing, those graph elements should still be in the box
         assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId1));
         assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId2));
@@ -321,7 +330,7 @@ public class BoxSelectionPluginNGTest {
     }
     
     /**
-     * Test of edit method, of class BoxSelectionPlugin. Alternate coordinates used
+     * Test of edit method, of class FreeformSelectionPlugin. Alternate coordinates used
      * 
      * @throws java.lang.InterruptedException
      * @throws au.gov.asd.tac.constellation.plugins.PluginException
@@ -336,10 +345,11 @@ public class BoxSelectionPluginNGTest {
         // 20 is the max mix ratio, giving a mix of 1
         camera.setMixRatio(20);
         
-        final BoxSelectionPlugin instance = new BoxSelectionPlugin(false, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
+        final Float[] transformedVertices = new Float[]{-0.3F, 0.25F, -0.3F, 0.15F, 0.3F, 0.15F, 0.3F, 0.25F};
+        final FreeformSelectionPlugin instance = new FreeformSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
-        // vxId1 and vxId2  + tx1 should be within the box -0.3, 0.3, 0.25, 0.15 normally.
+        // vxId1 and vxId2  + tx1 should be within the freeform polygon normally.
         // But with alternate coordiantes used, none of those end up in the box and instead txId2 should fall in it
         assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId1));
         assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId2));
