@@ -148,7 +148,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         }
                         
                         //get example responses
-                        if (Objects.nonNull(pp.getResponseBodyExample())) {
+                        if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON) && Objects.nonNull(pp.getResponseBodyExample())) {
                             final ObjectNode responses = httpMethod.putObject("responses");                            
                             responses.setAll((ObjectNode) root.at(pp.getResponseBodyExample()));                           
                         }
