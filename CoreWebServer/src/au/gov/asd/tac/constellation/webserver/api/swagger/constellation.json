@@ -311,31 +311,6 @@
                 }
             },
             
-            "openGrapthExample": {
-                 "responses": { 
-                     "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "example": {
-                                        "id": "1a7046cf-66fd-4d49-a131-b73f0762314c",
-                                        "name": "Cornell_Movie-Dialogs_Corpus",
-                                        "schema": "au.gov.asd.tac.constellation.graph.schema.AnalyticSchemaFactory"
-                                    }                                                             
-                                }
-                            }
-                        }
-                     },
-                     "401": {
-                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
-                     },
-                     "422": {
-                        "$ref": "#/components/examples/ValidationErrorResponse"
-                     }
-                }
-            },
-            
             "getGrapthExample": {
                  "responses": { 
                      "200": {
@@ -456,6 +431,207 @@
                                             "SELECT"
                                         ],
                                         "parameters": {}
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "getServiceDescriptionExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "name": "run_plugin",
+                                        "http_method": "POST",
+                                        "description": "Run a plugin, optionally specifying a graph.",
+                                        "mimetype": "application/json",
+                                        "tags": [
+                                            "plugin"
+                                        ],
+                                        "parameters": {
+                                            "plugin_name": {
+                                                "name": "Plugin name",
+                                                "type": "string",
+                                                "description": "The name of the plugin to run."
+                                            },
+                                            "graph_id": {
+                                                "name": "Graph id",
+                                                "type": "string",
+                                                "description": "The id of a graph to run the plugin on. (Default is the active graph)"
+                                            },
+                                            "args": {
+                                                "name": "Plugin arguments (body)",
+                                                "type": "string",
+                                                "description": "A JSON object containing parameter names and values to be passed to the plugin."
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "getTypeDescriptionExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "name": "Communication",
+                                        "description": "A transaction representing a communication between two entities, eg. a phone made a call to another phone",
+                                        "color": "Emerald",
+                                        "style": "SOLID",
+                                        "directed": "true",
+                                        "properties": "{}",
+                                        "super_type": "Communication",
+                                        "top_level_type": "Communication",
+                                        "hierarchy": "Communication"
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "listIconsExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": [
+                                        "",
+                                        "Background.Edge Square",
+                                        "Background.Flat Circle",
+                                        "Background.Flat Square",
+                                        "Background.Flat Triangle",
+                                        "Background.Pin",
+                                        "Background.Round Circle",
+                                        "Background.Round Square",
+                                        "Character.0"
+                                    ]
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "listNamedColorsExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "Amethyst": "#9b59b6",
+                                        "Azure": "#2e69c5",
+                                        "Banana": "#feff6a",
+                                        "Black": "#000000",
+                                        "Blue": "#0000ff",
+                                        "Blush": "#f0d4d4",
+                                        "Blueberry": "#99b3ff",
+                                        "Brown": "#7f3f3f",
+                                        "Burgundy": "#870020",
+                                        "Buttermilk": "#ffffc8",
+                                        "Carrot": "#e67e22",
+                                        "Cherry": "#de2446",
+                                        "Chocolate": "#775f4d",
+                                        "Clouds": "#ecf0f1",
+                                        "Cyan": "#00ffff",
+                                        "DarkGreen": "#007f00",
+                                        "DarkGrey": "#404040",
+                                        "DarkOrange": "#ff7f3f",
+                                        "DarkPurple": "#331a80",
+                                        "Emerald": "#2ecc4f",
+                                        "GoldenRod": "#ffbf00"
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "newGraphExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "id": "28963ab2-e5dc-48db-8c8d-6fb27ee81702",
+                                        "name": "test",
+                                        "schema": "au.gov.asd.tac.constellation.graph.schema.AnalyticSchemaFactory"
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "openGraphExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "id": "b2b870ce-1f5e-4132-b6db-3c59da3b0487",
+                                        "name": "CarlocsAll",
+                                        "schema": "au.gov.asd.tac.constellation.graph.schema.AnalyticSchemaFactory"
                                     }
                                 }
                             }

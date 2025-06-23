@@ -57,7 +57,7 @@ public class OpenGraph extends RestService {
 
     private static final String NAME = "open_graph";
     private static final String FILE_PARAMETER_ID = "filename";
-    private static final String EXAMPLE_RESPONSES_PATH = "openGrapthExample";
+    private static final String EXAMPLE_RESPONSES_PATH = "openGraphExample";
 
     @Override
     public String getName() {
