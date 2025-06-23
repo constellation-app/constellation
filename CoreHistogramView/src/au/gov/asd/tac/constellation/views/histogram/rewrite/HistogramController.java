@@ -26,7 +26,7 @@ public class HistogramController {
 
     // Analytic view controller instance
     private static HistogramController instance = null;
-    private HistogramTopComponent2 parent;
+    private HistogramTopComponent2 parent = null;
 
     /**
      * Singleton instance retrieval
@@ -68,7 +68,7 @@ public class HistogramController {
             return;
         }
 
-        // Todo: implement
+        // TODO: implement
         //PluginExecution.withPlugin(new HistogramStateReaderPlugin(pane)).executeLater(graph);
     }
 
