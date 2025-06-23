@@ -212,13 +212,13 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     }
 
     @Override
-    public void graphChanged(GraphChangeEvent evt) {
-        super.graphChanged(evt);
-        if (evt == null) {
+    protected void handleGraphChange(final GraphChangeEvent event) {
+        System.out.println("handleGraphChange");
+        if (event == null) {
             return;
         }
 
-        evt = evt.getLatest();
+        final GraphChangeEvent evt = event.getLatest();
         if (evt.getId() <= latestGraphChangeID) {
             return;
         }
