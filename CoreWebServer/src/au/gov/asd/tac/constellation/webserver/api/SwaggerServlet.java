@@ -150,15 +150,15 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     });
                     
                     //get example responses
-                    final String exampleResponsesPath = "/components/examples/";
+                    final String exampleResponsesPath = "/components/examples/%s/"+RESPONSES;
                     if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON) && Objects.nonNull(rs.getExampleResponsesPath())) {
                         final ObjectNode responses = httpMethod.putObject(RESPONSES);
-                        responses.setAll((ObjectNode) root.at(exampleResponsesPath + rs.getExampleResponsesPath() + "/" + RESPONSES));
+                        responses.setAll((ObjectNode) root.at(String.format(exampleResponsesPath, rs.getExampleResponsesPath())));
                     }
                     //populate default responses
                     if (Objects.isNull(httpMethod.get(RESPONSES))) {
                         final ObjectNode responses = httpMethod.putObject(RESPONSES);
-                        responses.setAll((ObjectNode) root.at(exampleResponsesPath + "defaultResponses" + "/" + RESPONSES));
+                        responses.setAll((ObjectNode) root.at(String.format(exampleResponsesPath, "defaultResponses")));                        
                     }
 
                     // Add the required CONSTELLATION secret header parameter.
