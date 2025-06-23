@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class GetGraph extends RestService {
 
     private static final String NAME = "get_graph";
-    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/getGrapthExample/responses";
+    private static final String EXAMPLE_RESPONSES_PATH = "getGrapthExample";
 
     @Override
     public String getName() {

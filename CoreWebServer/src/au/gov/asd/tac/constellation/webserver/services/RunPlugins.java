@@ -65,7 +65,7 @@ public class RunPlugins extends RestService {
     private static final String PLUGIN_NAME = "plugin_name";
     private static final String PLUGIN_ARGS = "plugin_args";
     
-    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/runPluginsExample/responses";
+    private static final String EXAMPLE_RESPONSES_PATH = "runPluginsExample";
 
     @Override
     public String getName() {

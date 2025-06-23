@@ -56,7 +56,7 @@ public class SetGraphValues extends RestService {
     private static final String ATTRIBUTES_PARAMETER_ID = "attributes";
 
     private static final String COLUMNS = "columns";    
-    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/setGraphAttributesExample/responses";
+    private static final String EXAMPLE_RESPONSES_PATH = "setGraphAttributesExample";
 
     @Override
     public String getName() {

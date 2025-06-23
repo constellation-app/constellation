@@ -15,10 +15,7 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ListServices extends RestService {
 
     private static final String NAME = "list_services";
-    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/listServicesExample/responses";
+    private static final String EXAMPLE_RESPONSES_PATH = "listServicesExample";
 
     @Override
     public String getName() {

@@ -41,7 +41,7 @@ public class GetPluginDescription extends RestService {
 
     private static final String NAME = "get_plugin_description";
     private static final String PLUGIN_NAME_PARAMETER_ID = "plugin_name";
-    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/getPluginDescriptionExample/responses";
+    private static final String EXAMPLE_RESPONSES_PATH = "getPluginDescriptionExample";
 
     @Override
     public String getName() {

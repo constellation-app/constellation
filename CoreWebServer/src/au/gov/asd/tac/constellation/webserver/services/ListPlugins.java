@@ -37,7 +37,7 @@ public class ListPlugins extends RestService {
 
     private static final String NAME = "list_plugins";
     private static final String ALIAS_PARAMETER_ID = "alias";
-    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/listPluginsExample/responses";
+    private static final String EXAMPLE_RESPONSES_PATH = "listPluginsExample";
 
     @Override
     public String getName() {

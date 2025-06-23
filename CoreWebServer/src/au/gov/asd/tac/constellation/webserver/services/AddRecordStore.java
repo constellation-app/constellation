@@ -74,7 +74,7 @@ public class AddRecordStore extends RestService {
     private static final String TX_SOURCE = GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.SOURCE;
 
     private static final String COLUMNS = "columns";
-    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/addRecordStoreExample/responses";
+    private static final String EXAMPLE_RESPONSES_PATH = "addRecordStoreExample";
 
     @Override
     public String getName() {

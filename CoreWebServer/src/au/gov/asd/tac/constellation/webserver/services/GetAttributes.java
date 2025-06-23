@@ -43,7 +43,7 @@ public class GetAttributes extends RestService {
 
     private static final String NAME = "get_attributes";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
-    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/getAttributesExample/responses";
+    private static final String EXAMPLE_RESPONSES_PATH = "getAttributesExample";
 
     @Override
     public String getName() {

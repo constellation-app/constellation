@@ -53,7 +53,7 @@ public class RenameGraph extends RestService {
     private static final String NAME = "rename_graph";
     private static final String NEW_GRAPH_NAME_PARAMETER_ID = "new_graph_name";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
-    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/renameGrapthExample/responses";
+    private static final String EXAMPLE_RESPONSES_PATH = "renameGrapthExample";
 
     @Override
     public String getName() {

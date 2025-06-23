@@ -62,7 +62,7 @@ public class GetRecordStore extends RestService {
     private static final String VX_PARAMETER_ID = "vx";
     private static final String TX_PARAMETER_ID = "tx";
     private static final String ATTRS_PARAMETER_ID = "attrs";
-    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/getRecordsStoreExample/responses";
+    private static final String EXAMPLE_RESPONSES_PATH = "getRecordsStoreExample";
 
     @Override
     public String getName() {

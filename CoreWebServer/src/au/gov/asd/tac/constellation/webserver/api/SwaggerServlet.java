@@ -78,7 +78,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
     private static final String DESCRIPTION = "description";
     private static final String SCHEMA = "schema";
     private static final String REQUIRED = "required";
-    private static final String OBJECT = "object";
+    private static final String RESPONSES = "responses";
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
@@ -150,14 +150,15 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     });
                     
                     //get example responses
+                    final String exampleResponsesPath = "/components/examples/";
                     if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON) && Objects.nonNull(rs.getExampleResponsesPath())) {
-                        final ObjectNode responses = httpMethod.putObject("responses");
-                        responses.setAll((ObjectNode) root.at(rs.getExampleResponsesPath()));
+                        final ObjectNode responses = httpMethod.putObject(RESPONSES);
+                        responses.setAll((ObjectNode) root.at(exampleResponsesPath + rs.getExampleResponsesPath() + "/" + RESPONSES));
                     }
                     //populate default responses
-                    if (Objects.isNull(httpMethod.get("responses"))) {
-                        final ObjectNode responses = httpMethod.putObject("responses");
-                        responses.setAll((ObjectNode) root.at("/components/examples/defaultResponses/responses"));
+                    if (Objects.isNull(httpMethod.get(RESPONSES))) {
+                        final ObjectNode responses = httpMethod.putObject(RESPONSES);
+                        responses.setAll((ObjectNode) root.at(exampleResponsesPath + "defaultResponses" + "/" + RESPONSES));
                     }
 
                     // Add the required CONSTELLATION secret header parameter.
