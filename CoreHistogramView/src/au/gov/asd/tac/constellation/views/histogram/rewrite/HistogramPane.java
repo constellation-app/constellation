@@ -118,6 +118,8 @@ public class HistogramPane extends BorderPane {
 
     private final HistogramDisplay2 display;
 
+    private static final int DISPLAY_PADDING = 10;
+
     private static final int SELECT_BUTTON_WIDTH = 100;
     private static final int DESCENDING_BUTTON_WIDTH = 100;
 
@@ -136,7 +138,7 @@ public class HistogramPane extends BorderPane {
         // Binds the width of the display to the width of viewable content in the scroll pane
         displayScroll.viewportBoundsProperty().addListener((obs, oldVal, newVal) -> display.setPrefWidth(newVal.getWidth()));
 
-        display.setPadding(new Insets(0, 10, 0, 10)); // padding of 10 on left and right TODO: make cleaner
+        display.setPadding(new Insets(0, DISPLAY_PADDING, 0, DISPLAY_PADDING)); // padding of 10 on left and right
         displayScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
 
         ////////////////////
@@ -467,7 +469,7 @@ public class HistogramPane extends BorderPane {
                     if (currentHistogramState != null) {
                         propertyChoice.getSelectionModel().select(currentHistogramState.getAttribute());
                     } else {
-                        Platform.runLater(() -> propertyChoice.getSelectionModel().select(0));;
+                        Platform.runLater(() -> propertyChoice.getSelectionModel().select(0));
                     }
                 } else {
                     propertyChoice.getItems().add("");
