@@ -44,7 +44,7 @@ public class GetGraphValues extends RestService {
 
     private static final String NAME = "get_graph_values";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
-    private static final String EXAMPLE_RESPONSES_PATH = "getGrapthValuesExample";
+    private static final String EXAMPLE_RESPONSES_PATH = "getGraphValuesExample";
 
     @Override
     public String getName() {

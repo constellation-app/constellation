@@ -311,7 +311,7 @@
                 }
             },
             
-            "getGrapthExample": {
+            "getGraphExample": {
                  "responses": { 
                      "200": {
                         "description": "Success",
@@ -336,7 +336,7 @@
                 }
             },
             
-            "getGrapthValuesExample": {
+            "getGraphValuesExample": {
                  "responses": { 
                      "200": {
                         "description": "Success",
@@ -370,7 +370,7 @@
                 }
             },
             
-            "renameGrapthExample": {
+            "renameGraphExample": {
                  "responses": { 
                      "200": {
                         "description": "Success"                        
@@ -379,7 +379,7 @@
                         "$ref": "#/components/examples/UnAuthorisedErrorResponse"
                      },
                      "422": {
-                        "description": "A graph with the name newGrapth already exists."
+                        "description": "A graph with the name newGraph already exists."
                      }
                 }
             },
