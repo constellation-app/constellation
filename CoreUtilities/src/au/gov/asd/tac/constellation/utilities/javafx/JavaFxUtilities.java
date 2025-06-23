@@ -23,6 +23,10 @@ import javafx.scene.paint.Color;
  */
 public class JavaFxUtilities {
 
+    // Empty private constructor for utility class
+    private JavaFxUtilities() {
+    }
+
     public static Color awtColorToFXColor(final java.awt.Color awtColor) {
         final int r = awtColor.getRed();
         final int g = awtColor.getGreen();
