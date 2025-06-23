@@ -41,6 +41,7 @@ public class GetPluginDescription extends RestService {
 
     private static final String NAME = "get_plugin_description";
     private static final String PLUGIN_NAME_PARAMETER_ID = "plugin_name";
+    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/getPluginDescriptionExample/responses";
 
     @Override
     public String getName() {
@@ -64,7 +65,7 @@ public class GetPluginDescription extends RestService {
         final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(PLUGIN_NAME_PARAMETER_ID);
         nameParam.setName("Plugin name");
         nameParam.setDescription("Plugin name to get the description and parameters.");
-        nameParam.setRequired(true);
+        nameParam.setRequired(true);        
         parameters.addParameter(nameParam);
 
         return parameters;
@@ -105,5 +106,10 @@ public class GetPluginDescription extends RestService {
         } catch (final IllegalArgumentException ex) {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, ex.getMessage());
         }
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

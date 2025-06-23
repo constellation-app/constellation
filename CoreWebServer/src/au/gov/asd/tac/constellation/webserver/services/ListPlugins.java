@@ -37,6 +37,7 @@ public class ListPlugins extends RestService {
 
     private static final String NAME = "list_plugins";
     private static final String ALIAS_PARAMETER_ID = "alias";
+    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/listPluginsExample/responses";
 
     @Override
     public String getName() {
@@ -60,7 +61,7 @@ public class ListPlugins extends RestService {
         final PluginParameter<BooleanParameterType.BooleanParameterValue> aliasParam = BooleanParameterType.build(ALIAS_PARAMETER_ID);
         aliasParam.setName("Show aliases");
         aliasParam.setDescription("Show the plugin aliases if true, the full name otherwise (default false).");
-        aliasParam.setObjectValue(true);
+        aliasParam.setObjectValue(true);        
         parameters.addParameter(aliasParam);
 
         return parameters;
@@ -78,5 +79,10 @@ public class ListPlugins extends RestService {
                 .forEachOrdered(name -> root.add(name));
 
         mapper.writeValue(out, root);
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

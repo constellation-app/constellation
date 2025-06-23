@@ -55,7 +55,8 @@ public class SetGraphValues extends RestService {
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
     private static final String ATTRIBUTES_PARAMETER_ID = "attributes";
 
-    private static final String COLUMNS = "columns";
+    private static final String COLUMNS = "columns";    
+    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/setGraphAttributesExample/responses";
 
     @Override
     public String getName() {
@@ -89,8 +90,7 @@ public class SetGraphValues extends RestService {
         final PluginParameter<StringParameterValue> dataParam = StringParameterType.build(ATTRIBUTES_PARAMETER_ID);
         dataParam.setName("Graph attributes (body)");
         dataParam.setDescription("A JSON representation of the graph attributes, in the form {\"columns\": [\"attribute1\",\"attribute2\",\"attribute3\"], \"data\": [[val1, val2, val3]]. This is the same as the output of pandas.DataFrame.to_json(orient='split', date_format='iso').");
-        dataParam.setRequestBodyExampleJson("#/components/examples/setGraphAttributesExample/request");
-        dataParam.setResponseBodyExample("/components/examples/setGraphAttributesExample/responses");
+        dataParam.setRequestBodyExampleJson("#/components/examples/setGraphAttributesExample/request");        
         dataParam.setRequired(true);
         parameters.addParameter(dataParam);
 
@@ -180,5 +180,10 @@ public class SetGraphValues extends RestService {
                 graph.setStringValue(attributeId, 0, attributeValue);
             }
         }
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

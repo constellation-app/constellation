@@ -19,10 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -40,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class GetGraph extends RestService {
 
     private static final String NAME = "get_graph";
-    private static final String EXAMPLE_RESPONSE_PARAMETER_ID = "rsps";
+    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/getGrapthExample/responses";
 
     @Override
     public String getName() {
@@ -55,18 +52,6 @@ public class GetGraph extends RestService {
     @Override
     public String[] getTags() {
         return new String[]{"graph", "schema"};
-    }
-
-    @Override
-    public PluginParameters createParameters() {
-        final PluginParameters parameters = new PluginParameters();
-
-        final PluginParameter<StringParameterValue> argsParam = StringParameterType.build(EXAMPLE_RESPONSE_PARAMETER_ID);
-        argsParam.setName("Example response");        
-        argsParam.setResponseBodyExample("/components/examples/getGrapthExample/responses");
-        parameters.addParameter(argsParam);
-
-        return parameters;
     }
     
     @Override
@@ -90,5 +75,10 @@ public class GetGraph extends RestService {
         root.put("schema", schemaName);
         
         mapper.writeValue(out, root);
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

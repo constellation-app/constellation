@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ListServices extends RestService {
 
     private static final String NAME = "list_services";
-    private static final String EXAMPLE_RESPONSE_PARAMETER_ID = "rsps";
+    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/listServicesExample/responses";
 
     @Override
     public String getName() {
@@ -54,18 +54,7 @@ public class ListServices extends RestService {
     public String[] getTags() {
         return new String[]{"service"};
     }
-
-    @Override
-    public PluginParameters createParameters() {
-        final PluginParameters parameters = new PluginParameters();
-        
-        final PluginParameter<StringParameterValue> argsParam = StringParameterType.build(EXAMPLE_RESPONSE_PARAMETER_ID);
-        argsParam.setName("Example response");        
-        argsParam.setResponseBodyExample("/components/examples/listServicesExample/responses");
-        parameters.addParameter(argsParam);
-
-        return parameters;
-    }
+    
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
 
@@ -79,5 +68,10 @@ public class ListServices extends RestService {
         });
 
         mapper.writeValue(out, root);
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

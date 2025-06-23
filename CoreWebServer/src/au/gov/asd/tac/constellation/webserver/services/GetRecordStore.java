@@ -62,7 +62,7 @@ public class GetRecordStore extends RestService {
     private static final String VX_PARAMETER_ID = "vx";
     private static final String TX_PARAMETER_ID = "tx";
     private static final String ATTRS_PARAMETER_ID = "attrs";
-    private static final String EXAMPLE_RESPONSES_PARAMETER_ID = "resps";    
+    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/getRecordsStoreExample/responses";
 
     @Override
     public String getName() {
@@ -110,11 +110,6 @@ public class GetRecordStore extends RestService {
         attrsParam.setName("Attribute list");
         attrsParam.setDescription("Include only these comma-separated attributes in the recordstore. Use this for much greater efficiency. (optional)");
         parameters.addParameter(attrsParam);
-        
-        final PluginParameter<StringParameterValue> argsParam = StringParameterType.build(EXAMPLE_RESPONSES_PARAMETER_ID);
-        argsParam.setName("Get Recordstore example responses");        
-        argsParam.setResponseBodyExample("/components/examples/getRecordsStoreExample/responses");
-        parameters.addParameter(argsParam);
 
         return parameters;
     }
@@ -229,6 +224,11 @@ public class GetRecordStore extends RestService {
 
         ioph.finish();
     }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
+    }
 
     /**
      * Convert a "key<type>" to "key|type" to make things slightly easier for
@@ -243,4 +243,5 @@ public class GetRecordStore extends RestService {
 
         return attrWithType.substring(0, ix) + SeparatorConstants.PIPE + attrWithType.substring(ix + 1, attrWithType.length() - 1);
     }
+    
 }

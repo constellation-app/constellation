@@ -145,15 +145,15 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                             param.put(DESCRIPTION, pp.getDescription());
                             final ObjectNode schema = param.putObject(SCHEMA);
                             schema.put("type", pp.getType().getId());
-                        }
+                        }                       
                         
-                        //get example responses
-                        if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON) && Objects.nonNull(pp.getResponseBodyExample())) {
-                            final ObjectNode responses = httpMethod.putObject("responses");                            
-                            responses.setAll((ObjectNode) root.at(pp.getResponseBodyExample()));                           
-                        }
                     });
                     
+                    //get example responses
+                    if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON) && Objects.nonNull(rs.getExampleResponsesPath())) {
+                        final ObjectNode responses = httpMethod.putObject("responses");
+                        responses.setAll((ObjectNode) root.at(rs.getExampleResponsesPath()));
+                    }
                     //populate default responses
                     if (Objects.isNull(httpMethod.get("responses"))) {
                         final ObjectNode responses = httpMethod.putObject("responses");

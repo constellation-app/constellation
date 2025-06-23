@@ -18,7 +18,10 @@ package au.gov.asd.tac.constellation.webserver.services;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -38,6 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ListGraphs extends RestService {
 
     private static final String NAME = "list_graphs";
+    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/listGraphsExample/responses";
 
     @Override
     public String getName() {
@@ -53,7 +57,7 @@ public class ListGraphs extends RestService {
     public String[] getTags() {
         return new String[]{"graph", "schema"};
     }
-
+   
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
@@ -71,5 +75,10 @@ public class ListGraphs extends RestService {
         });
 
         mapper.writeValue(out, root);
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

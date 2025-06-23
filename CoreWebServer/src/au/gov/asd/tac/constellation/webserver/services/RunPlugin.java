@@ -49,6 +49,7 @@ public class RunPlugin extends RestService {
     private static final String PLUGIN_NAME_PARAMETER_ID = "plugin_name";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
     private static final String ARGS_PARAMETER_ID = "args";
+    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/runPluginExample/responses";
 
     @Override
     public String getName() {
@@ -88,8 +89,7 @@ public class RunPlugin extends RestService {
         final PluginParameter<StringParameterValue> argsParam = StringParameterType.build(ARGS_PARAMETER_ID);
         argsParam.setName("Plugin arguments (body)");
         argsParam.setDescription("A JSON object containing parameter names and values to be passed to the plugin.");
-        argsParam.setRequestBodyExampleJson("#/components/examples/runPluginExample/request");
-        argsParam.setResponseBodyExample("/components/examples/runPluginExample/responses");
+        argsParam.setRequestBodyExampleJson("#/components/examples/runPluginExample/request");        
         parameters.addParameter(argsParam);
 
         return parameters;
@@ -121,5 +121,10 @@ public class RunPlugin extends RestService {
         } else {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
         }
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

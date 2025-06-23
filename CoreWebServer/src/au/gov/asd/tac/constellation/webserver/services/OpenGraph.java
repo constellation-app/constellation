@@ -59,6 +59,7 @@ public class OpenGraph extends RestService {
 
     private static final String NAME = "open_graph";
     private static final String FILE_PARAMETER_ID = "filename";
+    private static final String EXAMPLE_RESPONSES_PATH = "/components/examples/openGrapthExample/responses";
 
     @Override
     public String getName() {
@@ -87,8 +88,7 @@ public class OpenGraph extends RestService {
         final PluginParameter<StringParameterValue> fileParam = StringParameterType.build(FILE_PARAMETER_ID);
         fileParam.setName("File path");
         fileParam.setDescription("The fully qualified path of a .star file.");
-        fileParam.setRequired(true);
-        fileParam.setResponseBodyExample("/components/examples/openGrapthExample/responses");
+        fileParam.setRequired(true);        
         parameters.addParameter(fileParam);
 
         return parameters;
@@ -125,5 +125,10 @@ public class OpenGraph extends RestService {
         } catch (final ExecutionException ex) {
             throw new RestServiceException(ex);
         }
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

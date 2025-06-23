@@ -252,6 +252,65 @@
                 }
             },
             
+            "getAttributesExample": {
+                "responses": { 
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "graph.3d_display": "boolean",
+                                        "graph.blaze_opacity": "float",
+                                        "graph.blaze_size": "float",
+                                        "graph.camera": "camera",
+                                        "graph.max_transactions": "integer",
+                                        "graph.node_color_reference": "vertex_attribute_name",
+                                        "graph.node_top_labels": "graph_labels_nodes",
+                                        "graph.draw_directed_transactions": "boolean",
+                                        "graph.draw_flags": "draw_flags",
+                                        "graph.node_bottom_labels": "graph_labels_nodes"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                    },
+                    "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                    }
+                }
+            },
+            
+            "listGraphsExample": {
+                "responses": { 
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": [
+                                        {
+                                            "id": "fd443240-22e1-473a-9e5a-5cc05a8df6ec",
+                                            "name": "Cornell_Movie-Dialogs_Corpus",
+                                            "schema": "au.gov.asd.tac.constellation.graph.schema.AnalyticSchemaFactory"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                    },
+                    "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                    }
+                }
+            },
+            
             "openGrapthExample": {
                  "responses": { 
                      "200": {
@@ -285,7 +344,7 @@
                             "application/json": {
                                 "schema": {
                                     "example": {
-                                          "id": "23b4e80e-512f-43c3-b4a5-1ad40ed0f770",
+                                        "id": "23b4e80e-512f-43c3-b4a5-1ad40ed0f770",
                                         "name": "soc-redditHyperlinks-body",
                                         "schema": "au.gov.asd.tac.constellation.graph.schema.AnalyticSchemaFactory"
                                     }
@@ -349,6 +408,68 @@
                      }
                 }
             },
+            
+            "listPluginsExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": [
+                                        "CONTRACTGRAPH",
+                                        "HISTOGRAMFILTERONSELECTION",
+                                        "ARRANGEINGRIDCOMPONENTS",
+                                        "COMPONENTCOUNTANALYTIC",
+                                        "DEGREECENTRALITY",
+                                        "ECCENTRICITY",
+                                        "DELETESELECTION",
+                                        "CLOSENESSCENTRALITYANALYTIC",
+                                        "EXPANDCOMPOSITE",
+                                        "REMOVEUNUSEDATTRIBUTES"
+                                    ]
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "getPluginDescriptionExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "name": "Select All",
+                                        "id": "1568cc0c-7d4b-4ab7-bfab-4cd4467135ae",
+                                        "description": "Select everything in your graph",
+                                        "tags": [
+                                            "SELECT"
+                                        ],
+                                        "parameters": {}
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
             "defaultResponses": {
               "responses": { 
                      "200": {
@@ -359,14 +480,21 @@
                      },
                      "422": {
                         "$ref": "#/components/examples/ValidationErrorResponse"
+                     },
+                     "500": {
+                        "$ref": "#/components/examples/ServerError"
                      }
                 }  
-            },          
+            },
+            
             "UnAuthorisedErrorResponse": {
                 "description": "Un-Authorised"
             },
             "ValidationErrorResponse": {
-                "description": "Validation error"
+                "description": "Error: Unprocessable Entity"
+            },
+            "ServerError": {
+              "description": "Server Error"
             },
             "SuccessResponse": {
                 "description": "Success"
