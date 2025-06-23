@@ -266,7 +266,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
                 }
             }
 
-            HistogramState oldHistogramState = currentHistogramState;
+            final HistogramState oldHistogramState = currentHistogramState;
             if (histogramStateAttribute != Graph.NOT_FOUND) {
                 currentHistogramState = (HistogramState) rg.getObjectValue(histogramStateAttribute, 0);
                 if (currentHistogramState == null) {
@@ -289,7 +289,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
                     return;
                 }
 
-                String currentAttribute = currentHistogramState.getAttribute();
+                final String currentAttribute = currentHistogramState.getAttribute();
                 if (currentAttribute == null ? oldHistogramState.getAttribute() != null : !currentAttribute.equals(oldHistogramState.getAttribute())) {
                     reset(rg);
                     return;
@@ -314,7 +314,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
             }
 
             if (selectedAttribute != Graph.NOT_FOUND) {
-                long oldSelectedModificationCount = currentSelectedModificationCount;
+                final long oldSelectedModificationCount = currentSelectedModificationCount;
                 currentSelectedModificationCount = rg.getValueModificationCounter(selectedAttribute);
                 if (currentSelectedModificationCount != oldSelectedModificationCount && currentBinCollection != null) {
                     currentBinCollection.updateSelection(rg);
