@@ -65,14 +65,10 @@ import org.openide.util.HelpCtx;
  */
 public class HistogramPane extends BorderPane {
 
-    private static final Logger LOGGER = Logger.getLogger(HistogramPane.class.getName());
     private static final String HISTOGRAM_TOP_COMPONENT_CLASS_NAME = HistogramTopComponent2.class.getName();
-
-    private static final String NO_PLUGINS_SELECTED_TITLE = "No plugins selected.";
 
     // Styles
     private static final String HELP_STYLE = "-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null;";
-    //private static final String BUTTON_STYLE = "-fx-border-color: grey; -fx-border-width: 1px;  -fx-border-radius: 3px; -fx-background-color: transparent;";
     private static final String BUTTON_STYLE = "-fx-border-color: grey; -fx-border-width: 1px;  -fx-border-radius: 3px;";
 
     // Images
@@ -93,8 +89,6 @@ public class HistogramPane extends BorderPane {
 
     private boolean isAdjusting = false;
     private HistogramState currentHistogramState = null;
-//    private final DefaultComboBoxModel<String> propertyChoiceModel;
-//    private final DefaultComboBoxModel<BinFormatter> binFormatterChoiceModel;
 
     private final ToggleButton vertexToggle;
     private final ToggleButton transactionToggle;
@@ -138,22 +132,12 @@ public class HistogramPane extends BorderPane {
         display = new HistogramDisplay2(topComponent);
         final ScrollPane displayScroll = new ScrollPane();
         displayScroll.setContent(display);
-        //display.prefWidthProperty().bind(displayScroll.widthProperty());
 
         // Binds the width of the display to the width of viewable content in the scroll pane
         displayScroll.viewportBoundsProperty().addListener((obs, oldVal, newVal) -> display.setPrefWidth(newVal.getWidth()));
 
         display.setPadding(new Insets(0, 10, 0, 10)); // padding of 10 on left and right TODO: make cleaner
         displayScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
-
-//        final ScrollPane displayScroll = new ScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        //final ScrollPane displayScroll = new ScrollPane();
-        //displayScroll.getVerticalScrollBar().setUnitIncrement(HistogramDisplay.MAXIMUM_BAR_HEIGHT);
-        // TODO: replace set style for each button with a stylesheet
-        //getStylesheets().add(getClass().getResource("resources/rule-pane-dark.css").toExternalForm());
-        // Make a VBox for labels, and one for controls and buttons
-        final VBox labelsVBox = new VBox();
-        final VBox controlsVBox = new VBox();
 
         ////////////////////
         // Help Button
@@ -168,24 +152,19 @@ public class HistogramPane extends BorderPane {
             actionEvent.consume();
         });
 
-        //AnchorPane.setRightAnchor(helpButton, 5.0);
         ////////////////////
         // Graph Element
         ////////////////////
         vertexToggle = new ToggleButton("Node", NODE_ICON);
-        //vertexToggle.setOnAction(e -> vertexToggleStateChanged());
         vertexToggle.setOnAction(e -> toggleStateChanged(GraphElementType.VERTEX));
 
         transactionToggle = new ToggleButton("Transaction", TRANSACTION_ICON);
-        //transactionToggle.setOnAction(e -> transactionToggleStateChanged());
         transactionToggle.setOnAction(e -> toggleStateChanged(GraphElementType.TRANSACTION));
 
         edgeToggle = new ToggleButton("Edge", EDGE_ICON);
-        //edgeToggle.setOnAction(e -> edgeToggleStateChanged());
         edgeToggle.setOnAction(e -> toggleStateChanged(GraphElementType.EDGE));
 
         linkToggle = new ToggleButton("Link", LINK_ICON);
-        //linkToggle.setOnAction(e -> linkToggleStateChanged());
         linkToggle.setOnAction(e -> toggleStateChanged(GraphElementType.LINK));
 
         vertexToggle.setStyle(BUTTON_STYLE);
@@ -216,8 +195,6 @@ public class HistogramPane extends BorderPane {
         HBox.setHgrow(elementBoxSpacer, Priority.ALWAYS);
         graphElementHBox.getChildren().addAll(graphElementLabel, vertexToggle, transactionToggle, edgeToggle, linkToggle, elementBoxSpacer, helpButton);
 
-//        labelsVBox.getChildren().add(graphElementLabel);
-//        controlsVBox.getChildren().add(graphElementHBox);
         ////////////////////
         // Category
         ////////////////////
@@ -231,11 +208,8 @@ public class HistogramPane extends BorderPane {
         categoryLabel.setPrefWidth(PREF_LABEL_WIDTH);
         final HBox categoryHBox = new HBox(4);
         HBox.setHgrow(categoryChoice, Priority.ALWAYS);
-        //HBox.setHgrow(categoryHBox, Priority.ALWAYS);
         categoryHBox.getChildren().addAll(categoryLabel, categoryChoice);
 
-//        labelsVBox.getChildren().add(categoryLabel);
-//        controlsVBox.getChildren().add(categoryChoice);
         ////////////////////
         // Property and Format
         ////////////////////
@@ -256,8 +230,6 @@ public class HistogramPane extends BorderPane {
         final HBox propertyHBox = new HBox(4);
         propertyHBox.getChildren().addAll(propertyLabel, propertyChoice, binFormatterCombo);
 
-//        labelsVBox.getChildren().add(propertyLabel);
-//        controlsVBox.getChildren().add(propertyHBox);
         ////////////////////
         // Sort
         ////////////////////
@@ -292,8 +264,6 @@ public class HistogramPane extends BorderPane {
 
         sortHBox.getChildren().addAll(sortLabel, sortChoice, descendingButton);
 
-//        labelsVBox.getChildren().add(sortLabel);
-//        controlsVBox.getChildren().add(sortHBox);
         ////////////////////
         // Selection Mode
         ////////////////////
@@ -315,8 +285,6 @@ public class HistogramPane extends BorderPane {
 
         selectionModeHBox.getChildren().addAll(selectionModeLabel, selectionModeChoice, selectButton);
 
-//        labelsVBox.getChildren().add(selectionModeLabel);
-//        controlsVBox.getChildren().add(selectionModeHBox);
         ////////////////////
         // Filter
         ////////////////////
@@ -353,36 +321,13 @@ public class HistogramPane extends BorderPane {
         final MenuItem increaseHeightBarMenuItem = new MenuItem("Increase Height of Each Bin");
         increaseHeightBarMenuItem.setOnAction(e -> topComponent.modifyBinHeight(1));
         actionsMenu.getItems().add(increaseHeightBarMenuItem);
-
-//        labelsVBox.getChildren().add(filterLabel);
-//        controlsVBox.getChildren().add(filterHBox);
-//
         //// END Filter
-//        // Make an hbox to seperate labels from actual controls
-//        final HBox controlsBox = new HBox();
-//        HBox.setHgrow(labelsVBox, Priority.ALWAYS);
-//        HBox.setHgrow(controlsVBox, Priority.ALWAYS);
-//
-//        VBox.setVgrow(controlsBox, Priority.ALWAYS);
-//        controlsBox.getChildren().addAll(labelsVBox, controlsVBox);
-//
-//        labelsVBox.minHeightProperty().bind(controlsBox.heightProperty());
-//        controlsVBox.minHeightProperty().bind(controlsBox.heightProperty());
-//
-//        // Make all children of label vbox expand to fill height
-//        for (final Node child : labelsVBox.getChildren()) {
-//            VBox.setVgrow(child, Priority.ALWAYS);
-//        }
-//        // Make all children of controls vbox expand to fill height
-//        for (final Node child : controlsVBox.getChildren()) {
-//            VBox.setVgrow(child, Priority.ALWAYS);
-//        }
+
         // Add everything to this viewPane
         viewPane = new VBox(4);
         viewPane.prefWidthProperty().bind(this.widthProperty());
 
         displayScroll.prefWidthProperty().bind(viewPane.widthProperty());
-        //controlsBox.prefWidthProperty().bind(viewPane.widthProperty());
 
         viewPane.getChildren().addAll(
                 displayScroll,
@@ -392,12 +337,11 @@ public class HistogramPane extends BorderPane {
                 sortHBox,
                 selectionModeHBox,
                 filterHBox
-        // controlsBox
         );
 
         this.setCenter(viewPane);
 
-        // Update dispaly for initial values
+        // Update display for initial values
         updateDisplay();
 
         setHistogramState(null, null);
@@ -560,7 +504,6 @@ public class HistogramPane extends BorderPane {
         display.updateBinCollection();
     }
 
-    // TODO: fix all functions after adding used functions in top components
     private void clearFilter() {
         if (!isAdjusting) {
             topComponent.clearFilter();
