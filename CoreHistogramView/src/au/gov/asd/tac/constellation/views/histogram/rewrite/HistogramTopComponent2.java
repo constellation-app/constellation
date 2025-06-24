@@ -95,14 +95,11 @@ import org.openide.windows.TopComponent;
     "HINT_HistogramTopComponent2=The histogram view will display attribute values as a bar chart"
 })
 
-//public final class HistogramTopComponent2 extends TopComponent implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider {
 public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPane> {
 
     private static final int MIN_WIDTH = 425;
     private static final int MIN_HEIGHT = 400;
 
-    //private final HistogramControls controls;
-    //private final HistogramDisplay display;
     private long currentGlobalModificationCount = Long.MIN_VALUE;
     private long currentAttributeModificationCount = Long.MIN_VALUE;
     private long currentStructureModificationCount = Long.MIN_VALUE;
@@ -134,9 +131,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
         initComponents();
         super.initContent();
-
-//        final JScrollPane paneScroll = new JScrollPane(histogramPane, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-//        add(paneScroll, BorderLayout.CENTER);
     }
 
     /**
@@ -189,13 +183,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         super.handleComponentClosed();
         GraphManager.getDefault().removeGraphManagerListener(this);
         newActiveGraph(null);
-        // TODO
-        // Remove Listeners when Histogram View is closed.
-//        removeMouseListener(display);
-//        removeMouseMotionListener(display);
-//        removeMouseWheelListener(display);
-//        removeComponentListener(display);
-//        removeKeyListener(display);
     }
 
     @Override
@@ -213,7 +200,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
     @Override
     protected void handleGraphChange(final GraphChangeEvent event) {
-        System.out.println("handleGraphChange");
         if (event == null) {
             return;
         }
@@ -453,7 +439,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     }
 
     public void setAttributeType(final AttributeType attributeType) {
-        // For now comment out some of the coed below, as histogram state is kind of globally shared with old histopgram top compenent and doesnt update correclty here
+        // For now, comment out some of the code below, as histogram state is kind of globally shared with old histopgram top compenent and doesnt update correclty here
         if (currentGraph != null) {// && (currentHistogramState == null || attributeType != currentHistogramState.getAttributeType())) {
             HistogramState newHistogramState = new HistogramState(currentHistogramState);
             newHistogramState.setAttributeType(attributeType);
@@ -733,8 +719,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
             if (selectedAttribute != Graph.NOT_FOUND) {
                 currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
             }
-            // TODO
-            //SwingUtilities.invokeLater(display::repaint);
+            histogramPane.updateDisplay();
         }
     }
 
@@ -790,8 +775,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
             if (selectedAttribute != Graph.NOT_FOUND) {
                 currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
             }
-            // TODO
-            //SwingUtilities.invokeLater(display::repaint);
+            histogramPane.updateDisplay();
         }
     }
 }

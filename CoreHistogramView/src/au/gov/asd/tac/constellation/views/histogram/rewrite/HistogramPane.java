@@ -482,7 +482,7 @@ public class HistogramPane extends BorderPane {
         Platform.runLater(() -> isAdjusting = false);
     }
 
-    private void updateDisplay() {
+    public void updateDisplay() {
         display.updateDisplay();
     }
 
