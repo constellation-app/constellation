@@ -115,7 +115,10 @@ public class HistogramDisplay2 extends BorderPane {
 
     private static final int COLUMNS_SPACING = 5;
     private double prevWidth = 0;
-    private static final float FONT_SCALE_FACTOR = 0.66f;
+    private static final float FONT_SCALE_FACTOR = 0.66F;
+
+    private static final String HEADER_ROW_CSS_CLASS = "header-row";
+    private static final String FONT_SIZE_CSS_PROPERTY = "-fx-font-size: ";
 
     public HistogramDisplay2(final HistogramTopComponent2 topComponent) {
         this.topComponent = topComponent;
@@ -180,7 +183,7 @@ public class HistogramDisplay2 extends BorderPane {
         this.setOnMousePressed(e -> handleMousePressed(e));
         this.setOnMouseDragged(e -> handleMouseDragged(e));
         this.setOnMouseReleased(e -> handleMouseReleased(e));
-        this.setOnMouseEntered(e -> handleMouseEntered(e));
+        this.setOnMouseEntered(e -> handleMouseEntered());
 
         this.setOnKeyPressed(e -> handleKeyPressed(e));
     }
@@ -240,14 +243,14 @@ public class HistogramDisplay2 extends BorderPane {
                 final Label headerTotalBins = new Label(TOTAL_BINS_COUNT + binCollection.getSelectedBins().length + "/" + bins.length);
 
                 // Set styling
-                headerValue.getStyleClass().add("header-row");
-                headerCount.getStyleClass().add("header-row");
-                headerTotalBins.getStyleClass().add("header-row");
+                headerValue.getStyleClass().add(HEADER_ROW_CSS_CLASS);
+                headerCount.getStyleClass().add(HEADER_ROW_CSS_CLASS);
+                headerTotalBins.getStyleClass().add(HEADER_ROW_CSS_CLASS);
 
                 final double fontSize = barHeight * FONT_SCALE_FACTOR;
-                headerValue.setStyle("-fx-font-size: " + fontSize);
-                headerCount.setStyle("-fx-font-size: " + fontSize);
-                headerTotalBins.setStyle("-fx-font-size: " + fontSize);
+                headerValue.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
+                headerCount.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
+                headerTotalBins.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
 
                 headerValue.setMinHeight(barHeight);
 
@@ -280,10 +283,9 @@ public class HistogramDisplay2 extends BorderPane {
                         propertyValue.setTextFill(javafx.scene.paint.Color.grayRgb(192));
                         propertyValue.getStyleClass().add("histogram-text");
                     }
-                    System.out.println("propertyValue.getStyleClass() " + propertyValue.getStyleClass());
 
                     // For some reason, setting font size with setFont() doesn't work. So the styling is set like this
-                    propertyValue.setStyle("-fx-font-size: " + fontSize);
+                    propertyValue.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
                     propertyValue.setMinHeight(barHeight);
                     propertyValuesArray[bar] = propertyValue;
                 }
@@ -347,7 +349,7 @@ public class HistogramDisplay2 extends BorderPane {
         final int maxCount = binCollection.getMaxElementCount();
         prevWidth = width;
 
-        final float lengthPerElement = (float) width / (float) maxCount;
+        final float lengthPerElement = (float) width / maxCount;
         final int arc = barHeight / 3;
 
         // Setup bar colours
@@ -446,7 +448,7 @@ public class HistogramDisplay2 extends BorderPane {
                 final String binCount = (bin.selectedCount > 0) ? Integer.toString(bin.selectedCount) + "/" + Integer.toString(bin.elementCount) : Integer.toString(bin.elementCount);
                 final Label binCountlabel = new Label(binCount);
                 binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count"), true); // Set styling
-                binCountlabel.setStyle("-fx-font-size: " + fontSize);
+                binCountlabel.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
 
                 binCountlabel.setMinHeight(barHeight);
                 binCountsVbox.getChildren().add(binCountlabel);
@@ -593,7 +595,7 @@ public class HistogramDisplay2 extends BorderPane {
         }
     }
 
-    private void handleMouseEntered(final MouseEvent e) {
+    private void handleMouseEntered() {
         this.requestFocus(); // Focus the Histogram View so 'key' actions can be registered.
     }
 
