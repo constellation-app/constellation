@@ -16,20 +16,20 @@
     Created on : 2 June 2025, 9:48:27 am
     Author     : Quasar985
 */
-.label:no-value {
+.no-value {
     -fx-text-fill: #FFFF00;/*Yellow*/
 }
 
-.label:bar-bin-count {
+.bar-bin-count {
     -fx-text-fill: #C0C0C0;/*Silver*/
     -fx-padding: 0 0.5em 0 0;
 }
 
-.label:header-row{
+.header-row{
     -fx-text-fill: #FFFFFF;/*White*/
 
 }
 
-.label:histogram-text{
+.histogram-text{
     -fx-text-fill: #C0C0C0;/*Silver*/
 }

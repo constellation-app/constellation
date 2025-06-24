@@ -240,9 +240,9 @@ public class HistogramDisplay2 extends BorderPane {
                 final Label headerTotalBins = new Label(TOTAL_BINS_COUNT + binCollection.getSelectedBins().length + "/" + bins.length);
 
                 // Set styling
-                headerValue.pseudoClassStateChanged(PseudoClass.getPseudoClass("header-row"), true);
-                headerCount.pseudoClassStateChanged(PseudoClass.getPseudoClass("header-row"), true);
-                headerTotalBins.pseudoClassStateChanged(PseudoClass.getPseudoClass("header-row"), true);
+                headerValue.getStyleClass().add("header-row");
+                headerCount.getStyleClass().add("header-row");
+                headerTotalBins.getStyleClass().add("header-row");
 
                 final double fontSize = barHeight * FONT_SCALE_FACTOR;
                 headerValue.setStyle("-fx-font-size: " + fontSize);
@@ -273,13 +273,14 @@ public class HistogramDisplay2 extends BorderPane {
                         // Make text yellow, and <no value>
                         propertyValue = new Label(NO_VALUE);
                         // Sets a psuedo class for css that changes the text colour to yellow
-                        propertyValue.pseudoClassStateChanged(PseudoClass.getPseudoClass("no-value"), true);
+                        propertyValue.getStyleClass().add("no-value");
                     } else {
                         // Regular grey text
                         propertyValue = new Label(category);
                         propertyValue.setTextFill(javafx.scene.paint.Color.grayRgb(192));
-                        propertyValue.pseudoClassStateChanged(PseudoClass.getPseudoClass("histogram-text"), true);
+                        propertyValue.getStyleClass().add("histogram-text");
                     }
+                    System.out.println("propertyValue.getStyleClass() " + propertyValue.getStyleClass());
 
                     // For some reason, setting font size with setFont() doesn't work. So the styling is set like this
                     propertyValue.setStyle("-fx-font-size: " + fontSize);
