@@ -62,11 +62,11 @@ public class SaveGraphPlugin extends SimplePlugin {
         final PluginParameter<StringParameterValue> graphIdParameter = StringParameterType.build(GRAPH_PARAMETER);
         final PluginParameter<StringParameterValue> filePathParameter = StringParameterType.build(FILE_PATH_PARAMETER);
 
-        graphIdParameter.setName("graphId");
-        graphIdParameter.setDescription("The Id of the graph");
+        graphIdParameter.setName("Graph ID");
+        graphIdParameter.setDescription("The ID of the graph");
         parameters.addParameter(graphIdParameter);
 
-        filePathParameter.setName("saveFilePath");
+        filePathParameter.setName("Save File Path");
         filePathParameter.setDescription("Save Graph Plugin File Path");
         filePathParameter.setStringValue(System.getProperty("user.home"));
         parameters.addParameter(filePathParameter);
@@ -75,7 +75,7 @@ public class SaveGraphPlugin extends SimplePlugin {
     }
 
     @Override
-    protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+    protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final Graph g = graphs.getAllGraphs().get(parameters.getStringValue(GRAPH_PARAMETER));
         final String filePath = parameters.getStringValue(FILE_PATH_PARAMETER);
         final GraphNode gn = GraphNode.getGraphNode(g);
@@ -88,7 +88,7 @@ public class SaveGraphPlugin extends SimplePlugin {
                 SwingUtilities.invokeLater(() -> {
                     try {
                         ((VisualGraphTopComponent) gn.getTopComponent()).saveGraph();
-                    } catch (IOException ex) {
+                    } catch (final IOException ex) {
                         LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     }
                 });
@@ -96,7 +96,7 @@ public class SaveGraphPlugin extends SimplePlugin {
                 JOptionPane.showMessageDialog(null, "Error: Invalid file path parameter");
             }
 
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
