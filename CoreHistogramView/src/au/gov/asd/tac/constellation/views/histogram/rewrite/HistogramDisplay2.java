@@ -172,12 +172,12 @@ public class HistogramDisplay2 extends BorderPane {
         initializeListeners();
     }
 
-    public final void initializeSettings() {
+    private void initializeSettings() {
         setStyle("-fx-background-color: " + BACKGROUND_COLOR_STRING + ";");
         requestFocus(); // Focus the Histogram View so 'key' actions can be registered.
     }
 
-    public final void initializeListeners() {
+    private void initializeListeners() {
         // Set up mouse listeners
         this.setOnMouseClicked(e -> handleMouseClicked(e));
         this.setOnMousePressed(e -> handleMousePressed(e));
@@ -195,6 +195,16 @@ public class HistogramDisplay2 extends BorderPane {
         Platform.runLater(() -> updateDisplay());
     }
 
+    // For testing
+    protected BinCollection getBinCollection() {
+        return binCollection;
+    }
+
+    // For testing
+    protected BinIconMode getBinIconMode() {
+        return binIconMode;
+    }
+
     public void updateBinCollection() {
         binCollection.deactivateBins();
         activeBin = -1;
@@ -203,6 +213,10 @@ public class HistogramDisplay2 extends BorderPane {
 
     public void setBinSelectionMode(BinSelectionMode binSelectionMode) {
         this.binSelectionMode = binSelectionMode;
+    }
+
+    public BinSelectionMode getBinSelectionMode() {
+        return binSelectionMode;
     }
 
     private void setDragEnd(final int newValue) {
