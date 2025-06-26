@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JFileChooser;
@@ -88,17 +87,16 @@ public class SaveAsActionNGTest {
     @Test
     public void testActionPerformedNull() throws InterruptedException {
         System.out.println("actionPerformedNull");
-        final ArrayList<SaveAsAction> instance = new ArrayList<>();
+        final SaveAsAction instance = new SaveAsAction();
         final CountDownLatch latch = new CountDownLatch(1);
 
         SwingUtilities.invokeLater(() -> {
-            instance.add(new SaveAsAction());
-            instance.get(0).actionPerformed(null);
+            instance.actionPerformed(null);
             latch.countDown();
         });
 
         latch.await(5000, TimeUnit.MILLISECONDS);
         // Assert isSaved is still false, as null was fed into actionPerformed
-        assertFalse(instance.get(0).isSaved());
+        assertFalse(instance.isSaved());
     }
 }
