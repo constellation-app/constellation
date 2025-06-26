@@ -70,46 +70,46 @@ public class GraphCopyUtilitiesNGTest {
      */
     @Test
     public void testCopySelectedGraphElementsToClipboard() throws InterruptedException, UnsupportedFlavorException, IOException {
-//        System.out.println("copySelectedGraphElementsToClipboard");
-//        
-//        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
-//        final StoreGraph graph = new StoreGraph(schema);
-//        
-//        final int vxId1 = graph.addVertex();
-//        final int vxId2 = graph.addVertex();
-//        final int vxId3 = graph.addVertex();
-//        
-//        final int tId1 = graph.addTransaction(vxId1, vxId2, true);
-//        final int tId2 = graph.addTransaction(vxId1, vxId3, true);
-//        graph.addTransaction(vxId2, vxId3, true);
-//        
-//        final int selectedVertexAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-//        final int selectedTransactionAttribute = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-//        
-//        graph.setBooleanValue(selectedVertexAttribute, vxId1, true);
-//        graph.setBooleanValue(selectedVertexAttribute, vxId2, true);
-//        
-//        graph.setBooleanValue(selectedTransactionAttribute, tId1, true);
-//        graph.setBooleanValue(selectedTransactionAttribute, tId2, true);
-//        
-//        final Clipboard cb = ConstellationClipboardOwner.getConstellationClipboard();
-//        Transferable content = cb.getContents(null);
-//        assertNull(content);
-//        
-//        // this is the expected value for both the node bit set and transaction one
-//        // as in both instances, the first 2 are selected (and the 3rd is not)
-//        final BitSet expected = new BitSet(3);
-//        expected.set(0, true);
-//        expected.set(1, true);
-//        
-//        final BitSet[] result = GraphCopyUtilities.copySelectedGraphElementsToClipboard(graph);
-//        
-//        assertEquals(result, new BitSet[]{expected, expected});
-//        
-//        content = cb.getContents(null);
-//        assertTrue(content instanceof RecordStoreTransferable);
-//        
-//        // cleanup the clipboard at the end of the test
-//        cb.setContents(null, null);
+        System.out.println("copySelectedGraphElementsToClipboard");
+        
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
+        final StoreGraph graph = new StoreGraph(schema);
+        
+        final int vxId1 = graph.addVertex();
+        final int vxId2 = graph.addVertex();
+        final int vxId3 = graph.addVertex();
+        
+        final int tId1 = graph.addTransaction(vxId1, vxId2, true);
+        final int tId2 = graph.addTransaction(vxId1, vxId3, true);
+        graph.addTransaction(vxId2, vxId3, true);
+        
+        final int selectedVertexAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int selectedTransactionAttribute = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
+        
+        graph.setBooleanValue(selectedVertexAttribute, vxId1, true);
+        graph.setBooleanValue(selectedVertexAttribute, vxId2, true);
+        
+        graph.setBooleanValue(selectedTransactionAttribute, tId1, true);
+        graph.setBooleanValue(selectedTransactionAttribute, tId2, true);
+        
+        final Clipboard cb = ConstellationClipboardOwner.getConstellationClipboard();
+        Transferable content = cb.getContents(null);
+        assertNull(content);
+        
+        // this is the expected value for both the node bit set and transaction one
+        // as in both instances, the first 2 are selected (and the 3rd is not)
+        final BitSet expected = new BitSet(3);
+        expected.set(0, true);
+        expected.set(1, true);
+        
+        final BitSet[] result = GraphCopyUtilities.copySelectedGraphElementsToClipboard(graph);
+        
+        assertEquals(result, new BitSet[]{expected, expected});
+        
+        content = cb.getContents(null);
+        assertTrue(content instanceof RecordStoreTransferable);
+        
+        // cleanup the clipboard at the end of the test
+        cb.setContents(null, null);
     }
 }

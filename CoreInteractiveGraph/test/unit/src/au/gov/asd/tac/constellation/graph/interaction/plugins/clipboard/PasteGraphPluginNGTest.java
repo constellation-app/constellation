@@ -67,13 +67,13 @@ public class PasteGraphPluginNGTest {
      */
     @Test
     public void testCreateParameters() {
-//        System.out.println("createParameters");
-//        
-//        final PasteGraphPlugin instance = new PasteGraphPlugin();
-//        
-//        final PluginParameters params = instance.createParameters();
-//        assertEquals(params.getParameters().size(), 1);
-//        assertTrue(params.getParameters().containsKey(RECORDSTORE_PARAMETER_ID));
+        System.out.println("createParameters");
+        
+        final PasteGraphPlugin instance = new PasteGraphPlugin();
+        
+        final PluginParameters params = instance.createParameters();
+        assertEquals(params.getParameters().size(), 1);
+        assertTrue(params.getParameters().containsKey(RECORDSTORE_PARAMETER_ID));
     }
 
     /**
@@ -84,43 +84,43 @@ public class PasteGraphPluginNGTest {
      */
     @Test
     public void testEdit() throws InterruptedException, PluginException {
-//        System.out.println("edit");
-//        
-//        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
-//        final StoreGraph graph = new StoreGraph(schema);
-//        
-//        final RecordStore rs = new GraphRecordStore();
-//        rs.add();
-//        rs.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "node1");
-//        rs.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "node2");
-//        rs.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.IDENTIFIER, "transaction12");
-//        
-//        final PasteGraphPlugin instance = new PasteGraphPlugin();
-//        final PluginParameters parameters = instance.createParameters();
-//        parameters.setObjectValue(RECORDSTORE_PARAMETER_ID, rs);
-//        
-//        assertEquals(graph.getVertexCount(), 0);
-//        assertEquals(graph.getTransactionCount(), 0);
-//        
-//        int identifierVertexAttribute = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
-//        int identifierTransactionAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.get(graph);
-//        
-//        assertEquals(identifierVertexAttribute, Graph.NOT_FOUND);
-//        assertEquals(identifierTransactionAttribute, Graph.NOT_FOUND);
-//        
-//        instance.edit(graph, null, parameters);
-//        
-//        assertEquals(graph.getVertexCount(), 2);
-//        assertEquals(graph.getTransactionCount(), 1);
-//        
-//        identifierVertexAttribute = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
-//        identifierTransactionAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.get(graph);
-//        
-//        assertNotEquals(identifierVertexAttribute, Graph.NOT_FOUND);
-//        assertNotEquals(identifierTransactionAttribute, Graph.NOT_FOUND);
-//        
-//        assertEquals(graph.getStringValue(identifierVertexAttribute, 0), "node1");
-//        assertEquals(graph.getStringValue(identifierVertexAttribute, 1), "node2");
-//        assertEquals(graph.getStringValue(identifierTransactionAttribute, 0), "transaction12");
+        System.out.println("edit");
+        
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
+        final StoreGraph graph = new StoreGraph(schema);
+        
+        final RecordStore rs = new GraphRecordStore();
+        rs.add();
+        rs.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "node1");
+        rs.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "node2");
+        rs.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.IDENTIFIER, "transaction12");
+        
+        final PasteGraphPlugin instance = new PasteGraphPlugin();
+        final PluginParameters parameters = instance.createParameters();
+        parameters.setObjectValue(RECORDSTORE_PARAMETER_ID, rs);
+        
+        assertEquals(graph.getVertexCount(), 0);
+        assertEquals(graph.getTransactionCount(), 0);
+        
+        int identifierVertexAttribute = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
+        int identifierTransactionAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.get(graph);
+        
+        assertEquals(identifierVertexAttribute, Graph.NOT_FOUND);
+        assertEquals(identifierTransactionAttribute, Graph.NOT_FOUND);
+        
+        instance.edit(graph, null, parameters);
+        
+        assertEquals(graph.getVertexCount(), 2);
+        assertEquals(graph.getTransactionCount(), 1);
+        
+        identifierVertexAttribute = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
+        identifierTransactionAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.get(graph);
+        
+        assertNotEquals(identifierVertexAttribute, Graph.NOT_FOUND);
+        assertNotEquals(identifierTransactionAttribute, Graph.NOT_FOUND);
+        
+        assertEquals(graph.getStringValue(identifierVertexAttribute, 0), "node1");
+        assertEquals(graph.getStringValue(identifierVertexAttribute, 1), "node2");
+        assertEquals(graph.getStringValue(identifierTransactionAttribute, 0), "transaction12");
     }
 }
