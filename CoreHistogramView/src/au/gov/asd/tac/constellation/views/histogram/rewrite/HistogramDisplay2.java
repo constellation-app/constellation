@@ -228,7 +228,7 @@ public class HistogramDisplay2 extends BorderPane {
         return prevDragEnd != dragEnd;// drag start doesnt change per mouseDragged fire
     }
 
-    public void updateDisplay() {
+    public synchronized void updateDisplay() {
         updateIcons();
         updatePropertyText();
         updateBars(true);

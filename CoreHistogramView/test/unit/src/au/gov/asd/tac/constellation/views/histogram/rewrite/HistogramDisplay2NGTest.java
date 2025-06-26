@@ -15,10 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.histogram.rewrite;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.histogram.Bin;
 import au.gov.asd.tac.constellation.views.histogram.BinCollection;
 import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
 import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
+import au.gov.asd.tac.constellation.views.histogram.bins.ObjectBin;
+import java.awt.Color;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -114,14 +117,29 @@ public class HistogramDisplay2NGTest {
     /**
      * Test of updateDisplay method, of class HistogramDisplay2.
      */
-//    @Test
-//    public void testUpdateDisplay() {
-//        System.out.println("updateDisplay");
-//        HistogramDisplay2 instance = null;
-//        instance.updateDisplay();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+    @Test
+    public void testUpdateDisplay() {
+        System.out.println("updateDisplay");
+        
+        final ObjectBin mockBin = mock(ObjectBin.class);
+        final ConstellationColor mockKey = mock(ConstellationColor.class);
+        when(mockBin.getKeyAsObject()).thenReturn(mockKey);
+        when(mockKey.getJavaColor()).thenReturn(Color.RED);
+
+        final BinCollection binCollection = mock(BinCollection.class);
+        final Bin[] bins = {mockBin};
+        final BinIconMode binIconMode = BinIconMode.COLOR;
+        final HistogramDisplay2 instance = new HistogramDisplay2(mock(HistogramTopComponent2.class));
+
+        when(binCollection.getBins()).thenReturn(bins);
+
+        instance.setBinSelectionMode(BinSelectionMode.ADD_TO_SELECTION);
+        instance.setBinCollection(binCollection, binIconMode);
+
+        instance.updateBinCollection();
+
+        instance.updateDisplay();
+    }
     /**
      * Test of decreaseBarHeight method, of class HistogramDisplay2.
      */
@@ -144,4 +162,31 @@ public class HistogramDisplay2NGTest {
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
+
+    /*
+    @Test
+    public void getPreferenceFileName_ok_pressed() {
+        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(() -> JsonIODialog.getPreferenceFileName());
+
+        final Stage dialog = getDialog(robot);
+
+        final String input = "myPreferenceFile";
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".text-field")
+                        .queryAs(TextField.class)
+        ).write(input);
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".button")
+                        .lookup(hasText("OK"))
+                        .queryAs(Button.class)
+        );
+
+        final Optional<String> result = WaitForAsyncUtils.waitFor(future);
+
+        assertEquals(input, result.get());
+    }*/
 }
