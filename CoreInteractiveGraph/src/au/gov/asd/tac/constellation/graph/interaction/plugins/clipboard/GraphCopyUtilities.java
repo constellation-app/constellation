@@ -41,7 +41,7 @@ public class GraphCopyUtilities {
     
     /**
      * Copies the selected graph nodes and transactions, placing them on the
-     * CONSTELLATION specific clipboard.
+     * Constellation specific clipboard.
      *
      * @param rg The graph to copy elements from.
      * @return An array of length two containing a BitSet of the copied vertex

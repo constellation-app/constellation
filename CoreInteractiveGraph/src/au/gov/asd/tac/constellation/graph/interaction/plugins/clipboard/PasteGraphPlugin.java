@@ -46,8 +46,6 @@ public final class PasteGraphPlugin extends SimpleEditPlugin {
 
     // The graph being pasted from the paste buffer.
     public static final String RECORDSTORE_PARAMETER_ID = PluginParameter.buildId(PasteGraphPlugin.class, "recordstore");
-    public static final String OUT_VX_PASTED_PARAMETER_ID = PluginParameter.buildId(PasteGraphPlugin.class, "vertex_pasted");
-    public static final String OUT_TX_PASTED_PARAMETER_ID = PluginParameter.buildId(PasteGraphPlugin.class, "transaction_pasted");
 
 
     @Override
@@ -58,16 +56,7 @@ public final class PasteGraphPlugin extends SimpleEditPlugin {
         pasterParam.setName("Record Store");
         pasterParam.setDescription("The RecordStore object to be pasted onto the current graph");
         parameters.addParameter(pasterParam);
-
-        final PluginParameter<ObjectParameterValue> outVxPastedParam = ObjectParameterType.build(OUT_VX_PASTED_PARAMETER_ID);
-        outVxPastedParam.setName("Vertex Ids pasted");
-        outVxPastedParam.setDescription("A set of the vertex ids pasted (output parameter)");
-        parameters.addParameter(outVxPastedParam);
-
-        final PluginParameter<ObjectParameterValue> outTxPastedParam = ObjectParameterType.build(OUT_TX_PASTED_PARAMETER_ID);
-        outTxPastedParam.setName("Transaction Ids pasted");
-        outTxPastedParam.setDescription("A set of the transaction ids pasted (output parameter)");
-        parameters.addParameter(outTxPastedParam);
+        
         return parameters;
     }
 

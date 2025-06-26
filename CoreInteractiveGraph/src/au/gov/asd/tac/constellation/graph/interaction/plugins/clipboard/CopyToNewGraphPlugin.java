@@ -59,12 +59,10 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
 public class CopyToNewGraphPlugin extends SimpleReadPlugin {
 
+    public static final String NEW_SCHEMA_NAME_PARAMETER_ID = PluginParameter.buildId(CopyToNewGraphPlugin.class, "new_schema");
     public static final String COPY_ALL_PARAMETER_ID = PluginParameter.buildId(CopyToNewGraphPlugin.class, "copy_all");
     public static final String COPY_KEYS_PARAMETER_ID = PluginParameter.buildId(CopyToNewGraphPlugin.class, "copy_keys");
-    public static final String NEW_SCHEMA_NAME_PARAMETER_ID = PluginParameter.buildId(CopyToNewGraphPlugin.class, "new_schema");
     public static final String NEW_GRAPH_OUTPUT_PARAMETER_ID = PluginParameter.buildId(CopyToNewGraphPlugin.class, "new_graph");
-
-    private Graph copy = null;
     
     private static final Pattern DIGITS_REGEX = Pattern.compile("\\d+");
     
@@ -111,14 +109,10 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
         final GraphNode gnode = GraphNode.getGraphNode(rg.getId());
         final String name = gnode != null ? nameWithoutNumericSuffix(gnode.getDisplayName()) : "";
 
-        copy = makeGraph(rg, newSchemaName, copyKeys, copyAll);
+        final Graph copy = makeGraph(rg, newSchemaName, copyKeys, copyAll);
         parameters.getParameters().get(NEW_GRAPH_OUTPUT_PARAMETER_ID).setObjectValue(copy);
 
         GraphOpener.getDefault().openGraph(copy, name);
-    }
-
-    public Graph getCopy() {
-        return copy;
     }
 
     /**
@@ -160,7 +154,7 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
      * @throws java.lang.InterruptedException if the process is canceled while
      * it is running.
      */
-    public static Graph makeGraph(final GraphReadMethods original, final String newSchemaName, final boolean copyKeys, final boolean copyAll) throws InterruptedException {
+    private static Graph makeGraph(final GraphReadMethods original, final String newSchemaName, final boolean copyKeys, final boolean copyAll) throws InterruptedException {
         final Schema schema = StringUtils.isNotBlank(newSchemaName) ? SchemaFactoryUtilities.getSchemaFactory(newSchemaName).createSchema() : original.getSchema();
         final Graph dualGraph = new DualGraph(schema == null ? null : schema.getFactory().createSchema());
 

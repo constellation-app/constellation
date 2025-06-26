@@ -52,11 +52,6 @@ public class PasteFromClipboardPlugin extends SimpleEditPlugin {
     private static final Logger LOGGER = Logger.getLogger(PasteFromClipboardPlugin.class.getName());
 
     @Override
-    public PluginParameters createParameters() {
-        return new PluginParameters();
-    }
-
-    @Override
     protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         try {
             final Clipboard cb = ConstellationClipboardOwner.getConstellationClipboard();
