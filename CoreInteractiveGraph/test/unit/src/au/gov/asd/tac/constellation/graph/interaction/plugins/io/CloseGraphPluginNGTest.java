@@ -61,17 +61,17 @@ public class CloseGraphPluginNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-//        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
-//        graph = new DualGraph(schema);
-//        
-//        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("closeTestGraph", true);
-//        tc = spy(new VisualGraphTopComponent(gdo, graph));
-//        graphNode = new GraphNode(graph, gdo, tc, null);
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
+        graph = new DualGraph(schema);
+        
+        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("closeTestGraph", true);
+        tc = spy(new VisualGraphTopComponent(gdo, graph));
+        graphNode = new GraphNode(graph, gdo, tc, null);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-//        graphNode.destroy();
+        graphNode.destroy();
     }
 
     /**
@@ -79,14 +79,14 @@ public class CloseGraphPluginNGTest {
      */
     @Test
     public void testCreateParameters() {
-//        System.out.println("createParameters");
-//        
-//        final CloseGraphPlugin instance = new CloseGraphPlugin();
-//        
-//        final PluginParameters params = instance.createParameters();
-//        assertEquals(params.getParameters().size(), 2);
-//        assertTrue(params.getParameters().containsKey(GRAPH_PARAMETER_ID));
-//        assertTrue(params.getParameters().containsKey(FORCED_PARAMETER_ID));
+        System.out.println("createParameters");
+        
+        final CloseGraphPlugin instance = new CloseGraphPlugin();
+        
+        final PluginParameters params = instance.createParameters();
+        assertEquals(params.getParameters().size(), 2);
+        assertTrue(params.getParameters().containsKey(GRAPH_PARAMETER_ID));
+        assertTrue(params.getParameters().containsKey(FORCED_PARAMETER_ID));
     }
 
     /**
@@ -97,17 +97,17 @@ public class CloseGraphPluginNGTest {
      */
     @Test
     public void testExecute() throws InterruptedException, PluginException {
-//        System.out.println("execute");
-//        
-//        final CloseGraphPlugin instance = new CloseGraphPlugin();
-//        
-//        PluginExecution.withPlugin(instance)
-//                .withParameter(GRAPH_PARAMETER_ID, graph.getId())
-//                .executeNow(graph);
-//        // ideally we check whether the top component was actually closed but since its a challenge to have it open in the first place
-//        // this is the next best thing (since this is what we expect to be called in order to successfully close the graph)
-//        verify(tc).close();
-//        verify(tc, never()).forceClose();
+        System.out.println("execute");
+        
+        final CloseGraphPlugin instance = new CloseGraphPlugin();
+        
+        PluginExecution.withPlugin(instance)
+                .withParameter(GRAPH_PARAMETER_ID, graph.getId())
+                .executeNow(graph);
+        // ideally we check whether the top component was actually closed but since its a challenge to have it open in the first place
+        // this is the next best thing (since this is what we expect to be called in order to successfully close the graph)
+        verify(tc).close();
+        verify(tc, never()).forceClose();
     }
     
     /**
@@ -118,17 +118,17 @@ public class CloseGraphPluginNGTest {
      */
     @Test
     public void testExecuteForced() throws InterruptedException, PluginException {
-//        System.out.println("execute");
-//        
-//        final CloseGraphPlugin instance = new CloseGraphPlugin();  
-//        
-//        PluginExecution.withPlugin(instance)
-//                .withParameter(GRAPH_PARAMETER_ID, graph.getId())
-//                .withParameter(FORCED_PARAMETER_ID, true)
-//                .executeNow(graph);
-//        // ideally we check whether the top component was actually closed but since it's a challenge to have it open in the first place
-//        // this is the next best thing (since this is what we expect to be called in order to successfully close the graph)
-//        verify(tc).close();
-//        verify(tc).forceClose();
+        System.out.println("execute");
+        
+        final CloseGraphPlugin instance = new CloseGraphPlugin();  
+        
+        PluginExecution.withPlugin(instance)
+                .withParameter(GRAPH_PARAMETER_ID, graph.getId())
+                .withParameter(FORCED_PARAMETER_ID, true)
+                .executeNow(graph);
+        // ideally we check whether the top component was actually closed but since it's a challenge to have it open in the first place
+        // this is the next best thing (since this is what we expect to be called in order to successfully close the graph)
+        verify(tc).close();
+        verify(tc).forceClose();
     }
 }

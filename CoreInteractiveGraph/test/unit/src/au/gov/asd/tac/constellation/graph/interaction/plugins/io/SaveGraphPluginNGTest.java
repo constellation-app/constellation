@@ -57,13 +57,13 @@ public class SaveGraphPluginNGTest {
      */
     @Test
     public void testCreateParameters() {
-//        System.out.println("createParameters");
-//        
-//        final SaveGraphPlugin instance = new SaveGraphPlugin();
-//        
-//        final PluginParameters params = instance.createParameters();
-//        assertEquals(params.getParameters().size(), 2);
-//        assertTrue(params.getParameters().containsKey(GRAPH_PARAMETER));
-//        assertTrue(params.getParameters().containsKey(FILE_PATH_PARAMETER));
+        System.out.println("createParameters");
+        
+        final SaveGraphPlugin instance = new SaveGraphPlugin();
+        
+        final PluginParameters params = instance.createParameters();
+        assertEquals(params.getParameters().size(), 2);
+        assertTrue(params.getParameters().containsKey(GRAPH_PARAMETER));
+        assertTrue(params.getParameters().containsKey(FILE_PATH_PARAMETER));
     }
 }

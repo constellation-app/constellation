@@ -62,23 +62,23 @@ public class CloseActionNGTest {
      */
     @Test
     public void testActionPerformed() {
-//        System.out.println("actionPerformed");
-//        
-//        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
-//        final DualGraph graph = new DualGraph(schema);
-//        
-//        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("closeTestGraph", true);
-//        final VisualGraphTopComponent tc = spy(new VisualGraphTopComponent(gdo, graph));
-//        final GraphNode graphNode = new GraphNode(graph, gdo, tc, null);
-//        
-//        final CloseAction instance = new CloseAction(graphNode);
-//        try {
-//            instance.actionPerformed(null);
-//            // ideally we check whether the top component was actually closed but since its a challenge to have it open in the first place
-//            // this is the next best thing (since this is what we expect to be called in order to successfully close the graph)
-//            verify(tc).close();
-//        } finally {
-//            graphNode.destroy();
-//        }
+        System.out.println("actionPerformed");
+        
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
+        final DualGraph graph = new DualGraph(schema);
+        
+        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("closeTestGraph", true);
+        final VisualGraphTopComponent tc = spy(new VisualGraphTopComponent(gdo, graph));
+        final GraphNode graphNode = new GraphNode(graph, gdo, tc, null);
+        
+        final CloseAction instance = new CloseAction(graphNode);
+        try {
+            instance.actionPerformed(null);
+            // ideally we check whether the top component was actually closed but since its a challenge to have it open in the first place
+            // this is the next best thing (since this is what we expect to be called in order to successfully close the graph)
+            verify(tc).close();
+        } finally {
+            graphNode.destroy();
+        }
     } 
 }
