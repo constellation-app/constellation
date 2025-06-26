@@ -534,6 +534,11 @@ public class HistogramDisplay2 extends BorderPane {
         updateDisplay();
     }
 
+    // For testing
+    protected int getBarHeightBase() {
+        return barHeightBase;
+    }
+
     /**
      * Copy the values of the selected bars on the Histogram to the clipboard.
      * <p>

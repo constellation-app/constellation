@@ -25,11 +25,13 @@ import java.awt.Color;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -120,7 +122,7 @@ public class HistogramDisplay2NGTest {
     @Test
     public void testUpdateDisplay() {
         System.out.println("updateDisplay");
-        
+
         final ObjectBin mockBin = mock(ObjectBin.class);
         final ConstellationColor mockKey = mock(ConstellationColor.class);
         when(mockBin.getKeyAsObject()).thenReturn(mockKey);
@@ -132,6 +134,8 @@ public class HistogramDisplay2NGTest {
         final HistogramDisplay2 instance = new HistogramDisplay2(mock(HistogramTopComponent2.class));
 
         when(binCollection.getBins()).thenReturn(bins);
+        when(binCollection.getMaxElementCount()).thenReturn(1);
+        when(binCollection.getSelectedBins()).thenReturn(bins);
 
         instance.setBinSelectionMode(BinSelectionMode.ADD_TO_SELECTION);
         instance.setBinCollection(binCollection, binIconMode);
@@ -139,29 +143,39 @@ public class HistogramDisplay2NGTest {
         instance.updateBinCollection();
 
         instance.updateDisplay();
+
+        verify(binCollection, atLeast(1)).getBins();
+        verify(binCollection, atLeast(1)).getMaxElementCount();
+        verify(binCollection, atLeast(1)).getSelectedBins();
     }
+
     /**
      * Test of decreaseBarHeight method, of class HistogramDisplay2.
      */
-//    @Test
-//    public void testDecreaseBarHeight() {
-//        System.out.println("decreaseBarHeight");
-//        HistogramDisplay2 instance = null;
-//        instance.decreaseBarHeight();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+    @Test
+    public void testDecreaseBarHeight() {
+        System.out.println("decreaseBarHeight");
+        final HistogramDisplay2 instance = new HistogramDisplay2(mock(HistogramTopComponent2.class));
+
+        final int oldBarHeight = instance.getBarHeightBase();
+        instance.decreaseBarHeight();
+
+        assertTrue(oldBarHeight > instance.getBarHeightBase());
+    }
+
     /**
      * Test of increaseBarHeight method, of class HistogramDisplay2.
      */
-//    @Test
-//    public void testIncreaseBarHeight() {
-//        System.out.println("increaseBarHeight");
-//        HistogramDisplay2 instance = null;
-//        instance.increaseBarHeight();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+    @Test
+    public void testIncreaseBarHeight() {
+        System.out.println("increaseBarHeight");
+        final HistogramDisplay2 instance = new HistogramDisplay2(mock(HistogramTopComponent2.class));
+
+        final int oldBarHeight = instance.getBarHeightBase();
+        instance.increaseBarHeight();
+
+        assertTrue(oldBarHeight < instance.getBarHeightBase());
+    }
 
     /*
     @Test
