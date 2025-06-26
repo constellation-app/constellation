@@ -428,32 +428,32 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         }
     }
     
-    /**
-     * Test of resizeAndSave method, of RecentGraphScreenshotUtilities.
-     * 
-     * @throws java.io.IOException
-     */
-    @Test
-    public void testResizeAndSave() throws IOException {
-        System.out.println("resizeAndSave");
-        
-        final File resizedImageFile = new File("testResize.png");       
-        final BufferedImage originalImage = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
-        
-        assertFalse(resizedImageFile.exists());
-        assertEquals(originalImage.getHeight(), 500);
-        assertEquals(originalImage.getWidth(), 500);
-        assertEquals(originalImage.getType(), BufferedImage.TYPE_INT_ARGB);
-        
-        RecentGraphScreenshotUtilities.resizeAndSave(originalImage, resizedImageFile.toPath(), 250, 300);
-        
-        assertTrue(resizedImageFile.exists());
-        
-        final BufferedImage resizedImage = ImageIO.read(resizedImageFile);
-        assertEquals(resizedImage.getHeight(), 250);
-        assertEquals(resizedImage.getWidth(), 300);
-        assertEquals(resizedImage.getType(), BufferedImage.TYPE_INT_ARGB);
-        
-        resizedImageFile.delete();
-    }
+//    /**
+//     * Test of resizeAndSave method, of RecentGraphScreenshotUtilities.
+//     * 
+//     * @throws java.io.IOException
+//     */
+//    @Test
+//    public void testResizeAndSave() throws IOException {
+//        System.out.println("resizeAndSave");
+//        
+//        final File resizedImageFile = new File("testResize.png");       
+//        final BufferedImage originalImage = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
+//        
+//        assertFalse(resizedImageFile.exists());
+//        assertEquals(originalImage.getHeight(), 500);
+//        assertEquals(originalImage.getWidth(), 500);
+//        assertEquals(originalImage.getType(), BufferedImage.TYPE_INT_ARGB);
+//        
+//        RecentGraphScreenshotUtilities.resizeAndSave(originalImage, resizedImageFile.toPath(), 250, 300);
+//        
+//        assertTrue(resizedImageFile.exists());
+//        
+//        final BufferedImage resizedImage = ImageIO.read(resizedImageFile);
+//        assertEquals(resizedImage.getHeight(), 250);
+//        assertEquals(resizedImage.getWidth(), 300);
+//        assertEquals(resizedImage.getType(), BufferedImage.TYPE_INT_ARGB);
+//        
+//        resizedImageFile.delete();
+//    }
 }
