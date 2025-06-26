@@ -40,6 +40,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import org.apache.commons.lang3.StringUtils;
 
+
 /**
  * Customised TextInputDialog to read pressed keyboard shortcut with options
  * buttons
@@ -87,7 +88,9 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
      */
     public TextInputDialogWithKeybordShortcut(@NamedArg("defaultValue") final String defaultValue, final File preferenceDirectory, final Optional<String> ks) {
         final DialogPane dialogPane = getDialogPane();
-
+        
+        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+         
         // -- textfield
         this.textField = new TextField(defaultValue);
         this.textField.setMaxWidth(Double.MAX_VALUE);
@@ -140,20 +143,32 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
                 keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
                 keyboardShortcutLabel.setText(ksResult.getKeyboardShortcut());
                 keyboardShortcutSelectionResult.setKeyboardShortcut(ksResult.getKeyboardShortcut());
+                
+                if (ksResult.isAlreadyAssignedWithinApp()) {
+                    shorcutWarningLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 11.5px; -fx-text-fill: " + ConstellationColor.DARK_ORANGE.getHtmlColor() + ";");
+                    shorcutWarningLabel.setText(String.format(RecordKeyboardShortcut.KEYBOARD_SHORTCUT_EXISTS_WITHIN_APP_ALERT_ERROR_MSG_FORMAT, ksResult.getKeyboardShortcut()));
+                    keyboardShortcutSelectionResult.setAlreadyAssignedWithinApp(true);                    
+                    shorcutWarningIconLabel.setGraphic(warningImage);
+                    shorcutWarningIconLabel.setTooltip(warningToolTip);
+                    
+                    //disable OK button
+                    dialogPane.lookupButton(ButtonType.OK).setDisable(true);
 
-                if (ksResult.isAlreadyAssigned() && ksResult.getExisitngTemplateWithKs() != null) {
+                } else if (ksResult.isAlreadyAssigned() && ksResult.getExisitngTemplateWithKs() != null) {
                     shorcutWarningLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 11.5px; -fx-text-fill: " + ConstellationColor.DARK_ORANGE.getHtmlColor() + ";");
                     shorcutWarningLabel.setText(String.format(RecordKeyboardShortcut.KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT, ksResult.getKeyboardShortcut()));
                     keyboardShortcutSelectionResult.setAlreadyAssigned(true);
                     keyboardShortcutSelectionResult.setExisitngTemplateWithKs(ksResult.getExisitngTemplateWithKs());
                     shorcutWarningIconLabel.setGraphic(warningImage);
                     shorcutWarningIconLabel.setTooltip(warningToolTip);
+                    dialogPane.lookupButton(ButtonType.OK).setDisable(false);
                 } else {
                     shorcutWarningLabel.setText(null);
                     keyboardShortcutSelectionResult.setAlreadyAssigned(false);
                     keyboardShortcutSelectionResult.setExisitngTemplateWithKs(null);
                     shorcutWarningIconLabel.setGraphic(null);
                     shorcutWarningIconLabel.setTooltip(null);
+                    dialogPane.lookupButton(ButtonType.OK).setDisable(false);
                 }
             }
         });
@@ -168,8 +183,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
         dialogPane.contentTextProperty().addListener(o -> updateGrid());
 
-        dialogPane.getStyleClass().add("text-input-dialog");
-        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        dialogPane.getStyleClass().add("text-input-dialog");       
 
         updateGrid();
 
@@ -266,6 +280,6 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
     public KeyboardShortcutSelectionResult getKeyboardShortcutSelectionResult() {
         return keyboardShortcutSelectionResult;
-    }
+    }    
 
 }

@@ -19,6 +19,7 @@ import java.io.File;
 
 /**
  * Stores selected keyboard shortcut result for the workflow template
+ *
  * @author spica
  */
 public class KeyboardShortcutSelectionResult {
@@ -27,11 +28,14 @@ public class KeyboardShortcutSelectionResult {
     private boolean alreadyAssigned;
     private File exisitngTemplateWithKs;
     private String fileName;
+    private boolean alreadyAssignedWithinApp;
 
-    public KeyboardShortcutSelectionResult(final String keyboardShortcut, final boolean alreadyAssigned, final File exisitngTemplateWithKs) {
+    public KeyboardShortcutSelectionResult(final String keyboardShortcut, final boolean alreadyAssigned,
+            final File exisitngTemplateWithKs, final boolean alreadyAssignedWithinApp) {
         this.keyboardShortcut = keyboardShortcut;
         this.alreadyAssigned = alreadyAssigned;
         this.exisitngTemplateWithKs = exisitngTemplateWithKs;
+        this.alreadyAssignedWithinApp = alreadyAssignedWithinApp;
     }
 
     public KeyboardShortcutSelectionResult() {
@@ -69,4 +73,11 @@ public class KeyboardShortcutSelectionResult {
         this.exisitngTemplateWithKs = exisitngTemplateWithKs;
     }
 
+    public boolean isAlreadyAssignedWithinApp() {
+        return alreadyAssignedWithinApp;
+    }
+
+    public void setAlreadyAssignedWithinApp(boolean alreadyAssignedWithinApp) {
+        this.alreadyAssignedWithinApp = alreadyAssignedWithinApp;
+    }    
 }

@@ -42,7 +42,10 @@ public class RecordKeyboardShortcut  {
     
     public static final String KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT
             = "'%s' will be re-assigned to this template";
-     
+    
+    public static final String KEYBOARD_SHORTCUT_EXISTS_WITHIN_APP_ALERT_ERROR_MSG_FORMAT
+            = "'%s' already been assigned within application";
+    
     public static final String KEYBOARD_SHORTCUT = "KEYBOARD_SHORTCUT";
     public static final String ALREADY_ASSIGNED = "ALREADY_ASSIGNED";
     public static final String YES = "Yes";
@@ -70,12 +73,13 @@ public class RecordKeyboardShortcut  {
         td.setY(SystemUtilities.getMainframeYPos() + yOffset);
         td.showAndWait();
         
-        final String keyboardShortcut = (td.getLabel().getText().replace('+', ' ') +" ").trim();      
+        final String keyboardShortcut = td.getLabel().getText().trim(); 
         
         Optional<KeyboardShortcutSelectionResult> ksOptional = Optional.empty();
         
         if (StringUtils.isNotEmpty(keyboardShortcut)) {       
-            boolean alreadyAssigned = false;            
+            boolean alreadyAssigned = false;
+            boolean alreadyAssignedWithinApp = checkAlreadyAllocatedShortcutWithinApp(keyboardShortcut);
                         
             final File exisitngTemplateWithKs = keyboardShortCutAlreadyAssigned(preferenceDirectory, keyboardShortcut);
             
@@ -83,7 +87,7 @@ public class RecordKeyboardShortcut  {
                 alreadyAssigned = true;
             }
             
-            ksOptional = Optional.of(new KeyboardShortcutSelectionResult(keyboardShortcut, alreadyAssigned, exisitngTemplateWithKs));
+            ksOptional = Optional.of(new KeyboardShortcutSelectionResult(keyboardShortcut, alreadyAssigned, exisitngTemplateWithKs, alreadyAssignedWithinApp));
         }
         
         
@@ -94,7 +98,7 @@ public class RecordKeyboardShortcut  {
         
         File exisitngTemplateWithKs = null;
         
-        final FilenameFilter filenameFilter = (d, s) -> s.startsWith("[" + keyboardShortcut + "]");        
+        final FilenameFilter filenameFilter = (d, s) -> s.startsWith("[" + StringUtils.replace(keyboardShortcut, "+", " ") + "]");        
         
         final String[] fileNames = preferenceDirectory.list(filenameFilter);
 
@@ -108,6 +112,20 @@ public class RecordKeyboardShortcut  {
         return exisitngTemplateWithKs;
         
     }
+    
+    /**
+     * Check if selected shortcut has already been used within the application
+     * 
+     * @param keyboardShortcut
+     * @return 
+     */
+    private boolean checkAlreadyAllocatedShortcutWithinApp(final String keyboardShortcut) {
+
+        final List<String> shortcuts = SystemUtilities.getCurrentKeyboardShortcuts();
+        
+        return shortcuts.contains(keyboardShortcut);
+    }
+    
     
     public static KeyCombination createCombo(final KeyEvent event) {
         final List<Modifier> modifiers = new ArrayList<>();

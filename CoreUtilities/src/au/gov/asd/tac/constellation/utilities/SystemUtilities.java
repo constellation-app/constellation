@@ -17,9 +17,19 @@ package au.gov.asd.tac.constellation.utilities;
 
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import org.netbeans.core.options.keymap.api.KeyStrokeUtils;
+import org.netbeans.core.options.keymap.api.ShortcutAction;
+import org.netbeans.core.options.keymap.spi.KeymapManager;
+import org.openide.util.Lookup;
+import org.openide.util.Utilities;
 import org.openide.windows.WindowManager;
 
 /**
@@ -118,6 +128,38 @@ public class SystemUtilities {
             return 480;
         }
         return mainframe.getSize().getHeight();
+    }
+    
+    /**
+     * Get list of currently used keyboard shortcuts within application
+     * 
+     * @return list of currently used keydboard shortcuts within application
+     */
+    public static List<String> getCurrentKeyboardShortcuts() {
+        final List<String> shortcuts = new ArrayList<>();
+
+        for (final KeymapManager m : Lookup.getDefault().lookupAll(KeymapManager.class)) {
+
+            final Object[] ret = new Object[2];
+
+            ret[0] = m.getKeymap(m.getCurrentProfile());
+            ret[1] = m.getActions().entrySet();
+
+            Map<ShortcutAction, Set<String>> curKeymap = (Map<ShortcutAction, Set<String>>) ret[0];
+            Set<Map.Entry<String, Set<ShortcutAction>>> entryset = (Set<Map.Entry<String, Set<ShortcutAction>>>) ret[1];
+
+            for (Map.Entry<String, Set<ShortcutAction>> entry : entryset) {
+                for (ShortcutAction sa : entry.getValue()) {
+                    Set<String> ks = curKeymap.get(sa);
+                    if (Objects.nonNull(ks)) {
+                        shortcuts.addAll(ks.stream()
+                                .map(k -> KeyStrokeUtils.getKeyStrokesAsText(Utilities.stringToKeys(k), " "))
+                                .toList());
+                    }
+                }
+            }
+        }
+        return shortcuts;
     }
 
 }

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
@@ -194,19 +195,29 @@ public class JsonIO {
     }
 
     /**
-     * Get default keyboard shortcut. They are [Ctrl 1],[Ctrl 2],[Ctrl 3]...[Ctrl 5]     
+     * Get default keyboard shortcut. 
+     * They are [Ctrl+Alt+Shift+1],[Ctrl+Alt+Shift+2],[Ctrl+Alt+Shift+3]...[Ctrl+Alt+Shift+5] if not already been used within the application.
      * @param preferenceDirectory
      * @return 
      */
     public static Optional<String> getDefaultKeyboardShortcut(final File preferenceDirectory) {
+        final List<String> shortcuts = SystemUtilities.getCurrentKeyboardShortcuts();
+        
         for (int index = 1; index <= 5; index++) {
-            final String fileNameStartsWith = "[Ctrl " + index + "]";
-            final FilenameFilter filenameFilter = (d, s) -> s.startsWith(fileNameStartsWith);
+            final String defaultKeyboardShortcut = "Ctrl+Alt+Shift+" + index;
+            
+            if (!shortcuts.contains(defaultKeyboardShortcut)) {                
+                final String fileNameStartsWith = "[" + StringUtils.replace(defaultKeyboardShortcut, "+", " ") + "]";
+                final FilenameFilter filenameFilter = (d, s) -> s.startsWith(fileNameStartsWith);
 
-            if (ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
-                return Optional.of("Ctrl " + index);
+                if (ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
+                    return Optional.of(defaultKeyboardShortcut);
+                }
+                index++;
             }
+            
         }
+        
 
         return Optional.empty();
     }
@@ -267,7 +278,7 @@ public class JsonIO {
             }
 
             userInputWithKs = Optional.ofNullable(ksResult.get().getFileName());
-            ks = Optional.of("[" + ksResult.get().getKeyboardShortcut() + "]");
+            ks = Optional.of("[" + StringUtils.replace(ksResult.get().getKeyboardShortcut(), "+", " ") + "]");
 
         } else {
             return;
@@ -314,9 +325,8 @@ public class JsonIO {
                 // Configure JSON mapper settings
                 mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
                 mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-
-                mapper.writeValue(preferenceFile, rootNode);
-
+                mapper.writeValue(preferenceFile, rootNode);              
+                 
                 StatusDisplayer.getDefault().setStatusText(
                         String.format(
                                 PREFERENCE_FILE_SAVED_MSG_FORMAT,
