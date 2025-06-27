@@ -88,7 +88,7 @@ public class RecentGraphScreenshotUtilities {
         if (!saveDir.exists()) {
             saveDir.mkdir();
         } else if (!saveDir.isDirectory()) {
-            LOGGER.log(Level.WARNING, "Recent graph screenshots directory '{0}' is not a directory", SCREENSHOTS_DIR);
+            LOGGER.log(Level.WARNING, "Recent graph screenshots directory \'{0}\' is not a directory", SCREENSHOTS_DIR);
             return null;
         }
 
