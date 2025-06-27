@@ -1,13 +1,13 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2025-06-27 Shortcuts for Data Access View Workflow templates
+<p>Data Access View Workflow templates can now be saved with keyboard shortcuts
+<p>Allocated keyboard shortcut can be used to load up the workflow template instead of clicking the menu items.
+
 == 2025-06-20 Complete with Schema on Selection
 <p>A new plugin has been added that allows for Complete with Schema to only be run on the selected parts of a graph.</p>
 <p>This plugin can be found at Tools -&gt; Complete with Schema on Selection and can be run with the shortcut Shift + F5.</p>
-
-== 2025-06-17 Shortcuts for Data Access View Workflow templates
-<p>Data Access View Workflow templates can now be saved with keyboard shortcuts
-<p>Allocated keyboard shortcut can be used to load up the workflow template instead of clicking the menu items.
 
 == 2025-06-16 Replace with Empty Text
 <p>The Find View has been updated to allow values of attributes to be replaced with an empty string.</p>
