@@ -212,8 +212,7 @@ public class JsonIO {
 
                 if (ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
                     return Optional.of(defaultKeyboardShortcut);
-                }
-                index++;
+                }                
             }
             
         }
@@ -325,8 +324,8 @@ public class JsonIO {
                 // Configure JSON mapper settings
                 mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
                 mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-                mapper.writeValue(preferenceFile, rootNode);              
-                 
+                mapper.writeValue(preferenceFile, rootNode);
+               
                 StatusDisplayer.getDefault().setStatusText(
                         String.format(
                                 PREFERENCE_FILE_SAVED_MSG_FORMAT,
