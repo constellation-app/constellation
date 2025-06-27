@@ -68,6 +68,7 @@ public class GraphRecordStoreUtilities {
     public static final String ID = "[id]<string>";
     public static final String GHOST = "[ghost]<string>";
     public static final String DIRECTED_KEY = "[directed]<string>";
+    public static final String DIRECTED_VALUE_KEY = "directed<string>";
     public static final String COMPLETE_WITH_SCHEMA_KEY = "[complete_with_schema]<string>";
     public static final String DELETE_KEY = "[delete]<string>";
 
@@ -219,8 +220,14 @@ public class GraphRecordStoreUtilities {
             directed = !"False".equalsIgnoreCase(directedValue);
         } else {
             final SchemaTransactionType transactionType = SchemaTransactionTypeUtilities.getType(type);
-            if (transactionType != null) {
+            if (transactionType != null && !"Unknown".equalsIgnoreCase(transactionType.getName())) {
                 directed = transactionType.isDirected();
+            } else {
+                // When its an Unknown transaction type we should use the current directed setting if available.
+                final String directedCurrentValue = values.get(DIRECTED_VALUE_KEY);
+                if (directedCurrentValue != null) {
+                    directed = !"False".equalsIgnoreCase(directedCurrentValue);
+                }
             }
         }
 
