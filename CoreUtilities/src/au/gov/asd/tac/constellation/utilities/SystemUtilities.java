@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities;
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -135,8 +136,8 @@ public class SystemUtilities {
      * 
      * @return list of currently used keydboard shortcuts within application
      */
-    public static List<String> getCurrentKeyboardShortcuts() {
-        final List<String> shortcuts = new ArrayList<>();
+    public static Map<String, String> getCurrentKeyboardShortcuts() {
+        final Map<String, String> shortcuts = new HashMap<>();
 
         for (final KeymapManager m : Lookup.getDefault().lookupAll(KeymapManager.class)) {
 
@@ -151,14 +152,15 @@ public class SystemUtilities {
             for (Map.Entry<String, Set<ShortcutAction>> entry : entryset) {
                 for (ShortcutAction sa : entry.getValue()) {
                     Set<String> ks = curKeymap.get(sa);
-                    if (Objects.nonNull(ks)) {
-                        shortcuts.addAll(ks.stream()
-                                .map(k -> KeyStrokeUtils.getKeyStrokesAsText(Utilities.stringToKeys(k), " "))
-                                .toList());
+                    if (Objects.nonNull(ks)) {                        
+                        ks.forEach(s -> {
+                            shortcuts.put(KeyStrokeUtils.getKeyStrokesAsText(Utilities.stringToKeys(s), " "), sa.getDisplayName());
+                        });
                     }
                 }
             }
         }
+        
         return shortcuts;
     }
 

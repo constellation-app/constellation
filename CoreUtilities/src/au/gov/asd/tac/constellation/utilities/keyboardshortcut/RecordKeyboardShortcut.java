@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -44,7 +46,10 @@ public class RecordKeyboardShortcut  {
             = "'%s' will be re-assigned to this template";
     
     public static final String KEYBOARD_SHORTCUT_EXISTS_WITHIN_APP_ALERT_ERROR_MSG_FORMAT
-            = "'%s' already been assigned within application";
+            = "'%s' is a pre-defined application shortcut and may not be used here";
+    
+    public static final String KEYBOARD_SHORTCUT_EXISTS_WITHIN_APP_ALERT_TOOLTIP_MSG_FORMAT
+            = "'%s' is pre-configured to '%s'" ;
     
     public static final String KEYBOARD_SHORTCUT = "KEYBOARD_SHORTCUT";
     public static final String ALREADY_ASSIGNED = "ALREADY_ASSIGNED";
@@ -79,15 +84,14 @@ public class RecordKeyboardShortcut  {
         
         if (StringUtils.isNotEmpty(keyboardShortcut)) {       
             boolean alreadyAssigned = false;
-            boolean alreadyAssignedWithinApp = checkAlreadyAllocatedShortcutWithinApp(keyboardShortcut);
-                        
+            final Optional<Map.Entry<String, String>> assignedShortcut = getAssignedShortcut(keyboardShortcut);
             final File exisitngTemplateWithKs = keyboardShortCutAlreadyAssigned(preferenceDirectory, keyboardShortcut);
             
             if (exisitngTemplateWithKs != null) {
                 alreadyAssigned = true;
             }
             
-            ksOptional = Optional.of(new KeyboardShortcutSelectionResult(keyboardShortcut, alreadyAssigned, exisitngTemplateWithKs, alreadyAssignedWithinApp));
+            ksOptional = Optional.of(new KeyboardShortcutSelectionResult(keyboardShortcut, alreadyAssigned, exisitngTemplateWithKs, assignedShortcut));
         }
         
         
@@ -119,11 +123,9 @@ public class RecordKeyboardShortcut  {
      * @param keyboardShortcut
      * @return 
      */
-    private boolean checkAlreadyAllocatedShortcutWithinApp(final String keyboardShortcut) {
-
-        final List<String> shortcuts = SystemUtilities.getCurrentKeyboardShortcuts();
-        
-        return shortcuts.contains(keyboardShortcut);
+    private Optional<Map.Entry<String, String>> getAssignedShortcut(final String keyboardShortcut) {
+        final Map<String, String> shortcuts = SystemUtilities.getCurrentKeyboardShortcuts();
+        return shortcuts.entrySet().stream().filter(entry -> entry.getKey().equals(keyboardShortcut)).findFirst();        
     }
     
     

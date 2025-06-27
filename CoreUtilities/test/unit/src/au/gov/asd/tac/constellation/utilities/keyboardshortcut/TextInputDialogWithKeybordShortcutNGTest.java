@@ -80,7 +80,7 @@ public class TextInputDialogWithKeybordShortcutNGTest {
         when(textInputDialogWithKeybordShortcut.getDialogPane()).thenReturn(dialogPane);
         assertEquals(textInputDialogWithKeybordShortcut.getDefaultValue(), StringUtils.EMPTY);
 
-        final Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null, false));
+        final Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null, Optional.empty()));
         final RecordKeyboardShortcut rk = mock(RecordKeyboardShortcut.class);
         when(rk.start(outputFile)).thenReturn(ksResult);
 

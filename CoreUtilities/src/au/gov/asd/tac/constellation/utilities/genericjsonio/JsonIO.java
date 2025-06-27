@@ -35,6 +35,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -201,12 +202,12 @@ public class JsonIO {
      * @return 
      */
     public static Optional<String> getDefaultKeyboardShortcut(final File preferenceDirectory) {
-        final List<String> shortcuts = SystemUtilities.getCurrentKeyboardShortcuts();
+        final Map<String, String> shortcuts = SystemUtilities.getCurrentKeyboardShortcuts();
         
         for (int index = 1; index <= 5; index++) {
             final String defaultKeyboardShortcut = "Ctrl+Alt+Shift+" + index;
             
-            if (!shortcuts.contains(defaultKeyboardShortcut)) {                
+            if (!shortcuts.keySet().contains(defaultKeyboardShortcut)) {                
                 final String fileNameStartsWith = "[" + StringUtils.replace(defaultKeyboardShortcut, "+", " ") + "]";
                 final FilenameFilter filenameFilter = (d, s) -> s.startsWith(fileNameStartsWith);
 

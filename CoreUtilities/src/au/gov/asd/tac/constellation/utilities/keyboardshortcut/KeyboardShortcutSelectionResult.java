@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import java.io.File;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Stores selected keyboard shortcut result for the workflow template
@@ -28,14 +30,14 @@ public class KeyboardShortcutSelectionResult {
     private boolean alreadyAssigned;
     private File exisitngTemplateWithKs;
     private String fileName;
-    private boolean alreadyAssignedWithinApp;
+    private Optional<Map.Entry<String, String>> assignedShortcut;
 
     public KeyboardShortcutSelectionResult(final String keyboardShortcut, final boolean alreadyAssigned,
-            final File exisitngTemplateWithKs, final boolean alreadyAssignedWithinApp) {
+            final File exisitngTemplateWithKs, final Optional<Map.Entry<String, String>> assignedShortcut) {
         this.keyboardShortcut = keyboardShortcut;
         this.alreadyAssigned = alreadyAssigned;
         this.exisitngTemplateWithKs = exisitngTemplateWithKs;
-        this.alreadyAssignedWithinApp = alreadyAssignedWithinApp;
+        this.assignedShortcut = assignedShortcut;
     }
 
     public KeyboardShortcutSelectionResult() {
@@ -73,11 +75,12 @@ public class KeyboardShortcutSelectionResult {
         this.exisitngTemplateWithKs = exisitngTemplateWithKs;
     }
 
-    public boolean isAlreadyAssignedWithinApp() {
-        return alreadyAssignedWithinApp;
+    public Optional<Map.Entry<String, String>> getAssignedShortcut() {
+        return assignedShortcut;
     }
 
-    public void setAlreadyAssignedWithinApp(boolean alreadyAssignedWithinApp) {
-        this.alreadyAssignedWithinApp = alreadyAssignedWithinApp;
-    }    
+    public void setAssignedShortcut(Optional<Map.Entry<String, String>> assignedShortcut) {
+        this.assignedShortcut = assignedShortcut;
+    }   
+    
 }

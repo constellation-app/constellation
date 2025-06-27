@@ -109,7 +109,7 @@ public class KeyboardShortcutSelectionResultNGTest {
 
             final String keyboardShortcut = "ctrl 1";
 
-            final KeyboardShortcutSelectionResult ksResult = new KeyboardShortcutSelectionResult(keyboardShortcut, true, outputFile, false);
+            final KeyboardShortcutSelectionResult ksResult = new KeyboardShortcutSelectionResult(keyboardShortcut, true, outputFile, Optional.empty());
 
             final RecordKeyboardShortcut rks = mock(RecordKeyboardShortcut.class);
             Mockito.when(rks.start(outputFile)).thenReturn(Optional.of(ksResult));

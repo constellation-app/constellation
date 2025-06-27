@@ -111,6 +111,9 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         final ImageView warningImage = new ImageView(UserInterfaceIconProvider.WARNING.buildImage(20, new java.awt.Color(255, 128, 0)));
         final Tooltip warningToolTip = new Tooltip("This shortcut is currently assigned to another template");
                 
+        final ImageView errorImage = new ImageView(UserInterfaceIconProvider.ERROR.buildImage(16, ConstellationColor.RED.getJavaColor()));
+        final Tooltip errorToolTip = new Tooltip();
+        
         keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
         keyboardShortcutLabel.setPadding(new Insets(2, 10, 2, 10));
         keyboardShortcutLabel.setGraphic(null);
@@ -144,12 +147,14 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
                 keyboardShortcutLabel.setText(ksResult.getKeyboardShortcut());
                 keyboardShortcutSelectionResult.setKeyboardShortcut(ksResult.getKeyboardShortcut());
                 
-                if (ksResult.isAlreadyAssignedWithinApp()) {
-                    shorcutWarningLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 11.5px; -fx-text-fill: " + ConstellationColor.DARK_ORANGE.getHtmlColor() + ";");
+                if (ksResult.getAssignedShortcut().isPresent()) {
+                    shorcutWarningLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 11.5px; -fx-text-fill: " + ConstellationColor.RED.getHtmlColor() + ";");
                     shorcutWarningLabel.setText(String.format(RecordKeyboardShortcut.KEYBOARD_SHORTCUT_EXISTS_WITHIN_APP_ALERT_ERROR_MSG_FORMAT, ksResult.getKeyboardShortcut()));
-                    keyboardShortcutSelectionResult.setAlreadyAssignedWithinApp(true);                    
-                    shorcutWarningIconLabel.setGraphic(warningImage);
-                    shorcutWarningIconLabel.setTooltip(warningToolTip);
+                    errorToolTip.setText(String.format(RecordKeyboardShortcut.KEYBOARD_SHORTCUT_EXISTS_WITHIN_APP_ALERT_TOOLTIP_MSG_FORMAT, ksResult.getKeyboardShortcut(), 
+                            ksResult.getAssignedShortcut().get().getValue()));
+                    keyboardShortcutSelectionResult.setAssignedShortcut(ksResult.getAssignedShortcut());                    
+                    shorcutWarningIconLabel.setGraphic(errorImage);
+                    shorcutWarningIconLabel.setTooltip(errorToolTip);
                     
                     //disable OK button
                     dialogPane.lookupButton(ButtonType.OK).setDisable(true);
@@ -243,7 +248,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         grid.add(keyboardShortcutLabel, 2, 1, 4, 1);
         grid.add(shorcutWarningIconLabel, 6, 1, 1, 1);
 
-        grid.add(shorcutWarningLabel, 0, 2, 7, 1);
+        grid.add(shorcutWarningLabel, 0, 2, 8, 1);
 
         getDialogPane().setContent(grid);
 
