@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,8 +71,10 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
             this.getStyleClass().remove(NULL_VALUE_CLASS);
             if (item != null) {           
                 final Text text = getWrappingText(item);                
-                this.setGraphic(text);               
+                this.setGraphic(text);    
+                this.setText("");
             } else {
+                this.setGraphic(null);
                 this.setText(NO_VALUE_TEXT);
                 this.getStyleClass().add(NULL_VALUE_CLASS);
             }

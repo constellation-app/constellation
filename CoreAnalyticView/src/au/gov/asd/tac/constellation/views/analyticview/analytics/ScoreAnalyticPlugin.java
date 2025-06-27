@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
     }
 
     protected final StoreGraph getSubgraph(final GraphWriteMethods graph, final SchemaFactory schemaFactory, final Set<SchemaTransactionType> subgraphTransactionTypes) {
-        return SubgraphUtilities.getSubgraph(graph, schemaFactory.createSchema(), subgraphTransactionTypes, false);
+        return SubgraphUtilities.getTransactionTypeSubgraph(graph, schemaFactory.createSchema(), subgraphTransactionTypes, false);
     }
 
     protected final void copySubgraphToGraph(final GraphWriteMethods graph, final StoreGraph subgraph) {

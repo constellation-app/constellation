@@ -1,9 +1,24 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2025-06-20 Complete with Schema on Selection
+<p>A new plugin has been added that allows for Complete with Schema to only be run on the selected parts of a graph.</p>
+<p>This plugin can be found at Tools -&gt; Complete with Schema on Selection and can be run with the shortcut Shift + F5.</p>
+
+== 2025-06-16 Replace with Empty Text 
+<p>The Find View has been updated to allow values of attributes to be replaced with an empty string.</p>
+<p>For example, when Node identifiers have values such as phone numbers, like +6140000000, using the find and replace you could remove the '+' and replace it with an empty string.</p>
+
+== 2025-04-11 Spell checking in Constellation
+<p>Spell checking is available in text areas of Constellation. E.g. Data access view (Extract Types and Extract Words Plugins). It can be added in other text areas as requested.</p>
+<p>When enabled, incorrect spellings and some grammar errors are highlighted and underlined. 
+Left Clicking on a highlighted word/phrase will popup a suggestions list to choose from. An "Ignore All" button is available for spelling errors which will ignore the same error in the current text area.</p>
+<p>Constellation Option "Enable spell checking in specified text areas" (Enabled by default) is used to enable/disable spell checking. 
+If it is set, the right click context menu option "Turn On Spell Checking" will be available on fields where it has been enabled, and it can be used to toggle on/off spell checking dynamically. </p>
+
 == 2025-02-27 Multi-choice input field
-<p>Multi-choice input fields now have the ability to type ahead and have drop down suggestions
-<p>Existing multi-choice drop down input fields have been replaced with multi-choice type ahead input field so they all look and behave the same.
+<p>Multi-choice input fields now have the ability to type ahead and have drop down suggestions.</p>
+<p>Existing multi-choice drop down input fields have been replaced with multi-choice type ahead input field so they all look and behave the same.</p>
 
 == 2025-02-06 Histogram can now perform aggregate functions on nullable Transaction data
 <p> The Histogram View has had an enhancement to its aggregate processing for <b>Links</b> and <b>Edges</b>.</p>
@@ -23,8 +38,8 @@
 <p>Word Cloud View can now be found in Views -&gt; Word Cloud View.</p>
 
 == 2024-08-13 Layers View - Union and Intersection Modes have now been implemented.
-<p> You can now switch between Union and Intersection modes using the control at the top right of the Layers View. Union mode will show <b>all</b> elements matching with <b>any</b> Layer. Intersection mode will <b>only</b> show graph elements that match with <b>every</b> active layer.
-<p> Layers will now correctly display combined matches to queries as well as any manual allocations for the same layer.
+<p> You can now switch between Union and Intersection modes using the control at the top right of the Layers View. Union mode will show <b>all</b> elements matching with <b>any</b> Layer. Intersection mode will <b>only</b> show graph elements that match with <b>every</b> active layer.</p>
+<p> Layers will now correctly display combined matches to queries as well as any manual allocations for the same layer.</p>
 
 == 2024-07-05 Added Zoom to Selection to Find View
 <p> Added a "Zoom to Selection" checkbox to the Find View. Having this selected will make the graph zoom in to the results found.</p>

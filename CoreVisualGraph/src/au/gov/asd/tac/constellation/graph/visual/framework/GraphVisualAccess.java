@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,6 +105,8 @@ public final class GraphVisualAccess implements VisualAccess {
     private int transactionDimmed = Graph.NOT_FOUND;
     private int transactionLineStyle = Graph.NOT_FOUND;
     private int transactionWidth = Graph.NOT_FOUND;
+    private int defaultVertexColorAttribute = Graph.NOT_FOUND;
+    private int defaultTransactionColorAttribute = Graph.NOT_FOUND;
 
     private int nwDecorator = Graph.NOT_FOUND;
     private int neDecorator = Graph.NOT_FOUND;
@@ -629,7 +631,8 @@ public final class GraphVisualAccess implements VisualAccess {
                 referredAttr = readGraph.getAttribute(GraphElementType.VERTEX, colorAttrName);
             }
         }
-        vertexColor = referredAttr != Graph.NOT_FOUND && readGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : VisualConcept.VertexAttribute.COLOR.get(readGraph);
+        defaultVertexColorAttribute = VisualConcept.VertexAttribute.COLOR.get(readGraph);
+        vertexColor = referredAttr != Graph.NOT_FOUND && readGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : defaultVertexColorAttribute;
     }
 
     private void recalculateTransactionColorAttribute(final ReadableGraph readGraph) {
@@ -640,7 +643,8 @@ public final class GraphVisualAccess implements VisualAccess {
                 referredAttr = readGraph.getAttribute(GraphElementType.TRANSACTION, colorAttrName);
             }
         }
-        transactionColor = referredAttr != Graph.NOT_FOUND && readGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : VisualConcept.TransactionAttribute.COLOR.get(readGraph);
+        defaultTransactionColorAttribute = VisualConcept.TransactionAttribute.COLOR.get(readGraph);
+        transactionColor = referredAttr != Graph.NOT_FOUND && readGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : defaultTransactionColorAttribute;
     }
 
     private void recalculateConnectionMode(final ReadableGraph readGraph) {
@@ -1001,6 +1005,9 @@ public final class GraphVisualAccess implements VisualAccess {
         ConstellationColor color = null;
         if (vertexColor != Graph.NOT_FOUND) {
             color = accessGraph.getObjectValue(vertexColor, accessGraph.getVertex(vertex));
+            if (color == null && defaultVertexColorAttribute != Graph.NOT_FOUND && vertexColor != defaultVertexColorAttribute) {
+                color = accessGraph.getObjectValue(defaultVertexColorAttribute, accessGraph.getVertex(vertex));
+            }
         }
         return color != null ? color : VisualGraphDefaults.DEFAULT_VERTEX_COLOR;
     }
@@ -1128,7 +1135,10 @@ public final class GraphVisualAccess implements VisualAccess {
                     mixColor = graphMixColor != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphMixColor, 0) : VisualGraphDefaults.DEFAULT_MIX_COLOR;
                     for (int i = 0; i < accessGraph.getLinkTransactionCount(linkId); i++) {
                         final int transactionId = accessGraph.getLinkTransaction(linkId, i);
-                        final ConstellationColor transColor = accessGraph.getObjectValue(transactionColor, transactionId);
+                        ConstellationColor transColor = accessGraph.getObjectValue(transactionColor, transactionId);
+                        if (transColor == null) {
+                            transColor = accessGraph.getObjectValue(defaultTransactionColorAttribute, transactionId);
+                        }
                         if (color != null && !color.equals(transColor)) {
                             color = mixColor;
                         } else {
@@ -1141,7 +1151,10 @@ public final class GraphVisualAccess implements VisualAccess {
                     mixColor = graphMixColor != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphMixColor, 0) : VisualGraphDefaults.DEFAULT_MIX_COLOR;
                     for (int i = 0; i < accessGraph.getEdgeTransactionCount(edgeId); i++) {
                         final int transactionId = accessGraph.getEdgeTransaction(edgeId, i);
-                        final ConstellationColor transColor = accessGraph.getObjectValue(transactionColor, transactionId);
+                        ConstellationColor transColor = accessGraph.getObjectValue(transactionColor, transactionId);
+                        if (transColor == null) {
+                            transColor = accessGraph.getObjectValue(defaultTransactionColorAttribute, transactionId);
+                        }
                         if (color != null && !color.equals(transColor)) {
                             color = mixColor;
                         } else {
@@ -1152,6 +1165,9 @@ public final class GraphVisualAccess implements VisualAccess {
                 case TRANSACTION:
                 default:
                     color = accessGraph.getObjectValue(transactionColor, connectionElementIds[connection]);
+                    if (color == null && defaultTransactionColorAttribute != Graph.NOT_FOUND && transactionColor != defaultTransactionColorAttribute) {
+                        color = accessGraph.getObjectValue(defaultTransactionColorAttribute, connectionElementIds[connection]);
+                    }
                     break;
             }
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,7 +101,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
             }
 
             // Third and last step: do we have a default proxy?
-            if (defaultProxy != ConstellationHttpProxy.NO_PROXY) {
+            if (!ConstellationHttpProxy.NO_PROXY.equals(defaultProxy)) {
                 LOGGER.log(Level.FINE, "host {0} will use the default proxy {1}", new Object[]{host, defaultProxy});
                 return makeProxy(defaultProxy);
             }
@@ -146,7 +146,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
      */
     private static boolean isLocalHost(final String host, final List<String> localHosts) {
         final String hostLowerCase = host.toLowerCase();
-        if (StringUtils.equalsAnyIgnoreCase(hostLowerCase, new String[]{"localhost", "127.0.0.1"})) {
+        if (StringUtils.equalsAny(hostLowerCase, new String[]{"localhost", "127.0.0.1"})) {
             return true;
         }
 
@@ -182,9 +182,9 @@ public class ConstellationHttpProxySelector extends ProxySelector {
     public String toString() {
         return new StringBuilder()
                 .append(bypassProxyHosts.toString())
-                .append(ProxyUtilities.SEMICOLON)
+                .append(";")
                 .append(additionalProxies.toString())
-                .append(ProxyUtilities.SEMICOLON)
+                .append(";")
                 .append(defaultProxy.toString())
                 .toString();
     }

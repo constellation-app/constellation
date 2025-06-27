@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.schema.visual;
 
 import au.gov.asd.tac.constellation.graph.schema.visual.plugins.CompleteSchemaPlugin;
+import au.gov.asd.tac.constellation.graph.schema.visual.plugins.CompleteSchemaSelectionPlugin;
 
 /**
  * Visual Schema Plugin Registry.
@@ -25,4 +26,5 @@ import au.gov.asd.tac.constellation.graph.schema.visual.plugins.CompleteSchemaPl
 public class VisualSchemaPluginRegistry {
 
     public static final String COMPLETE_SCHEMA = CompleteSchemaPlugin.class.getName();
+    public static final String COMPLETE_SELECTION_SCHEMA = CompleteSchemaSelectionPlugin.class.getName();
 }

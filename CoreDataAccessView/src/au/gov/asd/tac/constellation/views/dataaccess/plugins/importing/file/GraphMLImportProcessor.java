@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,6 +84,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
     public static final String KEY_TYPE_TAG = "attr.type";
     public static final String NAME_TYPE_DELIMITER = ",";
     public static final String KEY_FOR_TAG = "for";
+    public static final String ALL_TAG = "all";
 
     @Override
     public String getName() {
@@ -134,9 +135,10 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                         + attributes.getNamedItem(KEY_TYPE_TAG).getNodeValue();
                 final String type = attributes.getNamedItem(KEY_FOR_TAG).getNodeValue();
 
-                if (type.equals(NODE_TAG)) {
+                if (ALL_TAG.equals(type) || NODE_TAG.equals(type)) {
                     nodeAttributes.put(id, name);
-                } else {
+                }
+                if (ALL_TAG.equals(type) || EDGE_TAG.equals(type)) {
                     transactionAttributes.put(id, name);
                 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import javax.swing.AbstractListModel;
  */
 class PerspectiveModel extends AbstractListModel<Perspective> {
 
+    //needs to be declared as ArrayList for serializing
     final ArrayList<Perspective> perspectives;
 
     public PerspectiveModel() {
@@ -89,7 +90,7 @@ class PerspectiveModel extends AbstractListModel<Perspective> {
         fireContentsChanged(this, index, index);
     }
 
-    String getNewLabel() {
+    protected String getNewLabel() {
         final String labelBase = "Perspective %d";
         int i = getSize() + 1;
         while (true) {

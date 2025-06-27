@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,6 +85,7 @@ public class TOCGeneratorNGTest {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testCreateTOCFileFail() {
         System.out.println("createTOCFileFail");
+        
         final String invalidPath = null;
         TOCGenerator.createTOCFile(invalidPath);
     }
@@ -137,9 +138,10 @@ public class TOCGeneratorNGTest {
     @Test
     public void testConvertXMLMappings_List_TreeNode() throws IOException {
         System.out.println("convertXMLMappings");
-        List<File> xmlsFromFile = new ArrayList<>();
+        
+        final List<File> xmlsFromFile = new ArrayList<>();
 
-        final TreeNode root = new TreeNode(new TOCItem("root", ""));
+        final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
         File tempFileTOC = null;
         try {
             tempFileTOC = File.createTempFile("tempFileTOC", ".md");
@@ -164,8 +166,9 @@ public class TOCGeneratorNGTest {
     @Test(expectedExceptions = IOException.class)
     public void testConvertXMLMappings_List_TreeNodeFail() throws IOException {
         System.out.println("convertXMLMappingsFail");
-        List<File> xmlsFromFile = new ArrayList<>();
-        final TreeNode root = new TreeNode(new TOCItem("root", ""));
+        
+        final List<File> xmlsFromFile = new ArrayList<>();
+        final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
         TOCGenerator.createTOCFile("incorrect/path/to/toc");
         TOCGenerator.convertXMLMappings(xmlsFromFile, root);
     }
@@ -223,7 +226,7 @@ public class TOCGeneratorNGTest {
             xmlsFromFile.add(tempFile);
             xmlsFromFile.add(tempFile2);
 
-            final TreeNode root = new TreeNode(new TOCItem("root", ""));
+            final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
 
             // try with resources
             try (final FileWriter fw = new FileWriter(tempFileTOC)) {
@@ -231,22 +234,22 @@ public class TOCGeneratorNGTest {
             }
             assertEquals(root.getChildren().size(), 1);
 
-            final TreeNode child1 = (TreeNode) root.getChildren().get(0); // Views
-            final TreeNode child11a = (TreeNode) child1.getChildren().get(0); // Layers View
-            final TreeNode child111a = (TreeNode) child11a.getChildren().get(0); // Layers View link
-            final TreeNode child11b = (TreeNode) child1.getChildren().get(1); // Notes View
-            final TreeNode child111b = (TreeNode) child11b.getChildren().get(0); // Notes View link
+            final TreeNode<TOCItem> child1 = root.getChildren().get(0); // Views
+            final TreeNode<TOCItem> child11a = child1.getChildren().get(0); // Layers View
+            final TreeNode<TOCItem> child111a = child11a.getChildren().get(0); // Layers View link
+            final TreeNode<TOCItem> child11b = child1.getChildren().get(1); // Notes View
+            final TreeNode<TOCItem> child111b = child11b.getChildren().get(0); // Notes View link
 
             assertEquals(child11a.getChildren().size(), 1);
             assertEquals(child11b.getChildren().size(), 1);
             assertEquals(child111a.getChildren().size(), 0);
             assertEquals(child111b.getChildren().size(), 0);
 
-            final TreeNode expectedChild1 = new TreeNode(new TOCItem("Views", ""));
-            final TreeNode expectedChild11a = new TreeNode(new TOCItem("Layers View", ""));
-            final TreeNode expectedChild111a = new TreeNode(new TOCItem("Layers View", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent"));
-            final TreeNode expectedChild11b = new TreeNode(new TOCItem("Notes View", ""));
-            final TreeNode expectedChild111b = new TreeNode(new TOCItem("Notes View", "au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent"));
+            final TreeNode<TOCItem> expectedChild1 = new TreeNode<>(new TOCItem("Views", ""));
+            final TreeNode<TOCItem> expectedChild11a = new TreeNode<>(new TOCItem("Layers View", ""));
+            final TreeNode<TOCItem> expectedChild111a = new TreeNode<>(new TOCItem("Layers View", "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent"));
+            final TreeNode<TOCItem> expectedChild11b = new TreeNode<>(new TOCItem("Notes View", ""));
+            final TreeNode<TOCItem> expectedChild111b = new TreeNode<>(new TOCItem("Notes View", "au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent"));
 
             assertEquals(child1, expectedChild1);
             assertEquals(child11a, expectedChild11a);
@@ -257,7 +260,7 @@ public class TOCGeneratorNGTest {
             assertNotNull(tempFileTOC);
             assertTrue(tempFileTOC.exists());
 
-            BufferedReader reader = new BufferedReader(new FileReader(tempFileTOC));
+            final BufferedReader reader = new BufferedReader(new FileReader(tempFileTOC));
 
             assertEquals(reader.readLine(), String.format("<div class=\"%s\">", "container"));
             assertEquals(reader.readLine(), String.format("<div id=\"%s\">", "accordion"));
@@ -282,26 +285,6 @@ public class TOCGeneratorNGTest {
     }
 
     /**
-     * Test of generateLink method, of class TOCGenerator.
-     */
-    @Test
-    public void testGenerateLink() {
-        System.out.println("generateLink");
-
-        final String title = "click here";
-        final String url = "www.link.com/to/follow.aspx";
-        final String expResult = String.format("[%s](%s)", title, url);
-        final String result = TOCGenerator.generateLink(title, url);
-        assertEquals(result, expResult);
-
-        final String title1 = null;
-        final String url1 = null;
-        final String expResult1 = String.format("[%s](%s)", title1, url1);
-        final String result1 = TOCGenerator.generateLink(title1, url1);
-        assertEquals(result1, expResult1);
-    }
-
-    /**
      * Test of generateHTMLLink method, of class TOCGenerator.
      */
     @Test
@@ -320,19 +303,7 @@ public class TOCGeneratorNGTest {
         final String result1 = TOCGenerator.generateHTMLLink(title1, url1);
         assertEquals(result1, expResult1);
     }
-
-    /**
-     * Test of writeAccordionItem method, of class TOCGenerator. TODO: This test
-     * method is not implemented as the implementation of the method is not
-     * finalised.
-     */
-    @Test
-    public void testWriteAccordionItem() {
-        System.out.println("writeAccordionItem");
-        System.out.println("TODO: This test method is not implemented as the "
-                + "implementation of the method is not finalised");
-    }
-
+    
     /**
      * Test of writeText method, of class TOCGenerator.
      * @throws java.io.IOException
@@ -340,6 +311,7 @@ public class TOCGeneratorNGTest {
     @Test
     public void testWriteText() throws IOException {
         System.out.println("writeText");
+        
         File tempFile = null;
         try {
             tempFile = File.createTempFile("testfile", ".xml");
@@ -361,7 +333,7 @@ public class TOCGeneratorNGTest {
                 });
             }
 
-            BufferedReader reader = new BufferedReader(new FileReader(tempFile));
+            final BufferedReader reader = new BufferedReader(new FileReader(tempFile));
             String line;
 
             int linecount = 0;
@@ -380,7 +352,7 @@ public class TOCGeneratorNGTest {
     public void testWriteTextFail() throws IOException {
         System.out.println("testWriteText Fail");
 
-        File tempFile = new File("invalid/path");
+        final File tempFile = new File("invalid/path");
         // try with resources
         try (final FileWriter fw = new FileWriter(tempFile)) {
             TOCGenerator.writeText(fw, "text");
@@ -394,6 +366,7 @@ public class TOCGeneratorNGTest {
     @Test
     public void testWriteItem() throws IOException {
         System.out.println("writeItem");
+        
         File tempFile = null;
         try {
             tempFile = File.createTempFile("testfile", ".xml");
@@ -415,7 +388,7 @@ public class TOCGeneratorNGTest {
                 });
             }
 
-            BufferedReader reader = new BufferedReader(new FileReader(tempFile));
+            final BufferedReader reader = new BufferedReader(new FileReader(tempFile));
             String line;
 
             int linecount = 0;
@@ -437,6 +410,7 @@ public class TOCGeneratorNGTest {
     @Test
     public void testWriteItemMultipleIndents() throws IOException {
         System.out.println("writeItem");
+        
         File tempFile = null;
         try {
             tempFile = File.createTempFile("testfile", ".xml");
@@ -458,7 +432,7 @@ public class TOCGeneratorNGTest {
                 });
             }
 
-            BufferedReader reader = new BufferedReader(new FileReader(tempFile));
+            final BufferedReader reader = new BufferedReader(new FileReader(tempFile));
             String line;
 
             int linecount = 0;
@@ -481,7 +455,7 @@ public class TOCGeneratorNGTest {
     public void testWriteItemFail() throws IOException {
         System.out.println("testWriteItem Fail");
 
-        File tempFile = new File("invalid/path");
+        final File tempFile = new File("invalid/path");
         // try with resources
         try (final FileWriter fw = new FileWriter(tempFile)) {
             TOCGenerator.writeItem(fw, "text", 0);

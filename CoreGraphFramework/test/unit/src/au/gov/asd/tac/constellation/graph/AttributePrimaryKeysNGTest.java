@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -510,7 +510,8 @@ public class AttributePrimaryKeysNGTest {
         int txId4 = graph.addTransaction(vxId2, vxId3, true);
         int txId5 = graph.addTransaction(vxId2, vxId3, true);
 
+        //same attr6 value will throw exception if only attr6 is set as primary key
         graph.setStringValue(attr6, txId4, "a1");
-        graph.setStringValue(attr6, txId5, "a2");
+        graph.setStringValue(attr6, txId5, "a1");
     }
 }

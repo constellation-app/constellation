@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -197,20 +197,20 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         );
         
         //Determine the positions of the selected nodes
-        final List<Integer> selectedVerticies = new ArrayList<>();    
+        final List<Integer> selectedVertexIds = new ArrayList<>();
         final int graphVertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < graphVertexCount; vertexPosition++) {
             final int currentVertexId = graph.getVertex(vertexPosition);
             if (graph.getBooleanValue(vertexSelectedAttributeId, currentVertexId)) {
-                selectedVerticies.add(vertexPosition);
+                selectedVertexIds.add(currentVertexId);
             }
         }
         
-        totalProcessSteps = selectedVerticies.size();
+        totalProcessSteps = selectedVertexIds.size();
         
         // Loop through the selected vertices and determine how many new verticies need to be added to the graph
         final List<Integer> newVertices = new ArrayList<>();
-        for (final int position : selectedVerticies) {
+        for (final int currentVertexId : selectedVertexIds) {
             interaction.setProgress(
                     ++currentProcessStep, 
                     totalProcessSteps, 
@@ -218,7 +218,6 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
             );
             
             // Check that the current vertex contains the split string being searched for.
-            final int currentVertexId = graph.getVertex(position);
             final String identifier = graph.getStringValue(vertexIdentifierAttributeId, currentVertexId);
             if (identifier != null && identifier.contains(character) && identifier.indexOf(character) <= identifier.length() - character.length()) {
                 int createdNodesCount = 0;
@@ -239,7 +238,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                     leftNodeIdentifier = substrings[0];
 
                     for (int i = 1; i < substrings.length; i++) {
-                        newVertices.add(createNewNode(graph, position, substrings[i], linkType, splitIntoSameLevel));
+                        newVertices.add(createNewNode(graph, currentVertexId, substrings[i], linkType, splitIntoSameLevel));
                         createdNodesCount++;
                     }
 
@@ -250,7 +249,8 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
 
                     // There was text found on the left side of the split so ignore it and set the node for the right side
                     if (StringUtils.isNotBlank(leftNodeIdentifier)) {
-                        leftNodeIdentifier = identifier.substring(0, i);newVertices.add(createNewNode(graph, position, identifier.substring(i + 1), linkType, splitIntoSameLevel));
+                        leftNodeIdentifier = identifier.substring(0, i);
+                        newVertices.add(createNewNode(graph, currentVertexId, identifier.substring(i + 1), linkType, splitIntoSameLevel));
                         createdNodesCount++;
 
                     // There was no text on the left side of the split so set the leftNodeIdentifier to the right side. 
