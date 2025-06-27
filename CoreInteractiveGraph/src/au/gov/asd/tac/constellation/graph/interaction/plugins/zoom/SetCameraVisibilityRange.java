@@ -58,7 +58,6 @@ public final class SetCameraVisibilityRange extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> visibilityLowParam = FloatParameterType.build(VISIBILITY_LOW_ID);
         visibilityLowParam.setName("visibilityLow");
         visibilityLowParam.setDescription("Low boundary of visibility");
-        visibilityLowParam.setFloatValue(0F);
         parameters.addParameter(visibilityLowParam);
 
         final PluginParameter<FloatParameterValue> visibilityHighParam = FloatParameterType.build(VISIBILITY_HIGH_ID);
@@ -72,7 +71,6 @@ public final class SetCameraVisibilityRange extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         final float visibilityLow = parameters.getFloatValue(VISIBILITY_LOW_ID);
         final float visibilityHigh = parameters.getFloatValue(VISIBILITY_HIGH_ID);
 

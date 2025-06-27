@@ -15,36 +15,18 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginRegistry;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-import org.openide.util.NbBundle.Messages;
+import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 
 /**
  * Cut to clipboard action.
  *
  * @author algol
  */
-@Messages({
-    "# {0} - nodes cut",
-    "# {1} - transactions cut",
-    "MSG_Cut=Nodes cut: {0}; Transactions cut {1}"})
-public final class CutToClipboardAction extends AbstractAction {
-
-    private final GraphNode context;
+public final class CutToClipboardAction extends SimplePluginAction {
 
     public CutToClipboardAction(final GraphNode context) {
-        this.context = context;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        final Graph graph = context.getGraph();
-
-        PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.CUT)).executeLater(graph);
+        super(context, InteractiveGraphPluginRegistry.CUT);
     }
 }

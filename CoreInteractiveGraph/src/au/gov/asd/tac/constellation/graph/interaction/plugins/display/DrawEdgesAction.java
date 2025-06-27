@@ -30,10 +30,10 @@ import org.openide.util.NbBundle;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.actions.Presenter;
 
-@Messages("CTL_DrawEdgesAction=Edges (transactions merged by direction)")
 /**
  * This class is responsible for rendering in edge mode.
  */
+@Messages("CTL_DrawEdgesAction=Edges (transactions merged by direction)")
 public final class DrawEdgesAction extends AbstractAction implements Presenter.Toolbar {
 
     private final GraphNode context;

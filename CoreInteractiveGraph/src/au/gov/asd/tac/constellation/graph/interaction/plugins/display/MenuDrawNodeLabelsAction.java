@@ -27,7 +27,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * This class produces a menu action for the 'set draw nodes' action available
+ * This class produces a menu action for the 'set draw node labels' action available
  * on the graph toolbar.
  *
  * @author altair
@@ -35,14 +35,9 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.display.MenuDrawNodeLabelsAction")
 @ActionRegistration(displayName = "#CTL_MenuDrawNodeLabelsAction", lazy = false)
 @ActionReference(path = "Menu/Display/Element Visibility", position = 300)
-@Messages({
-    "CTL_MenuDrawNodeLabelsAction=Node Labels"
-})
+@Messages("CTL_MenuDrawNodeLabelsAction=Node Labels")
 public class MenuDrawNodeLabelsAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuDrawNodeLabelsAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuDrawNodeLabelsAction(), true);
@@ -58,7 +53,7 @@ public class MenuDrawNodeLabelsAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         final Graph graph = getContext().getGraph();
-        boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.NODE_LABELS) != 0;
+        final boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.NODE_LABELS) != 0;
         menuButton.setSelected(flag);
     }
 }

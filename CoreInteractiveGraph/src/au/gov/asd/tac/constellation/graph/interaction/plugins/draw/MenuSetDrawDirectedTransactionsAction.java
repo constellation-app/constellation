@@ -33,14 +33,9 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Edit", id = "au.gov.asd.tac.constellation.functionality.display.MenuSetDrawDirectedTransactionsAction")
 @ActionRegistration(displayName = "#CTL_MenuSetDrawDirectedTransactionsAction", lazy = false)
 @ActionReference(path = "Menu/Edit", position = 900)
-@Messages({
-    "CTL_MenuSetDrawDirectedTransactionsAction=Draw Directed Transactions"
-})
+@Messages("CTL_MenuSetDrawDirectedTransactionsAction=Draw Directed Transactions")
 public class MenuSetDrawDirectedTransactionsAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuSetDrawDirectedTransactionsAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuSetDrawDirectedTransactionsAction(), true);

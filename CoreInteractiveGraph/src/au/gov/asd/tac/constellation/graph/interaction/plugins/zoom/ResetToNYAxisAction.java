@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -26,9 +25,8 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 
 /**
  *
@@ -36,10 +34,8 @@ import org.openide.util.NbBundle;
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.zoom.ResetToNYAxisAction")
 @ActionRegistration(displayName = "#CTL_ResetToNYAxisAction", iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/zoom/resources/axis_y_negative.png", surviveFocusChange = true)
-@ActionReferences({
-    @ActionReference(path = "Menu/Display/Reset View by Axis", position = 400)
-})
-@NbBundle.Messages("CTL_ResetToNYAxisAction=-Y Axis")
+@ActionReference(path = "Menu/Display/Reset View by Axis", position = 400)
+@Messages("CTL_ResetToNYAxisAction=-Y Axis")
 public class ResetToNYAxisAction extends AbstractAction {
 
     private final GraphNode context;
@@ -51,12 +47,11 @@ public class ResetToNYAxisAction extends AbstractAction {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        final Graph graph = context.getGraph();
+    public void actionPerformed(final ActionEvent e) {
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
                 .withParameter(ResetViewPlugin.AXIS_PARAMETER_ID, "y")
                 .withParameter(ResetViewPlugin.NEGATIVE_PARAMETER_ID, true)
                 .withParameter(ResetViewPlugin.SIGNIFICANT_PARAMETER_ID, true)
-                .executeLater(graph);
+                .executeLater(context.getGraph());
     }
 }

@@ -40,22 +40,12 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twinkle2_little
  */
 @ServiceProvider(service = Plugin.class)
-@Messages({
-    "PasteGraphPlugin=Paste Graph",
-    "# {0} - Graph to paste",
-    "MSG_Param=Must provide {0} argument",
-    "MSG_VxKeys=Node keys don't match",
-    "MSG_TxKeys=Transaction keys don't match",
-    "MSG_VxAttrs=Node attributes don't match",
-    "MSG_TxAttrs=Transaction attributes don't match"
-})
+@Messages("PasteGraphPlugin=Paste Graph")
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 public final class PasteGraphPlugin extends SimpleEditPlugin {
 
     // The graph being pasted from the paste buffer.
     public static final String RECORDSTORE_PARAMETER_ID = PluginParameter.buildId(PasteGraphPlugin.class, "recordstore");
-    public static final String OUT_VX_PASTED_PARAMETER_ID = PluginParameter.buildId(PasteGraphPlugin.class, "vertex_pasted");
-    public static final String OUT_TX_PASTED_PARAMETER_ID = PluginParameter.buildId(PasteGraphPlugin.class, "transaction_pasted");
 
 
     @Override
@@ -63,28 +53,18 @@ public final class PasteGraphPlugin extends SimpleEditPlugin {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<ObjectParameterValue> pasterParam = ObjectParameterType.build(RECORDSTORE_PARAMETER_ID);
-        pasterParam.setName("RecordStore");
+        pasterParam.setName("Record Store");
         pasterParam.setDescription("The RecordStore object to be pasted onto the current graph");
         parameters.addParameter(pasterParam);
-
-        final PluginParameter<ObjectParameterValue> outVxPastedParam = ObjectParameterType.build(OUT_VX_PASTED_PARAMETER_ID);
-        outVxPastedParam.setName("Vertex Ids pasted");
-        outVxPastedParam.setDescription("A set of the vertex ids pasted (output parameter)");
-        parameters.addParameter(outVxPastedParam);
-
-        final PluginParameter<ObjectParameterValue> outTxPastedParam = ObjectParameterType.build(OUT_TX_PASTED_PARAMETER_ID);
-        outTxPastedParam.setName("Transaction Ids pasted");
-        outTxPastedParam.setDescription("A set of the transaction ids pasted (output parameter)");
-        parameters.addParameter(outTxPastedParam);
+        
         return parameters;
     }
 
     @Override
     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         final Object paramPaster = parameters.getParameters().get(RECORDSTORE_PARAMETER_ID).getObjectValue();
         if (!(paramPaster instanceof RecordStore paster)) {
-            throw new IllegalArgumentException(Bundle.MSG_Param(RECORDSTORE_PARAMETER_ID));
+            throw new IllegalArgumentException("Must provide a record store!");
         }
 
         synchronized (paster) {

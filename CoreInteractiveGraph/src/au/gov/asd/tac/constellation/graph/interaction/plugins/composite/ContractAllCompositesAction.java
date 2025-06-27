@@ -17,12 +17,10 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.composite;
 
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import org.openide.util.NbBundle.Messages;
@@ -30,31 +28,20 @@ import org.openide.util.actions.Presenter;
 
 /**
  * Action for contracting all composites. It is accessed as an icon on
- * CONSTELLATION's graph sidebar.
+ * Constellation's graph sidebar.
  *
  * @see ContractAllCompositesPlugin
  * @author twilight_sparkle
  */
 @Messages("CTL_ContractAllCompositeAction=Contract all Composites")
-public class ContractAllCompositesAction extends AbstractAction implements Presenter.Toolbar {
-
-    private final GraphNode context;
-
-    /**
-     * Construct a new action.
-     *
-     * @param context Graph Node.
-     */
+public class ContractAllCompositesAction extends SimplePluginAction implements Presenter.Toolbar {
+    
     public ContractAllCompositesAction(final GraphNode context) {
-        this.context = context;
+        super(context, InteractiveGraphPluginRegistry.CONTRACT_ALL_COMPOSITES);
+        
         putValue(Action.SMALL_ICON, UserInterfaceIconProvider.CONTRACT.buildIcon(16, Color.BLACK));
         putValue(Action.SHORT_DESCRIPTION, "Contract all Composites");
         putValue(Action.SELECTED_KEY, true);
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent ev) {
-        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.CONTRACT_ALL_COMPOSITES).executeLater(context.getGraph());
     }
 
     @Override

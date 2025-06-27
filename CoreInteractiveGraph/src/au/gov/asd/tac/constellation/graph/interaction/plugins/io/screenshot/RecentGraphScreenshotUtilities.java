@@ -88,11 +88,8 @@ public class RecentGraphScreenshotUtilities {
         if (!saveDir.exists()) {
             saveDir.mkdir();
         } else if (!saveDir.isDirectory()) {
-            final String msg = String.format("Recent graph screenshots directory '%s' is not a directory", SCREENSHOTS_DIR);
-            LOGGER.warning(msg);
+            LOGGER.log(Level.WARNING, "Recent graph screenshots directory \'{0}\' is not a directory", SCREENSHOTS_DIR);
             return null;
-        } else {
-            return saveDir;
         }
 
         return saveDir;
@@ -104,10 +101,9 @@ public class RecentGraphScreenshotUtilities {
      * @param filepath The filepath of the graph
      * @return MD5 hash of filepath
      */
-    protected static String hashFilePath(final String filepath) {
-        final MessageDigest md;
+    protected static String hashFilePath(final String filepath) { 
         try {
-            md = MessageDigest.getInstance("SHA-256");
+            final MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(filepath.getBytes(StandardCharsets.UTF_8));
             final byte[] digest = md.digest();
             return DatatypeConverter.printHexBinary(digest).toUpperCase();
@@ -233,8 +229,7 @@ public class RecentGraphScreenshotUtilities {
      */
     public static synchronized void resizeAndSave(final BufferedImage originalImage, final Path target, final int height, final int width) throws IOException {
         // create a new BufferedImage for drawing
-        final BufferedImage newResizedImage
-                = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage newResizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         final Graphics2D g = newResizedImage.createGraphics();
 
         g.setComposite(AlphaComposite.Src);
@@ -262,7 +257,6 @@ public class RecentGraphScreenshotUtilities {
      * Refresh stored screenshots of recent files to match the recent files stored in history.
      */
     public static synchronized void refreshScreenshotsDir() {
-
         final List<String> filesInHistory = new ArrayList<>();
         final List<File> filesInDirectory = new ArrayList<>();
         final File screenShotsDir = getScreenshotsDir();

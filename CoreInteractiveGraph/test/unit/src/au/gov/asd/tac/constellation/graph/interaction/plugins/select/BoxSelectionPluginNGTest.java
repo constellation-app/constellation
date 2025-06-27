@@ -17,13 +17,15 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.select;
 
 import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
-import java.io.IOException;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -35,15 +37,9 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class BoxSelectionPluginNGTest {
-
-    BoxSelectionPlugin boxSelect;
-    Camera camera;
-    float[] box; // left, right, top, bottom in camera coordinates
-    float left = (float) -0.1;
-    float right = (float) 0.1;
-    float top = (float) 0.1;
-    float bottom = (float) -0.1;
-
+    
+    private Camera camera;
+    
     private int attrX;
     private int attrY;
     
@@ -60,20 +56,6 @@ public class BoxSelectionPluginNGTest {
     
     private StoreGraph graph;
 
-    public BoxSelectionPluginNGTest() {
-        createNewBox();
-        camera = new Camera();
-        boxSelect = new BoxSelectionPlugin(true, true, camera, box);
-    }
-
-    private void createNewBox() {
-        box = new float[4];
-        box[0] = left;
-        box[1] = right;
-        box[2] = top;
-        box[3] = bottom;
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         // Not currently required
@@ -86,10 +68,11 @@ public class BoxSelectionPluginNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        graph = new StoreGraph();
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
+        graph = new StoreGraph(schema);
 
-        VisualConcept.VertexAttribute.X.ensure(graph);
-        VisualConcept.VertexAttribute.Y.ensure(graph);
+        attrX = VisualConcept.VertexAttribute.X.ensure(graph);
+        attrY = VisualConcept.VertexAttribute.Y.ensure(graph);
         VisualConcept.VertexAttribute.Z.ensure(graph);
 
         vSelectedAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
@@ -98,311 +81,300 @@ public class BoxSelectionPluginNGTest {
         LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
 
         VisualConcept.VertexAttribute.NODE_RADIUS.ensure(graph);
+        
+        vxId1 = graph.addVertex();
+        graph.setFloatValue(attrX, vxId1, -3F);
+        graph.setFloatValue(attrY, vxId1, 3F);
+        
+        vxId2 = graph.addVertex();
+        graph.setFloatValue(attrX, vxId2, 3F);
+        graph.setFloatValue(attrY, vxId2, 3F);
+        
+        vxId3 = graph.addVertex();
+        graph.setFloatValue(attrX, vxId3, -3F);
+        graph.setFloatValue(attrY, vxId3, -3F);
+        
+        vxId4 = graph.addVertex();
+        graph.setFloatValue(attrX, vxId4, 3F);
+        graph.setFloatValue(attrY, vxId4, -3F);
+        
+        txId1 = graph.addTransaction(vxId1, vxId2, false);
+        txId2 = graph.addTransaction(vxId1, vxId4, false);
+        
+        camera = new Camera();
+        camera.setMixRatio(0);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
         // Not currently required
     }
-
+    
     /**
-     * Test of edit method, of class BoxSelectionPlugin.
+     * Test of edit method, of class BoxSelectionPlugin. Nothing Selected
+     * 
      * @throws java.lang.InterruptedException
      * @throws au.gov.asd.tac.constellation.plugins.PluginException
-     * @throws java.io.IOException
      */
     @Test
-    public void testEdit() throws InterruptedException, PluginException, IOException {
-        System.out.println("edit");
+    public void testEditNothingSelected() throws InterruptedException, PluginException {
+        System.out.println("editNothingSelected");
 
-        // test with 0 mix ratio in every boolean value arrangement
-        camera = new Camera();
-        camera.setMixRatio(0);
-        runBoxSelectTests(true, true);
-        runBoxSelectTests(true, false);
-        runBoxSelectTests(false, true);
-        runBoxSelectTests(false, false);
+        beginningAsserts();
+        
+        final BoxSelectionPlugin instance = new BoxSelectionPlugin(false, false, camera, new float[]{-0.25F, -0.2F, 0.1F, 0F});
+        PluginExecution.withPlugin(instance).executeNow(graph);
 
-        // Test with 1 mix ratio in every boolean value arrangement
-        camera = new Camera();
-        camera.setMixRatio(1);
-        runBoxSelectTests(true, true);
-        runBoxSelectTests(true, false);
-        runBoxSelectTests(false, true);
-        runBoxSelectTests(false, false);
-
-        // test with 0 mix ratio and VxVisibility in every boolean value arrangement
-        VisualConcept.VertexAttribute.VISIBILITY.ensure(graph);
-        camera = new Camera();
-        camera.setMixRatio(0);
-        runBoxSelectTests(true, true);
-        runBoxSelectTests(true, false);
-        runBoxSelectTests(false, true);
-        runBoxSelectTests(false, false);
+        // Should remain false after running
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId1));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId2));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId4));
+        
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId2));
     }
-
-    // Reduce code duplication by allowing one method to call 4 methods with the specified parameters.
-    public void runBoxSelectTests(final boolean isAdd, final boolean isToggle) throws InterruptedException, PluginException, IOException {
-        testBoxSelectWithNothingSelected(isAdd, isToggle);
-        testBoxSelectWithOneVxSelected(isAdd, isToggle);
-        testBoxSelectWithTwoVxOneTxSelected(isAdd, isToggle);
-        testBoxSelectWithTwoVxOneTxSecondaryAttributesSelected(isAdd, isToggle);
-    }
-
-    public void testBoxSelectWithNothingSelected(final boolean isAdd, final boolean isToggle) throws InterruptedException, PluginException, IOException {
-        // Test selecting nothing
-        // no element should be within the box
-        left = -0.56f;
-        right = -0.54f;
-        top = 0.268f;
-        bottom = 0.244f;
-
-        createNewBox();
-
-        boxSelect = new BoxSelectionPlugin(isAdd, isToggle, camera, box);
-
-        vxId1 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId1, 1.0f);
-        graph.setFloatValue(attrY, vxId1, 1.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId1, false);
-
-        vxId2 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId2, -1.0f);
-        graph.setFloatValue(attrY, vxId2, -1.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId2, false);
-
-        vxId3 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId3, 3.0f);
-        graph.setFloatValue(attrY, vxId3, 3.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId3, false);
-
-        vxId4 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId4, -3.0f);
-        graph.setFloatValue(attrY, vxId4, -3.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId4, false);
-
-        // Add transactions
-        txId1 = graph.addTransaction(vxId1, vxId2, false);
-        txId2 = graph.addTransaction(vxId1, vxId4, false);
-
-        graph.setBooleanValue(tSelectedAttrId, txId1, false);
-        graph.setBooleanValue(tSelectedAttrId, txId2, false);
-
-        // Test all selected attributes are false before execution
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId1));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId2));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId3));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId4));
-
-        assertFalse("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId1));
-        assertFalse("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId2));
-
-        // Run plugin
-        PluginExecution.withPlugin(boxSelect).executeNow(graph);
-
-        // Test selected node values
-        assertFalse("Vx Visibility After", graph.getBooleanValue(vSelectedAttrId, vxId1));
-        assertFalse("Vx Visibility After", graph.getBooleanValue(vSelectedAttrId, vxId2));
-        assertFalse("Vx Visibility After", graph.getBooleanValue(vSelectedAttrId, vxId3));
-        assertFalse("Vx Visibility After", graph.getBooleanValue(vSelectedAttrId, vxId4));
-
-        // Test selected transaction values
-        assertFalse("Tx Visibility After", graph.getBooleanValue(tSelectedAttrId, txId1));
-        assertFalse("Tx Visibility After", graph.getBooleanValue(tSelectedAttrId, txId2));
-    }
-
-    public void testBoxSelectWithOneVxSelected(final boolean isAdd, final boolean isToggle) throws InterruptedException, PluginException, IOException {
-        // test box without transaction
-        // vxId1 should be within a box 0.06, 0.13, 0.126, 0.054
-        left = 0.06f;
-        right = 0.13f;
-        top = 0.126f;
-        bottom = 0.054f;
-
-        createNewBox();
-        boxSelect = new BoxSelectionPlugin(isAdd, isToggle, camera, box);
-
-        vxId1 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId1, 1.0f);
-        graph.setFloatValue(attrY, vxId1, 1.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId1, false);
-
-        vxId2 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId2, -1.0f);
-        graph.setFloatValue(attrY, vxId2, -1.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId2, false);
-
-        vxId3 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId3, 3.0f);
-        graph.setFloatValue(attrY, vxId3, 3.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId3, false);
-
-        vxId4 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId4, -3.0f);
-        graph.setFloatValue(attrY, vxId4, -3.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId4, false);
-
-        // Add transactions
-        txId1 = graph.addTransaction(vxId1, vxId2, false);
-        txId2 = graph.addTransaction(vxId1, vxId4, false);
-
-        graph.setBooleanValue(tSelectedAttrId, txId1, false);
-        graph.setBooleanValue(tSelectedAttrId, txId2, false);
-
-        // Test all selected attributes are false before execution
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId1));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId2));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId3));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId4));
-
-        assertFalse("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId1));
-        assertFalse("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId2));
-
-        // Run plugin
-        PluginExecution.withPlugin(boxSelect).executeNow(graph);
-
-        // Test selected node values
-        assertTrue("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId1));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId2));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId3));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId4));
-
-        assertFalse("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId1));
-        assertFalse("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId2));
-    }
-
-    public void testBoxSelectWithTwoVxOneTxSelected(final boolean isAdd, final boolean isToggle) throws InterruptedException, PluginException, IOException {
-        // 2 nodes and one transaction are to be selected.
-        // vx1 and vx2, plus tx1
-        // vx1 and vx2 should be within a box -0.1, 0.1, 0.1, -0.1
-        left = (float) -0.1;
-        right = (float) 0.1;
-        top = (float) 0.1;
-        bottom = (float) -0.1;
-
-        createNewBox();
-        boxSelect = new BoxSelectionPlugin(isAdd, isToggle, camera, box);
-
-        vxId1 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId1, 1.0f);
-        graph.setFloatValue(attrY, vxId1, 1.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId1, false);
-
-        vxId2 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId2, -1.0f);
-        graph.setFloatValue(attrY, vxId2, -1.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId2, false);
-
-        vxId3 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId3, 3.0f);
-        graph.setFloatValue(attrY, vxId3, 3.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId3, false);
-
-        vxId4 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId4, -3.0f);
-        graph.setFloatValue(attrY, vxId4, -3.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId4, false);
-
-        // Add transactions
-        txId1 = graph.addTransaction(vxId1, vxId2, false);
-        txId2 = graph.addTransaction(vxId1, vxId4, false);
-
-        graph.setBooleanValue(tSelectedAttrId, txId1, false);
-        graph.setBooleanValue(tSelectedAttrId, txId2, false);
-
-        // Test all selected attributes are false before execution
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId1));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId2));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId3));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId4));
-
-        assertFalse("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId1));
-        assertFalse("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId2));
-
-        // Run plugin
-        PluginExecution.withPlugin(boxSelect).executeNow(graph);
-
-        // Test selected node values
-        assertTrue("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId1));
-        assertTrue("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId2));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId3));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId4));
-
-        assertTrue("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId1));
-        assertFalse("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId2));
-    }
-
+    
     /**
-     * Run a box select plugin test
-     *
-     * @param isAdd
-     * @param isToggle
-     * @throws InterruptedException
-     * @throws PluginException
-     * @throws IOException
+     * Test of edit method, of class BoxSelectionPlugin. Append to existing selection
+     * 
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
-    public void testBoxSelectWithTwoVxOneTxSecondaryAttributesSelected(final boolean isAdd, final boolean isToggle) throws InterruptedException, PluginException, IOException {
-        // test box with transaction and with x2 y2 and z2
-        // vxId1 and vxId2  + tx1 should be within a box -0.1, 0.1, 0.1, -0.1
-        left = -0.1f;
-        right = 0.1f;
-        top = 0.1f;
-        bottom = -0.1f;
+    @Test
+    public void testEditAppend() throws InterruptedException, PluginException {
+        System.out.println("editAppend");
+        
+        VisualConcept.VertexAttribute.VISIBILITY.ensure(graph);
+        VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
+        
+        beginningAsserts();
 
-        createNewBox();
-        boxSelect = new BoxSelectionPlugin(isAdd, isToggle, camera, box);
+        BoxSelectionPlugin instance = new BoxSelectionPlugin(true, false, camera, new float[]{-0.1F, 0.1F, 0.1F, -0.1F});
+        PluginExecution.withPlugin(instance).executeNow(graph);
 
-        vxId1 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId1, 1.0f);
-        graph.setFloatValue(attrY, vxId1, 1.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId1, false);
+        // txId2 should be within the box -0.1, 0.1, 0.1, -0.1
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId1));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId2));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId4));
 
-        vxId2 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId2, -1.0f);
-        graph.setFloatValue(attrY, vxId2, -1.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId2, false);
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
+        assertTrue(graph.getBooleanValue(tSelectedAttrId, txId2));
+        
+        instance = new BoxSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
+        PluginExecution.withPlugin(instance).executeNow(graph);
 
-        vxId3 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId3, 3.0f);
-        graph.setFloatValue(attrY, vxId3, 3.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId3, false);
+        // vx1 and vx2 should be within the box -0.3, 0.3, 0.25, 0.15. tx1 also gets selected consequently
+        // tx2 remains selected
+        assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId1));
+        assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId2));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId4));
 
-        vxId4 = graph.addVertex();
-        graph.setFloatValue(attrX, vxId4, -3.0f);
-        graph.setFloatValue(attrY, vxId4, -3.0f);
-        graph.setBooleanValue(vSelectedAttrId, vxId4, false);
+        assertTrue(graph.getBooleanValue(tSelectedAttrId, txId1));
+        assertTrue(graph.getBooleanValue(tSelectedAttrId, txId2));
+    }
+    
+    /**
+     * Test of edit method, of class BoxSelectionPlugin. Toggle selection
+     * 
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
+     */
+    @Test
+    public void testEditToggle() throws InterruptedException, PluginException {
+        System.out.println("editToggle");
+        
+        VisualConcept.VertexAttribute.VISIBILITY.ensure(graph);
+        VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
+        
+        graph.setBooleanValue(tSelectedAttrId, txId2, true);
+        
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId1));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId2));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId4));
 
-        // Add transactions
-        txId1 = graph.addTransaction(vxId1, vxId2, false);
-        txId2 = graph.addTransaction(vxId1, vxId4, false);
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
+        assertTrue(graph.getBooleanValue(tSelectedAttrId, txId2));
 
-        graph.setBooleanValue(tSelectedAttrId, txId1, false);
-        graph.setBooleanValue(tSelectedAttrId, txId2, false);
+        BoxSelectionPlugin instance = new BoxSelectionPlugin(false, true, camera, new float[]{-0.1F, 0.1F, 0.1F, -0.1F});
+        PluginExecution.withPlugin(instance).executeNow(graph);
 
-        // Add x2, y2, z2 attributes
-        VisualConcept.VertexAttribute.X2.ensure(graph);
-        VisualConcept.VertexAttribute.Y2.ensure(graph);
+        // txId2 should be within the box -0.1, 0.1, 0.1, -0.1. Toggle will turn this false
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId1));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId2));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId4));
+
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId2));
+        
+        instance = new BoxSelectionPlugin(false, true, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
+        PluginExecution.withPlugin(instance).executeNow(graph);
+
+        // vx1 and vx2 should be within the box -0.3, 0.3, 0.25, 0.15. tx1 also gets selected consequently
+        assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId1));
+        assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId2));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId4));
+
+        assertTrue(graph.getBooleanValue(tSelectedAttrId, txId1));
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId2));
+    }
+    
+    /**
+     * Test of edit method, of class BoxSelectionPlugin. Replace selection
+     * 
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
+     */
+    @Test
+    public void testEditReplace() throws InterruptedException, PluginException {
+        System.out.println("editReplace");
+        
+        VisualConcept.VertexAttribute.VISIBILITY.ensure(graph);
+        VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
+        
+        beginningAsserts();
+
+        BoxSelectionPlugin instance = new BoxSelectionPlugin(false, false, camera, new float[]{-0.1F, 0.1F, 0.1F, -0.1F});
+        PluginExecution.withPlugin(instance).executeNow(graph);
+
+        // txId2 should be within a box -0.1, 0.1, 0.1, -0.1
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId1));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId2));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId4));
+
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
+        assertTrue(graph.getBooleanValue(tSelectedAttrId, txId2));
+        
+        instance = new BoxSelectionPlugin(false, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
+        PluginExecution.withPlugin(instance).executeNow(graph);
+
+        // vx1 and vx2 should be within the box -0.3, 0.3, 0.25, 0.15. tx1 also gets selected consequently
+        // tx2 is deselected
+        assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId1));
+        assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId2));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId4));
+
+        assertTrue(graph.getBooleanValue(tSelectedAttrId, txId1));
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId2));
+    }
+    
+    /**
+     * Test of edit method, of class BoxSelectionPlugin. Alternate coordinates present but not used, no mix required
+     * 
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
+     */
+    @Test
+    public void testEditAltCoordsPresentNoMix() throws InterruptedException, PluginException {
+        System.out.println("editAltCoordsPresentNoMix");
+        
+        setupAltCoords();
+        beginningAsserts();
+        
+        final BoxSelectionPlugin instance = new BoxSelectionPlugin(false, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
+        PluginExecution.withPlugin(instance).executeNow(graph);
+
+        // vxId1 and vxId2  + tx1 should be within the box -0.3, 0.3, 0.25, 0.15
+        assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId1));
+        assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId2));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId4));
+
+        assertTrue(graph.getBooleanValue(tSelectedAttrId, txId1));
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId2));
+    }
+    
+    /**
+     * Test of edit method, of class BoxSelectionPlugin. Alternate coordinates used with mix
+     * 
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
+     */
+    @Test
+    public void testEditAltCoordsMix() throws InterruptedException, PluginException {
+        System.out.println("editAlCoordsMix");
+        
+        setupAltCoords();
+        beginningAsserts();
+        
+        camera.setMixRatio(10);
+        
+        final BoxSelectionPlugin instance = new BoxSelectionPlugin(false, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
+        PluginExecution.withPlugin(instance).executeNow(graph);
+
+        // vxId1 and vxId2  + tx1 should be within the box -0.3, 0.3, 0.25, 0.15 normally.
+        // With alternate coordiantes and mixing, those graph elements should still be in the box
+        assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId1));
+        assertTrue(graph.getBooleanValue(vSelectedAttrId, vxId2));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId4));
+
+        assertTrue(graph.getBooleanValue(tSelectedAttrId, txId1));
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId2));
+    }
+    
+    /**
+     * Test of edit method, of class BoxSelectionPlugin. Alternate coordinates used
+     * 
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
+     */
+    @Test
+    public void testEditAltCoords() throws InterruptedException, PluginException {
+        System.out.println("editAltCoords");
+        
+        setupAltCoords();       
+        beginningAsserts();
+        
+        // 20 is the max mix ratio, giving a mix of 1
+        camera.setMixRatio(20);
+        
+        final BoxSelectionPlugin instance = new BoxSelectionPlugin(false, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
+        PluginExecution.withPlugin(instance).executeNow(graph);
+
+        // vxId1 and vxId2  + tx1 should be within the box -0.3, 0.3, 0.25, 0.15 normally.
+        // But with alternate coordiantes used, none of those end up in the box and instead txId2 should fall in it
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId1));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId2));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId4));
+
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
+        assertTrue(graph.getBooleanValue(tSelectedAttrId, txId2));
+    }
+    
+    private void beginningAsserts() {
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId1));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId2));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId3));
+        assertFalse(graph.getBooleanValue(vSelectedAttrId, vxId4));
+
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
+        assertFalse(graph.getBooleanValue(tSelectedAttrId, txId2));
+    }
+    
+    private void setupAltCoords() {
+        final int attrX2 = VisualConcept.VertexAttribute.X2.ensure(graph);
+        final int attrY2 = VisualConcept.VertexAttribute.Y2.ensure(graph);
         VisualConcept.VertexAttribute.Z2.ensure(graph);
-
-        // Test all selected attributes are false before execution
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId1));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId2));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId3));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId4));
-
-        assertFalse("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId1));
-        assertFalse("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId2));
-
-        // Run plugin
-        PluginExecution.withPlugin(boxSelect).executeNow(graph);
-
-        // Test selected node values
-        assertTrue("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId1));
-        assertTrue("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId2));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId3));
-        assertFalse("Vx Visibility", graph.getBooleanValue(vSelectedAttrId, vxId4));
-
-        assertTrue("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId1));
-        assertFalse("Tx Visibility", graph.getBooleanValue(tSelectedAttrId, txId2));
+        
+        graph.setFloatValue(attrX2, vxId1, -2F);
+        graph.setFloatValue(attrY2, vxId1, 4F);
+        
+        graph.setFloatValue(attrX2, vxId2, 4F);
+        graph.setFloatValue(attrY2, vxId2, 4F);
+        
+        graph.setFloatValue(attrX2, vxId3, -2F);
+        graph.setFloatValue(attrY2, vxId3, -2F);
+        
+        graph.setFloatValue(attrX2, vxId4, 4F);
+        graph.setFloatValue(attrY2, vxId4, -2F);
     }
 }

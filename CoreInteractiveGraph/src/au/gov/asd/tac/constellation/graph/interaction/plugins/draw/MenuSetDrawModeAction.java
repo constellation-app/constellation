@@ -36,14 +36,9 @@ import org.openide.util.NbBundle.Messages;
     @ActionReference(path = "Menu/Edit", position = 800, separatorBefore = 799),
     @ActionReference(path = "Shortcuts", name = "C-D")
 })
-@Messages({
-    "CTL_MenuSetDrawModeAction=Draw Mode"
-})
+@Messages("CTL_MenuSetDrawModeAction=Draw Mode")
 public class MenuSetDrawModeAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuSetDrawModeAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuSetDrawModeAction(), false);

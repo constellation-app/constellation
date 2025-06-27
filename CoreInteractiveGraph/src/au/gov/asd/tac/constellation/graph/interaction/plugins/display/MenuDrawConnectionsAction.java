@@ -27,7 +27,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * This class produces a menu action for the 'set draw nodes' action available
+ * This class produces a menu action for the 'set draw connections' action available
  * on the graph toolbar.
  *
  * @author altair
@@ -35,14 +35,9 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.display.MenuDrawConnectionsAction")
 @ActionRegistration(displayName = "#CTL_MenuDrawConnectionsAction", lazy = false)
 @ActionReference(path = "Menu/Display/Element Visibility", position = 200)
-@Messages({
-    "CTL_MenuDrawConnectionsAction=Connections"
-})
+@Messages("CTL_MenuDrawConnectionsAction=Connections")
 public class MenuDrawConnectionsAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuDrawConnectionsAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuDrawConnectionsAction(), true);
@@ -58,7 +53,7 @@ public class MenuDrawConnectionsAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         final Graph graph = getContext().getGraph();
-        boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.CONNECTIONS) != 0;
+        final boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.CONNECTIONS) != 0;
         menuButton.setSelected(flag);
     }
 }

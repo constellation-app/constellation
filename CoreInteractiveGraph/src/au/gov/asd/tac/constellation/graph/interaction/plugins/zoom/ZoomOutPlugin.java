@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -33,7 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Quasar985
  */
 @ServiceProvider(service = Plugin.class)
-@NbBundle.Messages("ZoomOutPlugin=Zoom Out")
+@Messages("ZoomOutPlugin=Zoom Out")
 @PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
 public final class ZoomOutPlugin extends SimpleEditPlugin {
 

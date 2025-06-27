@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
@@ -56,8 +56,7 @@ public class PreviousViewPluginNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        // create an analytic graph
-        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
         graph = new StoreGraph(schema);
 
         // add attributes
@@ -88,9 +87,9 @@ public class PreviousViewPluginNGTest {
         System.out.println("edit");
         
         // Create some vecs to add to the original camera
-        final Vector3f lookAtCentre = new Vector3f(10,10,10);
-        final Vector3f lookAtEye = new Vector3f(5,10,5);
-        final Vector3f lookAtUp = new Vector3f(2,2,2);
+        final Vector3f lookAtCentre = new Vector3f(10, 10, 10);
+        final Vector3f lookAtEye = new Vector3f(5, 10, 5);
+        final Vector3f lookAtUp = new Vector3f(2, 2, 2);
         
         // Start with a default camera
         final Camera originalCamera = new Camera();

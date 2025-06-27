@@ -26,9 +26,10 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -37,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author arcturus
  */
 @ServiceProvider(service = Plugin.class)
-@NbBundle.Messages("SetDrawFlagPlugin=Set Draw Flag")
+@Messages("SetDrawFlagPlugin=Set Draw Flag")
 @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class SetDrawFlagPlugin extends SimpleEditPlugin {
 
@@ -47,7 +48,7 @@ public class SetDrawFlagPlugin extends SimpleEditPlugin {
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<IntegerParameterType.IntegerParameterValue> flagParam = IntegerParameterType.build(FLAG_PARAMETER_ID);
+        final PluginParameter<IntegerParameterValue> flagParam = IntegerParameterType.build(FLAG_PARAMETER_ID);
         flagParam.setName("Draw Flag");
         flagParam.setDescription("The graph elements to draw");
         parameters.addParameter(flagParam);
