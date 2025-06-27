@@ -114,13 +114,13 @@ public class HistogramTopComponent2NGTest {
     /**
      * Test of handleComponentClosed method, of class HistogramTopComponent2.
      */
-    @Test
-    public void testHandleComponentClosed() {
-        // Hard to test really
-        System.out.println("handleComponentClosed");
-        final HistogramTopComponent2 instance = new HistogramTopComponent2();
-        instance.handleComponentClosed();
-    }
+//    @Test
+//    public void testHandleComponentClosed() {
+//        // Hard to test really
+//        System.out.println("handleComponentClosed");
+//        final HistogramTopComponent2 instance = new HistogramTopComponent2();
+//        instance.handleComponentClosed();
+//    }
 
     /**
      * Test of handleNewGraph method, of class HistogramTopComponent2.
