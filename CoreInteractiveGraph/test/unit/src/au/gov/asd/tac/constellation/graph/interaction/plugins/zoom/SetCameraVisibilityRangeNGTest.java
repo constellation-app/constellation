@@ -103,7 +103,7 @@ public class SetCameraVisibilityRangeNGTest {
         instance.edit(graph, null, parameters);
         
         final Camera afterCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertEquals(afterCamera.getVisibilityLow(), 0.2);
-        assertEquals(afterCamera.getVisibilityHigh(), 0.7);
+        assertEquals(afterCamera.getVisibilityLow(), 0.2F);
+        assertEquals(afterCamera.getVisibilityHigh(), 0.7F);
     }
 }

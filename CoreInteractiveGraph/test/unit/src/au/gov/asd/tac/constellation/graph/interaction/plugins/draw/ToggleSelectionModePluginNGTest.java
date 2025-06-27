@@ -70,7 +70,7 @@ public class ToggleSelectionModePluginNGTest {
         
         final int drawingModeAttribute = VisualConcept.GraphAttribute.DRAWING_MODE.ensure(graph);
         
-        final ToggleDrawDirectedPlugin instance = new ToggleDrawDirectedPlugin();
+        final ToggleSelectionModePlugin instance = new ToggleSelectionModePlugin();
         
         assertFalse(graph.getBooleanValue(drawingModeAttribute, 0));
         

@@ -53,6 +53,7 @@ public class CreateCompositesFromDominantNodesPluginNGTest {
     private int tId2;
     
     private int identifierVertexAttribute;
+    private int typeVertexAttribute;
     private int selectedVertexAttribute;
     private int compositeStateVertexAttribute;
     private int identifierTransactionAttribute;
@@ -84,9 +85,9 @@ public class CreateCompositesFromDominantNodesPluginNGTest {
         tId2 = graph.addTransaction(vxId2, vxId3, false);
         
         identifierVertexAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        typeVertexAttribute = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
         selectedVertexAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         compositeStateVertexAttribute = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.ensure(graph);
-        AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
         VisualConcept.VertexAttribute.X.ensure(graph);
         VisualConcept.VertexAttribute.Y.ensure(graph);
         VisualConcept.VertexAttribute.Z.ensure(graph);
@@ -96,6 +97,10 @@ public class CreateCompositesFromDominantNodesPluginNGTest {
         graph.setStringValue(identifierVertexAttribute, vxId1, "normal node");
         graph.setStringValue(identifierVertexAttribute, vxId2, "part of an expanded node");
         graph.setStringValue(identifierVertexAttribute, vxId3, "another part of an expanded node");
+        
+        graph.setObjectValue(typeVertexAttribute, vxId1, AnalyticConcept.VertexType.EVENT);
+        graph.setObjectValue(typeVertexAttribute, vxId2, AnalyticConcept.VertexType.EVENT);
+        graph.setObjectValue(typeVertexAttribute, vxId3, AnalyticConcept.VertexType.EVENT);
         
         graph.setStringValue(identifierTransactionAttribute, tId1, "connected to expanded");
         

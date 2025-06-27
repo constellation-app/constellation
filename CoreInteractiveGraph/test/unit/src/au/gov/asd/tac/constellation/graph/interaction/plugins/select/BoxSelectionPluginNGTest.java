@@ -251,7 +251,7 @@ public class BoxSelectionPluginNGTest {
         assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
         assertTrue(graph.getBooleanValue(tSelectedAttrId, txId2));
         
-        instance = new BoxSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
+        instance = new BoxSelectionPlugin(false, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F});
         PluginExecution.withPlugin(instance).executeNow(graph);
 
         // vx1 and vx2 should be within the box -0.3, 0.3, 0.25, 0.15. tx1 also gets selected consequently

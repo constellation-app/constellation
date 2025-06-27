@@ -28,6 +28,8 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.util.concurrent.CountDownLatch;
+import javax.swing.SwingUtilities;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -104,6 +106,13 @@ public class CloseGraphPluginNGTest {
         PluginExecution.withPlugin(instance)
                 .withParameter(GRAPH_PARAMETER_ID, graph.getId())
                 .executeNow(graph);
+        
+        // this part ensures that the close has been given a chance to run in the AWT before continuing with the rest of the test
+        final CountDownLatch latch = new CountDownLatch(1);
+        SwingUtilities.invokeLater(() -> latch.countDown());
+        
+        latch.await();
+        
         // ideally we check whether the top component was actually closed but since its a challenge to have it open in the first place
         // this is the next best thing (since this is what we expect to be called in order to successfully close the graph)
         verify(tc).close();
@@ -126,6 +135,13 @@ public class CloseGraphPluginNGTest {
                 .withParameter(GRAPH_PARAMETER_ID, graph.getId())
                 .withParameter(FORCED_PARAMETER_ID, true)
                 .executeNow(graph);
+        
+        // this part ensures that the close has been given a chance to run in the AWT before continuing with the rest of the test
+        final CountDownLatch latch = new CountDownLatch(1);
+        SwingUtilities.invokeLater(() -> latch.countDown());
+        
+        latch.await();
+        
         // ideally we check whether the top component was actually closed but since it's a challenge to have it open in the first place
         // this is the next best thing (since this is what we expect to be called in order to successfully close the graph)
         verify(tc).close();

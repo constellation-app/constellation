@@ -23,6 +23,8 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import java.util.concurrent.CountDownLatch;
+import javax.swing.SwingUtilities;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import org.testng.annotations.AfterClass;
@@ -59,9 +61,11 @@ public class CloseActionNGTest {
 
     /**
      * Test of actionPerformed method, of class CloseAction.
+     * 
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testActionPerformed() {
+    public void testActionPerformed() throws InterruptedException {
         System.out.println("actionPerformed");
         
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
@@ -74,6 +78,13 @@ public class CloseActionNGTest {
         final CloseAction instance = new CloseAction(graphNode);
         try {
             instance.actionPerformed(null);
+            
+            // this part ensures that the close has been given a chance to run in the AWT before continuing with the rest of the test
+            final CountDownLatch latch = new CountDownLatch(1);
+            SwingUtilities.invokeLater(() -> latch.countDown());
+            
+            latch.await();
+            
             // ideally we check whether the top component was actually closed but since its a challenge to have it open in the first place
             // this is the next best thing (since this is what we expect to be called in order to successfully close the graph)
             verify(tc).close();

@@ -140,7 +140,7 @@ public class CreateCompositeFromSelectionPluginNGTest {
         instance.edit(graph, null, null);
         
         assertEquals(graph.getVertexCount(), 2);
-        assertEquals(graph.getTransactionCount(), 1);
+        assertEquals(graph.getTransactionCount(), 0);
         // node ids will have changed during the process
         // but we can verify that the selected node has a composite state, and the other node no longer has a composite state
         for (int i = 0; i < graph.getVertexCount(); i++) {

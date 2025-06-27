@@ -91,8 +91,8 @@ public class CreateVertexPluginNGTest {
         final int yAttribute = VisualConcept.VertexAttribute.Y.ensure(graph);
         final int zAttribute = VisualConcept.VertexAttribute.Z.ensure(graph);
         
-        final int layerMaskAttribute = LayersConcept.VertexAttribute.LAYER_MASK.get(graph);
-        LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.get(graph);
+        final int layerMaskAttribute = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
+        LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
         
         final CreateVertexPlugin instance = new CreateVertexPlugin();
         final PluginParameters parameters = instance.createParameters();

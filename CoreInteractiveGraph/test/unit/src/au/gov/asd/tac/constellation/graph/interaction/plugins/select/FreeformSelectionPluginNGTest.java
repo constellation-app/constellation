@@ -164,7 +164,7 @@ public class FreeformSelectionPluginNGTest {
         assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
         assertTrue(graph.getBooleanValue(tSelectedAttrId, txId2));
         
-        transformedVertices = new Float[]{-0.3F, 0.25F, -0.3F, 0.15F, 0.3F, 0.15F, 0.3F, 0.25F};
+        transformedVertices = new Float[]{-0.45F, 0.5F, -0.45F, 0.3F, 0.45F, 0.3F, 0.45F, 0.5F};
         instance = new FreeformSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
@@ -215,8 +215,8 @@ public class FreeformSelectionPluginNGTest {
         assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
         assertFalse(graph.getBooleanValue(tSelectedAttrId, txId2));
         
-        transformedVertices = new Float[]{-0.3F, 0.25F, -0.3F, 0.15F, 0.3F, 0.15F, 0.3F, 0.25F};
-        instance = new FreeformSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
+        transformedVertices = new Float[]{-0.45F, 0.5F, -0.45F, 0.3F, 0.45F, 0.3F, 0.45F, 0.5F};
+        instance = new FreeformSelectionPlugin(false, true, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
         // vx1 and vx2 should be within the freeform polygon. tx1 also gets selected consequently
@@ -257,8 +257,8 @@ public class FreeformSelectionPluginNGTest {
         assertFalse(graph.getBooleanValue(tSelectedAttrId, txId1));
         assertTrue(graph.getBooleanValue(tSelectedAttrId, txId2));
         
-        transformedVertices = new Float[]{-0.3F, 0.25F, -0.3F, 0.15F, 0.3F, 0.15F, 0.3F, 0.25F};
-        instance = new FreeformSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
+        transformedVertices = new Float[]{-0.45F, 0.5F, -0.45F, 0.3F, 0.45F, 0.3F, 0.45F, 0.5F};
+        instance = new FreeformSelectionPlugin(false, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
         // vx1 and vx2 should be within the freeform polygon. tx1 also gets selected consequently
@@ -285,7 +285,7 @@ public class FreeformSelectionPluginNGTest {
         setupAltCoords();
         beginningAsserts();
         
-        final Float[] transformedVertices = new Float[]{-0.3F, 0.25F, -0.3F, 0.15F, 0.3F, 0.15F, 0.3F, 0.25F};
+        final Float[] transformedVertices = new Float[]{-0.45F, 0.5F, -0.45F, 0.3F, 0.45F, 0.3F, 0.45F, 0.5F};
         final FreeformSelectionPlugin instance = new FreeformSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
@@ -314,7 +314,7 @@ public class FreeformSelectionPluginNGTest {
         
         camera.setMixRatio(10);
         
-        final Float[] transformedVertices = new Float[]{-0.3F, 0.25F, -0.3F, 0.15F, 0.3F, 0.15F, 0.3F, 0.25F};
+        final Float[] transformedVertices = new Float[]{-0.45F, 0.5F, -0.45F, 0.3F, 0.45F, 0.3F, 0.45F, 0.5F};
         final FreeformSelectionPlugin instance = new FreeformSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 
@@ -345,7 +345,7 @@ public class FreeformSelectionPluginNGTest {
         // 20 is the max mix ratio, giving a mix of 1
         camera.setMixRatio(20);
         
-        final Float[] transformedVertices = new Float[]{-0.3F, 0.25F, -0.3F, 0.15F, 0.3F, 0.15F, 0.3F, 0.25F};
+        final Float[] transformedVertices = new Float[]{-0.45F, 0.5F, -0.45F, 0.3F, 0.45F, 0.3F, 0.45F, 0.5F};
         final FreeformSelectionPlugin instance = new FreeformSelectionPlugin(true, false, camera, new float[]{-0.3F, 0.3F, 0.25F, 0.15F}, transformedVertices, 4);
         PluginExecution.withPlugin(instance).executeNow(graph);
 

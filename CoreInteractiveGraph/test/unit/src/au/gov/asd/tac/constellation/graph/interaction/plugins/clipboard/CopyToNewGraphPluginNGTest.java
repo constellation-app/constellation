@@ -159,7 +159,7 @@ public class CopyToNewGraphPluginNGTest {
     public void testReadNotCopyKeys() throws InterruptedException, PluginException {
         System.out.println("readNotCopyKeys");
         
-        int customAttribute = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "testAttribute", "", null, "");
+        int customAttribute = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "testAttribute", "", null, null);
         
         graph.setPrimaryKey(GraphElementType.VERTEX, customAttribute);
         

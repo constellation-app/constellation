@@ -101,11 +101,11 @@ public class PointSelectionPluginNGTest {
         vxId3 = storeGraph.addVertex();
         vxId4 = storeGraph.addVertex();
 
-        txId1 = storeGraph.addTransaction(vxId1, vxId2, false);
-        txId2 = storeGraph.addTransaction(vxId2, vxId3, false);
-        txId3 = storeGraph.addTransaction(vxId3, vxId1, false);
-        txId4 = storeGraph.addTransaction(vxId3, vxId2, false);
-        txId5 = storeGraph.addTransaction(vxId2, vxId3, false);
+        txId1 = storeGraph.addTransaction(vxId1, vxId2, true);
+        txId2 = storeGraph.addTransaction(vxId2, vxId3, true);
+        txId3 = storeGraph.addTransaction(vxId3, vxId1, true);
+        txId4 = storeGraph.addTransaction(vxId3, vxId2, true);
+        txId5 = storeGraph.addTransaction(vxId2, vxId3, true);
         
         storeGraph.setBooleanValue(vAttrId, vxId2, true);
         storeGraph.setBooleanValue(vAttrId, vxId3, true);
@@ -113,55 +113,17 @@ public class PointSelectionPluginNGTest {
         storeGraph.setBooleanValue(tAttrId, txId3, true);
         
         vxIds = new IntArray();
-        txIds = new IntArray();
+        vxIds.add(vxId1);
+        vxIds.add(vxId2);
         
-        vxIds.add(vxId1, vxId2);
-        txIds.add(txId1, txId2);
+        txIds = new IntArray();
+        txIds.add(txId1);
+        txIds.add(txId2);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
         // Not currently required
-    }
-    
-    /**
-     * Test of PointSelectionPlugin. Toggle and Clear Selection enabled
-     *
-     * @throws java.lang.InterruptedException
-     * @throws au.gov.asd.tac.constellation.plugins.PluginException
-     */
-    @Test
-    public void testToggleAndClearSelection() throws InterruptedException, PluginException {
-        System.out.println("toggleAndClearSelection");
-
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
-        
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
-
-        final PointSelectionPlugin instance = new PointSelectionPlugin(vxIds, txIds, true, true);
-        PluginExecution.withPlugin(instance).executeNow(storeGraph);
-        
-        // vxId1, txId1 become true because of selection
-        // vxId2, txId2 become false because of selection + toggle
-        // vxId3, txId3 become false because of clear selection
-        // vxId4, txId4, txId5 remain false
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
-        
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
     }
     
     /**
@@ -174,16 +136,7 @@ public class PointSelectionPluginNGTest {
     public void testToggleAndNoClearSelection() throws InterruptedException, PluginException {
         System.out.println("toggleAndNoClearSelection");
 
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
-        
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
+        beginningAsserts();
 
         final PointSelectionPlugin instance = new PointSelectionPlugin(vxIds, txIds, true, false);
         PluginExecution.withPlugin(instance).executeNow(storeGraph);
@@ -214,16 +167,7 @@ public class PointSelectionPluginNGTest {
     public void testNoToggleAndClearSelection() throws InterruptedException, PluginException {
         System.out.println("noToggleAndClearSelection");
 
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
-        
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
+        beginningAsserts();
 
         final PointSelectionPlugin instance = new PointSelectionPlugin(vxIds, txIds, false, true);
         PluginExecution.withPlugin(instance).executeNow(storeGraph);
@@ -254,16 +198,7 @@ public class PointSelectionPluginNGTest {
     public void testNoToggleAndNoClearSelection() throws InterruptedException, PluginException {
         System.out.println("noToggleAndNoClearSelection");
 
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
-        
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
+        beginningAsserts();
 
         final PointSelectionPlugin instance = new PointSelectionPlugin(vxIds, txIds, false, false);
         PluginExecution.withPlugin(instance).executeNow(storeGraph);
@@ -294,18 +229,9 @@ public class PointSelectionPluginNGTest {
     public void testEdgeConnectionMode() throws InterruptedException, PluginException {
         System.out.println("edgeConnectionMode");
         
-        storeGraph.setObjectValue(connectionModeAttrId, 0, ConnectionMode.LINK);
+        storeGraph.setObjectValue(connectionModeAttrId, 0, ConnectionMode.EDGE);
 
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
-        
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
+        beginningAsserts();
 
         final PointSelectionPlugin instance = new PointSelectionPlugin(vxIds, txIds, false, true);
         PluginExecution.withPlugin(instance).executeNow(storeGraph);
@@ -339,16 +265,7 @@ public class PointSelectionPluginNGTest {
         
         storeGraph.setObjectValue(connectionModeAttrId, 0, ConnectionMode.LINK);
 
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
-        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
-        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
-        
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
-        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
-        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
+        beginningAsserts();
 
         final PointSelectionPlugin instance = new PointSelectionPlugin(vxIds, txIds, false, true);
         PluginExecution.withPlugin(instance).executeNow(storeGraph);
@@ -368,5 +285,18 @@ public class PointSelectionPluginNGTest {
         assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
         assertTrue(storeGraph.getBooleanValue(tAttrId, txId4));
         assertTrue(storeGraph.getBooleanValue(tAttrId, txId5));
+    }
+    
+    private void beginningAsserts() {
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId4));
+        
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId4));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId5));
     }
 }

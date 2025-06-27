@@ -90,13 +90,13 @@ public class CreateTransactionPluginNGTest {
         final int vxId1 = graph.addVertex();
         final int vxId2 = graph.addVertex();
         
-        final int layerMaskAttribute = LayersConcept.TransactionAttribute.LAYER_MASK.get(graph);
-        LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.get(graph);
+        final int layerMaskAttribute = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
+        LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
         
         final CreateTransactionPlugin instance = new CreateTransactionPlugin();
         final PluginParameters parameters = instance.createParameters();
-        parameters.setFloatValue(SOURCE_PARAMETER_ID, vxId2);
-        parameters.setFloatValue(DESTINATION_PARAMETER_ID, vxId1);
+        parameters.setIntegerValue(SOURCE_PARAMETER_ID, vxId2);
+        parameters.setIntegerValue(DESTINATION_PARAMETER_ID, vxId1);
         parameters.setBooleanValue(DIRECTED_PARAMETER_ID, false);
         
         assertEquals(graph.getTransactionCount(), 0);
