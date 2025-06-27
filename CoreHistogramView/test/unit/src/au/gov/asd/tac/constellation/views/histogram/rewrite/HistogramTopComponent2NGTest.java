@@ -19,10 +19,13 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
+import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
+import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -121,7 +124,6 @@ public class HistogramTopComponent2NGTest {
 //        final HistogramTopComponent2 instance = new HistogramTopComponent2();
 //        instance.handleComponentClosed();
 //    }
-
     /**
      * Test of handleNewGraph method, of class HistogramTopComponent2.
      */
@@ -177,31 +179,71 @@ public class HistogramTopComponent2NGTest {
         verify(mockGraph, times(4)).getReadableGraph();
     }
 
-//    /**
-//     * Test of modifyBinHeight method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testModifyBinHeight() {
-//        System.out.println("modifyBinHeight");
-//        int change = 0;
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.modifyBinHeight(change);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of reset method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testReset_0args() {
-//        System.out.println("reset");
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.reset();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
+    /**
+     * Test of modifyBinHeight method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testModifyBinHeight() {
+        System.out.println("modifyBinHeight");
+        try (MockedConstruction<HistogramPane> mockConstructor = Mockito.mockConstruction(HistogramPane.class)) {
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+
+            assertEquals(1, mockConstructor.constructed().size());
+            final HistogramPane pane = mockConstructor.constructed().get(0);
+
+            instance.modifyBinHeight(-1);
+            verify(pane).decreaseBarHeight();
+
+            instance.modifyBinHeight(1);
+            verify(pane).increaseBarHeight();
+        }
+    }
+
+    /**
+     * Test of reset method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testReset() {
+        System.out.println("reset");
+        try (MockedConstruction<HistogramPane> mockConstructor = Mockito.mockConstruction(HistogramPane.class)) {
+            final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+
+            final Graph mockGraph = mock(Graph.class);
+            when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+            instance.newActiveGraph(mockGraph);
+
+            instance.reset();
+
+            assertEquals(1, mockConstructor.constructed().size());
+            final HistogramPane pane = mockConstructor.constructed().get(0);
+
+            verify(pane, atLeast(1)).setHistogramState(any(), any());
+            verify(pane, atLeast(1)).setBinSelectionMode(any(BinSelectionMode.class));
+        }
+    }
+
+    /**
+     * Test of reset method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testResetNullGraph() {
+        System.out.println("reset Null Graph");
+        try (MockedConstruction<HistogramPane> mockConstructor = Mockito.mockConstruction(HistogramPane.class)) {
+
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+
+            assertEquals(1, mockConstructor.constructed().size());
+            final HistogramPane pane = mockConstructor.constructed().get(0);
+
+            instance.reset();
+
+            verify(pane).setHistogramState(null, null);
+            verify(pane).setBinCollection(null, BinIconMode.NONE);
+        }
+    }
+
 //    /**
 //     * Test of reset method, of class HistogramTopComponent2.
 //     */
