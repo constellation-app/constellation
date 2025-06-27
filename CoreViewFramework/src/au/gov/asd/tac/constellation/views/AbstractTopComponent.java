@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
 import au.gov.asd.tac.constellation.preferences.ViewPreferenceKeys;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Point;
 import java.awt.Window;
 import java.util.prefs.Preferences;
 import org.openide.util.HelpCtx;
@@ -36,13 +35,18 @@ import org.openide.windows.WindowManager;
  */
 public abstract class AbstractTopComponent<P> extends TopComponent {
 
+    public enum Spawn {
+        LEFT,
+        RIGHT,
+        BOTTOM
+    }
+
     protected P content;
 
     private boolean isVisible;
 
     /**
-     * Checks if the view will need an update when a graph changes based on if
-     * the view is visible currently.
+     * Checks if the view will need an update when a graph changes based on if the view is visible currently.
      *
      * @return true if the view is visible and needs updating
      */
@@ -55,15 +59,13 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     }
 
     /**
-     * Builds and initialises the content for this top component. You should
-     * call this method in the constructor of your TopComponent implementation
-     * after calling the initComponents() method.
+     * Builds and initialises the content for this top component. You should call this method in the constructor of your
+     * TopComponent implementation after calling the initComponents() method.
      */
     protected abstract void initContent();
 
     /**
-     * This is where you pass in content which will be rendered within the
-     * AbstractTopComponent.
+     * This is where you pass in content which will be rendered within the AbstractTopComponent.
      *
      * @return
      */
@@ -169,14 +171,16 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     }
 
     /**
-     * Sets the view as floating based on the preference selection.
+     * Sets whether the view is floating based on the preference selection.
      *
-     * @param floatingWidth
-     * @param floatingHeight
+     * @param name
+     * @param width
+     * @param height
+     * @param spawn
      */
-    protected final void setFloating(final int floatingWidth, final int floatingHeight) {
+    protected final void setFloating(final String name, final int width, final int height, final Spawn spawn) {
         final Preferences prefs = NbPreferences.forModule(ViewPreferenceKeys.class);
-        final Boolean isFloating = prefs.getBoolean(this.getName(), ViewPreferenceKeys.DEFAULT_VIEW_OPTIONS.get(this.getName()));
+        final Boolean isFloating = prefs.getBoolean(name, ViewPreferenceKeys.getDefaultViewOptions().get(name));
         WindowManager.getDefault().setTopComponentFloating(this, isFloating);
 
         if (isFloating) {
@@ -185,15 +189,47 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
             for (final Window window : Window.getWindows()) {
                 if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
                     final Frame mainWindow = WindowManager.getDefault().getMainWindow();
-                    final int orientationBasedWidth = mainWindow.getWidth() > mainWindow.getHeight()
-                            ? Math.round(mainWindow.getWidth() * 0.3f)
-                            : Math.round(mainWindow.getWidth() * 0.4f);
-                    final Dimension size = new Dimension(
-                            floatingWidth == 0 ? orientationBasedWidth : floatingWidth,
-                            floatingHeight == 0 ? mainWindow.getHeight() - 110 : floatingHeight);
+                    final int mainWidth = mainWindow.getWidth();
+                    final int mainHeight = mainWindow.getHeight();
+                    final int mainX = mainWindow.getX();
+                    final int mainY = mainWindow.getY();
+                    final int offsetY = 110; // Offsets floating component so it doesn't overlap with top toolbar icons.
+
+                    final boolean isLandscape = mainWidth > mainHeight;
+
+                    final int landscapeWidth = Math.round(mainWidth * 0.3f);
+                    final int portraitWidth = Math.round(mainWidth * 0.4f);
+
+                    final Dimension sidesSize = new Dimension(
+                            width == 0 ? (isLandscape ? landscapeWidth : portraitWidth) : width,
+                            height == 0 ? mainHeight - offsetY : height);
+
+                    final int landscapeHeight = Math.round(mainHeight * 0.3f);
+                    final int portraitHeight = Math.round(mainHeight * 0.3f);
+
+                    final Dimension bottomSize = new Dimension(
+                            width == 0 ? mainWidth : width,
+                            height == 0 ? (isLandscape ? landscapeHeight : portraitHeight) : height);
+
+                    final Dimension size;
+
+                    switch (spawn) {
+                        case LEFT -> {
+                            size = sidesSize;
+                            window.setLocation(mainX, mainY + offsetY);
+                        }
+                        case RIGHT -> {
+                            size = sidesSize;
+                            window.setLocation(mainX + mainWidth - sidesSize.width, mainY + offsetY);
+                        }
+                        default -> {
+                            size = bottomSize;
+                            window.setLocation(mainX, mainY + mainHeight - bottomSize.height);
+                        }
+                    }
+
                     window.setMinimumSize(size);
                     window.setSize(size);
-                    window.setLocation(new Point(mainWindow.getX(), mainWindow.getY() + 110));
                 }
             }
 

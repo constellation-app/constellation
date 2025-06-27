@@ -15,21 +15,14 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
-import java.util.Collections;
 import java.util.Map;
-import java.util.TreeMap;
-import org.openide.util.Lookup;
 
 /**
- * Keys used to access View preferences.
+ * Provides views.
  *
  * @author sol695510
  */
-public class ViewPreferenceKeys {
+public abstract class ViewOptionsProvider {
 
-    public static final Map<String, Boolean> getDefaultViewOptions() {
-        final Map<String, Boolean> defaultViewOptions = new TreeMap<>();
-        Lookup.getDefault().lookupAll(ViewOptionsProvider.class).forEach(lookup -> defaultViewOptions.putAll(lookup.getViewOptions()));
-        return Collections.unmodifiableMap(defaultViewOptions);
-    }
+    public abstract Map<String, Boolean> getViewOptions();
 }

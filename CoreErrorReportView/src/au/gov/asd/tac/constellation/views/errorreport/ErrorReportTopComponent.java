@@ -498,12 +498,11 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     protected void handleComponentOpened() {
         errorReportRunning = true;
         ErrorReportDialogManager.getInstance().setErrorReportRunning(errorReportRunning);
-        setFloating(0, 0);
+        setFloating(Bundle.CTL_ErrorReportTopComponent(), 0, 0, Spawn.RIGHT);
     }
 
     /**
-     * Return popup control to the ErrorReportDialogManager when this view is
-     * closed
+     * Return popup control to the ErrorReportDialogManager when this view is closed
      */
     @Override
     protected void handleComponentClosed() {
@@ -687,8 +686,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     }
 
     /**
-     * enable or disable flashing of the alert icon, as well as flashing of the
-     * tab label
+     * enable or disable flashing of the alert icon, as well as flashing of the tab label
      *
      * @param enabled
      */
@@ -795,8 +793,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     }
 
     /**
-     * Generate the TitledPane object containing the details for the error
-     * report entry.
+     * Generate the TitledPane object containing the details for the error report entry.
      *
      * @param entry
      * @return

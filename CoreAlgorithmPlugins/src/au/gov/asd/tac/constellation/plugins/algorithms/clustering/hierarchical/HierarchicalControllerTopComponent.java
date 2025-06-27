@@ -35,12 +35,12 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -91,7 +91,7 @@ import org.openide.windows.TopComponent;
     "CTL_HierarchicalControllerTopComponent=Hierarchical",
     "HINT_HierarchicalControllerTopComponent=Use this window to view communities of interest in the graph"
 })
-public final class HierarchicalControllerTopComponent extends TopComponent implements LookupListener, GraphChangeListener {
+public final class HierarchicalControllerTopComponent extends AbstractTopComponent implements LookupListener, GraphChangeListener {
 
     private static final String INFO_STRING = "%s clusters";
     private static final String TOGGLE_DISABLED = "Toggle Interactive: Disabled";
@@ -519,6 +519,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     public void componentOpened() {
         result.addLookupListener(this);
         resultChanged(null);
+        setFloating(Bundle.CTL_HierarchicalControllerTopComponent(), 0, 0, Spawn.BOTTOM);
     }
 
     @Override
@@ -703,6 +704,16 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         }
 
         setGroups(false);
+    }
+
+    @Override
+    protected void initContent() {
+        // Required for AbstractTopComponent, intentionally left blank.
+    }
+
+    @Override
+    protected Object createContent() {
+        return nestedDiagramScrollPane;
     }
 
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})

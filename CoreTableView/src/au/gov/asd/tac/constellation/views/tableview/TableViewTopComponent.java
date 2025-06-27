@@ -163,10 +163,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     }
 
     /**
-     * Copy's the existing table view state and sets the new state's element
-     * type to the passed value. Also ensures the new state is in "Selected
-     * Only" mode. The graph table view state attribute is updated with the new
-     * state and then the table's selection is updated.
+     * Copy's the existing table view state and sets the new state's element type to the passed value. Also ensures the
+     * new state is in "Selected Only" mode. The graph table view state attribute is updated with the new state and then
+     * the table's selection is updated.
      *
      * @param elementType the element type to set to the new state
      * @param elementId can be anything, not used
@@ -253,13 +252,11 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     }
 
     /**
-     * Get column attributes that were present in the old state but not in the
-     * new one.
+     * Get column attributes that were present in the old state but not in the new one.
      *
      * @param oldState the old table state
      * @param newState the new table state
-     * @return a set of column attributes that are present in the old state but
-     * not the new one
+     * @return a set of column attributes that are present in the old state but not the new one
      */
     protected Set<Tuple<String, Attribute>> getRemovedAttributes(final TableViewState oldState, final TableViewState newState) {
         return new HashSet<>(CollectionUtils.subtract(
@@ -271,13 +268,11 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     }
 
     /**
-     * Get column attributes that were not present in the old state but are
-     * present in the new state.
+     * Get column attributes that were not present in the old state but are present in the new state.
      *
      * @param oldState the old table state
      * @param newState the new table state
-     * @return a set of column attributes that were not present in the old state
-     * but are present in the new state
+     * @return a set of column attributes that were not present in the old state but are present in the new state
      */
     protected Set<Tuple<String, Attribute>> getAddedAttributes(final TableViewState oldState, final TableViewState newState) {
         return new HashSet<>(CollectionUtils.subtract(
@@ -289,10 +284,8 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     }
 
     /**
-     * Update the current table state with the table state stored in the passed
-     * graph attributes. If a table state does not exist in the graph attribute
-     * then it will crate and new state and set it to the current state in the
-     * table.
+     * Update the current table state with the table state stored in the passed graph attributes. If a table state does
+     * not exist in the graph attribute then it will crate and new state and set it to the current state in the table.
      *
      * @param graph the graph that the new state will be extracted from
      */
@@ -347,10 +340,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     }
 
     /**
-     * Update the current state with the new state pulled from the passed
-     * graph's attributes and update the attribute handlers so that the table is
-     * only notified for attribute changes that it cares about. Then trigger a
-     * table refresh using the new graph as its source of truth.
+     * Update the current state with the new state pulled from the passed graph's attributes and update the attribute
+     * handlers so that the table is only notified for attribute changes that it cares about. Then trigger a table
+     * refresh using the new graph as its source of truth.
      *
      * @param graph the new graph
      */
@@ -404,8 +396,8 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     }
 
     /**
-     * When the graph is closed change the graphs pagination to a pagination
-     * over nothing and update the table. This will essentially clear the table.
+     * When the graph is closed change the graphs pagination to a pagination over nothing and update the table. This
+     * will essentially clear the table.
      *
      * @param graph the graph being closed
      */
@@ -418,7 +410,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     @Override
     public void handleComponentOpened() {
         super.handleComponentOpened();
-        setFloating(0, 0);
+        setFloating(Bundle.CTL_TableViewTopComponent(), 0, 0, Spawn.BOTTOM);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

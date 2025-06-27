@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class ViewOptionsPanelController extends OptionsPanelController {
     private ViewOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private final Preferences prefs = NbPreferences.forModule(ViewPreferenceKeys.class);
-    private final Map<String, Boolean> defaultOptions = ViewPreferenceKeys.DEFAULT_VIEW_OPTIONS;
+    private final Map<String, Boolean> defaultOptions = ViewPreferenceKeys.getDefaultViewOptions();
 
     @Override
     public void update() {
@@ -96,12 +96,12 @@ public class ViewOptionsPanelController extends OptionsPanelController {
     }
 
     @Override
-    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+    public void addPropertyChangeListener(final PropertyChangeListener pcl) {
         pcs.addPropertyChangeListener(pcl);
     }
 
     @Override
-    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+    public void removePropertyChangeListener(final PropertyChangeListener pcl) {
         pcs.removePropertyChangeListener(pcl);
     }
 
