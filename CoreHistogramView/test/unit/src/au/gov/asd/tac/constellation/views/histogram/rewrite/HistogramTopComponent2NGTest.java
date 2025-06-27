@@ -25,6 +25,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.awt.UndoRedo;
@@ -167,8 +168,13 @@ public class HistogramTopComponent2NGTest {
         instance.newActiveGraph(mockGraph);
         instance.handleGraphChange(event);
 
+        verify(event).getLatest();
+        verify(event, times(2)).getId();
+
         verify(mockReadableGraph).getStructureModificationCounter();
         verify(mockReadableGraph).getAttributeModificationCounter();
+
+        verify(mockGraph, times(4)).getReadableGraph();
     }
 
 //    /**
