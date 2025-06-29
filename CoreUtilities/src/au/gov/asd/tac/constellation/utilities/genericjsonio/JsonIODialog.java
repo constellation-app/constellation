@@ -31,6 +31,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  * Displays a generic dialog window that can allow the user to select a file
@@ -142,11 +144,17 @@ public class JsonIODialog {
         td.setTitle(PREFERENCE_NAME_DIALOG_TITLE);
         td.setHeaderText(PREFERENCE_NAME_DIALOG_HEADER_TEXT);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+        
+        
         final double xOffset = SystemUtilities.getMainframeWidth() / 2 - 60;
         final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 60;
-        td.setX(SystemUtilities.getMainframeXPos() + xOffset);
+        td.setX(SystemUtilities.getMainframeXPos() + xOffset);        
         td.setY(SystemUtilities.getMainframeYPos() + yOffset);
-        td.showAndWait(); 
+        
+        final Stage stage = (Stage) td.getDialogPane().getScene().getWindow();
+        stage.setAlwaysOnTop(true);        
+        td.showAndWait();
+        
         return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
     }
 

@@ -24,12 +24,12 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCombination.Modifier;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -76,7 +76,11 @@ public class RecordKeyboardShortcut  {
         final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 40;
         td.setX(SystemUtilities.getMainframeXPos() + xOffset);
         td.setY(SystemUtilities.getMainframeYPos() + yOffset);
-        td.showAndWait();
+        
+        final Stage stage = (Stage) td.getDialogPane().getScene().getWindow();
+        stage.setAlwaysOnTop(true);        
+        td.showAndWait();        
+        
         
         final String keyboardShortcut = td.getLabel().getText().trim(); 
         
