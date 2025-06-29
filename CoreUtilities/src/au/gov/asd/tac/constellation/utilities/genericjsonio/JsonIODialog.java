@@ -15,8 +15,12 @@
  */
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
+import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.DraggableCell;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
+import au.gov.asd.tac.constellation.utilities.keyboardshortcut.TextInputDialogWithKeybordShortcut;
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import javafx.collections.FXCollections;
@@ -27,6 +31,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  * Displays a generic dialog window that can allow the user to select a file
@@ -37,6 +43,7 @@ import javafx.scene.control.TextInputDialog;
  */
 public class JsonIODialog {
 
+    
     private static final String REMOVE_BUTTON_TEXT = "Remove";
 
     private static final String PREFERENCE_SELECTION_DIALOG_TITLE = "Preferences";
@@ -44,7 +51,8 @@ public class JsonIODialog {
 
     private static final String PREFERENCE_NAME_DIALOG_TITLE = "Preference Name";
     private static final String PREFERENCE_NAME_DIALOG_HEADER_TEXT = "Enter a name for the preference";
-
+    
+    
     private JsonIODialog() {
     }
 
@@ -103,6 +111,10 @@ public class JsonIODialog {
             event.consume();
         });
 
+        final double xOffset = SystemUtilities.getMainframeWidth() / 2 - 100;
+        final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 250;
+        dialog.setX(SystemUtilities.getMainframeXPos() + xOffset);
+        dialog.setY(SystemUtilities.getMainframeYPos() + yOffset);
         final Optional<ButtonType> option = dialog.showAndWait();
         if (option.isPresent() && option.get() == ButtonType.OK) {
             return Optional.ofNullable(nameList.getSelectionModel().getSelectedItem());
@@ -126,4 +138,24 @@ public class JsonIODialog {
 
         return td.showAndWait();
     }
+    
+    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(final Optional<String> ks, final File preferenceDirectory) {
+        final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut(preferenceDirectory, ks);
+        td.setTitle(PREFERENCE_NAME_DIALOG_TITLE);
+        td.setHeaderText(PREFERENCE_NAME_DIALOG_HEADER_TEXT);
+        td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+        
+        
+        final double xOffset = SystemUtilities.getMainframeWidth() / 2 - 60;
+        final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 60;
+        td.setX(SystemUtilities.getMainframeXPos() + xOffset);        
+        td.setY(SystemUtilities.getMainframeYPos() + yOffset);
+        
+        final Stage stage = (Stage) td.getDialogPane().getScene().getWindow();
+        stage.setAlwaysOnTop(true);        
+        td.showAndWait();
+        
+        return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
+    }
+
 }
