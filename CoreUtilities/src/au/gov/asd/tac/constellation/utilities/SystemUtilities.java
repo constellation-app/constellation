@@ -17,9 +17,7 @@ package au.gov.asd.tac.constellation.utilities;
 
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -146,12 +144,12 @@ public class SystemUtilities {
             ret[0] = m.getKeymap(m.getCurrentProfile());
             ret[1] = m.getActions().entrySet();
 
-            Map<ShortcutAction, Set<String>> curKeymap = (Map<ShortcutAction, Set<String>>) ret[0];
-            Set<Map.Entry<String, Set<ShortcutAction>>> entryset = (Set<Map.Entry<String, Set<ShortcutAction>>>) ret[1];
+            final Map<ShortcutAction, Set<String>> curKeymap = (Map<ShortcutAction, Set<String>>) ret[0];
+            final Set<Map.Entry<String, Set<ShortcutAction>>> entryset = (Set<Map.Entry<String, Set<ShortcutAction>>>) ret[1];
 
-            for (Map.Entry<String, Set<ShortcutAction>> entry : entryset) {
-                for (ShortcutAction sa : entry.getValue()) {
-                    Set<String> ks = curKeymap.get(sa);
+            for (final Map.Entry<String, Set<ShortcutAction>> entry : entryset) {
+                for (final ShortcutAction sa : entry.getValue()) {
+                    final Set<String> ks = curKeymap.get(sa);
                     if (Objects.nonNull(ks)) {                        
                         ks.forEach(s -> {
                             shortcuts.put(KeyStrokeUtils.getKeyStrokesAsText(Utilities.stringToKeys(s), " "), sa.getDisplayName());

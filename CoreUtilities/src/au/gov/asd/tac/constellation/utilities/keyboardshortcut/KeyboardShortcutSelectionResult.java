@@ -79,7 +79,7 @@ public class KeyboardShortcutSelectionResult {
         return assignedShortcut;
     }
 
-    public void setAssignedShortcut(Optional<Map.Entry<String, String>> assignedShortcut) {
+    public void setAssignedShortcut(final Optional<Map.Entry<String, String>> assignedShortcut) {
         this.assignedShortcut = assignedShortcut;
     }   
     
