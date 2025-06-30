@@ -129,8 +129,8 @@ public class GetTypeDescription extends RestService {
             root.put("hierarchy", transactionType.getHierachy());
 
             mapper.writeValue(out, root);
-        } else {
-            throw new IllegalArgumentException(String.format("The type '%s' is unknown.", typeName));
+        } else {            
+            throw new IllegalArgumentException(String.format("The type %s is unknown.", typeName));
         }
     }
     
