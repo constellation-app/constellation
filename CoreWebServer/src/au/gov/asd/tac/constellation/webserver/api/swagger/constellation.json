@@ -123,13 +123,11 @@
                             "source.selected"
                         ],
                         "data":[
-                            [
-                                "New Node1",
-                                true,
-                                true,
-                                "New Node1",
-                                true
-                            ]
+                            "New Node1",
+                            true,
+                            true,
+                            "New Node1",
+                            true
                         ]
                     }
                 },
