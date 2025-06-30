@@ -130,7 +130,7 @@ public class GetTypeDescription extends RestService {
 
             mapper.writeValue(out, root);
         } else {
-            throw new IllegalArgumentException(String.format("The type '%s' is unknown.", typeName));
+            throw new IllegalArgumentException(String.format("The type %s is unknown.", typeName));
         }
     }
     
