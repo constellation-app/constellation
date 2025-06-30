@@ -35,6 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ListNamedColors extends RestService {
 
     private static final String NAME = "list_named_colors";
+    private static final String EXAMPLE_RESPONSES_PATH = "listNamedColorsExample";
 
     @Override
     public String getName() {
@@ -59,5 +60,10 @@ public class ListNamedColors extends RestService {
                 .forEach(cocol -> root.put(cocol.getName(), cocol.getHtmlColor()));
 
         mapper.writeValue(out, root);
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }
