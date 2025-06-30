@@ -360,7 +360,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         // Ensure that the HistogramState is compatible with the current graph.
         currentHistogramState.validate(graph);
 
-        AttributeType binType = currentHistogramState.getAttributeType();
+        final AttributeType binType = currentHistogramState.getAttributeType();
         binCreators.clear();
         binType.addBinCreators(graph, currentHistogramState.getElementType(), binCreators);
         histogramPane.setHistogramState(currentHistogramState, binCreators);
@@ -407,34 +407,40 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     }
 
     public void setHistogramViewOptions(final GraphElementType elementType, final AttributeType attributeType, final String attribute) {
-        if (currentGraph != null) {
-            if (elementType == null) {
-                throw new IllegalArgumentException("Null element type");
-            }
-            if (currentHistogramState == null || elementType != currentHistogramState.getElementType() || attributeType != currentHistogramState.getAttributeType()
-                    || (attribute == null ? currentHistogramState.getAttribute() != null : !attribute.equals(currentHistogramState.getAttribute()))) {
-                HistogramState newHistogramState = new HistogramState(currentHistogramState);
-                newHistogramState.setElementType(elementType);
-                newHistogramState.setAttributeType(attributeType);
-                newHistogramState.setAttribute(attribute);
-                PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
-            }
+        if (currentGraph == null) {
+            return;
+        }
+
+        if (elementType == null) {
+            throw new IllegalArgumentException("Null element type");
+        }
+
+        if (currentHistogramState == null || elementType != currentHistogramState.getElementType() || attributeType != currentHistogramState.getAttributeType()
+                || (attribute == null ? currentHistogramState.getAttribute() != null : !attribute.equals(currentHistogramState.getAttribute()))) {
+            final HistogramState newHistogramState = new HistogramState(currentHistogramState);
+            newHistogramState.setElementType(elementType);
+            newHistogramState.setAttributeType(attributeType);
+            newHistogramState.setAttribute(attribute);
+            PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
         }
     }
 
     public void setGraphElementType(final GraphElementType elementType) {
-        if (currentGraph != null) {
-            if (elementType == null) {
-                throw new IllegalArgumentException("Null element type");
-            }
+        if (currentGraph == null) {
+            return;
+        }
 
-            // If the current state is null or the elementType selected is not the one already selected.
-            if (currentHistogramState == null || elementType != currentHistogramState.getElementType()) {
-                HistogramState newHistogramState = new HistogramState(currentHistogramState);
-                newHistogramState.setElementType(elementType);
-                newHistogramState.setElementState();
-                PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
-            }
+        if (elementType == null) {
+            throw new IllegalArgumentException("Null element type");
+        }
+
+        // If the current state is null or the elementType selected is not the one already selected.
+        if (currentHistogramState == null || elementType != currentHistogramState.getElementType()) {
+            final HistogramState newHistogramState = new HistogramState(currentHistogramState);
+            System.out.println("newHistogramState " + newHistogramState);
+            newHistogramState.setElementType(elementType);
+            newHistogramState.setElementState();
+            PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
         }
     }
 
@@ -459,15 +465,18 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     }
 
     public void setBinComparator(final BinComparator binComparator) {
-        if (currentGraph != null) {
-            if (binComparator == null) {
-                throw new IllegalArgumentException("Null bin comparator");
-            }
-            if (currentHistogramState == null || binComparator != currentHistogramState.getBinComparator()) {
-                HistogramState newHistogramState = new HistogramState(currentHistogramState);
-                newHistogramState.setBinComparator(binComparator);
-                PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
-            }
+        if (currentGraph == null) {
+            return;
+        }
+
+        if (binComparator == null) {
+            throw new IllegalArgumentException("Null bin comparator");
+        }
+
+        if (currentHistogramState == null || binComparator != currentHistogramState.getBinComparator()) {
+            HistogramState newHistogramState = new HistogramState(currentHistogramState);
+            newHistogramState.setBinComparator(binComparator);
+            PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
         }
     }
 

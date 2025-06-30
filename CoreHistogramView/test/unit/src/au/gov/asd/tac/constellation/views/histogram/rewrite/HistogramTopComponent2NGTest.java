@@ -16,11 +16,16 @@
 package au.gov.asd.tac.constellation.views.histogram.rewrite;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
+import au.gov.asd.tac.constellation.views.histogram.AttributeType;
+import au.gov.asd.tac.constellation.views.histogram.BinComparator;
 import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
 import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
+import au.gov.asd.tac.constellation.views.histogram.HistogramState;
+import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
@@ -33,6 +38,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.awt.UndoRedo;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
@@ -244,60 +250,96 @@ public class HistogramTopComponent2NGTest {
         }
     }
 
-//    /**
-//     * Test of reset method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testReset_GraphReadMethods() {
-//        System.out.println("reset");
-//        GraphReadMethods graph = null;
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.reset(graph);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of setHistogramViewOptions method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testSetHistogramViewOptions() {
-//        System.out.println("setHistogramViewOptions");
-//        GraphElementType elementType = null;
-//        AttributeType attributeType = null;
-//        String attribute = "";
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.setHistogramViewOptions(elementType, attributeType, attribute);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of setGraphElementType method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testSetGraphElementType() {
-//        System.out.println("setGraphElementType");
-//        GraphElementType elementType = null;
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.setGraphElementType(elementType);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of setAttributeType method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testSetAttributeType() {
-//        System.out.println("setAttributeType");
-//        AttributeType attributeType = null;
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.setAttributeType(attributeType);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
+    /**
+     * Test of setHistogramViewOptions method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testSetHistogramViewOptions() {
+        System.out.println("setHistogramViewOptions");
+        final GraphElementType elementType = GraphElementType.LINK;
+        final AttributeType attributeType = AttributeType.ATTRIBUTE;
+        final String attribute = "";
+
+        // Mocks
+        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final Graph mockGraph = mock(Graph.class);
+        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+        final HistogramTopComponent2 instance = new HistogramTopComponent2();
+
+        instance.newActiveGraph(mockGraph);
+        instance.setHistogramViewOptions(elementType, attributeType, attribute);
+    }
+
+    /**
+     * Test of setGraphElementType method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testSetGraphElementType() {
+        System.out.println("setGraphElementType");
+        // Mocks
+        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final Graph mockGraph = mock(Graph.class);
+        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+
+        final AttributeType mockBinType = AttributeType.ATTRIBUTE;
+        final GraphElementType mockElementType = GraphElementType.EDGE;
+        final BinComparator mockBinComparator = BinComparator.KEY;
+
+        try (MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
+            when(mock.getAttributeType()).thenReturn(mockBinType);
+            when(mock.getElementType()).thenReturn(mockElementType);
+            when(mock.getBinComparator()).thenReturn(mockBinComparator);
+        })) {
+            final GraphElementType elementType = GraphElementType.LINK;
+
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+
+            instance.newActiveGraph(mockGraph);
+            instance.setGraphElementType(elementType);
+
+            assertTrue(mockConstructor.constructed().size() > 1);
+            final HistogramState state = mockConstructor.constructed().getLast();
+
+            verify(state).setElementType(elementType);
+            verify(state).setElementState();
+        }
+    }
+
+    /**
+     * Test of setAttributeType method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testSetAttributeType() {
+        System.out.println("setAttributeType");
+        // Mocks
+        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final Graph mockGraph = mock(Graph.class);
+        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+        final AttributeType mockBinType = AttributeType.ATTRIBUTE;
+        final GraphElementType mockElementType = GraphElementType.EDGE;
+        final BinComparator mockBinComparator = BinComparator.KEY;
+
+        final AttributeType attributeType = AttributeType.ATTRIBUTE;
+
+        try (MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
+            when(mock.getAttributeType()).thenReturn(mockBinType);
+            when(mock.getElementType()).thenReturn(mockElementType);
+            when(mock.getBinComparator()).thenReturn(mockBinComparator);
+        })) {
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+            instance.newActiveGraph(mockGraph);
+
+            instance.setAttributeType(attributeType);
+
+            assertTrue(mockConstructor.constructed().size() > 1);
+            final HistogramState state = mockConstructor.constructed().getLast();
+
+            verify(state).setAttributeType(attributeType);
+            verify(state).setAttribute("");
+            verify(state).setBinFormatter(BinFormatter.DEFAULT_BIN_FORMATTER);
+        }
+    }
+
 //    /**
 //     * Test of setAttribute method, of class HistogramTopComponent2.
 //     */
