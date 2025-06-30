@@ -88,7 +88,7 @@ public class RecentGraphScreenshotUtilities {
         if (!saveDir.exists()) {
             saveDir.mkdir();
         } else if (!saveDir.isDirectory()) {
-            LOGGER.log(Level.WARNING, "Recent graph screenshots directory \'{0}\' is not a directory", SCREENSHOTS_DIR);
+            LOGGER.log(Level.WARNING, "Recent graph screenshots directory: {0} - is not a directory", SCREENSHOTS_DIR);
             return null;
         }
 
@@ -172,7 +172,7 @@ public class RecentGraphScreenshotUtilities {
         final Semaphore waiter = new Semaphore(0);
 
         requestGraphActive(graph, waiter);
-
+        
         // Wait for requested graph to become active
         waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
         visualManager.exportToBufferedImage(originalImage, waiter); // Requires 0 permits, becomes 1 when done
@@ -192,6 +192,7 @@ public class RecentGraphScreenshotUtilities {
         final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
 
         if (topComponents == null || graph == null) {
+            semaphore.release();
             return;
         }
 
@@ -202,14 +203,14 @@ public class RecentGraphScreenshotUtilities {
                 try {
                     // Request graph to be active
                     EventQueue.invokeAndWait(() -> vgComponent.requestActiveWithLatch(latch));
-
                     latch.await(LATCH_WAIT_SECONDS, TimeUnit.SECONDS);
-                    semaphore.release();
                 } catch (final InterruptedException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     Thread.currentThread().interrupt();
                 } catch (final InvocationTargetException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                } finally {
+                    semaphore.release();
                 }
             }
         });

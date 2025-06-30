@@ -52,10 +52,10 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.TopComponent.Registry;
 import org.openide.windows.WindowManager;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertThrows;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -66,30 +66,84 @@ import org.testng.annotations.Test;
  */
 public class RecentGraphScreenshotUtilitiesNGTest {
 
-    private static MockedStatic<RecentGraphScreenshotUtilities> recentGraphScreenshotUtilitiesMock;
-    private static MockedStatic<RecentFiles> recentFilesMock;
-    private static MockedStatic<DatatypeConverter> dataTypeConverter;
-    
     @BeforeClass
     public static void setUpClass() throws Exception {
-        recentGraphScreenshotUtilitiesMock = Mockito.mockStatic(RecentGraphScreenshotUtilities.class);
-        recentFilesMock = Mockito.mockStatic(RecentFiles.class);
-        dataTypeConverter = Mockito.mockStatic(DatatypeConverter.class);
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        recentGraphScreenshotUtilitiesMock.close();
-        recentFilesMock.close();
-        dataTypeConverter.close();
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        recentGraphScreenshotUtilitiesMock.reset();
-        recentFilesMock.reset();
+        // Not currently required
     }
 
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+        // Not currently required
+    }
+
+    /**
+     * Test of takeScreenshot method, of class RecentGraphScreenshotUtilities. No Graph Node
+     */
+    @Test
+    public void testTakeScreenshotNoGraphNode() {
+        System.out.println("testTakeScreenshotNoGraphNode");
+        
+        final String filePath = "";
+
+        // Mocks
+        final GraphManager gm = mock(GraphManager.class);
+        final Graph mockGraph = mock(Graph.class);
+        
+        when(gm.getActiveGraph()).thenReturn(mockGraph);
+        
+        try (final MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class); 
+                final MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class)) {
+            mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
+            
+            mockedGraphNode.when(() -> GraphNode.getGraphNode(any(Graph.class))).thenReturn(null);
+
+            RecentGraphScreenshotUtilities.takeScreenshot(filePath);
+            
+            //TODO: add something assert/verify here
+        }
+    }
+    
+    /**
+     * Test of takeScreenshot method, of class RecentGraphScreenshotUtilities.
+     */
+    @Test
+    public void testTakeScreenshotNoVisualManager() {
+        System.out.println("testTakeScreenshotNoVisualManager");
+        
+        final String filePath = "";
+
+        // Mocks
+        final GraphManager gm = mock(GraphManager.class);
+        final Graph mockGraph = mock(Graph.class);
+        final GraphNode mockGraphNode = mock(GraphNode.class);
+        final VisualManager vm = mock(VisualManager.class);
+        
+        when(gm.getActiveGraph()).thenReturn(mockGraph);
+        when(mockGraphNode.getVisualManager()).thenReturn(vm);
+        
+        try (final MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class); 
+                final MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class)) {
+            mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
+            
+            mockedGraphNode.when(() -> GraphNode.getGraphNode(any(Graph.class))).thenReturn(mockGraphNode);
+            when(mockGraphNode.getVisualManager()).thenReturn(null);
+
+            RecentGraphScreenshotUtilities.takeScreenshot(filePath);
+            
+            //TODO: add something assert/verify here
+        }
+    }
+    
     /**
      * Test of takeScreenshot method, of class RecentGraphScreenshotUtilities.
      */
@@ -97,53 +151,28 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void testTakeScreenshot() {
 //        System.out.println("testTakeScreenshot");
 //        
-//        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.takeScreenshot(anyString())).thenCallRealMethod();
-//        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.takeScreenshot(anyString(), any())).thenCallRealMethod();
-//
 //        final String filePath = "";
 //
 //        // Mocks
+//        final GraphManager gm = mock(GraphManager.class);
 //        final Graph mockGraph = mock(Graph.class);
 //        final GraphNode mockGraphNode = mock(GraphNode.class);
-//        final GraphManager gm = mock(GraphManager.class);
 //        final VisualManager vm = mock(VisualManager.class);
 //
-//        when(mockGraph.getId()).thenReturn("");
 //        when(gm.getActiveGraph()).thenReturn(mockGraph);
 //        when(mockGraphNode.getVisualManager()).thenReturn(vm);
-//
-//        // Assert mocks work
-//        assertEquals(gm.getActiveGraph(), mockGraph);
-//        assertEquals(mockGraphNode.getVisualManager(), vm);
-//
-//        //GraphNode.getGraphNode
+//        when(mockGraph.getId()).thenReturn("");
+//        
 //        try (final MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class); 
 //                final MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class)) {
 //            mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
-//            // Assert mocks work
-//            assertEquals(GraphManager.getDefault(), gm);
-//
-//            // Test graphnode is null
-//            mockedGraphNode.when(() -> GraphNode.getGraphNode(any(Graph.class))).thenReturn(null);
-//            assertEquals(GraphNode.getGraphNode(mockGraph), null);
-//
-//            RecentGraphScreenshotUtilities.takeScreenshot(filePath);
-//
-//            // Test graphnode not null, but visual manager is null
-//            mockedGraphNode.when(() -> GraphNode.getGraphNode(any(Graph.class))).thenReturn(mockGraphNode);
-//            when(mockGraphNode.getVisualManager()).thenReturn(null);
-//            assertEquals(GraphNode.getGraphNode(mockGraph), mockGraphNode);
-//            assertEquals(mockGraphNode.getVisualManager(), null);
-//
-//            RecentGraphScreenshotUtilities.takeScreenshot(filePath);
-//
-//            // Test with graphnode and visual manager NOT null
+//            
 //            mockedGraphNode.when(() -> GraphNode.getGraphNode(any(Graph.class))).thenReturn(mockGraphNode);
 //            when(mockGraphNode.getVisualManager()).thenReturn(vm);
-//            assertEquals(GraphNode.getGraphNode(mockGraph), mockGraphNode);
-//            assertEquals(mockGraphNode.getVisualManager(), vm);
 //
 //            RecentGraphScreenshotUtilities.takeScreenshot(filePath);
+//            
+//            //TODO: add something assert/verify here
 //        }
     }
 
@@ -155,7 +184,9 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void testRefreshScreenshotsDirNull() {
         System.out.println("refreshScreenshotDirNull");
 
-        try (final MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class)) {
+        try (final MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class);
+                final MockedStatic<RecentGraphScreenshotUtilities> recentGraphScreenshotUtilitiesMock  = Mockito.mockStatic(RecentGraphScreenshotUtilities.class);
+                final MockedStatic<RecentFiles> recentFilesMock = Mockito.mockStatic(RecentFiles.class)) {
             // getScreenshotsDir() will return null therefore there will be no files in filesInDirectory to iterate through.
             recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.getScreenshotsDir()).thenReturn(null);
             recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.refreshScreenshotsDir()).thenCallRealMethod();
@@ -182,7 +213,9 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void testRefreshScreenshotsDirNotNull() {
         System.out.println("refreshScreenshotDirNotNull");
         
-        try (final MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class)) {
+        try (final MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class);
+                final MockedStatic<RecentGraphScreenshotUtilities> recentGraphScreenshotUtilitiesMock  = Mockito.mockStatic(RecentGraphScreenshotUtilities.class);
+                final MockedStatic<RecentFiles> recentFilesMock = Mockito.mockStatic(RecentFiles.class)) {
             final File file1 = mock(File.class);
             when(file1.getName()).thenReturn("file1.star.png");
             when(file1.toPath()).thenReturn(Paths.get("path\'file1.star.png"));
@@ -222,7 +255,9 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void testRefreshScreenshotsHashed() {
         System.out.println("refreshScreenshotsHashed");
         
-        try (final MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class)) {
+        try (final MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class);
+                final MockedStatic<RecentGraphScreenshotUtilities> recentGraphScreenshotUtilitiesMock  = Mockito.mockStatic(RecentGraphScreenshotUtilities.class);
+                final MockedStatic<RecentFiles> recentFilesMock = Mockito.mockStatic(RecentFiles.class)) {
             final File file1 = mock(File.class);
             when(file1.getName()).thenReturn("1901de09374733aff5b72e9400d18482.png");
             when(file1.toPath()).thenReturn(Paths.get("1901de09374733aff5b72e9400d18482.png"));
@@ -257,7 +292,9 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void testRefreshScreenshotsLegacy() {
         System.out.println("refreshScreenshotsLegacy");
 
-        try (final MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class)) {
+        try (final MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class);
+                final MockedStatic<RecentGraphScreenshotUtilities> recentGraphScreenshotUtilitiesMock  = Mockito.mockStatic(RecentGraphScreenshotUtilities.class);
+                final MockedStatic<RecentFiles> recentFilesMock = Mockito.mockStatic(RecentFiles.class)) {
             final File file1 = mock(File.class);
             when(file1.getName()).thenReturn("test1.star.png");
             when(file1.toPath()).thenReturn(Paths.get("path\\to\\userdir\\test1.star.png"));
@@ -291,12 +328,13 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void testHashFilePath() {
         System.out.println("hashFilePath");
         
-        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.hashFilePath(anyString())).thenCallRealMethod();
-        dataTypeConverter.when(() -> DatatypeConverter.printHexBinary(Mockito.any())).thenReturn("0c695c8bff7af91d321c237bdf969addbfb859be8095d880f1d034737fbc35d2");
-        final String actual = RecentGraphScreenshotUtilities.hashFilePath("/test/path");
-        final String expected = "0C695C8BFF7AF91D321C237BDF969ADDBFB859BE8095D880F1D034737FBC35D2";
+        try (final MockedStatic<DatatypeConverter> dataTypeConverter = Mockito.mockStatic(DatatypeConverter.class)) {
+            dataTypeConverter.when(() -> DatatypeConverter.printHexBinary(Mockito.any())).thenReturn("0c695c8bff7af91d321c237bdf969addbfb859be8095d880f1d034737fbc35d2");
+            final String actual = RecentGraphScreenshotUtilities.hashFilePath("/test/path");
+            final String expected = "0C695C8BFF7AF91D321C237BDF969ADDBFB859BE8095D880F1D034737FBC35D2";
 
-        assertEquals(actual, expected);
+            assertEquals(actual, expected);           
+        }
     }
 
     /**
@@ -313,15 +351,17 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         final File screenShotsDir = mock(File.class);
         when(screenShotsDir.toString()).thenReturn(testFile.getParent());
 
-        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.hashFilePath(anyString())).thenReturn("hash123");
-        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.getScreenshotsDir()).thenReturn(screenShotsDir);
-        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.findScreenshot(anyString(), anyString())).thenCallRealMethod();
+        try (final MockedStatic<RecentGraphScreenshotUtilities> recentGraphScreenshotUtilitiesMock  = Mockito.mockStatic(RecentGraphScreenshotUtilities.class)) {
+            recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.hashFilePath(anyString())).thenReturn("hash123");
+            recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.getScreenshotsDir()).thenReturn(screenShotsDir);
+            recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.findScreenshot(anyString(), anyString())).thenCallRealMethod();
 
-        final Optional<File> actual = RecentGraphScreenshotUtilities.findScreenshot(testFile.getParent(), testFile.getName().replace(".png", ""));
-        final Optional<File> expected = Optional.of(new File(testFile.getParent() + File.separator + testFile.getName()));
+            final Optional<File> actual = RecentGraphScreenshotUtilities.findScreenshot(testFile.getParent(), testFile.getName().replace(".png", ""));
+            final Optional<File> expected = Optional.of(new File(testFile.getParent() + File.separator + testFile.getName()));
 
-        testFile.delete();
-        assertEquals(actual, expected);
+            testFile.delete();
+            assertEquals(actual, expected);
+        }
     }
 
     /**
@@ -334,14 +374,16 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         final File screenShotsDir = mock(File.class);
         when(screenShotsDir.toString()).thenReturn("/screenshots");
 
-        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.hashFilePath(anyString())).thenReturn("hash123");
-        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.getScreenshotsDir()).thenReturn(screenShotsDir);
-        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.findScreenshot(anyString(), anyString())).thenCallRealMethod();
+        try (final MockedStatic<RecentGraphScreenshotUtilities> recentGraphScreenshotUtilitiesMock  = Mockito.mockStatic(RecentGraphScreenshotUtilities.class)) {
+            recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.hashFilePath(anyString())).thenReturn("hash123");
+            recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.getScreenshotsDir()).thenReturn(screenShotsDir);
+            recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.findScreenshot(anyString(), anyString())).thenCallRealMethod();
 
-        final Optional<File> actual = RecentGraphScreenshotUtilities.findScreenshot("/not/found", "file");
-        final Optional<File> expected = Optional.empty();
+            final Optional<File> actual = RecentGraphScreenshotUtilities.findScreenshot("/not/found", "file");
+            final Optional<File> expected = Optional.empty();
 
-        assertEquals(actual, expected);
+            assertEquals(actual, expected);          
+        }
     }
 
     /**
@@ -350,9 +392,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     @Test
     public void testRequestGraphActive() {
         System.out.println("testRequestGraphActive");
-
-        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any(), any())).thenCallRealMethod();
-
+        
         // Set up mocks
         final Graph mockGraph = mock(Graph.class);
         when(mockGraph.getId()).thenReturn("");
@@ -434,25 +474,27 @@ public class RecentGraphScreenshotUtilitiesNGTest {
      */
     @Test
     public void testResizeAndSave() throws IOException {
-//        System.out.println("resizeAndSave");
-//        
-//        final File resizedImageFile = new File("testResize.png");       
-//        final BufferedImage originalImage = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
-//        
-//        assertFalse(resizedImageFile.exists());
-//        assertEquals(originalImage.getHeight(), 500);
-//        assertEquals(originalImage.getWidth(), 500);
-//        assertEquals(originalImage.getType(), BufferedImage.TYPE_INT_ARGB);
-//        
-//        RecentGraphScreenshotUtilities.resizeAndSave(originalImage, resizedImageFile.toPath(), 250, 300);
-//        
-//        assertTrue(resizedImageFile.exists());
-//        
-//        final BufferedImage resizedImage = ImageIO.read(resizedImageFile);
-//        assertEquals(resizedImage.getHeight(), 250);
-//        assertEquals(resizedImage.getWidth(), 300);
-//        assertEquals(resizedImage.getType(), BufferedImage.TYPE_INT_ARGB);
-//        
-//        resizedImageFile.delete();
+        System.out.println("resizeAndSave");
+        
+        final File resizedImageFile = new File("testResize.png");
+        
+        try {
+            resizedImageFile.createNewFile();
+            final BufferedImage originalImage = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
+            originalImage.setRGB(1, 1, 100);
+
+            assertEquals(originalImage.getHeight(), 500);
+            assertEquals(originalImage.getWidth(), 500);
+            
+            RecentGraphScreenshotUtilities.resizeAndSave(originalImage, resizedImageFile.toPath(), 250, 300);
+
+            assertTrue(resizedImageFile.exists());
+            
+            final BufferedImage resizedImage = ImageIO.read(resizedImageFile);
+            assertEquals(resizedImage.getHeight(), 250);
+            assertEquals(resizedImage.getWidth(), 300);
+        } finally {
+            resizedImageFile.delete();           
+        }      
     }
 }
