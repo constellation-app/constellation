@@ -81,7 +81,7 @@ public class CloseActionNGTest {
             
             // this part ensures that the close has been given a chance to run in the AWT before continuing with the rest of the test
             final CountDownLatch latch = new CountDownLatch(1);
-            SwingUtilities.invokeLater(() -> latch.countDown());
+            SwingUtilities.invokeLater(latch::countDown);
             
             latch.await();
             
