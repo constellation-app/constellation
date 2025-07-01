@@ -468,11 +468,10 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     private void updateGlobalParameters() {
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked") // AGGREGATOR_PARAMETER_ID is always a SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> aggregatorParameter = (PluginParameter<SingleChoiceParameterValue>) globalAnalyticParameters.getParameters().get(AGGREGATOR_PARAMETER_ID);
         final List<AnalyticAggregatorParameterValue> aggregators = new ArrayList<>();
         if (categoryListPane.isExpanded()) {
-            @SuppressWarnings("unchecked") //return type of getResultType is actually Class<? extends AnalyticResult<?>>
             final Class<? extends AnalyticResult<?>> pluginResultType = pluginList.getItems().get(0).getPlugin().getResultType();
 
             AnalyticUtilities.lookupAnalyticAggregators(pluginResultType).forEach(aggregator -> aggregators.add(new AnalyticAggregatorParameterValue(aggregator)));

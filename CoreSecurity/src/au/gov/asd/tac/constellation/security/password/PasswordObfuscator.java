@@ -106,7 +106,6 @@ public class PasswordObfuscator {
      * @throws IOException
      * @throws InvalidKeySpecException
      */
-    @SuppressWarnings("unused")
     public static void main(final String[] args) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, IOException, IllegalBlockSizeException {
         final BufferedReader input = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8.name()));
         LOGGER.log(Level.INFO, "Enter the string to encrypt (enter \"-\" to genernate a key): ");
