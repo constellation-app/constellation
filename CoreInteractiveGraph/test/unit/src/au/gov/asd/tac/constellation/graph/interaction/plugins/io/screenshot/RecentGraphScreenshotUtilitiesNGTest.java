@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
 import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.EventQueue;
 import java.awt.image.BufferedImage;
@@ -37,6 +38,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,11 +49,13 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.stubbing.Answer;
+import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
 import org.openide.windows.TopComponent.Registry;
 import org.openide.windows.WindowManager;
@@ -88,13 +93,42 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void tearDownMethod() throws Exception {
         // Not currently required
     }
+    
+    /**
+     * Test of getScreenshotsDir method, of class RecentGraphScreenshotUtilities.
+     * 
+     * @throws java.util.prefs.BackingStoreException
+     */
+    @Test
+    public void testGetScreenshotsDir() throws BackingStoreException {
+        System.out.println("getScreenshotsDir");
+        
+        final Preferences p = Preferences.userNodeForPackage(RecentGraphScreenshotUtilitiesNGTest.class);
+        File screenshotDir = null;
+        
+        try (final MockedStatic<NbPreferences> nbPreferencesMockedStatic = mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS)) {
+            nbPreferencesMockedStatic.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class)).thenReturn(p);
+            
+            p.put(ApplicationPreferenceKeys.USER_DIR, "userDir");
+            
+            screenshotDir = RecentGraphScreenshotUtilities.getScreenshotsDir();
+            
+            assertTrue(screenshotDir.exists());
+            assertEquals(screenshotDir.getPath(), "userDir" + File.separator + "Screenshots");
+        } finally {
+            p.removeNode();
+            if (screenshotDir != null) {
+                screenshotDir.delete();
+            }
+        }
+    }
 
     /**
      * Test of takeScreenshot method, of class RecentGraphScreenshotUtilities. No Graph Node
      */
     @Test
     public void testTakeScreenshotNoGraphNode() {
-        System.out.println("testTakeScreenshotNoGraphNode");
+        System.out.println("takeScreenshotNoGraphNode");
         
         // Mocks
         final GraphManager gm = mock(GraphManager.class);
@@ -121,7 +155,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
      */
     @Test
     public void testTakeScreenshotNoVisualManager() {
-        System.out.println("testTakeScreenshotNoVisualManager");
+        System.out.println("takeScreenshotNoVisualManager");
         
         // Mocks
         final GraphManager gm = mock(GraphManager.class);
@@ -150,7 +184,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
      */
     @Test
     public void testTakeScreenshot() {
-        System.out.println("testTakeScreenshot");
+        System.out.println("takeScreenshot");
 
         // Mocks
         final GraphManager gm = mock(GraphManager.class);
@@ -179,7 +213,6 @@ public class RecentGraphScreenshotUtilitiesNGTest {
             mockedRecentGraphScreenshotUtilities.when(() -> RecentGraphScreenshotUtilities.takeScreenshot(anyString())).thenCallRealMethod();
             mockedRecentGraphScreenshotUtilities.when(() -> RecentGraphScreenshotUtilities.takeScreenshot(anyString(), any(Graph.class))).thenCallRealMethod();
             mockedRecentGraphScreenshotUtilities.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any(Graph.class), any(Semaphore.class))).thenCallRealMethod();
-            mockedRecentGraphScreenshotUtilities.when(() -> RecentGraphScreenshotUtilities.resizeAndSave(any(BufferedImage.class), any(Path.class), anyInt(), anyInt())).thenCallRealMethod();
             
             RecentGraphScreenshotUtilities.takeScreenshot("");
             
@@ -403,7 +436,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
      */
     @Test
     public void testRequestGraphActive() {
-        System.out.println("testRequestGraphActive");
+        System.out.println("requestGraphActive");
         
         // Set up mocks
         final Graph mockGraph = mock(Graph.class);
