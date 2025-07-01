@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.histogram.AttributeType;
 import au.gov.asd.tac.constellation.views.histogram.BinComparator;
 import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
@@ -191,7 +192,7 @@ public class HistogramTopComponent2NGTest {
     @Test
     public void testModifyBinHeight() {
         System.out.println("modifyBinHeight");
-        try (MockedConstruction<HistogramPane> mockConstructor = Mockito.mockConstruction(HistogramPane.class)) {
+        try (final MockedConstruction<HistogramPane> mockConstructor = Mockito.mockConstruction(HistogramPane.class)) {
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
 
             assertEquals(1, mockConstructor.constructed().size());
@@ -211,7 +212,7 @@ public class HistogramTopComponent2NGTest {
     @Test
     public void testReset() {
         System.out.println("reset");
-        try (MockedConstruction<HistogramPane> mockConstructor = Mockito.mockConstruction(HistogramPane.class)) {
+        try (final MockedConstruction<HistogramPane> mockConstructor = Mockito.mockConstruction(HistogramPane.class)) {
             final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
 
             final Graph mockGraph = mock(Graph.class);
@@ -236,7 +237,7 @@ public class HistogramTopComponent2NGTest {
     @Test
     public void testResetNullGraph() {
         System.out.println("reset Null Graph");
-        try (MockedConstruction<HistogramPane> mockConstructor = Mockito.mockConstruction(HistogramPane.class)) {
+        try (final MockedConstruction<HistogramPane> mockConstructor = Mockito.mockConstruction(HistogramPane.class)) {
 
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
 
@@ -285,7 +286,7 @@ public class HistogramTopComponent2NGTest {
         final GraphElementType mockElementType = GraphElementType.EDGE;
         final BinComparator mockBinComparator = BinComparator.KEY;
 
-        try (MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
+        try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
             when(mock.getAttributeType()).thenReturn(mockBinType);
             when(mock.getElementType()).thenReturn(mockElementType);
             when(mock.getBinComparator()).thenReturn(mockBinComparator);
@@ -321,7 +322,7 @@ public class HistogramTopComponent2NGTest {
 
         final AttributeType attributeType = AttributeType.ATTRIBUTE;
 
-        try (MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
+        try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
             when(mock.getAttributeType()).thenReturn(mockBinType);
             when(mock.getElementType()).thenReturn(mockElementType);
             when(mock.getBinComparator()).thenReturn(mockBinComparator);
@@ -340,46 +341,110 @@ public class HistogramTopComponent2NGTest {
         }
     }
 
-//    /**
-//     * Test of setAttribute method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testSetAttribute() {
-//        System.out.println("setAttribute");
-//        String attribute = "";
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.setAttribute(attribute);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of setBinComparator method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testSetBinComparator() {
-//        System.out.println("setBinComparator");
-//        BinComparator binComparator = null;
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.setBinComparator(binComparator);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of setBinFormatter method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testSetBinFormatter() {
-//        System.out.println("setBinFormatter");
-//        BinFormatter binFormatter = null;
-//        PluginParameters parameters = null;
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.setBinFormatter(binFormatter, parameters);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
+    /**
+     * Test of setAttribute method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testSetAttribute() {
+        System.out.println("setAttribute");
+        final String attribute = "attribute";
+
+        // Mocks
+        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final Graph mockGraph = mock(Graph.class);
+        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+
+        final AttributeType mockBinType = AttributeType.ATTRIBUTE;
+        final GraphElementType mockElementType = GraphElementType.EDGE;
+        final BinComparator mockBinComparator = BinComparator.KEY;
+
+        try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
+            when(mock.getAttributeType()).thenReturn(mockBinType);
+            when(mock.getElementType()).thenReturn(mockElementType);
+            when(mock.getBinComparator()).thenReturn(mockBinComparator);
+        })) {
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+            instance.newActiveGraph(mockGraph);
+            instance.setAttribute(attribute);
+
+            assertTrue(mockConstructor.constructed().size() > 1);
+            final HistogramState state = mockConstructor.constructed().getLast();
+
+            verify(state).setAttribute(attribute);
+            verify(state).setBinFormatter(BinFormatter.DEFAULT_BIN_FORMATTER);
+        }
+    }
+
+    /**
+     * Test of setBinComparator method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testSetBinComparator() {
+        System.out.println("setBinComparator");
+        // Mocks
+        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final Graph mockGraph = mock(Graph.class);
+        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+
+        final AttributeType mockBinType = AttributeType.ATTRIBUTE;
+        final GraphElementType mockElementType = GraphElementType.EDGE;
+        final BinComparator mockBinComparator = BinComparator.KEY;
+
+        final BinComparator binComparator = BinComparator.KEY_NUMBER; // Has to be different from default which is BinComparator.KEY apparently
+
+        try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
+            when(mock.getAttributeType()).thenReturn(mockBinType);
+            when(mock.getElementType()).thenReturn(mockElementType);
+            when(mock.getBinComparator()).thenReturn(mockBinComparator);
+        })) {
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+
+            instance.newActiveGraph(mockGraph);
+            instance.setBinComparator(binComparator);
+
+            assertTrue(mockConstructor.constructed().size() > 1);
+            final HistogramState state = mockConstructor.constructed().getLast();
+
+            verify(state).setBinComparator(binComparator);
+        }
+    }
+
+    /**
+     * Test of setBinFormatter method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testSetBinFormatter() {
+        System.out.println("setBinFormatter");
+        // Mocks
+        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final Graph mockGraph = mock(Graph.class);
+        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+
+        final BinFormatter binFormatter = new BinFormatter();
+        final PluginParameters parameters = null;
+
+        final AttributeType mockBinType = AttributeType.ATTRIBUTE;
+        final GraphElementType mockElementType = GraphElementType.EDGE;
+        final BinComparator mockBinComparator = BinComparator.KEY;
+
+        try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
+            when(mock.getAttributeType()).thenReturn(mockBinType);
+            when(mock.getElementType()).thenReturn(mockElementType);
+            when(mock.getBinComparator()).thenReturn(mockBinComparator);
+        })) {
+
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+            instance.newActiveGraph(mockGraph);
+            instance.setBinFormatter(binFormatter, parameters);
+
+            assertTrue(mockConstructor.constructed().size() > 1);
+            final HistogramState state = mockConstructor.constructed().getLast();
+
+            verify(state).setBinFormatter(binFormatter);
+            verify(state).setBinFormatterParameters(parameters);
+        }
+    }
+
 //    /**
 //     * Test of setBinSelectionMode method, of class HistogramTopComponent2.
 //     */

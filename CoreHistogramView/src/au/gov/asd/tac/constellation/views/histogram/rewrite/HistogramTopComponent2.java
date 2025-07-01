@@ -437,7 +437,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         // If the current state is null or the elementType selected is not the one already selected.
         if (currentHistogramState == null || elementType != currentHistogramState.getElementType()) {
             final HistogramState newHistogramState = new HistogramState(currentHistogramState);
-            System.out.println("newHistogramState " + newHistogramState);
             newHistogramState.setElementType(elementType);
             newHistogramState.setElementState();
             PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
@@ -481,16 +480,19 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     }
 
     public void setBinFormatter(final BinFormatter binFormatter, final PluginParameters parameters) {
-        if (currentGraph != null) {
-            if (binFormatter == null) {
-                throw new IllegalArgumentException("Null bin formatter");
-            }
-            if (currentHistogramState == null || binFormatter != currentHistogramState.getBinFormatter() || parameters != currentHistogramState.getBinFormatterParameters()) {
-                HistogramState newHistogramState = new HistogramState(currentHistogramState);
-                newHistogramState.setBinFormatter(binFormatter);
-                newHistogramState.setBinFormatterParameters(parameters);
-                PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
-            }
+        if (currentGraph == null) {
+            return;
+        }
+
+        if (binFormatter == null) {
+            throw new IllegalArgumentException("Null bin formatter");
+        }
+
+        if (currentHistogramState == null || binFormatter != currentHistogramState.getBinFormatter() || parameters != currentHistogramState.getBinFormatterParameters()) {
+            HistogramState newHistogramState = new HistogramState(currentHistogramState);
+            newHistogramState.setBinFormatter(binFormatter);
+            newHistogramState.setBinFormatterParameters(parameters);
+            PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
         }
     }
 
