@@ -152,9 +152,6 @@ public class RecentGraphScreenshotUtilities {
      * @param graph The graph to take a screenshot of
      */
     public static synchronized void takeScreenshot(final String filepath, final Graph graph) {
-        final String pathHash = hashFilePath(filepath);
-        final String imageFile = getScreenshotsDir() + File.separator + pathHash + FileExtensionConstants.PNG;
-        final Path source = Paths.get(imageFile);
         final GraphNode graphNode = GraphNode.getGraphNode(graph);
 
         if (graphNode == null) {
@@ -180,8 +177,9 @@ public class RecentGraphScreenshotUtilities {
         // Wait for exporting to finish before moving on
         waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
         try {
+            final String imageFile = getScreenshotsDir() + File.separator + hashFilePath(filepath) + FileExtensionConstants.PNG;
             // resizeAndSave the buffered image in memory and write the image to disk
-            resizeAndSave(originalImage[0], source, IMAGE_SIZE, IMAGE_SIZE);
+            resizeAndSave(originalImage[0], Paths.get(imageFile), IMAGE_SIZE, IMAGE_SIZE);
             refreshScreenshotsDir();
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -209,11 +207,11 @@ public class RecentGraphScreenshotUtilities {
                     Thread.currentThread().interrupt();
                 } catch (final InvocationTargetException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                } finally {
-                    semaphore.release();
                 }
             }
         });
+        
+        semaphore.release();
     }
 
     /**

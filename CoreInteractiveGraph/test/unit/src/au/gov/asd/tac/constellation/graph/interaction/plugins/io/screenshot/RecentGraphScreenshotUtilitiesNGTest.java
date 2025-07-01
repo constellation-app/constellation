@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,11 +40,13 @@ import java.util.concurrent.Semaphore;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -93,8 +96,6 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void testTakeScreenshotNoGraphNode() {
         System.out.println("testTakeScreenshotNoGraphNode");
         
-        final String filePath = "";
-
         // Mocks
         final GraphManager gm = mock(GraphManager.class);
         final Graph mockGraph = mock(Graph.class);
@@ -102,14 +103,16 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         when(gm.getActiveGraph()).thenReturn(mockGraph);
         
         try (final MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class); 
-                final MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class)) {
+                final MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class);
+                final MockedStatic<RecentGraphScreenshotUtilities> mockedRecentGraphScreenshotUtilities = Mockito.mockStatic(RecentGraphScreenshotUtilities.class, Mockito.CALLS_REAL_METHODS)) {
             mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
             
-            mockedGraphNode.when(() -> GraphNode.getGraphNode(any(Graph.class))).thenReturn(null);
+            mockedGraphNode.when(() -> GraphNode.getGraphNode(mockGraph)).thenReturn(null);
 
-            RecentGraphScreenshotUtilities.takeScreenshot(filePath);
+            RecentGraphScreenshotUtilities.takeScreenshot("");
             
-            //TODO: add something assert/verify here
+            // without a graph node, no screenshot should be saved
+            mockedRecentGraphScreenshotUtilities.verify(() -> RecentGraphScreenshotUtilities.resizeAndSave(any(BufferedImage.class), any(Path.class), anyInt(), anyInt()), never());
         }
     }
     
@@ -120,27 +123,25 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void testTakeScreenshotNoVisualManager() {
         System.out.println("testTakeScreenshotNoVisualManager");
         
-        final String filePath = "";
-
         // Mocks
         final GraphManager gm = mock(GraphManager.class);
         final Graph mockGraph = mock(Graph.class);
         final GraphNode mockGraphNode = mock(GraphNode.class);
-        final VisualManager vm = mock(VisualManager.class);
         
         when(gm.getActiveGraph()).thenReturn(mockGraph);
-        when(mockGraphNode.getVisualManager()).thenReturn(vm);
+        when(mockGraphNode.getVisualManager()).thenReturn(null);
         
         try (final MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class); 
-                final MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class)) {
+                final MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class);
+                final MockedStatic<RecentGraphScreenshotUtilities> mockedRecentGraphScreenshotUtilities = Mockito.mockStatic(RecentGraphScreenshotUtilities.class, Mockito.CALLS_REAL_METHODS)) {
             mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
             
-            mockedGraphNode.when(() -> GraphNode.getGraphNode(any(Graph.class))).thenReturn(mockGraphNode);
-            when(mockGraphNode.getVisualManager()).thenReturn(null);
+            mockedGraphNode.when(() -> GraphNode.getGraphNode(mockGraph)).thenReturn(mockGraphNode);
 
-            RecentGraphScreenshotUtilities.takeScreenshot(filePath);
+            RecentGraphScreenshotUtilities.takeScreenshot("");
             
-            //TODO: add something assert/verify here
+            // without a visual manager, no screenshot should be saved
+            mockedRecentGraphScreenshotUtilities.verify(() -> RecentGraphScreenshotUtilities.resizeAndSave(any(BufferedImage.class), any(Path.class), anyInt(), anyInt()), never());
         }
     }
     
@@ -149,31 +150,42 @@ public class RecentGraphScreenshotUtilitiesNGTest {
      */
     @Test
     public void testTakeScreenshot() {
-//        System.out.println("testTakeScreenshot");
-//        
-//        final String filePath = "";
-//
-//        // Mocks
-//        final GraphManager gm = mock(GraphManager.class);
-//        final Graph mockGraph = mock(Graph.class);
-//        final GraphNode mockGraphNode = mock(GraphNode.class);
-//        final VisualManager vm = mock(VisualManager.class);
-//
-//        when(gm.getActiveGraph()).thenReturn(mockGraph);
-//        when(mockGraphNode.getVisualManager()).thenReturn(vm);
-//        when(mockGraph.getId()).thenReturn("");
-//        
-//        try (final MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class); 
-//                final MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class)) {
-//            mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
-//            
-//            mockedGraphNode.when(() -> GraphNode.getGraphNode(any(Graph.class))).thenReturn(mockGraphNode);
-//            when(mockGraphNode.getVisualManager()).thenReturn(vm);
-//
-//            RecentGraphScreenshotUtilities.takeScreenshot(filePath);
-//            
-//            //TODO: add something assert/verify here
-//        }
+        System.out.println("testTakeScreenshot");
+
+        // Mocks
+        final GraphManager gm = mock(GraphManager.class);
+        final Graph mockGraph = mock(Graph.class);
+        final GraphNode mockGraphNode = mock(GraphNode.class);
+        final VisualManager vm = mock(VisualManager.class);
+
+        when(gm.getActiveGraph()).thenReturn(mockGraph);
+        when(mockGraphNode.getVisualManager()).thenReturn(vm);
+        when(mockGraph.getId()).thenReturn("");
+        doAnswer(invocation -> {
+            // getting the semaphore argument so that it is released properly
+            final Semaphore sem = invocation.getArgument(1);
+            sem.release();
+            
+            return null;
+        }).when(vm).exportToBufferedImage(any(BufferedImage[].class), any(Semaphore.class));
+        
+        try (final MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class); 
+                final MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class);
+                final MockedStatic<RecentGraphScreenshotUtilities> mockedRecentGraphScreenshotUtilities = Mockito.mockStatic(RecentGraphScreenshotUtilities.class)) {
+            mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
+            
+            mockedGraphNode.when(() -> GraphNode.getGraphNode(mockGraph)).thenReturn(mockGraphNode);
+            
+            mockedRecentGraphScreenshotUtilities.when(() -> RecentGraphScreenshotUtilities.takeScreenshot(anyString())).thenCallRealMethod();
+            mockedRecentGraphScreenshotUtilities.when(() -> RecentGraphScreenshotUtilities.takeScreenshot(anyString(), any(Graph.class))).thenCallRealMethod();
+            mockedRecentGraphScreenshotUtilities.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any(Graph.class), any(Semaphore.class))).thenCallRealMethod();
+            mockedRecentGraphScreenshotUtilities.when(() -> RecentGraphScreenshotUtilities.resizeAndSave(any(BufferedImage.class), any(Path.class), anyInt(), anyInt())).thenCallRealMethod();
+            
+            RecentGraphScreenshotUtilities.takeScreenshot("");
+            
+            // with everything in place, the screenshot should be taken and saved
+            mockedRecentGraphScreenshotUtilities.verify(() -> RecentGraphScreenshotUtilities.resizeAndSave(any(BufferedImage.class), any(Path.class), anyInt(), anyInt()));
+        }
     }
 
     /**
