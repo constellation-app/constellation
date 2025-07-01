@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.histogram.rewrite;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -28,6 +29,8 @@ import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
 import au.gov.asd.tac.constellation.views.histogram.HistogramState;
 import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -255,7 +258,7 @@ public class HistogramTopComponent2NGTest {
      * Test of setHistogramViewOptions method, of class HistogramTopComponent2.
      */
     @Test
-    public void testSetHistogramViewOptions() {
+    public void testSetHistogramViewOptions() throws InterruptedException {
         System.out.println("setHistogramViewOptions");
         final GraphElementType elementType = GraphElementType.LINK;
         final AttributeType attributeType = AttributeType.ATTRIBUTE;
@@ -263,8 +266,11 @@ public class HistogramTopComponent2NGTest {
 
         // Mocks
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
         final Graph mockGraph = mock(Graph.class);
         when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
+
         final HistogramTopComponent2 instance = new HistogramTopComponent2();
 
         instance.newActiveGraph(mockGraph);
@@ -275,12 +281,17 @@ public class HistogramTopComponent2NGTest {
      * Test of setGraphElementType method, of class HistogramTopComponent2.
      */
     @Test
-    public void testSetGraphElementType() {
+    public void testSetGraphElementType() throws InterruptedException {
         System.out.println("setGraphElementType");
+
+        final GraphElementType elementType = GraphElementType.LINK;
+
         // Mocks
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
         final Graph mockGraph = mock(Graph.class);
         when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
 
         final AttributeType mockBinType = AttributeType.ATTRIBUTE;
         final GraphElementType mockElementType = GraphElementType.EDGE;
@@ -291,11 +302,12 @@ public class HistogramTopComponent2NGTest {
             when(mock.getElementType()).thenReturn(mockElementType);
             when(mock.getBinComparator()).thenReturn(mockBinComparator);
         })) {
-            final GraphElementType elementType = GraphElementType.LINK;
 
+            // Set up top component
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
-
             instance.newActiveGraph(mockGraph);
+
+            // Run Function
             instance.setGraphElementType(elementType);
 
             assertTrue(mockConstructor.constructed().size() > 1);
@@ -310,26 +322,33 @@ public class HistogramTopComponent2NGTest {
      * Test of setAttributeType method, of class HistogramTopComponent2.
      */
     @Test
-    public void testSetAttributeType() {
+    public void testSetAttributeType() throws InterruptedException {
         System.out.println("setAttributeType");
+
+        final AttributeType attributeType = AttributeType.ATTRIBUTE;
+
         // Mocks
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
         final Graph mockGraph = mock(Graph.class);
         when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
+
         final AttributeType mockBinType = AttributeType.ATTRIBUTE;
         final GraphElementType mockElementType = GraphElementType.EDGE;
         final BinComparator mockBinComparator = BinComparator.KEY;
-
-        final AttributeType attributeType = AttributeType.ATTRIBUTE;
 
         try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
             when(mock.getAttributeType()).thenReturn(mockBinType);
             when(mock.getElementType()).thenReturn(mockElementType);
             when(mock.getBinComparator()).thenReturn(mockBinComparator);
         })) {
+
+            // Set up top component
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
             instance.newActiveGraph(mockGraph);
 
+            // Run Function
             instance.setAttributeType(attributeType);
 
             assertTrue(mockConstructor.constructed().size() > 1);
@@ -345,14 +364,16 @@ public class HistogramTopComponent2NGTest {
      * Test of setAttribute method, of class HistogramTopComponent2.
      */
     @Test
-    public void testSetAttribute() {
+    public void testSetAttribute() throws InterruptedException {
         System.out.println("setAttribute");
         final String attribute = "attribute";
 
         // Mocks
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
         final Graph mockGraph = mock(Graph.class);
         when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
 
         final AttributeType mockBinType = AttributeType.ATTRIBUTE;
         final GraphElementType mockElementType = GraphElementType.EDGE;
@@ -363,8 +384,12 @@ public class HistogramTopComponent2NGTest {
             when(mock.getElementType()).thenReturn(mockElementType);
             when(mock.getBinComparator()).thenReturn(mockBinComparator);
         })) {
+
+            // Set up top component
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
             instance.newActiveGraph(mockGraph);
+
+            // Run Function
             instance.setAttribute(attribute);
 
             assertTrue(mockConstructor.constructed().size() > 1);
@@ -379,27 +404,33 @@ public class HistogramTopComponent2NGTest {
      * Test of setBinComparator method, of class HistogramTopComponent2.
      */
     @Test
-    public void testSetBinComparator() {
+    public void testSetBinComparator() throws InterruptedException {
         System.out.println("setBinComparator");
+
+        final BinComparator binComparator = BinComparator.KEY_NUMBER; // Has to be different from default which is BinComparator.KEY apparently
+
         // Mocks
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
         final Graph mockGraph = mock(Graph.class);
         when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
 
         final AttributeType mockBinType = AttributeType.ATTRIBUTE;
         final GraphElementType mockElementType = GraphElementType.EDGE;
         final BinComparator mockBinComparator = BinComparator.KEY;
-
-        final BinComparator binComparator = BinComparator.KEY_NUMBER; // Has to be different from default which is BinComparator.KEY apparently
 
         try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
             when(mock.getAttributeType()).thenReturn(mockBinType);
             when(mock.getElementType()).thenReturn(mockElementType);
             when(mock.getBinComparator()).thenReturn(mockBinComparator);
         })) {
-            final HistogramTopComponent2 instance = new HistogramTopComponent2();
 
+            // Set up top component
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
             instance.newActiveGraph(mockGraph);
+
+            // Run Function
             instance.setBinComparator(binComparator);
 
             assertTrue(mockConstructor.constructed().size() > 1);
@@ -413,15 +444,19 @@ public class HistogramTopComponent2NGTest {
      * Test of setBinFormatter method, of class HistogramTopComponent2.
      */
     @Test
-    public void testSetBinFormatter() {
+    public void testSetBinFormatter() throws InterruptedException {
         System.out.println("setBinFormatter");
-        // Mocks
-        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
-        final Graph mockGraph = mock(Graph.class);
-        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
 
+        // Function parameters
         final BinFormatter binFormatter = new BinFormatter();
         final PluginParameters parameters = null;
+
+        // Mocks
+        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
+        final Graph mockGraph = mock(Graph.class);
+        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
 
         final AttributeType mockBinType = AttributeType.ATTRIBUTE;
         final GraphElementType mockElementType = GraphElementType.EDGE;
@@ -433,10 +468,14 @@ public class HistogramTopComponent2NGTest {
             when(mock.getBinComparator()).thenReturn(mockBinComparator);
         })) {
 
+            // Set up top component
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
             instance.newActiveGraph(mockGraph);
+
+            // Run Function
             instance.setBinFormatter(binFormatter, parameters);
 
+            // Assert state was made and certain functions were run
             assertTrue(mockConstructor.constructed().size() > 1);
             final HistogramState state = mockConstructor.constructed().getLast();
 
@@ -445,19 +484,47 @@ public class HistogramTopComponent2NGTest {
         }
     }
 
-//    /**
-//     * Test of setBinSelectionMode method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testSetBinSelectionMode() {
-//        System.out.println("setBinSelectionMode");
-//        BinSelectionMode binSelectionMode = null;
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.setBinSelectionMode(binSelectionMode);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
+    /**
+     * Test of setBinSelectionMode method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testSetBinSelectionMode() throws InterruptedException {
+        System.out.println("setBinSelectionMode");
+
+        final BinSelectionMode binSelectionMode = BinSelectionMode.ADD_TO_SELECTION;
+
+        // Mocks
+        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
+        final Graph mockGraph = mock(Graph.class);
+        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
+
+        final AttributeType mockBinType = AttributeType.ATTRIBUTE;
+        final GraphElementType mockElementType = GraphElementType.EDGE;
+        final BinComparator mockBinComparator = BinComparator.KEY;
+
+        try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
+            when(mock.getAttributeType()).thenReturn(mockBinType);
+            when(mock.getElementType()).thenReturn(mockElementType);
+            when(mock.getBinComparator()).thenReturn(mockBinComparator);
+        })) {
+
+            // Set up top component
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+            instance.newActiveGraph(mockGraph);
+
+            // Run Function
+            instance.setBinSelectionMode(binSelectionMode);
+
+            // Assert state was made and certain functions were run
+            assertTrue(mockConstructor.constructed().size() > 1);
+            final HistogramState state = mockConstructor.constructed().getLast();
+
+            verify(state).setBinSelectionMode(binSelectionMode);
+        }
+    }
+
 //    /**
 //     * Test of selectOnlyBins method, of class HistogramTopComponent2.
 //     */

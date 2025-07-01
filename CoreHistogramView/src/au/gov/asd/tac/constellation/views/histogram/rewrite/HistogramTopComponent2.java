@@ -497,15 +497,18 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     }
 
     public void setBinSelectionMode(final BinSelectionMode binSelectionMode) {
-        if (currentGraph != null) {
-            if (binSelectionMode == null) {
-                throw new IllegalArgumentException("Null bin selection mode");
-            }
-            if (currentHistogramState == null || binSelectionMode != currentHistogramState.getBinSelectionMode()) {
-                HistogramState newHistogramState = new HistogramState(currentHistogramState);
-                newHistogramState.setBinSelectionMode(binSelectionMode);
-                PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
-            }
+        if (currentGraph == null) {
+            return;
+        }
+
+        if (binSelectionMode == null) {
+            throw new IllegalArgumentException("Null bin selection mode");
+        }
+
+        if (currentHistogramState == null || binSelectionMode != currentHistogramState.getBinSelectionMode()) {
+            HistogramState newHistogramState = new HistogramState(currentHistogramState);
+            newHistogramState.setBinSelectionMode(binSelectionMode);
+            PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
         }
     }
 
