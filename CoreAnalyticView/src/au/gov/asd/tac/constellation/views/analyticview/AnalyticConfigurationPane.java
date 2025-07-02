@@ -170,7 +170,7 @@ public class AnalyticConfigurationPane extends VBox {
         // set up the list of analytic questions
         this.questionToPluginsMap = new HashMap<>();
         AnalyticUtilities.getAnalyticQuestionDescriptions().forEach(question -> {
-            final List<Class> questionPluginClasses = question.getPluginClasses();
+            final List<Class<? extends AnalyticPlugin>> questionPluginClasses = question.getPluginClasses();
             SELECTABLE_PLUGINS.forEach(selectablePlugin -> {
                 if (questionPluginClasses.contains(selectablePlugin.plugin.getClass())) {
                     final List<SelectableAnalyticPlugin> questionPlugins;
@@ -634,7 +634,7 @@ public class AnalyticConfigurationPane extends VBox {
 
             // update the questions pane
             if (!activeAnalyticQuestions.isEmpty() && !categoriesVisible) {
-                for (final AnalyticQuestionDescription question : activeAnalyticQuestions) {
+                for (final AnalyticQuestionDescription<?> question : activeAnalyticQuestions) {
                     if (question != null && questionList.getItems().contains(question)) {
                         final int index = questionList.getItems().indexOf(question);
                         questionList.getSelectionModel().select(index);
