@@ -382,9 +382,9 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
                 if (elementType == null) {
                     elementType = currentHistogramState.getElementType();
                 }
+
                 binnedAttribute = graph.getAttribute(elementType, currentHistogramState.getAttribute());
                 if (binnedAttribute != Graph.NOT_FOUND) {
-
                     Attribute binnedAttributeRecord = new GraphAttribute(graph, binnedAttribute);
                     if ("icon".equals(binnedAttributeRecord.getAttributeType())) {
                         binIconMode = BinIconMode.ICON;
@@ -520,7 +520,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
     public void filterOnSelection() {
         if (currentGraph != null) {
-            Plugin plugin = new HistogramFilterOnSelectionPlugin();
+            final Plugin plugin = new HistogramFilterOnSelectionPlugin();
             PluginParameters params = plugin.createParameters();
             params.getParameters().get(HistogramFilterOnSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID).setObjectValue(new ElementTypeParameterValue(currentHistogramState.getElementType()));
             PluginExecution.withPlugin(plugin).withParameters(params).executeLater(currentGraph);
@@ -529,7 +529,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
     public void clearFilter() {
         if (currentGraph != null) {
-            Plugin plugin = new HistogramClearFilterPlugin();
+            final Plugin plugin = new HistogramClearFilterPlugin();
             PluginParameters params = plugin.createParameters();
             params.getParameters().get(HistogramClearFilterPlugin.ELEMENT_TYPE_PARAMETER_ID).setObjectValue(new ElementTypeParameterValue(currentHistogramState.getElementType()));
             PluginExecution.withPlugin(plugin).withParameters(params).executeLater(currentGraph);
