@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.histogram.AttributeType;
 import au.gov.asd.tac.constellation.views.histogram.BinComparator;
@@ -43,6 +45,7 @@ import static org.mockito.Mockito.when;
 import org.openide.awt.UndoRedo;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -50,6 +53,30 @@ import org.testng.annotations.Test;
  * @author Quasar985
  */
 public class HistogramTopComponent2NGTest {
+
+    // Mocks
+    private ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+    private WritableGraph mockWritableGraph = mock(WritableGraph.class);
+    private Graph mockGraph = mock(Graph.class);
+
+    private AttributeType mockBinType = AttributeType.ATTRIBUTE;
+    private GraphElementType mockElementType = GraphElementType.EDGE;
+    private BinComparator mockBinComparator = BinComparator.KEY;
+
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+        mockReadableGraph = mock(ReadableGraph.class);
+        mockWritableGraph = mock(WritableGraph.class);
+        mockGraph = mock(Graph.class);
+
+        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
+        when(mockReadableGraph.getAttribute(GraphElementType.META, "histogram_state")).thenReturn(Graph.NOT_FOUND);
+
+        mockBinType = AttributeType.ATTRIBUTE;
+        mockElementType = GraphElementType.EDGE;
+        mockBinComparator = BinComparator.KEY;
+    }
 
     /**
      * Test of componentShowing method, of class HistogramTopComponent2.
@@ -109,7 +136,6 @@ public class HistogramTopComponent2NGTest {
     public void testHandleComponentOpened() {
         System.out.println("handleComponentOpened");
 
-        final Graph mockGraph = mock(Graph.class);
         final GraphManager mockGraphManager = mock(GraphManager.class);
         when(mockGraphManager.getActiveGraph()).thenReturn(mockGraph);
 
@@ -169,13 +195,6 @@ public class HistogramTopComponent2NGTest {
         when(event.getLatest()).thenReturn(event);
         when(event.getId()).thenReturn(1L);
 
-        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
-        when(mockReadableGraph.getStructureModificationCounter()).thenReturn(Long.MIN_VALUE);
-        when(mockReadableGraph.getAttributeModificationCounter()).thenReturn(Long.MIN_VALUE);
-
-        final Graph mockGraph = mock(Graph.class);
-        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
-
         final HistogramTopComponent2 instance = new HistogramTopComponent2();
         instance.newActiveGraph(mockGraph);
         instance.handleGraphChange(event);
@@ -216,10 +235,6 @@ public class HistogramTopComponent2NGTest {
     public void testReset() {
         System.out.println("reset");
         try (final MockedConstruction<HistogramPane> mockConstructor = Mockito.mockConstruction(HistogramPane.class)) {
-            final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
-
-            final Graph mockGraph = mock(Graph.class);
-            when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
 
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
             instance.newActiveGraph(mockGraph);
@@ -264,13 +279,6 @@ public class HistogramTopComponent2NGTest {
         final AttributeType attributeType = AttributeType.ATTRIBUTE;
         final String attribute = "";
 
-        // Mocks
-        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
-        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
-        final Graph mockGraph = mock(Graph.class);
-        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
-        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
-
         final HistogramTopComponent2 instance = new HistogramTopComponent2();
 
         instance.newActiveGraph(mockGraph);
@@ -285,17 +293,6 @@ public class HistogramTopComponent2NGTest {
         System.out.println("setGraphElementType");
 
         final GraphElementType elementType = GraphElementType.LINK;
-
-        // Mocks
-        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
-        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
-        final Graph mockGraph = mock(Graph.class);
-        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
-        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
-
-        final AttributeType mockBinType = AttributeType.ATTRIBUTE;
-        final GraphElementType mockElementType = GraphElementType.EDGE;
-        final BinComparator mockBinComparator = BinComparator.KEY;
 
         try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
             when(mock.getAttributeType()).thenReturn(mockBinType);
@@ -327,22 +324,11 @@ public class HistogramTopComponent2NGTest {
 
         final AttributeType attributeType = AttributeType.ATTRIBUTE;
 
-        // Mocks
-        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
-        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
-        final Graph mockGraph = mock(Graph.class);
-        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
-        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
-
-        final AttributeType mockBinType = AttributeType.ATTRIBUTE;
-        final GraphElementType mockElementType = GraphElementType.EDGE;
-        final BinComparator mockBinComparator = BinComparator.KEY;
-
         try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
             when(mock.getAttributeType()).thenReturn(mockBinType);
             when(mock.getElementType()).thenReturn(mockElementType);
             when(mock.getBinComparator()).thenReturn(mockBinComparator);
-        })) {
+        }); final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
 
             // Set up top component
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
@@ -357,6 +343,9 @@ public class HistogramTopComponent2NGTest {
             verify(state).setAttributeType(attributeType);
             verify(state).setAttribute("");
             verify(state).setBinFormatter(BinFormatter.DEFAULT_BIN_FORMATTER);
+
+            // Assert PluginExecution was called
+            mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
         }
     }
 
@@ -367,17 +356,6 @@ public class HistogramTopComponent2NGTest {
     public void testSetAttribute() throws InterruptedException {
         System.out.println("setAttribute");
         final String attribute = "attribute";
-
-        // Mocks
-        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
-        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
-        final Graph mockGraph = mock(Graph.class);
-        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
-        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
-
-        final AttributeType mockBinType = AttributeType.ATTRIBUTE;
-        final GraphElementType mockElementType = GraphElementType.EDGE;
-        final BinComparator mockBinComparator = BinComparator.KEY;
 
         try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
             when(mock.getAttributeType()).thenReturn(mockBinType);
@@ -408,17 +386,6 @@ public class HistogramTopComponent2NGTest {
         System.out.println("setBinComparator");
 
         final BinComparator binComparator = BinComparator.KEY_NUMBER; // Has to be different from default which is BinComparator.KEY apparently
-
-        // Mocks
-        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
-        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
-        final Graph mockGraph = mock(Graph.class);
-        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
-        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
-
-        final AttributeType mockBinType = AttributeType.ATTRIBUTE;
-        final GraphElementType mockElementType = GraphElementType.EDGE;
-        final BinComparator mockBinComparator = BinComparator.KEY;
 
         try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
             when(mock.getAttributeType()).thenReturn(mockBinType);
@@ -451,17 +418,6 @@ public class HistogramTopComponent2NGTest {
         final BinFormatter binFormatter = new BinFormatter();
         final PluginParameters parameters = null;
 
-        // Mocks
-        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
-        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
-        final Graph mockGraph = mock(Graph.class);
-        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
-        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
-
-        final AttributeType mockBinType = AttributeType.ATTRIBUTE;
-        final GraphElementType mockElementType = GraphElementType.EDGE;
-        final BinComparator mockBinComparator = BinComparator.KEY;
-
         try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
             when(mock.getAttributeType()).thenReturn(mockBinType);
             when(mock.getElementType()).thenReturn(mockElementType);
@@ -493,22 +449,11 @@ public class HistogramTopComponent2NGTest {
 
         final BinSelectionMode binSelectionMode = BinSelectionMode.ADD_TO_SELECTION;
 
-        // Mocks
-        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
-        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
-        final Graph mockGraph = mock(Graph.class);
-        when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
-        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
-
-        final AttributeType mockBinType = AttributeType.ATTRIBUTE;
-        final GraphElementType mockElementType = GraphElementType.EDGE;
-        final BinComparator mockBinComparator = BinComparator.KEY;
-
         try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
             when(mock.getAttributeType()).thenReturn(mockBinType);
             when(mock.getElementType()).thenReturn(mockElementType);
             when(mock.getBinComparator()).thenReturn(mockBinComparator);
-        })) {
+        }); final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
 
             // Set up top component
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
@@ -519,139 +464,208 @@ public class HistogramTopComponent2NGTest {
 
             // Assert state was made and certain functions were run
             assertTrue(mockConstructor.constructed().size() > 1);
-            final HistogramState state = mockConstructor.constructed().getLast();
 
+            final HistogramState state = mockConstructor.constructed().getLast();
             verify(state).setBinSelectionMode(binSelectionMode);
+
+            // Assert PluginExecution was called
+            mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
         }
     }
 
-//    /**
-//     * Test of selectOnlyBins method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testSelectOnlyBins() {
-//        System.out.println("selectOnlyBins");
-//        int firstBin = 0;
-//        int lastBin = 0;
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.selectOnlyBins(firstBin, lastBin);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of filterOnSelection method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testFilterOnSelection() {
-//        System.out.println("filterOnSelection");
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.filterOnSelection();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of clearFilter method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testClearFilter() {
-//        System.out.println("clearFilter");
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.clearFilter();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of selectBins method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testSelectBins() {
-//        System.out.println("selectBins");
-//        int firstBin = 0;
-//        int lastBin = 0;
-//        boolean select = false;
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.selectBins(firstBin, lastBin, select);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of invertBins method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testInvertBins() {
-//        System.out.println("invertBins");
-//        int firstBin = 0;
-//        int lastBin = 0;
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.invertBins(firstBin, lastBin);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of completeBins method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testCompleteBins() {
-//        System.out.println("completeBins");
-//        int firstBin = 0;
-//        int lastBin = 0;
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.completeBins(firstBin, lastBin);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of filterSelection method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testFilterSelection() {
-//        System.out.println("filterSelection");
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.filterSelection();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of saveBinsToGraph method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testSaveBinsToGraph() {
-//        System.out.println("saveBinsToGraph");
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.saveBinsToGraph();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of saveBinsToClipboard method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testSaveBinsToClipboard() {
-//        System.out.println("saveBinsToClipboard");
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.saveBinsToClipboard();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of expandSelection method, of class HistogramTopComponent2.
-//     */
-//    @Test
-//    public void testExpandSelection() {
-//        System.out.println("expandSelection");
-//        HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.expandSelection();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//    
+    /**
+     * Test of selectOnlyBins method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testSelectOnlyBins() throws InterruptedException {
+        System.out.println("selectOnlyBins");
+        final int firstBin = 0;
+        final int lastBin = 0;
+
+        final PluginExecution mockPE = mock(PluginExecution.class);
+
+        // Set up top component
+        final HistogramTopComponent2 instance = new HistogramTopComponent2();
+        instance.newActiveGraph(mockGraph);
+
+        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class)) {
+            mockPluginExecution.when(() -> PluginExecution.withPlugin(any(Plugin.class))).thenReturn(mockPE);
+
+            instance.selectOnlyBins(firstBin, lastBin);
+            mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
+        }
+    }
+
+    /**
+     * Test of filterOnSelection method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testFilterOnSelection() throws InterruptedException {
+        System.out.println("filterOnSelection");
+
+        // Set up top component
+        final HistogramTopComponent2 instance = new HistogramTopComponent2();
+        instance.newActiveGraph(mockGraph);
+
+        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            instance.filterOnSelection();
+            mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
+        }
+    }
+
+    /**
+     * Test of clearFilter method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testClearFilter() throws InterruptedException {
+        System.out.println("clearFilter");
+
+        // Set up top component
+        final HistogramTopComponent2 instance = new HistogramTopComponent2();
+        instance.newActiveGraph(mockGraph);
+
+        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            instance.clearFilter();
+            mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
+        }
+    }
+
+    /**
+     * Test of selectBins method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testSelectBins() throws InterruptedException {
+        System.out.println("selectBins");
+        final int firstBin = 0;
+        final int lastBin = 0;
+        final boolean select = false;
+
+        // Set up top component
+        final HistogramTopComponent2 instance = new HistogramTopComponent2();
+        instance.newActiveGraph(mockGraph);
+
+        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            instance.selectBins(firstBin, lastBin, select);
+            mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
+        }
+    }
+
+    /**
+     * Test of invertBins method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testInvertBins() throws InterruptedException {
+        System.out.println("invertBins");
+
+        final int firstBin = 0;
+        final int lastBin = 0;
+
+        // Set up top component
+        final HistogramTopComponent2 instance = new HistogramTopComponent2();
+        instance.newActiveGraph(mockGraph);
+
+        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            instance.invertBins(firstBin, lastBin);
+            mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
+        }
+    }
+
+    /**
+     * Test of completeBins method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testCompleteBins() throws InterruptedException {
+        System.out.println("completeBins");
+
+        final int firstBin = 0;
+        final int lastBin = 0;
+
+        // Set up top component
+        final HistogramTopComponent2 instance = new HistogramTopComponent2();
+        instance.newActiveGraph(mockGraph);
+
+        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            instance.completeBins(firstBin, lastBin);
+            mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
+        }
+    }
+
+    /**
+     * Test of filterSelection method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testFilterSelection() {
+        System.out.println("filterSelection");
+
+        final HistogramTopComponent2 instance = new HistogramTopComponent2();
+        instance.newActiveGraph(mockGraph);
+
+        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            instance.filterSelection();
+            mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
+        }
+    }
+
+    /**
+     * Test of saveBinsToGraph method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testSaveBinsToGraph() {
+        System.out.println("saveBinsToGraph");
+
+        final HistogramTopComponent2 instance = new HistogramTopComponent2();
+        instance.newActiveGraph(mockGraph);
+
+        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            instance.saveBinsToGraph();
+            mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
+        }
+    }
+
+    /**
+     * Test of saveBinsToClipboard method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testSaveBinsToClipboard() {
+        System.out.println("saveBinsToClipboard");
+
+        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS); final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
+            when(mock.getAttributeType()).thenReturn(mockBinType);
+            when(mock.getElementType()).thenReturn(mockElementType);
+            when(mock.getBinComparator()).thenReturn(mockBinComparator);
+            when(mock.getAttribute()).thenReturn("");
+        })) {
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+            instance.newActiveGraph(mockGraph);
+            instance.saveBinsToClipboard();
+
+            mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
+
+            assertTrue(mockConstructor.constructed().size() > 1);
+        }
+    }
+
+    /**
+     * Test of expandSelection method, of class HistogramTopComponent2.
+     */
+    @Test
+    public void testExpandSelection() {
+        System.out.println("expandSelection");
+
+        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS); final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
+            when(mock.getAttributeType()).thenReturn(mockBinType);
+            when(mock.getElementType()).thenReturn(mockElementType);
+            when(mock.getBinComparator()).thenReturn(mockBinComparator);
+            when(mock.getAttribute()).thenReturn("");
+        })) {
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+            instance.newActiveGraph(mockGraph);
+
+            instance.expandSelection();
+
+            mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
+
+            assertTrue(mockConstructor.constructed().size() > 1);
+        }
+    }
 }
