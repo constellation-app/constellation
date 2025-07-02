@@ -80,9 +80,8 @@ public class DoubleAttributeDescriptionNGTest {
     public void testGetNativeClass() {
         System.out.println("getNativeClass");
         
-        Class expResult = double.class;
-        Class result = instance.getNativeClass();
-        assertEquals(result, expResult);
+        Class<?> result = instance.getNativeClass();
+        assertEquals(result, double.class);
     }
 
     /**
