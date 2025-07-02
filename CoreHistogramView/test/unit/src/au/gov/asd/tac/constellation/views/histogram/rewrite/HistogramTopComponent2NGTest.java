@@ -613,12 +613,19 @@ public class HistogramTopComponent2NGTest {
     public void testSaveBinsToGraph() {
         System.out.println("saveBinsToGraph");
 
-        final HistogramTopComponent2 instance = new HistogramTopComponent2();
-        instance.newActiveGraph(mockGraph);
+        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS); final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
+            when(mock.getAttributeType()).thenReturn(mockBinType);
+            when(mock.getElementType()).thenReturn(mockElementType);
+            when(mock.getBinComparator()).thenReturn(mockBinComparator);
+            when(mock.getAttribute()).thenReturn("");
+        })) {
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+            instance.newActiveGraph(mockGraph);
 
-        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
             instance.saveBinsToGraph();
             mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
+
+            assertTrue(mockConstructor.constructed().size() > 1);
         }
     }
 
@@ -652,20 +659,13 @@ public class HistogramTopComponent2NGTest {
     public void testExpandSelection() {
         System.out.println("expandSelection");
 
-        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS); final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
-            when(mock.getAttributeType()).thenReturn(mockBinType);
-            when(mock.getElementType()).thenReturn(mockElementType);
-            when(mock.getBinComparator()).thenReturn(mockBinComparator);
-            when(mock.getAttribute()).thenReturn("");
-        })) {
+        try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
             instance.newActiveGraph(mockGraph);
 
             instance.expandSelection();
 
             mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
-
-            assertTrue(mockConstructor.constructed().size() > 1);
         }
     }
 }
