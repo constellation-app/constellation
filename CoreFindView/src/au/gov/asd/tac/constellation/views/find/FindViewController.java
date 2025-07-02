@@ -498,7 +498,7 @@ public class FindViewController {
                 // iterate and delete per graph
                 final Iterator<Entry<String,ArrayList<DeleteResultsPlugin>>> iter = graphDeletePluginMap.entrySet().iterator();
                 while (iter.hasNext()) {
-                    final Entry<String, ArrayList<DeleteResultsPlugin>> entrySet = (Entry)iter.next();
+                    final Entry<String, ArrayList<DeleteResultsPlugin>> entrySet = iter.next();
                     final String graphId = entrySet.getKey();
                     final ArrayList<DeleteResultsPlugin> pluginList = entrySet.getValue();
                     final Graph graph = GraphManager.getDefault().getAllGraphs().get(graphId);

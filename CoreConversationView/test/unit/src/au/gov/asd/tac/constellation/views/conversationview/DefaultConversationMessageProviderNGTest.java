@@ -107,12 +107,12 @@ public class DefaultConversationMessageProviderNGTest {
         final DefaultConversationMessageProvider instance = new DefaultConversationMessageProvider();
         
         try (final ReadableGraph rg = graph.getReadableGraph()) {    
-            final List<ConversationMessage> messages = new ArrayList();
+            final List<ConversationMessage> messages = new ArrayList<>();
             final ConversationMessage message1 = new ConversationMessage(tnId1, vxId1, ConversationSide.LEFT);
             final ConversationMessage message2 = new ConversationMessage(tnId3, vxId1, ConversationSide.LEFT);
             messages.add(message1);
             messages.add(message2);
-            final List<ConversationMessage> resultMessages = new ArrayList();
+            final List<ConversationMessage> resultMessages = new ArrayList<>();
             instance.getMessages(rg, resultMessages);
             assertEquals(messages.size(), resultMessages.size());      
         }
