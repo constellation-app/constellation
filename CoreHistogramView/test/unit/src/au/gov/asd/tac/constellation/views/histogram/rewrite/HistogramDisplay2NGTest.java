@@ -31,6 +31,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import java.awt.datatransfer.Clipboard;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import static org.mockito.ArgumentMatchers.any;
@@ -226,7 +228,7 @@ public class HistogramDisplay2NGTest {
             instance.copySelectedToClipboard(true);
 
             verify(mockClipboard).setContents(any(), any());
-            
+
             verify(binCollection, atLeast(1)).getBins();
             verify(binSpy).getLabel();
         }
@@ -279,7 +281,6 @@ public class HistogramDisplay2NGTest {
      * Test of handleMousePressed method, of class HistogramDisplay2.
      */
     @Test
-
     public void testHandleMousePressed() {
         System.out.println("handleMousePressed");
 
@@ -310,4 +311,124 @@ public class HistogramDisplay2NGTest {
         verify(binSpy).mousePressed(e.isShiftDown(), e.isControlDown(), binCollection.getBins(), -1, -1);
     }
 
+    /**
+     * Test of handleMouseDragged method, of class HistogramDisplay2.
+     */
+    @Test
+    public void testHandleMouseDragged() {
+        System.out.println("handleMouseDragged");
+
+        // Mocks
+        final BinCollection binCollection = mock(BinCollection.class);
+        final Bin[] bins = new Bin[0];
+        final BinIconMode binIconMode = BinIconMode.NONE;
+        when(binCollection.getBins()).thenReturn(bins);
+
+        // Mouse event mock
+        final MouseEvent e = mock(MouseEvent.class);
+        when(e.isPrimaryButtonDown()).thenReturn(true);
+
+        final BinSelectionMode binSpy = spy(BinSelectionMode.ADD_TO_SELECTION);
+
+        // Set up instance
+        final HistogramDisplay2 instance = new HistogramDisplay2(mock(HistogramTopComponent2.class));
+        instance.setBinSelectionMode(binSpy);
+        instance.setBinCollection(binCollection, binIconMode);
+
+        // Run function
+        instance.handleMouseDragged(e);
+
+        // Verify functions were called
+        verify(e).isPrimaryButtonDown();
+        verify(e).getX();
+        verify(e).getY();
+        verify(binSpy).mouseDragged(e.isShiftDown(), e.isControlDown(), binCollection.getBins(), -1, -1, -1);
+    }
+
+    /**
+     * Test of handleMouseReleased method, of class HistogramDisplay2.
+     */
+    @Test
+    public void testHandleMouseReleased() {
+        System.out.println("handleMouseReleased");
+
+        // Mocks
+        final BinCollection binCollection = mock(BinCollection.class);
+        final Bin[] bins = new Bin[0];
+        final BinIconMode binIconMode = BinIconMode.NONE;
+        when(binCollection.getBins()).thenReturn(bins);
+
+        // Mouse event mock
+        final MouseEvent e = mock(MouseEvent.class);
+        when(e.getButton()).thenReturn(MouseButton.PRIMARY);
+
+        final BinSelectionMode binSpy = spy(BinSelectionMode.ADD_TO_SELECTION);
+
+        // Set up instance
+        final HistogramTopComponent2 topComponent = mock(HistogramTopComponent2.class);
+        final HistogramDisplay2 instance = new HistogramDisplay2(topComponent);
+        instance.setBinSelectionMode(binSpy);
+        instance.setBinCollection(binCollection, binIconMode);
+
+        // Run function
+        instance.handleMouseReleased(e);
+
+        // Verify functions were called
+        verify(e).getButton();
+        verify(binSpy).mouseReleased(e.isShiftDown(), e.isControlDown(), binCollection.getBins(), -1, -1, topComponent);
+    }
+
+    /**
+     * Test of handleKeyPressed method, of class HistogramDisplay2.
+     */
+    @Test
+    public void testHandleKeyPressed() {
+        System.out.println("handleKeyPressed");
+
+        // Mocks
+        final BinCollection binCollection = mock(BinCollection.class);
+        final Bin[] bins = new Bin[0];
+        final BinIconMode binIconMode = BinIconMode.NONE;
+        when(binCollection.getBins()).thenReturn(bins);
+
+//        // Mocks
+//        final BinCollection binCollection = mock(BinCollection.class);
+//        final Bin binSpy = spy(new TransactionDirectionBin());
+//        binSpy.selectedCount = 1;
+//        binSpy.elementCount = 1;
+//        final Bin[] bins = {binSpy};
+//        final BinIconMode binIconMode = BinIconMode.NONE;
+//        when(binCollection.getBins()).thenReturn(bins);
+        final Clipboard mockClipboard = mock(Clipboard.class);
+        final Toolkit mockToolkit = mock(Toolkit.class);
+        when(mockToolkit.getSystemClipboard()).thenReturn(mockClipboard);
+
+        // Mouse key mock
+        final KeyEvent e = mock(KeyEvent.class);
+        when(e.getCode()).thenReturn(KeyCode.C);
+        when(e.isControlDown()).thenReturn(true);
+
+        final BinSelectionMode binSpy = spy(BinSelectionMode.ADD_TO_SELECTION);
+
+        // Set up instance
+        final HistogramTopComponent2 topComponent = mock(HistogramTopComponent2.class);
+        final HistogramDisplay2 instance = spy(new HistogramDisplay2(topComponent));
+        when(instance.isFocused()).thenReturn(true);
+        instance.requestFocus();
+        instance.setBinSelectionMode(binSpy);
+        instance.setBinCollection(binCollection, binIconMode);
+
+        try (final MockedStatic<Toolkit> mockStaticToolkit = Mockito.mockStatic(Toolkit.class, Mockito.CALLS_REAL_METHODS)) {
+            // Set up static mock methods
+            mockStaticToolkit.when(Toolkit::getDefaultToolkit).thenReturn(mockToolkit);
+            // Run function
+            instance.handleKeyPressed(e);
+
+            // Verify functions were called
+            verify(e).getCode();
+            verify(e).isControlDown();
+
+            verify(mockClipboard).setContents(any(), any());
+        }
+    }
 }

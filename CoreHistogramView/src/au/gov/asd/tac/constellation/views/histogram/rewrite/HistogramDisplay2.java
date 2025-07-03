@@ -593,9 +593,9 @@ public class HistogramDisplay2 extends BorderPane {
         }
     }
 
-    private void handleMouseDragged(final MouseEvent e) {
-        if (binCollection != null && e.isPrimaryButtonDown()) { // Not sure if same as e.getModifiersEx() == InputEvent.BUTTON1_DOWN_MASK
-            final Point pointOnHistogram = new Point((int) Math.round(e.getX()), (int) Math.round(e.getY())); // May need to be getScreenX()
+    protected void handleMouseDragged(final MouseEvent e) {
+        if (binCollection != null && e.isPrimaryButtonDown()) {
+            final Point pointOnHistogram = new Point((int) Math.round(e.getX()), (int) Math.round(e.getY()));
             final int bar = getBarAtPoint(pointOnHistogram, false);
 
             final int newDragEnd = bar;
@@ -607,7 +607,7 @@ public class HistogramDisplay2 extends BorderPane {
         }
     }
 
-    private void handleMouseReleased(final MouseEvent e) {
+    protected void handleMouseReleased(final MouseEvent e) {
         this.requestFocus();
         if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
             binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
@@ -618,11 +618,11 @@ public class HistogramDisplay2 extends BorderPane {
         }
     }
 
-    private void handleMouseEntered() {
+    protected void handleMouseEntered() {
         this.requestFocus(); // Focus the Histogram View so 'key' actions can be registered.
     }
 
-    private void handleKeyPressed(final KeyEvent e) {
+    protected void handleKeyPressed(final KeyEvent e) {
         if (binCollection != null
                 && this.isFocused() // Check if Histogram Display is focused before allowing Ctrl + C to be registered.
                 && ((e.isControlDown()) && (e.getCode() == KeyCode.C))) {
