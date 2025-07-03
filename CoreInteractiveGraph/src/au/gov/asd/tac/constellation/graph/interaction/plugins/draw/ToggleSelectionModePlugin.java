@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author arcturus
  */
 @ServiceProvider(service = Plugin.class)
-@NbBundle.Messages("ToggleSelectionModePlugin=Toggle Selection Mode")
+@Messages("ToggleSelectionModePlugin=Toggle Selection Mode")
 @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.LOW_LEVEL})
 public class ToggleSelectionModePlugin extends SimpleEditPlugin {
 
@@ -45,5 +45,4 @@ public class ToggleSelectionModePlugin extends SimpleEditPlugin {
             graph.setBooleanValue(drawingModeAttribute, 0, !graph.getBooleanValue(drawingModeAttribute, 0));
         }
     }
-
 }
