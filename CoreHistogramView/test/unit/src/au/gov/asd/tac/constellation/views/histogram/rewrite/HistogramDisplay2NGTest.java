@@ -391,14 +391,6 @@ public class HistogramDisplay2NGTest {
         final BinIconMode binIconMode = BinIconMode.NONE;
         when(binCollection.getBins()).thenReturn(bins);
 
-//        // Mocks
-//        final BinCollection binCollection = mock(BinCollection.class);
-//        final Bin binSpy = spy(new TransactionDirectionBin());
-//        binSpy.selectedCount = 1;
-//        binSpy.elementCount = 1;
-//        final Bin[] bins = {binSpy};
-//        final BinIconMode binIconMode = BinIconMode.NONE;
-//        when(binCollection.getBins()).thenReturn(bins);
         final Clipboard mockClipboard = mock(Clipboard.class);
         final Toolkit mockToolkit = mock(Toolkit.class);
         when(mockToolkit.getSystemClipboard()).thenReturn(mockClipboard);
