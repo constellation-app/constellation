@@ -68,7 +68,7 @@ public class PluginParameter<V extends ParameterValue> {
     private boolean enabled = true;
     private String helpID;
     private boolean isSuppressed = false;
-    private String requestBodyExample;
+    private String requestBodyExample;    
     private boolean required = false;
     private boolean isSpellCheckEnabled = false;
 
@@ -776,7 +776,7 @@ public class PluginParameter<V extends ParameterValue> {
             this.requestBodyExample = requestBodyExample;
         }
     }
-
+    
     /**
      * Is the parameter required?
      *

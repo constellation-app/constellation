@@ -53,6 +53,7 @@ public class RenameGraph extends RestService {
     private static final String NAME = "rename_graph";
     private static final String NEW_GRAPH_NAME_PARAMETER_ID = "new_graph_name";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
+    private static final String EXAMPLE_RESPONSES_PATH = "renameGraphExample";
 
     @Override
     public String getName() {
@@ -80,8 +81,8 @@ public class RenameGraph extends RestService {
 
         final PluginParameter<StringParameterValue> graphNameParam = StringParameterType.build(NEW_GRAPH_NAME_PARAMETER_ID);
         graphNameParam.setName("New graph name");
-        graphNameParam.setDescription("The new graph name");
-        graphNameParam.setRequired(true);
+        graphNameParam.setDescription("The new graph name");        
+        graphNameParam.setRequired(true);        
         parameters.addParameter(graphNameParam);
 
         return parameters;
@@ -122,6 +123,11 @@ public class RenameGraph extends RestService {
         } else {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, graphId != null ? String.format("No graph with id %s.", graphId) : "No open graphs to rename.");
         }
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 
     private void renameGraph(final String newGraphName, final GraphNode graphNode, final OutputStream out) {

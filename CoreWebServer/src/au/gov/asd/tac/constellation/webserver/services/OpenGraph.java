@@ -37,8 +37,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
@@ -59,6 +57,7 @@ public class OpenGraph extends RestService {
 
     private static final String NAME = "open_graph";
     private static final String FILE_PARAMETER_ID = "filename";
+    private static final String EXAMPLE_RESPONSES_PATH = "openGraphExample";
 
     @Override
     public String getName() {
@@ -87,7 +86,7 @@ public class OpenGraph extends RestService {
         final PluginParameter<StringParameterValue> fileParam = StringParameterType.build(FILE_PARAMETER_ID);
         fileParam.setName("File path");
         fileParam.setDescription("The fully qualified path of a .star file.");
-        fileParam.setRequired(true);
+        fileParam.setRequired(true);        
         parameters.addParameter(fileParam);
 
         return parameters;
@@ -124,5 +123,10 @@ public class OpenGraph extends RestService {
         } catch (final ExecutionException ex) {
             throw new RestServiceException(ex);
         }
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

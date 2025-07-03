@@ -37,8 +37,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
@@ -60,6 +58,7 @@ public class NewGraph extends RestService {
     private static final String NAME = "new_graph";
     private static final String SCHEMA_PARAMETER_ID = "schema_name";
     private static final String GRAPH_NAME_PARAMETER_ID = "graph_name";
+    private static final String EXAMPLE_RESPONSES_PATH = "newGraphExample";
 
     @Override
     public String getName() {
@@ -154,5 +153,10 @@ public class NewGraph extends RestService {
             throw new RestServiceException(ex);
         }
 
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }
