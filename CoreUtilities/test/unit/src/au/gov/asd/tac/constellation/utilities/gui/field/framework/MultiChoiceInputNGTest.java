@@ -26,7 +26,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
-import static org.assertj.core.api.Java6Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
