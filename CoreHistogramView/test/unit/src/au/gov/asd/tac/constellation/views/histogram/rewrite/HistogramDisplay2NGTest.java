@@ -25,8 +25,12 @@ import java.awt.Color;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
@@ -177,30 +181,38 @@ public class HistogramDisplay2NGTest {
         assertTrue(oldBarHeight < instance.getBarHeightBase());
     }
 
-    /*
+    /**
+     * Test of handleMousePressed method, of class HistogramDisplay2.
+     */
     @Test
-    public void getPreferenceFileName_ok_pressed() {
-        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(() -> JsonIODialog.getPreferenceFileName());
+    public void testHandleMousePressed() {
+        System.out.println("handleMousePressed");
 
-        final Stage dialog = getDialog(robot);
+        // Mocks
+        final BinCollection binCollection = mock(BinCollection.class);
+        final Bin[] bins = new Bin[0];
+        final BinIconMode binIconMode = BinIconMode.NONE;
+        when(binCollection.getBins()).thenReturn(bins);
 
-        final String input = "myPreferenceFile";
+        // Mouse event mock
+        final MouseEvent e = mock(MouseEvent.class);
+        when(e.getButton()).thenReturn(MouseButton.PRIMARY);
+        when(e.isShiftDown()).thenReturn(true);
+        when(e.isControlDown()).thenReturn(true);
 
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".text-field")
-                        .queryAs(TextField.class)
-        ).write(input);
+        final BinSelectionMode binSpy = spy(BinSelectionMode.ADD_TO_SELECTION);
 
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".button")
-                        .lookup(hasText("OK"))
-                        .queryAs(Button.class)
-        );
+        // Set up instance
+        final HistogramDisplay2 instance = new HistogramDisplay2(mock(HistogramTopComponent2.class));
+        instance.setBinSelectionMode(binSpy);
+        instance.setBinCollection(binCollection, binIconMode);
 
-        final Optional<String> result = WaitForAsyncUtils.waitFor(future);
+        // Run function
+        instance.handleMousePressed(e);
 
-        assertEquals(input, result.get());
-    }*/
+        // Verify functions were called
+        verify(e).getButton();
+        verify(binSpy).mousePressed(e.isShiftDown(), e.isControlDown(), binCollection.getBins(), -1, -1);
+    }
+
 }

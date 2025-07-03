@@ -572,7 +572,10 @@ public class HistogramDisplay2 extends BorderPane {
         }
     }
 
-    private void handleMousePressed(final MouseEvent e) {
+    /**
+     * Function to handle when the user presses their mouse button on the display Made protected for testing
+     */
+    protected void handleMousePressed(final MouseEvent e) {
         if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
             final Point pointOnHistogram = new Point((int) Math.round(e.getX()), (int) Math.round(e.getY())); // May need to be getScreenX(), no actually
             final int bar = getBarAtPoint(pointOnHistogram, false);
@@ -582,6 +585,7 @@ public class HistogramDisplay2 extends BorderPane {
 
             dragStart = (shiftDown && activeBin >= 0) ? activeBin : bar;
             setDragEnd(bar);
+
             binSelectionMode.mousePressed(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd);
 
             // Only need to update bars
