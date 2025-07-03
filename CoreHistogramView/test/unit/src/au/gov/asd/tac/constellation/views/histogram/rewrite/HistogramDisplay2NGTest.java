@@ -21,18 +21,22 @@ import au.gov.asd.tac.constellation.views.histogram.BinCollection;
 import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
 import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
 import au.gov.asd.tac.constellation.views.histogram.bins.ObjectBin;
+import au.gov.asd.tac.constellation.views.histogram.bins.TransactionDirectionBin;
 import java.awt.Color;
+import java.awt.Toolkit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
+import java.awt.datatransfer.Clipboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
@@ -185,6 +189,47 @@ public class HistogramDisplay2NGTest {
         instance.increaseBarHeight();
 
         assertTrue(oldBarHeight < instance.getBarHeightBase());
+    }
+
+    /**
+     * Test of copySelectedToClipboard method, of class HistogramDisplay2.
+     */
+    @Test
+    public void testCopySelectedToClipboard() {
+        System.out.println("copySelectedToClipboard");
+
+        // Mocks
+        final BinCollection binCollection = mock(BinCollection.class);
+        final Bin binSpy = spy(new TransactionDirectionBin());
+        binSpy.selectedCount = 1;
+        binSpy.elementCount = 1;
+        final Bin[] bins = {binSpy};
+        final BinIconMode binIconMode = BinIconMode.NONE;
+        when(binCollection.getBins()).thenReturn(bins);
+
+        final BinSelectionMode binSelectionMode = BinSelectionMode.ADD_TO_SELECTION;
+
+        final Clipboard mockClipboard = mock(Clipboard.class);
+        final Toolkit mockToolkit = mock(Toolkit.class);
+        when(mockToolkit.getSystemClipboard()).thenReturn(mockClipboard);
+
+        // Set up instance
+        final HistogramDisplay2 instance = new HistogramDisplay2(mock(HistogramTopComponent2.class));
+        instance.setBinSelectionMode(binSelectionMode);
+        instance.setBinCollection(binCollection, binIconMode);
+
+        try (final MockedStatic<Toolkit> mockStaticToolkit = Mockito.mockStatic(Toolkit.class, Mockito.CALLS_REAL_METHODS)) {
+            // Set up static mock methods
+            mockStaticToolkit.when(Toolkit::getDefaultToolkit).thenReturn(mockToolkit);
+
+            // Run function
+            instance.copySelectedToClipboard(true);
+
+            verify(mockClipboard).setContents(any(), any());
+            
+            verify(binCollection).getBins();
+            verify(binSpy).getLabel();
+        }
     }
 
     /**

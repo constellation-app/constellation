@@ -547,7 +547,7 @@ public class HistogramDisplay2 extends BorderPane {
      *
      * @param includeCounts True if the counts corresponding to the values are also to be copied to the clipboard.
      */
-    private void copySelectedToClipboard(final boolean includeCounts) {
+    protected void copySelectedToClipboard(final boolean includeCounts) {
         final StringBuilder buf = new StringBuilder();
         for (final Bin bin : binCollection.getBins()) {
             // Check if the bar(s) on the Histogram are selected.
