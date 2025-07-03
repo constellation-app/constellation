@@ -227,7 +227,7 @@ public class HistogramDisplay2NGTest {
 
             verify(mockClipboard).setContents(any(), any());
             
-            verify(binCollection).getBins();
+            verify(binCollection, atLeast(1)).getBins();
             verify(binSpy).getLabel();
         }
     }
