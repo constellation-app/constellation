@@ -566,7 +566,7 @@ public class HistogramDisplay2 extends BorderPane {
         clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
     }
 
-    private void handleMouseClicked(final MouseEvent e) {
+    protected void handleMouseClicked(final MouseEvent e) {
         if (binCollection != null && e.getButton() == MouseButton.SECONDARY) {
             copyMenu.show(this, e.getScreenX(), e.getScreenY());
         }

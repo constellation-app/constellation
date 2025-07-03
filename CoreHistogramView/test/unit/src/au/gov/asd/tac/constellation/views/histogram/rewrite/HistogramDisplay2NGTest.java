@@ -25,9 +25,15 @@ import java.awt.Color;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import org.mockito.MockedConstruction;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -182,9 +188,53 @@ public class HistogramDisplay2NGTest {
     }
 
     /**
+     * Test of handleMouseClicked method, of class HistogramDisplay2.
+     */
+    @Test
+    public void testHandleMouseClicked() {
+        System.out.println("handleMouseClicked");
+
+        // Mocks
+        final BinCollection binCollection = mock(BinCollection.class);
+        final Bin[] bins = new Bin[0];
+        final BinIconMode binIconMode = BinIconMode.NONE;
+        when(binCollection.getBins()).thenReturn(bins);
+
+        // Mouse event mock
+        final MouseEvent e = mock(MouseEvent.class);
+        when(e.getButton()).thenReturn(MouseButton.SECONDARY);
+
+        final BinSelectionMode binSelectionMode = BinSelectionMode.ADD_TO_SELECTION;
+
+        final ObservableList mockItems = mock(ObservableList.class);
+
+        try (final MockedConstruction<ContextMenu> mockConstructor = Mockito.mockConstruction(ContextMenu.class, (mock, context) -> {
+            when(mock.getItems()).thenReturn(mockItems);
+        })) {
+
+            // Set up instance
+            final HistogramDisplay2 instance = new HistogramDisplay2(mock(HistogramTopComponent2.class));
+            instance.setBinSelectionMode(binSelectionMode);
+            instance.setBinCollection(binCollection, binIconMode);
+
+            // Run function
+            instance.handleMouseClicked(e);
+
+            // Verify functions were called
+            verify(e).getButton();
+
+            // Assert context menu was made and function was called
+            assertTrue(!mockConstructor.constructed().isEmpty());
+            final ContextMenu menu = mockConstructor.constructed().getLast();
+            verify(menu).show(any(Node.class), anyDouble(), anyDouble());
+        }
+    }
+
+    /**
      * Test of handleMousePressed method, of class HistogramDisplay2.
      */
     @Test
+
     public void testHandleMousePressed() {
         System.out.println("handleMousePressed");
 
