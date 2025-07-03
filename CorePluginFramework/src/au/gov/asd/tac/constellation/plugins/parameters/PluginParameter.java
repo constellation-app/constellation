@@ -436,7 +436,7 @@ public class PluginParameter<V extends ParameterValue> {
      * @return a copy of this parameter.
      */
     public final PluginParameter<V> copy() {
-        final PluginParameter<V> copy = (PluginParameter<V>) create(value, type, id);
+        final PluginParameter<V> copy = create(value, type, id);
         copy.setName(name);
         copy.setDescription(description);
         copy.setIcon(icon);
