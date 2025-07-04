@@ -60,8 +60,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
 
     private boolean[] data = new boolean[0];
     private boolean defaultValue = DEFAULT_VALUE;
-
-    @SuppressWarnings("unchecked") // Casts are manually checked
+    
     private boolean convertFromObject(final Object object) throws IllegalArgumentException {
         switch (object) {
             case Number number -> {

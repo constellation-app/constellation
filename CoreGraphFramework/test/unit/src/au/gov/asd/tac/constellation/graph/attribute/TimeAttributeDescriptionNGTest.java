@@ -79,9 +79,8 @@ public class TimeAttributeDescriptionNGTest {
      */
     @Test
     public void testGetNativeClass() {
-        Class expResult = Integer.class;
-        Class result = instance.getNativeClass();
-        assertEquals(result, expResult);
+        Class<?> result = instance.getNativeClass();
+        assertEquals(result, Integer.class);
     }
 
     /**

@@ -33,7 +33,6 @@ public class TransactionTypeAttributeInteraction extends AbstractAttributeIntera
     }
 
     @Override
-    @SuppressWarnings("unchecked") // cast is manually checked.
     public String getDisplayText(final Object value) {
         if (value instanceof SchemaTransactionType type) {
             return type.getName();

@@ -144,6 +144,6 @@ public class GlobalParametersNGTest {
     @Test(expectedExceptions = NullPointerException.class)
     public void readDataToMapFileDoesNotExist() {
         GlobalParameters.readDataToMap(
-                GlobalParametersNGTest.class, "./resources/doesNotExist", Collections.EMPTY_MAP);
+                GlobalParametersNGTest.class, "./resources/doesNotExist", Collections.emptyMap());
     }
 }

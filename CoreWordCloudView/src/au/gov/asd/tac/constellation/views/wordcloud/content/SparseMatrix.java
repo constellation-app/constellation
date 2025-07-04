@@ -39,14 +39,13 @@ public class SparseMatrix<N extends Number> {
         this.calc = typer;
     }
 
-    public static SparseMatrix constructMatrix(final Number noEntryVal) {
-        if (noEntryVal instanceof Integer value) {
-            return new SparseMatrix<>(value, IntegerArithmeticHandler.INSTANCE);
-        } else if (noEntryVal instanceof Float value) {
-            return new SparseMatrix<>(value, FloatArithmeticHandler.INSTANCE);
-        } else {
-            return null;
-        }
+    public static SparseMatrix<?> constructMatrix(final Number noEntryVal) {
+        return switch (noEntryVal) {
+            case Integer value -> new SparseMatrix<>(value, IntegerArithmeticHandler.INSTANCE);
+            case Float value -> new SparseMatrix<>(value, FloatArithmeticHandler.INSTANCE);
+            case null -> null;
+            default -> null;
+        };
     }
     
     public ArithmeticHandler<N> getCalc() {
@@ -459,7 +458,7 @@ public class SparseMatrix<N extends Number> {
     }
     
 
-    public class MatrixColumnIterator implements Iterator {
+    public class MatrixColumnIterator implements Iterator<ElementValuePair<N>> {
 
         private final Iterator<Integer> keyIter;
         private final Iterator<N> valIter;

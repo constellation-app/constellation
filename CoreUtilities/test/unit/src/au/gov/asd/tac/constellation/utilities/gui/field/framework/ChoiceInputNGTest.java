@@ -73,7 +73,7 @@ public class ChoiceInputNGTest {
 
     @Test(expectedExceptions = InvalidOperationException.class)
     public void testChoiceInputField_nullOptions() {  
-        final ChoiceInputField choiceInputFieldMock = spy(createEmptyChoiceInputField());
+        final ChoiceInputField<?, ?> choiceInputFieldMock = spy(createEmptyChoiceInputField());
         assertEquals(choiceInputFieldMock.getOptions().size(), 0);
         choiceInputFieldMock.setOptions(null);
         
@@ -86,9 +86,9 @@ public class ChoiceInputNGTest {
     public void testChoiceInputField_constructorWithOptions() {  
         final ObservableList<String> observableList = FXCollections.observableArrayList();
         observableList.addAll(fruitList);
-        final ChoiceInputField choiceInputFieldMock = spy(createChoiceInputField(observableList));
+        final ChoiceInputField<?, String> choiceInputFieldMock = spy(createChoiceInputField(observableList));
         
-        final List fruitOptions = choiceInputFieldMock.getOptions();
+        final List<String> fruitOptions = choiceInputFieldMock.getOptions();
         assertEquals(fruitOptions.size(), fruitList.size());
         assertEquals(fruitOptions.getFirst(), "apple");
         assertTrue(fruitOptions.contains("banana"));
@@ -104,7 +104,7 @@ public class ChoiceInputNGTest {
     public void testChoiceInputField_clearChoices() {  
         final ObservableList<String> observableList = FXCollections.observableArrayList();
         observableList.addAll(fruitList);
-        final ChoiceInputField choiceInputFieldMock = spy(createChoiceInputField(observableList));
+        final ChoiceInputField<?, String> choiceInputFieldMock = spy(createChoiceInputField(observableList));
         
         // test setText and getText
         choiceInputFieldMock.setText(fruitList.getFirst());
@@ -117,7 +117,7 @@ public class ChoiceInputNGTest {
     
     @Test
     public void testChoiceInputField_icons() {  
-        final ChoiceInputField choiceInputFieldMock = spy(createEmptyChoiceInputField());
+        final ChoiceInputField<?, ?> choiceInputFieldMock = spy(createEmptyChoiceInputField());
         
         final List<ImageView> iconsList = new ArrayList<>();
         final ImageView mockIcon = mock(ImageView.class);
@@ -127,21 +127,18 @@ public class ChoiceInputNGTest {
         assertEquals(choiceInputFieldMock.getIcons().getFirst(), mockIcon);
     }
     
-    public final ChoiceInputField createEmptyChoiceInputField() {
+    private ChoiceInputField<?, ?> createEmptyChoiceInputField() {
       return new ChoiceInputFieldImpl();
     }
     
-    public ChoiceInputField createChoiceInputField(ObservableList options) {
+    private ChoiceInputField<?, String> createChoiceInputField(final ObservableList<String> options) {
       return new ChoiceInputFieldImpl(options);
     }
 
     private static class ChoiceInputFieldImpl extends ChoiceInputField {
 
-        private List<MenuItem> items = new ArrayList<>();
-
-        public ChoiceInputFieldImpl(final ObservableList options) {
+        public ChoiceInputFieldImpl(final ObservableList<String> options) {
             super(options);
-            items = options;
         }
         
          public ChoiceInputFieldImpl() {
@@ -155,7 +152,7 @@ public class ChoiceInputNGTest {
 
         @Override
         public void setValue(final Object value) {
-            return;
+            // do nothing
         }
 
         @Override
@@ -165,11 +162,7 @@ public class ChoiceInputNGTest {
 
         @Override
         public List<MenuItem> getLocalMenuItems() {
-            if (items != null) {
-                return items;
-            } else {
-                return new ArrayList();
-            }
+            return new ArrayList<>();
         }
     }
 }

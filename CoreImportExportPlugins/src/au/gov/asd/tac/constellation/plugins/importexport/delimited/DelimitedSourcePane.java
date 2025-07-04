@@ -285,7 +285,7 @@ public class DelimitedSourcePane extends SourcePane {
      * @param importController The ImportController.
      */
     @Override
-    public void update(final ImportController importController) {
+    public void update(final ImportController<?> importController) {
         graphComboBox.getItems().stream()
                 .filter(importDestination -> importController.getDestination().toString().equals(importDestination.toString()))
                 .findAny()

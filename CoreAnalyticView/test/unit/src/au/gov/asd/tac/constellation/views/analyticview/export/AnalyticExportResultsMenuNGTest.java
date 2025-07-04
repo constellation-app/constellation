@@ -78,7 +78,7 @@ public class AnalyticExportResultsMenuNGTest {
     private static final String GRAPH_ID = "graphId";
 
     private AnalyticExportResultsMenu exportMenu;
-    private TableView table;
+    private TableView<?> table;
     private AnalyticViewTopComponent topComponent;
     private final Graph graph = mock(Graph.class);
     private final GraphManager graphManager = spy(GraphManager.class);

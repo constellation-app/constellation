@@ -359,7 +359,7 @@ public class JDBCSourcePane extends SourcePane {
 
         final Label nameLabel = new Label("Name");
         gp.add(nameLabel, 0, 1, 1, 1);
-        final ComboBox driverName = new ComboBox();
+        final ComboBox<String> driverName = new ComboBox<>();
         gp.add(driverName, 1, 1, 1, 1);
         final Button chooser = new Button(" ... ");
         chooser.setOnAction((final ActionEvent t2) -> {
@@ -394,7 +394,7 @@ public class JDBCSourcePane extends SourcePane {
             }
 
             if (driverName.getSelectionModel().getSelectedItem() != null) {
-                if (driverManager.isDriverUsed((String) driverName.getSelectionModel().getSelectedItem())) {
+                if (driverManager.isDriverUsed(driverName.getSelectionModel().getSelectedItem())) {
                     final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(
                             TITLE_JDBC_IMPORT,
                             ADD_DRIVER, 
@@ -406,7 +406,7 @@ public class JDBCSourcePane extends SourcePane {
                         return;
                     }
                 }
-                driverManager.addDriver((String) driverName.getSelectionModel().getSelectedItem(), new File(driverFilePath.getText()));
+                driverManager.addDriver(driverName.getSelectionModel().getSelectedItem(), new File(driverFilePath.getText()));
                 driverTable.getItems().clear();
                 driverTable.getItems().addAll(driverManager.getDrivers());
                 driver.getItems().clear();
@@ -445,7 +445,7 @@ public class JDBCSourcePane extends SourcePane {
         d.showAndWait();
     }
 
-    private void setDriver(final File f, final ComboBox driverName) {
+    private void setDriver(final File f, final ComboBox<String> driverName) {
         driverName.getItems().clear();
         driverName.getItems().addAll(JDBCDriver.getDrivers(f));
         driverName.getSelectionModel().selectFirst();
@@ -457,14 +457,14 @@ public class JDBCSourcePane extends SourcePane {
      * @param importController The ImportController.
      */
     @Override
-    public void update(final ImportController importController) {
+    public void update(final ImportController<?> importController) {
         graphComboBox.getItems().stream()
                 .filter(importDestination -> importController.getDestination().toString().equals(importDestination.toString()))
                 .findAny()
                 .ifPresent(graphComboBox.getSelectionModel()::select);
     }
 
-    private boolean validateDriverParams(final TextField driverFilePath, final ComboBox driverName) {
+    private boolean validateDriverParams(final TextField driverFilePath, final ComboBox<String> driverName) {
         final StringJoiner missingParamsMsgs = new StringJoiner(System.lineSeparator() + System.lineSeparator());
 
         if (StringUtils.isBlank(driverFilePath.getText())) {

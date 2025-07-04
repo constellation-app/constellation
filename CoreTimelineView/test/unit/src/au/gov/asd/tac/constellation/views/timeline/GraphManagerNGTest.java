@@ -85,7 +85,7 @@ public class GraphManagerNGTest {
     @Test
     public void testGetVertexAttributeNames() {
         System.out.println("getVertexAttributeNames");
-        final List expResult = new ArrayList<>();
+        final List<String> expResult = new ArrayList<>();
 
         final GraphNode mockGraphNode = mock(GraphNode.class);
         final Graph mockGraph = mock(Graph.class);
@@ -107,7 +107,7 @@ public class GraphManagerNGTest {
             instance.setDatetimeAttr("");
             instance.resultChanged(null);
 
-            final List result = instance.getVertexAttributeNames();
+            final List<String> result = instance.getVertexAttributeNames();
             assertEquals(result, expResult);
 
             mockTopComponent.verify(TopComponent::getRegistry, times(3));

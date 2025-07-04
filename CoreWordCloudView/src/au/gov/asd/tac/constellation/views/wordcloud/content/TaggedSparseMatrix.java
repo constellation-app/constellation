@@ -38,14 +38,13 @@ public class TaggedSparseMatrix<N extends Number> extends SparseMatrix<N> {
         taggedColumns.put(false, new HashSet<>());
     }
 
-    public static TaggedSparseMatrix constructMatrix(final Number noEntryValue) {
-        if (noEntryValue instanceof Integer value) {
-            return new TaggedSparseMatrix<>(value, IntegerArithmeticHandler.INSTANCE);
-        } else if (noEntryValue instanceof Float value) {
-            return new TaggedSparseMatrix<>(value, FloatArithmeticHandler.INSTANCE);
-        } else {
-            return null;
-        }
+    public static TaggedSparseMatrix<?> constructMatrix(final Number noEntryValue) {
+        return switch (noEntryValue) {
+            case Integer value -> new TaggedSparseMatrix<>(value, IntegerArithmeticHandler.INSTANCE);
+            case Float value -> new TaggedSparseMatrix<>(value, FloatArithmeticHandler.INSTANCE);
+            case null -> null;
+            default -> null;
+        };
     }
 
     public void tagColumn(final int key, final boolean tag) {

@@ -33,7 +33,6 @@ public class LineStyleAttributeInteraction extends AbstractAttributeInteraction<
     }
 
     @Override
-    @SuppressWarnings("unchecked") //Cast is manually checked
     public String getDisplayText(final Object value) {
         if (value == null) {
             return null;

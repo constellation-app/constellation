@@ -15,10 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 
+import static au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.InfoMapPlugin.CONNECTION_TYPE_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.InfoMapPlugin.DYNAMICS_PARAMETER_ID;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
@@ -30,13 +33,11 @@ import org.testng.annotations.Test;
 public class InfoMapPluginNGTest {
 
     // Connection Type
-    public static final String CONNECTION_TYPE_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "connection_type");
     private static final String CONNECTION_TYPE_LINKS = "Links";
     private static final String CONNECTION_TYPE_EDGES = "Edges";
     private static final String CONNECTION_TYPE_TRANSACTIONS = "Transactions";
 
     // Dynamics
-    public static final String DYNAMICS_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "dynamics");
     private static final String DYNAMICS_PARAMETER_UNDIRECTED = "Undirected";
     private static final String DYNAMICS_PARAMETER_DIRECTED = "Directed";
     private static final String DYNAMICS_PARAMETER_UNDIRECTED_FLOW = "Undirected flow, directed codelength";
@@ -93,9 +94,13 @@ public class InfoMapPluginNGTest {
             for (final String dynamic : dynamicTypes) {
                 final PluginParameters params = instance.createParameters();
                 // Connection type
-                SingleChoiceParameterType.setChoice((PluginParameter) params.getParameters().get(CONNECTION_TYPE_PARAMETER_ID), connection);
+                @SuppressWarnings("unchecked") // CONNECTION_TYPE_PARAMETER will always be a SingleChoiceParameter
+                final PluginParameter<SingleChoiceParameterValue> connectionTypeParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(CONNECTION_TYPE_PARAMETER_ID);
+                SingleChoiceParameterType.setChoice(connectionTypeParam, connection);
                 // Dynamics
-                SingleChoiceParameterType.setChoice((PluginParameter) params.getParameters().get(DYNAMICS_PARAMETER_ID), dynamic);
+                @SuppressWarnings("unchecked") // DYNAMICS_PARAMETER will always be a SingleChoiceParameter
+                final PluginParameter<SingleChoiceParameterValue> dynamicsParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(DYNAMICS_PARAMETER_ID);
+                SingleChoiceParameterType.setChoice(dynamicsParam, dynamic);
 
                 final Config config = instance.createConfig(params);
                 // Assert connection and dynamic was set in config

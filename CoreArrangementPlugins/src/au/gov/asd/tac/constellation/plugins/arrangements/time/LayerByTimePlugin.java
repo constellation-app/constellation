@@ -385,7 +385,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final boolean drawTxGuides = parameters.getParameters().get(DRAW_TX_GUIDES_PARAMETER_ID).getBooleanValue();
 
             // Modify the copied graph to show our layers.
-            int z = 0;
+            float z = 0;
             final float step = getWidth(wgcopy) / values.size();
             for (final Entry<Integer, List<Float>> entry : remappedLayers.entrySet()) {
                 for (final Entry<Float, List<Integer>> currentLayer : transactionLayers.entrySet()) {
@@ -757,7 +757,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      *
      *
      */
-    private void transactionsAsLayers(final GraphWriteMethods graph, final int txId, final int z, final float step) {
+    private void transactionsAsLayers(final GraphWriteMethods graph, final int txId, final float z, final float step) {
         final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
         final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
         final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);

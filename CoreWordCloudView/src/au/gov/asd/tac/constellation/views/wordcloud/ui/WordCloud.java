@@ -94,7 +94,7 @@ public class WordCloud {
         });
         wordListBySize.putAll(wordListWithSizes);
         hasSignificances = !wordSignificances.isEmpty();
-        currentWords = new TreeSet<>((Comparator<String>) (isSizeSorted ? wordListBySize.comparator() : wordListWithSizes.comparator()));
+        currentWords = new TreeSet<>(isSizeSorted ? wordListBySize.comparator() : wordListWithSizes.comparator());
         currentWords.addAll(wordListWithSizes.keySet());
         updateCurrentWords(1, currentSignificance);
     }
@@ -163,7 +163,7 @@ public class WordCloud {
         });
         wordListBySize.putAll(wordListWithSizes);
         hasSignificances = !wordSignificances.isEmpty();
-        currentWords = new TreeSet<>((Comparator<String>) (isSizeSorted ? wordListBySize.comparator() : wordListWithSizes.comparator()));
+        currentWords = new TreeSet<>(isSizeSorted ? wordListBySize.comparator() : wordListWithSizes.comparator());
         currentWords.addAll(wordListWithSizes.keySet());
         updateCurrentWords(1, currentSignificance);
     }

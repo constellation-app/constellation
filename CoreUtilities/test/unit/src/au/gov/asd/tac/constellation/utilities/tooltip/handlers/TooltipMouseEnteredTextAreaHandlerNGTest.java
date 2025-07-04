@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.event.Event;
 import javafx.geometry.Point2D;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.Pane;
@@ -99,12 +98,11 @@ public class TooltipMouseEnteredTextAreaHandlerNGTest {
             when(tooltipPane.isEnabled()).thenReturn(false);
             doNothing().when(inlineCssTextArea).requestFocus();
             final TooltipMouseEnteredTextAreaHandler instance = new TooltipMouseEnteredTextAreaHandler(inlineCssTextArea, tooltipPane);
-            final Event event = mock(Event.class);
+            final MouseOverTextEvent event = mock(MouseOverTextEvent.class);
 
             instance.handle(event);
 
             // verify that the text area was not focused.
-            verify(tooltipPane, times(0)).isEnabled();
             verify(inlineCssTextArea, times(0)).requestFocus();
         }
     }

@@ -80,9 +80,8 @@ public class IntegerAttributeDescriptionNGTest {
     public void testGetNativeClass() {
         System.out.println("getNativeClass");
         
-        Class expResult = int.class;
-        Class result = instance.getNativeClass();
-        assertEquals(result, expResult);
+        Class<?> result = instance.getNativeClass();
+        assertEquals(result, int.class);
     }
 
     /**
@@ -104,7 +103,7 @@ public class IntegerAttributeDescriptionNGTest {
     public void testGetDefault() {
         System.out.println("getDefault");
         
-        Object expResult = (int) 0;
+        Object expResult = 0;
         Object result = instance.getDefault();
         assertEquals(result, expResult);
     }
@@ -412,7 +411,7 @@ public class IntegerAttributeDescriptionNGTest {
         System.out.println("getObject");
         
         int id = 0;
-        Object expResult = (int) 0;
+        Object expResult = 0;
         Object result = instance.getObject(id);
         assertEquals(result, expResult);
     }

@@ -15,7 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.translators;
 
+import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
+import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,9 +88,8 @@ public class ScoreToSizeTranslatorNGTest {
         System.out.println("getResultType");
         
         final ScoreToSizeTranslator instance = new ScoreToSizeTranslator();
-        final Class expResult = ScoreResult.class;
-        final Class result = instance.getResultType();
-        assertEquals(result, expResult);
+        final Class<? extends AnalyticResult<?>> result = instance.getResultType();
+        assertEquals(result, ScoreResult.class);
     }
 
     /**
@@ -99,8 +100,8 @@ public class ScoreToSizeTranslatorNGTest {
         System.out.println("buildControl");
         
         final ScoreToSizeTranslator instance = new ScoreToSizeTranslator();
-        final SizeVisualisation expResult = new SizeVisualisation(instance);
-        final SizeVisualisation result = instance.buildControl();
+        final SizeVisualisation<ElementScore> expResult = new SizeVisualisation<>(instance);
+        final SizeVisualisation<ElementScore> result = instance.buildControl();
         assertEquals(result, expResult);
     }
 

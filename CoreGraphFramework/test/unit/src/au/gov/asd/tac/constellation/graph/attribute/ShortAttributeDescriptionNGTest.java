@@ -80,9 +80,8 @@ public class ShortAttributeDescriptionNGTest {
     public void testGetNativeClass() {
         System.out.println("getNativeClass");
         
-        Class expResult = short.class;
-        Class result = instance.getNativeClass();
-        assertEquals(result, expResult);
+        Class<?> result = instance.getNativeClass();
+        assertEquals(result, short.class);
     }
 
     /**

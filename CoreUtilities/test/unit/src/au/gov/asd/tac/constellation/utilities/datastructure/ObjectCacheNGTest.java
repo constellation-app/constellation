@@ -54,7 +54,7 @@ public class ObjectCacheNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        objectCache = new ObjectCache();
+        objectCache = new ObjectCache<>();
         objectCache.add(KEY1, VALUE1);
         objectCache.add(KEY1, VALUE2);
         objectCache.add(KEY2, VALUE3);

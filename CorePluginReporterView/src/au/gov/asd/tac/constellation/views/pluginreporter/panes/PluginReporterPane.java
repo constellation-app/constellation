@@ -270,6 +270,7 @@ public class PluginReporterPane extends BorderPane {
                 final MultiChoiceParameterValue multiChoiceValue = params.getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);                
                 multiChoiceValue.setOptions(alltags);
                 multiChoiceValue.setChoices(selectedIndices);
+                @SuppressWarnings("unchecked") // REPORT_SETTINGS_PARAMETER will always be of type MultiChoiceParameter
                 final PluginParameter<MultiChoiceParameterValue> filterTypeParameter 
                         = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(REPORT_SETTINGS_PARAMETER_ID);
                 // fire property event to prevent a looping event trigger on parameter value

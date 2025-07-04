@@ -124,7 +124,7 @@ public class NifiClient extends RestClient {
         // in the headers and nifi will apply this as an attribute which can be
         // routed on instead.
         final List<Tuple<String, String>> headers = new ArrayList<>();
-        headers.add(new Tuple("flexloader.type", "flowfile-v3"));
+        headers.add(new Tuple<>("flexloader.type", "flowfile-v3"));
         
         
         

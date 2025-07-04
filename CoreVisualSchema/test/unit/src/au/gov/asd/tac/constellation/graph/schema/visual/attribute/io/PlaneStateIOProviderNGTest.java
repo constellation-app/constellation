@@ -163,7 +163,7 @@ public class PlaneStateIOProviderNGTest {
             Mockito.verify(mockGraphWriteMethods, times(1)).setObjectValue(captorAtributeId.capture(), captorElementId.capture(), captorState.capture());
             assertEquals((int)captorAtributeId.getValue(), attributeId);
             assertEquals((int)captorElementId.getValue(), elementId);
-            assertEquals(((PlaneState)captorState.getValue()).toString(), "%s[\nPlane[plane@(0.000000,0.100000,0.200000) 5x6]\n" +
+            assertEquals(captorState.getValue().toString(), "%s[\nPlane[plane@(0.000000,0.100000,0.200000) 5x6]\n" +
                 "Plane[plane@(0.000000,0.100000,0.200000) 5x6]\n]");
         }
     }

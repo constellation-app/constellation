@@ -108,8 +108,8 @@ public class GlobalParametersPaneNGTest {
 
     @Test
     public void getParamLabels() {
-        final PluginParameter param1 = mock(PluginParameter.class);
-        final PluginParameter param2 = mock(PluginParameter.class);
+        final PluginParameter<?> param1 = mock(PluginParameter.class);
+        final PluginParameter<?> param2 = mock(PluginParameter.class);
 
         when(parameters.getParameters())
                 .thenReturn(Map.of("hello", param1, "world", param2));

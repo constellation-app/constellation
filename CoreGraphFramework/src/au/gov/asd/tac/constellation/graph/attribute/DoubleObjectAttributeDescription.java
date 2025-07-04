@@ -35,7 +35,6 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
     }
 
     @Override
-    @SuppressWarnings("unchecked") //Casts are manually checked
     protected Double convertFromObject(final Object object) {
         try {
             return super.convertFromObject(object);

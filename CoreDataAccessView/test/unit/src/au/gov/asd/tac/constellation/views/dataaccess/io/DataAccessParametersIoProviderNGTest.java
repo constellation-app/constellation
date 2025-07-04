@@ -155,16 +155,16 @@ public class DataAccessParametersIoProviderNGTest {
         when(tab1.getDataAccessPanes()).thenReturn(List.of(dataSourceTitledPane1, dataSourceTitledPane2));
         when(tab2.getDataAccessPanes()).thenReturn(List.of());
 
-        final PluginParameter pluginParameter1 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter1 = mock(PluginParameter.class);
         when(pluginParameter1.getId()).thenReturn("param1");
 
-        final PluginParameter pluginParameter2 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter2 = mock(PluginParameter.class);
         when(pluginParameter2.getId()).thenReturn("param2");
 
-        final PluginParameter pluginParameter3 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter3 = mock(PluginParameter.class);
         when(pluginParameter3.getId()).thenReturn("param3");
 
-        final PluginParameter pluginParameter4 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter4 = mock(PluginParameter.class);
         when(pluginParameter4.getId()).thenReturn("param4");
 
         final PluginParameters globalPluginParameters1 = new PluginParameters();

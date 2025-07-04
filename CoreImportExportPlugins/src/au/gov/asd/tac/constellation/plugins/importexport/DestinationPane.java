@@ -42,7 +42,7 @@ public class DestinationPane extends GridPane {
 
     private final ImportController importController;
 
-    public DestinationPane(final ImportController importController) {
+    public DestinationPane(final ImportController<?> importController) {
         this.importController = importController;
 
         setMaxWidth(Double.MAX_VALUE);

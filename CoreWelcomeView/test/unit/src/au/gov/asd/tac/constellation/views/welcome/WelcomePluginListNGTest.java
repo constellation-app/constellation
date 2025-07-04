@@ -73,7 +73,7 @@ public class WelcomePluginListNGTest {
         System.out.println("getTopPlugins");
         final WelcomePluginList instance = new WelcomePluginList();
 
-        final List result = instance.getTopPlugins();
+        final List<WelcomePluginInterface> result = instance.getTopPlugins();
         assertTrue(result.size() == 7);
         assertEquals(result.get(0).getClass(), AddModeWelcomePlugin.class);
     }
@@ -86,7 +86,7 @@ public class WelcomePluginListNGTest {
         System.out.println("getSidePlugins");
         final WelcomePluginList instance = new WelcomePluginList();
 
-        final List result = instance.getSidePlugins();
+        final List<WelcomePluginInterface> result = instance.getSidePlugins();
         assertTrue(result.size() == 4);
         assertEquals(result.get(0).getClass(), GettingStartedWelcomePlugin.class);
     }

@@ -48,7 +48,6 @@ public class QualityControlState {
      *
      * @return A List of QualityControlEvent instances.
      */
-    @SuppressWarnings("ReturnOfCollectionOrArrayField")
     public List<QualityControlEvent> getQualityControlEvents() {
         return qualityControlEvents;
     }
@@ -58,7 +57,6 @@ public class QualityControlState {
      *
      * @return The current quality control rules.
      */
-    @SuppressWarnings("ReturnOfCollectionOrArrayField")
     public List<QualityControlRule> getRegisteredRules() {
         return registeredRules;
     }

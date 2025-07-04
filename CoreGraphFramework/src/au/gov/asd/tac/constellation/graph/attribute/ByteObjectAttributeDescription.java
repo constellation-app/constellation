@@ -35,7 +35,6 @@ public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescr
     }
 
     @Override
-    @SuppressWarnings("unchecked") //Casts are manually checked
     protected Byte convertFromObject(final Object object) {
         try {
             return super.convertFromObject(object);

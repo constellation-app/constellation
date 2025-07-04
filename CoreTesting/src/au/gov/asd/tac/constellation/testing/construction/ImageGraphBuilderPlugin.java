@@ -125,8 +125,8 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         final List<File> imageFiles = (List<File>) parameters.getObjectValue(IMAGE_FILE_PARAMETER_ID);
         final List<BufferedImage> images = new ArrayList<>();
 
-        final boolean addRight = (boolean) parameters.getBooleanValue(ADD_RIGHT_PARAMETER_ID);
-        final boolean addLayers = (boolean) parameters.getBooleanValue(ADD_LAYERS_PARAMETER_ID);
+        final boolean addRight = parameters.getBooleanValue(ADD_RIGHT_PARAMETER_ID);
+        final boolean addLayers = parameters.getBooleanValue(ADD_LAYERS_PARAMETER_ID);
         final int vertexBitmaskAttributeId = addLayers ? LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph) : Graph.NOT_FOUND;
         final int stateAttributeId = addLayers ? LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph) : Graph.NOT_FOUND;
         

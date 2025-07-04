@@ -318,7 +318,7 @@ public class OptionsMenuBar {
          *
          * @return the future work to be completed by the lister after its last call
          */
-        public CompletableFuture getLastChange() {
+        public CompletableFuture<Void> getLastChange() {
             return lastChange;
         }
 

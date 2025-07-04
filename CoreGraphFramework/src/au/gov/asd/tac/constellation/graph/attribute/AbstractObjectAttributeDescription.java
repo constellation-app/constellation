@@ -100,9 +100,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
             Arrays.fill(data, len, capacity, defaultValue);
         }
     }
-
-    // Suppressing warning as the data within the ObjectAttributeDescription will always be convertable to type T
-    @SuppressWarnings("unchecked")
+    
     @Override
     public String getString(final int id) {
         return data[id] != null ? String.valueOf(data[id]) : null;

@@ -50,12 +50,12 @@ public class AttributeList extends VBox {
     private static final Insets VBOX_PADDING = new Insets(2);
 
     private final RunPane runPane;
-    protected final ImportController importController;
+    protected final ImportController<?> importController;
     private final AttributeType attributeType;
     private final Map<String, AttributeNode> attributeNodes;
     private Set<Integer> keys;
 
-    public AttributeList(final ImportController importController, final RunPane runPane, final AttributeType attributeType) {
+    public AttributeList(final ImportController<?> importController, final RunPane runPane, final AttributeType attributeType) {
         this.runPane = runPane;
 
         this.importController = importController;

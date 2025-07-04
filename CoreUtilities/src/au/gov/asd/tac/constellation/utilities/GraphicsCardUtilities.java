@@ -91,7 +91,7 @@ public class GraphicsCardUtilities {
                     }
 
                     final long startTime = System.currentTimeMillis();
-                    Runtime.getRuntime().exec("dxdiag /64bit /t " + tmp);
+                    Runtime.getRuntime().exec(new String[]{"dxdiag", "/64bit", "/t", tmp});
                     while (!file.exists()) {
                         try {
                             LOCK.wait(1000);

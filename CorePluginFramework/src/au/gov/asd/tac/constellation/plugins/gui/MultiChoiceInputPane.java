@@ -57,7 +57,7 @@ public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoicePa
 
     @Override
     public ConstellationInputListener getFieldChangeListener(final PluginParameter<MultiChoiceParameterValue> parameter) {
-        return (ConstellationInputListener<List<ParameterValue>>) (final List<ParameterValue>newValue) -> {
+        return (ConstellationInputListener<List<ParameterValue>>) (final List<ParameterValue> newValue) -> {
             if (newValue != null) {
                 MultiChoiceParameterType.setChoicesData(parameter, newValue);
             }

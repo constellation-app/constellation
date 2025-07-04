@@ -54,8 +54,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     private double[] data = new double[0];
     private double defaultValue = DEFAULT_VALUE;
-
-    @SuppressWarnings("unchecked") // Casts are manually checked
+    
     private double convertFromObject(final Object object) throws IllegalArgumentException {
         switch (object) {
             case Number number -> {

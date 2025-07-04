@@ -108,12 +108,13 @@ public class JSingleChoiceComboBoxMenuNGTest {
     @Test
     public void testConstructor_WithText() {
         System.out.println("constructor_WithText");
+        
         final File iconFile = new File("non_existing_icon.png");
         installedFileLocatorMockedStatic.when(() -> InstalledFileLocator.getDefault()
                 .locate(anyString(), anyString(), anyBoolean()))
                 .thenReturn(iconFile);
 
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>("Text", items);
         final String expResult = "Text";
 
         final String result = instance.getText();
@@ -126,8 +127,9 @@ public class JSingleChoiceComboBoxMenuNGTest {
     @Test
     public void testConstructor_WithIcon() {
         System.out.println("constructor_WithIcon");
+        
         final Icon icon = new ImageIcon(COOKIE_ICON_PATH);
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu(icon, items);
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>(icon, items);
         final CompoundIcon result = (CompoundIcon) instance.getIcon();
         assertEquals(result.getIconCount(), 2);
         final List<Icon> icons = new ArrayList<>();
@@ -144,13 +146,14 @@ public class JSingleChoiceComboBoxMenuNGTest {
     @Test(expectedExceptions = AssertionError.class)
     public void testConstructor_WithIcon_ThrowsMalformedURLExceptionTriggersAssertionError() throws MalformedURLException {
         System.out.println("constructor_WithIcon_ThrowsMalformedURLExceptionTriggersAssertionError");
+        
         try (final MockedStatic<Utilities> utilitiesMockStatic = Mockito.mockStatic(Utilities.class);) {
             final Icon icon = new ImageIcon(COOKIE_ICON_PATH);
             final URI uriMock = mock(URI.class);
             utilitiesMockStatic.when(() -> Utilities.toURI(any(File.class)))
                     .thenReturn(uriMock);
             when(uriMock.toURL()).thenThrow(MalformedURLException.class);
-            new JSingleChoiceComboBoxMenu(icon, items);
+            new JSingleChoiceComboBoxMenu<>(icon, items);
         }
     }
 
@@ -161,7 +164,8 @@ public class JSingleChoiceComboBoxMenuNGTest {
     @Test
     public void testaddButtonActionListener() {
         System.out.println("addButtonActionListener");
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
+        
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>("Text", items);
 
         final JButton button = instance.getButton();
         final JPopupMenu menu = instance.getMenu();
@@ -191,7 +195,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
     public void testAddMenuItemActionListener() {
         System.out.println("addMenuItemActionListener");
 
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>("Text", items);
         final ActionEvent actionEventMock = mock(ActionEvent.class);
         final Map<JMenuItem, String> menuItems = instance.getMenuItems();
         final String itemSelected = "Item 3";
@@ -203,7 +207,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
         instance.addSelectionListener(listSelectionListenerMock1);
         instance.setSelectedItem(itemSelected);
 
-        assertEquals(instance.getSelectedItem().stream().findFirst().get().toString(), itemSelected);
+        assertEquals(instance.getSelectedItem().stream().findFirst().get(), itemSelected);
 
         newMenuItem.getActionListeners()[0].actionPerformed(actionEventMock);
 
@@ -228,8 +232,9 @@ public class JSingleChoiceComboBoxMenuNGTest {
     @Test
     public void testGetText() {
         System.out.println("getText");
+        
         final String text = "Test text";
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu(text, items);
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>(text, items);
         final String result = instance.getText();
         assertEquals(result, text);
     }
@@ -240,8 +245,9 @@ public class JSingleChoiceComboBoxMenuNGTest {
     @Test
     public void testSetText() {
         System.out.println("setText");
+        
         final String text = "Test text";
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>("Text", items);
         instance.setText(text);
         final String result = instance.getText();
         assertEquals(result, text);
@@ -253,7 +259,8 @@ public class JSingleChoiceComboBoxMenuNGTest {
     @Test
     public void testGetIcon() {
         System.out.println("getIcon");
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
+        
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>("Text", items);
         final Icon result = instance.getIcon();
         assertNotNull(result);
     }
@@ -266,7 +273,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
     public void testSetIcon() throws MalformedURLException {
         System.out.println("setIcon");
 
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>("Text", items);
 
         final Icon newIcon1 = new ImageIcon(Utilities.toURI(ICON_FILE).toURL());
         final Icon newIcon2 = new ImageIcon(DROP_DOWN_ARROW_ICON_PATH);
@@ -285,8 +292,9 @@ public class JSingleChoiceComboBoxMenuNGTest {
     @Test
     public void testGetItems() {
         System.out.println("getItems");
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
-        final Set result = instance.getItems();
+        
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>("Text", items);
+        final Set<String> result = instance.getItems();
         assertEqualsNoOrder(result.toArray(), items.toArray());
     }
 
@@ -296,8 +304,9 @@ public class JSingleChoiceComboBoxMenuNGTest {
     @Test
     public void testSetSelectedItem() {
         System.out.println("setSelectedItem");
+        
         final String item = "Item 3";
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>("Text", items);
         assertTrue(instance.getSelectedItem().isEmpty());
         instance.setSelectedItem(item);
         final Set<String> resultSet = instance.getSelectedItem();
@@ -310,10 +319,11 @@ public class JSingleChoiceComboBoxMenuNGTest {
     @Test
     public void testGetSelectedItem() {
         System.out.println("getSelectedItem");
+        
         final String item = "Item 3";
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>("Text", items);
         instance.setSelectedItem(item);
-        final Set resultSet = instance.getSelectedItem();
+        final Set<String> resultSet = instance.getSelectedItem();
         assertEquals(resultSet.size(), 1);
         assertEquals(resultSet.stream().findFirst().get(), item);
     }
@@ -324,8 +334,9 @@ public class JSingleChoiceComboBoxMenuNGTest {
     @Test
     public void testSetToolTipText() {
         System.out.println("setToolTipText");
+        
         final String text = "Tooltip text to test";
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>("Text", items);
         instance.setToolTipText(text);
         final String result = instance.getToolTipText();
         assertEquals(result, text);
@@ -339,7 +350,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
         System.out.println("addSelectionListener");
 
         final ListSelectionListener listSelectionListenerMock = mock(ListSelectionListener.class);
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>("Text", items);
         instance.addSelectionListener(listSelectionListenerMock);
         final Set<ListSelectionListener> resultListeners = instance.getListeners();
         assertEquals(resultListeners.size(), 1);
@@ -356,7 +367,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
         final ListSelectionListener listSelectionListenerMock1 = mock(ListSelectionListener.class);
         final ListSelectionListener listSelectionListenerMock2 = mock(ListSelectionListener.class);
         final ListSelectionEvent mockEvent = mock(ListSelectionEvent.class);
-        final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
+        final JSingleChoiceComboBoxMenu<String> instance = new JSingleChoiceComboBoxMenu<>("Text", items);
 
         instance.addSelectionListener(listSelectionListenerMock1);
         instance.addSelectionListener(listSelectionListenerMock2);

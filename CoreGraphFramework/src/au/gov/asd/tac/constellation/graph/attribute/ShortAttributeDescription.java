@@ -54,8 +54,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
 
     private short[] data = new short[0];
     private short defaultValue = DEFAULT_VALUE;
-
-    @SuppressWarnings("unchecked") // Casts are manually checked
+    
     private short convertFromObject(final Object object) throws IllegalArgumentException {
         switch (object) {
             case Number number -> {

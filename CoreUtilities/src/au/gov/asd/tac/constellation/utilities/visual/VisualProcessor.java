@@ -248,7 +248,6 @@ public abstract class VisualProcessor {
      * properties for.
      * @return The set of properties trumped by the supplied property.
      */
-    @SuppressWarnings("unchecked")
     protected Set<VisualProperty> getTrumpedProperties(final VisualProperty property) {
         return Collections.emptySet();
     }

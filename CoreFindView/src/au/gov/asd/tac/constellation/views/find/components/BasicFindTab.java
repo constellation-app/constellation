@@ -99,9 +99,9 @@ public class BasicFindTab extends Tab {
     protected final CheckBox exactMatchCB = new CheckBox("Exact Match Only");
 
     protected final Label searchInLabel = new Label("Search In:");
-    protected final ChoiceBox searchInChoiceBox = new ChoiceBox();
+    protected final ChoiceBox<String> searchInChoiceBox = new ChoiceBox<>();
     protected final Label postSearchLabel = new Label("Post-Search Action:");
-    protected final ChoiceBox postSearchChoiceBox = new ChoiceBox();
+    protected final ChoiceBox<String> postSearchChoiceBox = new ChoiceBox<>();
 
     private final Label resultsFoundLabel = new Label();
     private final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
@@ -144,21 +144,15 @@ public class BasicFindTab extends Tab {
         });
 
         // set the action for changing the seleciton in the postSearchChoiceBox
-        searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) {
-                updateSelectionFactors();
-                updateBasicFindParamters();
-            }
+        searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement) -> {
+            updateSelectionFactors();
+            updateBasicFindParamters();
         });
 
         // set the action for changing the seleciton in the postSearchChoiceBox
-        postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) {
-                updateSelectionFactors();
-                updateBasicFindParamters();
-            }
+        postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement) -> {
+            updateSelectionFactors();
+            updateBasicFindParamters();
         });
 
         //Set the actions for the 5 bottom buttons

@@ -42,7 +42,6 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
     }
 
     @Override
-    @SuppressWarnings("unchecked") // Casts are manually checked
     protected Boolean convertFromObject(final Object object) {
         try {
             return super.convertFromObject(object);

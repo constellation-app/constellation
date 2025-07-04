@@ -98,7 +98,7 @@ public class AnalyticResultsPane extends VBox {
         return result;
     }
 
-    protected final void displayResults(final AnalyticQuestion<?> question, final AnalyticResult results,
+    protected final void displayResults(final AnalyticQuestion<?> question, final AnalyticResult<?> results,
             final Map<GraphVisualisation, Boolean> graphVisualisations) {
         if (results.getClass().equals(EmptyResult.class) && question != null) {
             result = question.getResult() == null ? new EmptyResult() : question.getResult();

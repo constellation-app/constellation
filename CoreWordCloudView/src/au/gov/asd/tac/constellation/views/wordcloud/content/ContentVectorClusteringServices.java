@@ -43,7 +43,7 @@ public class ContentVectorClusteringServices {
 
     private ContentVectorClusteringServices(final SparseMatrix<Integer> tokenElementMatrix) {
         this.tokenElementMatrix = tokenElementMatrix;
-        this.elementTokenMatrix = SparseMatrix.constructMatrix(0F);
+        this.elementTokenMatrix = (SparseMatrix<Float>) SparseMatrix.constructMatrix(0F);
         this.elementToCluster = new ConcurrentSkipListMap<>();
         this.clusterCentres = new ArrayList<>();
         moduli = new ConcurrentSkipListMap<>();

@@ -68,7 +68,7 @@ public class DateTimeRangeInputPaneNGTest {
     public void testSetPeriod() {
         System.out.println("testsetPeriod");
 
-        final PluginParameter parameter = new PluginParameter<>(new DateTimeRangeParameterValue(), new DateTimeRangeParameterType(), DateTimeRangeParameterType.ID);
+        final PluginParameter<DateTimeRangeParameterValue> parameter = new PluginParameter<>(new DateTimeRangeParameterValue(), new DateTimeRangeParameterType(), DateTimeRangeParameterType.ID);
         final DateTimeRangeInputPane instance = new DateTimeRangeInputPane(parameter);
 
         final ZoneId zi = ZoneId.systemDefault();
@@ -102,7 +102,7 @@ public class DateTimeRangeInputPaneNGTest {
     public void testSetAbsolute() {
         System.out.println("setAbsolute");
 
-        final PluginParameter parameter = new PluginParameter<>(new DateTimeRangeParameterValue(), new DateTimeRangeParameterType(), DateTimeRangeParameterType.ID);
+        final PluginParameter<DateTimeRangeParameterValue> parameter = new PluginParameter<>(new DateTimeRangeParameterValue(), new DateTimeRangeParameterType(), DateTimeRangeParameterType.ID);
         final DateTimeRangeInputPane instance = new DateTimeRangeInputPane(parameter);
 
         // Create zoned date times one month apart
@@ -132,7 +132,7 @@ public class DateTimeRangeInputPaneNGTest {
     public void testClearRangeButtons() {
         System.out.println("clearRangeButtons");
 
-        final PluginParameter parameter = new PluginParameter<>(new DateTimeRangeParameterValue(), new DateTimeRangeParameterType(), DateTimeRangeParameterType.ID);
+        final PluginParameter<DateTimeRangeParameterValue> parameter = new PluginParameter<>(new DateTimeRangeParameterValue(), new DateTimeRangeParameterType(), DateTimeRangeParameterType.ID);
         final DateTimeRangeInputPane instance = new DateTimeRangeInputPane(parameter);
 
         instance.clearRangeButtons();
@@ -146,7 +146,7 @@ public class DateTimeRangeInputPaneNGTest {
     public void testDatePickerFuncitions() {
         System.out.println("datePickerFuncitions");
 
-        final PluginParameter parameter = new PluginParameter<>(new DateTimeRangeParameterValue(), new DateTimeRangeParameterType(), DateTimeRangeParameterType.ID);
+        final PluginParameter<DateTimeRangeParameterValue> parameter = new PluginParameter<>(new DateTimeRangeParameterValue(), new DateTimeRangeParameterType(), DateTimeRangeParameterType.ID);
         final DateTimeRangeInputPane instance = new DateTimeRangeInputPane(parameter);
 
         final DatePicker datePicker = instance.getDatePickers().get(0);

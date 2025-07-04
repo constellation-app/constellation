@@ -116,11 +116,11 @@ public class PathScoringUtilitiesNGTest {
         final float[] expectedFloats = {3.0F, 3.0F, 0.0F, 3.0F, 3.0F};
 
         // Run function
-        final Tuple result = PathScoringUtilities.computeShortestPathsDirected(graph, scoreType, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional, selectedOnly);
+        final Tuple<BitSet[], float[]> result = PathScoringUtilities.computeShortestPathsDirected(graph, scoreType, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional, selectedOnly);
 
         // Assert results equal
-        assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
-        assertTrue(Arrays.equals((float[]) result.getSecond(), expectedFloats));
+        assertTrue(Arrays.equals(result.getFirst(), expectedBitSets));
+        assertTrue(Arrays.equals(result.getSecond(), expectedFloats));
 
         // BIG GRAPH
         // Set up expected expected bit set array
@@ -149,10 +149,10 @@ public class PathScoringUtilitiesNGTest {
         // Set up expected float array
         final float[] expectedFloatsbig = {0.0F, 3.0F, 0.0F, 0.0F, 4.0F, 0.0F, 0.0F, 9.0F, 18.0F, 0.0F, 15.0F, 0.0F, 10.0F, 21.0F, 0.0F, 0.0F, 0.0F, 20.0F, 0.0F, 18.0F};
 
-        final Tuple resultBig = PathScoringUtilities.computeShortestPathsDirected(bigGraph, scoreType, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional, selectedOnly);
+        final Tuple<BitSet[], float[]> resultBig = PathScoringUtilities.computeShortestPathsDirected(bigGraph, scoreType, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional, selectedOnly);
 
-        assertTrue(Arrays.equals((BitSet[]) resultBig.getFirst(), expectedBitSetsBig));
-        assertTrue(Arrays.equals((float[]) resultBig.getSecond(), expectedFloatsbig));
+        assertTrue(Arrays.equals(resultBig.getFirst(), expectedBitSetsBig));
+        assertTrue(Arrays.equals(resultBig.getSecond(), expectedFloatsbig));
     }
 
     /**
@@ -174,19 +174,19 @@ public class PathScoringUtilitiesNGTest {
         final float[] expectedFloats = {2.0F, 2.0F, 0.0F, 2.0F, 2.0F};
 
         // Run function
-        final Tuple result = PathScoringUtilities.computeShortestPathsUndirected(graph, scoreType, selectedOnly);
+        final Tuple<BitSet[], float[]> result = PathScoringUtilities.computeShortestPathsUndirected(graph, scoreType, selectedOnly);
 
         // Assert results equal
-        assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
-        assertTrue(Arrays.equals((float[]) result.getSecond(), expectedFloats));
+        assertTrue(Arrays.equals(result.getFirst(), expectedBitSets));
+        assertTrue(Arrays.equals(result.getSecond(), expectedFloats));
 
         // BIG GRAPH
         // Set up expected float array
         final float[] expectedFloatsbig = {0.0F, 22.0F, 0.0F, 0.0F, 60.0F, 0.0F, 0.0F, 2.0F, 92.0F, 0.0F, 22.0F, 0.0F, 52.0F, 62.0F, 0.0F, 0.0F, 0.0F, 88.0F, 0.0F, 100.0F};
 
-        final Tuple resultBig = PathScoringUtilities.computeShortestPathsUndirected(bigGraph, scoreType, selectedOnly);
+        final Tuple<BitSet[], float[]> resultBig = PathScoringUtilities.computeShortestPathsUndirected(bigGraph, scoreType, selectedOnly);
 
-        assertTrue(Arrays.equals((float[]) resultBig.getSecond(), expectedFloatsbig));
+        assertTrue(Arrays.equals(resultBig.getSecond(), expectedFloatsbig));
     }
 
     /**
@@ -207,19 +207,19 @@ public class PathScoringUtilitiesNGTest {
         final float[] expectedFloats = {2.0F, 2.0F, 0.0F, 2.0F, 2.0F};
 
         // Run function
-        final Tuple result = PathScoringUtilities.computeAllPathsUndirected(graph, scoreType);
+        final Tuple<BitSet[], float[]> result = PathScoringUtilities.computeAllPathsUndirected(graph, scoreType);
 
         // Assert results equal
-        assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
-        assertTrue(Arrays.equals((float[]) result.getSecond(), expectedFloats));
+        assertTrue(Arrays.equals(result.getFirst(), expectedBitSets));
+        assertTrue(Arrays.equals(result.getSecond(), expectedFloats));
 
         // BIG GRAPH
         // Set up expected float array
         final float[] expectedFloatsbig = {7.0F, 6.0F, 0.0F, 1.0F, 6.0F, 0.0F, 5.0F, 7.0F, 5.0F, 0.0F, 6.0F, 5.0F, 6.0F, 5.0F, 7.0F, 1.0F, 7.0F, 4.0F, 0.0F, 4.0F};
 
-        final Tuple resultBig = PathScoringUtilities.computeAllPathsUndirected(bigGraph, scoreType);
+        final Tuple<BitSet[], float[]> resultBig = PathScoringUtilities.computeAllPathsUndirected(bigGraph, scoreType);
 
-        assertTrue(Arrays.equals((float[]) resultBig.getSecond(), expectedFloatsbig));
+        assertTrue(Arrays.equals(resultBig.getSecond(), expectedFloatsbig));
     }
 
     /**
@@ -240,19 +240,19 @@ public class PathScoringUtilitiesNGTest {
         final float[] expectedFloats = {3.0F, 3.0F, 0.0F, 3.0F, 3.0F};
 
         // Run function
-        final Tuple result = PathScoringUtilities.computeAllPathsDirected(graph, scoreType, false, true, false);
+        final Tuple<BitSet[], float[]> result = PathScoringUtilities.computeAllPathsDirected(graph, scoreType, false, true, false);
 
         // Assert results equal
-        assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
-        assertTrue(Arrays.equals((float[]) result.getSecond(), expectedFloats));
+        assertTrue(Arrays.equals(result.getFirst(), expectedBitSets));
+        assertTrue(Arrays.equals(result.getSecond(), expectedFloats));
 
         // BIG GRAPH
         // Set up expected float array
         final float[] expectedFloatsbig = {4.0F, 8.0F, 0.0F, 1.0F, 3.0F, 0.0F, 0.0F, 7.0F, 2.0F, 0.0F, 6.0F, 4.0F, 1.0F, 5.0F, 0.0F, 0.0F, 0.0F, 4.0F, 0.0F, 3.0F};
 
-        final Tuple resultBig = PathScoringUtilities.computeAllPathsDirected(bigGraph, scoreType, false, true, false);
+        final Tuple<BitSet[], float[]> resultBig = PathScoringUtilities.computeAllPathsDirected(bigGraph, scoreType, false, true, false);
 
-        assertTrue(Arrays.equals((float[]) resultBig.getSecond(), expectedFloatsbig));
+        assertTrue(Arrays.equals(resultBig.getSecond(), expectedFloatsbig));
     }
 
     /**
@@ -273,19 +273,19 @@ public class PathScoringUtilitiesNGTest {
         final float[] expectedFloats = {1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 2.0F, 2.0F, 2.0F};
 
         // Run function
-        final Tuple result = PathScoringUtilities.calculateScores(graph, scoreType, true, true, true, false);
+        final Tuple<BitSet[], float[]> result = PathScoringUtilities.calculateScores(graph, scoreType, true, true, true, false);
 
         // Assert results equal
-        assertTrue(Arrays.equals((BitSet[]) result.getFirst(), expectedBitSets));
-        assertTrue(Arrays.equals((float[]) result.getSecond(), expectedFloats));
+        assertTrue(Arrays.equals(result.getFirst(), expectedBitSets));
+        assertTrue(Arrays.equals(result.getSecond(), expectedFloats));
 
         // BIG GRAPH
         // Set up expected float array
         final float[] expectedFloatsbig = {1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 2.0F, 2.0F, 2.0F, 2.0F, 2.0F, 2.0F, 2.0F, 2.0F, 3.0F, 3.0F, 3.0F, 3.0F, 4.0F};
 
-        final Tuple resultBig = PathScoringUtilities.computeAllPathsDirected(bigGraph, scoreType, false, true, false);
+        final Tuple<BitSet[], float[]> resultBig = PathScoringUtilities.computeAllPathsDirected(bigGraph, scoreType, false, true, false);
 
-        assertTrue(Arrays.equals((float[]) resultBig.getSecond(), expectedFloatsbig));
+        assertTrue(Arrays.equals(resultBig.getSecond(), expectedFloatsbig));
     }
 
 }

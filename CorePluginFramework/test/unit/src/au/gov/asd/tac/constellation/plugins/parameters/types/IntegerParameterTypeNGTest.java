@@ -66,7 +66,7 @@ public class IntegerParameterTypeNGTest {
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof IntegerParameterType);
-        assertEquals(((IntegerParameterValue) result.getParameterValue()).get(), 0);
+        assertEquals(result.getParameterValue().get(), 0);
     }
 
     /**
@@ -82,7 +82,7 @@ public class IntegerParameterTypeNGTest {
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof IntegerParameterType);
-        assertEquals(((IntegerParameterValue) result.getParameterValue()).get(), 1);
+        assertEquals(result.getParameterValue().get(), 1);
     }
 
     /**

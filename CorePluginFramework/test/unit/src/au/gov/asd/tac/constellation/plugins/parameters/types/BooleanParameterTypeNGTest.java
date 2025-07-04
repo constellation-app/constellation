@@ -62,7 +62,7 @@ public class BooleanParameterTypeNGTest {
         System.out.println("build_string");
         String id = "booleanParameter";
 
-        PluginParameter result = BooleanParameterType.build(id);
+        PluginParameter<BooleanParameterValue> result = BooleanParameterType.build(id);
         BooleanParameterValue expectedValue = new BooleanParameterValue();
 
         assertEquals(result.getId(), id);
@@ -79,7 +79,7 @@ public class BooleanParameterTypeNGTest {
         String id = "booleanParameter";
         BooleanParameterValue parameterValue = new BooleanParameterValue();
 
-        PluginParameter result = BooleanParameterType.build(id, parameterValue);
+        PluginParameter<BooleanParameterValue> result = BooleanParameterType.build(id, parameterValue);
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof BooleanParameterType);

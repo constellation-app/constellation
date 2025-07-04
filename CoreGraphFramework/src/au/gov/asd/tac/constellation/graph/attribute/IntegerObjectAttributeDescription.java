@@ -35,7 +35,6 @@ public class IntegerObjectAttributeDescription extends AbstractObjectAttributeDe
     }
 
     @Override
-    @SuppressWarnings("unchecked") // Casts are manually checked
     protected Integer convertFromObject(final Object object) {
         try {
             return super.convertFromObject(object);

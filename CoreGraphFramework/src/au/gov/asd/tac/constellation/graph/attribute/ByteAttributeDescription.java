@@ -54,8 +54,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     private byte[] data = new byte[0];
     private byte defaultValue = DEFAULT_VALUE;
-
-    @SuppressWarnings("unchecked") // Casts are manually checked
+    
     private byte convertFromObject(final Object object) throws IllegalArgumentException {
         switch (object) {
             case Number number -> {

@@ -64,7 +64,6 @@ public class SchemaAttributeUtilities {
      * @param elementType The element type
      * @return A {@link List} of all discovered {@link SchemaAttribute}.
      */
-    @SuppressWarnings("unchecked") // unchecked cast error cause by Empty set : this is fine.
     public static Collection<SchemaAttribute> getAttributes(final GraphElementType elementType) {
         buildAttributes();
         return switch (elementType) {

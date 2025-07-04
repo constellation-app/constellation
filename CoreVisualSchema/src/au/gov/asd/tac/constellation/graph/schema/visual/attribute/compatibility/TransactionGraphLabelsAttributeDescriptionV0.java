@@ -47,7 +47,6 @@ public final class TransactionGraphLabelsAttributeDescriptionV0 extends Abstract
      * @return A GraphLabels.
      */
     @Override
-    @SuppressWarnings("unchecked") // Casts are checked manually
     protected ElementGraphLabelsV0 convertFromObject(final Object object) {
         if (object == null) {
             return DEFAULT_VALUE;

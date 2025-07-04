@@ -41,7 +41,7 @@ public class ContentAnalysisManagerNGTest {
     
     private final Graph graph = mock(Graph.class);
     private final int[] performOnElements = {0, 1, 2, 3, 4};
-    private final Set<Integer> elementsOfInterest = new HashSet();
+    private final Set<Integer> elementsOfInterest = new HashSet<>();
     private final int graphElementCapacity = 1;
     private final GraphElementType elementType = GraphElementType.VERTEX;
     private final int performOnAttributeID = 0;
@@ -72,7 +72,7 @@ public class ContentAnalysisManagerNGTest {
     @Test
     public void testGetStringListAllocator() {
         System.out.println("getStringListAllocator");
-        final List<String> list = new ArrayList();
+        final List<String> list = new ArrayList<>();
         list.add("vertex1");
         list.add("vertex2");
         list.add("vertex3");

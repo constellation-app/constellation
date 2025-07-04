@@ -38,7 +38,6 @@ public class HyperlinkAttributeDescription extends AbstractObjectAttributeDescri
     }
 
     @Override
-    @SuppressWarnings("unchecked") // Casts are manually checked
     protected URI convertFromObject(final Object object) {
         try {
             return super.convertFromObject(object);
