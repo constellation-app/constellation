@@ -146,20 +146,34 @@ public class HistogramTopComponent2NGTest {
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
             instance.handleComponentOpened();
 
+            // Assert functions were called
             verify(mockGraphManager).getActiveGraph();
+            mockedGraphManager.verify(() -> GraphManager.getDefault(), atLeast(1));
         }
     }
 
     /**
      * Test of handleComponentClosed method, of class HistogramTopComponent2.
      */
-//    @Test
-//    public void testHandleComponentClosed() {
-//        // Hard to test really
-//        System.out.println("handleComponentClosed");
-//        final HistogramTopComponent2 instance = new HistogramTopComponent2();
-//        instance.handleComponentClosed();
-//    }
+    @Test
+    public void testHandleComponentClosed() {
+        System.out.println("handleComponentClosed");
+
+        final GraphManager mockGraphManager = mock(GraphManager.class);
+        when(mockGraphManager.getActiveGraph()).thenReturn(mockGraph);
+
+        try (final MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class)) {
+
+            mockedGraphManager.when(GraphManager::getDefault).thenReturn(mockGraphManager);
+
+            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+            instance.handleComponentClosed();
+
+            // Assert function was called
+            mockedGraphManager.verify(() -> GraphManager.getDefault(), atLeast(1));
+        }
+    }
+
     /**
      * Test of handleNewGraph method, of class HistogramTopComponent2.
      */
