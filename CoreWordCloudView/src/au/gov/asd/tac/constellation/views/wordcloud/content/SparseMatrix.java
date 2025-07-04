@@ -43,6 +43,7 @@ public class SparseMatrix<N extends Number> {
         return switch (noEntryVal) {
             case Integer value -> new SparseMatrix<>(value, IntegerArithmeticHandler.INSTANCE);
             case Float value -> new SparseMatrix<>(value, FloatArithmeticHandler.INSTANCE);
+            case null -> null;
             default -> null;
         };
     }

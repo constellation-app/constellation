@@ -42,6 +42,7 @@ public class TaggedSparseMatrix<N extends Number> extends SparseMatrix<N> {
         return switch (noEntryValue) {
             case Integer value -> new TaggedSparseMatrix<>(value, IntegerArithmeticHandler.INSTANCE);
             case Float value -> new TaggedSparseMatrix<>(value, FloatArithmeticHandler.INSTANCE);
+            case null -> null;
             default -> null;
         };
     }
