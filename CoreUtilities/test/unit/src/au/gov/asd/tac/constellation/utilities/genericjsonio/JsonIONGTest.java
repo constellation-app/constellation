@@ -369,38 +369,38 @@ public class JsonIONGTest {
     public void test_getDefaultKeyboardShortcut() throws URISyntaxException, IOException {
         final File prefDir = new File(System.getProperty("java.io.tmpdir"));
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
-        final File outputFile1 = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl 1] my-preferences.json");
-        final File outputFile2 = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl 2] my-preferences.json");
-        final File outputFile3 = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl 3] my-preferences.json");
-        final File outputFile4 = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl 4] my-preferences.json");
-        final File outputFile5 = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl 5] my-preferences.json");
+        final File outputFile1 = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl Alt Shift 1] my-preferences.json");
+        final File outputFile2 = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl Alt Shift 2] my-preferences.json");
+        final File outputFile3 = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl Alt Shift 3] my-preferences.json");
+        final File outputFile4 = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl Alt Shift 4] my-preferences.json");
+        final File outputFile5 = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl Alt Shift 5] my-preferences.json");
 
         try {
 
             outputFile.createNewFile();
             final Optional<String> ks = JsonIO.getDefaultKeyboardShortcut(prefDir);
             assertTrue(ks.isPresent());
-            assertEquals("Ctrl 1", ks.get());
+            assertEquals("Ctrl+Alt+Shift+1", ks.get());
 
             outputFile1.createNewFile();
             final Optional<String> ks1 = JsonIO.getDefaultKeyboardShortcut(prefDir);
             assertTrue(ks1.isPresent());
-            assertEquals("Ctrl 2", ks1.get());
+            assertEquals("Ctrl+Alt+Shift+2", ks1.get());
 
             outputFile2.createNewFile();
             final Optional<String> ks2 = JsonIO.getDefaultKeyboardShortcut(prefDir);
             assertTrue(ks2.isPresent());
-            assertEquals("Ctrl 3", ks2.get());
+            assertEquals("Ctrl+Alt+Shift+3", ks2.get());
 
             outputFile3.createNewFile();
             final Optional<String> ks3 = JsonIO.getDefaultKeyboardShortcut(prefDir);
             assertTrue(ks3.isPresent());
-            assertEquals("Ctrl 4", ks3.get());
+            assertEquals("Ctrl+Alt+Shift+4", ks3.get());
 
             outputFile4.createNewFile();
             final Optional<String> ks4 = JsonIO.getDefaultKeyboardShortcut(prefDir);
             assertTrue(ks4.isPresent());
-            assertEquals("Ctrl 5", ks4.get());
+            assertEquals("Ctrl+Alt+Shift+5", ks4.get());
 
             outputFile5.createNewFile();
             final Optional<String> ks5 = JsonIO.getDefaultKeyboardShortcut(prefDir);
