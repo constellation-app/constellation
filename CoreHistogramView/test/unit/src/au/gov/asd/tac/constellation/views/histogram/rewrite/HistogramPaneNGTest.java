@@ -16,8 +16,11 @@
 package au.gov.asd.tac.constellation.views.histogram.rewrite;
 
 import au.gov.asd.tac.constellation.views.histogram.BinCollection;
+import au.gov.asd.tac.constellation.views.histogram.BinCreator;
 import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
 import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
+import au.gov.asd.tac.constellation.views.histogram.HistogramState;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -161,5 +164,18 @@ public class HistogramPaneNGTest {
             final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
             verify(menu).updateBinCollection();
         }
+    }
+
+    /**
+     * Test of setHistogramState method, of class HistogramPane.
+     */
+    @Test
+    public void testSetHistogramState() {
+        System.out.println("setHistogramState");
+        final HistogramState histogramState = new HistogramState();
+        final Map<String, BinCreator> attributes = mock(Map.class);
+        final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
+
+        instance.setHistogramState(histogramState, attributes);
     }
 }
