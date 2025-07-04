@@ -157,7 +157,7 @@ public class UpdateDataTaskNGTest {
 
         when(activeTableReference.getUserTablePreferences()).thenReturn(userTablePreferences);
 
-        final TableFilter.Builder filterBuilder = mock(TableFilter.Builder.class);
+        final TableFilter.Builder<ObservableList<String>> filterBuilder = mock(TableFilter.Builder.class);
         final TableFilter<ObservableList<String>> filter = mock(TableFilter.class);
 
         final FilteredList<ObservableList<String>> filteredList = mock(FilteredList.class);
@@ -250,7 +250,7 @@ public class UpdateDataTaskNGTest {
 
     @Test
     public void runThreadInterruptedPartWayThrough() throws InterruptedException {
-        final TableFilter.Builder filterBuilder = mock(TableFilter.Builder.class);
+        final TableFilter.Builder<ObservableList<String>> filterBuilder = mock(TableFilter.Builder.class);
         final TableFilter<ObservableList<String>> filter = mock(TableFilter.class);
 
         final FilteredList<ObservableList<String>> filteredList = mock(FilteredList.class);

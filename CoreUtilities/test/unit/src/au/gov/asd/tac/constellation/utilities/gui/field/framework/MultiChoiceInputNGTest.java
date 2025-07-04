@@ -79,9 +79,9 @@ public class MultiChoiceInputNGTest {
     
     @Test
     public void testMultiChoiceInput_options() {               
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput<String>());
+        final MultiChoiceInput<String> multiChoiceInput = spy(new MultiChoiceInput<>());
         multiChoiceInput.setOptions(fruitList);
-        final List fruitOptions = multiChoiceInput.getOptions();
+        final List<String> fruitOptions = multiChoiceInput.getOptions();
 
         assertEquals(fruitOptions.size(), fruitList.size());
         assertEquals(fruitOptions.getFirst(), "apple");
@@ -91,7 +91,7 @@ public class MultiChoiceInputNGTest {
      
     @Test(expectedExceptions = InvalidOperationException.class)
     public void testMultiChoiceInputField_nullOptions() {  
-        final ChoiceInputField multiChoiceInputFieldMock = spy(new MultiChoiceInput());
+        final ChoiceInputField<?, ?> multiChoiceInputFieldMock = spy(new MultiChoiceInput<>());
         assertEquals(multiChoiceInputFieldMock.getOptions().size(), 0);
         multiChoiceInputFieldMock.setOptions(null);        
     }
@@ -101,7 +101,7 @@ public class MultiChoiceInputNGTest {
         final ObservableList<String> observableList = FXCollections.observableArrayList();
         observableList.addAll(fruitList);
         observableList.add("None");
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput(observableList));
+        final MultiChoiceInput<String> multiChoiceInput = spy(new MultiChoiceInput<>(observableList));
         
         assertEquals(multiChoiceInput.getText(), "");
         multiChoiceInput.setChoice(fruitList.getFirst());
@@ -127,7 +127,7 @@ public class MultiChoiceInputNGTest {
     
     @Test
     public void testMultiChoiceInputField_getLocalMenuItems() {  
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput());      
+        final MultiChoiceInput<?> multiChoiceInput = spy(new MultiChoiceInput<>());      
         assertEquals(multiChoiceInput.getLocalMenuItems().size(), 1);
         final MenuItem menuItem = (MenuItem) multiChoiceInput.getLocalMenuItems().getFirst();
         assertEquals(menuItem.getText(), "Show Choices...");
@@ -137,7 +137,7 @@ public class MultiChoiceInputNGTest {
     public void testMultiChoiceInputField_isValidContent() {  
         final ObservableList<String> observableList = FXCollections.observableArrayList();
         observableList.addAll(fruitList);
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput(observableList));
+        final MultiChoiceInput<String> multiChoiceInput = spy(new MultiChoiceInput<>(observableList));
         
         multiChoiceInput.setChoice(fruitList.getFirst());
         assertTrue(multiChoiceInput.isValidContent());
@@ -149,7 +149,7 @@ public class MultiChoiceInputNGTest {
     public void testMultiChoiceInputField_getAutocompleteSuggestions() {  
         final ObservableList<String> observableList = FXCollections.observableArrayList();
         observableList.addAll(fruitList);
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput(observableList));
+        final MultiChoiceInput<String> multiChoiceInput = spy(new MultiChoiceInput<>(observableList));
         
         multiChoiceInput.setText("o");
         final List<MenuItem> autoCompleteSuggestions = multiChoiceInput.getAutoCompleteSuggestions();
@@ -164,7 +164,7 @@ public class MultiChoiceInputNGTest {
     
     @Test
     public void testMultiChoiceInputField_ChoiceInputDropDown() {  
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput());
+        final MultiChoiceInput<String> multiChoiceInput = spy(new MultiChoiceInput<>());
         multiChoiceInput.setOptions(fruitList);
         doNothing().when(multiChoiceInput).showDropDown(Mockito.any());
         assertThatCode(() -> multiChoiceInput.executeRightButtonAction()).doesNotThrowAnyException();
@@ -172,7 +172,7 @@ public class MultiChoiceInputNGTest {
     
     @Test
     public void testMultiChoiceInput_rightButtonSupport() {  
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput());
+        final MultiChoiceInput<String> multiChoiceInput = spy(new MultiChoiceInput<>());
         multiChoiceInput.setOptions(fruitList);
         doNothing().when(multiChoiceInput).setMenuShown(Mockito.anyBoolean());
         doNothing().when(multiChoiceInput).executeRightButtonAction();
@@ -188,7 +188,7 @@ public class MultiChoiceInputNGTest {
     
     @Test
     public void testMultiChoiceInput_executeRightButtonAction() {  
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput());
+        final MultiChoiceInput<String> multiChoiceInput = spy(new MultiChoiceInput<>());
         multiChoiceInput.setOptions(fruitList);
 
         doReturn(false).when(multiChoiceInput).isMenuShown();
