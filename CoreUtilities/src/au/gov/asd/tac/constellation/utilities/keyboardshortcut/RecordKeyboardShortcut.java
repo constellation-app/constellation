@@ -29,7 +29,9 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCombination.Modifier;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -58,8 +60,11 @@ public class RecordKeyboardShortcut  {
     
     private final KeyPressLabelDialog td;
 
-    public RecordKeyboardShortcut() {
+    public RecordKeyboardShortcut(final Window parentWindow) {
         this.td = new KeyPressLabelDialog();
+        final Stage stage = (Stage) td.getDialogPane().getScene().getWindow();
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(parentWindow);       
     }
     
     //For unit test
@@ -76,11 +81,7 @@ public class RecordKeyboardShortcut  {
         final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 40;
         td.setX(SystemUtilities.getMainframeXPos() + xOffset);
         td.setY(SystemUtilities.getMainframeYPos() + yOffset);
-        
-        final Stage stage = (Stage) td.getDialogPane().getScene().getWindow();
-        stage.setAlwaysOnTop(true);        
         td.showAndWait();        
-        
         
         final String keyboardShortcut = td.getLabel().getText().trim(); 
         

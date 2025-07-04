@@ -29,6 +29,7 @@ import java.util.Optional;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.stage.Window;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -58,7 +59,7 @@ public class DataAccessParametersIoProvider {
      * @param tabs the tabs to extract the global and plugin parameters from
      * @see JsonIO#saveJsonPreferences(Optional, ObjectMapper, Object)
      */
-    public static void saveParameters(final TabPane tabs) {
+    public static void saveParameters(final TabPane tabs, final Window parentWindow) {
         final List<DataAccessUserPreferences> dataAccessUserPreferenceses = new ArrayList<>();
 
         for (final Tab step : tabs.getTabs()) {
@@ -75,7 +76,7 @@ public class DataAccessParametersIoProvider {
         }
 
         // Can now save the preferences even if no query name parameter is present
-        JsonIO.saveJsonPreferencesWithKeyboardShortcut(Optional.of(DATA_ACCESS_DIR), dataAccessUserPreferenceses);
+        JsonIO.saveJsonPreferencesWithKeyboardShortcut(Optional.of(DATA_ACCESS_DIR), dataAccessUserPreferenceses, parentWindow);
     }
 
     /**

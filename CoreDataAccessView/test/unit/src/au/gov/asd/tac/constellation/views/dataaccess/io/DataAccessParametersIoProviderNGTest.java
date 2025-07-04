@@ -441,13 +441,13 @@ public class DataAccessParametersIoProviderNGTest {
                 final MockedConstruction<DataAccessUserPreferences> mockedPrefConstruction = 
                         Mockito.mockConstruction(DataAccessUserPreferences.class, mockInitializer);
             ) {
-            DataAccessParametersIoProvider.saveParameters(tabPane);
+            DataAccessParametersIoProvider.saveParameters(tabPane, null);
             
             if (isSaveExpected) {
                 jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferencesWithKeyboardShortcut(
                         eq(Optional.of("DataAccessView")),
-                        eq(mockedPrefConstruction.constructed())
-                ));
+                        eq(mockedPrefConstruction.constructed()), any())
+                );
             } else {
                 jsonIOStaticMock.verifyNoInteractions();
             }

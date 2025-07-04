@@ -72,7 +72,7 @@ public class KeyboardShortcutSelectionResultNGTest {
         final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
+                () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory, null));
 
         final Stage dialog = getDialog(robot);
         dialog.setX(0);

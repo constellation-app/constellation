@@ -31,8 +31,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.stage.Window;
 
 /**
  * Displays a generic dialog window that can allow the user to select a file
@@ -139,22 +138,9 @@ public class JsonIODialog {
         return td.showAndWait();
     }
     
-    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(final Optional<String> ks, final File preferenceDirectory) {
-        final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut(preferenceDirectory, ks);
-        td.setTitle(PREFERENCE_NAME_DIALOG_TITLE);
-        td.setHeaderText(PREFERENCE_NAME_DIALOG_HEADER_TEXT);
-        td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-        
-        
-        final double xOffset = SystemUtilities.getMainframeWidth() / 2 - 60;
-        final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 60;
-        td.setX(SystemUtilities.getMainframeXPos() + xOffset);        
-        td.setY(SystemUtilities.getMainframeYPos() + yOffset);
-        
-        final Stage stage = (Stage) td.getDialogPane().getScene().getWindow();
-        stage.setAlwaysOnTop(true);        
-        td.showAndWait();
-        
+    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(final Optional<String> ks, final File preferenceDirectory, final Window parentWindow) {
+        final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut("",  PREFERENCE_NAME_DIALOG_TITLE, PREFERENCE_NAME_DIALOG_HEADER_TEXT, preferenceDirectory, ks, parentWindow);
+        td.showPopUp();        
         return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
     }
 

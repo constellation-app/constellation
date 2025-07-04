@@ -162,7 +162,7 @@ public class OptionsMenuBarNGTest {
             optionsMenuBar.getSaveMenuItem().getOnAction().handle(actionEvent);
 
             prefProviderMockedStatic.verify(() -> DataAccessParametersIoProvider
-                    .saveParameters(tabPane));
+                    .saveParameters(tabPane, null));
             verify(actionEvent).consume();
         }
 

@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Window;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.NotifyDescriptor;
@@ -251,7 +252,7 @@ public class JsonIO {
         saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER);
     }
 
-    public static void saveJsonPreferencesWithKeyboardShortcut(final Optional<String> saveDir, final Object rootNode) {
+    public static void saveJsonPreferencesWithKeyboardShortcut(final Optional<String> saveDir, final Object rootNode, final Window parentWindow) {
         final ObjectMapper mapper = OBJECT_MAPPER;
         final File preferenceDirectory = getPrefereceFileDirectory(saveDir);
 
@@ -271,7 +272,7 @@ public class JsonIO {
         // Ask the user to provide a file name        
         final Optional<String> userInputWithKs;
 
-        final Optional<KeyboardShortcutSelectionResult> ksResult = JsonIODialog.getPreferenceFileName(ks, preferenceDirectory);
+        final Optional<KeyboardShortcutSelectionResult> ksResult = JsonIODialog.getPreferenceFileName(ks, preferenceDirectory, parentWindow);
         if (ksResult.isPresent()) {
             if (Objects.isNull(ksResult.get().getFileName())) {
                 return;

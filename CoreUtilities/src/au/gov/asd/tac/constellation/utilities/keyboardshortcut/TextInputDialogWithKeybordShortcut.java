@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
+import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.util.Optional;
@@ -22,7 +23,6 @@ import javafx.application.Platform;
 import javafx.beans.NamedArg;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
@@ -33,11 +33,23 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.css.PseudoClass;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Control;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -54,17 +66,25 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
      * Fields
      *
      **************************************************************************/
-    private final GridPane grid;
-    private final Label label;
+    private final DialogPane dialogPane;    
+    private final String title;
+    private final String headerText;
+    private boolean isFirstTime = true;
+    private Window parent = null;
+    private Stage stage = null;
     private final TextField textField;
-    private final String defaultValue;
-
     private final Label keyboardShortcutLabel;
     private final Button keyboardShortcutButton;
-
     private final Label shorcutWarningLabel;
     private final Label shorcutWarningIconLabel;
     private final KeyboardShortcutSelectionResult keyboardShortcutSelectionResult;
+    private final Label label;
+    private final GridPane grid;
+    private final Button addButton = new Button("OK");
+    private final Button cancelButton = new Button("Cancel");
+    private static final PseudoClass HEADER_PSEUDO_CLASS = PseudoClass.getPseudoClass("header"); 
+    private static final Logger LOGGER = Logger.getLogger(TextInputDialogWithKeybordShortcut.class.getName());
+
 
 
     /* ************************************************************************
@@ -76,8 +96,8 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
      * Creates a new TextInputDialog without a default value entered into the
      * dialog {@link TextField}.
      */
-    public TextInputDialogWithKeybordShortcut(final File preferenceDirectory, final Optional<String> ks) {
-        this("", preferenceDirectory, ks);
+    public TextInputDialogWithKeybordShortcut(final File preferenceDirectory, final Optional<String> ks, final Window parentWindow) {
+        this("",  "", "", preferenceDirectory, ks, parentWindow);
     }
 
     /**
@@ -86,69 +106,79 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
      *
      * @param defaultValue the default value entered into the dialog
      */
-    public TextInputDialogWithKeybordShortcut(@NamedArg("defaultValue") final String defaultValue, final File preferenceDirectory, final Optional<String> ks) {
-        final DialogPane dialogPane = getDialogPane();
+    public TextInputDialogWithKeybordShortcut(@NamedArg("defaultValue") final String defaultValue, final String title, final String headerText, 
+            final File preferenceDirectory, final Optional<String> ks, final Window parentWindow) {
+        this.title =  title;
+        this.headerText = headerText;
+        parent =  parentWindow;
         
+        dialogPane = new DialogPane();
+        dialogPane.pseudoClassStateChanged(HEADER_PSEUDO_CLASS, true);
+        dialogPane.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-         
+        
+        // -- label
+        label = createContentLabel(dialogPane.getContentText());
+        label.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        label.textProperty().bind(dialogPane.contentTextProperty());
+        
         // -- textfield
         this.textField = new TextField(defaultValue);
         this.textField.setMaxWidth(Double.MAX_VALUE);
         this.textField.setMinWidth(250);
         GridPane.setHgrow(textField, Priority.ALWAYS);
         GridPane.setFillWidth(textField, true);
-
-        // -- label
-        label = createContentLabel(dialogPane.getContentText());
-        label.setPrefWidth(Region.USE_COMPUTED_SIZE);
-        label.textProperty().bind(dialogPane.contentTextProperty());
-
+        
         // Leyboard shortcut label. Showing existing/ptoposed shortcut assigned to the template
         keyboardShortcutLabel = createLabel();
         keyboardShortcutLabel.setMinWidth(Control.USE_PREF_SIZE);
-        keyboardShortcutLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);        
- 
+        keyboardShortcutLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
+        keyboardShortcutLabel.setPadding(new Insets(2, 10, 2, 10));
+        keyboardShortcutLabel.setGraphic(null);
+        keyboardShortcutLabel.setTooltip(null);
+        keyboardShortcutLabel.setContentDisplay(ContentDisplay.RIGHT);
+        
+        keyboardShortcutButton = new Button("Shortcut");
+        
+        shorcutWarningLabel = createLabel();
+        shorcutWarningLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        shorcutWarningLabel.setPrefHeight(Region.USE_COMPUTED_SIZE);
+        shorcutWarningLabel.setMinHeight(Region.USE_PREF_SIZE);
+        shorcutWarningLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 11.5px; -fx-text-fill: " + ConstellationColor.DARK_ORANGE.getHtmlColor() + ";");        
+        shorcutWarningLabel.setPadding(new Insets(5, 2, 5, 2));
+        
+        shorcutWarningIconLabel = createLabel();
+        shorcutWarningIconLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);        
+
         final ImageView warningImage = new ImageView(UserInterfaceIconProvider.WARNING.buildImage(20, new java.awt.Color(255, 128, 0)));
         final Tooltip warningToolTip = new Tooltip("This shortcut is currently assigned to another template");
                 
         final ImageView errorImage = new ImageView(UserInterfaceIconProvider.ERROR.buildImage(20, ConstellationColor.CHERRY.getJavaColor()));
         final Tooltip errorToolTip = new Tooltip();
         
-        keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
-        keyboardShortcutLabel.setPadding(new Insets(2, 10, 2, 10));
-        keyboardShortcutLabel.setGraphic(null);
-        keyboardShortcutLabel.setTooltip(null);
-        keyboardShortcutLabel.setContentDisplay(ContentDisplay.RIGHT);
-
-        shorcutWarningLabel = createLabel();
-        shorcutWarningLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);
-        shorcutWarningLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 11.5px; -fx-text-fill: " + ConstellationColor.DARK_ORANGE.getHtmlColor() + ";");
-        GridPane.setHgrow(shorcutWarningLabel, Priority.ALWAYS);
-        GridPane.setFillWidth(shorcutWarningLabel, true);
-
-        shorcutWarningIconLabel = createLabel();
-        shorcutWarningIconLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);        
-
+        
         keyboardShortcutSelectionResult = new KeyboardShortcutSelectionResult();
-
+        
         if (ks.isPresent()) {
             keyboardShortcutLabel.setText(ks.get());
             keyboardShortcutSelectionResult.setKeyboardShortcut(ks.get());
         }
-
-        keyboardShortcutButton = new Button("Shortcut");        
-
-        keyboardShortcutButton.setOnAction(e -> {//NOSONAR
-            final RecordKeyboardShortcut rk = new RecordKeyboardShortcut();
-            final Optional<KeyboardShortcutSelectionResult> keyboardShortcut = getKeyboardShortcut(preferenceDirectory, rk);
+        
+        keyboardShortcutButton.setOnAction(e -> {//NOSONAR            
+            stage.setAlwaysOnTop(false);
+            final RecordKeyboardShortcut rk = new RecordKeyboardShortcut(stage.getScene().getWindow());
+            final Optional<KeyboardShortcutSelectionResult> keyboardShortcut = rk.start(preferenceDirectory);
+            stage.setAlwaysOnTop(true);
+            
             if (keyboardShortcut.isPresent()) {
                 final KeyboardShortcutSelectionResult ksResult = keyboardShortcut.get();
                 keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
                 keyboardShortcutLabel.setText(ksResult.getKeyboardShortcut());
                 keyboardShortcutSelectionResult.setKeyboardShortcut(ksResult.getKeyboardShortcut());
                 
-                if (ksResult.getAssignedShortcut().isPresent()) {
-                    shorcutWarningLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 11.5px; -fx-text-fill: " + ConstellationColor.CHERRY.getHtmlColor() + ";");
+                if (ksResult.getAssignedShortcut().isPresent()) {                    
+                    shorcutWarningLabel.setStyle(" -fx-text-alignment: left; -fx-font-size: 11.5px; -fx-text-fill: " + ConstellationColor.CHERRY.getHtmlColor() + ";");
                     shorcutWarningLabel.setText(String.format(RecordKeyboardShortcut.KEYBOARD_SHORTCUT_EXISTS_WITHIN_APP_ALERT_ERROR_MSG_FORMAT, ksResult.getKeyboardShortcut()));
                     errorToolTip.setText(String.format(RecordKeyboardShortcut.KEYBOARD_SHORTCUT_EXISTS_WITHIN_APP_ALERT_TOOLTIP_MSG_FORMAT, ksResult.getKeyboardShortcut(), 
                             ksResult.getAssignedShortcut().get().getValue()));
@@ -166,103 +196,54 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
                     keyboardShortcutSelectionResult.setExisitngTemplateWithKs(ksResult.getExisitngTemplateWithKs());
                     shorcutWarningIconLabel.setGraphic(warningImage);
                     shorcutWarningIconLabel.setTooltip(warningToolTip);
-                    dialogPane.lookupButton(ButtonType.OK).setDisable(false);
+                    dialogPane.lookupButton(ButtonType.OK).setDisable(false);                    
                 } else {
                     shorcutWarningLabel.setText(null);
                     keyboardShortcutSelectionResult.setAlreadyAssigned(false);
                     keyboardShortcutSelectionResult.setExisitngTemplateWithKs(null);
                     shorcutWarningIconLabel.setGraphic(null);
                     shorcutWarningIconLabel.setTooltip(null);
-                    dialogPane.lookupButton(ButtonType.OK).setDisable(false);
+                    dialogPane.lookupButton(ButtonType.OK).setDisable(false);                    
                 }
+                
+            }
+
+        });       
+               
+        
+        ((Button) dialogPane.lookupButton(ButtonType.CANCEL)).setOnAction(e -> {
+            if (stage != null) {
+               stage.close();
             }
         });
+        
+        ((Button) dialogPane.lookupButton(ButtonType.OK)).setOnAction(e -> {
+            if (stage != null) {
+                if (keyboardShortcutSelectionResult.isAlreadyAssigned() && keyboardShortcutSelectionResult.getExisitngTemplateWithKs() != null) {
+                    //remove shortcut from existing template to be re-assign to new template                    
+                    final String rename = keyboardShortcutSelectionResult.getExisitngTemplateWithKs()
+                            .getName().replaceAll("\\[" + StringUtils.replace(keyboardShortcutSelectionResult.getKeyboardShortcut(), "+", StringUtils.SPACE) + "\\]", StringUtils.EMPTY);
+                    keyboardShortcutSelectionResult.getExisitngTemplateWithKs().renameTo(new File(preferenceDirectory, FilenameEncoder.encode(rename.trim())));
+                }
 
-        this.defaultValue = defaultValue;
-
+                keyboardShortcutSelectionResult.setFileName(textField.getText());
+                stage.close();
+            }
+        });
+        
         this.grid = new GridPane();
         this.grid.setHgap(20);
         this.grid.setVgap(10);
         this.grid.setMaxWidth(Double.MAX_VALUE);
         this.grid.setAlignment(Pos.CENTER_LEFT);
-
+        
         dialogPane.contentTextProperty().addListener(o -> updateGrid());
 
-        dialogPane.getStyleClass().add("text-input-dialog");       
-
+        dialogPane.getStyleClass().add("text-input-dialog");
+        
+        dialogPane.setMinHeight(270);
+        
         updateGrid();
-
-        setResultConverter(dialogButton -> {
-            final ButtonBar.ButtonData data = dialogButton == null ? null : dialogButton.getButtonData();
-
-            if (data == ButtonBar.ButtonData.OK_DONE) {
-                if (keyboardShortcutSelectionResult.isAlreadyAssigned() && keyboardShortcutSelectionResult.getExisitngTemplateWithKs() != null) {
-                    //remove shortcut from existing template to be re-assign to new template
-                    final String rename = keyboardShortcutSelectionResult.getExisitngTemplateWithKs()
-                            .getName().replaceAll("\\[" + keyboardShortcutSelectionResult.getKeyboardShortcut() + "\\]", StringUtils.EMPTY);
-                    keyboardShortcutSelectionResult.getExisitngTemplateWithKs().renameTo(new File(preferenceDirectory, FilenameEncoder.encode(rename.trim())));
-                }
-
-                keyboardShortcutSelectionResult.setFileName(textField.getText());
-                return textField.getText();
-            } else {
-                return null;
-            }
-        });
-    }
-
-    /* ************************************************************************
-     *
-     * Public API
-     *
-     **************************************************************************/
-    /**
-     * Returns the {@link TextField} used within this dialog.
-     *
-     * @return the {@link TextField} used within this dialog
-     */
-    public final TextField getEditor() {
-        return textField;
-    }
-
-    /**
-     * Returns the default value that was specified in the constructor.
-     *
-     * @return the default value that was specified in the constructor
-     */
-    public final String getDefaultValue() {
-        return defaultValue;
-    }
-
-    /* ************************************************************************
-     *
-     * Private Implementation
-     *
-     **************************************************************************/
-    private void updateGrid() {
-        grid.getChildren().clear();
-
-        grid.add(textField, 0, 0, 7, 1);
-
-        grid.add(keyboardShortcutButton, 0, 1, 2, 1);
-        grid.add(keyboardShortcutLabel, 2, 1, 4, 1);
-        grid.add(shorcutWarningIconLabel, 6, 1, 1, 1);
-
-        grid.add(shorcutWarningLabel, 0, 2, 8, 1);
-
-        getDialogPane().setContent(grid);
-
-        Platform.runLater(() -> textField.requestFocus());
-    }
-
-    private static Label createContentLabel(final String text) {
-        final Label label = new Label(text);
-        label.setMaxWidth(Double.MAX_VALUE);
-        label.setMaxHeight(Double.MAX_VALUE);
-        label.getStyleClass().add("content");
-        label.setWrapText(true);
-        label.setPrefWidth(360);
-        return label;
     }
 
     private static Label createLabel() {
@@ -274,17 +255,95 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         label.setPrefWidth(360);
         return label;
     }
-
-    public void setKSLabelText(final String ks) {
-        this.keyboardShortcutLabel.setText(ks);
+    
+    private static Label createContentLabel(final String text) {
+        final Label label = new Label(text);
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setMaxHeight(Double.MAX_VALUE);
+        label.getStyleClass().add("content");
+        label.setWrapText(true);
+        label.setPrefWidth(360);
+        return label;
     }
+    
+    /**
+     * Instantiate stage for the pop up and set event handler to close it when
+     * consty closes
+     */
+    public void showPopUp() {
+        if (isFirstTime) {
+            parent.setOnCloseRequest(event -> {                
+                addButton.setDisable(true);
+                cancelButton.setDisable(true);
+                closePopUp();
+            });
+            stage = new Stage();
 
-    public static Optional<KeyboardShortcutSelectionResult> getKeyboardShortcut(final File preferenceDirectory, final RecordKeyboardShortcut rk) {
-        return rk.start(preferenceDirectory);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(parent);
+            stage.setAlwaysOnTop(true);
+            stage.setTitle(title);
+            
+            dialogPane.setHeaderText(headerText);
+
+            final Scene s = new Scene(dialogPane);
+            s.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+            stage.setScene(s);
+
+            isFirstTime = false;
+        }
+
+        final JDialog hiddenDialog = new JDialog();
+        hiddenDialog.setModal(true);
+        hiddenDialog.setUndecorated(true);
+        hiddenDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+
+        stage.setTitle(title);
+        dialogPane.setHeaderText(headerText);
+
+        final double xOffset = SystemUtilities.getMainframeWidth() / 2 - 60;
+        final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 60;
+        stage.setX(SystemUtilities.getMainframeXPos() + xOffset);
+        stage.setY(SystemUtilities.getMainframeYPos() + yOffset);
+
+        try {
+            SwingUtilities.invokeLater(() -> hiddenDialog.setVisible(true));
+            if (!stage.isShowing()) {
+                stage.showAndWait();
+            }
+        } catch (final IllegalStateException e) {
+            LOGGER.log(Level.SEVERE, "Error opening popup", e);
+        } finally {
+            hiddenDialog.dispose();
+        }
+
     }
-
+    public void closePopUp() {
+        if (stage != null) {
+            stage.close();
+        }
+    }
+    
     public KeyboardShortcutSelectionResult getKeyboardShortcutSelectionResult() {
         return keyboardShortcutSelectionResult;
-    }    
+    }
+    
+    /* ************************************************************************
+     *
+     * Private Implementation
+     *
+     **************************************************************************/
+    private void updateGrid() {
+        grid.getChildren().clear();
 
+        grid.add(textField, 0, 0, 7, 1);
+        grid.add(keyboardShortcutButton, 0, 1, 2, 1);
+        grid.add(keyboardShortcutLabel, 2, 1, 4, 1);
+        grid.add(shorcutWarningIconLabel, 6, 1, 1, 1);
+        grid.add(shorcutWarningLabel, 0, 2, 7, 1);
+              
+        dialogPane.setContent(grid);
+
+        Platform.runLater(() -> textField.requestFocus());
+    }
 }
