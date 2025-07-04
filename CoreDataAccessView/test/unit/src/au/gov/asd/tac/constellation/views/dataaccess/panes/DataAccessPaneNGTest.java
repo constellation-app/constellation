@@ -34,6 +34,9 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Tab;
 import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -409,6 +412,33 @@ public class DataAccessPaneNGTest {
         dataAccessPane.qualityControlRuleChanged(false);
 
         verify(buttonToolbar).changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.CALCULATING, true);
+    }   
+
+    @Test
+    public void testCreateCombo() throws Exception {
+        final DataAccessPane dataAccessPane1 = mock(DataAccessPane.class);
+        when(dataAccessPane1.createCombo(any())).thenCallRealMethod();
+
+        final KeyEvent keyEvent = new KeyEvent(KeyEvent.KEY_PRESSED, "Ctrl", "A", KeyCode.A, false, true, false, false);
+        final KeyCombination keyCombination = dataAccessPane1.createCombo(keyEvent);
+        assertTrue(keyCombination != null);
+        assertTrue(keyCombination.getDisplayText().equals("Ctrl+A"));
+
+        final KeyEvent keyEvent1 = new KeyEvent(KeyEvent.KEY_PRESSED, "Shift", "A", KeyCode.A, true, false, false, false);
+        final KeyCombination keyCombination1 = dataAccessPane1.createCombo(keyEvent1);
+        assertTrue(keyCombination1 != null);
+        assertTrue(keyCombination1.getDisplayText().equals("Shift+A"));
+
+        final KeyEvent keyEvent2 = new KeyEvent(KeyEvent.KEY_PRESSED, "Alt", "A", KeyCode.A, false, false, true, false);
+        final KeyCombination keyCombination2 = dataAccessPane1.createCombo(keyEvent2);
+        assertTrue(keyCombination2 != null);
+        assertTrue(keyCombination2.getDisplayText().equals("Alt+A"));
+
+        final KeyEvent keyEvent3 = new KeyEvent(KeyEvent.KEY_PRESSED, "Meta", "A", KeyCode.A, false, false, false, true);
+        final KeyCombination keyCombination3 = dataAccessPane1.createCombo(keyEvent3);
+        assertTrue(keyCombination3 != null);
+        assertTrue(keyCombination3.getDisplayText().equals("Meta+A"));
+
     }
 
     /**
