@@ -51,6 +51,7 @@ public class KeyboardShortcutSelectionResultNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        System.setProperty("java.awt.headless", "false");
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
