@@ -526,7 +526,7 @@ public final class GraphJsonReader {
      * @throws IOException If there is an IOException.
      * @throws GraphParseException If there is a GraphParseException.
      */
-    private void parseElement(final GraphWriteMethods graph, final GraphElementType elementType, final Map<Integer, Integer> vertexPositions, final Map<Integer, Integer> transactionPositions, final IoProgress ph, final long entrySize, ImmutableObjectCache immutableObjectCache) throws GraphParseException, Exception {
+    private void parseElement(final GraphWriteMethods graph, final GraphElementType elementType, final Map<Integer, Integer> vertexPositions, final Map<Integer, Integer> transactionPositions, final IoProgress ph, final long entrySize, ImmutableObjectCache immutableObjectCache) throws GraphParseException, IOException {
         final String elementTypeLabel = IoUtilities.getGraphElementTypeString(elementType);
 
         JsonToken current;
@@ -736,7 +736,7 @@ public final class GraphJsonReader {
                     final AbstractGraphIOProvider ioProvider = providers.get(ai.attrType);
                     ioProvider.readObject(ai.attrId, id, jnode, graph, vertexPositions, transactionPositions, byteReader, immutableObjectCache);
                 } else if (ai != null) {
-                    throw new Exception("No IO provider found for attribute type: " + ai.attrType);
+                    throw new IOException("No IO provider found for attribute type: " + ai.attrType);
                 }
             }
 

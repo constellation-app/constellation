@@ -88,7 +88,7 @@ public class AdamicAdarIndexPluginNGTest {
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         graph = null;
     }
 

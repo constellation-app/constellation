@@ -86,7 +86,7 @@ public class MergeNodesPluginNGTest {
     }
     
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         graph = null;
         interaction = null;
         parameters = null;

@@ -87,7 +87,7 @@ public class DelimitedImportControllerNGTest {
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         filesToValidate.clear();
     }
 

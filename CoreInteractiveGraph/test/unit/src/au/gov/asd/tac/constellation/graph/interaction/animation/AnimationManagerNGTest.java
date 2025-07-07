@@ -48,7 +48,7 @@ public class AnimationManagerNGTest {
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         animationManager = null;
     }
 

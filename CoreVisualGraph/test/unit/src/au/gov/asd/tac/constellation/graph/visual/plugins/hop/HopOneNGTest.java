@@ -70,7 +70,7 @@ public class HopOneNGTest {
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         graph = null;
     }
 
