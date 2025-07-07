@@ -438,7 +438,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     }
 
     public void setAttributeType(final AttributeType attributeType) {
-        // For now, comment out some of the code below, as histogram state is kind of globally shared with old histopgram top compenent and doesnt update correclty here
+        // For now, comment out some of the code below, as histogram state is kind of globally shared with old histopgram top compenent and doesnt update correctly here
         if (currentGraph != null) {// && (currentHistogramState == null || attributeType != currentHistogramState.getAttributeType())) {
             HistogramState newHistogramState = new HistogramState(currentHistogramState);
             newHistogramState.setAttributeType(attributeType);

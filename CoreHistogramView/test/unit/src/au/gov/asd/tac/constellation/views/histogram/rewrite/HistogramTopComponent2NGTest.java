@@ -115,9 +115,7 @@ public class HistogramTopComponent2NGTest {
     @Test
     public void testHandleComponentOpenedClosed() {
         System.out.println("handleComponentOpenedClosed");
-
         final GraphManager mockGraphManager = mock(GraphManager.class);
-        //when(mockGraphManager.getActiveGraph()).thenReturn(mockGraph);
 
         try (final MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class)) {
 
