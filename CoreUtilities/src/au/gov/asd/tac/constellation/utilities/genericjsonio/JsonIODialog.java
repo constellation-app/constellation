@@ -138,7 +138,7 @@ public class JsonIODialog {
         return td.showAndWait();
     }
     
-    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(final Optional<String> ks, final File preferenceDirectory, final Window parentWindow) {
+    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(final Optional<String> ks, final File preferenceDirectory, final Optional<Window> parentWindow) {
         final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut("",  PREFERENCE_NAME_DIALOG_TITLE, PREFERENCE_NAME_DIALOG_HEADER_TEXT, preferenceDirectory, ks, parentWindow);
         td.showPopUp();        
         return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());

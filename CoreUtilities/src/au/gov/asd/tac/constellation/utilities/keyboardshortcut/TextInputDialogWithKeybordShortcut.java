@@ -43,7 +43,6 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Control;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -96,7 +95,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
      * Creates a new TextInputDialog without a default value entered into the
      * dialog {@link TextField}.
      */
-    public TextInputDialogWithKeybordShortcut(final File preferenceDirectory, final Optional<String> ks, final Window parentWindow) {
+    public TextInputDialogWithKeybordShortcut(final File preferenceDirectory, final Optional<String> ks, final Optional<Window> parentWindow) {
         this("",  "", "", preferenceDirectory, ks, parentWindow);
     }
 
@@ -107,10 +106,10 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
      * @param defaultValue the default value entered into the dialog
      */
     public TextInputDialogWithKeybordShortcut(@NamedArg("defaultValue") final String defaultValue, final String title, final String headerText, 
-            final File preferenceDirectory, final Optional<String> ks, final Window parentWindow) {
+            final File preferenceDirectory, final Optional<String> ks, final Optional<Window> parentWindow) {
         this.title =  title;
         this.headerText = headerText;
-        parent =  parentWindow;
+        parent =  parentWindow.orElse(null);
         
         dialogPane = new DialogPane();
         dialogPane.pseudoClassStateChanged(HEADER_PSEUDO_CLASS, true);
@@ -272,11 +271,14 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
      */
     public void showPopUp() {
         if (isFirstTime) {
-            parent.setOnCloseRequest(event -> {                
-                addButton.setDisable(true);
-                cancelButton.setDisable(true);
-                closePopUp();
-            });
+            if (parent != null) {
+                parent.setOnCloseRequest(event -> {
+                    addButton.setDisable(true);
+                    cancelButton.setDisable(true);
+                    closePopUp();
+                });
+            }
+            
             stage = new Stage();
 
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -294,7 +296,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         }
 
         final JDialog hiddenDialog = new JDialog();
-        hiddenDialog.setModal(true);
+        hiddenDialog.setModal(true);        
         hiddenDialog.setUndecorated(true);
         hiddenDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -308,13 +310,14 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
         try {
             SwingUtilities.invokeLater(() -> hiddenDialog.setVisible(true));
+            
             if (!stage.isShowing()) {
                 stage.showAndWait();
             }
         } catch (final IllegalStateException e) {
             LOGGER.log(Level.SEVERE, "Error opening popup", e);
         } finally {
-            hiddenDialog.dispose();
+            hiddenDialog.dispose();            
         }
 
     }
