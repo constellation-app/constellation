@@ -291,8 +291,8 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     @Override
     protected List<ZonedDateTime> calculateTickValues(double v, Object range) {
         final Object[] dateTimeRange = (Object[]) range;
-        final ZonedDateTime lowerBound = (ZonedDateTime) dateTimeRange[0];
-        final ZonedDateTime upperBound = (ZonedDateTime) dateTimeRange[1];
+        final ZonedDateTime lowerBoundDateTime = (ZonedDateTime) dateTimeRange[0];
+        final ZonedDateTime upperBoundDateTime = (ZonedDateTime) dateTimeRange[1];
 
         List<ZonedDateTime> dateTimeList = new ArrayList<>();
         final List<ZonedDateTime> previousDateTimeList = new ArrayList<>();
@@ -305,21 +305,21 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
         // starting with the greatest interval, add one of each calendar unit.
         ZonedDateTime datetime;
         for (final Interval interval : Interval.values()) {
-            datetime = lowerBound;
+            datetime = lowerBoundDateTime;
             dateTimeList.clear();
             previousDateTimeList.clear();
             actualInterval = interval;
 
             // loop as long we exceeded the upper bound.
-            while (datetime.toInstant().toEpochMilli() <= upperBound.toInstant().toEpochMilli()) {
+            while (datetime.toInstant().toEpochMilli() <= upperBoundDateTime.toInstant().toEpochMilli()) {
                 dateTimeList.add(datetime);
                 datetime = datetime.plus(interval.amount, interval.interval);
             }
             // check the size of the list, if it is greater than the amount of ticks, take that list.
             if (dateTimeList.size() > averageTicks) {
-                datetime = lowerBound;
+                datetime = lowerBoundDateTime;
                 // recheck if the previous interval is better suited.
-                while (datetime.toInstant().toEpochMilli() <= upperBound.toInstant().toEpochMilli()) {
+                while (datetime.toInstant().toEpochMilli() <= upperBoundDateTime.toInstant().toEpochMilli()) {
                     previousDateTimeList.add(datetime);
                     datetime = datetime.plus(previousInterval.amount, previousInterval.interval);
                 }
@@ -334,7 +334,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
         }
 
         // finally, add the upper bound.
-        dateTimeList.add(upperBound);
+        dateTimeList.add(upperBoundDateTime);
 
         final List<ZonedDateTime> evenDateTimeList = makeDateTimesEven(dateTimeList);
         // if there are at least three datetimes, check if the gap between the lower datetime and the second datetime
@@ -348,13 +348,13 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
             final ZonedDateTime previousLastDateTime = evenDateTimeList.get(dateTimeList.size() - 3);
 
             // if the second date is too near by the lower bound, remove it.
-            if (secondDateTime.toInstant().toEpochMilli() - lowerBound.toInstant().toEpochMilli() < (thirdDateTime.toInstant().toEpochMilli() - secondDateTime.toInstant().toEpochMilli()) / 2) {
+            if (secondDateTime.toInstant().toEpochMilli() - lowerBoundDateTime.toInstant().toEpochMilli() < (thirdDateTime.toInstant().toEpochMilli() - secondDateTime.toInstant().toEpochMilli()) / 2) {
                 evenDateTimeList.remove(secondDateTime);
             }
 
             // if difference from the upper bound to the last date is less than the half of the difference of the previous two dates,
             // we better remove the last date, as it comes to close to the upper bound.
-            if (upperBound.toInstant().toEpochMilli() - lastDateTime.toInstant().toEpochMilli() < (lastDateTime.toInstant().toEpochMilli() - previousLastDateTime.toInstant().toEpochMilli()) / 2) {
+            if (upperBoundDateTime.toInstant().toEpochMilli() - lastDateTime.toInstant().toEpochMilli() < (lastDateTime.toInstant().toEpochMilli() - previousLastDateTime.toInstant().toEpochMilli()) / 2) {
                 evenDateTimeList.remove(lastDateTime);
             }
         }

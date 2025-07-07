@@ -284,40 +284,6 @@ public class FindViewTopComponentNGTest {
     }
 
     /**
-     * Test of focusFindTextField method, of class FindViewTopComponent.
-     */
-    @Test
-    public void testFocusFindTextField() {
-//        System.out.println("focusFindTextField");
-//        setupGraph();
-//
-//        spyTopComponent = spy(topComponent);
-//
-//        pane = new FindViewPane(topComponent);
-//        spyPane = spy(pane);
-//
-//        tabs = new FindViewTabs(spyPane);
-//        spyTabs = spy(tabs);
-//
-//        basicFindTab = new BasicFindTab(spyTabs);
-//        spyBasicFindTab = spy(basicFindTab);
-//
-//        replaceTab = new ReplaceTab(spyTabs);
-//        spyReplaceTab = spy(replaceTab);
-//
-//        when(spyTopComponent.getFindViewPane()).thenReturn(spyPane);
-//        when(spyPane.getTabs()).thenReturn(spyTabs);
-//        when(spyTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
-//
-//        doCallRealMethod().when(spyTopComponent).focusFindTextField();
-//
-//        spyTopComponent.handleGraphOpened(graph);
-//        spyTopComponent.handleComponentOpened();
-//        spyTopComponent.focusFindTextField();
-//        assertEquals(spyBasicFindTab.getFindTextField().isFocused(), true);
-    }
-
-    /**
      * Test of UpdateUI method, of class FindViewTopComponent.
      */
     @Test

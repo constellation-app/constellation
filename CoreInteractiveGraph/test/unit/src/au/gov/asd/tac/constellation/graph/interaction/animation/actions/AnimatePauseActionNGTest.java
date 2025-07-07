@@ -36,13 +36,11 @@ import org.testng.annotations.Test;
  * @author Andromeda-224
  */
 public class AnimatePauseActionNGTest {
+    
     private MockedStatic<AnimationUtilities> animationUtilitiesMocked;
     private GraphNode graphNodeMock;
     private final String mockGraphId = "Test graph Id";
     private Graph mockGraph;
-    
-    public AnimatePauseActionNGTest() {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {

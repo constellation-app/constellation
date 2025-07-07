@@ -100,6 +100,9 @@ public class StoreGraphValidatorNGTest {
                         }
                     }
                 }
+                default -> {
+                    // do nothing
+                }
             }
         }
     }

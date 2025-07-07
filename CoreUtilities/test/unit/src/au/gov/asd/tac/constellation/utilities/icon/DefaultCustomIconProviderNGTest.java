@@ -115,7 +115,7 @@ public class DefaultCustomIconProviderNGTest {
             
             // Run testAddIcon
             System.out.print("TEST: Add an icon: ");
-            testAddIcon(icon2, testFile);
+            testAddIcon(icon2);
             System.out.println(" *PASSED*");
             
             //Run testAddIconFileDoesExist
@@ -153,7 +153,7 @@ public class DefaultCustomIconProviderNGTest {
      * @param testFile
      * @throws URISyntaxException
      */
-    public void testAddIcon(final ConstellationIcon icon, final File testFile) throws URISyntaxException {
+    private void testAddIcon(final ConstellationIcon icon) throws URISyntaxException {
         // Create a test icon
 
         boolean icExists = IconManager.iconExists(icon.getExtendedName());
@@ -168,7 +168,7 @@ public class DefaultCustomIconProviderNGTest {
      *
      * @param icon
      */
-    public void testAddIconFileDoesExist(final ConstellationIcon icon) {
+    private void testAddIconFileDoesExist(final ConstellationIcon icon) {
         // Check if the icon is present in the local cache
         final boolean localCacheEntryExists = DefaultCustomIconProvider.containsIcon(icon.getName());
         assertEquals(localCacheEntryExists, true);
@@ -183,7 +183,7 @@ public class DefaultCustomIconProviderNGTest {
      *
      * @param icon
      */
-    public void testRemoveIcon(final ConstellationIcon icon) {
+    private void testRemoveIcon(final ConstellationIcon icon) {
         // Test removing an icon
         final boolean result = IconManager.removeIcon(icon.getExtendedName());
         assertEquals(result, true);
@@ -195,7 +195,7 @@ public class DefaultCustomIconProviderNGTest {
      * icon that does not exist.
      * @param icon
      */
-    public void testRemoveIconDoesNotExist(final ConstellationIcon icon) {
+    private void testRemoveIconDoesNotExist(final ConstellationIcon icon) {
         // Test removing an icon that doesn't exist
         final boolean result = IconManager.removeIcon(icon.getExtendedName());
         assertEquals(result, false);
@@ -206,7 +206,7 @@ public class DefaultCustomIconProviderNGTest {
      *
      * @param testFile
      */
-    public void testCacheMatch(final File testFile) {
+    private void testCacheMatch(final File testFile) {
         Set<String> iconSet = IconManager.getIconNames(true);
         // At the time of writing the test, the number of icons should be 2: the initial "test_bagel_blue.png" file
         //   and the Category1.TestIcon1.png file created during testing
@@ -214,7 +214,7 @@ public class DefaultCustomIconProviderNGTest {
         assertEquals(iconSet.size(), testFile.listFiles().length);
     }
     
-    public void prepareFileDir(final File testFile){
+    private void prepareFileDir(final File testFile){
         // reset the icon resource folder to only contain the test_bagel_blue.png file
         List<String> filenames = new ArrayList<>();
         for (File f : testFile.listFiles()){

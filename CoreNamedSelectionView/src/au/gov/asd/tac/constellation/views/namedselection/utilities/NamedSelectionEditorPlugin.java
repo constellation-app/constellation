@@ -214,9 +214,9 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
     private void performUnion(GraphWriteMethods graph) throws InterruptedException {
         long inputMask = 0L;
 
-        for (final int inputSelection : inputSelections) {
-            if (inputSelection >= 0) {
-                inputMask |= 1L << inputSelection;
+        for (final int selection : inputSelections) {
+            if (selection >= 0) {
+                inputMask |= 1L << selection;
             }
         }
 
@@ -321,9 +321,9 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
         // Perform the intersection:
         long inputMask = 0L;
 
-        for (final int inputSelection : inputSelections) {
-            if (inputSelection >= 0) {
-                inputMask |= 1L << inputSelection;
+        for (final int selection : inputSelections) {
+            if (selection >= 0) {
+                inputMask |= 1L << selection;
             }
         }
 

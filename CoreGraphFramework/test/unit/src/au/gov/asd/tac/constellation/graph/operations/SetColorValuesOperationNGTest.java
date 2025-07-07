@@ -40,9 +40,6 @@ public class SetColorValuesOperationNGTest {
     private WritableGraph wg;
     private final int attributeId = 101;
     private final int elementId = 1;
-    
-    public SetColorValuesOperationNGTest() {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -51,6 +48,7 @@ public class SetColorValuesOperationNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

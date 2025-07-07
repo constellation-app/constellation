@@ -34,8 +34,6 @@ public class AnimationManagerNGTest {
     private Animation colorWarpAnimation;
     private Animation directionIndicatorAnimation;
     
-    public AnimationManagerNGTest() {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {

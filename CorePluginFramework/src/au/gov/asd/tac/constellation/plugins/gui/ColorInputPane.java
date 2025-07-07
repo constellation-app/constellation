@@ -128,8 +128,8 @@ public class ColorInputPane extends Pane {
         for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
             namedColors.add(c);
         }
-        final ComboBox<ConstellationColor> namedCombo = new ComboBox<>(namedColors);
-        namedCombo.setValue(ConstellationColor.WHITE);
+        final ComboBox<ConstellationColor> namedComboBox = new ComboBox<>(namedColors);
+        namedComboBox.setValue(ConstellationColor.WHITE);
         final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
             @Override
             protected void updateItem(final ConstellationColor item, boolean empty) {
@@ -142,9 +142,9 @@ public class ColorInputPane extends Pane {
                 }
             }
         };
-        namedCombo.setCellFactory(cellFactory);
-        namedCombo.setButtonCell(cellFactory.call(null));
+        namedComboBox.setCellFactory(cellFactory);
+        namedComboBox.setButtonCell(cellFactory.call(null));
 
-        return namedCombo;
+        return namedComboBox;
     }
 }

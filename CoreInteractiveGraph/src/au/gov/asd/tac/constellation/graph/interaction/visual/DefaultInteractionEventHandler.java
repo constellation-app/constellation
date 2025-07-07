@@ -236,7 +236,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         if (!operations.isEmpty() && interactionGraph != null) {
                             interactionGraph = interactionGraph.flush(false);
                         }
-                        final boolean waitForever = eventState.isMousePressed() || (eventState.getCurrentAction().equals(SceneAction.CREATING) && eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION));
+                        final boolean waitForever = eventState.isMousePressed() || (eventState.getCurrentAction() == SceneAction.CREATING && eventState.getCurrentCreationMode() == CreationMode.CREATING_TRANSACTION);
                         waitTime = Math.max(nextWaitTime, time + waitTime - System.currentTimeMillis());
                         time = System.currentTimeMillis();
 
@@ -590,7 +590,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     }
                 }
 
-                if (!(eventState.getCurrentAction().equals(SceneAction.CREATING) && eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION))) {
+                if (!(eventState.getCurrentAction() == SceneAction.CREATING && eventState.getCurrentCreationMode() == CreationMode.CREATING_TRANSACTION)) {
                     eventState.setCurrentAction(SceneAction.NONE);
                 }
 
@@ -710,10 +710,10 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      * @param point
      */
     private void updateHitTestAndNewLine(final GraphReadMethods rg, final Point point) {
-        final boolean newLine = eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION);
+        final boolean newLine = eventState.getCurrentCreationMode() == CreationMode.CREATING_TRANSACTION;
         // We need to wait for the results of the hit test if we are creating a transaction
         if (newLine) {
-            orderHitTest(point, HitTestMode.HANDLE_ASYNCHRONOUSLY, eventState -> scheduleNewLineChangeOperation(rg, point, VisualGraphUtilities.getCamera(rg), false, eventState));
+            orderHitTest(point, HitTestMode.HANDLE_ASYNCHRONOUSLY, evtState -> scheduleNewLineChangeOperation(rg, point, VisualGraphUtilities.getCamera(rg), false, evtState));
         } else {
             orderHitTest(point, HitTestMode.REQUEST_ONLY);
         }
@@ -736,12 +736,10 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             VisualGraphUtilities.setCamera(wg, camera);
         }
 
-        if (eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION)) {
+        if (eventState.getCurrentCreationMode() == CreationMode.CREATING_TRANSACTION) {
             scheduleNewLineChangeOperation(wg, point, camera, cameraChange);
         } else if (cameraChange) {
             scheduleCameraChangeOperation();
-        } else {
-            // Do nothing
         }
     }
 
@@ -905,7 +903,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      * Flag in the event state that a new vertex is in the process of being created.
      */
     private void beginCreateVertex() {
-        if (!eventState.getCurrentCreationMode().equals(CreationMode.NONE)) {
+        if (eventState.getCurrentCreationMode() != CreationMode.NONE) {
             eventState.setCurrentCreationMode(CreationMode.NONE);
         } else {
             eventState.setCurrentCreationMode(CreationMode.CREATING_VERTEX);
