@@ -47,7 +47,7 @@ public class IconManagerNGTest {
     
     private static final Logger LOGGER = Logger.getLogger(IconManagerNGTest.class.getName());
 
-    private final static Map<String, ConstellationIcon> TEST_CACHE = new HashMap<>();
+    private static final Map<String, ConstellationIcon> TEST_CACHE = new HashMap<>();
 
     @BeforeClass
     public static void setUpClass() throws URISyntaxException {

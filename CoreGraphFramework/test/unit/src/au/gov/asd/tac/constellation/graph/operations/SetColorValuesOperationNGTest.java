@@ -35,11 +35,11 @@ import org.testng.annotations.Test;
  */
 public class SetColorValuesOperationNGTest {
     
-    private final ConstellationColor ORIGINAL_COLOR = ConstellationColor.CLOUDS;
-    private final ConstellationColor NEW_COLOR = ConstellationColor.CHOCOLATE;
+    private final ConstellationColor originalColor = ConstellationColor.CLOUDS;
+    private final ConstellationColor newColor = ConstellationColor.CHOCOLATE;
     private WritableGraph wg;
-    private final int ATTRIBUTEID = 101;
-    private final int ELEMENTID = 1;
+    private final int attributeId = 101;
+    private final int elementId = 1;
     
     public SetColorValuesOperationNGTest() {
     }
@@ -61,11 +61,11 @@ public class SetColorValuesOperationNGTest {
         System.out.println("SetColorValuesOperation setValue");
 
         SetColorValuesOperation instance = new SetColorValuesOperation(
-                wg, GraphElementType.VERTEX, ATTRIBUTEID);
-        doReturn(ORIGINAL_COLOR).when(wg).getObjectValue(ATTRIBUTEID, ELEMENTID);
-        instance.setValue(ELEMENTID, NEW_COLOR);
-        assertTrue(instance.originalColor == ORIGINAL_COLOR);
-        assertTrue(instance.newColor == NEW_COLOR);
+                wg, GraphElementType.VERTEX, attributeId);
+        doReturn(originalColor).when(wg).getObjectValue(attributeId, elementId);
+        instance.setValue(elementId, newColor);
+        assertTrue(instance.originalColor == originalColor);
+        assertTrue(instance.newColor == newColor);
     }
 
     /**
@@ -75,21 +75,21 @@ public class SetColorValuesOperationNGTest {
     public void testExecute() {
         System.out.println("SetColorValuesOperation execute");
         SetColorValuesOperation instance = new SetColorValuesOperation(
-                wg, GraphElementType.VERTEX, ATTRIBUTEID);
-        doReturn(ORIGINAL_COLOR).when(wg).getObjectValue(ATTRIBUTEID, ELEMENTID);
+                wg, GraphElementType.VERTEX, attributeId);
+        doReturn(originalColor).when(wg).getObjectValue(attributeId, elementId);
         
         // new color not set, setObjectValue not called
         assertTrue(instance.newColor == null);
         instance.execute(wg);
-        verify(wg, times(0)).setObjectValue(ATTRIBUTEID, ELEMENTID, NEW_COLOR);
+        verify(wg, times(0)).setObjectValue(attributeId, elementId, newColor);
         
         // set new color, setObjectValue called
-        instance.setValue(ELEMENTID, NEW_COLOR);
-        assertTrue(instance.originalColor == ORIGINAL_COLOR);
-        assertTrue(instance.newColor == NEW_COLOR);
+        instance.setValue(elementId, newColor);
+        assertTrue(instance.originalColor == originalColor);
+        assertTrue(instance.newColor == newColor);
         
         instance.execute(wg);
-        verify(wg, times(1)).setObjectValue(ATTRIBUTEID, ELEMENTID, NEW_COLOR);        
+        verify(wg, times(1)).setObjectValue(attributeId, elementId, newColor);        
     }
 
     /**
@@ -99,19 +99,19 @@ public class SetColorValuesOperationNGTest {
     public void testUndo() {
         System.out.println("SetColorValuesOperation undo");
         SetColorValuesOperation instance = new SetColorValuesOperation(
-                wg, GraphElementType.VERTEX, ATTRIBUTEID);
+                wg, GraphElementType.VERTEX, attributeId);
         
         // set the original color and new color
-        doReturn(ORIGINAL_COLOR).when(wg).getObjectValue(ATTRIBUTEID, ELEMENTID);
-        instance.setValue(ELEMENTID, NEW_COLOR);
+        doReturn(originalColor).when(wg).getObjectValue(attributeId, elementId);
+        instance.setValue(elementId, newColor);
                 
-        assertTrue(instance.originalColor == ORIGINAL_COLOR);
-        assertTrue(instance.newColor == NEW_COLOR);
+        assertTrue(instance.originalColor == originalColor);
+        assertTrue(instance.newColor == newColor);
         
         // undo => set object to original color and new color set to null
-        doNothing().when(wg).setObjectValue(ATTRIBUTEID, ELEMENTID, ORIGINAL_COLOR);
+        doNothing().when(wg).setObjectValue(attributeId, elementId, originalColor);
         instance.undo(wg);
-        verify(wg, times(1)).setObjectValue(ATTRIBUTEID, ELEMENTID, ORIGINAL_COLOR);
+        verify(wg, times(1)).setObjectValue(attributeId, elementId, originalColor);
         assertTrue(instance.newColor == null);        
     }
 
@@ -122,7 +122,7 @@ public class SetColorValuesOperationNGTest {
     public void testIsMoreEfficient() {
         System.out.println("SetColorValuesOperation isMoreEfficient");
         SetColorValuesOperation instance = new SetColorValuesOperation(
-                wg, GraphElementType.VERTEX, ATTRIBUTEID);
+                wg, GraphElementType.VERTEX, attributeId);
         boolean expResult = true;
         boolean result = instance.isMoreEfficient();
         assertEquals(result, expResult);      
@@ -136,7 +136,7 @@ public class SetColorValuesOperationNGTest {
         System.out.println("SetColorValuesOperation size");
         doReturn(54).when(wg).getVertexCapacity();
         SetColorValuesOperation instance = new SetColorValuesOperation(
-                wg, GraphElementType.VERTEX, ATTRIBUTEID);
+                wg, GraphElementType.VERTEX, attributeId);
         int expResult = GraphElementType.VERTEX.getElementCapacity(wg);
         int result = instance.size();
         System.out.println(result);

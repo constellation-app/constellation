@@ -39,12 +39,12 @@ import org.testng.annotations.Test;
 public class ConstellationLAFSettingsNGTest {
     
     private static final Logger LOGGER = Logger.getLogger(ConstellationLAFSettingsNGTest.class.getName());
-    final static PseudoLookAndFeel pseudoLAF = new PseudoLookAndFeel();
-    final static PseudoUIDefaults pseudoUIdefaults = new PseudoUIDefaults();
-    final static PseudoViewTabDisplayerUI pseudoViewDisplayerUI = new PseudoViewTabDisplayerUI();
-    final static PseudoTabDisplayerUI pseudoTabDisplayerUI = new PseudoTabDisplayerUI();
-    final static Class<?> pseudoViewDisplayerUIclass = pseudoViewDisplayerUI.getClass();
-    final static Class<?> pseudoTabDisplayerUIclass = pseudoTabDisplayerUI.getClass();
+    static final PseudoLookAndFeel pseudoLAF = new PseudoLookAndFeel();
+    static final PseudoUIDefaults pseudoUIdefaults = new PseudoUIDefaults();
+    static final PseudoViewTabDisplayerUI pseudoViewDisplayerUI = new PseudoViewTabDisplayerUI();
+    static final PseudoTabDisplayerUI pseudoTabDisplayerUI = new PseudoTabDisplayerUI();
+    static final Class<?> pseudoViewDisplayerUIclass = pseudoViewDisplayerUI.getClass();
+    static final Class<?> pseudoTabDisplayerUIclass = pseudoTabDisplayerUI.getClass();
 
     @Test
     public void runSetWindowsXPTabColors() throws UnsupportedLookAndFeelException {

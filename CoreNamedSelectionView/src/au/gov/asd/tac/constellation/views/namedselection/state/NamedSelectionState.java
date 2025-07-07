@@ -235,6 +235,6 @@ public final class NamedSelectionState {
 
     @Override
     public String toString() {
-        return String.format("NamedSelectionState %s: contains %d NamedSelections", ((Object) this).hashCode(), namedSelections.size());
+        return String.format("NamedSelectionState %s: contains %d NamedSelections", this.hashCode(), namedSelections.size());
     }
 }
