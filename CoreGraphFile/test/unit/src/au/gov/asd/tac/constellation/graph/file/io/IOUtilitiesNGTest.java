@@ -159,8 +159,8 @@ public class IOUtilitiesNGTest {
                 controlChars.append((char) i);
             }
         }
-
-        assertEquals("Control characters", controlChars, IoUtilities.escape(controlChars.toString()));
+        
+        assertEquals("Control characters", controlChars.toString(), IoUtilities.escape(controlChars.toString()));
     }
 
     @Test
@@ -172,7 +172,7 @@ public class IOUtilitiesNGTest {
             }
         }
 
-        assertEquals("Control characters", controlChars, IoUtilities.unescape(controlChars.toString()));
+        assertEquals("Control characters", controlChars.toString(), IoUtilities.unescape(controlChars.toString()));
     }
 
     @Test
@@ -184,7 +184,7 @@ public class IOUtilitiesNGTest {
             }
         }
 
-        assertEquals("Control characters", controlChars, IoUtilities.unescape(IoUtilities.escape(controlChars.toString())));
+        assertEquals("Control characters", controlChars.toString(), IoUtilities.unescape(IoUtilities.escape(controlChars.toString())));
     }
 
     @Test
