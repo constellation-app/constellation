@@ -17,9 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -39,21 +37,9 @@ import org.openide.util.NbBundle.Messages;
     @ActionReference(path = "Shortcuts", name = "C-Up")
 })
 @Messages("CTL_ZoomToSelectionAction=Zoom to Selection")
-public final class ZoomToSelectionAction implements ActionListener {
-
-    private final GraphNode context;
-
-    /**
-     * Construct a new ZoomToSelectionAction.
-     *
-     * @param context GraphNode.
-     */
+public final class ZoomToSelectionAction extends SimplePluginAction {
+    
     public ZoomToSelectionAction(final GraphNode context) {
-        this.context = context;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(context.getGraph());
+        super(context, InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION);
     }
 }

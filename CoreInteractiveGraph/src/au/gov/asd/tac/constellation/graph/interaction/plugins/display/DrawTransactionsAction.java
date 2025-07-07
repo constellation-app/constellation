@@ -30,10 +30,10 @@ import org.openide.util.NbBundle;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.actions.Presenter;
 
-@Messages("CTL_DrawTransactionsAction=Transactions (no merging)")
 /**
  * This class is responsible for displaying transactions mode
  */
+@Messages("CTL_DrawTransactionsAction=Transactions (no merging)")
 public final class DrawTransactionsAction extends AbstractAction implements Presenter.Toolbar {
 
     private final GraphNode context;
