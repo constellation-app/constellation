@@ -201,7 +201,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
     }
     
     public String getQuery() {
-        return field.getText().equals("") ? null : field.getText();
+        return StringUtils.isEmpty(field.getText()) ? null : field.getText();
     }
     
     public void setQuery(final String query) {

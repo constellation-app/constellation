@@ -78,7 +78,7 @@ public final class ColorAttributeDescription extends AbstractObjectAttributeDesc
 
     @Override
     public void setDefault(final Object value) {
-        defaultValue = value instanceof String ? ConstellationColor.getColorValue((String) value) : (ConstellationColor) value;
+        defaultValue = value instanceof String stringValue ? ConstellationColor.getColorValue(stringValue) : (ConstellationColor) value;
     }
 
     @Override

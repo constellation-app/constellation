@@ -245,7 +245,7 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
             timeZoneString = (StringUtils.isEmpty(timeZoneString) ? TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC) : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
 
             // The Local Date value of the current date based of the timeZone
-            final LocalDate calculatedDate = LocalDate.now(dateString.equals("") ? TimeZoneUtilities.UTC : ZoneId.of(formattedTimeZoneString));
+            final LocalDate calculatedDate = LocalDate.now(StringUtils.isEmpty(dateString) ? TimeZoneUtilities.UTC : ZoneId.of(formattedTimeZoneString));
 
             // Switch statment that determines the date string one value based
             // off the choiceSelection

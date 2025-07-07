@@ -31,7 +31,7 @@ import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -190,7 +190,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
         for (int label = 0; label < access.getConnectionLabelCount(pos); label++) {
             context.labelNumber = label;
             final String text = access.getConnectionLabelText(pos, label);
-            ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
+            final List<String> lines = LabelUtilities.splitTextIntoLines(text);
             for (final String line : lines) {
                 context.totalScale = totalScale;
                 SharedDrawable.getGlyphManager().renderTextAsLigatures(line, glyphStream, context);

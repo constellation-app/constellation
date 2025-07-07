@@ -179,8 +179,6 @@ public final class FlyingAnimation extends Animation {
     }
 
     private Vector3f getNextVertex(final GraphReadMethods rg, final float mix) {
-        final Vector3f xyz;
-
         // If there is no valid graph just return a default vector
         if (rg.getVertexCount() == 0) {
             return new Vector3f(0, 0, 0);

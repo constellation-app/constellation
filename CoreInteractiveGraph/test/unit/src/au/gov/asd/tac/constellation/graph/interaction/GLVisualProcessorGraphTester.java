@@ -133,7 +133,7 @@ public class GLVisualProcessorGraphTester {
         final VisualManager visualManager = new VisualManager(access, processor);
         processor.startVisualising(visualManager);
         demo.runDemo(processor, visualManager);
-        final GraphChangeListener gct = (event) -> visualManager.updateFromIndigenousChanges();
+        final GraphChangeListener gct = event -> visualManager.updateFromIndigenousChanges();
         gct.graphChanged(null);
         try {
             Thread.sleep(3000);

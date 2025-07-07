@@ -689,8 +689,7 @@ public class AdvancedSearchPluginNGTest {
     }
 
     private String addZero(int number) {
-        String newNumber = (number < 10 ? newNumber = "0" + Integer.toString(number) : Integer.toString(number));
-        return newNumber;
+        return number < 10 ? "0" + Integer.toString(number) : Integer.toString(number);
     }
 
     private void setupGraph() {

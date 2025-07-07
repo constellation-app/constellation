@@ -153,7 +153,7 @@ public class DecoratorsIOProviderNGTest {
         Mockito.verify(mockGraphWriteMethods, times(1)).setStringValue(attributeId, elementId, null);
 //
         // Call method under test with JsonNode.isNull=true and JsonNode.isObject=true
-        resetMocking();;
+        resetMocking();
         when(mockJsonNode.isNull()).thenReturn(true);
         when(mockJsonNode.isObject()).thenReturn(true);
         instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);

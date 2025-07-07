@@ -117,9 +117,7 @@ public class AnimationManager {
      * Interrupt all animations.
      */
     public void interruptAllAnimations() {
-        getAnimations().values().forEach(animation -> {
-            animation.interrupt();
-        });
+        getAnimations().values().forEach(Animation::interrupt);
         getAnimations().clear();
         this.isPaused = false;
     }

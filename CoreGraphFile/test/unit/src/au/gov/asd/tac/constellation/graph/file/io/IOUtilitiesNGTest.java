@@ -153,38 +153,38 @@ public class IOUtilitiesNGTest {
 
     @Test
     public void escapeControl() {
-        String controlChars = "";
+        final StringBuilder controlChars = new StringBuilder();
         for (int i = 0; i < ' '; i++) {
             if (i != 9 && i != 10 && i != 13) {
-                controlChars += (char) i;
+                controlChars.append((char) i);
             }
         }
 
-        assertEquals("Control characters", controlChars, IoUtilities.escape(controlChars));
+        assertEquals("Control characters", controlChars, IoUtilities.escape(controlChars.toString()));
     }
 
     @Test
     public void unescapeControl() {
-        String controlChars = "";
+        final StringBuilder controlChars = new StringBuilder();
         for (int i = 0; i < ' '; i++) {
             if (i != 9 && i != 10 && i != 13) {
-                controlChars += (char) i;
+                controlChars.append((char) i);
             }
         }
 
-        assertEquals("Control characters", controlChars, IoUtilities.unescape(controlChars));
+        assertEquals("Control characters", controlChars, IoUtilities.unescape(controlChars.toString()));
     }
 
     @Test
     public void roundTripControl() {
-        String controlChars = "";
+        final StringBuilder controlChars = new StringBuilder();
         for (int i = 0; i < ' '; i++) {
             if (i != 9 && i != 10 && i != 13) {
-                controlChars += (char) i;
+                controlChars.append((char) i);
             }
         }
 
-        assertEquals("Control characters", controlChars, IoUtilities.unescape(IoUtilities.escape(controlChars)));
+        assertEquals("Control characters", controlChars, IoUtilities.unescape(IoUtilities.escape(controlChars.toString())));
     }
 
     @Test

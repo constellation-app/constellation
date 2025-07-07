@@ -807,12 +807,9 @@ public final class PluginParametersPane extends GridPane {
          * @param parameter 
          */
         private void updateTop(final PluginParameter<?> parameter){  
-            if (parameter != null & top != null){
-                if ((parameter.isRequired() && StringUtils.isBlank(parameter.getStringValue())) || parameter.getError() != null){
-                    top.notifyParameterValidityChange(parameter, false);
-                } else {
-                    top.notifyParameterValidityChange(parameter, true);
-                }
+            if (parameter != null & top != null) {
+                final boolean parameterValid = (!parameter.isRequired() || StringUtils.isNotBlank(parameter.getStringValue())) && parameter.getError() == null;
+                top.notifyParameterValidityChange(parameter, parameterValid);
             }
         }
             

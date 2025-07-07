@@ -132,7 +132,7 @@ public class HideVisualisationNGTest {
         final HideVisualisation instance = new HideVisualisation(translator);
         final List expResult = Arrays.asList(
                 VisualConcept.VertexAttribute.VISIBILITY,
-                VisualConcept.TransactionAttribute.VISIBILITY);;
+                VisualConcept.TransactionAttribute.VISIBILITY);
         final List result = instance.getAffectedAttributes();
         assertEquals(result, expResult);
     }

@@ -227,7 +227,7 @@ public abstract class Animation {
                 wg.commit();
             }
         }
-    };
+    }
     
     public abstract void setFinalFrame(final GraphWriteMethods wg);
 }

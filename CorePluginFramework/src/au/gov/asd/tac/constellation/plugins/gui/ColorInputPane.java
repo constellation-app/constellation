@@ -108,14 +108,14 @@ public class ColorInputPane extends Pane {
                         if (!param.equals(field.getValue())) {
                             field.setValue(param.getJavaFXColor());
                         }
-                }
+                    }
                     case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
                     case VISIBLE -> {
                         field.setManaged(parameter.isVisible());
                         field.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
-                }
+                    }
                     default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
             }));

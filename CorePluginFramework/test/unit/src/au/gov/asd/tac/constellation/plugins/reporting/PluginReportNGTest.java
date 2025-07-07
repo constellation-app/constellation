@@ -198,9 +198,7 @@ public class PluginReportNGTest {
 
         @Override
         public String[] getTags() {
-            final String[] testTags = {PluginTags.ANALYTIC, PluginTags.GENERAL,
-                PluginTags.SEARCH};
-            return testTags;
+            return new String[]{PluginTags.ANALYTIC, PluginTags.GENERAL, PluginTags.SEARCH};
         }
         
         @Override

@@ -15,13 +15,11 @@
  */
 package au.gov.asd.tac.constellation.graph.value.readables;
 
-import au.gov.asd.tac.constellation.graph.value.Updatable;
-
 /**
  *
  * @author sirius
  */
-public interface ByteReadable extends ShortReadable, Updatable {
+public interface ByteReadable extends ShortReadable {
 
     byte readByte();
 

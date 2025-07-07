@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.namedselection.NamedSelection;
 import au.gov.asd.tac.constellation.views.namedselection.NamedSelectionManager;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
 /**
  * This class holds the state variables used by the NamedSelection services.
@@ -142,7 +143,7 @@ public final class NamedSelectionState {
         this.allocated = allocated;
     }
 
-    public ArrayList<NamedSelection> getNamedSelections() {
+    public List<NamedSelection> getNamedSelections() {
         return namedSelections;
     }
 

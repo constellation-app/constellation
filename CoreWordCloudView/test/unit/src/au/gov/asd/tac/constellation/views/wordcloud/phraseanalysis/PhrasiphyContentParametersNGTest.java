@@ -69,7 +69,7 @@ public class PhrasiphyContentParametersNGTest {
     public void testToString() {
         System.out.println("toString");
         final PhrasiphyContentParameters instance = new PhrasiphyContentParameters(1, 1, 5);
-        final String expResult = String.format("PhrasiphyContentParameters[onAttributeID:%d, phraseLength:%d, proximity:%d, threshold:%d]", -1, 1, 1, 5);;
+        final String expResult = String.format("PhrasiphyContentParameters[onAttributeID:%d, phraseLength:%d, proximity:%d, threshold:%d]", -1, 1, 1, 5);
         final String result = instance.toString();
         assertEquals(result, expResult);
     }

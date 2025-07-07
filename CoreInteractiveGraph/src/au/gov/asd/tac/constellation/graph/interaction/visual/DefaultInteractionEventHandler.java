@@ -431,9 +431,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             to = point;
                             performDrag(wg, camera, from, to);
                         }
-                        case SELECTING -> {
-                            updateSelectionBoxModel(new SelectionBoxModel(eventState.getPoint(EventState.PRESSED_POINT), point));
-                        }
+                        case SELECTING -> updateSelectionBoxModel(new SelectionBoxModel(eventState.getPoint(EventState.PRESSED_POINT), point));
                         case FREEFORM_SELECTING -> {
                             freeformModel.addPoint(point);
                             updateSelectionFreeformModel(freeformModel);

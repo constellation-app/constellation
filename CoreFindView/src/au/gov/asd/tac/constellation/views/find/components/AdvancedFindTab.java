@@ -105,7 +105,7 @@ public class AdvancedFindTab extends Tab {
     private final GridPane bottomGrid = new GridPane();
 
     private boolean firstSearch = true;
-    private final String foundLabelText = "Results Found: ";
+    private static final String FOUND_LABEL_TEXT = "Results Found: ";
     private final Label matchesFoundLabel = new Label("");
     private final Label matchesFoundCountLabel = new Label("");
 
@@ -144,7 +144,7 @@ public class AdvancedFindTab extends Tab {
         
         FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> {
             if (firstSearch) {
-                matchesFoundLabel.setText(foundLabelText);
+                matchesFoundLabel.setText(FOUND_LABEL_TEXT);
                 firstSearch = false;
             }
 
