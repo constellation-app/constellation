@@ -352,9 +352,12 @@ public class HistogramPane extends BorderPane {
     public final void setHistogramState(final HistogramState histogramState, final Map<String, BinCreator> attributes) {
 
         isAdjusting = true;
-
+        System.out.println("a");
+        //System.out.println("currentHistogramState " + currentHistogramState + " histogramState " + histogramState);
         if (histogramState != currentHistogramState) {
+            System.out.println("b");
             if (histogramState == null) {
+                System.out.println("c1");
                 vertexToggle.setSelected(true);
                 etToggles.values().stream().forEach(toggle -> toggle.setDisable(true));
 
@@ -389,7 +392,7 @@ public class HistogramPane extends BorderPane {
                 clearFilterButton.setDisable(true);
 
             } else {
-
+                System.out.println("c2");
                 if (currentHistogramState == null) {
                     etToggles.values().stream().forEach(toggle -> toggle.setDisable(false));
                     categoryChoice.setDisable(false);

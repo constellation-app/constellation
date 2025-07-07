@@ -155,12 +155,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
     @Override
-    protected void componentShowing() {
-        super.componentShowing();
-        histogramController.readState();
-    }
-
-    @Override
     public HistogramPane createContent() {
         return histogramPane;
     }

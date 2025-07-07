@@ -15,9 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.histogram.rewrite;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-
 /**
  *
  * @author Quasar985
@@ -53,23 +50,4 @@ public class HistogramController {
     public HistogramTopComponent2 getParent() {
         return parent;
     }
-
-    /**
-     * Reads the graph's analytic_view_state attribute and populates the Analytic View pane.
-     */
-    public void readState() {
-        if (getParent() == null) {
-            return;
-        }
-
-        final HistogramPane pane = getParent().createContent();
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
-        if (pane == null || graph == null) {
-            return;
-        }
-
-        // TODO: implement
-        //PluginExecution.withPlugin(new HistogramStateReaderPlugin(pane)).executeLater(graph);
-    }
-
 }

@@ -79,26 +79,6 @@ public class HistogramTopComponent2NGTest {
     }
 
     /**
-     * Test of componentShowing method, of class HistogramTopComponent2.
-     */
-    @Test
-    public void testComponentShowing() {
-        System.out.println("componentShowing");
-        final HistogramController mockController = mock(HistogramController.class);
-        when(mockController.init(any(HistogramTopComponent2.class))).thenReturn(mockController);
-
-        try (final MockedStatic<HistogramController> mockedStaticController = Mockito.mockStatic(HistogramController.class)) {
-
-            mockedStaticController.when(HistogramController::getDefault).thenReturn(mockController);
-            final HistogramTopComponent2 instance = new HistogramTopComponent2();
-            instance.componentShowing();
-
-            verify(mockController).readState();
-        }
-
-    }
-
-    /**
      * Test of createContent method, of class HistogramTopComponent2.
      */
     @Test
