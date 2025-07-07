@@ -45,9 +45,9 @@ public class GraphOptionsPanelNGTest {
     @Test
     public void graphOptionsPanel_animationEnabled() {
         graphOptionsPanel.setAnimationsEnabled(true);
-        assertTrue(graphOptionsPanel.getAnimationsEnabled());
+        assertTrue(graphOptionsPanel.isAnimationsEnabled());
         graphOptionsPanel.setAnimationsEnabled(false);
-        assertFalse(graphOptionsPanel.getAnimationsEnabled());
+        assertFalse(graphOptionsPanel.isAnimationsEnabled());
     }
     
     @Test

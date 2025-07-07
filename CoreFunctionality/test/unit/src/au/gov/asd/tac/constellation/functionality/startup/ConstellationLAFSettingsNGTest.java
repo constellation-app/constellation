@@ -41,10 +41,8 @@ public class ConstellationLAFSettingsNGTest {
     private static final Logger LOGGER = Logger.getLogger(ConstellationLAFSettingsNGTest.class.getName());
     static final PseudoLookAndFeel pseudoLAF = new PseudoLookAndFeel();
     static final PseudoUIDefaults pseudoUIdefaults = new PseudoUIDefaults();
-    static final PseudoViewTabDisplayerUI pseudoViewDisplayerUI = new PseudoViewTabDisplayerUI();
-    static final PseudoTabDisplayerUI pseudoTabDisplayerUI = new PseudoTabDisplayerUI();
-    static final Class<?> pseudoViewDisplayerUIclass = pseudoViewDisplayerUI.getClass();
-    static final Class<?> pseudoTabDisplayerUIclass = pseudoTabDisplayerUI.getClass();
+    static final Class<?> pseudoViewDisplayerUIclass = PseudoViewTabDisplayerUI.class;
+    static final Class<?> pseudoTabDisplayerUIclass = PseudoTabDisplayerUI.class;
 
     @Test
     public void runSetWindowsXPTabColors() throws UnsupportedLookAndFeelException {

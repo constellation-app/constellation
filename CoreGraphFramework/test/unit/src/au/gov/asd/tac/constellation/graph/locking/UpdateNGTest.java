@@ -132,7 +132,7 @@ public class UpdateNGTest {
         try {
             wg.release();
         } catch (IllegalMonitorStateException ex) {
-            System.out.printf("%s\n", ex);
+            System.out.printf("%s%n", ex);
         }
     }
 
@@ -159,7 +159,7 @@ public class UpdateNGTest {
         try {
             wg.rollBack();
         } catch (IllegalMonitorStateException ex) {
-            System.out.printf("%s\n", ex);
+            System.out.printf("%s%n", ex);
         }
     }
 
@@ -242,7 +242,7 @@ public class UpdateNGTest {
             Assert.fail("Shouldn't get here, wg.addTransaction() should fail.");
         } catch (IllegalArgumentException ex) {
             // Expected result.
-            System.out.printf("Expected exception: %s\n", ex.getMessage());
+            System.out.printf("Expected exception: %s%n", ex.getMessage());
         }
 
         if (wg != null) {

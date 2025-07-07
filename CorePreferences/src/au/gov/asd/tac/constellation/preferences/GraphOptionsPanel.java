@@ -168,7 +168,7 @@ final class GraphOptionsPanel extends JPanel {
         rightEyeColor.setSelectedItem(color);
     }
     
-    public boolean getAnimationsEnabled() {
+    public boolean isAnimationsEnabled() {
         return this.enableAnimationsCheckBox.isSelected();
     }
     
