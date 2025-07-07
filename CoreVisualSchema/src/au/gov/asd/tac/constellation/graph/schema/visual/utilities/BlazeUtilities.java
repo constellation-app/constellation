@@ -169,8 +169,8 @@ public class BlazeUtilities {
 
                 final ListView<String> colourListView = new ListView<>(FXCollections.observableList(colorsList));
                 colourListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-                colourListView.setCellFactory((ListView<String> list) -> {
-                    return new ListCell<>() {
+                colourListView.setCellFactory((final ListView<String> list) ->
+                    new ListCell<>() {
                         @Override
                         public void updateItem(final String item, final boolean empty) {
                             super.updateItem(item, empty);
@@ -186,8 +186,7 @@ public class BlazeUtilities {
                                 setGraphic(rect);
                             }
                         }
-                    };
-                });
+                    });
 
                 colourListView.getSelectionModel().selectFirst();
 

@@ -251,7 +251,6 @@ public final class GraphJsonReader {
      * {@link au.gov.asd.tac.constellation.graph.io.providers.AbstractGraphIOProvider#readObject}
      * that uses vertex ids.
      *
-     * @param path The name of the file being read.
      * @param in The InputStream to read from.
      * @param entrySize The size of the file being read (-1 if unknown).
      * @param progress A progress indicator.
@@ -469,7 +468,7 @@ public final class GraphJsonReader {
                 throw new GraphParseException(String.format("Expected END_ARRAY, found '%s'.", current));
             }
 
-        } catch (final Exception ex) {
+        } catch (final GraphParseException | IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } finally {
             jp.close();
