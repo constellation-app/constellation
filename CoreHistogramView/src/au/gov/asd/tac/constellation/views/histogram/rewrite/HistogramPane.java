@@ -36,7 +36,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.control.MenuItem;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -350,14 +349,9 @@ public class HistogramPane extends BorderPane {
     }
 
     public final void setHistogramState(final HistogramState histogramState, final Map<String, BinCreator> attributes) {
-
         isAdjusting = true;
-        System.out.println("a");
-        //System.out.println("currentHistogramState " + currentHistogramState + " histogramState " + histogramState);
         if (histogramState != currentHistogramState) {
-            System.out.println("b");
             if (histogramState == null) {
-                System.out.println("c1");
                 vertexToggle.setSelected(true);
                 etToggles.values().stream().forEach(toggle -> toggle.setDisable(true));
 
@@ -392,7 +386,6 @@ public class HistogramPane extends BorderPane {
                 clearFilterButton.setDisable(true);
 
             } else {
-                System.out.println("c2");
                 if (currentHistogramState == null) {
                     etToggles.values().stream().forEach(toggle -> toggle.setDisable(false));
                     categoryChoice.setDisable(false);
@@ -509,21 +502,21 @@ public class HistogramPane extends BorderPane {
         display.updateBinCollection();
     }
 
-    private void clearFilter() {
+    protected void clearFilter() {
         if (!isAdjusting) {
             topComponent.clearFilter();
             updateDisplay();
         }
     }
 
-    private void filterSelection() {
+    protected void filterSelection() {
         if (!isAdjusting) {
             topComponent.filterOnSelection();
             updateDisplay();
         }
     }
 
-    private void categoryChoiceHandler() {
+    protected void categoryChoiceHandler() {
         if (!isAdjusting) {
             final AttributeType newValue = (AttributeType) categoryChoice.getValue();
             if (newValue != null) {
@@ -533,35 +526,35 @@ public class HistogramPane extends BorderPane {
         }
     }
 
-    private void selectButtonHandler() {
+    protected void selectButtonHandler() {
         if (!isAdjusting) {
             currentHistogramState.getBinSelectionMode().select(topComponent);
             updateDisplay();
         }
     }
 
-    private void selectionModeChoiceHandler() {
+    protected void selectionModeChoiceHandler() {
         if (!isAdjusting) {
             topComponent.setBinSelectionMode((BinSelectionMode) selectionModeChoice.getValue());
             updateDisplay();
         }
     }
 
-    private void descendingButtonHandler() {
+    protected void descendingButtonHandler() {
         if (!isAdjusting) {
             updateBinComparator();
             updateDisplay();
         }
     }
 
-    private void sortChoiceHandler() {
+    protected void sortChoiceHandler() {
         if (!isAdjusting) {
             updateBinComparator();
             updateDisplay();
         }
     }
 
-    private void propertyChoiceHandler() {
+    protected void propertyChoiceHandler() {
         if (!isAdjusting) {
             topComponent.setAttribute((String) propertyChoice.getValue());
             updateDisplay();
@@ -613,23 +606,23 @@ public class HistogramPane extends BorderPane {
         updateDisplay();
     }
 
-    private void actionButtonMousePressed(final MouseEvent evt) {
+    protected void actionButtonMousePressed(final MouseEvent evt) {
         actionsMenu.show(actionButton, evt.getScreenX(), evt.getScreenY());
         updateDisplay();
     }
 
-    private void toggleStateChanged(final GraphElementType state) {
+    protected void toggleStateChanged(final GraphElementType state) {
         if (!isAdjusting) {
             topComponent.setGraphElementType(state);
             updateDisplay();
         }
     }
 
-    private void saveBinsToGraph() {
+    protected void saveBinsToGraph() {
         topComponent.saveBinsToGraph();
     }
 
-    private void updateBinComparator() {
+    protected void updateBinComparator() {
         BinComparator binComparator = (BinComparator) sortChoice.getValue();
         topComponent.setBinComparator(this.descendingButton.isSelected() ? binComparator.getReverse() : binComparator);
     }

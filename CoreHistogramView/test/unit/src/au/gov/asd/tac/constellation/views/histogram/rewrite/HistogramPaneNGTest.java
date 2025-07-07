@@ -24,11 +24,18 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.input.MouseEvent;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import javafx.util.Pair;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -177,5 +184,185 @@ public class HistogramPaneNGTest {
         final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
 
         instance.setHistogramState(histogramState, attributes);
+    }
+
+    private Pair<HistogramTopComponent2, HistogramPane> createPanehelper() {
+        final HistogramTopComponent2 mockTopComponent = mock(HistogramTopComponent2.class);
+        final HistogramController controllerSpy = spy(HistogramController.getDefault());
+        when(controllerSpy.getParent()).thenReturn(mockTopComponent);
+
+        // Set up instance
+        final HistogramPane spy = spy(new HistogramPane(controllerSpy));
+        // Stub this method, so variable "isAdjusting" is not set to true
+        Mockito.doNothing().when(spy).setHistogramState(any(), any());
+
+        return new Pair(mockTopComponent, spy);
+    }
+
+    /**
+     * Test of clearFilter method, of class HistogramPane.
+     */
+    @Test
+    public void testClearFilter() {
+        System.out.println("clearFilter");
+
+        // Set up instance
+        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+        final HistogramTopComponent2 mockTopComponent = p.getKey();
+        final HistogramPane instance = p.getValue();
+
+        instance.clearFilter();
+        verify(mockTopComponent).clearFilter();
+        verify(instance).updateDisplay();
+    }
+
+    /**
+     * Test of clearFilter method, of class HistogramPane.
+     */
+    @Test
+    public void testFilterSelection() {
+        System.out.println("filterSelection");
+
+        // Set up instance
+        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+        final HistogramTopComponent2 mockTopComponent = p.getKey();
+        final HistogramPane instance = p.getValue();
+
+        instance.filterSelection();
+        verify(mockTopComponent).filterOnSelection();
+        verify(instance).updateDisplay();
+    }
+
+    /**
+     * Test of selectionModeChoiceHandler method, of class HistogramPane.
+     */
+    @Test
+    public void testSelectionModeChoiceHandler() {
+        System.out.println("selectionModeChoiceHandler");
+
+        // Set up instance
+        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+        final HistogramTopComponent2 mockTopComponent = p.getKey();
+        final HistogramPane instance = p.getValue();
+
+        instance.selectionModeChoiceHandler();
+        verify(mockTopComponent).setBinSelectionMode(any());
+        verify(instance).updateDisplay();
+    }
+
+    /**
+     * Test of descendingButtonHandler method, of class HistogramPane.
+     */
+    @Test
+    public void testDescendingButtonHandler() {
+        System.out.println("descendingButtonHandler");
+
+        // Set up instance
+        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+        final HistogramPane instance = p.getValue();
+
+        instance.descendingButtonHandler();
+        verify(instance).updateDisplay();
+    }
+
+    /**
+     * Test of sortChoiceHandler method, of class HistogramPane.
+     */
+    @Test
+    public void testSortChoiceHandler() {
+        System.out.println("sortChoiceHandler");
+
+        // Set up instance
+        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+        final HistogramPane instance = p.getValue();
+
+        instance.sortChoiceHandler();
+        verify(instance).updateDisplay();
+    }
+
+    /**
+     * Test of selectionModeChoiceHandler method, of class HistogramPane.
+     */
+    @Test
+    public void testPropertyChoiceHandler() {
+        System.out.println("propertyChoiceHandler");
+
+        // Set up instance
+        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+        final HistogramTopComponent2 mockTopComponent = p.getKey();
+        final HistogramPane instance = p.getValue();
+
+        instance.propertyChoiceHandler();
+        verify(mockTopComponent).setAttribute(any());
+        verify(instance).updateDisplay();
+    }
+
+    /**
+     * Test of actionButtonMousePressed method, of class HistogramPane.
+     */
+    @Test
+    public void testActionButtonMousePressed() {
+        System.out.println("actionButtonMousePressed");
+
+        final ObservableList mockItems = mock(ObservableList.class);
+        try (final MockedConstruction<ContextMenu> mockConstructor = Mockito.mockConstruction(ContextMenu.class, (mock, context) -> {
+            when(mock.getItems()).thenReturn(mockItems);
+        })) {
+            // Set up instance
+            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+            final HistogramPane instance = p.getValue();
+
+            instance.actionButtonMousePressed(mock(MouseEvent.class));
+            verify(instance).updateDisplay();
+        }
+    }
+
+    /**
+     * Test of toggleStateChanged method, of class HistogramPane.
+     */
+    @Test
+    public void testToggleStateChanged() {
+        System.out.println("toggleStateChanged");
+
+        // Set up instance
+        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+        final HistogramTopComponent2 mockTopComponent = p.getKey();
+        final HistogramPane instance = p.getValue();
+
+        instance.toggleStateChanged(null);
+        verify(mockTopComponent).setGraphElementType(any());
+        verify(instance).updateDisplay();
+    }
+
+    /**
+     * Test of saveBinsToGraph method, of class HistogramPane.
+     */
+    @Test
+    public void testSaveBinsToGraph() {
+        System.out.println("saveBinsToGraph");
+
+        // Set up instance
+        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+        final HistogramTopComponent2 mockTopComponent = p.getKey();
+        final HistogramPane instance = p.getValue();
+
+        instance.saveBinsToGraph();
+        verify(mockTopComponent).saveBinsToGraph();
+    }
+
+    /**
+     * Test of updateBinComparator method, of class HistogramPane.
+     */
+    @Test
+    public void testUpdateBinComparator() {
+        System.out.println("updateBinComparator");
+
+        // Set up instance
+        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+        final HistogramTopComponent2 mockTopComponent = p.getKey();
+        final HistogramPane instance = p.getValue();
+
+        instance.updateBinComparator();
+        verify(mockTopComponent).setBinComparator(any());
     }
 }
