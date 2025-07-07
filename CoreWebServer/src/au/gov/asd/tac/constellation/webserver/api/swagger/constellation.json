@@ -373,9 +373,20 @@
             },
             
             "renameGraphExample": {
-                 "responses": { 
+                 "responses": {
                      "200": {
-                        "description": "Success"                        
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "id": "23b4e80e-512f-43c3-b4a5-1ad40ed0f770",
+                                        "previous_name": "analytic graph1",
+                                        "new_name": "renamed graph"
+                                    }
+                                }
+                            }
+                        }
                      },
                      "401": {
                         "$ref": "#/components/examples/UnAuthorisedErrorResponse"
