@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.views.find.components.AdvancedFindTab;
 import au.gov.asd.tac.constellation.views.find.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find.components.advanced.criteriavalues.FloatCriteriaValues;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -45,11 +44,11 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
         super(parentComponent, type, graphElementType);
         setGridContent();
 
-        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
+        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement)
                 -> enableLabelAndSearchFieldtwo(newElement)
         );
 
-        searchField.textProperty().addListener((final ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             // Retrieve the index of a "."
             final int index = searchField.getText().indexOf(".");
             // Save the current text but replace all non numbers with nothing
@@ -63,7 +62,7 @@ public class FloatCriteriaPanel extends AdvancedCriteriaBorderPane {
             searchField.setText(text);
         });
 
-        searchFieldTwo.textProperty().addListener((final ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+        searchFieldTwo.textProperty().addListener((observable, oldValue, newValue) -> {
             // Retrieve the index of a "."
             final int index = searchFieldTwo.getText().indexOf(".");
             // Save the current text but replace all non numbers with nothing

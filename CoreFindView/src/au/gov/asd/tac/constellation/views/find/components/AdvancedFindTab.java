@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -126,11 +125,11 @@ public class AdvancedFindTab extends Tab {
         addCriteriaPaneButton.setOnAction(action -> addCriteriaPane(getSelectedGraphElementType()));
 
         // Change the displayed list based on the graph element type selection
-        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> changeDisplayedList(newElement));
+        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement) -> changeDisplayedList(newElement));
 
-        searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
+        searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement) -> updateSelectionFactors());
 
-        postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
+        postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement) -> updateSelectionFactors());
 
         findAllButton.setOnAction(action -> findAllAction());
         findNextButton.setOnAction(action -> findNextAction());

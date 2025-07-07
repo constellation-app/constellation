@@ -190,14 +190,14 @@ public class GraphIconSavingNGTest {
             defaultCustomIconProviderMock.when(() -> DefaultCustomIconProvider.loadIcons()).thenCallRealMethod();
             
             // Create a test icon to be added and saved with the graph data
-            final ConstellationColor ICON_COLOR = ConstellationColor.BLUEBERRY;
-            final ConstellationIcon ICON_BACKGROUND = DefaultIconProvider.FLAT_SQUARE;
-            final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.STAR;
+            final ConstellationColor iconColor = ConstellationColor.BLUEBERRY;
+            final ConstellationIcon iconBackground = DefaultIconProvider.FLAT_SQUARE;
+            final ConstellationIcon iconSymbol = AnalyticIconProvider.STAR;
 
             ConstellationIcon icon = new ConstellationIcon.Builder(TEST_ICON_NAME,
                     new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
-                            ICON_BACKGROUND.buildBufferedImage(16, ICON_COLOR.getJavaColor()),
-                            ICON_SYMBOL.buildBufferedImage(16), 0, 0)))
+                            iconBackground.buildBufferedImage(16, iconColor.getJavaColor()),
+                            iconSymbol.buildBufferedImage(16), 0, 0)))
                     .build();
             icon.setEditable(true);
             System.out.println("===== INITIALISE TEST ENVIRONMENT =====");
@@ -282,14 +282,14 @@ public class GraphIconSavingNGTest {
     }
     
     // determine whether the node of the specified name exists in the graph and contains an icon value
-    private boolean nodeIconFound(ReadableGraph graph, String base_name, String iconName) {
+    private boolean nodeIconFound(ReadableGraph graph, String baseName, String iconName) {
         int nameAttrId = graph.getAttribute(GraphElementType.VERTEX, "name");
         int iconAttrId = graph.getAttribute(GraphElementType.VERTEX, "icon");
         boolean found = false;
         for (int i = 0; i < graph.getVertexCount(); i++) {
             int id = graph.getVertex(i);
             String name = graph.getStringValue(nameAttrId, id);
-            if (base_name.equals(name)) {
+            if (baseName.equals(name)) {
                 String loadedIconName = graph.getStringValue(iconAttrId, id);
                 if (iconName.equals(loadedIconName)) {
                     found = true;

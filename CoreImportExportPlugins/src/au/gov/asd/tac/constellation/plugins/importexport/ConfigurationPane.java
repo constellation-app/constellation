@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Side;
@@ -137,8 +136,7 @@ public class ConfigurationPane extends AnchorPane {
                 label.setText(field.getText());
                 tab.setGraphic(label);
             });
-            field.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                    Boolean newValue) -> {
+            field.focusedProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue) {
                     label.setText(field.getText());
                     tab.setGraphic(label);

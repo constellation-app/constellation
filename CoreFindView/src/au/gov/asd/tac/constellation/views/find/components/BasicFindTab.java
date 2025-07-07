@@ -135,7 +135,7 @@ public class BasicFindTab extends Tab {
          * graphElementType and update the selectedAttributes to retrieve
          * potentially previously selected elements of the new GraphElementType
          */
-        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> {
+        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement) -> {
             if (oldElement != null) {
                 saveSelected(GraphElementType.getValue(oldElement));
             }
