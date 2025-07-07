@@ -50,8 +50,7 @@ public class KeyboardShortcutSelectionResultNGTest {
     private final FxRobot robot = new FxRobot();
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-        System.setProperty("java.awt.headless", "false");
+    public static void setUpClass() throws Exception {        
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
@@ -69,35 +68,47 @@ public class KeyboardShortcutSelectionResultNGTest {
     @Test
     public void testKeyboardShortcutSelectionResult() {
 
-        final Optional<String> ks = Optional.of("ctrl 1");
-        final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
-
-        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory, Optional.empty()));
+        final String previousHeadlessPorperty = System.getProperty("java.awt.headless");
         
-        final Stage dialog = getDialog(robot);
-        dialog.setX(0);
-        dialog.setY(0);               
+        try {
+            // This particular test needs to NOT be in headless mode
+            System.setProperty("java.awt.headless", "false");
+            
+            final Optional<String> ks = Optional.of("ctrl 1");
+            final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
-        final String input = "myPreferenceFile";
+            final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
+                    () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory, Optional.empty()));
 
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".text-field")
-                        .queryAs(TextField.class)
-        ).write(input);
+            final Stage dialog = getDialog(robot);
+            dialog.setX(0);
+            dialog.setY(0);
 
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".button")
-                        .lookup(hasText("OK"))
-                        .queryAs(Button.class)
-        );
+            final String input = "myPreferenceFile";
 
-        final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
-        assertEquals(result.get().getKeyboardShortcut(), ks.get());
-        assertTrue(result.get().getExisitngTemplateWithKs() == null);
-        assertEquals(input, result.get().getFileName());
+            robot.clickOn(
+                    robot.from(dialog.getScene().getRoot())
+                            .lookup(".text-field")
+                            .queryAs(TextField.class)
+            ).write(input);
+
+            robot.clickOn(
+                    robot.from(dialog.getScene().getRoot())
+                            .lookup(".button")
+                            .lookup(hasText("OK"))
+                            .queryAs(Button.class)
+            );
+
+            final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
+            assertEquals(result.get().getKeyboardShortcut(), ks.get());
+            assertTrue(result.get().getExisitngTemplateWithKs() == null);
+            assertEquals(input, result.get().getFileName());
+        } finally {
+            if (previousHeadlessPorperty != null) {
+                System.setProperty("java.awt.headless", previousHeadlessPorperty);
+            }
+        }
+        
     }
 
     @Test

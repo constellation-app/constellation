@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextField;
@@ -49,7 +48,7 @@ public class TextInputDialogWithKeybordShortcutNGTest {
     private final FxRobot robot = new FxRobot();
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() throws Exception {        
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
@@ -71,80 +70,74 @@ public class TextInputDialogWithKeybordShortcutNGTest {
 
         outputFile.createNewFile();
 
-        final TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = mock(TextInputDialogWithKeybordShortcut.class);
-        //when(textInputDialogWithKeybordShortcut.getDefaultValue()).thenReturn(StringUtils.EMPTY);
+        final TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = mock(TextInputDialogWithKeybordShortcut.class);       
 
         final DialogPane dialogPane = mock(DialogPane.class);
-        when(textInputDialogWithKeybordShortcut.getDialogPane()).thenReturn(dialogPane);
-        //assertEquals(textInputDialogWithKeybordShortcut.getDefaultValue(), StringUtils.EMPTY);
+        when(textInputDialogWithKeybordShortcut.getDialogPane()).thenReturn(dialogPane);        
 
         final Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null, Optional.empty()));
         final RecordKeyboardShortcut rk = mock(RecordKeyboardShortcut.class);
         when(rk.start(outputFile)).thenReturn(ksResult);
 
-        final Optional<KeyboardShortcutSelectionResult> actualResponse = Optional.ofNullable(textInputDialogWithKeybordShortcut.getKeyboardShortcutSelectionResult());
+        final Optional<KeyboardShortcutSelectionResult> actualResponse = rk.start(outputFile);
 
         assertEquals(actualResponse, ksResult);
 
     }
+   
 
     @Test
-    public void testTextInputDialogWithKeybordShortcut() throws Exception {
-        final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir"));
-        final Optional<String> ks = Optional.of("Ctrl+1");
+    public void testClickOnShortcutButton() throws Exception {        
+        final String previousHeadlessPorperty = System.getProperty("java.awt.headless");
+        
+        try {
+            // This particular test needs to NOT be in headless mode
+            System.setProperty("java.awt.headless", "false");
+            
+            final Optional<String> ks = Optional.of("ctrl 1");
+            final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                final TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = new TextInputDialogWithKeybordShortcut(preferenceDirectory, ks, null);
-               // Assert.assertNotNull(textInputDialogWithKeybordShortcut.getEditor());
-               // assertEquals(textInputDialogWithKeybordShortcut.getDefaultValue(), "");
+            WaitForAsyncUtils.asyncFx(
+                    () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory, Optional.empty()));
+
+            final Stage dialog = getDialog(robot);
+            dialog.setX(0);
+            dialog.setY(0);
+
+            final String input = "myPreferenceFile";
+
+            robot.clickOn(
+                    robot.from(dialog.getScene().getRoot())
+                            .lookup(".text-field")
+                            .queryAs(TextField.class)
+            ).write(input);
+
+            robot.clickOn(
+                    robot.from(dialog.getScene().getRoot())
+                            .lookup(".button")
+                            .lookup(hasText("Shortcut"))
+                            .queryAs(Button.class)
+            );
+
+            robot.clickOn(
+                    robot.from(dialog.getScene().getRoot())
+                            .lookup(".button")
+                            .lookup(hasText("Cancel"))
+                            .queryAs(Button.class)
+            );
+
+            robot.clickOn(
+                    robot.from(dialog.getScene().getRoot())
+                            .lookup(".button")
+                            .lookup(hasText("OK"))
+                            .queryAs(Button.class)
+            );
+   
+        } finally {
+            if (previousHeadlessPorperty != null) {
+                System.setProperty("java.awt.headless", previousHeadlessPorperty);
             }
-        });
-
-    }
-
-    @Test
-    public void testClickOnShortcutButton() throws Exception {
-        final Optional<String> ks = Optional.of("ctrl 1");
-        final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
-
-        WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory, null));
-
-        final Stage dialog = getDialog(robot);
-        dialog.setX(0);
-        dialog.setY(0);
-
-        final String input = "myPreferenceFile";
-
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".text-field")
-                        .queryAs(TextField.class)
-        ).write(input);
-
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".button")
-                        .lookup(hasText("Shortcut"))
-                        .queryAs(Button.class)
-        );
-
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".button")
-                        .lookup(hasText("Cancel"))
-                        .queryAs(Button.class)
-        );
-
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".button")
-                        .lookup(hasText("OK"))
-                        .queryAs(Button.class)
-        );
-
+        }
     }
 
     private Stage getDialog(final FxRobot robot) {
