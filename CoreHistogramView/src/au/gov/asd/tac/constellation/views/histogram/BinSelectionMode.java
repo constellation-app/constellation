@@ -210,7 +210,7 @@ public enum BinSelectionMode {
         // TODO: Remove this function when Histogram rewrite is fully merged
         @Override
         public void select(final HistogramTopComponent2 topComponent) {
-            topComponent.expandSelection();
+            topComponent.filterSelection();
         }
     },
     /**

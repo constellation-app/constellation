@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,11 +55,12 @@ import javafx.scene.paint.Stop;
  * @author sirius
  * @author antares
  * @author sol695510
+ * @author Quasar985
  */
 public class HistogramDisplay2 extends BorderPane {
 
-    public static final Color BACKGROUND_COLOR = new Color(0x44, 0x44, 0x44);
-    public static final String BACKGROUND_COLOR_STRING = "#424242";
+    public static final String BACKGROUND_COLOR_STRING = "#444444";
+    public static final Color BACKGROUND_COLOR = Color.decode(BACKGROUND_COLOR_STRING);
     public static final Color BAR_COLOR = new Color(0.1176F, 0.5647F, 1.0F);
     public static final Color SELECTED_COLOR = Color.RED.darker();
     public static final Color ACTIVE_COLOR = Color.YELLOW;
@@ -76,8 +77,8 @@ public class HistogramDisplay2 extends BorderPane {
     private static final Color ACTIVE_AREA_COLOR = CLICK_AREA_COLOR.brighter();
     private static final String NO_DATA = "<No Data>";
     private static final int GAP_BETWEEN_BARS = 5;
-    public static final int MINIMUM_BAR_HEIGHT = 2; // Set back to private after histogram rewrite fully replaces old version
-    public static final int MAXIMUM_BAR_HEIGHT = 99;// Set back to private after histogram rewrite fully replaces old version
+    private static final int MINIMUM_BAR_HEIGHT = 2;
+    private static final int MAXIMUM_BAR_HEIGHT = 99;
     private static final int MINIMUM_BAR_WIDTH = 4;
     private static final int MINIMUM_SELECTED_WIDTH = 3;
     private static final int MINIMUM_TEXT_WIDTH = 150;
@@ -117,6 +118,7 @@ public class HistogramDisplay2 extends BorderPane {
     private double prevWidth = 0;
     private static final float FONT_SCALE_FACTOR = 0.66F;
 
+    private static final String STYLE_SETTING = "-fx-background-color: %s;";
     private static final String HEADER_ROW_CSS_CLASS = "header-row";
     private static final String FONT_SIZE_CSS_PROPERTY = "-fx-font-size: ";
 
@@ -173,7 +175,7 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private void initializeSettings() {
-        setStyle("-fx-background-color: " + BACKGROUND_COLOR_STRING + ";");
+        setStyle(String.format(STYLE_SETTING, BACKGROUND_COLOR_STRING));
         requestFocus(); // Focus the Histogram View so 'key' actions can be registered.
     }
 
