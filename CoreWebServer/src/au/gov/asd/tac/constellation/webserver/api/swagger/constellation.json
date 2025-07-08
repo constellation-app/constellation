@@ -659,6 +659,28 @@
                 }
             },
             
+            "refelctJsonExample": {
+                "request": {
+                    "type": "object",
+                    "properties": {
+                        "test.string": {
+                            "type": "string"
+                        },
+                        "test.integer": {
+                            "type": "integer"
+                        },
+                        "test.float": {
+                            "type": "float"
+                        }
+                    },
+                    "example": {
+                        "test.string": "Test reflect json",
+                        "test.integer": 1,
+                        "test.float": 1.1
+                    }
+                }        
+            },
+            
             "defaultResponses": {
               "responses": { 
                      "200": {
