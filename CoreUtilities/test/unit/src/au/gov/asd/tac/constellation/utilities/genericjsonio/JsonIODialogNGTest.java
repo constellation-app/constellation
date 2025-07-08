@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
+import java.awt.Robot;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -242,92 +243,66 @@ public class JsonIODialogNGTest {
    
     @Test
     public void getPreferenceFileNameWithKs_ok_pressed() {
-        
-        final String previousHeadlessPorperty = System.getProperty("java.awt.headless");
-        
-        try {
-            // This particular test needs to NOT be in headless mode
-            System.setProperty("java.awt.headless", "false");
-            
-            final Optional<String> ks = Optional.of("[ctrl 1]");
-            final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+        final Optional<String> ks = Optional.of("[ctrl 1]");
+        final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
-            final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
-                    () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory, Optional.empty()));
+        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
+                () -> JsonIODialog.getPreferenceFileNameTest(ks, preferenceDirectory, Optional.empty()));
 
-            final Stage dialog = getDialog(robot);
-            dialog.setX(0);
-            dialog.setY(0);
+        final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
 
-            final String input = "myPreferenceFile";
+        final String input = "myPreferenceFile";
 
-            robot.clickOn(
-                    robot.from(dialog.getScene().getRoot())
-                            .lookup(".text-field")
-                            .queryAs(TextField.class)
-            ).write(input);
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".text-field")
+                        .queryAs(TextField.class)
+        ).write(input);
 
-            robot.clickOn(
-                    robot.from(dialog.getScene().getRoot())
-                            .lookup(".button")
-                            .lookup(hasText("OK"))
-                            .queryAs(Button.class)
-            );
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".button")
+                        .lookup(hasText("OK"))
+                        .queryAs(Button.class)
+        );
 
-            final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
-            assertEquals(result.get().getKeyboardShortcut(), ks.get());
-            assertTrue(result.get().getExisitngTemplateWithKs() == null);
-            assertEquals(input, result.get().getFileName());
-        } finally {
-            if (previousHeadlessPorperty != null) {
-                System.setProperty("java.awt.headless", previousHeadlessPorperty);
-            }
-        }
+        final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
+        assertEquals(result.get().getKeyboardShortcut(), ks.get());
+        assertTrue(result.get().getExisitngTemplateWithKs() == null);
+        assertEquals(input, result.get().getFileName());
     }
 
     
     @Test
-    public void getPreferenceFileNameWithKs_cancel_pressed() {        
-        
-        final String previousHeadlessPorperty = System.getProperty("java.awt.headless");
-        
-        try {
-            // This particular test needs to NOT be in headless mode
-            System.setProperty("java.awt.headless", "false");
-            
-            final Optional<String> ks = Optional.of("[ctrl 1]");
-            final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+    public void getPreferenceFileNameWithKs_cancel_pressed() {
+        final Optional<String> ks = Optional.of("[ctrl 1]");
+        final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
-            final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
-                    () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory, Optional.empty()));
+        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
+                () -> JsonIODialog.getPreferenceFileNameTest(ks, preferenceDirectory, Optional.empty()));
 
-            final Stage dialog = getDialog(robot);
-            dialog.setX(0);
-            dialog.setY(0);
+        final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
 
-            robot.clickOn(
-                    robot.from(dialog.getScene().getRoot())
-                            .lookup(".text-field")
-                            .queryAs(TextField.class)
-            ).write("myPreferenceFile");
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".text-field")
+                        .queryAs(TextField.class)
+        ).write("myPreferenceFile");
 
-            robot.clickOn(
-                    robot.from(dialog.getScene().getRoot())
-                            .lookup(".button")
-                            .lookup(hasText("Cancel"))
-                            .queryAs(Button.class)
-            );
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".button")
+                        .lookup(hasText("Cancel"))
+                        .queryAs(Button.class)
+        );
 
-            final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
+        final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
 
-            assertTrue(result.isPresent());
-            
-        } finally {
-            if (previousHeadlessPorperty != null) {
-                System.setProperty("java.awt.headless", previousHeadlessPorperty);
-            }
-        }
-        
+        assertTrue(result.isPresent());       
     }
 
 

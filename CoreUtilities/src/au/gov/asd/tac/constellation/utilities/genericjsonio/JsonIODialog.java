@@ -32,6 +32,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Window;
+import javax.swing.JDialog;
 
 /**
  * Displays a generic dialog window that can allow the user to select a file
@@ -140,8 +141,20 @@ public class JsonIODialog {
     
     public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(final Optional<String> ks, final File preferenceDirectory, final Optional<Window> parentWindow) {
         final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut("",  PREFERENCE_NAME_DIALOG_TITLE, PREFERENCE_NAME_DIALOG_HEADER_TEXT, preferenceDirectory, ks, parentWindow);
-        td.showPopUp();        
+        td.showPopUp(new JDialog());        
         return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
     }
 
+    /**
+     * For unittest
+     * @param ks
+     * @param preferenceDirectory
+     * @param parentWindow
+     * @return 
+     */
+    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileNameTest(final Optional<String> ks, final File preferenceDirectory, final Optional<Window> parentWindow) {
+        final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut("",  PREFERENCE_NAME_DIALOG_TITLE, PREFERENCE_NAME_DIALOG_HEADER_TEXT, preferenceDirectory, ks, parentWindow);
+        td.showPopUp();
+        return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
+    }
 }

@@ -34,6 +34,7 @@ import javafx.scene.layout.Region;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.css.PseudoClass;
@@ -266,10 +267,17 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
     }
     
     /**
+     * For unittest
+     */
+    public void showPopUp() {
+        showPopUp(null);
+    }
+    
+    /**
      * Instantiate stage for the pop up and set event handler to close it when
      * consty closes
      */
-    public void showPopUp() {
+    public void showPopUp(final JDialog hiddenDialog) {
         if (isFirstTime) {
             if (parent != null) {
                 parent.setOnCloseRequest(event -> {
@@ -294,12 +302,13 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
             isFirstTime = false;
         }
-
-        final JDialog hiddenDialog = new JDialog();
-        hiddenDialog.setModal(true);        
-        hiddenDialog.setUndecorated(true);
-        hiddenDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-
+        
+        if(Objects.nonNull(hiddenDialog)) {
+            hiddenDialog.setModal(true);
+            hiddenDialog.setUndecorated(true);
+            hiddenDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        }
+        
         stage.setTitle(title);
         dialogPane.setHeaderText(headerText);
 
@@ -309,7 +318,9 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         stage.setY(SystemUtilities.getMainframeYPos() + yOffset);
 
         try {
-            SwingUtilities.invokeLater(() -> hiddenDialog.setVisible(true));
+            if(Objects.nonNull(hiddenDialog)) {
+                SwingUtilities.invokeLater(() -> hiddenDialog.setVisible(true));   
+            }
             
             if (!stage.isShowing()) {
                 stage.showAndWait();
@@ -317,7 +328,9 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         } catch (final IllegalStateException e) {
             LOGGER.log(Level.SEVERE, "Error opening popup", e);
         } finally {
-            hiddenDialog.dispose();            
+            if(Objects.nonNull(hiddenDialog)) {
+                hiddenDialog.dispose();
+            }
         }
 
     }
