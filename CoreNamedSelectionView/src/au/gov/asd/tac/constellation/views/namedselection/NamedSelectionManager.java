@@ -795,7 +795,6 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
      *
      * @return The state that was saved to the graph.
      */
-    @SuppressWarnings("unchecked")
     private NamedSelectionState saveStateToGraph() {
         final Graph graph = graphNode.getGraph();
         final NamedSelectionState newState;
@@ -836,7 +835,6 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
      * @see NamedSelectionState
      * @see NamedSelectionStatePlugin
      */
-    @SuppressWarnings("unchecked")
     private void readStateFromGraph(final GraphReadMethods graph) {
         // Ensure that the state gets set correctly under all circumstances.
         this.state = null;

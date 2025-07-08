@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  *
  * @author twilight_sparkle
  */
-public class PrimaryKeyDefaultGetter implements DefaultGetter {
+public class PrimaryKeyDefaultGetter implements DefaultGetter<List<String>> {
 
     private final GraphElementType elementType;
 
@@ -37,15 +37,12 @@ public class PrimaryKeyDefaultGetter implements DefaultGetter {
     }
 
     @Override
-    public Object getDefaultValue() {
-        final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
+    public List<String> getDefaultValue() {
         List<SchemaAttribute> keys = new ArrayList<>();
-        try {
+        try (final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph()) {
             if (rg.getSchema() != null) {
                 keys = rg.getSchema().getFactory().getKeyAttributes(elementType);
             }
-        } finally {
-            rg.release();
         }
         return keys.stream().map(s -> s.getName()).collect(Collectors.toList());
     }

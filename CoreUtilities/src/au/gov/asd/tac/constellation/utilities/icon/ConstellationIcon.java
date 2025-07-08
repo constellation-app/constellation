@@ -371,7 +371,7 @@ public class ConstellationIcon {
 
         final Image image;
         if (IMAGE_CACHE.containsKey(key)) {
-            image = (Image) IMAGE_CACHE.get(key);
+            image = IMAGE_CACHE.get(key);
         } else {
             // build the image
             LOGGER.log(Level.FINE, BUILDING_ICON_FORMAT, name);

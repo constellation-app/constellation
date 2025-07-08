@@ -60,7 +60,7 @@ public class ImportPane extends BorderPane {
     protected final TitledPane titledConfigurationPane;
     protected final ActionPane actionPane;
 
-    protected ImportController importController;
+    protected ImportController<?> importController;
     protected ImportTopComponent importTopComponent;
     protected ConfigurationPane configurationPane;
     protected SourcePane sourcePane;
@@ -72,7 +72,7 @@ public class ImportPane extends BorderPane {
     public static final String LOAD_TEMPLATE_LOGO = "resources/ImportExportLoadTemplate.png";
     private final ImageView loadTemplateImage = new ImageView(new Image(ImportTopComponent.class.getResourceAsStream(LOAD_TEMPLATE_LOGO)));
 
-    public ImportPane(final ImportTopComponent importTopComponent, final ImportController controller,
+    public ImportPane(final ImportTopComponent importTopComponent, final ImportController<?> controller,
             final ConfigurationPane configurationPane, final SourcePane sourcePane) {
         this.importTopComponent = importTopComponent;
         this.importController = controller;
@@ -166,7 +166,7 @@ public class ImportPane extends BorderPane {
         setCenter(root);
     }
 
-    public void update(final ImportController importController, final List<ImportDefinition> definitions) {
+    public void update(final ImportController<?> importController, final List<ImportDefinition> definitions) {
         sourcePane.update(importController);
         configurationPane.update(definitions);
     }

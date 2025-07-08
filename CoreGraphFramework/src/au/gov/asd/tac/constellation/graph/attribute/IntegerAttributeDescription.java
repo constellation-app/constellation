@@ -54,8 +54,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     private int[] data = new int[0];
     private int defaultValue = DEFAULT_VALUE;
-
-    @SuppressWarnings("unchecked") // Casts are manually checked
+    
     private int convertFromObject(final Object object) throws IllegalArgumentException {
         switch (object) {
             case Number number -> {

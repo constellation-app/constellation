@@ -24,7 +24,7 @@ import javafx.event.EventHandler;
  *
  * @author aldebaran30701
  */
-public class TooltipMouseExitedHandler implements EventHandler {
+public class TooltipMouseExitedHandler implements EventHandler<Event> {
 
     private final TooltipPane tooltipPane;
     

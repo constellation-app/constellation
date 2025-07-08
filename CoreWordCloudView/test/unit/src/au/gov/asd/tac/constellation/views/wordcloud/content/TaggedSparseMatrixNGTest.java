@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.wordcloud.content;
 import java.util.Set;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -58,19 +59,22 @@ public class TaggedSparseMatrixNGTest {
     @Test
     public void testConstructMatrix() {
         System.out.println("constructMatrix");
+        
         Number noEntryVal = 4;
-        TaggedSparseMatrix result = TaggedSparseMatrix.constructMatrix(noEntryVal);
-        TaggedSparseMatrix.ArithmeticHandler calc = result.getCalc();
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        TaggedSparseMatrix<Integer> result = (TaggedSparseMatrix<Integer>) TaggedSparseMatrix.constructMatrix(noEntryVal);
+        TaggedSparseMatrix.ArithmeticHandler<Integer> calc = result.getCalc();
         assertEquals(calc.getClass(), TaggedSparseMatrix.IntegerArithmeticHandler.class);
         
-        noEntryVal = 2.0F;
-        result = TaggedSparseMatrix.constructMatrix(noEntryVal);
-        calc = result.getCalc();
-        assertEquals(calc.getClass(), SparseMatrix.FloatArithmeticHandler.class);
+        noEntryVal = 2F;
+        @SuppressWarnings("unchecked") // parsing float will return float matrix
+        TaggedSparseMatrix<Float> result2 = (TaggedSparseMatrix<Float>) TaggedSparseMatrix.constructMatrix(noEntryVal);
+        TaggedSparseMatrix.ArithmeticHandler<Float> calc2 = result2.getCalc();
+        assertEquals(calc2.getClass(), SparseMatrix.FloatArithmeticHandler.class);
         
         noEntryVal = null;
-        result = TaggedSparseMatrix.constructMatrix(noEntryVal);
-        assertEquals(result, null);
+        TaggedSparseMatrix<?> result3 = TaggedSparseMatrix.constructMatrix(noEntryVal);
+        assertNull(result3);
     }
 
     /**
@@ -79,8 +83,10 @@ public class TaggedSparseMatrixNGTest {
     @Test
     public void testTagColumn() {
         System.out.println("tagColumn");
-        final Number val = 4;
-        final TaggedSparseMatrix instance = TaggedSparseMatrix.constructMatrix(val);
+        
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final TaggedSparseMatrix<Integer> instance = (TaggedSparseMatrix<Integer>) TaggedSparseMatrix.constructMatrix(val);
         instance.putCell(1, 2, val);
         instance.putCell(0, 4, 6);
         instance.putCell(3, 8, 9);
@@ -97,15 +103,17 @@ public class TaggedSparseMatrixNGTest {
     @Test
     public void testGetColumnsWithTag() {
         System.out.println("getColumnsWithTag");
+        
         final boolean tag = true;
-        final Number val = 4;
-        final TaggedSparseMatrix instance = TaggedSparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final TaggedSparseMatrix<Integer> instance = (TaggedSparseMatrix<Integer>) TaggedSparseMatrix.constructMatrix(val);
         instance.putCell(1, 2, val);
         instance.putCell(0, 4, 6);
         instance.putCell(3, 8, 9);
         instance.tagColumn(0, tag);
         instance.tagColumn(1, tag);
-        final Set result = instance.getColumnsWithTag(tag);
+        final Set<Integer> result = instance.getColumnsWithTag(tag);
         assertEquals(result.size(), 2);
     }
 
@@ -115,9 +123,11 @@ public class TaggedSparseMatrixNGTest {
     @Test
     public void testGetLargestColumnSumWithTag() {
         System.out.println("getLargestColumnSumWithTag");
+        
         final boolean tag = false;
-        final Number val = 4;
-        final TaggedSparseMatrix instance = TaggedSparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final TaggedSparseMatrix<Integer> instance = (TaggedSparseMatrix<Integer>) TaggedSparseMatrix.constructMatrix(val);
         instance.putCell(1, 2, val);
         instance.putCell(0, 4, 6);
         instance.putCell(3, 8, 9);
@@ -135,9 +145,11 @@ public class TaggedSparseMatrixNGTest {
     @Test
     public void testIsTag() {
         System.out.println("isTag");
+        
         final int key = 0;
-        final Number val = 4;
-        final TaggedSparseMatrix instance = TaggedSparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final TaggedSparseMatrix<Integer> instance = (TaggedSparseMatrix<Integer>) TaggedSparseMatrix.constructMatrix(val);
         instance.putCell(1, 2, val);
         instance.putCell(0, 4, 6);
         instance.putCell(3, 8, 9);
@@ -155,9 +167,11 @@ public class TaggedSparseMatrixNGTest {
     @Test
     public void testRemoveColumn() {
         System.out.println("removeColumn");
+        
         final int key = 0;
-        final Number val = 4;
-        final TaggedSparseMatrix instance = TaggedSparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final TaggedSparseMatrix<Integer> instance = (TaggedSparseMatrix<Integer>) TaggedSparseMatrix.constructMatrix(val);
         instance.putCell(1, 2, val);
         instance.putCell(0, 4, 6);
         instance.putCell(3, 8, 9);
@@ -175,10 +189,12 @@ public class TaggedSparseMatrixNGTest {
     @Test
     public void testClearCell() {
         System.out.println("clearCell");
+        
         final int i = 0;
         final int j = 0;
-        final Number val = 4;
-        final TaggedSparseMatrix instance = TaggedSparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final TaggedSparseMatrix<Integer> instance = (TaggedSparseMatrix<Integer>) TaggedSparseMatrix.constructMatrix(val);
         instance.putCell(1, 2, val);
         instance.putCell(0, 4, 6);
         instance.putCell(3, 8, 9);

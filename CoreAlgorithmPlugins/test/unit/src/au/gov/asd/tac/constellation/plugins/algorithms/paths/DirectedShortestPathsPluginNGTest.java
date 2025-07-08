@@ -124,6 +124,7 @@ public class DirectedShortestPathsPluginNGTest {
         final DirectedShortestPathsPlugin instance = new DirectedShortestPathsPlugin();
         
         final PluginParameters params = instance.createParameters();
+        @SuppressWarnings("unchecked") // SOURCE_NODE_PARAMETER will always be a SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> sourceNode = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(SOURCE_NODE_PARAMETER_ID);
         
         assertTrue(SingleChoiceParameterType.getOptions(sourceNode).isEmpty());
@@ -142,7 +143,8 @@ public class DirectedShortestPathsPluginNGTest {
         final DirectedShortestPathsPlugin instance = new DirectedShortestPathsPlugin();
         
         final PluginParameters params = instance.createParameters();
-        final PluginParameter<SingleChoiceParameterValue> sourceNode = (PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue>) params.getParameters().get(SOURCE_NODE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // SOURCE_NODE_PARAMETER will always be a SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> sourceNode = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(SOURCE_NODE_PARAMETER_ID);
         
         assertTrue(SingleChoiceParameterType.getOptions(sourceNode).isEmpty());
         

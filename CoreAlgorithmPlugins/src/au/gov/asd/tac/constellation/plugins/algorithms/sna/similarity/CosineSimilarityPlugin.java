@@ -214,7 +214,7 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
         }
 
         private float calculateMagnitude() {
-            float mag = 0;
+            double mag = 0;
             for (final int neighbourWeight : neighbourWeightsMap.values()) {
                 mag += Math.pow(neighbourWeight, 2);
             }

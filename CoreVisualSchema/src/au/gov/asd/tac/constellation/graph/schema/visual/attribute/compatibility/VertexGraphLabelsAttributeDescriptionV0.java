@@ -47,7 +47,6 @@ public final class VertexGraphLabelsAttributeDescriptionV0 extends AbstractObjec
      * @return A GraphLabels.
      */
     @Override
-    @SuppressWarnings("unchecked") // Casts are manually checked
     protected ElementGraphLabelsV0 convertFromObject(final Object object) {
         if (object == null) {
             return DEFAULT_VALUE;

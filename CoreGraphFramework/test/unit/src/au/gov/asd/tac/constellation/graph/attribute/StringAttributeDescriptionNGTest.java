@@ -79,9 +79,8 @@ public class StringAttributeDescriptionNGTest {
     public void testGetNativeClass() {
         System.out.println("getNativeClass");
         
-        Class expResult = String.class;
-        Class result = instance.getNativeClass();
-        assertEquals(result, expResult);
+        Class<?> result = instance.getNativeClass();
+        assertEquals(result, String.class);
     }
 
     /**

@@ -76,6 +76,7 @@ public class Access {
 
     public final <D> AccessRegistry<D> getRegistry(final Class<D> destinationClass) {
         synchronized (registries) {
+            @SuppressWarnings("unchecked") // registry will match type of destination class
             AccessRegistry<D> registry = (AccessRegistry<D>) registries.get(destinationClass);
             if (registry == null) {
                 registry = new AccessRegistry<>(destinationClass);
