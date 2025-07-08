@@ -50,6 +50,7 @@
                 <package>com.fasterxml.jackson.core.exc</package>
                 <package>com.fasterxml.jackson.core.filter</package>
                 <package>com.fasterxml.jackson.core.format</package>
+                <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_19_1</package>
                 <package>com.fasterxml.jackson.core.io</package>
                 <package>com.fasterxml.jackson.core.io.doubleparser</package>
                 <package>com.fasterxml.jackson.core.io.schubfach</package>
@@ -3207,16 +3208,16 @@
                 <binary-origin>release/modules/ext/j2objc-annotations-2.8.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-annotations-2.16.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-annotations-2.16.1.jar</binary-origin>
+                <runtime-relative-path>ext/jackson-annotations-2.19.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-annotations-2.19.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-core-2.16.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-core-2.16.1.jar</binary-origin>
+                <runtime-relative-path>ext/jackson-core-2.19.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-core-2.19.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-databind-2.16.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-databind-2.16.1.jar</binary-origin>
+                <runtime-relative-path>ext/jackson-databind-2.19.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-databind-2.19.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jai_imageio-1.1.jar</runtime-relative-path>
