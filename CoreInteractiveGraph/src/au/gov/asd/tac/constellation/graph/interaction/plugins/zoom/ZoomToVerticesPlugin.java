@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
@@ -63,33 +64,13 @@ public final class ZoomToVerticesPlugin extends SimpleEditPlugin {
         verticesParameter.setDescription("An array or list of vertex ids to zoom onto");
         parameters.addParameter(verticesParameter);
 
-        final PluginParameter<IntegerParameterType.IntegerParameterValue> vxParameter = IntegerParameterType.build(VERTEX_PARAMETER_ID);
+        final PluginParameter<IntegerParameterValue> vxParameter = IntegerParameterType.build(VERTEX_PARAMETER_ID);
         vxParameter.setName("Vertex Id");
         vxParameter.setDescription("A vertex id to zoom to");
         vxParameter.setObjectValue(Graph.NOT_FOUND);
         parameters.addParameter(vxParameter);
 
         return parameters;
-    }
-
-    private static int[] verticesParam(final PluginParameters parameters) {
-        final int vxId = parameters.getIntegerValue(VERTEX_PARAMETER_ID);
-        if (vxId != Graph.NOT_FOUND) {
-            return new int[]{vxId};
-        } else {
-            // The vertices parameter was originally int[], but we want to allow List<Integer>, so handle both.
-            final Object vParam = parameters.getObjectValue(VERTICES_PARAMETER_ID);
-            final int[] vertices;
-            if (vParam.getClass() == int[].class) {
-                vertices = (int[]) vParam;
-            } else {
-                @SuppressWarnings("unchecked") //vParam will be list of integers which extends from object type
-                final List<Integer> vertexList = (List<Integer>) vParam;
-                vertices = vertexList.stream().mapToInt(i -> i).toArray();
-            }
-
-            return vertices;
-        }
     }
 
     @Override
@@ -108,5 +89,25 @@ public final class ZoomToVerticesPlugin extends SimpleEditPlugin {
             // Skip the animation, just set the new camera position
             VisualGraphUtilities.setCamera(graph, camera);
         }                
+    }
+    
+    private static int[] verticesParam(final PluginParameters parameters) {
+        final int vxId = parameters.getIntegerValue(VERTEX_PARAMETER_ID);
+        if (vxId != Graph.NOT_FOUND) {
+            return new int[]{vxId};
+        } else {
+            // The vertices parameter was originally int[], but we want to allow List<Integer>, so handle both.
+            final Object vParam = parameters.getObjectValue(VERTICES_PARAMETER_ID);
+            final int[] vertices;
+            if (vParam.getClass() == int[].class) {
+                vertices = (int[]) vParam;
+            } else {
+                @SuppressWarnings("unchecked") //vParam will be list of integers which extends from object type
+                final List<Integer> vertexList = (List<Integer>) vParam;
+                vertices = vertexList.stream().mapToInt(i -> i).toArray();
+            }
+
+            return vertices;
+        }
     }
 }
