@@ -54,7 +54,6 @@ public class NodeQuickSearchProvider implements SearchProvider {
      * @param request The content being entered into the QuickSearch box.
      * @param response The content to be returned to the QuickSearch box.
      */
-    @SuppressWarnings("unchecked")
     @Override
     public void evaluate(final SearchRequest request, final SearchResponse response) {
         final Graph graph = graphRetriever.getGraph();
@@ -143,7 +142,6 @@ public class NodeQuickSearchProvider implements SearchProvider {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public void run() {
             final List<FindResult> results = new ArrayList<>();
             results.add(result);

@@ -943,8 +943,8 @@ public class PathScoringUtilities {
                                 intersection.set(index, false);
                             }
                         }
-                        scores[vertexPosition] += (1.0 / (intersection.cardinality() + 1));
-                        scores[newVertexPosition] += (1.0 / (intersection.cardinality() + 1));
+                        scores[vertexPosition] += (float) (1.0 / (intersection.cardinality() + 1));
+                        scores[newVertexPosition] += (float) (1.0 / (intersection.cardinality() + 1));
                     }
                 }
             }
@@ -973,7 +973,7 @@ public class PathScoringUtilities {
                                 intersection.set(index, false);
                             }
                         }
-                        scores[vertexPosition] += (1.0 / (intersection.cardinality() + 1));
+                        scores[vertexPosition] += (float) (1.0 / (intersection.cardinality() + 1));
                     }
                 }
             }

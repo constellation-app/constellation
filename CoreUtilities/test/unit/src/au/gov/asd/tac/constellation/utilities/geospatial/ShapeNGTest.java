@@ -391,13 +391,13 @@ public class ShapeNGTest {
         final List<String> c = new ArrayList<>();
 
         String first = null;
-        for (Tuple t : coords) {
+        for (final Tuple<Double, Double> t : coords) {
             // convert each coord to [123,456]
             final StringBuilder s = new StringBuilder();
             s.append("[");
             s.append(String.join(",",
-                    String.valueOf((Double) t.getFirst()),
-                    String.valueOf((Double) t.getSecond())));
+                    String.valueOf(t.getFirst()),
+                    String.valueOf(t.getSecond())));
             s.append("]");
             c.add(s.toString());
             // some shapes put the first coord in twice, beginning and end
@@ -852,7 +852,7 @@ public class ShapeNGTest {
         // convert GeoJson string to a list of Features
         final FeatureJSON featureJson = new FeatureJSON(new GeometryJSON());
         featureJson.setFeatureType(featureJson.readFeatureCollectionSchema(s, false));
-        final FeatureCollection featureCollection;
+        final FeatureCollection<?, ?> featureCollection;
         try (final Reader stringReader = new StringReader(s)) {
             featureCollection = featureJson.readFeatureCollection(stringReader);
         }
@@ -915,18 +915,18 @@ public class ShapeNGTest {
             Shape.generateShapeCollection("dummy", shapes, Collections.emptyMap());
 
             // check that the Feature write was only called once
-            final ArgumentCaptor<FeatureCollection> fcCaptor
+            final ArgumentCaptor<FeatureCollection<?, ?>> fcCaptor
                     = ArgumentCaptor.forClass(FeatureCollection.class);
             verify(mockFeatureJson.constructed().get(0), times(1))
                     .writeFeatureCollection(fcCaptor.capture(), any());
 
             // check that the FeatureCollection to be output has only one Feature
-            final FeatureCollection fc = fcCaptor.getValue();
+            final FeatureCollection<?, ?> fc = fcCaptor.getValue();
             assertEquals(fc.size(), 1);
 
             // check that the written Feature is as expected
             try (final SimpleFeatureIterator it = (SimpleFeatureIterator) fc.features()) {
-                final SimpleFeature feature = (SimpleFeature) it.next();
+                final SimpleFeature feature = it.next();
                 final String featureName = (String) feature.getAttribute(NAME);
                 assertTrue(featureName.equals(POINT_ID) || featureName.equals(LINE_ID));
             }
@@ -1172,7 +1172,7 @@ public class ShapeNGTest {
                 ArgumentCaptor<List<SimpleFeature>> captor
                         = ArgumentCaptor.forClass(List.class);
                 verify(mockFeatures.constructed().get(0)).addAll((Collection<SimpleFeature>) captor.capture());
-                final List<SimpleFeature> features = (List) captor.getValue();
+                final List<SimpleFeature> features = captor.getValue();
                 assertEquals(features.size(), 1);
                 final String featureName = (String) features.get(0).getAttribute(NAME);
                 assertTrue(featureName.equals(POINT_ID) || featureName.equals(LINE_ID));

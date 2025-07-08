@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import static au.gov.asd.tac.constellation.graph.visual.plugins.select.ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -106,7 +107,8 @@ public class ChangeSelectionPluginNGTest {
         final BitSet elementIds = new BitSet();
         elementIds.set(tId2);
         parameters.setObjectValue(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIds);
-        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // ELEMENT_TYPE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ELEMENT_TYPE_PARAMETER_ID);
         SingleChoiceParameterType.setChoiceData(elementTypeParam, new ElementTypeParameterValue(GraphElementType.TRANSACTION));
         parameters.setObjectValue(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.ADD);
         
@@ -142,7 +144,8 @@ public class ChangeSelectionPluginNGTest {
         final BitSet elementIds = new BitSet();
         elementIds.set(vxId2);
         parameters.setObjectValue(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIds);
-        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // ELEMENT_TYPE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ELEMENT_TYPE_PARAMETER_ID);
         SingleChoiceParameterType.setChoiceData(elementTypeParam, new ElementTypeParameterValue(GraphElementType.VERTEX));
         parameters.setObjectValue(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.ADD);
         
@@ -178,7 +181,8 @@ public class ChangeSelectionPluginNGTest {
         final BitSet elementIds = new BitSet();
         elementIds.set(tId3);
         parameters.setObjectValue(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIds);
-        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // ELEMENT_TYPE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ELEMENT_TYPE_PARAMETER_ID);
         SingleChoiceParameterType.setChoiceData(elementTypeParam, new ElementTypeParameterValue(GraphElementType.TRANSACTION));
         parameters.setObjectValue(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.REMOVE);
         
@@ -214,7 +218,8 @@ public class ChangeSelectionPluginNGTest {
         final BitSet elementIds = new BitSet();
         elementIds.set(vxId3);
         parameters.setObjectValue(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIds);
-        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // ELEMENT_TYPE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ELEMENT_TYPE_PARAMETER_ID);
         SingleChoiceParameterType.setChoiceData(elementTypeParam, new ElementTypeParameterValue(GraphElementType.VERTEX));
         parameters.setObjectValue(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.REMOVE);
         
@@ -250,7 +255,8 @@ public class ChangeSelectionPluginNGTest {
         final BitSet elementIds = new BitSet();
         elementIds.set(tId2);
         parameters.setObjectValue(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIds);
-        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // ELEMENT_TYPE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ELEMENT_TYPE_PARAMETER_ID);
         SingleChoiceParameterType.setChoiceData(elementTypeParam, new ElementTypeParameterValue(GraphElementType.TRANSACTION));
         parameters.setObjectValue(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.REPLACE);
         
@@ -287,7 +293,8 @@ public class ChangeSelectionPluginNGTest {
         elementIds.set(vxId1);
         elementIds.set(vxId2);
         parameters.setObjectValue(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIds);
-        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // ELEMENT_TYPE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ELEMENT_TYPE_PARAMETER_ID);
         SingleChoiceParameterType.setChoiceData(elementTypeParam, new ElementTypeParameterValue(GraphElementType.VERTEX));
         parameters.setObjectValue(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.REPLACE);
         
@@ -324,7 +331,8 @@ public class ChangeSelectionPluginNGTest {
         elementIds.set(tId1);
         elementIds.set(tId3);
         parameters.setObjectValue(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIds);
-        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // ELEMENT_TYPE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ELEMENT_TYPE_PARAMETER_ID);
         SingleChoiceParameterType.setChoiceData(elementTypeParam, new ElementTypeParameterValue(GraphElementType.TRANSACTION));
         parameters.setObjectValue(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.INVERT);
         
@@ -361,7 +369,8 @@ public class ChangeSelectionPluginNGTest {
         elementIds.set(vxId1);
         elementIds.set(vxId2);
         parameters.setObjectValue(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIds);
-        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // ELEMENT_TYPE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> elementTypeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ELEMENT_TYPE_PARAMETER_ID);
         SingleChoiceParameterType.setChoiceData(elementTypeParam, new ElementTypeParameterValue(GraphElementType.VERTEX));
         parameters.setObjectValue(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.INVERT);
         

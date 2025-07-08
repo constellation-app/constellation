@@ -61,7 +61,7 @@ public class ConstellationTextAreaNGTest {
     @Test
     public void testConstellationTextArea_setPromptText() {
 
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput());
+        final MultiChoiceInput<?> multiChoiceInput = spy(new MultiChoiceInput());
         final ConstellationTextArea cTextArea = spy(new ConstellationTextArea(
                 multiChoiceInput, ConstellationInputConstants.TextType.MULTILINE));
 
@@ -76,7 +76,7 @@ public class ConstellationTextAreaNGTest {
     @Test
     public void testConstellationTextArea_setText() {
 
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput());
+        final MultiChoiceInput<?> multiChoiceInput = spy(new MultiChoiceInput());
         final ConstellationTextArea cTextArea = spy(new ConstellationTextArea(
                 multiChoiceInput, ConstellationInputConstants.TextType.MULTILINE));
 
@@ -94,7 +94,7 @@ public class ConstellationTextAreaNGTest {
     @Test
     public void testConstellationTextArea_setEditable() {
 
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput());
+        final MultiChoiceInput<?> multiChoiceInput = spy(new MultiChoiceInput());
         final ConstellationTextArea cTextArea = spy(new ConstellationTextArea(
                 multiChoiceInput, ConstellationInputConstants.TextType.MULTILINE));
 
@@ -125,7 +125,7 @@ public class ConstellationTextAreaNGTest {
     @Test
     public void testConstellationTextArea_setPreferredRowCounter() {
 
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput());
+        final MultiChoiceInput<?> multiChoiceInput = spy(new MultiChoiceInput());
         final ConstellationTextArea cTextArea = spy(new ConstellationTextArea(
                 multiChoiceInput, ConstellationInputConstants.TextType.MULTILINE));
 
@@ -138,7 +138,7 @@ public class ConstellationTextAreaNGTest {
     @Test
     public void testConstellationTextArea_hideReveal() {
 
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput());
+        final MultiChoiceInput<?> multiChoiceInput = spy(new MultiChoiceInput());
         final ConstellationTextArea cTextArea = spy(new ConstellationTextArea(
                 multiChoiceInput, ConstellationInputConstants.TextType.SECRET));
 
@@ -166,7 +166,7 @@ public class ConstellationTextAreaNGTest {
     @Test
     public void testConstellationTextArea_secretType() {
 
-        final MultiChoiceInput multiChoiceInput = spy(new MultiChoiceInput());
+        final MultiChoiceInput<?> multiChoiceInput = spy(new MultiChoiceInput());
         final ConstellationTextArea cTextArea = spy(new ConstellationTextArea(
                 multiChoiceInput, ConstellationInputConstants.TextType.SECRET));
 

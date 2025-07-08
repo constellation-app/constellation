@@ -58,7 +58,6 @@ public final class ColorAttributeDescription extends AbstractObjectAttributeDesc
     }
 
     @Override
-    @SuppressWarnings("unchecked") //Casts are checked manually
     public ConstellationColor convertFromObject(final Object object) {
         try {
             return super.convertFromObject(object);

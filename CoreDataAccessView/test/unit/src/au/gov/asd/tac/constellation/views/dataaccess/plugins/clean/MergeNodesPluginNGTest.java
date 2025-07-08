@@ -55,11 +55,11 @@ public class MergeNodesPluginNGTest {
     private PluginInteraction interaction;
     private PluginParameters parameters;
         
-    private PluginParameter mergeTypeParameter;
-    private PluginParameter thresholdParameter;
-    private PluginParameter mergerParameter;
-    private PluginParameter leadParameter;
-    private PluginParameter selectedParameter;
+    private PluginParameter<SingleChoiceParameterValue> mergeTypeParameter;
+    private PluginParameter<IntegerParameterValue> thresholdParameter;
+    private PluginParameter<SingleChoiceParameterValue> mergerParameter;
+    private PluginParameter<SingleChoiceParameterValue> leadParameter;
+    private PluginParameter<BooleanParameterValue> selectedParameter;
     
     private Map<String, PluginParameter<?>> pluginParameters;
 
@@ -129,6 +129,7 @@ public class MergeNodesPluginNGTest {
                 "MergeNodesPlugin.lead",
                 "MergeNodesPlugin.selected"));
 
+        @SuppressWarnings("unchecked") // merge type will always be of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> actualMergeTypeParameter
                 = (PluginParameter<SingleChoiceParameterValue>) actualParameters.get("MergeNodesPlugin.merge_type");
 
@@ -142,6 +143,7 @@ public class MergeNodesPluginNGTest {
                 "Supported Type"));
         assertEquals(actualMergeTypeParameter.getProperty("choices").getClass(), Object.class);
 
+        @SuppressWarnings("unchecked") // threshold will always be of type IntegerParameter
         final PluginParameter<IntegerParameterValue> actualThresholdParameter
                 = (PluginParameter<IntegerParameterValue>) actualParameters.get("MergeNodesPlugin.threshold");
 
@@ -149,6 +151,7 @@ public class MergeNodesPluginNGTest {
         assertEquals(actualThresholdParameter.getDescription(), "The maximum nodes to merge");
         assertFalse(actualThresholdParameter.isEnabled());
 
+        @SuppressWarnings("unchecked") // merger will always be of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> mergingRuleParameter
                 = (PluginParameter<SingleChoiceParameterValue>) actualParameters.get("MergeNodesPlugin.merger");
 
@@ -164,6 +167,7 @@ public class MergeNodesPluginNGTest {
         assertEquals(mergingRuleParameter.getParameterValue().getChoice(), "Retain lead vertex attributes if present");
         assertFalse(mergingRuleParameter.isEnabled());
 
+        @SuppressWarnings("unchecked") // lead will always be of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> leadNodeParameter
                 = (PluginParameter<SingleChoiceParameterValue>) actualParameters.get("MergeNodesPlugin.lead");
 
@@ -178,6 +182,7 @@ public class MergeNodesPluginNGTest {
         assertEquals(leadNodeParameter.getParameterValue().getChoice(), "Longest Value");
         assertFalse(leadNodeParameter.isEnabled());
 
+        @SuppressWarnings("unchecked") // selected will always be of type BooleanParameter
         final PluginParameter<BooleanParameterValue> selectedOnlyParameter
                 = (PluginParameter<BooleanParameterValue>) actualParameters.get("MergeNodesPlugin.selected");
 

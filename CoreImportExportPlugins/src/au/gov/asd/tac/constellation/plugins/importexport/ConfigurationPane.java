@@ -53,12 +53,12 @@ public class ConfigurationPane extends AnchorPane {
 
     private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
 
-    protected final ImportController importController;
+    protected final ImportController<?> importController;
     protected final TabPane tabPane;
     private final String helpText;
 
 
-    public ConfigurationPane(final ImportController importController, final String helpText) {
+    public ConfigurationPane(final ImportController<?> importController, final String helpText) {
         this.importController = importController;
         this.helpText = helpText;
 

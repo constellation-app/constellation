@@ -99,7 +99,7 @@ public class DelimitedImportControllerNGTest {
         System.out.println("getColumnHeaders");
         final File file = new File(this.getClass().getResource("./resources/testCSV.csv").getFile());
         final List<String> expResult = Arrays.asList("Source$name", "Source@Type", "ab cd", "Transaction.Time", "name");
-        final List result = delimitedImportController.getColumnHeaders(file);
+        final List<String> result = delimitedImportController.getColumnHeaders(file);
         assertEquals(result, expResult);
     }
 

@@ -170,7 +170,7 @@ public class AnalyticConfigurationPane extends VBox {
         // set up the list of analytic questions
         this.questionToPluginsMap = new HashMap<>();
         AnalyticUtilities.getAnalyticQuestionDescriptions().forEach(question -> {
-            final List<Class> questionPluginClasses = question.getPluginClasses();
+            final List<Class<? extends AnalyticPlugin>> questionPluginClasses = question.getPluginClasses();
             SELECTABLE_PLUGINS.forEach(selectablePlugin -> {
                 if (questionPluginClasses.contains(selectablePlugin.plugin.getClass())) {
                     final List<SelectableAnalyticPlugin> questionPlugins;
@@ -468,11 +468,10 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     private void updateGlobalParameters() {
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked") // AGGREGATOR_PARAMETER_ID is always a SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> aggregatorParameter = (PluginParameter<SingleChoiceParameterValue>) globalAnalyticParameters.getParameters().get(AGGREGATOR_PARAMETER_ID);
         final List<AnalyticAggregatorParameterValue> aggregators = new ArrayList<>();
         if (categoryListPane.isExpanded()) {
-            @SuppressWarnings("unchecked") //return type of getResultType is actually Class<? extends AnalyticResult<?>>
             final Class<? extends AnalyticResult<?>> pluginResultType = pluginList.getItems().get(0).getPlugin().getResultType();
 
             AnalyticUtilities.lookupAnalyticAggregators(pluginResultType).forEach(aggregator -> aggregators.add(new AnalyticAggregatorParameterValue(aggregator)));
@@ -635,7 +634,7 @@ public class AnalyticConfigurationPane extends VBox {
 
             // update the questions pane
             if (!activeAnalyticQuestions.isEmpty() && !categoriesVisible) {
-                for (final AnalyticQuestionDescription question : activeAnalyticQuestions) {
+                for (final AnalyticQuestionDescription<?> question : activeAnalyticQuestions) {
                     if (question != null && questionList.getItems().contains(question)) {
                         final int index = questionList.getItems().indexOf(question);
                         questionList.getSelectionModel().select(index);

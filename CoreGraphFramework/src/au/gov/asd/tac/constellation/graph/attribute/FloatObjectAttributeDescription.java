@@ -35,7 +35,6 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
     }
 
     @Override
-    @SuppressWarnings("unchecked") // Casts are manually checked
     protected Float convertFromObject(final Object object) {
         try {
             return super.convertFromObject(object);

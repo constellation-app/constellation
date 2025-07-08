@@ -51,8 +51,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     private String[] data = new String[0];
     private String defaultValue = DEFAULT_VALUE;
-
-    @SuppressWarnings("unchecked") // Casts are manually checked
+    
     private String convertFromObject(final Object object) throws IllegalArgumentException {
         switch (object) {
             case Number number -> {

@@ -98,7 +98,7 @@ public class ConstellationErrorManagerNGTest {
     private void delay(final long milliseconds){
         // may need to wait for the error handler to do it's thing
         final Executor delayed = CompletableFuture.delayedExecutor(milliseconds, TimeUnit.MILLISECONDS);
-        final CompletableFuture cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
+        final CompletableFuture<Void> cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
             .thenAccept(LOGGER::info);
         try {
             cf.get();

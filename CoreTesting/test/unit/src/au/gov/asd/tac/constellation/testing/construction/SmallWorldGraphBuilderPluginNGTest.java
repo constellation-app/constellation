@@ -100,7 +100,9 @@ public class SmallWorldGraphBuilderPluginNGTest {
         final SmallWorldGraphBuilderPlugin instance = new SmallWorldGraphBuilderPlugin();
         
         final PluginParameters params = instance.createParameters();
+        @SuppressWarnings("unchecked") // NODE_TYPES_PARAMETER will always be of type MultiChoiceParameter
         final PluginParameter<MultiChoiceParameterValue> nAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(NODE_TYPES_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // TRANSACTION_TYPES_PARAMETER will always be of type MultiChoiceParameter
         final PluginParameter<MultiChoiceParameterValue> tAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
         
         assertTrue(MultiChoiceParameterType.getOptions(nAttribute).isEmpty());
@@ -122,7 +124,9 @@ public class SmallWorldGraphBuilderPluginNGTest {
         final SmallWorldGraphBuilderPlugin instance = new SmallWorldGraphBuilderPlugin();
         
         final PluginParameters params = instance.createParameters();
+        @SuppressWarnings("unchecked") // NODE_TYPES_PARAMETER will always be of type MultiChoiceParameter
         final PluginParameter<MultiChoiceParameterValue> nAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(NODE_TYPES_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // TRANSACTION_TYPES_PARAMETER will always be of type MultiChoiceParameter
         final PluginParameter<MultiChoiceParameterValue> tAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
         
         assertTrue(MultiChoiceParameterType.getOptions(nAttribute).isEmpty());
