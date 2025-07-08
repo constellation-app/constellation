@@ -151,9 +151,7 @@ public class SystemUtilities {
                 for (final ShortcutAction sa : entry.getValue()) {
                     final Set<String> ks = curKeymap.get(sa);
                     if (Objects.nonNull(ks)) {                        
-                        ks.forEach(s -> {
-                            shortcuts.put(KeyStrokeUtils.getKeyStrokesAsText(Utilities.stringToKeys(s), " "), sa.getDisplayName());
-                        });
+                        ks.forEach(s -> shortcuts.put(KeyStrokeUtils.getKeyStrokesAsText(Utilities.stringToKeys(s), " "), sa.getDisplayName()));
                     }
                 }
             }

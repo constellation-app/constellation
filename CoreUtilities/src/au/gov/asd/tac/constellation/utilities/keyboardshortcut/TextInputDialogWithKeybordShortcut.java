@@ -213,7 +213,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         
         ((Button) dialogPane.lookupButton(ButtonType.CANCEL)).setOnAction(e -> {
             if (stage != null) {
-               stage.close();
+                stage.close();
             }
         });
         
