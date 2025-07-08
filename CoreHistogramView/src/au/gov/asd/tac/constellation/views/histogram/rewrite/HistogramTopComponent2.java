@@ -63,6 +63,7 @@ import org.openide.windows.TopComponent;
  *
  * @author sirius, Quasar985
  */
+// TODO: uncomment when histogram rewrite fully replaces old histogram
 //@ConvertAsProperties(
 //        dtd = "-//au.gov.asd.tac.constellation.views.histogram//Histogram//EN",
 //        autostore = false
@@ -82,6 +83,7 @@ import org.openide.windows.TopComponent;
 )
 @ActionReferences({
     @ActionReference(path = "Menu/Views", position = 501),
+// TODO: uncomment when histogram rewrite fully replaces old histogram
 //    @ActionReference(path = "Shortcuts", name = "CS-H"),
     @ActionReference(path = "Toolbars/Views", position = 0)
 })
@@ -161,7 +163,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
     @Override
     protected String createStyle() {
-        //return "resources/histogram-view.css"; // Uncomment when histogram rewrite fully replaces old histogram
+        //return "resources/histogram-view.css"; // TODO: Uncomment when histogram rewrite fully replaces old histogram
         return "histogram-view.css";// Remove this when histogram rewrite fully replaces old histogram
     }
 
@@ -439,6 +441,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
     public void setAttributeType(final AttributeType attributeType) {
         // For now, comment out some of the code below, as histogram state is kind of globally shared with old histopgram top compenent and doesnt update correctly here
+        // TODO: uncomment below code when histogram rewrite fully replaces original histogram
         if (currentGraph != null) {// && (currentHistogramState == null || attributeType != currentHistogramState.getAttributeType())) {
             HistogramState newHistogramState = new HistogramState(currentHistogramState);
             newHistogramState.setAttributeType(attributeType);
