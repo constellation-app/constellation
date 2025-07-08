@@ -72,8 +72,8 @@ public class DataAccessViewCategoryPanelControllerNGTest {
 
         final DataAccessViewCategoryPanel dataAccessViewCategoryPanelSpy = spy(dataAccessViewCategoryPanel);
 
-        final DefaultListModel listModelV = new DefaultListModel();
-        final DefaultListModel listModelH = new DefaultListModel();
+        final DefaultListModel<String> listModelV = new DefaultListModel<>();
+        final DefaultListModel<String> listModelH = new DefaultListModel<>();
 
         final JList<String> list1 = new JList<>();
         listModelV.addElement("Import");
@@ -119,7 +119,7 @@ public class DataAccessViewCategoryPanelControllerNGTest {
         /* Test visible types*/
         final JList<String> list1 = new JList<>();
         
-        final DefaultListModel listModel1 = new DefaultListModel();
+        final DefaultListModel<String> listModel1 = new DefaultListModel<>();
         listModel1.addElement("Import");
         listModel1.addElement("Utility");
 
@@ -135,7 +135,7 @@ public class DataAccessViewCategoryPanelControllerNGTest {
 
         /* Test hidden types*/
         final JList<String> list2 = new JList<>();
-        final DefaultListModel listModel2 = new DefaultListModel();
+        final DefaultListModel<String> listModel2 = new DefaultListModel<>();
         listModel2.addElement("Clean");
         listModel2.addElement("Developer");
 

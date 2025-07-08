@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestio
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.GraphVisualisationTranslator;
 import au.gov.asd.tac.constellation.views.analyticview.translators.InternalVisualisationTranslator;
+import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
+import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,10 +37,10 @@ import org.openide.util.Lookup;
  */
 public class AnalyticUtilities {
 
-    private static final Map<String, AnalyticQuestionDescription> ANALYTIC_QUESTION_DESCRIPTIONS = new HashMap<>();
+    private static final Map<String, AnalyticQuestionDescription<?>> ANALYTIC_QUESTION_DESCRIPTIONS = new HashMap<>();
     private static final Map<String, AnalyticAggregator<?>> ANALYTIC_AGGREGATORS = new HashMap<>();
-    private static final Map<String, InternalVisualisationTranslator> INTERNAL_VISUALISATION_TRANSLATORS = new HashMap<>();
-    private static final Map<String, GraphVisualisationTranslator> GRAPH_VISUALISATION_TRANSLATORS = new HashMap<>();
+    private static final Map<String, InternalVisualisationTranslator<? extends AnalyticResult<?>, ? extends InternalVisualisation>> INTERNAL_VISUALISATION_TRANSLATORS = new HashMap<>();
+    private static final Map<String, GraphVisualisationTranslator<? extends AnalyticResult<?>, ? extends GraphVisualisation>> GRAPH_VISUALISATION_TRANSLATORS = new HashMap<>();
     private static final String SEP = File.separator;
 
     static {

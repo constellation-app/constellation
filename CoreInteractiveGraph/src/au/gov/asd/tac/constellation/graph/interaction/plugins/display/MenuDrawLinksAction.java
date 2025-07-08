@@ -27,7 +27,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * This class produces a menu action for the 'record video' action available on
+ * This class produces a menu action for the 'set draw links' action available on
  * the graph toolbar.
  *
  * @author altair
@@ -35,14 +35,9 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.display.MenuDrawLinksAction")
 @ActionRegistration(displayName = "#CTL_MenuDrawLinksAction", lazy = false)
 @ActionReference(path = "Menu/Display/Connection Types", position = 300)
-@Messages({
-    "CTL_MenuDrawLinksAction=Links"
-})
+@Messages("CTL_MenuDrawLinksAction=Links")
 public class MenuDrawLinksAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuDrawLinksAction() {
         super();
         this.initRadioButton(Bundle.CTL_MenuDrawLinksAction(), "ConnectionMode", false);
@@ -58,7 +53,7 @@ public class MenuDrawLinksAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         final Graph graph = getContext().getGraph();
-        boolean flag = VisualGraphUtilities.getConnectionMode(graph) == ConnectionMode.LINK;
+        final boolean flag = VisualGraphUtilities.getConnectionMode(graph) == ConnectionMode.LINK;
         menuButton.setSelected(flag);
     }
 }

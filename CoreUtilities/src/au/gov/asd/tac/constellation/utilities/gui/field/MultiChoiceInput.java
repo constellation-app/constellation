@@ -276,7 +276,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
         //A local reference to the check boxes displayed in Multi Choice context menu's
         final List<CheckBox> boxes = new ArrayList<>();
 
-        public ChoiceInputDropDown(final MultiChoiceInput field) {
+        public ChoiceInputDropDown(final MultiChoiceInput<C> field) {
             super(field);
 
             if (getOptions() != null) {
@@ -295,15 +295,15 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
                     setMenuShown(false);
                 });
                 registerCustomMenuItem(clear);
-                final Object[] optionsList = getOptions().toArray();
-                if (optionsList.length > 0) {
+                final List<C> optionsList = getOptions();
+                if (!optionsList.isEmpty()) {
                     // add separator
                     getItems().add(new SeparatorMenuItem());
                 }
 
                 final List<C> choices = field.getChoices();
-                for (int i = 0; i < optionsList.length; i++) {
-                    final C choice = (C) optionsList[i];
+                for (int i = 0; i < optionsList.size(); i++) {
+                    final C choice = optionsList.get(i);
 
                     final CheckBox item = new CheckBox(choice.toString());
                     item.setOnAction(event -> {

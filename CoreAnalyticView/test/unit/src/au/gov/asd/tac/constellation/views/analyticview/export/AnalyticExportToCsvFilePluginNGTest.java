@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.analyticview.export;
 
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
+import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticExportUtilities;
 import java.io.File;
 import java.io.FileInputStream;
@@ -82,7 +82,8 @@ public class AnalyticExportToCsvFilePluginNGTest {
      */
     @Test
     public void testExecute() throws IOException, InterruptedException, PluginException {
-        final TableView<ScoreResult.ElementScore> table = mock(TableView.class);
+        @SuppressWarnings("unchecked") // this mock will be of type ElementScore for its use
+        final TableView<ElementScore> table = mock(TableView.class);
         final PluginInteraction pluginInteraction = mock(PluginInteraction.class);
 
         File tmpFile = null;

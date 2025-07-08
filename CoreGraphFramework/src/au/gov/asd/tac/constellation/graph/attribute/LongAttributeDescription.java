@@ -55,8 +55,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     private long[] data = new long[0];
     private long defaultValue = DEFAULT_VALUE;
-
-    @SuppressWarnings("unchecked") // Casts are manually checked
+    
     private long convertFromObject(final Object object) throws IllegalArgumentException {
         switch (object) {
             case Number number -> {

@@ -171,7 +171,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             Platform.runLater(() -> {
                 final Text t = (Text) field.lookup(".text");
                 if (t != null) {
-                    field.setPrefHeight(numberOfLines * t.getBoundsInLocal().getHeight() + field.EXTRA_HEIGHT);
+                    field.setPrefHeight(numberOfLines * t.getBoundsInLocal().getHeight() + SpellCheckingTextArea.EXTRA_HEIGHT);
                 }
             });
 

@@ -101,7 +101,7 @@ public class NewNotePane {
     private Window parent = null;
 
     public NewNotePane(final String userChosenColour) {
-        this.userChosenColour = userChosenColour;
+        NewNotePane.userChosenColour = userChosenColour;
 
         dialogPane = new BorderPane();
         dialogPane.setPrefHeight(HEIGHT);

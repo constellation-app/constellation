@@ -30,7 +30,7 @@ import javafx.scene.layout.Region;
  * @author capricornunicorn123
  * @author andromeda-224
  */
-public abstract class ConstellationInputButton extends ComboBox {
+public abstract class ConstellationInputButton extends ComboBox<String> {
 
     private final ButtonType btnType;
     private Region arrowBtn = null ;

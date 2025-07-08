@@ -145,8 +145,8 @@ public class ConversationNGTest {
             
             final GraphReadMethods graph = mock(GraphReadMethods.class);
             final Conversation instance = new Conversation();
-            final List expResult = new ArrayList();
-            final List result = instance.updateMessages(graph);
+            final List<ConversationMessage> expResult = new ArrayList<>();
+            final List<ConversationMessage> result = instance.updateMessages(graph);
             verify(controller, times(2)).getConversationBox();
             verify(box).setInProgress();
             assertEquals(result, expResult);

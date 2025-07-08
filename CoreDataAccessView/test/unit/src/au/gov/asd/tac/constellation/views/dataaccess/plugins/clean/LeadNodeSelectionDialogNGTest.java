@@ -43,8 +43,8 @@ public class LeadNodeSelectionDialogNGTest {
         // that the constructor sets leadVertexId to -1. At this point in the code
         // leadVertexId is actually 0.
         final List<ItemsRow<Integer>> selectedRows = List.of(
-                new ItemsRow(5, "label1", "description1"),
-                new ItemsRow(15, "label2", "description2")
+                new ItemsRow<>(5, "label1", "description1"),
+                new ItemsRow<>(15, "label2", "description2")
         );
 
         leadNodeSelectionDialog.selectRows(selectedRows);

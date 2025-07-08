@@ -140,7 +140,7 @@ public class MultiChoiceInputFieldNGTest {
         
         //Make sure the the a MenuButton is returned
         MenuButton expectedClass = new MenuButton();
-        Class menuButtonClass = menuButton.getClass();
+        Class<?> menuButtonClass = menuButton.getClass();
         Assert.assertTrue(menuButtonClass.isInstance(expectedClass));
         
         //Assert that the menu button only has two initial Options, Select all         

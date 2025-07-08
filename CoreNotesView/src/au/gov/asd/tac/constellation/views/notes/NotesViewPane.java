@@ -109,8 +109,8 @@ public class NotesViewPane extends BorderPane {
     private final Set<String> notesDateTimeCache;
     private final ObservableList<String> availableFilters;
     private final List<String> selectedFilters;
-    private final MultiChoiceInputField filterSelectionMultiChoiceInput;
-    private MultiChoiceInputField autoFilterCheckComboBox;
+    private final MultiChoiceInputField<String> filterSelectionMultiChoiceInput;
+    private MultiChoiceInputField<String> autoFilterCheckComboBox;
     private boolean isSelectedFiltersUpdating = false;
     private boolean isAutoSelectedFiltersUpdating = false;
 
@@ -173,12 +173,12 @@ public class NotesViewPane extends BorderPane {
         selectedFilters.add(USER_NOTES_FILTER); // Only user notes are selected by default.
 
         // CheckComboBox to select and deselect various filters for note rendering.
-        filterSelectionMultiChoiceInput = new MultiChoiceInputField(availableFilters);
+        filterSelectionMultiChoiceInput = new MultiChoiceInputField<>(availableFilters);
         filterSelectionMultiChoiceInput.setTitle("Select a filter...");
         filterSelectionMultiChoiceInput.setMinWidth(165);
 
         filterSelectionMultiChoiceInput.setStyle(FONT_SIZE);
-        filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
+        filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> event) -> {
             if (!isSelectedFiltersUpdating) {
                 setFilters(filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems());
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
@@ -207,9 +207,9 @@ public class NotesViewPane extends BorderPane {
         tagsFiltersList = FXCollections.observableArrayList(tagsUpdater);
 
         // CheckComboBox for the Auto Note filters.
-        autoFilterCheckComboBox = new MultiChoiceInputField(tagsFiltersList);
+        autoFilterCheckComboBox = new MultiChoiceInputField<>(tagsFiltersList);
         autoFilterCheckComboBox.setStyle(FONT_SIZE);
-        autoFilterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
+        autoFilterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> event) -> {
             if (!isAutoSelectedFiltersUpdating) {
                 updateSelectedTagsCombo(autoFilterCheckComboBox.getCheckModel().getCheckedItems());
 
@@ -303,7 +303,7 @@ public class NotesViewPane extends BorderPane {
                     warningAlert.setHeight(popUpHeight);
                     warningAlert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
                     
-                    final Optional o = warningAlert.showAndWait();
+                    final Optional<ButtonType> o = warningAlert.showAndWait();
                     newNotePane.setEditMode(false);
                     newNotePane.showPopUp();
 

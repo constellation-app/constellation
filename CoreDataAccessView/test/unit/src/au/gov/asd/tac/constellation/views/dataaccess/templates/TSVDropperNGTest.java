@@ -15,12 +15,14 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -68,9 +70,9 @@ public class TSVDropperNGTest {
         data.add(file);
         when(transferable.getTransferData(DataFlavor.javaFileListFlavor)).thenReturn(data);
 
-        final BiConsumer expResult = null;
+        final BiConsumer<Graph, DropInfo> expResult = null;
         final TSVDropper instance = new TSVDropper();
-        final BiConsumer result = instance.drop(dtde);
+        final BiConsumer<Graph, DropInfo> result = instance.drop(dtde);
 
         // TODO: would like to be able to test more than not null
         assertNotEquals(result, expResult);
@@ -97,9 +99,9 @@ public class TSVDropperNGTest {
         data.add(file);
         when(transferable.getTransferData(DataFlavor.javaFileListFlavor)).thenReturn(data);
 
-        final BiConsumer expResult = null;
+        final BiConsumer<Graph, DropInfo> expResult = null;
         final TSVDropper instance = new TSVDropper();
-        final BiConsumer result = instance.drop(dtde);
+        final BiConsumer<Graph, DropInfo> result = instance.drop(dtde);
 
         // TODO: would like to be able to test more than not null
         assertNotEquals(result, expResult);
@@ -121,9 +123,9 @@ public class TSVDropperNGTest {
         when(dtde.getTransferable()).thenReturn(transferable);
         when(transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)).thenReturn(false);
 
-        final BiConsumer expResult = null;
+        final BiConsumer<Graph, DropInfo> expResult = null;
         final TSVDropper instance = new TSVDropper();
-        final BiConsumer result = instance.drop(dtde);
+        final BiConsumer<Graph, DropInfo> result = instance.drop(dtde);
 
         assertEquals(result, expResult);
     }
