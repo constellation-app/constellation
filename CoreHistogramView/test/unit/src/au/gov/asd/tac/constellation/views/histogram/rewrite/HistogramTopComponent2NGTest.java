@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.histogram.AttributeType;
 import au.gov.asd.tac.constellation.views.histogram.BinComparator;
 import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
@@ -420,11 +421,15 @@ public class HistogramTopComponent2NGTest {
 
         final BinSelectionMode binSelectionMode = BinSelectionMode.ADD_TO_SELECTION;
 
+        final PluginExecution mockPE = mock(PluginExecution.class);
+
         try (final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
             when(mock.getAttributeType()).thenReturn(mockBinType);
             when(mock.getElementType()).thenReturn(mockElementType);
             when(mock.getBinComparator()).thenReturn(mockBinComparator);
         }); final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+
+            mockPluginExecution.when(() -> PluginExecution.withPlugin(any(SimpleEditPlugin.class))).thenReturn(mockPE);
 
             // Set up top component
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
@@ -453,11 +458,11 @@ public class HistogramTopComponent2NGTest {
         final int firstBin = 0;
         final int lastBin = 0;
 
-        final PluginExecution mockPE = mock(PluginExecution.class);
-
         // Set up top component
         final HistogramTopComponent2 instance = new HistogramTopComponent2();
         instance.newActiveGraph(mockGraph);
+
+        final PluginExecution mockPE = mock(PluginExecution.class);
 
         try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class)) {
             mockPluginExecution.when(() -> PluginExecution.withPlugin(any(Plugin.class))).thenReturn(mockPE);
@@ -478,7 +483,12 @@ public class HistogramTopComponent2NGTest {
         final HistogramTopComponent2 instance = new HistogramTopComponent2();
         instance.newActiveGraph(mockGraph);
 
+        final PluginExecution mockPE = mock(PluginExecution.class);
+        when(mockPE.withParameters(any(PluginParameters.class))).thenReturn(mockPE);
+
         try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            mockPluginExecution.when(() -> PluginExecution.withPlugin(any(SimpleEditPlugin.class))).thenReturn(mockPE);
+
             instance.filterOnSelection();
             mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
         }
@@ -495,7 +505,12 @@ public class HistogramTopComponent2NGTest {
         final HistogramTopComponent2 instance = new HistogramTopComponent2();
         instance.newActiveGraph(mockGraph);
 
+        final PluginExecution mockPE = mock(PluginExecution.class);
+        when(mockPE.withParameters(any(PluginParameters.class))).thenReturn(mockPE);
+
         try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            mockPluginExecution.when(() -> PluginExecution.withPlugin(any(SimpleEditPlugin.class))).thenReturn(mockPE);
+
             instance.clearFilter();
             mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
         }
@@ -515,7 +530,11 @@ public class HistogramTopComponent2NGTest {
         final HistogramTopComponent2 instance = new HistogramTopComponent2();
         instance.newActiveGraph(mockGraph);
 
+        final PluginExecution mockPE = mock(PluginExecution.class);
+
         try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            mockPluginExecution.when(() -> PluginExecution.withPlugin(any(SimpleEditPlugin.class))).thenReturn(mockPE);
+
             instance.selectBins(firstBin, lastBin, select);
             mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
         }
@@ -535,7 +554,11 @@ public class HistogramTopComponent2NGTest {
         final HistogramTopComponent2 instance = new HistogramTopComponent2();
         instance.newActiveGraph(mockGraph);
 
+        final PluginExecution mockPE = mock(PluginExecution.class);
+
         try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            mockPluginExecution.when(() -> PluginExecution.withPlugin(any(SimpleEditPlugin.class))).thenReturn(mockPE);
+
             instance.invertBins(firstBin, lastBin);
             mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
         }
@@ -555,7 +578,11 @@ public class HistogramTopComponent2NGTest {
         final HistogramTopComponent2 instance = new HistogramTopComponent2();
         instance.newActiveGraph(mockGraph);
 
+        final PluginExecution mockPE = mock(PluginExecution.class);
+
         try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            mockPluginExecution.when(() -> PluginExecution.withPlugin(any(SimpleEditPlugin.class))).thenReturn(mockPE);
+
             instance.completeBins(firstBin, lastBin);
             mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
         }
@@ -571,7 +598,11 @@ public class HistogramTopComponent2NGTest {
         final HistogramTopComponent2 instance = new HistogramTopComponent2();
         instance.newActiveGraph(mockGraph);
 
+        final PluginExecution mockPE = mock(PluginExecution.class);
+
         try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            mockPluginExecution.when(() -> PluginExecution.withPlugin(any(SimpleEditPlugin.class))).thenReturn(mockPE);
+
             instance.filterSelection();
             mockPluginExecution.verify(() -> PluginExecution.withPlugin(any(Plugin.class)));
         }
@@ -584,12 +615,16 @@ public class HistogramTopComponent2NGTest {
     public void testSaveBinsToGraph() {
         System.out.println("saveBinsToGraph");
 
+        final PluginExecution mockPE = mock(PluginExecution.class);
+
         try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS); final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
             when(mock.getAttributeType()).thenReturn(mockBinType);
             when(mock.getElementType()).thenReturn(mockElementType);
             when(mock.getBinComparator()).thenReturn(mockBinComparator);
             when(mock.getAttribute()).thenReturn("");
         })) {
+            mockPluginExecution.when(() -> PluginExecution.withPlugin(any(SimpleEditPlugin.class))).thenReturn(mockPE);
+
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
             instance.newActiveGraph(mockGraph);
 
@@ -607,12 +642,16 @@ public class HistogramTopComponent2NGTest {
     public void testSaveBinsToClipboard() {
         System.out.println("saveBinsToClipboard");
 
+        final PluginExecution mockPE = mock(PluginExecution.class);
+
         try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS); final MockedConstruction<HistogramState> mockConstructor = Mockito.mockConstruction(HistogramState.class, (mock, context) -> {
             when(mock.getAttributeType()).thenReturn(mockBinType);
             when(mock.getElementType()).thenReturn(mockElementType);
             when(mock.getBinComparator()).thenReturn(mockBinComparator);
             when(mock.getAttribute()).thenReturn("");
         })) {
+            mockPluginExecution.when(() -> PluginExecution.withPlugin(any(SimpleEditPlugin.class))).thenReturn(mockPE);
+
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
             instance.newActiveGraph(mockGraph);
             instance.saveBinsToClipboard();
@@ -630,7 +669,11 @@ public class HistogramTopComponent2NGTest {
     public void testExpandSelection() {
         System.out.println("expandSelection");
 
+        final PluginExecution mockPE = mock(PluginExecution.class);
+
         try (final MockedStatic<PluginExecution> mockPluginExecution = Mockito.mockStatic(PluginExecution.class, Mockito.CALLS_REAL_METHODS)) {
+            mockPluginExecution.when(() -> PluginExecution.withPlugin(any(SimpleEditPlugin.class))).thenReturn(mockPE);
+
             final HistogramTopComponent2 instance = new HistogramTopComponent2();
             instance.newActiveGraph(mockGraph);
 

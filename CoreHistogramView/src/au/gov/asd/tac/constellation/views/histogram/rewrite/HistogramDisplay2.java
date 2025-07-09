@@ -91,7 +91,7 @@ public class HistogramDisplay2 extends BorderPane {
     private int barHeight = (barHeightBase * FontUtilities.getApplicationFontSize()) / DEFAULT_FONT_SIZE;   // the vertical thickness of the bars
     private BinCollection binCollection = null;
     private BinIconMode binIconMode = BinIconMode.NONE;
-    private BinSelectionMode binSelectionMode;
+    private BinSelectionMode binSelectionMode = BinSelectionMode.ADD_TO_SELECTION;
     private int activeBin = -1;
     private int prevDragEnd = -2; // Set to -2, so value is different to dragEnd
     private int dragStart = -1;
@@ -213,7 +213,7 @@ public class HistogramDisplay2 extends BorderPane {
         Platform.runLater(() -> updateDisplay());
     }
 
-    public void setBinSelectionMode(BinSelectionMode binSelectionMode) {
+    public void setBinSelectionMode(final BinSelectionMode binSelectionMode) {
         this.binSelectionMode = binSelectionMode;
     }
 
@@ -357,7 +357,7 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private void drawBars(final boolean updateBinCounts, final double width) {
-        if (binCollection == null) {
+        if (binCollection == null || binSelectionMode == null) {
             return;
         }
 
