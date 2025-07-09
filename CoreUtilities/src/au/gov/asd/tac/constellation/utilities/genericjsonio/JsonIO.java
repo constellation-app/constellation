@@ -304,12 +304,16 @@ public class JsonIO {
         final File preferenceFile = new File(
                 preferenceDirectory,
                 FilenameEncoder.encode(fileNameWithKeyboardShortcut + FileExtensionConstants.JSON)
-        );
-
+        );                
+        
+        final FilenameFilter filenameFilter = (d, s) -> s.substring(s.indexOf("]")+1, s.length()).trim().equalsIgnoreCase(FilenameEncoder.encode(fileName + FileExtensionConstants.JSON));        
+        final String[] fileNames = preferenceDirectory.list(filenameFilter);
+        final boolean preferenceFileExists = ArrayUtils.isNotEmpty(fileNames);
+        
         boolean go = true;
 
         // If the file exist, ask the user if they want to overwrite
-        if (preferenceFile.exists()) {
+        if (preferenceFileExists) {
             final Alert alert = getAlert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText(PREFERENCE_FILE_EXISTS_ALERT_TITLE);
             alert.setContentText(String.format(
@@ -322,7 +326,14 @@ public class JsonIO {
         }
 
         if (go) {
-            try {
+            try {                
+                if (!preferenceFileExists && ksResult.isPresent() && ksResult.get().isAlreadyAssigned() && Objects.nonNull(ksResult.get().getExisitngTemplateWithKs())) {
+                    //remove shortcut from existing template to be re-assign to new template                    
+                    final String rename = ksResult.get().getExisitngTemplateWithKs()
+                            .getName().replaceAll("\\[" + StringUtils.replace(ksResult.get().getKeyboardShortcut(), "+", StringUtils.SPACE) + "\\]", StringUtils.EMPTY);
+                    ksResult.get().getExisitngTemplateWithKs().renameTo(new File(preferenceDirectory, FilenameEncoder.encode(rename.trim())));
+                }
+
                 // Configure JSON mapper settings
                 mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
                 mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);

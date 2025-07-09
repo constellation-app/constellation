@@ -32,7 +32,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -50,7 +49,6 @@ import javafx.stage.Window;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -223,13 +221,6 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         
         ((Button) dialogPane.lookupButton(ButtonType.OK)).setOnAction(e -> {
             if (stage != null) {
-                if (keyboardShortcutSelectionResult.isAlreadyAssigned() && keyboardShortcutSelectionResult.getExisitngTemplateWithKs() != null) {
-                    //remove shortcut from existing template to be re-assign to new template                    
-                    final String rename = keyboardShortcutSelectionResult.getExisitngTemplateWithKs()
-                            .getName().replaceAll("\\[" + StringUtils.replace(keyboardShortcutSelectionResult.getKeyboardShortcut(), "+", StringUtils.SPACE) + "\\]", StringUtils.EMPTY);
-                    keyboardShortcutSelectionResult.getExisitngTemplateWithKs().renameTo(new File(preferenceDirectory, FilenameEncoder.encode(rename.trim())));
-                }
-
                 keyboardShortcutSelectionResult.setFileName(textField.getText());
                 stage.close();
             }
