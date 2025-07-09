@@ -36,7 +36,7 @@ be loaded and will appear exactly as it was when it was saved. You can
 also remove a saved preference from here by selecting one from the list
 and selecting Remove.
 
-Alternatively, when use press a keyboard shortcut, mapped template gets loaded.
+Alternatively, when you press a keyboard shortcut, the mapped template gets loaded.
 
 ## Saving data access results
 
