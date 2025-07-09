@@ -167,8 +167,6 @@ public class KTruss {
             return nextComponentNum;
         }
         
-        //
-        // 
         /**
          * Helper method for getComponents which uses recursion to 'hop out one'.
          * Iterates through the links adjacent of a given link, adding them to the same component, clearing them, and then calling itself recursively, 
