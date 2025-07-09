@@ -133,7 +133,11 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         keyboardShortcutLabel = createLabel();
         keyboardShortcutLabel.setMinWidth(Control.USE_PREF_SIZE);
         keyboardShortcutLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);
-        keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
+        if (ks.isPresent()) {
+            keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
+        } else {
+            keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px;");
+        }
         keyboardShortcutLabel.setPadding(new Insets(2, 10, 2, 10));
         keyboardShortcutLabel.setGraphic(null);
         keyboardShortcutLabel.setTooltip(null);
@@ -242,6 +246,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         dialogPane.getStyleClass().add("text-input-dialog");
         
         dialogPane.setMinHeight(270);
+        dialogPane.setMinWidth(320);
         
         updateGrid();
     }
