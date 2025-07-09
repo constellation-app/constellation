@@ -136,13 +136,20 @@ public class KTruss {
 
         }
         
-        // Calculates the connected components of the k-trusses in the graph as k increases.
-        // Apart from links which is a clone of the links remaining in the graph that serves only as an in parameter,
-        // all parameters are in/out parameters which need to be managed by the KTruss method itself.
-        // nodeToComponent and linkToComponent record the smallest components that each node and link lies in
-        // componentTree records the heirarchy of nested components
-        // componentSizes records the number of nodes in each componenent
-        // nextComponentNum keeps track of the total number of components
+        /**
+         * Calculates the connected components of the k-trusses in the graph as k increases.
+         * Apart from links which is a clone of the links remaining in the graph that serves only as an in parameter, 
+         * all parameters are in/out parameters which need to be managed by the KTruss method itself.
+         * 
+         * @param graph the graph in focus
+         * @param links links in the graph
+         * @param nodeToComponent a map of the smallest components that each node lies in
+         * @param linkToComponent a map of the smallest components that each link lies in
+         * @param componentTree a map of the hierarchy of nested components
+         * @param componentSizes a map of the number of nodes in each component
+         * @param currentComponentNum total number of components
+         * @return 
+         */
         private static int getComponents(final GraphWriteMethods graph, final BitSet links, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, final int currentComponentNum) {
             int nextComponentNum = currentComponentNum;
             // For each link remaining in the graph find all links connected to it, record them and their end vertices as belonging to the same component, and clear them.
@@ -160,9 +167,21 @@ public class KTruss {
             return nextComponentNum;
         }
         
-        // Helper method for getComponents which uses recursion to 'hop out one'.
-        // Iterates through the links adjacent of a given link, adding them to the same componenent, clearing them, and then calling itself recursively,
-        // until it reaches a link with no adjacent links that haven't already been cleared.
+        //
+        // 
+        /**
+         * Helper method for getComponents which uses recursion to 'hop out one'.
+         * Iterates through the links adjacent of a given link, adding them to the same component, clearing them, and then calling itself recursively, 
+         * until it reaches a link with no adjacent links that haven't already been cleared.
+         * 
+         * @param graph
+         * @param links
+         * @param nodeToComponent
+         * @param linkToComponent
+         * @param componentTree
+         * @param currentComponentNum
+         * @param initialLinkPosition 
+         */
         private static void getComponentsHopper(final GraphWriteMethods graph, final BitSet links, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final int currentComponentNum, final int initialLinkPosition) {
             final Deque<Integer> linksToHopFrom = new LinkedList<>();
             linksToHopFrom.add(initialLinkPosition);

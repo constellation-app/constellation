@@ -515,15 +515,16 @@ public final class GraphJsonReader {
     /**
      * Parse an element type's attributes and data from a JSON file.
      *
-     * @param elementType The element type of the attributes and data being
-     * read.
-     * @param vertexPositions The mapping of Constants.ID to vertex id; written
-     * when vertices are parsed, read when transactions are parsed.
+     * @param graph The graph being parsed
+     * @param elementType The element type of the attributes and data being read.
+     * @param vertexPositions The mapping of Constants.ID to vertex id; written when vertices are parsed, read when transactions are parsed.
+     * @param transactionPositions The mapping of Constants.ID to transaction id; written when transactions are parsed.
      * @param ph Progress handle.
      * @param entrySize The size of the file being read; -1 if unknown.
+     * @param immutableObjectCache The object cache
      *
-     * @throws IOException If there is an IOException.
-     * @throws GraphParseException If there is a GraphParseException.
+     * @throws IOException
+     * @throws GraphParseException
      */
     private void parseElement(final GraphWriteMethods graph, final GraphElementType elementType, final Map<Integer, Integer> vertexPositions, final Map<Integer, Integer> transactionPositions, final IoProgress ph, final long entrySize, ImmutableObjectCache immutableObjectCache) throws GraphParseException, IOException {
         final String elementTypeLabel = IoUtilities.getGraphElementTypeString(elementType);
