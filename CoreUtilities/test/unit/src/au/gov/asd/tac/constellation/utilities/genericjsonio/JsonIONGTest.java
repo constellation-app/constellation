@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -70,7 +69,7 @@ public class JsonIONGTest {
     private static final Optional<String> DEFAULT_KS = Optional.of("ctrl+1");
 
     @Test
-    public void loadJsonPreferences_get_pojo_without_prefix() throws URISyntaxException, FileNotFoundException, IOException {
+    public void loadJsonPreferences_get_pojo_without_prefix() throws URISyntaxException, IOException {
         try (final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
             jsonIoMockedStatic.when(() -> JsonIO
                     .loadJsonPreferences(any(Optional.class), any(TypeReference.class)))
@@ -88,7 +87,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void loadJsonPreferences_get_pojo_without_mapper() throws URISyntaxException, FileNotFoundException, IOException {
+    public void loadJsonPreferences_get_pojo_without_mapper() throws URISyntaxException, IOException {
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
             jsonIoMockedStatic.when(() -> JsonIO
                     .loadJsonPreferences(any(Optional.class), any(Optional.class), any(TypeReference.class)))
@@ -106,7 +105,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void loadJsonPreferences_get_tree_without_prefix() throws URISyntaxException, FileNotFoundException, IOException {
+    public void loadJsonPreferences_get_tree_without_prefix() throws URISyntaxException, IOException {
 
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
             jsonIoMockedStatic.when(() -> JsonIO
@@ -231,7 +230,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void saveJsonPreferences() throws URISyntaxException, FileNotFoundException, IOException {
+    public void saveJsonPreferences() throws URISyntaxException, IOException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
@@ -419,7 +418,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void saveJsonPreferences_without_prefix() throws URISyntaxException, FileNotFoundException, IOException {
+    public void saveJsonPreferences_without_prefix() throws URISyntaxException, IOException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
@@ -439,7 +438,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void saveJsonPreferences_without_mapper() throws URISyntaxException, FileNotFoundException, IOException {
+    public void saveJsonPreferences_without_mapper() throws URISyntaxException, IOException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
@@ -457,7 +456,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void saveJsonPreferences_file_exists_dont_write() throws URISyntaxException, FileNotFoundException, IOException, InterruptedException, ExecutionException {
+    public void saveJsonPreferences_file_exists_dont_write() throws URISyntaxException, IOException, InterruptedException, ExecutionException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try {
@@ -493,7 +492,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void saveJsonPreferences_file_exists_overwrite() throws URISyntaxException, FileNotFoundException, IOException, InterruptedException, ExecutionException {
+    public void saveJsonPreferences_file_exists_overwrite() throws URISyntaxException, IOException, InterruptedException, ExecutionException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try {
@@ -523,7 +522,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void saveJsonPreferences_no_name_provided() throws URISyntaxException, FileNotFoundException, IOException {
+    public void saveJsonPreferences_no_name_provided() throws URISyntaxException, IOException {
         final Instant fakeNow = Instant.parse("2020-01-01T00:00:00.00Z");
         final String expectedDateTimeString = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z")
                 .withZone(ZoneId.systemDefault()).format(fakeNow);
@@ -553,7 +552,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void saveJsonPreferences_pref_dir_not_a_dir() throws URISyntaxException, FileNotFoundException, IOException {
+    public void saveJsonPreferences_pref_dir_not_a_dir() throws URISyntaxException, IOException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
@@ -581,7 +580,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void saveJsonPreferences_user_cancels() throws URISyntaxException, FileNotFoundException, IOException {
+    public void saveJsonPreferences_user_cancels() throws URISyntaxException, IOException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
@@ -637,7 +636,7 @@ public class JsonIONGTest {
     }
 
     @Test
-    public void deleteJsonPreferences_fails() throws URISyntaxException, FileNotFoundException, IOException {
+    public void deleteJsonPreferences_fails() throws URISyntaxException, IOException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
