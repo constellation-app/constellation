@@ -43,8 +43,8 @@ import org.testng.annotations.Test;
 public class ConstellationIconNGTest {
 
     private static ConstellationIcon testIcon;
-    private final static List<String> aliases = new ArrayList<>();
-    private final static List<String> categories = new ArrayList<>();
+    private static final List<String> aliases = new ArrayList<>();
+    private static final List<String> categories = new ArrayList<>();
     
     @BeforeClass
     public static void setUpClass() throws Exception {

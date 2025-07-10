@@ -566,20 +566,6 @@ public class BasicFindTabNGTest {
         }
     }
 
-    /**
-     * Test of requestTextFieldFocus method, of class BasicFindTab.
-     */
-    @Test
-    public void testRequestTextFieldFocus() {
-        System.out.println("requestTextFieldFocus");
-
-//        setupGraph();
-//
-//        basicFindTab.requestTextFieldFocus();
-//        assertEquals(basicFindTab.getFindTextField().isFocused(), true);
-//        basicFindTab.getFindTextField().requestFocus();
-    }
-
     private void setupGraph() {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         graph2 = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
@@ -635,5 +621,4 @@ public class BasicFindTabNGTest {
             Thread.currentThread().interrupt();
         }
     }
-
 }

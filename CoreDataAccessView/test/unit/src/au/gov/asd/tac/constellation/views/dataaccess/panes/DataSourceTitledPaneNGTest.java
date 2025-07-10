@@ -165,7 +165,7 @@ public class DataSourceTitledPaneNGTest {
         while ((pluginParameters = dataSourceTitledPane.getParameters()) == null && counter < 3) {
             Thread.yield();
             counter++;
-        };
+        }
 
         assertSame(pluginParameters, dataSourceParameters);
 
@@ -184,7 +184,7 @@ public class DataSourceTitledPaneNGTest {
         while ((pluginParameters = dataSourceTitledPane.getParameters()) == null && counter < 3) {
             Thread.yield();
             counter++;
-        };
+        }
 
         assertSame(pluginParameters, dataSourceParameters);
 

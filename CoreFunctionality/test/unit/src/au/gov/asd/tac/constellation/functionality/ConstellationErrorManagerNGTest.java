@@ -91,7 +91,7 @@ public class ConstellationErrorManagerNGTest {
     private void simulateException(final Level logLevel, final boolean autoBlockPopup){
         LOGGER.log(Level.INFO, "\n ------- simulating {0} exception", logLevel.getName());
         final Exception e = new Exception((autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG : "") + "Something totally not unexpected happened !");
-        LOGGER.log(logLevel, "Simulating a " + logLevel.getName() + " exception !", e);
+        LOGGER.log(logLevel, e, () ->  "Simulating a " + logLevel.getName() + " exception !");
         LOGGER.info("\n ------- simulated.");
     }
     

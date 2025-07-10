@@ -73,8 +73,8 @@ public class JDBCConnection {
         return driver;
     }
 
-    public void setDriver(final JDBCDriver _driver) {
-        this.driver = _driver;
+    public void setDriver(final JDBCDriver driver) {
+        this.driver = driver;
     }
 
     public String getConnectionString() {

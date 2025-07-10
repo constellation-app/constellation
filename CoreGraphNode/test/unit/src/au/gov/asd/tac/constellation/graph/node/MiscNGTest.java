@@ -81,7 +81,7 @@ public class MiscNGTest {
                     final int tx = wg.addTransaction(vx, vx + 1, true);
 
                     Assert.fail("Shouldn't get here, wg.addTransaction() should fail.");
-                    System.out.printf("New transaction: %d\n", tx);
+                    System.out.printf("New transaction: %d%n", tx);
                 }
 
                 @Override

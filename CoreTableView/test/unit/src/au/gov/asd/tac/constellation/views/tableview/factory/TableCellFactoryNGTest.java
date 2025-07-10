@@ -115,9 +115,9 @@ public class TableCellFactoryNGTest {
         ReadOnlyDoubleProperty mockWidthProperty = mock(ReadOnlyDoubleProperty.class);
         doReturn(mockWidthProperty).when(cellColumn).widthProperty();
         
-        Text test_text = tableCellFactory.getWrappingText(test_value);
+        Text testText = tableCellFactory.getWrappingText(test_value);
         verify(tableCellFactory, times(1)).getWrappingText(test_value);
-        assertEquals(test_text.getText(), test_value);      
+        assertEquals(testText.getText(), test_value);      
     }
     
     @Test
@@ -126,9 +126,9 @@ public class TableCellFactoryNGTest {
         ReadOnlyDoubleProperty mockWidthProperty = mock(ReadOnlyDoubleProperty.class);
         doReturn(mockWidthProperty).when(cellColumn).widthProperty();
         
-        Text test_text = tableCellFactory.getWrappingText(test_value);
+        Text testText = tableCellFactory.getWrappingText(test_value);
         verify(tableCellFactory, times(1)).getWrappingText(test_value);
-        assertEquals(test_text.getText(), "");      
+        assertEquals(testText.getText(), "");      
     }
 
     @Test

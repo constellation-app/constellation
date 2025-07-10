@@ -295,8 +295,8 @@ public class DateAxis extends Axis<Date> {
     @Override
     protected List<Date> calculateTickValues(final double v, final Object range) {
         final Object[] r = (Object[]) range;
-        final Date lowerBound = (Date) r[0];
-        final Date upperBound = (Date) r[1];
+        final Date lowerBoundDate = (Date) r[0];
+        final Date upperBoundDate = (Date) r[1];
 
         List<Date> dateList = new ArrayList<>();
         final List<Date> previousDateList = new ArrayList<>();
@@ -309,21 +309,21 @@ public class DateAxis extends Axis<Date> {
         // starting with the greatest interval, add one of each calendar unit.
         Calendar calendar = Calendar.getInstance();
         for (final Interval interval : Interval.values()) {
-            calendar.setTime(lowerBound);
+            calendar.setTime(lowerBoundDate);
             dateList.clear();
             previousDateList.clear();
             actualInterval = interval;
 
             // loop as long we exceeded the upper bound.
-            while (calendar.getTime().getTime() <= upperBound.getTime()) {
+            while (calendar.getTime().getTime() <= upperBoundDate.getTime()) {
                 dateList.add(calendar.getTime());
                 calendar.add(interval.interval, interval.amount);
             }
             // check the size of the list, If it is greater than the amount of ticks, take that list.
             if (dateList.size() > averageTicks) {
-                calendar.setTime(lowerBound);
+                calendar.setTime(lowerBoundDate);
                 // recheck if the previous interval is better suited.
-                while (calendar.getTime().getTime() <= upperBound.getTime()) {
+                while (calendar.getTime().getTime() <= upperBoundDate.getTime()) {
                     previousDateList.add(calendar.getTime());
                     calendar.add(previousInterval.interval, previousInterval.amount);
                 }
@@ -338,7 +338,7 @@ public class DateAxis extends Axis<Date> {
         }
 
         // finally, add the upper bound.
-        dateList.add(upperBound);
+        dateList.add(upperBoundDate);
 
         final List<Date> evenDateList = makeDatesEven(dateList, calendar);
         // if there are at least three dates, check if the gap between the lower date and the second date
@@ -352,13 +352,13 @@ public class DateAxis extends Axis<Date> {
             final Date previousLastDate = evenDateList.get(dateList.size() - 3);
 
             // if the second date is too near by the lower bound, remove it.
-            if (secondDate.getTime() - lowerBound.getTime() < (thirdDate.getTime() - secondDate.getTime()) / 2) {
+            if (secondDate.getTime() - lowerBoundDate.getTime() < (thirdDate.getTime() - secondDate.getTime()) / 2) {
                 evenDateList.remove(secondDate);
             }
 
             // if difference from the upper bound to the last date is less than the half of the difference of the previous two dates,
             // we better remove the last date, as it comes to close to the upper bound.
-            if (upperBound.getTime() - lastDate.getTime() < (lastDate.getTime() - previousLastDate.getTime()) / 2) {
+            if (upperBoundDate.getTime() - lastDate.getTime() < (lastDate.getTime() - previousLastDate.getTime()) / 2) {
                 evenDateList.remove(lastDate);
             }
         }

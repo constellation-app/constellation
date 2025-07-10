@@ -177,7 +177,7 @@ public class AddRecordStore extends RestService {
                 final JsonNode jn = jrow.get(ix);
                 if (!jn.isNull()) {
                     if (jn.getNodeType() == JsonNodeType.ARRAY) {
-                        rs.set(h, RestServiceUtilities.toList((ArrayNode) jn));
+                        rs.set(h, RestServiceUtilities.toList(jn));
                     } else {
                         rs.set(h, jn.asText());
                     }

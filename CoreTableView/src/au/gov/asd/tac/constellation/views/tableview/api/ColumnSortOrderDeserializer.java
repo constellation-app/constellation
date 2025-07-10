@@ -52,7 +52,7 @@ public class ColumnSortOrderDeserializer extends JsonDeserializer<Pair<String, T
      */
     @Override
     public Pair<String, TableColumn.SortType> deserialize(final JsonParser jp,
-            final DeserializationContext dc) throws IOException, JsonProcessingException {
+            final DeserializationContext dc) throws IOException {
         final JsonNode node = jp.getCodec().readTree(jp);
 
         final String left = node.fieldNames().next();

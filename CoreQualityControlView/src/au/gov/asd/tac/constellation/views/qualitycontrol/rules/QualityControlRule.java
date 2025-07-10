@@ -94,12 +94,8 @@ public abstract class QualityControlRule {
             // if not info, then it is higher than major
             return CATEGORY_2_HIGHER;
         }
-        // if severe, rule2 could be medium, major, critical
+        // if severe, rule2 could be medium, major
         if (category1 == QualityCategory.SEVERE) {
-            // if rule2 is critical, it is higher priority
-            if (category2 == QualityCategory.CRITICAL) {
-                return CATEGORY_2_HIGHER;
-            }
             // if not critical, must be lower.
             return CATEGORY_1_HIGHER;
         }

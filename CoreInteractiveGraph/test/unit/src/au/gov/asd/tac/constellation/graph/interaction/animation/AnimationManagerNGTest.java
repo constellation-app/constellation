@@ -34,8 +34,6 @@ public class AnimationManagerNGTest {
     private Animation colorWarpAnimation;
     private Animation directionIndicatorAnimation;
     
-    public AnimationManagerNGTest() {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -48,7 +46,7 @@ public class AnimationManagerNGTest {
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         animationManager = null;
     }
 

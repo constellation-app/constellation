@@ -68,7 +68,7 @@ import java.util.concurrent.ExecutorService;
  */
 public class SVGGraphBuilder {
     
-    private final static String BUILDING_REPORT_MESSAGE= "Building Graph";
+    private static final String BUILDING_REPORT_MESSAGE = "Building Graph";
     
     // Variables specified when the Builder class is instantiated
     private final Matrix44f modelViewProjectionMatrix = new Matrix44f();
