@@ -344,47 +344,51 @@ public class HistogramPane extends BorderPane {
 
         // Update display for initial values
         updateDisplay();
-
+        disableControls();
         setHistogramState(null, null);
+    }
+
+    private void disableControls() {
+        vertexToggle.setSelected(true);
+        etToggles.values().stream().forEach(toggle -> toggle.setDisable(true));
+
+        categoryChoice.getSelectionModel().select(0);
+        categoryChoice.setDisable(true);
+
+        propertyChoice.getItems().clear();
+        propertyChoice.getItems().add("");
+        propertyChoice.getSelectionModel().select(0);
+        propertyChoice.setDisable(true);
+
+        // Clear all items
+        binFormatterCombo.setItems(FXCollections.observableArrayList());
+        binFormatterCombo.getItems().add(BinFormatter.DEFAULT_BIN_FORMATTER);
+        binFormatterCombo.getSelectionModel().select(0);
+        binFormatterCombo.setDisable(true);
+
+        sortChoice.getSelectionModel().select(0);
+        sortChoice.setDisable(true);
+
+        descendingButton.setSelected(false);
+        descendingButton.setDisable(true);
+
+        selectionModeChoice.getSelectionModel().select(0);
+        selectionModeChoice.setDisable(true);
+
+        selectButton.setDisable(true);
+
+        filterSelectionButton.setDisable(true);
+        clearFilterButton.setDisable(true);
     }
 
     public final void setHistogramState(final HistogramState histogramState, final Map<String, BinCreator> attributes) {
         isAdjusting = true;
+
         if (histogramState != currentHistogramState) {
             if (histogramState == null) {
-                vertexToggle.setSelected(true);
-                etToggles.values().stream().forEach(toggle -> toggle.setDisable(true));
-
-                categoryChoice.getSelectionModel().select(0);
-                categoryChoice.setDisable(true);
-
-                propertyChoice.getItems().clear();
-                propertyChoice.getItems().add("");
-                Platform.runLater(() -> propertyChoice.getSelectionModel().select(0));
-                propertyChoice.setDisable(true);
-
                 Platform.runLater(() -> {
-                    // Clear all items
-                    binFormatterCombo.setItems(FXCollections.observableArrayList());
-                    binFormatterCombo.getItems().add(BinFormatter.DEFAULT_BIN_FORMATTER);
-                    binFormatterCombo.getSelectionModel().select(0);
-                    binFormatterCombo.setDisable(true);
+                    disableControls();
                 });
-
-                Platform.runLater(() -> sortChoice.getSelectionModel().select(0));
-                sortChoice.setDisable(true);
-
-                descendingButton.setSelected(false);
-                descendingButton.setDisable(true);
-
-                selectionModeChoice.getSelectionModel().select(0);
-                selectionModeChoice.setDisable(true);
-
-                selectButton.setDisable(true);
-
-                filterSelectionButton.setDisable(true);
-                clearFilterButton.setDisable(true);
-
             } else {
                 if (currentHistogramState == null) {
                     etToggles.values().stream().forEach(toggle -> toggle.setDisable(false));
