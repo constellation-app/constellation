@@ -116,7 +116,7 @@ public class DataAccessViewTopComponentNGTest {
                         Mockito.mockStatic(DataAccessUtilities.class);
         ) {
             platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class)))
-                    .thenAnswer((iom) -> {
+                    .thenAnswer(iom -> {
                         final Runnable runnable = iom.getArgument(0);
                         runnable.run();
                         return null;

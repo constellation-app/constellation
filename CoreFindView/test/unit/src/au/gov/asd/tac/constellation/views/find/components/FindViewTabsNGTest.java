@@ -86,25 +86,6 @@ public class FindViewTabsNGTest {
     }
 
     /**
-     * Test listener for changing selected tab
-     */
-    @Test
-    public void testChangeTab() {
-//        System.out.println("changeTab");
-////                doNothing().when(basicFindMock).updateBasicFindParamters();
-//
-//        doNothing().when(spyBasicFindTab).updateButtons();
-//        doNothing().when(spyReplaceTab).updateButtons();
-//
-//        spyFindViewTabs.getSelectionModel().select(spyFindViewTabs.getReplaceTab());
-//        verify(spyFindViewTabs.getReplaceTab()).updateButtons();
-//        spyFindViewTabs.getSelectionModel().select(spyFindViewTabs.getBasicFindTab());
-//        verify(spyFindViewTabs.getBasicFindTab()).updateButtons();
-//
-
-    }
-
-    /**
      * Test of getParentComponent method, of class FindViewTabs.
      */
     @Test

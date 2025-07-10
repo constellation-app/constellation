@@ -57,9 +57,6 @@ public class TableViewPreferencesIoProviderNGTest {
 
     private static MockedStatic<JsonIO> jsonIOStaticMock;
 
-    public TableViewPreferencesIoProviderNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {

@@ -82,14 +82,14 @@ public class DefaultCustomIconProviderNGTest {
             defaultCustomIconProviderMock.when(() -> DefaultCustomIconProvider.loadIcons()).thenCallRealMethod();
             
             // Create a test icon to be removed by testRemoveIcon
-            final ConstellationColor ICON_COLOR = ConstellationColor.BLUEBERRY;
-            final ConstellationIcon ICON_BACKGROUND = DefaultIconProvider.FLAT_SQUARE;
-            final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.STAR;
+            final ConstellationColor iconColor = ConstellationColor.BLUEBERRY;
+            final ConstellationIcon iconBackground = DefaultIconProvider.FLAT_SQUARE;
+            final ConstellationIcon iconSymbol = AnalyticIconProvider.STAR;
 
             ConstellationIcon icon = new ConstellationIcon.Builder(TEST_ICON_NAME,
                     new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
-                            ICON_BACKGROUND.buildBufferedImage(16, ICON_COLOR.getJavaColor()),
-                            ICON_SYMBOL.buildBufferedImage(16), 0, 0)))
+                            iconBackground.buildBufferedImage(16, iconColor.getJavaColor()),
+                            iconSymbol.buildBufferedImage(16), 0, 0)))
                     .build();
             icon.setEditable(true);
             System.out.println("===== INITIALISE TEST =====");
@@ -103,19 +103,19 @@ public class DefaultCustomIconProviderNGTest {
 
             System.out.println("---------------------");
             
-            final ConstellationColor ICON_COLOR2 = ConstellationColor.RED;
-            final ConstellationIcon ICON_BACKGROUND2 = DefaultIconProvider.FLAT_CIRCLE;
-            final ConstellationIcon ICON_SYMBOL2 = AnalyticIconProvider.ANDROID;
+            final ConstellationColor iconColor2 = ConstellationColor.RED;
+            final ConstellationIcon iconBackground2 = DefaultIconProvider.FLAT_CIRCLE;
+            final ConstellationIcon iconSymbol2 = AnalyticIconProvider.ANDROID;
 
             ConstellationIcon icon2 = new ConstellationIcon.Builder("Category2.TestIcon",
                 new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
-                        ICON_BACKGROUND2.buildBufferedImage(16, ICON_COLOR2.getJavaColor()),
-                        ICON_SYMBOL2.buildBufferedImage(16), 0, 0)))
+                        iconBackground2.buildBufferedImage(16, iconColor2.getJavaColor()),
+                        iconSymbol2.buildBufferedImage(16), 0, 0)))
                 .build();
             
             // Run testAddIcon
             System.out.print("TEST: Add an icon: ");
-            testAddIcon(icon2, testFile);
+            testAddIcon(icon2);
             System.out.println(" *PASSED*");
             
             //Run testAddIconFileDoesExist
@@ -153,7 +153,7 @@ public class DefaultCustomIconProviderNGTest {
      * @param testFile
      * @throws URISyntaxException
      */
-    public void testAddIcon(final ConstellationIcon icon, final File testFile) throws URISyntaxException {
+    private void testAddIcon(final ConstellationIcon icon) throws URISyntaxException {
         // Create a test icon
 
         boolean icExists = IconManager.iconExists(icon.getExtendedName());
@@ -168,7 +168,7 @@ public class DefaultCustomIconProviderNGTest {
      *
      * @param icon
      */
-    public void testAddIconFileDoesExist(final ConstellationIcon icon) {
+    private void testAddIconFileDoesExist(final ConstellationIcon icon) {
         // Check if the icon is present in the local cache
         final boolean localCacheEntryExists = DefaultCustomIconProvider.containsIcon(icon.getName());
         assertEquals(localCacheEntryExists, true);
@@ -183,7 +183,7 @@ public class DefaultCustomIconProviderNGTest {
      *
      * @param icon
      */
-    public void testRemoveIcon(final ConstellationIcon icon) {
+    private void testRemoveIcon(final ConstellationIcon icon) {
         // Test removing an icon
         final boolean result = IconManager.removeIcon(icon.getExtendedName());
         assertEquals(result, true);
@@ -195,7 +195,7 @@ public class DefaultCustomIconProviderNGTest {
      * icon that does not exist.
      * @param icon
      */
-    public void testRemoveIconDoesNotExist(final ConstellationIcon icon) {
+    private void testRemoveIconDoesNotExist(final ConstellationIcon icon) {
         // Test removing an icon that doesn't exist
         final boolean result = IconManager.removeIcon(icon.getExtendedName());
         assertEquals(result, false);
@@ -206,7 +206,7 @@ public class DefaultCustomIconProviderNGTest {
      *
      * @param testFile
      */
-    public void testCacheMatch(final File testFile) {
+    private void testCacheMatch(final File testFile) {
         Set<String> iconSet = IconManager.getIconNames(true);
         // At the time of writing the test, the number of icons should be 2: the initial "test_bagel_blue.png" file
         //   and the Category1.TestIcon1.png file created during testing
@@ -214,7 +214,7 @@ public class DefaultCustomIconProviderNGTest {
         assertEquals(iconSet.size(), testFile.listFiles().length);
     }
     
-    public void prepareFileDir(final File testFile){
+    private void prepareFileDir(final File testFile){
         // reset the icon resource folder to only contain the test_bagel_blue.png file
         List<String> filenames = new ArrayList<>();
         for (File f : testFile.listFiles()){

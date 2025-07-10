@@ -62,9 +62,9 @@ public final class DelimitedImportTopComponent extends ImportTopComponent {
 
             HINTS:
             * See all supported attributes with 'Options > Show all schema attributes'.
-            * Filter in the Configuration Pane by adding searches of the form <column_name>==\"<search text>\"."
-            * E.g. first_name==\"Nick\"
-            * To filter Attributes, start typing in the Attributes Filter.";
+            * Filter in the Configuration Pane by adding searches of the form <column_name>=="<search text>".
+            * E.g. first_name=="Nick"
+            * To filter Attributes, start typing in the Attributes Filter.;
             """;
 
     final DelimitedImportController controller = new DelimitedImportController();

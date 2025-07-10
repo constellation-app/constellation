@@ -26,17 +26,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -158,7 +155,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
 
         final Tooltip tooltip = new Tooltip("");
         tooltip.setStyle("-fx-text-fill: white;");
-        field.focusedProperty().addListener((final ObservableValue<? extends Boolean> ov, final Boolean t, final Boolean t1) -> {
+        field.focusedProperty().addListener((ov, t, t1) -> {
             if (!t1) {
                 if(validityCheckRequired) {
                     final boolean isValid = field.getText() == null || ExpressionUtilities.testQueryValidity(field.getText());
@@ -201,7 +198,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
     }
     
     public String getQuery() {
-        return field.getText().equals("") ? null : field.getText();
+        return StringUtils.isEmpty(field.getText()) ? null : field.getText();
     }
     
     public void setQuery(final String query) {

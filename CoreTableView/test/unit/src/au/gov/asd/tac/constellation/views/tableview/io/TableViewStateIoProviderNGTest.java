@@ -77,8 +77,6 @@ public class TableViewStateIoProviderNGTest {
 
         final TableViewState actual = captor.getValue();
 
-        final TableViewState expected = new TableViewState();
-
         assertTrue(actual.isSelectedOnly());
         assertEquals(actual.getElementType(), GraphElementType.VERTEX);
 

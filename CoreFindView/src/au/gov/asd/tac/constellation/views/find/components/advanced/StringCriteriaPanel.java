@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.views.find.components.advanced.utilities.Use
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
@@ -54,7 +53,7 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
         setGridContent();
         useListCheckBox.setOnAction(action -> activateMoreDetails(useListCheckBox.selectedProperty().get()));
 
-        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
+        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement)
                 -> regexSelectionAction(newElement)
         );
 

@@ -146,7 +146,7 @@ public class VisualSchemaV1UpdateProviderNGTest {
         GraphLabelsAndDecoratorsV0 labelsAndDecorators = new GraphLabelsAndDecoratorsV0();
         labelsAndDecorators.addBottomLabel(new GraphLabelV0("bottom;red;1"));
         labelsAndDecorators.addTopLabel(new GraphLabelV0("top;red;1"));
-        labelsAndDecorators.addTopLabel(new GraphLabelV0("top;red;2"));;
+        labelsAndDecorators.addTopLabel(new GraphLabelV0("top;red;2"));
         labelsAndDecorators.addConnectionLabel(new GraphLabelV0("connection;red;1"));
         labelsAndDecorators.addConnectionLabel(new GraphLabelV0("connection;red;2"));
         labelsAndDecorators.addConnectionLabel(new GraphLabelV0("connection;red;3"));
