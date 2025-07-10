@@ -18,9 +18,17 @@ package au.gov.asd.tac.constellation.plugins.logging;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.csv.SmartCSVWriter;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
@@ -36,6 +44,19 @@ import org.openide.windows.TopComponent;
 public class DefaultConstellationLogger implements ConstellationLogger {
 
     private static final Logger LOGGER = Logger.getLogger(DefaultConstellationLogger.class.getName());
+
+    private static File logs;
+
+    public DefaultConstellationLogger() {
+        try {
+            logs = File.createTempFile("logs", ".csv");
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    private long starttime = 0;
+    private long stoptime = 0;
 
     @Override
     public void applicationStarted() {
@@ -65,11 +86,20 @@ public class DefaultConstellationLogger implements ConstellationLogger {
     @Override
     public void pluginStarted(final Plugin plugin, final PluginParameters parameters, final Graph graph) {
         LOGGER.log(Level.FINE, "Plugin Started: {0}", plugin.getName());
+        starttime = System.currentTimeMillis();
     }
 
     @Override
     public void pluginStopped(final Plugin plugin, final PluginParameters parameters) {
         LOGGER.log(Level.FINE, "Plugin Stopped: {0}", plugin.getName());
+        stoptime = System.currentTimeMillis();
+//        LOGGER.log(Level.INFO, "\"{0}\",\"{1}\",\"{2}\",\"{3}\",\"{4}\"", new Object[]{TemporalFormatting.zonedDateTimeStringFromLong(starttime), TemporalFormatting.zonedDateTimeStringFromLong(stoptime), stoptime - starttime, plugin.getName(), plugin.getTags()[0]});
+
+        try (final SmartCSVWriter csv = new SmartCSVWriter(new OutputStreamWriter(new FileOutputStream(logs, true), StandardCharsets.UTF_8.name()))) {
+            csv.writeNext(new String[]{TemporalFormatting.zonedDateTimeStringFromLong(starttime), TemporalFormatting.zonedDateTimeStringFromLong(stoptime), String.valueOf(stoptime - starttime), plugin.getName(), plugin.getTags()[0]});
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     @Override
