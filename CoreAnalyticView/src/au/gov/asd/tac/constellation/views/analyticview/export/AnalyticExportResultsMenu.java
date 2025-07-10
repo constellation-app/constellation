@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -38,7 +39,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
-import static org.geotools.referencing.factory.ReferencingFactory.LOGGER;
 import org.openide.filesystems.FileChooserBuilder;
 
 /**
@@ -48,6 +48,8 @@ import org.openide.filesystems.FileChooserBuilder;
  */
 public class AnalyticExportResultsMenu {
 
+    private static final Logger LOGGER = Logger.getLogger(AnalyticExportResultsMenu.class.getName());
+    
     private static final String EXPORT_CSV = "Export to CSV";
     private static final String EXPORT_XLSX = "Export to Excel";
     private static final String EXPORT_CSV_FILE_CHOOSER_TITLE = "Export To CSV";
