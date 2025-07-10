@@ -48,7 +48,7 @@ final class GraphOptionsPanel extends JPanel {
 
     private final List<JPanel> colorPanels;
     final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
-    private final static Color DEFAULT_COLOR = new Color(255, 255, 254);
+    private static final Color DEFAULT_COLOR = new Color(255, 255, 254);
     private static final String[] EYE_COLORS = new String[]{"Blue", "Cyan", "Green", "Magenta", "Red", "Yellow"};
 
     public GraphOptionsPanel() {
@@ -168,7 +168,7 @@ final class GraphOptionsPanel extends JPanel {
         rightEyeColor.setSelectedItem(color);
     }
     
-    public boolean getAnimationsEnabled() {
+    public boolean isAnimationsEnabled() {
         return this.enableAnimationsCheckBox.isSelected();
     }
     

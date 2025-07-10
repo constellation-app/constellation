@@ -249,7 +249,7 @@ public abstract class SchemaFactory {
      * objects of {@link SchemaAttribute} objects which will be registered to
      * {@link Schema} objects created by this SchemaFactory.
      */
-    public final EnumMap<GraphElementType, Map<String, SchemaAttribute>> getRegisteredAttributes() {
+    public final Map<GraphElementType, Map<String, SchemaAttribute>> getRegisteredAttributes() {
         return allRegisteredAttributes;
     }
 

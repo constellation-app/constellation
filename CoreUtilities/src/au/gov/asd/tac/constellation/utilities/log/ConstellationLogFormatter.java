@@ -38,7 +38,6 @@ public class ConstellationLogFormatter extends Formatter {
     // Store a copy of the previous log message, so we can check for repeats.
     private String repeatedLogMessage = "";
     private String repeatedExceptionBlock = "";
-    private boolean repeatedException = false;
     private Integer repeatedLogCount = 0;
     
     // Pending message is continually updated with a potential final message when repeat messages occur, 
@@ -72,7 +71,7 @@ public class ConstellationLogFormatter extends Formatter {
         } else {
             errTrace = null;
         }
-        repeatedException = false;
+        boolean repeatedException = false;
         if (errTrace != null) {
             exceptionBlock.append((logRecord.getMessage() != null ? logRecord.getMessage() : ""));
             exceptionBlock.append(SeparatorConstants.NEWLINE);

@@ -34,12 +34,12 @@ import org.testng.annotations.Test;
  */
 public class QualityControlEventNGTest {
 
-    private final static QualityControlEvent.QualityCategory OK = QualityControlEvent.QualityCategory.OK;
-    private final static QualityControlEvent.QualityCategory MINOR = QualityControlEvent.QualityCategory.MINOR;
-    private final static QualityControlEvent.QualityCategory MEDIUM = QualityControlEvent.QualityCategory.MEDIUM;
-    private final static QualityControlEvent.QualityCategory MAJOR = QualityControlEvent.QualityCategory.MAJOR;
-    private final static QualityControlEvent.QualityCategory SEVERE = QualityControlEvent.QualityCategory.SEVERE;
-    private final static QualityControlEvent.QualityCategory CRITICAL = QualityControlEvent.QualityCategory.CRITICAL;
+    private static final QualityControlEvent.QualityCategory OK = QualityControlEvent.QualityCategory.OK;
+    private static final QualityControlEvent.QualityCategory MINOR = QualityControlEvent.QualityCategory.MINOR;
+    private static final QualityControlEvent.QualityCategory MEDIUM = QualityControlEvent.QualityCategory.MEDIUM;
+    private static final QualityControlEvent.QualityCategory MAJOR = QualityControlEvent.QualityCategory.MAJOR;
+    private static final QualityControlEvent.QualityCategory SEVERE = QualityControlEvent.QualityCategory.SEVERE;
+    private static final QualityControlEvent.QualityCategory CRITICAL = QualityControlEvent.QualityCategory.CRITICAL;
     
     @BeforeClass
     public static void setUpClass() throws Exception {

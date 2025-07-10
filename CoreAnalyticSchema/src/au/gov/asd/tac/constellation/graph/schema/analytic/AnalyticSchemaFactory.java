@@ -233,12 +233,12 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 graph.setStringValue(vertexLabelAttribute, vertexId, label);
             }
 
-            if (type != null && ((!modifiedDefaultVtxType && (type != SchemaVertexTypeUtilities.getDefaultType()) || graph.isDefaultValue(vertexColorAttribute, vertexId)))
+            if (type != null && (!modifiedDefaultVtxType && (type != SchemaVertexTypeUtilities.getDefaultType()) || graph.isDefaultValue(vertexColorAttribute, vertexId))
                     && !Objects.equals(type.getColor(), graph.getObjectValue(vertexColorAttribute, vertexId))) {
                 graph.setObjectValue(vertexColorAttribute, vertexId, type.getColor());
             }
 
-            if (type != null && ((!modifiedDefaultVtxType && (type != SchemaVertexTypeUtilities.getDefaultType()) || graph.isDefaultValue(vertexBackgroundIconAttribute, vertexId)))
+            if (type != null && (!modifiedDefaultVtxType && (type != SchemaVertexTypeUtilities.getDefaultType()) || graph.isDefaultValue(vertexBackgroundIconAttribute, vertexId))
                     && !Objects.equals(type.getBackgroundIcon(), graph.getObjectValue(vertexBackgroundIconAttribute, vertexId))) {
                 graph.setObjectValue(vertexBackgroundIconAttribute, vertexId, type.getBackgroundIcon().getExtendedName());
             }

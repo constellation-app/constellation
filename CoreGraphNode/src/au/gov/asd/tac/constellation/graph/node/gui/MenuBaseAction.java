@@ -39,7 +39,7 @@ import org.openide.util.actions.Presenter;
  * @author altair
  * @author capricornuncorn123
  */
-public abstract class MenuBaseAction extends AbstractAction implements Presenter.Menu, ActionListener, LookupListener, GraphChangeListener {
+public abstract class MenuBaseAction extends AbstractAction implements Presenter.Menu, LookupListener, GraphChangeListener {
 
     protected final Lookup.Result<GraphNode> graphNodeSet;
     protected final Lookup lookup;

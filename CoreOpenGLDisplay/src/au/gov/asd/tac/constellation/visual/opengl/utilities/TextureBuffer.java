@@ -25,13 +25,13 @@ import java.nio.Buffer;
  * Encapsulates texture buffers of various types.
  *
  * @author sirius
- * @param <BufferType>
+ * @param <B>
  */
-public abstract class TextureBuffer<BufferType extends Buffer> {
+public abstract class TextureBuffer<B extends Buffer> {
 
     private final int[] bufferName;
     private final int[] textureName;
-    protected final BufferType buffer;
+    protected final B buffer;
 
     /**
      * Allocate a texture buffer.
@@ -39,7 +39,7 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
      * @param gl the current OpenGL context.
      * @param buffer A Buffer to be wrapped in a texture.
      */
-    protected TextureBuffer(final GL3 gl, final BufferType buffer) {
+    protected TextureBuffer(final GL3 gl, final B buffer) {
         final int nItems = buffer.limit();
 
         // Generate a buffer object name.
@@ -80,7 +80,7 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
      */
     protected abstract int internalFormat();
 
-    public BufferType getBuffer() {
+    public B getBuffer() {
         return buffer;
     }
 
@@ -92,7 +92,7 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
         return textureName[0];
     }
 
-    public abstract BufferType connectBuffer(final GL3 gl);
+    public abstract B connectBuffer(final GL3 gl);
 
     public void disconnectBuffer(final GL gl) {
         gl.glBindBuffer(GL2ES3.GL_TEXTURE_BUFFER, bufferName[0]);

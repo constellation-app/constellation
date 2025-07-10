@@ -1465,30 +1465,30 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         // Clear all the unused attribute values
         switch (entry.getElementType()) {
             case VERTEX -> {
-                for (int id = 0; id < vStore.getCapacity(); id++) {
-                    if (!vStore.elementExists(id)) {
-                        description.clear(id);
+                for (int vId = 0; vId < vStore.getCapacity(); vId++) {
+                    if (!vStore.elementExists(vId)) {
+                        description.clear(vId);
                     }
                 }
             }
             case LINK -> {
-                for (int id = 0; id < lStore.getCapacity(); id++) {
-                    if (!lStore.elementExists(id)) {
-                        description.clear(id);
+                for (int lId = 0; lId < lStore.getCapacity(); lId++) {
+                    if (!lStore.elementExists(lId)) {
+                        description.clear(lId);
                     }
                 }
             }
             case EDGE -> {
-                for (int id = 0; id < eStore.getCapacity(); id++) {
-                    if (!eStore.elementExists(id)) {
-                        description.clear(id);
+                for (int eId = 0; eId < eStore.getCapacity(); eId++) {
+                    if (!eStore.elementExists(eId)) {
+                        description.clear(eId);
                     }
                 }
             }
             case TRANSACTION -> {
-                for (int id = 0; id < tStore.getCapacity(); id++) {
-                    if (!tStore.elementExists(id)) {
-                        description.clear(id);
+                for (int tId = 0; tId < tStore.getCapacity(); tId++) {
+                    if (!tStore.elementExists(tId)) {
+                        description.clear(tId);
                     }
                 }
             }

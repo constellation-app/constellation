@@ -103,6 +103,7 @@ public class FlattenZNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test

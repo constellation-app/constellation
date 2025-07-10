@@ -118,7 +118,7 @@ public class JDBCDriver {
         this.jarFile = jarFile;
     }
 
-    public Driver getDriver() throws MalformedURLException, ClassNotFoundException, NoSuchMethodException, NoSuchMethodException, InstantiationException, InstantiationException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public Driver getDriver() throws MalformedURLException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         final URL[] searchPath = new URL[]{jarFile.toURI().toURL()};
         final ClassLoader clloader = URLClassLoader.newInstance(searchPath);
 

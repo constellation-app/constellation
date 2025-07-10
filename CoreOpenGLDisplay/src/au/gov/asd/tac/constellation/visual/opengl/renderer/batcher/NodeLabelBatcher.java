@@ -32,6 +32,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -185,7 +186,7 @@ public class NodeLabelBatcher implements SceneBatcher {
         int totalScale = LabelUtilities.NRADIUS_TO_LABEL_UNITS;
         for (int label = 0; label < access.getBottomLabelCount(); label++) {
             final String labelText = access.getVertexBottomLabelText(pos, label);
-            ArrayList<String> lines = LabelUtilities.splitTextIntoLines(labelText);
+            final List<String> lines = LabelUtilities.splitTextIntoLines(labelText);
             for (final String line : lines) {
                 SharedDrawable.getGlyphManager().renderTextAsLigatures(line, glyphStream, new NodeGlyphStreamContext(pos, -totalScale, visibility, label));
                 totalScale += labelBottomInfoReference.get(label, 3);
@@ -198,7 +199,7 @@ public class NodeLabelBatcher implements SceneBatcher {
         int totalScale = LabelUtilities.NRADIUS_TO_LABEL_UNITS;
         for (int label = 0; label < access.getTopLabelCount(); label++) {
             final String text = access.getVertexTopLabelText(pos, label);
-            ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
+            final List<String> lines = LabelUtilities.splitTextIntoLines(text);
             Collections.reverse(lines);
             for (final String line : lines) {
                 SharedDrawable.getGlyphManager().renderTextAsLigatures(line, glyphStream, new NodeGlyphStreamContext(pos, totalScale, visibility, label));

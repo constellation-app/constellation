@@ -55,9 +55,7 @@ public class SystemUtilities {
             return;
         }
         try {
-            EventQueue.invokeAndWait(() -> {
-                mainframe = (JFrame) WindowManager.getDefault().getMainWindow();
-            });
+            EventQueue.invokeAndWait(() -> mainframe = (JFrame) WindowManager.getDefault().getMainWindow());
         } catch (final InterruptedException ex) {
             LOGGER.log(Level.WARNING, "Thread displaying dialog was interrupted.", ex);
             Thread.currentThread().interrupt();

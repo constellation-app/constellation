@@ -87,7 +87,7 @@ public class ClusteringCoefficientNGTest {
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         graph = null;
     }
 

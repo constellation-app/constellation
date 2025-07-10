@@ -189,7 +189,7 @@ public class WhatsNewViewPane extends BorderPane {
         for (final WhatsNewEntry wne : wnList) {
             // Use a far-future date to indicate an undated fixed position at the top.
             final String dt;
-            if (wne.date.compareTo("3000") == -1) {
+            if (wne.date.compareTo("3000") < 0) {
                 if (!headerDone) {
                     buf.append("<hr>\n<h2>What's New</h2>\n");
                     headerDone = true;

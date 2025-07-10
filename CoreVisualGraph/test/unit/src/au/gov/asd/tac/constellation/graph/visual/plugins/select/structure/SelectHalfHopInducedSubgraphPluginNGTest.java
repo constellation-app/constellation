@@ -87,6 +87,7 @@ public class SelectHalfHopInducedSubgraphPluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

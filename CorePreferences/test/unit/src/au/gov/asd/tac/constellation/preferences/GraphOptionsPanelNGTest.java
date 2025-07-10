@@ -29,9 +29,6 @@ import org.testng.annotations.Test;
 public class GraphOptionsPanelNGTest {
 
     private GraphOptionsPanel graphOptionsPanel;
-    
-    public GraphOptionsPanelNGTest() {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -40,14 +37,15 @@ public class GraphOptionsPanelNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     @Test
     public void graphOptionsPanel_animationEnabled() {
         graphOptionsPanel.setAnimationsEnabled(true);
-        assertTrue(graphOptionsPanel.getAnimationsEnabled());
+        assertTrue(graphOptionsPanel.isAnimationsEnabled());
         graphOptionsPanel.setAnimationsEnabled(false);
-        assertFalse(graphOptionsPanel.getAnimationsEnabled());
+        assertFalse(graphOptionsPanel.isAnimationsEnabled());
     }
     
     @Test

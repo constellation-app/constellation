@@ -37,13 +37,12 @@ import org.testng.annotations.Test;
  * @author Andromeda-224
  */
 public class AnimateColorWarpActionNGTest {
+    
     private MockedStatic<AnimationUtilities> animationUtilitiesMocked;
     private GraphNode graphNodeMock;
     private final String mockGraphId = "Test graph Id";
     private Graph mockGraph;
     
-    public AnimateColorWarpActionNGTest() {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {

@@ -95,15 +95,4 @@ public class TimeZoneAttributeDescriptionNGTest {
         String result = instance.getString(id);
         assertEquals(result, expResult);
     }
-
-//    /**
-//     * Test of hashCode method, of class TimeZoneAttributeDescription.
-//     */
-//    @Test
-//    public void testHashCode() {
-//        int id = 0;
-//        int expResult = 0;
-//        int result = instance.hashCode(id);
-//        assertEquals(result, expResult);
-//    }
 }
