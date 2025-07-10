@@ -28,7 +28,7 @@ public class TestHttpProxy implements ConstellationHttpProxy {
 
     @Override
     public Pair<String, Integer> getDefaultProxy() {
-        return new Pair("my-proxy.default", 8080);
+        return new Pair<>("my-proxy.default", 8080);
     }
 
     @Override

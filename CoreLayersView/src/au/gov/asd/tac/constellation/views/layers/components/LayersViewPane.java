@@ -51,7 +51,7 @@ public class LayersViewPane extends BorderPane {
     protected VBox layersViewVBox;
     protected final VBox noGraphPane;
     private final MenuBar options;
-    private final ComboBox modeBox;
+    private final ComboBox<String> modeBox;
     
     private final TitledPane layersHeading;
     private final ScrollPane attributeScrollPane;
@@ -96,9 +96,9 @@ public class LayersViewPane extends BorderPane {
         layersHeading.setText(" ");
         
         final String[] modeList = {"UNION mode" , "INTERSECTION mode"};
-        modeBox = new ComboBox(FXCollections.observableArrayList(modeList));
+        modeBox = new ComboBox<>(FXCollections.observableArrayList(modeList));
         modeBox.getSelectionModel().selectFirst();
-        modeBox.valueProperty().addListener((final ObservableValue observable, final Object oldValue, final Object newValue) -> 
+        modeBox.valueProperty().addListener((observable, oldValue, newValue) -> 
             LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getActiveGraph())
         );
         final BorderPane border = new BorderPane();

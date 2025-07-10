@@ -101,7 +101,7 @@ public class PluginFinder {
         private final Alert dialog;
         private final ListView<String> listView;
 
-        public MouseEventHandler(final Alert dialog, final ListView listView) {
+        public MouseEventHandler(final Alert dialog, final ListView<String> listView) {
             this.dialog = dialog;
             this.listView = listView;
         }
@@ -133,7 +133,7 @@ public class PluginFinder {
         private final Alert dialog;
         private final ListView<String> listView;
 
-        public KeyEventHandler(final Alert dialog, final ListView listView) {
+        public KeyEventHandler(final Alert dialog, final ListView<String> listView) {
             this.dialog = dialog;
             this.listView = listView;
         }
@@ -156,10 +156,10 @@ public class PluginFinder {
 
     class TextFieldChangeListener implements ChangeListener<String> {
         private final ObservableList<String> texts;
-        private final ListView listView;
+        private final ListView<String> listView;
 
         public TextFieldChangeListener(final ObservableList<String> texts,
-                                       final ListView listView) {
+                                       final ListView<String> listView) {
             this.texts = texts;
             this.listView = listView;
         }

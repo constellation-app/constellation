@@ -435,9 +435,8 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @return a copy of this parameter.
      */
-    @SuppressWarnings("unchecked") // Below cast will always work.
     public final PluginParameter<V> copy() {
-        final PluginParameter<V> copy = (PluginParameter<V>) create(value, type, id);
+        final PluginParameter<V> copy = create(value, type, id);
         copy.setName(name);
         copy.setDescription(description);
         copy.setIcon(icon);

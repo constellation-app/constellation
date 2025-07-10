@@ -91,9 +91,8 @@ public class DateAttributeDescriptionNGTest {
      */
     @Test
     public void testGetNativeClass() {
-        Class expResult = Long.class;
-        Class result = instance.getNativeClass();
-        assertEquals(result, expResult);
+        Class<?> result = instance.getNativeClass();
+        assertEquals(result, Long.class);
     }
 
     /**

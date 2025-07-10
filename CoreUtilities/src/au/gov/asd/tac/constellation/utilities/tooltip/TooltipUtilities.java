@@ -86,6 +86,6 @@ public class TooltipUtilities {
                 e = finish;
             }
         }
-        return new Pair(s,e);
+        return new Pair<>(s,e);
     }
 }

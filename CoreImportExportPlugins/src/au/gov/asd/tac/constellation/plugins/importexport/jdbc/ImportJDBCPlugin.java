@@ -117,6 +117,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final JDBCConnection connection = (JDBCConnection) parameters.getParameters().get(CONNECTION_PARAMETER_ID).getObjectValue();
         final String query = parameters.getParameters().get(QUERY_PARAMETER_ID).getStringValue();
+        @SuppressWarnings("unchecked") // DEFINITIONS_PARAMETER_ID will always contain a list of ImportDefinition
         final List<ImportDefinition> definitions = (List<ImportDefinition>) parameters.getParameters().get(DEFINITIONS_PARAMETER_ID).getObjectValue();
         final Boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
         boolean positionalAtrributesExist = false;

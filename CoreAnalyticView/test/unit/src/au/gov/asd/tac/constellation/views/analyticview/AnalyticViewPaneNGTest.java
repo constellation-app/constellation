@@ -83,7 +83,7 @@ public class AnalyticViewPaneNGTest {
             final AnalyticViewPane instance = new AnalyticViewPane(controller);
 
             final Map<GraphVisualisation, Boolean> newVisualisations = new HashMap<>();
-            final SizeVisualisation sizeVisualisation = mock(SizeVisualisation.class);
+            final SizeVisualisation<?> sizeVisualisation = mock(SizeVisualisation.class);
             newVisualisations.put(sizeVisualisation, true);
             when(controller.getGraphVisualisations()).thenReturn(newVisualisations);
 

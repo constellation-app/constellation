@@ -421,7 +421,7 @@ public abstract class RestClient {
         if (LogPreferences.isConnectionLoggingEnabled()) {
             ConnectionLogging.getInstance().log(Level.FINE, "### Connection Request URL = " + url, null);
             final StringBuilder sb = new StringBuilder();
-            for (final Tuple t : params){
+            for (final Tuple<String, String> t : params){
                 sb.append(t.getFirst()).append(" = ").append(t.getSecond()).append("\n");
             }
             ConnectionLogging.getInstance().log(Level.FINE, "### Connection Request Parameters:\n" + sb.toString(), null);

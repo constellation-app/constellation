@@ -188,8 +188,10 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
     }
 
     private String translateFromZonedDateTime(final ZonedDateTime zonedDateTime, final PluginParameters parameters) {
-        final PluginParameter timeZoneParam = parameters.getParameters().get(TIMEZONE_PARAMETER_ID);
-        final PluginParameter convertedTimeZoneParam = parameters.getParameters().get(CONVERTED_TIMEZONE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // TIMEZONE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> timeZoneParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TIMEZONE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // CONVERTED_TIMEZONE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> convertedTimeZoneParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(CONVERTED_TIMEZONE_PARAMETER_ID);
 
         final String timeZoneString = timeZoneParam.getStringValue();
         if (timeZoneParam.isEnabled() && StringUtils.isNotBlank(timeZoneString)) {
@@ -201,8 +203,10 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
     }
 
     private String translateFromTemporalAccessorDateTime(final String value, final String format, final PluginParameters parameters){
-        final PluginParameter timeZoneParam = parameters.getParameters().get(TIMEZONE_PARAMETER_ID);
-        final PluginParameter convertedTimeZoneParam = parameters.getParameters().get(CONVERTED_TIMEZONE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // TIMEZONE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> timeZoneParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TIMEZONE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // CONVERTED_TIMEZONE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> convertedTimeZoneParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(CONVERTED_TIMEZONE_PARAMETER_ID);
 
         final DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
         final String timeZoneString = timeZoneParam.getStringValue();

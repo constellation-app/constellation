@@ -80,9 +80,8 @@ public class ByteAttributeDescriptionNGTest {
     public void testGetNativeClass() {
         System.out.println("getNativeClass");
         
-        Class expResult = byte.class;
-        Class result = instance.getNativeClass();
-        assertEquals(result, expResult);
+        Class<?> result = instance.getNativeClass();
+        assertEquals(result, byte.class);
     }
 
     /**

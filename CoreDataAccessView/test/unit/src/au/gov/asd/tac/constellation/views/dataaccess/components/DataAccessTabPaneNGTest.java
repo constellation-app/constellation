@@ -342,9 +342,9 @@ public class DataAccessTabPaneNGTest {
 
         doCallRealMethod().when(queryPhasePane).storeParameterValues();
 
-        final PluginParameter pluginParameter1 = mock(PluginParameter.class);
-        final PluginParameter pluginParameter2 = mock(PluginParameter.class);
-        final PluginParameter pluginParameter3 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter1 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter2 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter3 = mock(PluginParameter.class);
 
         // Set up our fake tab pane
         doReturn(tabPane).when(dataAccessTabPane).getTabPane();
@@ -430,7 +430,7 @@ public class DataAccessTabPaneNGTest {
         when(dataSourceTitledPane3.getParameters()).thenReturn(pane3PluginParameters);
 
         // Stub out the individual parameters 
-        final PluginParameter pluginParameter1 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter1 = mock(PluginParameter.class);
         final PluginParameter pluginParameter2 = mock(PluginParameter.class);
         final PluginParameter pluginParameter3 = mock(PluginParameter.class);
 
@@ -640,8 +640,8 @@ public class DataAccessTabPaneNGTest {
         final PluginParameters pane3PluginParameters = mock(PluginParameters.class);
         final PluginParameters pane4PluginParameters = mock(PluginParameters.class);
 
-        final PluginParameter pluginParameter1 = mock(PluginParameter.class);
-        final PluginParameter pluginParameter2 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter1 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter2 = mock(PluginParameter.class);
 
         final Tab tab = mock(Tab.class);
         final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);

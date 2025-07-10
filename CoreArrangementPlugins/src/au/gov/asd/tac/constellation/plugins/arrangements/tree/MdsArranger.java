@@ -535,7 +535,7 @@ public class MdsArranger implements Arranger {
                 throw new InterruptedException();
             }
             final int vxId = vxsToArrange[i];
-            float sum = 0;
+            double sum = 0;
 
             for (int j = 0; j < numVxsToInfluence; j++) {
                 final int inflVxId = vxsToInfluence[j];
@@ -549,7 +549,7 @@ public class MdsArranger implements Arranger {
             }
 
             if (sum > 0) {
-                gains[vxId] = 1.0F / (2.0F * sum);
+                gains[vxId] = 1F / (2F * (float) sum);
             }
         }
     }
@@ -658,8 +658,8 @@ public class MdsArranger implements Arranger {
                             xInc += (xDelta * mult);
                             yInc += (yDelta * mult);
                         } else {
-                            xInc += (RANDOM.nextDouble() - 0.5);
-                            yInc += (RANDOM.nextDouble() - 0.5);
+                            xInc += (RANDOM.nextFloat() - 0.5F);
+                            yInc += (RANDOM.nextFloat() - 0.5F);
                         }
                     }
                 }

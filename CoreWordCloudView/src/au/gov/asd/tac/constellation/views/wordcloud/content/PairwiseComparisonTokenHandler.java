@@ -26,7 +26,7 @@ import java.util.Set;
  */
 public class PairwiseComparisonTokenHandler implements TokenHandler {
 
-    final Map<String, Map[]> tokenElementFrequencies = new HashMap<>();
+    final Map<String, Map<Integer, Integer>[]> tokenElementFrequencies = new HashMap<>();
     final Map<Integer, Integer> elementCardinalities = new HashMap<>();
 
     final Set<Integer> elementsOfInterest;
@@ -55,7 +55,7 @@ public class PairwiseComparisonTokenHandler implements TokenHandler {
         }
 
         synchronized (tokenElementFrequencies) {
-            Map[] frequencyMaps = tokenElementFrequencies.get(token);
+            Map<Integer, Integer>[] frequencyMaps = tokenElementFrequencies.get(token);
             if (frequencyMaps == null) {
                 frequencyMaps = new LinkedHashMap[totalChunks];
                 for (int i = 0; i < totalChunks; i++) {

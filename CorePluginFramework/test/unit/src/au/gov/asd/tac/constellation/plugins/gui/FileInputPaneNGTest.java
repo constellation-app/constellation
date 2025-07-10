@@ -98,7 +98,7 @@ public class FileInputPaneNGTest {
         final String[] titleArray = {"title open", "title open_multiple", "title save"};
         final String[] fileExtensionArray = {null, "", "svg"};
 
-        final CompletableFuture dialogFuture = CompletableFuture.completedFuture(stubLambda(null, null));
+        final CompletableFuture<Optional<File>> dialogFuture = CompletableFuture.completedFuture(stubLambda(null, null));
 
         try (MockedStatic<FileChooser> fileChooserStaticMock = Mockito.mockStatic(FileChooser.class, Mockito.CALLS_REAL_METHODS)) {
             // Setup static mock
@@ -130,7 +130,7 @@ public class FileInputPaneNGTest {
         System.out.println("handleButtonOnActionInterruptedException");
 
         // Mock
-        final CompletableFuture dialogFutureMock = mock(CompletableFuture.class);
+        final CompletableFuture<?> dialogFutureMock = mock(CompletableFuture.class);
         // Needs try catch
         try {
             doThrow(InterruptedException.class).when(dialogFutureMock).get();
@@ -171,7 +171,7 @@ public class FileInputPaneNGTest {
         System.out.println("handleButtonOnActionExecutionException");
 
         // Mock
-        final CompletableFuture dialogFutureMock = mock(CompletableFuture.class);
+        final CompletableFuture<?> dialogFutureMock = mock(CompletableFuture.class);
         // Needs try catch
         try {
             doThrow(ExecutionException.class).when(dialogFutureMock).get();
