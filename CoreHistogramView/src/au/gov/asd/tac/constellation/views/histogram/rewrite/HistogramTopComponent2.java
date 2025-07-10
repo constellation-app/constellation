@@ -82,18 +82,18 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.histogram.rewrite.HistogramTopComponent2"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 501),
+    @ActionReference(path = "Menu/Experimental/Views", position = 3),
 // TODO: uncomment when histogram rewrite fully replaces old histogram
 //    @ActionReference(path = "Shortcuts", name = "CS-H"),
-    @ActionReference(path = "Toolbars/Views", position = 0)
+//    @ActionReference(path = "Toolbars/Views", position = 0)
 })
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_HistogramAction2",
         preferredID = "HistogramTopComponent2"
 )
 @NbBundle.Messages({
-    "CTL_HistogramAction2=Histogram2",
-    "CTL_HistogramTopComponent2=Histogram2",
+    "CTL_HistogramAction2=New Histogram",
+    "CTL_HistogramTopComponent2=New Histogram",
     "HINT_HistogramTopComponent2=The histogram view will display attribute values as a bar chart"
 })
 
