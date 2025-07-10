@@ -597,9 +597,9 @@ public class HistogramPane extends BorderPane {
                 if (r == DialogDescriptor.OK_OPTION) {
                     dialog.storeRecentParameterValues();
                     CURRENT_PARAMETER_IDS.put(binFormatter, parameters.copy());
-                    topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getValue(), parameters);
+                    Platform.runLater(() -> topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getValue(), parameters));
                 } else if (currentHistogramState != null) {
-                    binFormatterCombo.getSelectionModel().select(currentHistogramState.getBinFormatter());
+                    Platform.runLater(() -> binFormatterCombo.getSelectionModel().select(currentHistogramState.getBinFormatter()));
                 }
             });
 
