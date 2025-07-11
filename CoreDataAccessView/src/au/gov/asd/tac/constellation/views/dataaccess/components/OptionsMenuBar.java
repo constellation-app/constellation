@@ -26,6 +26,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -131,9 +132,9 @@ public class OptionsMenuBar {
         // Save Menu
         ////////////////////
         saveMenuItem = new MenuItem(SAVE_MENU_ITEM_TEXT, SAVE_TEMPLATE_ICON);
-        saveMenuItem.setOnAction(event -> {
+        saveMenuItem.setOnAction(event -> {            
             DataAccessParametersIoProvider.saveParameters(
-                    dataAccessPane.getDataAccessTabPane().getTabPane()
+                    dataAccessPane.getDataAccessTabPane().getTabPane(), dataAccessPane.getScene().getWindow()
             );
 
             event.consume();
