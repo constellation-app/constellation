@@ -734,6 +734,7 @@
                 <package>jnr.ffi.provider.jffi.platform.aarch64.darwin</package>
                 <package>jnr.ffi.provider.jffi.platform.aarch64.freebsd</package>
                 <package>jnr.ffi.provider.jffi.platform.aarch64.linux</package>
+                <package>jnr.ffi.provider.jffi.platform.aarch64.windows</package>
                 <package>jnr.ffi.provider.jffi.platform.arm.linux</package>
                 <package>jnr.ffi.provider.jffi.platform.i386.darwin</package>
                 <package>jnr.ffi.provider.jffi.platform.i386.freebsd</package>
@@ -742,6 +743,7 @@
                 <package>jnr.ffi.provider.jffi.platform.i386.openbsd</package>
                 <package>jnr.ffi.provider.jffi.platform.i386.solaris</package>
                 <package>jnr.ffi.provider.jffi.platform.i386.windows</package>
+                <package>jnr.ffi.provider.jffi.platform.loongarch64.linux</package>
                 <package>jnr.ffi.provider.jffi.platform.mips.linux</package>
                 <package>jnr.ffi.provider.jffi.platform.mips64.linux</package>
                 <package>jnr.ffi.provider.jffi.platform.mips64el.linux</package>
@@ -754,6 +756,7 @@
                 <package>jnr.ffi.provider.jffi.platform.ppc64.ibmi</package>
                 <package>jnr.ffi.provider.jffi.platform.ppc64.linux</package>
                 <package>jnr.ffi.provider.jffi.platform.ppc64le.linux</package>
+                <package>jnr.ffi.provider.jffi.platform.riscv64.linux</package>
                 <package>jnr.ffi.provider.jffi.platform.s390.linux</package>
                 <package>jnr.ffi.provider.jffi.platform.s390x.linux</package>
                 <package>jnr.ffi.provider.jffi.platform.sparc.solaris</package>
@@ -1493,36 +1496,6 @@
                 <package>org.assertj.core.util.diff.myers</package>
                 <package>org.assertj.core.util.introspection</package>
                 <package>org.assertj.core.util.xml</package>
-                <package>org.checkerframework.checker.builder.qual</package>
-                <package>org.checkerframework.checker.calledmethods.qual</package>
-                <package>org.checkerframework.checker.compilermsgs.qual</package>
-                <package>org.checkerframework.checker.fenum.qual</package>
-                <package>org.checkerframework.checker.formatter.qual</package>
-                <package>org.checkerframework.checker.guieffect.qual</package>
-                <package>org.checkerframework.checker.i18n.qual</package>
-                <package>org.checkerframework.checker.i18nformatter.qual</package>
-                <package>org.checkerframework.checker.index.qual</package>
-                <package>org.checkerframework.checker.initialization.qual</package>
-                <package>org.checkerframework.checker.interning.qual</package>
-                <package>org.checkerframework.checker.lock.qual</package>
-                <package>org.checkerframework.checker.mustcall.qual</package>
-                <package>org.checkerframework.checker.nullness.qual</package>
-                <package>org.checkerframework.checker.optional.qual</package>
-                <package>org.checkerframework.checker.propkey.qual</package>
-                <package>org.checkerframework.checker.regex.qual</package>
-                <package>org.checkerframework.checker.signature.qual</package>
-                <package>org.checkerframework.checker.signedness.qual</package>
-                <package>org.checkerframework.checker.tainting.qual</package>
-                <package>org.checkerframework.checker.units.qual</package>
-                <package>org.checkerframework.common.aliasing.qual</package>
-                <package>org.checkerframework.common.initializedfields.qual</package>
-                <package>org.checkerframework.common.reflection.qual</package>
-                <package>org.checkerframework.common.returnsreceiver.qual</package>
-                <package>org.checkerframework.common.subtyping.qual</package>
-                <package>org.checkerframework.common.util.count.report.qual</package>
-                <package>org.checkerframework.common.value.qual</package>
-                <package>org.checkerframework.dataflow.qual</package>
-                <package>org.checkerframework.framework.qual</package>
                 <package>org.codehaus.jackson</package>
                 <package>org.codehaus.jackson.annotate</package>
                 <package>org.codehaus.jackson.impl</package>
@@ -2002,6 +1975,7 @@
                 <package>org.json</package>
                 <package>org.json.simple</package>
                 <package>org.json.simple.parser</package>
+                <package>org.jspecify.annotations</package>
                 <package>org.jvnet.fastinfoset</package>
                 <package>org.jvnet.fastinfoset.sax</package>
                 <package>org.jvnet.fastinfoset.sax.helpers</package>
@@ -2314,6 +2288,7 @@
                 <package>org.python.apache.commons.compress.compressors.xz</package>
                 <package>org.python.apache.commons.compress.compressors.z</package>
                 <package>org.python.apache.commons.compress.compressors.zstandard</package>
+                <package>org.python.apache.commons.compress.harmony</package>
                 <package>org.python.apache.commons.compress.harmony.archive.internal.nls</package>
                 <package>org.python.apache.commons.compress.harmony.pack200</package>
                 <package>org.python.apache.commons.compress.harmony.unpack200</package>
@@ -2322,6 +2297,21 @@
                 <package>org.python.apache.commons.compress.java.util.jar</package>
                 <package>org.python.apache.commons.compress.parallel</package>
                 <package>org.python.apache.commons.compress.utils</package>
+                <package>org.python.apache.commons.io</package>
+                <package>org.python.apache.commons.io.build</package>
+                <package>org.python.apache.commons.io.channels</package>
+                <package>org.python.apache.commons.io.charset</package>
+                <package>org.python.apache.commons.io.comparator</package>
+                <package>org.python.apache.commons.io.file</package>
+                <package>org.python.apache.commons.io.file.attribute</package>
+                <package>org.python.apache.commons.io.file.spi</package>
+                <package>org.python.apache.commons.io.filefilter</package>
+                <package>org.python.apache.commons.io.function</package>
+                <package>org.python.apache.commons.io.input</package>
+                <package>org.python.apache.commons.io.input.buffer</package>
+                <package>org.python.apache.commons.io.monitor</package>
+                <package>org.python.apache.commons.io.output</package>
+                <package>org.python.apache.commons.io.serialization</package>
                 <package>org.python.apache.html.dom</package>
                 <package>org.python.apache.wml</package>
                 <package>org.python.apache.wml.dom</package>
@@ -2365,25 +2355,11 @@
                 <package>org.python.bouncycastle.asn1</package>
                 <package>org.python.bouncycastle.asn1.anssi</package>
                 <package>org.python.bouncycastle.asn1.bc</package>
-                <package>org.python.bouncycastle.asn1.cryptlib</package>
                 <package>org.python.bouncycastle.asn1.cryptopro</package>
-                <package>org.python.bouncycastle.asn1.edec</package>
                 <package>org.python.bouncycastle.asn1.gm</package>
-                <package>org.python.bouncycastle.asn1.gnu</package>
-                <package>org.python.bouncycastle.asn1.iana</package>
-                <package>org.python.bouncycastle.asn1.isara</package>
-                <package>org.python.bouncycastle.asn1.iso</package>
-                <package>org.python.bouncycastle.asn1.kisa</package>
-                <package>org.python.bouncycastle.asn1.microsoft</package>
-                <package>org.python.bouncycastle.asn1.misc</package>
-                <package>org.python.bouncycastle.asn1.mozilla</package>
                 <package>org.python.bouncycastle.asn1.nist</package>
-                <package>org.python.bouncycastle.asn1.nsri</package>
-                <package>org.python.bouncycastle.asn1.ntt</package>
                 <package>org.python.bouncycastle.asn1.ocsp</package>
-                <package>org.python.bouncycastle.asn1.oiw</package>
                 <package>org.python.bouncycastle.asn1.pkcs</package>
-                <package>org.python.bouncycastle.asn1.rosstandart</package>
                 <package>org.python.bouncycastle.asn1.sec</package>
                 <package>org.python.bouncycastle.asn1.teletrust</package>
                 <package>org.python.bouncycastle.asn1.ua</package>
@@ -2419,6 +2395,7 @@
                 <package>org.python.bouncycastle.crypto.agreement.kdf</package>
                 <package>org.python.bouncycastle.crypto.agreement.srp</package>
                 <package>org.python.bouncycastle.crypto.commitments</package>
+                <package>org.python.bouncycastle.crypto.constraints</package>
                 <package>org.python.bouncycastle.crypto.digests</package>
                 <package>org.python.bouncycastle.crypto.ec</package>
                 <package>org.python.bouncycastle.crypto.encodings</package>
@@ -2426,6 +2403,7 @@
                 <package>org.python.bouncycastle.crypto.examples</package>
                 <package>org.python.bouncycastle.crypto.fpe</package>
                 <package>org.python.bouncycastle.crypto.generators</package>
+                <package>org.python.bouncycastle.crypto.hpke</package>
                 <package>org.python.bouncycastle.crypto.io</package>
                 <package>org.python.bouncycastle.crypto.kems</package>
                 <package>org.python.bouncycastle.crypto.macs</package>
@@ -2438,6 +2416,7 @@
                 <package>org.python.bouncycastle.crypto.prng</package>
                 <package>org.python.bouncycastle.crypto.prng.drbg</package>
                 <package>org.python.bouncycastle.crypto.signers</package>
+                <package>org.python.bouncycastle.crypto.tls</package>
                 <package>org.python.bouncycastle.crypto.util</package>
                 <package>org.python.bouncycastle.dvcs</package>
                 <package>org.python.bouncycastle.eac</package>
@@ -2451,8 +2430,21 @@
                 <package>org.python.bouncycastle.iana</package>
                 <package>org.python.bouncycastle.internal.asn1.bsi</package>
                 <package>org.python.bouncycastle.internal.asn1.cms</package>
+                <package>org.python.bouncycastle.internal.asn1.cryptlib</package>
                 <package>org.python.bouncycastle.internal.asn1.eac</package>
+                <package>org.python.bouncycastle.internal.asn1.edec</package>
+                <package>org.python.bouncycastle.internal.asn1.gnu</package>
+                <package>org.python.bouncycastle.internal.asn1.iana</package>
+                <package>org.python.bouncycastle.internal.asn1.isara</package>
                 <package>org.python.bouncycastle.internal.asn1.isismtt</package>
+                <package>org.python.bouncycastle.internal.asn1.iso</package>
+                <package>org.python.bouncycastle.internal.asn1.kisa</package>
+                <package>org.python.bouncycastle.internal.asn1.microsoft</package>
+                <package>org.python.bouncycastle.internal.asn1.misc</package>
+                <package>org.python.bouncycastle.internal.asn1.nsri</package>
+                <package>org.python.bouncycastle.internal.asn1.ntt</package>
+                <package>org.python.bouncycastle.internal.asn1.oiw</package>
+                <package>org.python.bouncycastle.internal.asn1.rosstandart</package>
                 <package>org.python.bouncycastle.its</package>
                 <package>org.python.bouncycastle.its.bc</package>
                 <package>org.python.bouncycastle.its.jcajce</package>
@@ -2461,6 +2453,7 @@
                 <package>org.python.bouncycastle.jcajce.interfaces</package>
                 <package>org.python.bouncycastle.jcajce.io</package>
                 <package>org.python.bouncycastle.jcajce.provider.asymmetric</package>
+                <package>org.python.bouncycastle.jcajce.provider.asymmetric.compositesignatures</package>
                 <package>org.python.bouncycastle.jcajce.provider.asymmetric.dh</package>
                 <package>org.python.bouncycastle.jcajce.provider.asymmetric.dsa</package>
                 <package>org.python.bouncycastle.jcajce.provider.asymmetric.dstu</package>
@@ -2520,32 +2513,46 @@
                 <package>org.python.bouncycastle.pkcs.jcajce</package>
                 <package>org.python.bouncycastle.pkix</package>
                 <package>org.python.bouncycastle.pkix.jcajce</package>
+                <package>org.python.bouncycastle.pkix.util</package>
+                <package>org.python.bouncycastle.pkix.util.filter</package>
                 <package>org.python.bouncycastle.pqc.asn1</package>
                 <package>org.python.bouncycastle.pqc.crypto</package>
+                <package>org.python.bouncycastle.pqc.crypto.bike</package>
                 <package>org.python.bouncycastle.pqc.crypto.cmce</package>
+                <package>org.python.bouncycastle.pqc.crypto.crystals.dilithium</package>
+                <package>org.python.bouncycastle.pqc.crypto.crystals.kyber</package>
+                <package>org.python.bouncycastle.pqc.crypto.falcon</package>
                 <package>org.python.bouncycastle.pqc.crypto.frodo</package>
-                <package>org.python.bouncycastle.pqc.crypto.gmss</package>
-                <package>org.python.bouncycastle.pqc.crypto.gmss.util</package>
+                <package>org.python.bouncycastle.pqc.crypto.gemss</package>
+                <package>org.python.bouncycastle.pqc.crypto.hqc</package>
                 <package>org.python.bouncycastle.pqc.crypto.lms</package>
-                <package>org.python.bouncycastle.pqc.crypto.mceliece</package>
                 <package>org.python.bouncycastle.pqc.crypto.newhope</package>
-                <package>org.python.bouncycastle.pqc.crypto.qtesla</package>
+                <package>org.python.bouncycastle.pqc.crypto.ntru</package>
+                <package>org.python.bouncycastle.pqc.crypto.ntruprime</package>
+                <package>org.python.bouncycastle.pqc.crypto.picnic</package>
                 <package>org.python.bouncycastle.pqc.crypto.rainbow</package>
-                <package>org.python.bouncycastle.pqc.crypto.rainbow.util</package>
                 <package>org.python.bouncycastle.pqc.crypto.saber</package>
                 <package>org.python.bouncycastle.pqc.crypto.sphincs</package>
                 <package>org.python.bouncycastle.pqc.crypto.sphincsplus</package>
                 <package>org.python.bouncycastle.pqc.crypto.util</package>
                 <package>org.python.bouncycastle.pqc.crypto.xmss</package>
+                <package>org.python.bouncycastle.pqc.crypto.xwing</package>
                 <package>org.python.bouncycastle.pqc.jcajce.interfaces</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider</package>
+                <package>org.python.bouncycastle.pqc.jcajce.provider.bike</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.cmce</package>
+                <package>org.python.bouncycastle.pqc.jcajce.provider.dilithium</package>
+                <package>org.python.bouncycastle.pqc.jcajce.provider.falcon</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.frodo</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.gmss</package>
+                <package>org.python.bouncycastle.pqc.jcajce.provider.hqc</package>
+                <package>org.python.bouncycastle.pqc.jcajce.provider.kyber</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.lms</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.mceliece</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.newhope</package>
-                <package>org.python.bouncycastle.pqc.jcajce.provider.qtesla</package>
+                <package>org.python.bouncycastle.pqc.jcajce.provider.ntru</package>
+                <package>org.python.bouncycastle.pqc.jcajce.provider.ntruprime</package>
+                <package>org.python.bouncycastle.pqc.jcajce.provider.picnic</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.rainbow</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.saber</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.sphincs</package>
@@ -2553,7 +2560,19 @@
                 <package>org.python.bouncycastle.pqc.jcajce.provider.util</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.xmss</package>
                 <package>org.python.bouncycastle.pqc.jcajce.spec</package>
-                <package>org.python.bouncycastle.pqc.math.linearalgebra</package>
+                <package>org.python.bouncycastle.pqc.legacy.crypto.gmss</package>
+                <package>org.python.bouncycastle.pqc.legacy.crypto.gmss.util</package>
+                <package>org.python.bouncycastle.pqc.legacy.crypto.mceliece</package>
+                <package>org.python.bouncycastle.pqc.legacy.crypto.ntru</package>
+                <package>org.python.bouncycastle.pqc.legacy.crypto.qtesla</package>
+                <package>org.python.bouncycastle.pqc.legacy.crypto.rainbow</package>
+                <package>org.python.bouncycastle.pqc.legacy.crypto.rainbow.util</package>
+                <package>org.python.bouncycastle.pqc.legacy.math.linearalgebra</package>
+                <package>org.python.bouncycastle.pqc.legacy.math.ntru.euclid</package>
+                <package>org.python.bouncycastle.pqc.legacy.math.ntru.polynomial</package>
+                <package>org.python.bouncycastle.pqc.legacy.math.ntru.util</package>
+                <package>org.python.bouncycastle.pqc.math.ntru</package>
+                <package>org.python.bouncycastle.pqc.math.ntru.parameters</package>
                 <package>org.python.bouncycastle.tsp</package>
                 <package>org.python.bouncycastle.tsp.cms</package>
                 <package>org.python.bouncycastle.tsp.ers</package>
@@ -2605,10 +2624,12 @@
                 <package>org.python.icu.impl.number</package>
                 <package>org.python.icu.impl.number.parse</package>
                 <package>org.python.icu.impl.number.range</package>
+                <package>org.python.icu.impl.personname</package>
                 <package>org.python.icu.impl.text</package>
                 <package>org.python.icu.impl.units</package>
                 <package>org.python.icu.lang</package>
                 <package>org.python.icu.math</package>
+                <package>org.python.icu.message2</package>
                 <package>org.python.icu.number</package>
                 <package>org.python.icu.text</package>
                 <package>org.python.icu.util</package>
@@ -2742,7 +2763,6 @@
                 <package>org.w3.xlink</package>
                 <package>org.w3.xlink.impl</package>
                 <package>org.w3.xlink.util</package>
-                <package>org.w3c.dom.html</package>
                 <package>pabeles.concurrency</package>
                 <package>processing.awt</package>
                 <package>processing.core</package>
@@ -2851,12 +2871,8 @@
                 <binary-origin>release/modules/ext/byte-buddy-agent-1.17.5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/checker-qual-3.43.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/checker-qual-3.43.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/commonmark-0.22.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commonmark-0.22.0.jar</binary-origin>
+                <runtime-relative-path>ext/commonmark-0.25.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commonmark-0.25.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-beanutils-1.9.4.jar</runtime-relative-path>
@@ -2935,40 +2951,36 @@
                 <binary-origin>release/modules/ext/curvesapi-1.08.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-all-0.43.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-all-0.43.1.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-cdense-0.44.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-cdense-0.44.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-cdense-0.43.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-cdense-0.43.1.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-core-0.44.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-core-0.44.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-core-0.43.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-core-0.43.1.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-ddense-0.44.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-ddense-0.44.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-ddense-0.43.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-ddense-0.43.1.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-dsparse-0.44.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-dsparse-0.44.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-dsparse-0.43.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-dsparse-0.43.1.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-fdense-0.44.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-fdense-0.44.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-fdense-0.43.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-fdense-0.43.1.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-fsparse-0.44.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-fsparse-0.44.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-fsparse-0.43.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-fsparse-0.43.1.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-simple-0.44.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-simple-0.44.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-simple-0.43.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-simple-0.43.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/ejml-zdense-0.43.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-zdense-0.43.1.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-zdense-0.44.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-zdense-0.44.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/emoji-java-5.1.1.jar</runtime-relative-path>
@@ -2983,16 +2995,16 @@
                 <binary-origin>release/modules/ext/error_prone_annotations-2.36.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/failureaccess-1.0.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/failureaccess-1.0.2.jar</binary-origin>
+                <runtime-relative-path>ext/failureaccess-1.0.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/failureaccess-1.0.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/filters-2.0.235.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/filters-2.0.235.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/flowless-0.7.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/flowless-0.7.2.jar</binary-origin>
+                <runtime-relative-path>ext/flowless-0.7.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flowless-0.7.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-natives-linux-amd64.jar</runtime-relative-path>
@@ -3119,8 +3131,8 @@
                 <binary-origin>release/modules/ext/gt-xsd-ows-32.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/guava-33.4.0-jre.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/guava-33.4.0-jre.jar</binary-origin>
+                <runtime-relative-path>ext/guava-33.4.8-jre.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/guava-33.4.8-jre.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/hamcrest-2.1.jar</runtime-relative-path>
@@ -3283,8 +3295,8 @@
                 <binary-origin>release/modules/ext/jogl-all.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/json-20240205.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/json-20240205.jar</binary-origin>
+                <runtime-relative-path>ext/json-20220924.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/json-20220924.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/json-simple-1.1.1.jar</runtime-relative-path>
@@ -3293,6 +3305,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jsonic-1.2.11.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jsonic-1.2.11.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jspecify-1.0.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jspecify-1.0.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jsr305-3.0.2.jar</runtime-relative-path>
@@ -3439,8 +3455,8 @@
                 <binary-origin>release/modules/ext/jts-core-1.20.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jython-standalone-2.7.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jython-standalone-2.7.3.jar</binary-origin>
+                <runtime-relative-path>ext/jython-standalone-2.7.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jython-standalone-2.7.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/language-detector-0.6.jar</runtime-relative-path>
@@ -3503,8 +3519,8 @@
                 <binary-origin>release/modules/ext/morfologik-stemming-2.1.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/nashorn-core-15.4.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/nashorn-core-15.4.jar</binary-origin>
+                <runtime-relative-path>ext/nashorn-core-15.6.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/nashorn-core-15.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/nativewindow-natives-windows-i586.jar</runtime-relative-path>
@@ -3627,12 +3643,12 @@
                 <binary-origin>release/modules/ext/resilience4j-micrometer-1.7.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/richtextfx-0.11.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/richtextfx-0.11.2.jar</binary-origin>
+                <runtime-relative-path>ext/richtextfx-0.11.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/richtextfx-0.11.5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/rsyntaxtextarea-3.4.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/rsyntaxtextarea-3.4.0.jar</binary-origin>
+                <runtime-relative-path>ext/rsyntaxtextarea-3.6.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/rsyntaxtextarea-3.6.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/segment-2.0.1.jar</runtime-relative-path>
