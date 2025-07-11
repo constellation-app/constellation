@@ -198,7 +198,7 @@ public class JsonIO {
 
     /**
      * Get default keyboard shortcut. 
-     * They are [Ctrl+Alt+Shift+1],[Ctrl+Alt+Shift+2],[Ctrl+Alt+Shift+3]...[Ctrl+Alt+Shift+5] if not already been used within the application.
+     * They are [Alt+1],[Alt+2],[Alt+3]...[Alt+5] if not already been used within the application.
      * @param preferenceDirectory
      * @return 
      */
@@ -206,7 +206,7 @@ public class JsonIO {
         final Map<String, String> shortcuts = SystemUtilities.getCurrentKeyboardShortcuts();
         
         for (int index = 1; index <= 5; index++) {
-            final String defaultKeyboardShortcut = "Ctrl+Alt+Shift+" + index;
+            final String defaultKeyboardShortcut = "Alt+" + index;
             
             if (!shortcuts.keySet().contains(defaultKeyboardShortcut)) {                
                 final String fileNameStartsWith = "[" + StringUtils.replace(defaultKeyboardShortcut, "+", " ") + "]";
@@ -304,7 +304,7 @@ public class JsonIO {
         final File preferenceFile = new File(
                 preferenceDirectory,
                 FilenameEncoder.encode(fileNameWithKeyboardShortcut + FileExtensionConstants.JSON)
-        );                
+        );
         
         final FilenameFilter filenameFilter = (d, s) -> s.substring(s.indexOf("]")+1, s.length()).trim().equalsIgnoreCase(FilenameEncoder.encode(fileName + FileExtensionConstants.JSON));        
         final String[] fileNames = preferenceDirectory.list(filenameFilter);
@@ -318,20 +318,23 @@ public class JsonIO {
             alert.setHeaderText(PREFERENCE_FILE_EXISTS_ALERT_TITLE);
             alert.setContentText(String.format(
                     PREFERENCE_FILE_EXISTS_ALERT_ERROR_MSG_FORMAT,
-                    fileNameWithKeyboardShortcut
+                    fileName
             ));
 
             final Optional<ButtonType> option = alert.showAndWait();
-            go = option.isPresent() && option.get() == ButtonType.OK;
+            go = option.isPresent() && option.get() == ButtonType.OK;            
         }
 
         if (go) {
-            try {                
-                if (!preferenceFileExists && ksResult.isPresent() && ksResult.get().isAlreadyAssigned() && Objects.nonNull(ksResult.get().getExisitngTemplateWithKs())) {
-                    //remove shortcut from existing template to be re-assign to new template                    
-                    final String rename = ksResult.get().getExisitngTemplateWithKs()
-                            .getName().replaceAll("\\[" + StringUtils.replace(ksResult.get().getKeyboardShortcut(), "+", StringUtils.SPACE) + "\\]", StringUtils.EMPTY);
-                    ksResult.get().getExisitngTemplateWithKs().renameTo(new File(preferenceDirectory, FilenameEncoder.encode(rename.trim())));
+            try {
+                if (preferenceFileExists) {
+                    //If preferenceFileExists and choose to overwrite existing file with ks
+                    Files.deleteIfExists(new File(preferenceDirectory,FilenameEncoder.encode(fileNames[0])).toPath());
+                } else if (ksResult.isPresent() && ksResult.get().isAlreadyAssigned() && Objects.nonNull(ksResult.get().getExisitngTemplateWithKs())) {
+                    //remove shortcut from existing template to be re-assign to new template
+                    final String rename = FilenameEncoder.decode(ksResult.get().getExisitngTemplateWithKs().getName())
+                            .replaceAll("\\[" + StringUtils.replace(ksResult.get().getKeyboardShortcut(), "+", StringUtils.SPACE) + "\\]", StringUtils.EMPTY).trim();                    
+                    ksResult.get().getExisitngTemplateWithKs().renameTo(new File(preferenceDirectory, FilenameEncoder.encode(rename.trim())));                    
                 }
 
                 // Configure JSON mapper settings

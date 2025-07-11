@@ -21,7 +21,7 @@ with file system limitations.) Files in this directory can be copied and
 deleted using your favourite file management utility. 
 
 Preferences are being saved with assigned keyboard shortcuts. 
-Default keyboard shortcuts are 'ctrl 1', 'ctrl 2', ... , 'ctrl 5'. 
+Default keyboard shortcuts are 'Alt 1', 'Alt 2', ... , 'Alt 5'. 
 Users can save preferences with the keyboard shortcut of their choice. 
 
 <img src="../ext/docs/CoreDataAccessView/resources/DataAccessSaveTemplateWithKeyboardShortcut.png" alt="Save Template Button" />

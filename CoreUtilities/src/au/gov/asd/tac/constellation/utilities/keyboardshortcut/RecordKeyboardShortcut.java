@@ -17,7 +17,6 @@
 package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import au.gov.asd.tac.constellation.utilities.SystemUtilities;
-import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -114,7 +113,7 @@ public class RecordKeyboardShortcut  {
         if (!ArrayUtils.isEmpty(fileNames)) {
             exisitngTemplateWithKs = new File(
                     preferenceDirectory,
-                    FilenameEncoder.encode(fileNames[0])
+                    fileNames[0]
             );
         }
         
