@@ -57,9 +57,9 @@
         <dependency org="gov.nasa" name="worldwind" rev="2.0.0-986" />
         <dependency org="javax.help" name="javahelp" rev="2.0.05" />
         <dependency org="log4j" name="log4j" rev="1.2.17" />
-        <dependency org="org.controlsfx" name="controlsfx" rev="11.1.2" />
-        <dependency org="org.eclipse.jetty" name="jetty-server" rev="11.0.20" />
-        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="11.0.20" />
+        <dependency org="org.controlsfx" name="controlsfx" rev="11.2.2" />
+        <dependency org="org.eclipse.jetty" name="jetty-server" rev="12.0.23" />
+        <dependency org="org.eclipse.jetty.ee10" name="jetty-ee10-servlet" rev="12.0.23" />
         <dependency org="org.ejml" name="ejml-simple" rev="0.44.0" />
         <dependency org="org.python" name="jython-standalone" rev="2.7.4" />
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1" />

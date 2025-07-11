@@ -64,10 +64,12 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.ArrayUtils;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
+import org.eclipse.jetty.http.HttpURI;
+import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileChooserBuilder;
@@ -107,8 +109,8 @@ public class WebServer {
          * @param response The response.
          *
          * @return True if the correct secret was found, false otherwise.
-         *
-         * @throws javax.servlet.ServletException
+         * 
+         * @throws jakarta.servlet.ServletException
          * @throws java.io.IOException
          */
         public static boolean checkSecret(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
@@ -218,8 +220,8 @@ public class WebServer {
             // Make our own handler so we can log requests with the CONSTELLATION logs.
             //
             final RequestLog requestLog = (request, response) -> {
-                final String log = String.format("Request at %s from %s %s, status %d", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), request.getRemoteAddr(), request.getRequestURI(), response.getStatus());
-                LOGGER.info(log);
+                final HttpURI requestURI = HttpURI.build(request.getHttpURI()).query(null);
+                LOGGER.log(Level.INFO, "Request at {0} from {1} {2}, status {3}", new Object[]{LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), Request.getRemoteAddr(request), requestURI.asString(), response.getStatus()});
             };
             server.setRequestLog(requestLog);
 
@@ -480,6 +482,7 @@ public class WebServer {
      * Verify that the Python REST API client package was installed. Otherwise copy the script file to the notebook
      * directory
      *
+     * @throws java.io.IOException
      */
     public static void verifyPythonPackage() throws IOException {
         // Create the process buillder with required arguments

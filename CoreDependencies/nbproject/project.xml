@@ -1564,28 +1564,45 @@
                 <package>org.eclipse.emf.ecore.xml.type.impl</package>
                 <package>org.eclipse.emf.ecore.xml.type.internal</package>
                 <package>org.eclipse.emf.ecore.xml.type.util</package>
+                <package>org.eclipse.jetty.ee10.servlet</package>
+                <package>org.eclipse.jetty.ee10.servlet.jmx</package>
+                <package>org.eclipse.jetty.ee10.servlet.listener</package>
+                <package>org.eclipse.jetty.ee10.servlet.security</package>
+                <package>org.eclipse.jetty.ee10.servlet.security.authentication</package>
+                <package>org.eclipse.jetty.ee10.servlet.util</package>
+                <package>org.eclipse.jetty.ee10.servlet.writer</package>
                 <package>org.eclipse.jetty.http</package>
                 <package>org.eclipse.jetty.http.compression</package>
+                <package>org.eclipse.jetty.http.content</package>
                 <package>org.eclipse.jetty.http.pathmap</package>
                 <package>org.eclipse.jetty.io</package>
+                <package>org.eclipse.jetty.io.content</package>
+                <package>org.eclipse.jetty.io.internal</package>
                 <package>org.eclipse.jetty.io.jmx</package>
                 <package>org.eclipse.jetty.io.ssl</package>
                 <package>org.eclipse.jetty.security</package>
                 <package>org.eclipse.jetty.security.authentication</package>
+                <package>org.eclipse.jetty.security.internal</package>
+                <package>org.eclipse.jetty.security.jaas</package>
+                <package>org.eclipse.jetty.security.jaas.callback</package>
+                <package>org.eclipse.jetty.security.jaas.spi</package>
                 <package>org.eclipse.jetty.server</package>
                 <package>org.eclipse.jetty.server.handler</package>
                 <package>org.eclipse.jetty.server.handler.gzip</package>
                 <package>org.eclipse.jetty.server.handler.jmx</package>
+                <package>org.eclipse.jetty.server.internal</package>
                 <package>org.eclipse.jetty.server.jmx</package>
                 <package>org.eclipse.jetty.server.resource</package>
                 <package>org.eclipse.jetty.server.session</package>
                 <package>org.eclipse.jetty.servlet</package>
                 <package>org.eclipse.jetty.servlet.jmx</package>
                 <package>org.eclipse.jetty.servlet.listener</package>
+                <package>org.eclipse.jetty.session</package>
                 <package>org.eclipse.jetty.util</package>
                 <package>org.eclipse.jetty.util.annotation</package>
                 <package>org.eclipse.jetty.util.component</package>
                 <package>org.eclipse.jetty.util.compression</package>
+                <package>org.eclipse.jetty.util.jndi</package>
                 <package>org.eclipse.jetty.util.log</package>
                 <package>org.eclipse.jetty.util.preventers</package>
                 <package>org.eclipse.jetty.util.resource</package>
@@ -2939,8 +2956,8 @@
                 <binary-origin>release/modules/ext/commons-validator-1.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/controlsfx-11.1.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/controlsfx-11.1.2.jar</binary-origin>
+                <runtime-relative-path>ext/controlsfx-11.2.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/controlsfx-11.2.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/core.jar</runtime-relative-path>
@@ -3203,6 +3220,10 @@
                 <binary-origin>release/modules/ext/jakarta.inject-api-2.0.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jakarta.servlet-api-6.0.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jakarta.servlet-api-6.0.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/javahelp-2.0.05.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/javahelp-2.0.05.jar</binary-origin>
             </class-path-extension>
@@ -3223,32 +3244,32 @@
                 <binary-origin>release/modules/ext/jaxb-runtime-2.4.0-b180830.0438.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-http-11.0.20.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-http-11.0.20.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-ee10-servlet-12.0.23.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-ee10-servlet-12.0.23.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-io-11.0.20.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-io-11.0.20.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-http-12.0.23.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-http-12.0.23.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-jakarta-servlet-api-5.0.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-jakarta-servlet-api-5.0.2.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-io-12.0.23.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-io-12.0.23.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-security-11.0.20.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-security-11.0.20.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-security-12.0.23.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-security-12.0.23.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-server-11.0.20.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-server-11.0.20.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-server-12.0.23.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-server-12.0.23.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-servlet-11.0.20.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-servlet-11.0.20.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-session-12.0.23.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-session-12.0.23.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-util-11.0.20.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-util-11.0.20.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-util-12.0.23.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-util-12.0.23.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jgridshift-core-1.3.jar</runtime-relative-path>
@@ -3687,8 +3708,8 @@
                 <binary-origin>release/modules/ext/simpleclient_tracer_otel_agent-0.12.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/slf4j-api-2.0.9.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/slf4j-api-2.0.9.jar</binary-origin>
+                <runtime-relative-path>ext/slf4j-api-2.0.17.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/slf4j-api-2.0.17.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/sqlite-jdbc-3.41.2.2.jar</runtime-relative-path>
