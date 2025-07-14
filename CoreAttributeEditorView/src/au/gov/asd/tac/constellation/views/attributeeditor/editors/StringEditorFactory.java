@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.Edi
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.IndexRange;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -51,8 +50,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
     public class StringEditor extends AbstractEditor<String> {
 
-        private static final int CONTROLS_SPACING = 10;
-        private TextArea textArea;
+        private static final int CONTROLS_SPACING = 10;        
         private SpellCheckingTextArea spellCheckingTextArea;
 
         protected StringEditor(final EditOperation editOperation, final DefaultGetter<String> defaultGetter, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
@@ -61,8 +59,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
         @Override
         public void updateControlsWithValue(final String value) {
-            if (value != null) {
-                textArea.setText(value);
+            if (value != null) {                
                 spellCheckingTextArea.setText(value);
             }
         }
@@ -83,48 +80,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
             controls.getColumnConstraints().add(cc);
             final RowConstraints rc = new RowConstraints();
             rc.setVgrow(Priority.ALWAYS);
-            controls.getRowConstraints().add(rc);
-            
-            textArea = new TextArea();
-            textArea.setWrapText(true);
-            textArea.textProperty().addListener((o, n, v) -> update());
-            textArea.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-                if (e.getCode() == KeyCode.DELETE) {
-                    IndexRange selection = textArea.getSelection();
-                    if (selection.getLength() == 0) {
-                        textArea.deleteNextChar();
-                    } else {
-                        textArea.deleteText(selection);
-                    }
-                    e.consume();
-                } else if (e.isShortcutDown() && e.isShiftDown() && (e.getCode() == KeyCode.RIGHT)) {                    
-                    textArea.selectNextWord();
-                    e.consume();
-                } else if (e.isShortcutDown() && e.isShiftDown() && (e.getCode() == KeyCode.LEFT)) {                    
-                    textArea.selectPreviousWord();
-                    e.consume();
-                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.RIGHT)) {                    
-                    textArea.nextWord();
-                    e.consume();
-                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.LEFT)) {                    
-                    textArea.previousWord();
-                    e.consume();
-                } else if (e.isShiftDown() && (e.getCode() == KeyCode.RIGHT)) {                    
-                    textArea.selectForward();
-                    e.consume();
-                } else if (e.isShiftDown() && (e.getCode() == KeyCode.LEFT)) {                    
-                    textArea.selectBackward();
-                    e.consume();
-                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.A)) {                    
-                    textArea.selectAll();
-                    e.consume();
-                } else if (e.getCode() == KeyCode.ESCAPE) {
-                    e.consume();
-                } else {
-                    // Do nothing
-                }
-            });
-            
+            controls.getRowConstraints().add(rc);            
             
             spellCheckingTextArea = new SpellCheckingTextArea(true);
             spellCheckingTextArea.setWrapText(true);

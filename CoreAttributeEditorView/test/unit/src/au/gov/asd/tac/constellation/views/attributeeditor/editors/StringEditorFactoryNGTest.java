@@ -99,12 +99,14 @@ public class StringEditorFactoryNGTest {
         instance.createEditorControls();
         
         assertEquals(instance.getClass(), StringEditorFactory.StringEditor.class);
-        assertTrue(instance.noValueCheckBoxAvailable());        
+        assertTrue(instance.noValueCheckBoxAvailable());
         assertTrue(Objects.isNull(instance.getValueFromControls()));
         
-        instance.updateControlsWithValue("test");        
+        instance.updateControlsWithValue("test");
         assertEquals(instance.getCurrentValue(), "test");
-        assertEquals(instance.getValueFromControls(), "test");       
+        assertEquals(instance.getValueFromControls(), "test");
         
+        instance.updateControlsWithValue(null);
+        assertTrue(Objects.isNull(instance.getValueFromControls()));
     }
 }
