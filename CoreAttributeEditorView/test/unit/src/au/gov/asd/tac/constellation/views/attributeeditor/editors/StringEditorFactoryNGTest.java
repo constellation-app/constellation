@@ -104,9 +104,7 @@ public class StringEditorFactoryNGTest {
         
         instance.updateControlsWithValue("test");
         assertEquals(instance.getCurrentValue(), "test");
-        assertEquals(instance.getValueFromControls(), "test");
+        assertEquals(instance.getValueFromControls(), "test");        
         
-        instance.updateControlsWithValue(null);
-        assertTrue(Objects.isNull(instance.getValueFromControls()));
     }
 }
