@@ -41,6 +41,7 @@ public class GetTypeDescription extends RestService {
 
     private static final String NAME = "get_type_description";
     private static final String TYPE_PARAMETER_ID = "type_name";
+    private static final String EXAMPLE_RESPONSES_PATH = "getTypeDescriptionExample";
 
     @Override
     public String getName() {
@@ -129,7 +130,12 @@ public class GetTypeDescription extends RestService {
 
             mapper.writeValue(out, root);
         } else {
-            throw new IllegalArgumentException(String.format("The type '%s' is unknown.", typeName));
+            throw new IllegalArgumentException(String.format("The type \u2019%s\u2019 is unknown.", typeName));
         }
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }
