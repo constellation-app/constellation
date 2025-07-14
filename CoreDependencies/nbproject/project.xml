@@ -2154,7 +2154,6 @@
                 <package>org.locationtech.jts.triangulate.tri</package>
                 <package>org.locationtech.jts.util</package>
                 <package>org.mockito</package>
-                <package>org.mockito.codegen</package>
                 <package>org.mockito.configuration</package>
                 <package>org.mockito.creation.instance</package>
                 <package>org.mockito.exceptions.base</package>
@@ -2172,6 +2171,8 @@
                 <package>org.mockito.internal.configuration.plugins</package>
                 <package>org.mockito.internal.creation</package>
                 <package>org.mockito.internal.creation.bytebuddy</package>
+                <package>org.mockito.internal.creation.bytebuddy.access</package>
+                <package>org.mockito.internal.creation.bytebuddy.codegen</package>
                 <package>org.mockito.internal.creation.instance</package>
                 <package>org.mockito.internal.creation.proxy</package>
                 <package>org.mockito.internal.creation.settings</package>
@@ -2931,8 +2932,8 @@
                 <binary-origin>release/modules/ext/byte-buddy-1.17.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/byte-buddy-agent-1.14.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/byte-buddy-agent-1.14.1.jar</binary-origin>
+                <runtime-relative-path>ext/byte-buddy-agent-1.17.6.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/byte-buddy-agent-1.17.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commonmark-0.25.0.jar</runtime-relative-path>
@@ -3599,12 +3600,8 @@
                 <binary-origin>release/modules/ext/micrometer-registry-prometheus-1.7.12.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/mockito-core-5.2.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/mockito-core-5.2.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/mockito-inline-5.2.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/mockito-inline-5.2.0.jar</binary-origin>
+                <runtime-relative-path>ext/mockito-core-5.18.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/mockito-core-5.18.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/morfologik-fsa-2.1.9.jar</runtime-relative-path>
