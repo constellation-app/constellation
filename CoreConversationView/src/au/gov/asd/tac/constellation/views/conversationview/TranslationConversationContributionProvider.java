@@ -28,12 +28,12 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.IndexRange;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -82,8 +82,8 @@ public class TranslationConversationContributionProvider extends ConversationCon
         private final Button createTranslationButton = new Button("Create Translation");
         private final Button saveButton = new Button("Save");
         private final Button cancelButton = new Button("Cancel");
-        private final Button editButton = new Button("Edit");
-        private final TextArea editTranslationTextArea = new TextArea();
+        private final Button editButton = new Button("Edit");        
+        private SpellCheckingTextArea editTranslationTextArea = new SpellCheckingTextArea(true);
         private EnhancedTextArea translationTextArea = new EnhancedTextArea();
 
         public TranslationContribution(final String graphId, final ConversationMessage message, final String text) {
