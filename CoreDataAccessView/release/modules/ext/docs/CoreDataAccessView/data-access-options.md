@@ -30,6 +30,17 @@ Click on 'Shortcut' button to map keyboard shortcut of users' choice.
 
 <img src="../ext/docs/CoreDataAccessView/resources/DataAccessSaveTemplateWithKeyboardShortcutChoice.png" alt="Save Template Button" />
 
+If the selected keyboard shortcut is pre-defined application shortcut then you will get an error message and 'OK' button will be disabled. 
+You can hover the mouse over the error icon to get more information.
+
+<img src="../ext/docs/CoreDataAccessView/resources/DataAccessSaveTemplateWithKeyboardShortcut_error.png" alt="Save Template Button" />
+
+If the selected keyboard shortcut is already been mapped to some other saved template then you will get a warming message.
+Click on 'OK' button will remove the selected keyboard shortcut from previously saved template and allocate it to the new template.
+
+<img src="../ext/docs/CoreDataAccessView/resources/DataAccessSaveTemplateWithKeyboardShortcut_warning.png" alt="Save Template Button" />
+
+
 When you select "Load Templates", you will be presented with a list of saved
 preferences. Select one from the list and select OK. The preference will
 be loaded and will appear exactly as it was when it was saved. You can
