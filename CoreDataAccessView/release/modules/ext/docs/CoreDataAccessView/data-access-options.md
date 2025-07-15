@@ -18,13 +18,36 @@ you want to overwrite it. Preferences are saved by default in the
 directory &lt;HOME_DIRECTORY&gt;/.CONSTELLATION/DataAccessView. (The name of the
 file in which the preference is saved is encoded so it doesn't clash
 with file system limitations.) Files in this directory can be copied and
-deleted using your favourite file management utility.
+deleted using your favourite file management utility. 
+
+Preferences are being saved with assigned keyboard shortcuts. 
+Default keyboard shortcuts are 'Alt 1', 'Alt 2', ... , 'Alt 5'. 
+Users can save preferences with the keyboard shortcut of their choice. 
+
+<img src="../ext/docs/CoreDataAccessView/resources/DataAccessSaveTemplateWithKeyboardShortcut.png" alt="Save Template Button" />
+
+Click on 'Shortcut' button to map keyboard shortcut of users' choice.
+
+<img src="../ext/docs/CoreDataAccessView/resources/DataAccessSaveTemplateWithKeyboardShortcutChoice.png" alt="Save Template Button" />
+
+If the selected keyboard shortcut is pre-defined application shortcut then you will get an error message and 'OK' button will be disabled. 
+You can hover the mouse over the error icon to get more information.
+
+<img src="../ext/docs/CoreDataAccessView/resources/DataAccessSaveTemplateWithKeyboardShortcut_error.png" alt="Save Template Button" />
+
+If the selected keyboard shortcut is already been mapped to some other saved template then you will get a warming message.
+Click on 'OK' button will remove the selected keyboard shortcut from previously saved template and allocate it to the new template.
+
+<img src="../ext/docs/CoreDataAccessView/resources/DataAccessSaveTemplateWithKeyboardShortcut_warning.png" alt="Save Template Button" />
+
 
 When you select "Load Templates", you will be presented with a list of saved
 preferences. Select one from the list and select OK. The preference will
 be loaded and will appear exactly as it was when it was saved. You can
 also remove a saved preference from here by selecting one from the list
 and selecting Remove.
+
+Alternatively, when you press a keyboard shortcut, the mapped template gets loaded.
 
 ## Saving data access results
 
