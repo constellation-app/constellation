@@ -81,6 +81,7 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
         QualityControlAutoVetter.getInstance().addListener(this);
         QualityControlAutoVetter.getInstance().invokeListener(this);
         QualityControlAutoVetter.getInstance().init();
+        setFloating(Bundle.CTL_QualityControlViewTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
