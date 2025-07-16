@@ -99,6 +99,6 @@ public class FindViewPaneNGTest {
     public void testGetTabs() {
         System.out.println("getTabs");
         
-        assertEquals(findViewPane.getTabs(), spyFindViewTabs);
+        assertEquals(findViewPane.getTabs(), findViewTabs);
     }
 }
