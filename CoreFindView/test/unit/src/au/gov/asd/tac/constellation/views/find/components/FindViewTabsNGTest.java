@@ -19,6 +19,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
@@ -61,7 +62,7 @@ public class FindViewTabsNGTest {
     public void setUpMethod() throws Exception {
         findViewPane = mock(FindViewPane.class);
 
-        findViewTabs = new FindViewTabs(findViewPane);
+        findViewTabs = spy(new FindViewTabs(findViewPane));
         basicFindTab = mock(BasicFindTab.class);
         replaceTab = mock(ReplaceTab.class);
 
