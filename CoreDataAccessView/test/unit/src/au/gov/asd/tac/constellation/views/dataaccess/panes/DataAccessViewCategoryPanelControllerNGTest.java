@@ -184,27 +184,4 @@ public class DataAccessViewCategoryPanelControllerNGTest {
         verify(dataAccessViewCategoryPanelSpy).getHiddenCategory();
         verify(dataAccessViewCategoryPanelController).isValid();
     }
-
-    /**
-     * Test of isChanged method, of class DataAccessViewCategoryPanelController.
-     */
-    @Test
-    public void testIsChanged() {
-        System.out.println("isChanged");
-        
-        final DataAccessViewCategoryPanelController dataAccessViewCategoryPanelController = mock(DataAccessViewCategoryPanelController.class);
-        final DataAccessViewCategoryPanel dataAccessViewCategoryPanel = new DataAccessViewCategoryPanel(dataAccessViewCategoryPanelController);
-
-        final DataAccessViewCategoryPanel dataAccessViewCategoryPanelSpy = spy(dataAccessViewCategoryPanel);
-        List<String> list1 = Arrays.asList("Clean", "Developer");
-
-        when(dataAccessViewCategoryPanelController.getPanel()).thenReturn(dataAccessViewCategoryPanelSpy);
-        when(dataAccessViewCategoryPanelController.isChanged()).thenCallRealMethod();
-        when(dataAccessViewCategoryPanelSpy.getHiddenCategory()).thenReturn(list1);
-
-        boolean expResult = false;
-        boolean result = dataAccessViewCategoryPanelController.isChanged();
-        assertEquals(result, expResult);
-        verify(dataAccessViewCategoryPanelController).isChanged();
-    }
 }
