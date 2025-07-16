@@ -38,7 +38,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javax.swing.filechooser.FileFilter;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.filesystems.FileChooserBuilder;
 
 /**
@@ -255,7 +255,7 @@ public class AnalyticExportResultsMenu {
                             final String name = file.getName();
                             // if it is an actual file and it ends with the expected extension
 
-                            return (file.isFile() && StringUtils.endsWithIgnoreCase(name, expectedFileExtension)) || file.isDirectory();
+                            return (file.isFile() && Strings.CI.endsWith(name, expectedFileExtension)) || file.isDirectory();
                         }
 
                         @Override
