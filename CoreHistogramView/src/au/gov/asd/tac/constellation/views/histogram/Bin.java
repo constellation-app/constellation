@@ -29,11 +29,14 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
  */
 public abstract class Bin implements Comparable<Bin> {
 
+    // TODO: Remove public keyword of variables when histogram rewrite is completely merged, 
+    // and the rewritten display is in the same package as this class
+    
     // The number of elements in this bin
-    int elementCount = 0;
+    public int elementCount = 0; // TODO: Remove public
 
     // The number of elements in this bin that are currently selected
-    int selectedCount = 0;
+    public int selectedCount = 0; // TODO: Remove public
 
     // A place to hold a saved selection count value
     // This is used to hold the original selected count value when the user
@@ -49,7 +52,7 @@ public abstract class Bin implements Comparable<Bin> {
     // Is the bin activated? A bin becomes activated when the user uses shift-click to
     // select a range of bins. The start of this range (selected in the previous click)
     // is the activated bin.
-    boolean activated = false;
+    public boolean activated = false; // TODO: Remove public
 
     // A place to hold a saved activated value
     // This is used to hold the original activated value when the user
