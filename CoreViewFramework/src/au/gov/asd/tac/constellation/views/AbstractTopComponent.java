@@ -193,23 +193,15 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                     final int mainHeight = mainWindow.getHeight();
                     final int mainX = mainWindow.getX();
                     final int mainY = mainWindow.getY();
-                    final int offsetY = 110; // Offsets floating component so it doesn't overlap with top toolbar icons.
-
-                    final boolean isLandscape = mainWidth > mainHeight;
-
-                    final int landscapeWidth = Math.round(mainWidth * 0.3f);
-                    final int portraitWidth = Math.round(mainWidth * 0.4f);
+                    final int offsetY = 120; // Offsets floating component so it doesn't overlap with top toolbar icons.
 
                     final Dimension sidesSize = new Dimension(
-                            width == 0 ? (isLandscape ? landscapeWidth : portraitWidth) : width,
+                            width == 0 ? Math.round(mainWidth * 0.3f) : width,
                             height == 0 ? mainHeight - offsetY : height);
-
-                    final int landscapeHeight = Math.round(mainHeight * 0.3f);
-                    final int portraitHeight = Math.round(mainHeight * 0.3f);
 
                     final Dimension bottomSize = new Dimension(
                             width == 0 ? mainWidth : width,
-                            height == 0 ? (isLandscape ? landscapeHeight : portraitHeight) : height);
+                            height == 0 ? Math.round(mainHeight * 0.3f) : height);
 
                     final Dimension size;
 
