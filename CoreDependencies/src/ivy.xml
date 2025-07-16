@@ -78,7 +78,7 @@
                
         <!-- Testing -->
         <dependency org="org.assertj" name="assertj-core" rev="3.27.3" />
-        <dependency org="org.mockito" name="mockito-inline" rev="5.2.0" />
+        <dependency org="org.mockito" name="mockito-core" rev="5.18.0" />
         <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="4.0.5" />
         <dependency org="org.testfx" name="openjfx-monocle" rev="21.0.2" transitive="false" />
         <dependency org="org.testfx" name="testfx-core" rev="4.0.18" />

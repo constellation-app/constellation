@@ -44,7 +44,6 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,7 +75,6 @@ public class AdvancedFindTabNGTest {
     private int vxId1;
 
     private FindViewTopComponent findViewTopComponent;
-    private FindViewTopComponent spyTopComponent;
 
     private BasicFindTab basicFindTab;
     private ReplaceTab replaceTab;
@@ -105,7 +103,6 @@ public class AdvancedFindTabNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         findViewTopComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(findViewTopComponent);
 
         findViewPane = mock(FindViewPane.class);
         findViewTabs = mock(FindViewTabs.class);
@@ -248,50 +245,6 @@ public class AdvancedFindTabNGTest {
     }
 
     /**
-     * Test of changeCriteriaPane method, of class AdvancedFindTab.
-     *
-     * TODO fix this
-     */
-//    @Test
-//    public void testChangeCriteriaPane() {
-//        System.out.println("changeCriteriaPane");
-//
-//        setupGraph();
-//
-//        GraphElementType type = GraphElementType.VERTEX;
-//
-//        advancedTab.addCriteriaPane(type);
-//
-//        AdvancedFindTab advancedFindSpy = spy(advancedTab);
-//
-//        AdvancedCriteriaBorderPane tempPane1 = advancedTab.getCorrespondingCriteriaList(type).get(0);
-//        AdvancedCriteriaBorderPane spyTempPane = spy(tempPane1);
-//
-//        final List<AdvancedCriteriaBorderPane> criteriaPaneList = new ArrayList<>();
-//        criteriaPaneList.add(spyTempPane);
-//
-//        ReadableGraph rg = graph.getReadableGraph();
-//
-//        int attributeInt = rg.getAttribute(type, 1);
-//        labelAttributeV = new GraphAttribute(rg, attributeInt);
-//        attributeInt = rg.getAttribute(type, 2);
-//        identifierAttributeV = new GraphAttribute(rg, attributeInt);
-//        attributeInt = rg.getAttribute(type, 3);
-//        xAtrributeV = new GraphAttribute(rg, attributeInt);
-//        rg.close();
-//
-//        List<Attribute> attributeList = new ArrayList<>();
-//        attributeList.add(labelAttributeV);
-//        attributeList.add(identifierAttributeV);
-//        attributeList.add(xAtrributeV);
-//        when(spyTempPane.getAttributesList()).thenReturn(attributeList);
-//        when(advancedFindSpy.getCorrespondingCriteriaList(type)).thenReturn(criteriaPaneList);
-//
-//        advancedFindSpy.changeCriteriaPane(spyTempPane, type, "x", false);
-//        assertEquals(advancedFindSpy.getCorrespondingCriteriaList(type).get(0).getType(), FloatAttributeDescription.ATTRIBUTE_NAME);
-//    }
-
-    /**
      * Test of getCorrespondingCriteriaList method, of class AdvancedFindTab.
      */
     @Test
@@ -369,7 +322,7 @@ public class AdvancedFindTabNGTest {
 
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(spyTopComponent);
+        mockController.init(findViewTopComponent);
         doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
         Button mockButton = mock(Button.class);
 
@@ -435,7 +388,7 @@ public class AdvancedFindTabNGTest {
 
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(spyTopComponent);
+        mockController.init(findViewTopComponent);
         doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
@@ -499,7 +452,7 @@ public class AdvancedFindTabNGTest {
 
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(spyTopComponent);
+        mockController.init(findViewTopComponent);
         doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(false), Mockito.eq(false));
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
