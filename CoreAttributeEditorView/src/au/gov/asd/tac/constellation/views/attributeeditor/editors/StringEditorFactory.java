@@ -17,12 +17,12 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.IndexRange;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -50,8 +50,8 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
     public class StringEditor extends AbstractEditor<String> {
 
-        private static final int CONTROLS_SPACING = 10;
-        private TextArea textArea;
+        private static final int CONTROLS_SPACING = 10;        
+        private SpellCheckingTextArea spellCheckingTextArea;
 
         protected StringEditor(final EditOperation editOperation, final DefaultGetter<String> defaultGetter, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -59,14 +59,14 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
         @Override
         public void updateControlsWithValue(final String value) {
-            if (value != null) {
-                textArea.setText(value);
+            if (value != null) {                
+                spellCheckingTextArea.setText(value);
             }
         }
 
         @Override
         protected String getValueFromControls() {
-            return textArea.getText().isBlank() ? null : textArea.getText();
+            return spellCheckingTextArea.getText().isBlank() ? null : spellCheckingTextArea.getText();
         }
 
         @Override
@@ -80,40 +80,40 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
             controls.getColumnConstraints().add(cc);
             final RowConstraints rc = new RowConstraints();
             rc.setVgrow(Priority.ALWAYS);
-            controls.getRowConstraints().add(rc);
-
-            textArea = new TextArea();
-            textArea.setWrapText(true);
-            textArea.textProperty().addListener((o, n, v) -> update());
-            textArea.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            controls.getRowConstraints().add(rc);            
+            
+            spellCheckingTextArea = new SpellCheckingTextArea(true);
+            spellCheckingTextArea.setWrapText(true);
+            spellCheckingTextArea.textProperty().addListener((o, n, v) -> update());
+            spellCheckingTextArea.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
                 if (e.getCode() == KeyCode.DELETE) {
-                    IndexRange selection = textArea.getSelection();
+                    IndexRange selection = spellCheckingTextArea.getSelection();
                     if (selection.getLength() == 0) {
-                        textArea.deleteNextChar();
+                        spellCheckingTextArea.deleteNextChar();
                     } else {
-                        textArea.deleteText(selection);
+                        spellCheckingTextArea.deleteText(selection);
                     }
                     e.consume();
-                } else if (e.isShortcutDown() && e.isShiftDown() && (e.getCode() == KeyCode.RIGHT)) {
-                    textArea.selectNextWord();
+                } else if (e.isShortcutDown() && e.isShiftDown() && (e.getCode() == KeyCode.RIGHT)) {                    
+                    spellCheckingTextArea.selectNextWord();
                     e.consume();
-                } else if (e.isShortcutDown() && e.isShiftDown() && (e.getCode() == KeyCode.LEFT)) {
-                    textArea.selectPreviousWord();
+                } else if (e.isShortcutDown() && e.isShiftDown() && (e.getCode() == KeyCode.LEFT)) {                    
+                    spellCheckingTextArea.selectPreviousWord();
                     e.consume();
-                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.RIGHT)) {
-                    textArea.nextWord();
+                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.RIGHT)) {                    
+                    spellCheckingTextArea.nextWord();
                     e.consume();
-                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.LEFT)) {
-                    textArea.previousWord();
+                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.LEFT)) {                    
+                    spellCheckingTextArea.previousWord();
                     e.consume();
-                } else if (e.isShiftDown() && (e.getCode() == KeyCode.RIGHT)) {
-                    textArea.selectForward();
+                } else if (e.isShiftDown() && (e.getCode() == KeyCode.RIGHT)) {                    
+                    spellCheckingTextArea.selectForward();
                     e.consume();
-                } else if (e.isShiftDown() && (e.getCode() == KeyCode.LEFT)) {
-                    textArea.selectBackward();
+                } else if (e.isShiftDown() && (e.getCode() == KeyCode.LEFT)) {                    
+                    spellCheckingTextArea.selectBackward();
                     e.consume();
-                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.A)) {
-                    textArea.selectAll();
+                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.A)) {                    
+                    spellCheckingTextArea.selectAll();
                     e.consume();
                 } else if (e.getCode() == KeyCode.ESCAPE) {
                     e.consume();
@@ -122,7 +122,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
                 }
             });
 
-            controls.addRow(0, textArea);
+            controls.addRow(0, spellCheckingTextArea);
             return controls;
         }
 
