@@ -33,6 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.awt.Mnemonics;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.HelpCtx;
@@ -138,7 +139,7 @@ public class HashmodPanel extends javax.swing.JPanel {
                     @Override
                     public boolean accept(final File file) {
                         final String name = file.getName();
-                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.COMMA_SEPARATED_VALUE)) || file.isDirectory();
+                        return (file.isFile() && Strings.CI.endsWith(name, FileExtensionConstants.COMMA_SEPARATED_VALUE)) || file.isDirectory();
                     }
 
                     @Override

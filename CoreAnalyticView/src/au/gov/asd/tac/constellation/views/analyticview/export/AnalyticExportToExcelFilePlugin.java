@@ -112,7 +112,6 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
                     } catch (final IOException ex) {
                         interaction.notify(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
                     }
-                    workbook.dispose();
                 }
             };
             outputThread.start();

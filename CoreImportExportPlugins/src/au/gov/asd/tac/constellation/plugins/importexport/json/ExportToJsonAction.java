@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -50,7 +50,7 @@ public final class ExportToJsonAction implements ActionListener {
         FileChooser.openSaveDialog(getExportToJSONFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
             String fnam = file.getAbsolutePath();
 
-            if (!StringUtils.endsWithIgnoreCase(fnam, FileExtensionConstants.JSON)) {
+            if (!Strings.CI.endsWith(fnam, FileExtensionConstants.JSON)) {
                 fnam += FileExtensionConstants.JSON;
             }
 

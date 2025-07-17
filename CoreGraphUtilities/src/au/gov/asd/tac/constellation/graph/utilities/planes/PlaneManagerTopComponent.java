@@ -53,7 +53,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileFilter;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -407,8 +407,8 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                     @Override
                     public boolean accept(final File file) {
                         final String name = file.getName();
-                        return (file.isFile() && (StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG)
-                                || StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JPG)))
+                        return (file.isFile() && (Strings.CI.endsWith(name, FileExtensionConstants.PNG)
+                                || Strings.CI.endsWith(name, FileExtensionConstants.JPG)))
                                 || file.isDirectory();
                     }
 

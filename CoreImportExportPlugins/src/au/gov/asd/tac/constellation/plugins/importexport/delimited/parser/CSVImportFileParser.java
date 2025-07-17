@@ -27,7 +27,7 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -103,7 +103,7 @@ public class CSVImportFileParser extends ImportFileParser {
             @Override
             public boolean accept(final File file) {
                 final String name = file.getName();
-                return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.COMMA_SEPARATED_VALUE)) || file.isDirectory();
+                return (file.isFile() && Strings.CI.endsWith(name, FileExtensionConstants.COMMA_SEPARATED_VALUE)) || file.isDirectory();
             }
 
             @Override

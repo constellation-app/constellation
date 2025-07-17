@@ -49,7 +49,7 @@ import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -91,9 +91,9 @@ public class TSVDropper implements GraphDropper {
                         // Only process files that have a .tsv or .tsv.gz extension
                         // If any file does not have this extension then reject all the files.
                         final InputStream in;
-                        if (StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.TAB_SEPARATED_VALUE + FileExtensionConstants.GZIP)) {
+                        if (Strings.CI.endsWith(file.getName(), FileExtensionConstants.TAB_SEPARATED_VALUE + FileExtensionConstants.GZIP)) {
                             in = new GZIPInputStream(new FileInputStream(file));
-                        } else if (StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.TAB_SEPARATED_VALUE)) {
+                        } else if (Strings.CI.endsWith(file.getName(), FileExtensionConstants.TAB_SEPARATED_VALUE)) {
                             in = new FileInputStream(file);
                         } else {
                             badData = true;

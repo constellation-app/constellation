@@ -44,7 +44,6 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,7 +75,6 @@ public class AdvancedFindTabNGTest {
     private int vxId1;
 
     private FindViewTopComponent findViewTopComponent;
-    private FindViewTopComponent spyTopComponent;
 
     private BasicFindTab basicFindTab;
     private ReplaceTab replaceTab;
@@ -105,7 +103,6 @@ public class AdvancedFindTabNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         findViewTopComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(findViewTopComponent);
 
         findViewPane = mock(FindViewPane.class);
         findViewTabs = mock(FindViewTabs.class);
@@ -325,7 +322,7 @@ public class AdvancedFindTabNGTest {
 
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(spyTopComponent);
+        mockController.init(findViewTopComponent);
         doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
         Button mockButton = mock(Button.class);
 
@@ -391,7 +388,7 @@ public class AdvancedFindTabNGTest {
 
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(spyTopComponent);
+        mockController.init(findViewTopComponent);
         doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
@@ -455,7 +452,7 @@ public class AdvancedFindTabNGTest {
 
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(spyTopComponent);
+        mockController.init(findViewTopComponent);
         doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(false), Mockito.eq(false));
 
         GraphElementType graphElementType = GraphElementType.VERTEX;

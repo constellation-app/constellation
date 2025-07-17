@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.opengis.referencing.FactoryException;
+import org.geotools.api.referencing.FactoryException;
 
 /**
  * Spatial Reference Parameter Value
