@@ -15,8 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.prefs.Preferences;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.apache.commons.io.IOUtils;
@@ -48,6 +51,7 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.NotifyDescriptor;
+import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -58,13 +62,15 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class JsonIONGTest {
-    
+
     private static final Optional<String> SUB_DIRECTORY = Optional.of("test");
     private static final Optional<String> FILE_PREFIX = Optional.of("my-");
 
+    private static final Optional<String> DEFAULT_KS = Optional.of("ctrl+1");
+
     @Test
     public void loadJsonPreferences_get_pojo_without_prefix() throws URISyntaxException, IOException {
-        try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
+        try (final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
             jsonIoMockedStatic.when(() -> JsonIO
                     .loadJsonPreferences(any(Optional.class), any(TypeReference.class)))
                     .thenCallRealMethod();
@@ -156,6 +162,27 @@ public class JsonIONGTest {
     }
 
     @Test
+    public void loadJsonPreferences_pref_ioexception() throws URISyntaxException {
+
+        try (
+                final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class, Mockito.CALLS_REAL_METHODS); MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
+
+            // The returned preference directory is not a directory so the UI is
+            // opened with an empty list and the user hits cancel.
+            jsonIoDialogMockedStatic.when(() -> JsonIODialog.getSelection(Collections.emptyList(), SUB_DIRECTORY, FILE_PREFIX))
+                    .thenReturn(Optional.empty());
+
+            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
+                    .thenReturn(new File(System.getProperty("java.io.tmpdir") + "/samplefile"));
+
+            final JsonNode jsonNode = JsonIO
+                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX);
+
+            assertEquals(jsonNode, null);
+        }
+    }
+
+    @Test
     public void loadJsonPreferences_get_tree() throws URISyntaxException {
         try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class, Mockito.CALLS_REAL_METHODS);
                 MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class)) {
@@ -181,6 +208,28 @@ public class JsonIONGTest {
     }
 
     @Test
+    public void loadJsonPreferences_test_ioexception() throws URISyntaxException, IOException {
+
+        try (final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
+            jsonIoMockedStatic.when(() -> JsonIO
+                    .loadJsonPreferences(any(Optional.class), any(Optional.class), any(TypeReference.class)))
+                    .thenCallRealMethod();
+
+            final TypeReference<MyPreferences> type = new TypeReference<MyPreferences>() {
+            };
+
+            final File testFile = new File("testfile");
+            testFile.setReadable(false);
+
+            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
+                    .thenReturn(testFile);
+
+            JsonIO.loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, type);
+
+        }
+    }
+
+    @Test
     public void saveJsonPreferences() throws URISyntaxException, IOException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
@@ -194,6 +243,178 @@ public class JsonIONGTest {
         } finally {
             Files.deleteIfExists(outputFile.toPath());
         }
+    }
+
+    @Test
+    public void saveJsonPreferences_with_keyboardshortcut() throws URISyntaxException, IOException {
+
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+
+        try (final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
+
+            jsonIoMockedStatic.when(() -> JsonIO
+                    .getPrefereceFileDirectory(any(Optional.class)))
+                    .thenReturn(outputFile);
+
+            jsonIoMockedStatic.when(() -> JsonIO
+                    .saveJsonPreferencesWithKeyboardShortcut(any(Optional.class), any(Object.class), any()))
+                    .thenCallRealMethod();
+
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture(), null);
+
+            jsonIoMockedStatic.verify(() -> JsonIO
+                    .saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture(), null));
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+
+    @Test
+    public void test_saveJsonPreferencesWithKeyboardShortcut_1() throws URISyntaxException, IOException {
+
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
+
+        final File preferenceDirectory = new File(userDir, SUB_DIRECTORY.orElse(""));
+        final File outputFile = new File(preferenceDirectory.getAbsolutePath() + "/[Ctrl 1] my-preferences.json");
+
+        try (final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class)) {
+
+            final Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null, Optional.empty()));
+
+            jsonIoDialogMockedStatic.when(() -> JsonIODialog
+                    .getPreferenceFileName(any(Optional.class), any(), any()))
+                    .thenReturn(ksResult);
+
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture(), null);
+
+            assertFalse(outputFile.exists());
+
+            jsonIoDialogMockedStatic.when(() -> JsonIODialog
+                    .getPreferenceFileName(any(Optional.class), any(), any()))
+                    .thenReturn(Optional.empty());
+
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture(), null);
+
+            assertFalse(outputFile.exists());
+
+            ksResult.get().setFileName("my-preferences");
+
+            jsonIoDialogMockedStatic.when(() -> JsonIODialog
+                    .getPreferenceFileName(any(Optional.class), any(), any()))
+                    .thenReturn(ksResult);
+
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture(), null);
+
+            assertTrue(outputFile.exists());
+
+        } finally {
+
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+
+    @Test
+    public void test_saveJsonPreferencesWithKeyboardShortcut_prefFileAlreadyExists() throws URISyntaxException, IOException {
+
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
+
+        final File preferenceDirectory = new File(userDir, SUB_DIRECTORY.orElse(""));
+        final File outputFile = new File(preferenceDirectory.getAbsolutePath() + "/[Ctrl 1] my-preferences.json");
+
+        try (final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class); MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
+
+            outputFile.createNewFile();
+
+            final Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null, Optional.empty()));
+            ksResult.get().setFileName("my-preferences");
+
+            final Alert mockAlert = Mockito.mock(Alert.class);
+
+            jsonIoDialogMockedStatic.when(() -> JsonIODialog
+                    .getPreferenceFileName(any(Optional.class), any(), any()))
+                    .thenReturn(ksResult);
+
+            jsonIoMockedStatic.when(() -> JsonIO
+                    .getPrefereceFileDirectory(any()))
+                    .thenReturn(preferenceDirectory);
+
+            jsonIoMockedStatic.when(() -> JsonIO
+                    .getAlert(any()))
+                    .thenReturn(mockAlert);
+
+            jsonIoMockedStatic.when(() -> JsonIO
+                    .saveJsonPreferencesWithKeyboardShortcut(any(Optional.class), any(), any()))
+                    .thenCallRealMethod();
+
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture(), null);
+
+            assertTrue(outputFile.exists());
+
+            when(mockAlert.showAndWait()).thenReturn(Optional.of(ButtonType.OK));
+
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture(), null);
+
+            assertTrue(outputFile.exists());
+
+        } finally {
+
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+
+    @Test
+    public void test_getDefaultKeyboardShortcut() throws URISyntaxException, IOException {
+        final File prefDir = new File(System.getProperty("java.io.tmpdir"));
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+        final File outputFile1 = new File(System.getProperty("java.io.tmpdir") + "/[Alt 1] my-preferences.json");
+        final File outputFile2 = new File(System.getProperty("java.io.tmpdir") + "/[Alt 2] my-preferences.json");
+        final File outputFile3 = new File(System.getProperty("java.io.tmpdir") + "/[Alt 3] my-preferences.json");
+        final File outputFile4 = new File(System.getProperty("java.io.tmpdir") + "/[Alt 4] my-preferences.json");
+        final File outputFile5 = new File(System.getProperty("java.io.tmpdir") + "/[Alt 5] my-preferences.json");
+
+        try {
+
+            outputFile.createNewFile();
+            final Optional<String> ks = JsonIO.getDefaultKeyboardShortcut(prefDir);
+            assertTrue(ks.isPresent());
+            assertEquals("Alt+1", ks.get());
+
+            outputFile1.createNewFile();
+            final Optional<String> ks1 = JsonIO.getDefaultKeyboardShortcut(prefDir);
+            assertTrue(ks1.isPresent());
+            assertEquals("Alt+2", ks1.get());
+
+            outputFile2.createNewFile();
+            final Optional<String> ks2 = JsonIO.getDefaultKeyboardShortcut(prefDir);
+            assertTrue(ks2.isPresent());
+            assertEquals("Alt+3", ks2.get());
+
+            outputFile3.createNewFile();
+            final Optional<String> ks3 = JsonIO.getDefaultKeyboardShortcut(prefDir);
+            assertTrue(ks3.isPresent());
+            assertEquals("Alt+4", ks3.get());
+
+            outputFile4.createNewFile();
+            final Optional<String> ks4 = JsonIO.getDefaultKeyboardShortcut(prefDir);
+            assertTrue(ks4.isPresent());
+            assertEquals("Alt+5", ks4.get());
+
+            outputFile5.createNewFile();
+            final Optional<String> ks5 = JsonIO.getDefaultKeyboardShortcut(prefDir);
+            assertFalse(ks5.isPresent());
+
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
+            Files.deleteIfExists(outputFile1.toPath());
+            Files.deleteIfExists(outputFile2.toPath());
+            Files.deleteIfExists(outputFile3.toPath());
+            Files.deleteIfExists(outputFile4.toPath());
+            Files.deleteIfExists(outputFile5.toPath());
+
+        }
+
     }
 
     @Test
@@ -244,10 +465,10 @@ public class JsonIONGTest {
             try (final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
                     final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
                     final MockedConstruction<Alert> alertConstruction = Mockito.mockConstruction(Alert.class,
-                            (mock, cnxt) -> {
-                                assertEquals(cnxt.arguments(), List.of(Alert.AlertType.CONFIRMATION));
+                    (mock, cnxt) -> {
+                        assertEquals(cnxt.arguments(), List.of(Alert.AlertType.CONFIRMATION));
 
-                                when(mock.showAndWait()).thenReturn(Optional.of(ButtonType.CANCEL));
+                        when(mock.showAndWait()).thenReturn(Optional.of(ButtonType.CANCEL));
                             });
             ) {
                 setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"));
@@ -280,16 +501,16 @@ public class JsonIONGTest {
             try (final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class);
                     final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
                     final MockedConstruction<Alert> alertConstruction = Mockito.mockConstruction(Alert.class,
-                            (mock, cnxt) -> {
-                                assertEquals(cnxt.arguments(), List.of(Alert.AlertType.CONFIRMATION));
+                    (mock, cnxt) -> {
+                        assertEquals(cnxt.arguments(), List.of(Alert.AlertType.CONFIRMATION));
 
-                                when(mock.showAndWait()).thenReturn(Optional.of(ButtonType.OK));
+                        when(mock.showAndWait()).thenReturn(Optional.of(ButtonType.OK));
                             });
             ) {
                 setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"));
 
                 JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper());
-                
+
                 verify(alertConstruction.constructed().get(0)).setContentText("'my-preferences' already exists. Do you want to overwrite it?");
                 verify(alertConstruction.constructed().get(0)).setHeaderText("Preference File Exists");
             }
@@ -375,6 +596,22 @@ public class JsonIONGTest {
     }
 
     @Test
+    public void saveJsonPreferences_withks_user_cancels() throws URISyntaxException, IOException {
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+
+        try (                
+                final MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class); final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
+            setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.empty());
+
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, new Object(), null);
+
+            assertFalse(outputFile.exists());
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+
+    @Test
     public void deleteJsonPreferences() throws URISyntaxException, IOException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
@@ -435,11 +672,19 @@ public class JsonIONGTest {
         jsonIoDialogMockedStatic.when(JsonIODialog::getPreferenceFileName)
                 .thenReturn(userResponse);
 
+        jsonIoDialogMockedStatic.when(() -> JsonIODialog
+                .getPreferenceFileName(DEFAULT_KS, new File(""), null))
+                .thenReturn(Optional.of(new KeyboardShortcutSelectionResult(DEFAULT_KS.get(), false, null, Optional.empty())));
+
         jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
                 .thenReturn(new File(System.getProperty("java.io.tmpdir")));
 
         jsonIoMockedStatic.when(() -> JsonIO
                 .saveJsonPreferences(any(Optional.class), any(Optional.class), any(), any(ObjectMapper.class)))
+                .thenCallRealMethod();
+
+        jsonIoMockedStatic.when(() -> JsonIO
+                .saveJsonPreferencesWithKeyboardShortcut(any(Optional.class), any(), any()))
                 .thenCallRealMethod();
     }
 
