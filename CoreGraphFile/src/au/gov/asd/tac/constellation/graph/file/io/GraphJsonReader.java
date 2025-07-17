@@ -430,7 +430,7 @@ public final class GraphJsonReader {
             }
 
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && "transaction".equals(jp.currentLocation())) {
+            if (current == JsonToken.FIELD_NAME && "transaction".equals(jp.currentName())) {
                 parseElement(storeGraph, GraphElementType.TRANSACTION, vertexMap, transactionMap, progress, entrySize, immutableObjectCache);
             } else {
                 final String msg = String.format("Expected FIELD_NAME 'transaction', found '%s' at %s", current, jp.currentLocation());
