@@ -31,7 +31,7 @@ import org.openide.util.NbPreferences;
  */
 public abstract class AnimationMenuBaseAction extends MenuBaseAction implements PreferenceChangeListener {
     
-    public AnimationMenuBaseAction(final String actionLabel) {
+    protected AnimationMenuBaseAction(final String actionLabel) {
         super();
         this.initCheckBox(actionLabel, false);
         PreferenceUtilities.addPreferenceChangeListener(NbPreferences.forModule(GraphPreferenceKeys.class).absolutePath(), this);

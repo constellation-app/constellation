@@ -399,7 +399,7 @@ public class ShapeNGTest {
     // convenience method to get the bounding box part of GeoJson
     private String getGeoJsonBoundingBox(final List<Double> points) {
         return points.stream()
-                .map(p -> String.valueOf(p))
+                .map(String::valueOf)
                 .collect(Collectors.joining(","));
     }
 

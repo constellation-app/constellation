@@ -29,7 +29,7 @@ public class SQLiteDBManager {
     
     private static final Logger LOGGER = Logger.getLogger(SQLiteDBManager.class.getName());
 
-    private static SQLiteDBManager __instance__ = null;
+    private static SQLiteDBManager instance = null;
     private File sqlite;
 
     private SQLiteDBManager() {
@@ -86,9 +86,9 @@ public class SQLiteDBManager {
     }
 
     public static SQLiteDBManager getInstance() {
-        if (__instance__ == null) {
-            __instance__ = new SQLiteDBManager();
+        if (instance == null) {
+            instance = new SQLiteDBManager();
         }
-        return __instance__;
+        return instance;
     }
 }

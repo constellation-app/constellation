@@ -70,7 +70,7 @@ public class ActionPane extends BorderPane {
         skipInvalidRowsCheckBox.setSelected(false);
         skipInvalidRowsCheckBox.setDisable(true);        
         
-        skipInvalidRowsCheckBox.setOnAction((t) -> 
+        skipInvalidRowsCheckBox.setOnAction(t -> 
             controller.setSkipInvalidRows(skipInvalidRowsCheckBox.isSelected()));
 
         runBox.getChildren().add(skipInvalidRowsCheckBox);

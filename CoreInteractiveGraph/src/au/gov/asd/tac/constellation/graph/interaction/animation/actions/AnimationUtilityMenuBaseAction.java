@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
  */
 public abstract class AnimationUtilityMenuBaseAction extends MenuBaseAction {
 
-    public AnimationUtilityMenuBaseAction(final String label) {
+    protected AnimationUtilityMenuBaseAction(final String label) {
         super();
         initMenuItem(label, false);
     }

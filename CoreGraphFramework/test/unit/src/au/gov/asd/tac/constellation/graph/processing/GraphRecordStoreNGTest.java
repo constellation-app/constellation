@@ -96,15 +96,15 @@ public class GraphRecordStoreNGTest {
      */
     @Test
     public void testSet() {
-        final int record = 0;
+        final int recordEntry = 0;
         final String key = "key1";
         final String value = "value1";
 
         final GraphRecordStore instance = new GraphRecordStore();
         instance.add();
-        instance.set(record, key, value);
+        instance.set(recordEntry, key, value);
 
-        assertEquals(value, instance.get(record, key));
+        assertEquals(value, instance.get(recordEntry, key));
     }
 
     /**
@@ -112,7 +112,7 @@ public class GraphRecordStoreNGTest {
      */
     @Test
     public void testValues() {
-        final int record = 1;
+        final int recordEntry = 1;
 
         final GraphRecordStore instance = new GraphRecordStore();
         instance.add();
@@ -129,7 +129,7 @@ public class GraphRecordStoreNGTest {
         expResult.add("value3");
         expResult.add("value4");
 
-        final List<String> result = instance.values(record);
+        final List<String> result = instance.values(recordEntry);
         assertEquals(result, expResult);
     }
 

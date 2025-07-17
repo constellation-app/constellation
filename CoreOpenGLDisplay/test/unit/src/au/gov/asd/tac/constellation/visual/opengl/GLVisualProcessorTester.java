@@ -41,7 +41,6 @@ public class GLVisualProcessorTester {
     private static class GLVisualProcessorDemo {
 
         private VisualManager manager;
-        private VisualProcessor processor = null;
         private final Frame frame;
 
         public GLVisualProcessorDemo() {
@@ -57,12 +56,11 @@ public class GLVisualProcessorTester {
             });
         }
 
-        public void runDemo(final VisualProcessor processor, final VisualManager manager) {
+        public void runDemo(final VisualManager manager) {
             if (this.manager != null) {
                 this.manager.stopProcessing();
                 frame.remove(this.manager.getVisualComponent());
             }
-            this.processor = processor;
             this.manager = manager;
             final Component canvas = manager.getVisualComponent();
             frame.add(canvas);
@@ -79,7 +77,7 @@ public class GLVisualProcessorTester {
         final GLVisualProcessor processor = new GLVisualProcessor();
         final VisualManager visualManager = new VisualManager(access, processor);
         processor.startVisualising(visualManager);
-        demo.runDemo(processor, visualManager);
+        demo.runDemo(visualManager);
         final List<VisualChange> changeSet = new ArrayList<>();
         changeSet.add(new VisualChangeBuilder(VisualProperty.VERTICES_REBUILD).build());
         changeSet.add(new VisualChangeBuilder(VisualProperty.CONNECTIONS_REBUILD).build());

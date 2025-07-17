@@ -40,7 +40,7 @@ public class PrimaryKeyUtilities {
      */
     public static Set<String> getPrimaryKeyNames(final GraphReadMethods graph, final GraphElementType type) {
         final int[] primaryKeyIds = graph.getPrimaryKey(type);
-        final Set<String> primaryKeys = new HashSet<>(primaryKeyIds.length);
+        final Set<String> primaryKeys = HashSet.newHashSet(primaryKeyIds.length);
         for (int i = 0; i < primaryKeyIds.length; i++) {
             primaryKeys.add(graph.getAttributeName(primaryKeyIds[i]));
         }

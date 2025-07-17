@@ -22,7 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -99,14 +98,10 @@ public class PasswordObfuscator {
      *
      * @param args
      * @throws NoSuchAlgorithmException
-     * @throws NoSuchPaddingException
-     * @throws InvalidKeyException
-     * @throws IllegalBlockSizeException
-     * @throws BadPaddingException
      * @throws IOException
-     * @throws InvalidKeySpecException
      */
-    public static void main(final String[] args) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, IOException, IllegalBlockSizeException {
+    @SuppressWarnings("unused")
+    public static void main(final String[] args) throws NoSuchAlgorithmException, IOException {
         final BufferedReader input = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8.name()));
         LOGGER.log(Level.INFO, "Enter the string to encrypt (enter \"-\" to genernate a key): ");
         final String password = input.readLine();

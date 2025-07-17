@@ -27,8 +27,10 @@ import de.fhpotsdam.unfolding.geo.Location;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A factory for creating markers for use in the Map View.
@@ -38,7 +40,7 @@ import java.util.List;
 public class ConstellationMarkerFactory {
 
     private final ObjectCache<FeatureKey, ConstellationAbstractMarker> featureCache;
-    private final HashMap<ConstellationFeatureType, Class<? extends ConstellationAbstractMarker>> featureTypeMap;
+    private final Map<ConstellationFeatureType, Class<? extends ConstellationAbstractMarker>> featureTypeMap;
 
     private int defaultColor = MarkerUtilities.DEFAULT_COLOR;
     private int defaultCustomColor = MarkerUtilities.DEFAULT_CUSTOM_COLOR;
@@ -50,7 +52,7 @@ public class ConstellationMarkerFactory {
     public ConstellationMarkerFactory() {
         super();
         this.featureCache = new ObjectCache<>();
-        this.featureTypeMap = new HashMap<>();
+        this.featureTypeMap = new EnumMap<>(ConstellationFeatureType.class);
         featureTypeMap.put(ConstellationFeatureType.POINT, ConstellationPointMarker.class);
         featureTypeMap.put(ConstellationFeatureType.LINE, ConstellationLineMarker.class);
         featureTypeMap.put(ConstellationFeatureType.POLYGON, ConstellationPolygonMarker.class);

@@ -17,9 +17,18 @@ package au.gov.asd.tac.constellation.utilities;
 
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import org.netbeans.core.options.keymap.api.KeyStrokeUtils;
+import org.netbeans.core.options.keymap.api.ShortcutAction;
+import org.netbeans.core.options.keymap.spi.KeymapManager;
+import org.openide.util.Lookup;
+import org.openide.util.Utilities;
 import org.openide.windows.WindowManager;
 
 /**
@@ -46,9 +55,7 @@ public class SystemUtilities {
             return;
         }
         try {
-            EventQueue.invokeAndWait(() -> {
-                mainframe = (JFrame) WindowManager.getDefault().getMainWindow();
-            });
+            EventQueue.invokeAndWait(() -> mainframe = (JFrame) WindowManager.getDefault().getMainWindow());
         } catch (final InterruptedException ex) {
             LOGGER.log(Level.WARNING, "Thread displaying dialog was interrupted.", ex);
             Thread.currentThread().interrupt();
@@ -118,6 +125,37 @@ public class SystemUtilities {
             return 480;
         }
         return mainframe.getSize().getHeight();
+    }
+    
+    /**
+     * Get list of currently used keyboard shortcuts within application
+     * 
+     * @return list of currently used keydboard shortcuts within application
+     */
+    public static Map<String, String> getCurrentKeyboardShortcuts() {
+        final Map<String, String> shortcuts = new HashMap<>();
+
+        for (final KeymapManager m : Lookup.getDefault().lookupAll(KeymapManager.class)) {
+
+            final Object[] ret = new Object[2];
+
+            ret[0] = m.getKeymap(m.getCurrentProfile());
+            ret[1] = m.getActions().entrySet();
+
+            final Map<ShortcutAction, Set<String>> curKeymap = (Map<ShortcutAction, Set<String>>) ret[0];
+            final Set<Map.Entry<String, Set<ShortcutAction>>> entryset = (Set<Map.Entry<String, Set<ShortcutAction>>>) ret[1];
+
+            for (final Map.Entry<String, Set<ShortcutAction>> entry : entryset) {
+                for (final ShortcutAction sa : entry.getValue()) {
+                    final Set<String> ks = curKeymap.get(sa);
+                    if (Objects.nonNull(ks)) {                        
+                        ks.forEach(s -> shortcuts.put(KeyStrokeUtils.getKeyStrokesAsText(Utilities.stringToKeys(s), " "), sa.getDisplayName()));
+                    }
+                }
+            }
+        }
+        
+        return shortcuts;
     }
 
 }

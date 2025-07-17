@@ -329,8 +329,8 @@ public class GraphNode extends AbstractNode {
      *
      * @return list of IDs
      */
-    public static ArrayList<String> getGraphIDs() {
-        final ArrayList<String> list = new ArrayList<>();
+    public static List<String> getGraphIDs() {
+        final List<String> list = new ArrayList<>();
         final Iterator<Graph> iter = GraphNode.getAllGraphs().values().iterator();
         while (iter.hasNext()) {
             final GraphNode node = GraphNode.getGraphNode(iter.next());

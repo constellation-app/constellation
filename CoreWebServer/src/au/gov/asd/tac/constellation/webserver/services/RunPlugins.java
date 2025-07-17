@@ -64,6 +64,8 @@ public class RunPlugins extends RestService {
     //
     private static final String PLUGIN_NAME = "plugin_name";
     private static final String PLUGIN_ARGS = "plugin_args";
+    
+    private static final String EXAMPLE_RESPONSES_PATH = "runPluginsExample";
 
     @Override
     public String getName() {
@@ -103,10 +105,10 @@ public class RunPlugins extends RestService {
         final PluginParameter<StringParameterValue> pluginsParam = StringParameterType.build(PLUGINS_PARAMETER_ID);
         pluginsParam.setName("Plugins and arguments (body)");
         pluginsParam.setDescription("A JSON list containing objects with 'plugin_name' and 'plugin_args' arguments.");
-        pluginsParam.setRequestBodyExampleJson("#/components/examples/runPluginsExample");
+        pluginsParam.setRequestBodyExampleJson("#/components/examples/runPluginsExample/request");        
         pluginsParam.setRequired(true);
-        parameters.addParameter(pluginsParam);
-
+        parameters.addParameter(pluginsParam);        
+       
         return parameters;
     }
 
@@ -244,5 +246,10 @@ public class RunPlugins extends RestService {
             final String exString = ex.getMessage();
             return String.format("Plugin:%n%s%nException:%n%s%n", pluginName, exString);
         }
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

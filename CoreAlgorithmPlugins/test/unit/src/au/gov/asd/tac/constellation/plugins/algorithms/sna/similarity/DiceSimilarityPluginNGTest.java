@@ -48,7 +48,7 @@ public class DiceSimilarityPluginNGTest {
     private StoreGraph graph;
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         // Not currently required
     }
 

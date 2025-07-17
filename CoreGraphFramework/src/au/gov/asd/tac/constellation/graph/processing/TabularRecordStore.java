@@ -254,10 +254,10 @@ public class TabularRecordStore implements RecordStore {
     }
 
     @Override
-    public List<String> values(final int record) {
+    public List<String> values(final int recordEntry) {
         final List<String> values = new ArrayList<>(records.size());
         for (final Object[][] v : records.values()) {
-            values.add(TabularRecordStore.getValue(v, record));
+            values.add(TabularRecordStore.getValue(v, recordEntry));
         }
         return values;
     }
