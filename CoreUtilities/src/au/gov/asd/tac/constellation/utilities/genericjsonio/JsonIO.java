@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbPreferences;
@@ -392,8 +393,8 @@ public class JsonIO {
         final String[] names;
         if (preferenceDirectory.isDirectory()) {
             names = preferenceDirectory.list((File dir, String name)
-                    -> StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON)
-                    && (filePrefix.isEmpty() || StringUtils.startsWithIgnoreCase(name, filePrefix.get()))
+                    -> Strings.CI.endsWith(name, FileExtensionConstants.JSON)
+                    && (filePrefix.isEmpty() || Strings.CI.startsWith(name, filePrefix.get()))
             );
         } else {
             // Nothing to select from - return an empty array

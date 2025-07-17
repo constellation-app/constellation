@@ -37,11 +37,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -99,7 +97,7 @@ public class OpenGraph extends RestService {
         final String existingId = RestServiceUtilities.activeGraphId();
         final File fnam = new File(filePath).getAbsoluteFile();
         String name = fnam.getName();
-        if (StringUtils.endsWithIgnoreCase(name, GraphDataObject.FILE_EXTENSION)) {
+        if (Strings.CI.endsWith(name, GraphDataObject.FILE_EXTENSION)) {
             name = name.substring(0, name.length() - GraphDataObject.FILE_EXTENSION.length());
         }
 

@@ -114,7 +114,7 @@ public class RecordStoreUtilities {
                     while (true) {
                         currentToken = parser.nextToken();
                         if (currentToken == JsonToken.FIELD_NAME) {
-                            final String fieldName = parser.getCurrentName();
+                            final String fieldName = parser.currentName();
 
                             String fieldValue;
                             currentToken = parser.nextToken();
