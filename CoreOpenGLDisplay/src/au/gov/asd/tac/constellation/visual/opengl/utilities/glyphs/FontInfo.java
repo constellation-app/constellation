@@ -214,7 +214,7 @@ public class FontInfo {
             final Set<Character.UnicodeScript> mustNotHave = new HashSet<>();
             boolean ok = true;
             line = line.trim();
-            if (line.length() > 0 && !line.startsWith("#")) {
+            if (!line.isEmpty() && !line.startsWith("#")) {
                 final String[] parts = FONT_INFO_REGEX.split(line.trim());
                 final String fontName = parts[0];
                 if (fontName.isEmpty()) {

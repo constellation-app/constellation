@@ -33,6 +33,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * Reads from key press event on keyboard shortcut label
@@ -106,7 +107,7 @@ public class RecordKeyboardShortcut  {
         
         File exisitngTemplateWithKs = null;
         
-        final FilenameFilter filenameFilter = (d, s) -> s.startsWith("[" + StringUtils.replace(keyboardShortcut, "+", " ") + "]");        
+        final FilenameFilter filenameFilter = (d, s) -> s.startsWith("[" + Strings.CS.replace(keyboardShortcut, "+", " ") + "]");        
         
         final String[] fileNames = preferenceDirectory.list(filenameFilter);
 

@@ -196,7 +196,7 @@ public class XMLImportFileParser extends ImportFileParser {
             }
         }
 
-        if (text.length() > 0) {
+        if (!text.isEmpty()) {
             rowValues.put(globalKey, text.toString());
         }
 

@@ -283,7 +283,7 @@ public class RecordStoreUtilities {
                     }
                     line.append(",");
                 }
-                line.setLength(line.length() > 0 ? line.length() - 1 : 0);
+                line.setLength(!line.isEmpty() ? line.length() - 1 : 0);
                 line.append(SeparatorConstants.NEWLINE);
                 columnsWritten = true;
 
@@ -307,7 +307,7 @@ public class RecordStoreUtilities {
                 }
                 line.append(",");
             }
-            line.setLength(line.length() > 0 ? line.length() - 1 : 0);
+            line.setLength(!line.isEmpty() ? line.length() - 1 : 0);
             line.append(SeparatorConstants.NEWLINE);
 
             try {
