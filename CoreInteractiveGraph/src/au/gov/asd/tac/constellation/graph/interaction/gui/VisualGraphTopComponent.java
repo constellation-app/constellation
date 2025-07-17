@@ -665,6 +665,13 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
     @Override
     public boolean canClose() {
+        // Release file is done at this point in time so it may be closed even
+        // if it was not being modified; lock also needs to be released if
+        // save with gdo.createFromTemplate in handleSave() is called
+        final GraphDataObject gdo = graphNode.getDataObject();
+        if (gdo.getChannelLock() != null && gdo.getFileChannel() != null) {
+            gdo.unlockFile();
+        }
         if (savable.isModified()) {
             final String message = String.format("Graph %s is modified. Save?", getDisplayName());
             final Object[] options = new Object[]{
@@ -1104,9 +1111,15 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             }
 
             final File newFile = new File(folder.getPath(), name + ext);
+            final GraphDataObject dataObject = graphNode.getDataObject();
 
             // One last check if file were saving over doesn't have it's graph open UNLESS were saving over the file with the same graph
-            final Path currentFilePath = Paths.get(graphNode.getDataObject().getPrimaryFile().getPath());
+            final Path currentFilePath = Paths.get(dataObject.getPrimaryFile().getPath());
+            
+            // release the lock on the current file as SaveAs may have been requested on an existing file
+            if (dataObject.getChannelLock() != null && dataObject.getFileChannel() != null) {
+                dataObject.unlockFile();
+            }
 
             // Check if overwriting open graph
             final Path filePath = Paths.get(newFile.getPath());
@@ -1140,6 +1153,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
             // Wait for screenshot to finish
             waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+            // lock new file after it is newly created
+            freshGdo.lockFile();                        
         }
     }
 
