@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -66,7 +66,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                 } else {
                     final BitMaskQuery query = new BitMaskQuery(
                             new Query(GraphElementType.VERTEX,
-                                    StringUtils.equals("null", vertexLayersArray.get(i).get(2).asText()) ? ""
+                                    Strings.CS.equals("null", vertexLayersArray.get(i).get(2).asText()) ? ""
                                     : vertexLayersArray.get(i).get(2).asText()),
                             vertexLayersArray.get(i).get(0).asInt(),
                             vertexLayersArray.get(i).get(3).asText()
@@ -85,7 +85,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                 } else {
                     final BitMaskQuery query = new BitMaskQuery(
                             new Query(GraphElementType.TRANSACTION,
-                                    StringUtils.equals("null", transactionLayersArray.get(i).get(2).asText()) ? ""
+                                    Strings.CS.equals("null", transactionLayersArray.get(i).get(2).asText()) ? ""
                                     : transactionLayersArray.get(i).get(2).asText()),
                             transactionLayersArray.get(i).get(0).asInt(),
                             transactionLayersArray.get(i).get(3).asText()

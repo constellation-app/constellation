@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
@@ -164,7 +163,6 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
                     } catch (final IOException ex) {
                         interaction.notify(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
                     }
-                    workbook.dispose();
                 }
             };
             outputThread.start();

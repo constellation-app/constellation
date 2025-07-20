@@ -36,12 +36,9 @@ import org.testng.annotations.Test;
 public class FindViewTabsNGTest {
     
     private BasicFindTab basicFindTab;
-    private BasicFindTab spyBasicFindTab;
     private ReplaceTab replaceTab;
-    private ReplaceTab spyReplaceTab;
     private FindViewPane findViewPane;
     private FindViewTabs findViewTabs;
-    private FindViewTabs spyFindViewTabs;
 
     private static final Logger LOGGER = Logger.getLogger(FindViewTabsNGTest.class.getName());
     
@@ -65,19 +62,14 @@ public class FindViewTabsNGTest {
     public void setUpMethod() throws Exception {
         findViewPane = mock(FindViewPane.class);
 
-        findViewTabs = new FindViewTabs(findViewPane);
-        spyFindViewTabs = spy(findViewTabs);
-
+        findViewTabs = spy(new FindViewTabs(findViewPane));
         basicFindTab = mock(BasicFindTab.class);
-        spyBasicFindTab = spy(basicFindTab);
-
         replaceTab = mock(ReplaceTab.class);
-        spyReplaceTab = spy(replaceTab);
 
-        when(spyFindViewTabs.getParentComponent()).thenReturn(findViewPane);
-        when(findViewPane.getTabs()).thenReturn(spyFindViewTabs);
-        when(spyFindViewTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
-        when(spyFindViewTabs.getReplaceTab()).thenReturn(spyReplaceTab);
+        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
+        when(findViewPane.getTabs()).thenReturn(findViewTabs);
+        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
+        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
     }
 
     @AfterMethod
@@ -92,7 +84,7 @@ public class FindViewTabsNGTest {
     public void testGetParentComponent() {
         System.out.println("getParentComponent");
 
-        assertEquals(spyFindViewTabs.getParentComponent(), findViewPane);
+        assertEquals(findViewTabs.getParentComponent(), findViewPane);
     }
 
     /**
@@ -102,7 +94,7 @@ public class FindViewTabsNGTest {
     public void testGetBasicFindTab() {
         System.out.println("getBasicFindTab");
 
-        assertEquals(spyFindViewTabs.getBasicFindTab(), spyBasicFindTab);
+        assertEquals(findViewTabs.getBasicFindTab(), basicFindTab);
     }
 
     /**
@@ -112,6 +104,6 @@ public class FindViewTabsNGTest {
     public void testGetReplaceTab() {
         System.out.println("getReplaceTab");
 
-        assertEquals(spyFindViewTabs.getReplaceTab(), spyReplaceTab);
+        assertEquals(findViewTabs.getReplaceTab(), replaceTab);
     }
 }
