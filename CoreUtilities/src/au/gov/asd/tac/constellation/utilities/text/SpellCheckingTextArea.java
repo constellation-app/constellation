@@ -247,7 +247,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         }
     }
     
-    private void nextWord(boolean select) {
+    private void nextWord(final boolean select) {
         final int textLength = getLength();
         final String text = getText();
         if (textLength <= 0) {
@@ -266,15 +266,11 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         // stop at newline. Then move the caret or select a range.
         while (current != BreakIterator.DONE) {
             for (int p = last; p <= current; p++) {
-                char ch = text.charAt(clamp(0, p, textLength - 1));
+                final char ch = text.charAt(clamp(0, p, textLength - 1));
                 // Avoid using Character.isSpaceChar() and Character.isWhitespace(),
                 // because they include LINE_SEPARATOR, PARAGRAPH_SEPARATOR, etc.
                 if (ch != ' ' && ch != '\t') {
-                    if (select) {
-                        selectRange(getAnchor(), p);
-                    } else {
-                        selectRange(p, p);
-                    }
+                    selectRange(select ? getAnchor() : p, p);                    
                     return;
                 }
             }
@@ -290,7 +286,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         }
     }
     
-    private void previousWord(boolean select) {
+    private void previousWord(final boolean select) {
         final int textLength = getLength();
         final String text = getText();
         if (textLength <= 0) {
@@ -318,10 +314,8 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      * Simple utility function which clamps the given value to be strictly
      * between the min and max values.
      */
-    private int clamp(int min, int value, int max) {
-        if (value < min) return min;
-        if (value > max) return max;
-        return value;
+    private int clamp(final int min, final int value, final int max) {
+        return Math.clamp(value, min, max);        
     }
     
     /**
