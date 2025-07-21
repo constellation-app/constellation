@@ -63,7 +63,7 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
         private Spinner<Integer> milliSpinner;
 
         protected TimeEditor(final EditOperation editOperation, final DefaultGetter<LocalTime> defaultGetter, final ValueValidator<LocalTime> validator, final String editedItemName, final LocalTime initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -96,12 +96,7 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
             controls.addRow(0, timeSpinnerContainer);
             return controls;
         }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
-        }
-
+        
         private HBox createTimeSpinners() {
             hourSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23));
             minSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59));

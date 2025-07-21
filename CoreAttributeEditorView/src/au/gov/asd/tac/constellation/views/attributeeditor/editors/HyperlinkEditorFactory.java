@@ -49,7 +49,7 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
         private TextField textField;
 
         protected HyperlinkEditor(final EditOperation editOperation, final DefaultGetter<URI> defaultGetter, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -77,11 +77,6 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
             textField.textProperty().addListener((o, n, v) -> update());
             controls.addRow(0, textField);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

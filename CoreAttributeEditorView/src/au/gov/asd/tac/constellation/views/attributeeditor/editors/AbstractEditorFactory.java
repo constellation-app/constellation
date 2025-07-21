@@ -67,10 +67,15 @@ public abstract class AbstractEditorFactory<V> {
         protected V savedValue;
         protected Node editorHeading = null;
         protected Node editorControls = null;
+        private final boolean noValueAllowed;
 
         protected boolean updateInProgress = false;
 
         protected AbstractEditor(final EditOperation editOperation, final DefaultGetter<V> defaultGetter, final ValueValidator<V> validator, final String editedItemName, final V initialValue) {
+            this(editOperation, defaultGetter, validator, editedItemName, initialValue, false);
+        }
+        
+        protected AbstractEditor(final EditOperation editOperation, final DefaultGetter<V> defaultGetter, final ValueValidator<V> validator, final String editedItemName, final V initialValue, final boolean noValueAllowed) {
             this.editOperation = editOperation;
             this.defaultGetter = defaultGetter;
             this.validator = validator;
@@ -78,6 +83,7 @@ public abstract class AbstractEditorFactory<V> {
             this.errorMessageProperty = new SimpleStringProperty();
             this.editedItemName = editedItemName;
             setCurrentValue(initialValue);
+            this.noValueAllowed = noValueAllowed;
         }
 
         protected final V getCurrentValue() {
@@ -235,7 +241,9 @@ public abstract class AbstractEditorFactory<V> {
 
         protected abstract Node createEditorControls();
 
-        public abstract boolean noValueCheckBoxAvailable();
+        public boolean isNoValueAllowed() {
+            return noValueAllowed;
+        }
     }
 
     /**

@@ -153,11 +153,6 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
             return controls;
         }
 
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
-        }
-
         private class LabelEntry {
 
             private final ComboBox<String> attrCombo;
@@ -260,7 +255,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
                     };
 
                     final AbstractEditor<ConstellationColor> editor = editorFactory.createEditor(setColorEditOperation, ValueValidator.getAlwaysSucceedValidator(), "label color", ConstellationColor.fromFXColor(color));
-                    final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
+                    final AttributeEditorDialog<ConstellationColor> dialog = new AttributeEditorDialog<>(false, editor);
                     dialog.showDialog();
                 };
             }

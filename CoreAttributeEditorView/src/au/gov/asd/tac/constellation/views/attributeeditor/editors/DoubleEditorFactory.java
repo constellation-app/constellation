@@ -81,10 +81,5 @@ public class DoubleEditorFactory extends AttributeValueEditorFactory<Double> {
             controls.getChildren().add(numberField);
             return controls;
         }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
-        }
     }
 }

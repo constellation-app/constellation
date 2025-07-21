@@ -163,11 +163,6 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             return controls;
         }
 
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
-        }
-
         private void reloadUserDefinedIcons(final String iconFile) {
             final IconNode userNode = new IconNode("(User-defined)", IconManager.getIconNames(true));
             final TreeItem<IconNode> userItem = new TreeItem<>(userNode);

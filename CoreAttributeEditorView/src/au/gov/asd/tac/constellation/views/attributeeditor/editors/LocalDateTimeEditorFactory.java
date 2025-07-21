@@ -71,7 +71,7 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         private Spinner<Integer> milliSpinner;
 
         protected LocalDateTimeEditor(final EditOperation editOperation, final DefaultGetter<LocalDateTime> defaultGetter, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -189,11 +189,6 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             timeSpinnerContainer.getChildren().addAll(dateLabelNode, hourLabelNode, minLabelNode, secLabelNode, milliLabelNode);
 
             return timeSpinnerContainer;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

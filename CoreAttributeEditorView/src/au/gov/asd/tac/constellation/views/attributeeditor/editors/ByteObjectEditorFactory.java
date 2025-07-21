@@ -48,7 +48,7 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
         private TextField numberField;
 
         protected ByteObjectEditor(final EditOperation editOperation, final DefaultGetter<Byte> defaultGetter, final ValueValidator<Byte> validator, final String editedItemName, final Byte initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -76,11 +76,6 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
             numberField.textProperty().addListener((o, n, v) -> update());
             controls.addRow(0, numberField);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

@@ -48,7 +48,7 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
         private TextField numberField;
 
         protected DoubleObjectEditor(final EditOperation editOperation, final DefaultGetter<Double> defaultGetter, final ValueValidator<Double> validator, final String editedItemName, final Double initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -76,11 +76,6 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
             numberField.textProperty().addListener((o, n, v) -> update());
             controls.addRow(0, numberField);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

@@ -92,7 +92,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
         };
 
         protected DateTimeEditor(final EditOperation editOperation, final DefaultGetter<ZonedDateTime> defaultGetter, final ValueValidator<ZonedDateTime> validator, final String editedItemName, final ZonedDateTime initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -159,11 +159,6 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             controls.addRow(0, timeSpinnerContainer);
             controls.addRow(1, timeZoneHbox);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
 
         private void updateTimeZoneList() {

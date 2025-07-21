@@ -131,10 +131,5 @@ public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactor
             controls.addRow(2, attributeList);
             return controls;
         }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
-        }
     }
 }

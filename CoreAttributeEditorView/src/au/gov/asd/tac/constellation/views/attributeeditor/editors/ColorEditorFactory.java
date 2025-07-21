@@ -58,7 +58,7 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
         private ColorPicker picker;
 
         protected ColorEditor(final EditOperation editOperation, final DefaultGetter<ConstellationColor> defaultGetter, final ValueValidator<ConstellationColor> validator, final String editedItemName, final ConstellationColor initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -139,11 +139,6 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
             controls.addRow(0, namedLabel, colorCombo);
             controls.addRow(1, pickerLabel, picker);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

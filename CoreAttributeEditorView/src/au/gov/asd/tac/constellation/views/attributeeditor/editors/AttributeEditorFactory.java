@@ -146,11 +146,6 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             return controls;
         }
 
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
-        }
-
         @SuppressWarnings("unchecked")
         private <T> EventHandler<ActionEvent> getSelectDefaultHandler() {
             return e -> {
@@ -168,7 +163,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
                 };
 
                 final AbstractEditor<T> editor = editorFactory.createEditor(restoreDefaultEditOperation, validator, "the default", (T) toTranslator.translate(defaultValue));
-                final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
+                final AttributeEditorDialog<T> dialog = new AttributeEditorDialog<>(false, editor);
                 dialog.showDialog();
             };
         }

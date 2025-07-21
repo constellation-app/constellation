@@ -145,10 +145,5 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
             controls.addRow(2, typeList);
             return controls;
         }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
-        }
     }
 }

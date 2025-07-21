@@ -54,7 +54,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
         private TextArea textArea;
 
         protected StringEditor(final EditOperation editOperation, final DefaultGetter<String> defaultGetter, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -124,11 +124,6 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
             controls.addRow(0, textArea);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

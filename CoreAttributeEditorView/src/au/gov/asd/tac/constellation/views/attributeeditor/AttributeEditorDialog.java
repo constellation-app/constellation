@@ -36,9 +36,11 @@ import javafx.scene.paint.Color;
  * <br>
  * This is a modal javafx dialog.
  *
+ * @param <V> the value type for the editor
+ * 
  * @author twinkle2_little
  */
-public class AttributeEditorDialog extends ConstellationDialog {
+public class AttributeEditorDialog<V> extends ConstellationDialog {
 
     private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/attributeeditor/resources/attribute-editor-dialog-dark.css";
     private final HBox okCancelHBox;
@@ -49,7 +51,7 @@ public class AttributeEditorDialog extends ConstellationDialog {
     private final CheckBox noValueCheckBox;
     private final VBox noValueVBox;
 
-    public AttributeEditorDialog(final boolean defaultButtonAvailable, final AbstractEditor<?> editor) {
+    public AttributeEditorDialog(final boolean defaultButtonAvailable, final AbstractEditor<V> editor) {
         final VBox root = new VBox();
         root.setPadding(new Insets(10));
         root.setAlignment(Pos.CENTER);
@@ -79,7 +81,7 @@ public class AttributeEditorDialog extends ConstellationDialog {
         cancelButton.setOnAction(e -> hideDialog());
 
         defaultButton.setOnAction(e -> {
-            if (editor.noValueCheckBoxAvailable()) {
+            if (editor.isNoValueAllowed()) {
                 noValueCheckBox.setSelected(editor.isDefaultValueNull());
             }
 
@@ -103,7 +105,7 @@ public class AttributeEditorDialog extends ConstellationDialog {
             okCancelHBox.getChildren().addAll(okButton, cancelButton);
         }
 
-        if (editor.noValueCheckBoxAvailable()) {
+        if (editor.isNoValueAllowed()) {
             noValueVBox.getChildren().addAll(noValueCheckBox, okCancelHBox);
         }
 
@@ -117,7 +119,7 @@ public class AttributeEditorDialog extends ConstellationDialog {
                 editor.getEditorHeading(),
                 ec,
                 errorLabel,
-                editor.noValueCheckBoxAvailable() ? noValueVBox : okCancelHBox);
+                editor.isNoValueAllowed() ? noValueVBox : okCancelHBox);
 
         final Scene scene = new Scene(root);
         scene.setFill(Color.rgb(0, 0, 0, 0));

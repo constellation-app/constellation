@@ -47,7 +47,7 @@ public class LongObjectEditorFactory extends AttributeValueEditorFactory<Long> {
         private TextField numberField;
 
         protected LongObjectEditor(final EditOperation editOperation, final DefaultGetter<Long> defaultGetter, final ValueValidator<Long> validator, final String editedItemName, final Long initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -75,11 +75,6 @@ public class LongObjectEditorFactory extends AttributeValueEditorFactory<Long> {
             numberField.textProperty().addListener((o, n, v) -> update());
             controls.addRow(0, numberField);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

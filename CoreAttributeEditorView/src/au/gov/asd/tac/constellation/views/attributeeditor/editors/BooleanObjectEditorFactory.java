@@ -47,7 +47,7 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
         private CheckBox checkBox;
 
         protected BooleanObjectEditor(final EditOperation editOperation, final DefaultGetter<Boolean> defaultGetter, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -71,11 +71,6 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
             checkBox.selectedProperty().addListener((v, o, n) -> update());
             controls.addRow(0, checkBox);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

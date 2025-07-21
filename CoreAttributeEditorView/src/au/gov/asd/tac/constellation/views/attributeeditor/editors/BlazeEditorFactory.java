@@ -67,7 +67,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
         private ColorPicker picker;
 
         protected BlazeEditor(final EditOperation editOperation, final DefaultGetter<Blaze> defaultGetter, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -187,11 +187,6 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             controls.addRow(3, namedLabel, colorCombo);
             controls.addRow(4, pickerLabel, picker);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

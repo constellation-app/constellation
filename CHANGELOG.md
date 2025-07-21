@@ -1,5 +1,12 @@
 # Constellation Changes
 
+## Changes in July 2025
+-   Updated `AttributeEditorDialog` to take a type parameter matching the type of the editor passed in the constructor.
+-   Updated `AbstractEditorFactory.AbstractEditor` to include a constructor with a boolean parameter for whether "No value" is allowed.
+    The existing constructor now passes to this new constructor, passing false for the new parameter.
+-   Updated `AbstractEditorFactory.AbstractEditor.noValueCheckBoxAvailable()` to no longer be abstract and simply return the boolean value set from the new constructor.
+    It is also renamed to `AbstractEditorFactory.AbstractEditor.isNoValueAllowed()`. Existing editors overriding this function should now instead pass this value into the constructor.
+
 ## Changes in June 2025
 -   Removed `Auth` and `AuthPanel` classes as they were unused.
 -   Removed `DragElementsPlugin` and `LineDragger` classes which were unused.

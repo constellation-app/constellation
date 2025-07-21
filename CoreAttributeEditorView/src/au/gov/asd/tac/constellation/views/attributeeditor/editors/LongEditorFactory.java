@@ -81,10 +81,5 @@ public class LongEditorFactory extends AttributeValueEditorFactory<Long> {
             controls.getChildren().add(numberField);
             return controls;
         }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
-        }
     }
 }

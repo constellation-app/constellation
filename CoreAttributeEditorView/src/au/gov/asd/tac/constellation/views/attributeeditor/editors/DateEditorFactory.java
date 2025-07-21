@@ -52,7 +52,7 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
         private DatePicker datePicker;
 
         protected DateEditor(final EditOperation editOperation, final DefaultGetter<LocalDate> defaultGetter, final ValueValidator<LocalDate> validator, final String editedItemName, final LocalDate initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -90,11 +90,6 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             datePicker.valueProperty().addListener((v, o, n) -> update());
             controls.addRow(0, datePicker);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

@@ -47,7 +47,7 @@ public class IntegerObjectEditorFactory extends AttributeValueEditorFactory<Inte
         private TextField numberField;
 
         protected IntegerObjectEditor(final EditOperation editOperation, final DefaultGetter<Integer> defaultGetter, final ValueValidator<Integer> validator, final String editedItemName, final Integer initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -75,11 +75,6 @@ public class IntegerObjectEditorFactory extends AttributeValueEditorFactory<Inte
             numberField.textProperty().addListener((o, n, v) -> update());
             controls.addRow(0, numberField);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

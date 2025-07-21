@@ -128,11 +128,6 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
             return controls;
         }
 
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
-        }
-
         private void setDecoratorChoice(final ComboBox<String> comboBox, final String choice) {
             comboBox.getSelectionModel().select(choice == null ? NO_DECORATOR : choice);
         }

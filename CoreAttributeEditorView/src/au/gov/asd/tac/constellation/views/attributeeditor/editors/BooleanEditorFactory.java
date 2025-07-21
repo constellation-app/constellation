@@ -81,10 +81,5 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
             return controls;
         }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
-        }
     }
 }

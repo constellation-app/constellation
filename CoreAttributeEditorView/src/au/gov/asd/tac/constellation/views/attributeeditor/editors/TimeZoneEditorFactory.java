@@ -108,10 +108,5 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
             controls.getChildren().addAll(timeZoneComboBox);
             return controls;
         }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
-        }
     }
 }

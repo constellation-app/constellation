@@ -145,10 +145,5 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
             controls.addRow(2, typeList);
             return controls;
         }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
-        }
     }
 }

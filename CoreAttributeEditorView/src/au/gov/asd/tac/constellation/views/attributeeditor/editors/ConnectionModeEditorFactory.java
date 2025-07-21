@@ -99,10 +99,5 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
             controls.addRow(0, connectionModeLabel, connectionModeComboBox);
             return controls;
         }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
-        }
     }
 }

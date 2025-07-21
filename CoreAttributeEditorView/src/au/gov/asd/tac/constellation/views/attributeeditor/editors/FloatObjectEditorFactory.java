@@ -47,7 +47,7 @@ public class FloatObjectEditorFactory extends AttributeValueEditorFactory<Float>
         private TextField numberField;
 
         protected FloatObjectEditor(final EditOperation editOperation, final DefaultGetter<Float> defaultGetter, final ValueValidator<Float> validator, final String editedItemName, final Float initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -75,11 +75,6 @@ public class FloatObjectEditorFactory extends AttributeValueEditorFactory<Float>
             numberField.textProperty().addListener((o, n, v) -> update());
             controls.addRow(0, numberField);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

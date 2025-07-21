@@ -48,7 +48,7 @@ public class ShortObjectEditorFactory extends AttributeValueEditorFactory<Short>
         private TextField numberField;
 
         protected ShortObjectEditor(final EditOperation editOperation, final DefaultGetter<Short> defaultGetter, final ValueValidator<Short> validator, final String editedItemName, final Short initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
         }
 
         @Override
@@ -76,11 +76,6 @@ public class ShortObjectEditorFactory extends AttributeValueEditorFactory<Short>
             numberField.textProperty().addListener((o, n, v) -> update());
             controls.addRow(0, numberField);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }
