@@ -254,7 +254,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
                     };
 
                     final AbstractEditor<ConstellationColor> editor = editorFactory.createEditor(setColorEditOperation, ValueValidator.getAlwaysSucceedValidator(), "label color", ConstellationColor.fromFXColor(color));
-                    final AttributeEditorDialog<ConstellationColor> dialog = new AttributeEditorDialog<>(false, editor);
+                    final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
                     dialog.showDialog();
                 };
             }

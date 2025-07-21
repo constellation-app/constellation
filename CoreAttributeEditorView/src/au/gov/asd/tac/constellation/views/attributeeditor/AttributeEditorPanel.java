@@ -288,7 +288,7 @@ public class AttributeEditorPanel extends BorderPane {
             final EditOperation editOperation = value -> prefs.put(correspondingPreference, ((ConstellationColor) value).getHtmlColor());
             @SuppressWarnings("unchecked") // return type of createEditor will actually be AbstractEditor<ConstellationColor>
             final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(editOperation, String.format("for %s", itemName), ConstellationColor.fromFXColor(color));
-            final AttributeEditorDialog<ConstellationColor> dialog = new AttributeEditorDialog<>(false, editor);
+            final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
             dialog.showDialog();
         });
         return schemaMenuItem;
@@ -867,7 +867,7 @@ public class AttributeEditorPanel extends BorderPane {
 
         ((AttributeEditor) editor).setGraphElementType(elementType);
         ((AttributeEditor) editor).setTypeModifiable(true);
-        final AttributeEditorDialog<AttributePrototype> dialog = new AttributeEditorDialog<>(false, editor);
+        final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
         dialog.showDialog();
     }
 
@@ -880,7 +880,7 @@ public class AttributeEditorPanel extends BorderPane {
 
         ((AttributeEditor) editor).setGraphElementType(attr.getElementType());
         ((AttributeEditor) editor).setTypeModifiable(false);
-        final AttributeEditorDialog<AttributePrototype> dialog = new AttributeEditorDialog<>(false, editor);
+        final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
         dialog.showDialog();
     }
 
@@ -888,7 +888,7 @@ public class AttributeEditorPanel extends BorderPane {
         final EditOperation editOperation = zoneId
                 -> PluginExecution.withPlugin(new UpdateTimeZonePlugin((ZoneId) zoneId, attr)).executeLater(GraphManager.getDefault().getActiveGraph());
         final AbstractEditor<ZoneId> editor = UPDATE_TIME_ZONE_EDITOR_FACTORY.createEditor(editOperation, String.format("Set time-zone for attribute %s", attr.getAttributeName()), TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
-        final AttributeEditorDialog<ZoneId> dialog = new AttributeEditorDialog<>(true, editor);
+        final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();
     }
 
@@ -913,7 +913,7 @@ public class AttributeEditorPanel extends BorderPane {
             final DefaultGetter<List<String>> defaultGetter = new PrimaryKeyDefaultGetter(elementType);
             final AbstractEditor<List<String>> editor = LIST_SELECTION_EDITOR_FACTORY.createEditor(editOperation, defaultGetter, String.format("Edit primary key for %ss", elementType.getShortLabel()), currentKeyAttributes);
             ((ListSelectionEditor) editor).setPossibleItems(allAttributes);
-            final AttributeEditorDialog<List<String>> dialog = new AttributeEditorDialog<>(true, editor);
+            final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
             dialog.showDialog();
         }
     }
@@ -928,7 +928,7 @@ public class AttributeEditorPanel extends BorderPane {
         final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
         final DefaultGetter<?> defaultGetter = attributeData::getDefaultValue;
         final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
-        final AttributeEditorDialog<?> dialog = new AttributeEditorDialog<>(true, editor);
+        final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();
     }
 

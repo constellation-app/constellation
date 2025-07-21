@@ -163,7 +163,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
                 };
 
                 final AbstractEditor<T> editor = editorFactory.createEditor(restoreDefaultEditOperation, validator, "the default", (T) toTranslator.translate(defaultValue));
-                final AttributeEditorDialog<T> dialog = new AttributeEditorDialog<>(false, editor);
+                final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
                 dialog.showDialog();
             };
         }

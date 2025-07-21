@@ -35,12 +35,10 @@ import javafx.scene.paint.Color;
  * editor.
  * <br>
  * This is a modal javafx dialog.
- *
- * @param <V> the value type for the editor
  * 
  * @author twinkle2_little
  */
-public class AttributeEditorDialog<V> extends ConstellationDialog {
+public class AttributeEditorDialog extends ConstellationDialog {
 
     private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/attributeeditor/resources/attribute-editor-dialog-dark.css";
     private final HBox okCancelHBox;
@@ -51,7 +49,7 @@ public class AttributeEditorDialog<V> extends ConstellationDialog {
     private final CheckBox noValueCheckBox;
     private final VBox noValueVBox;
 
-    public AttributeEditorDialog(final boolean defaultButtonAvailable, final AbstractEditor<V> editor) {
+    public AttributeEditorDialog(final boolean defaultButtonAvailable, final AbstractEditor<?> editor) {
         final VBox root = new VBox();
         root.setPadding(new Insets(10));
         root.setAlignment(Pos.CENTER);
