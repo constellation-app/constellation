@@ -94,31 +94,6 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
                         spellCheckingTextArea.deleteText(selection);
                     }
                     e.consume();
-                } else if (e.isShortcutDown() && e.isShiftDown() && (e.getCode() == KeyCode.RIGHT)) {                    
-                    spellCheckingTextArea.selectNextWord();
-                    e.consume();
-                } else if (e.isShortcutDown() && e.isShiftDown() && (e.getCode() == KeyCode.LEFT)) {                    
-                    spellCheckingTextArea.selectPreviousWord();
-                    e.consume();
-                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.RIGHT)) {                    
-                    spellCheckingTextArea.nextWord();
-                    e.consume();
-                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.LEFT)) {                    
-                    spellCheckingTextArea.previousWord();
-                    e.consume();
-                } else if (e.isShiftDown() && (e.getCode() == KeyCode.RIGHT)) {                    
-                    spellCheckingTextArea.selectForward();
-                    e.consume();
-                } else if (e.isShiftDown() && (e.getCode() == KeyCode.LEFT)) {                    
-                    spellCheckingTextArea.selectBackward();
-                    e.consume();
-                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.A)) {                    
-                    spellCheckingTextArea.selectAll();
-                    e.consume();
-                } else if (e.getCode() == KeyCode.ESCAPE) {
-                    e.consume();
-                } else {
-                    // Do nothing
                 }
             });
 
