@@ -52,6 +52,7 @@
                 <package>com.fasterxml.jackson.core.format</package>
                 <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_19_1</package>
                 <package>com.fasterxml.jackson.core.io</package>
+                <package>com.fasterxml.jackson.core.io.doubleparser</package>
                 <package>com.fasterxml.jackson.core.io.schubfach</package>
                 <package>com.fasterxml.jackson.core.json</package>
                 <package>com.fasterxml.jackson.core.json.async</package>
@@ -313,9 +314,23 @@
                 <package>com.sun.xml.bind.v2.schemagen.episode</package>
                 <package>com.sun.xml.bind.v2.schemagen.xmlschema</package>
                 <package>com.sun.xml.bind.v2.util</package>
+                <package>com.sun.xml.fastinfoset</package>
+                <package>com.sun.xml.fastinfoset.algorithm</package>
+                <package>com.sun.xml.fastinfoset.alphabet</package>
+                <package>com.sun.xml.fastinfoset.dom</package>
+                <package>com.sun.xml.fastinfoset.org.apache.xerces.util</package>
+                <package>com.sun.xml.fastinfoset.sax</package>
+                <package>com.sun.xml.fastinfoset.stax</package>
+                <package>com.sun.xml.fastinfoset.stax.events</package>
+                <package>com.sun.xml.fastinfoset.stax.factory</package>
+                <package>com.sun.xml.fastinfoset.stax.util</package>
+                <package>com.sun.xml.fastinfoset.tools</package>
+                <package>com.sun.xml.fastinfoset.util</package>
+                <package>com.sun.xml.fastinfoset.vocab</package>
                 <package>com.sun.xml.txw2</package>
                 <package>com.sun.xml.txw2.annotation</package>
                 <package>com.sun.xml.txw2.output</package>
+                <package>com.vdurmont.emoji</package>
                 <package>com.xhaus.modjy</package>
                 <package>com.zaxxer.sparsebits</package>
                 <package>com.zebraimaging</package>
@@ -346,6 +361,8 @@
                 <package>dumonts.hunspell.bindings</package>
                 <package>edu.washington.cs.knowitall.logic</package>
                 <package>edu.washington.cs.knowitall.regex</package>
+                <package>gnu.trove</package>
+                <package>gnu.trove.decorator</package>
                 <package>gov.nasa.worldwind</package>
                 <package>gov.nasa.worldwind.animation</package>
                 <package>gov.nasa.worldwind.avlist</package>
@@ -459,6 +476,7 @@
                 <package>io.github.resilience4j.micrometer</package>
                 <package>io.github.resilience4j.micrometer.tagged</package>
                 <package>io.grpc</package>
+                <package>io.grpc.inprocess</package>
                 <package>io.grpc.internal</package>
                 <package>io.grpc.netty.shaded.io.grpc.netty</package>
                 <package>io.grpc.netty.shaded.io.netty.bootstrap</package>
@@ -701,6 +719,7 @@
                 <package>javax.help.resources</package>
                 <package>javax.help.search</package>
                 <package>javax.help.tagext</package>
+                <package>javax.inject</package>
                 <package>javax.measure</package>
                 <package>javax.measure.format</package>
                 <package>javax.measure.quantity</package>
@@ -895,6 +914,10 @@
                 <package>jogamp.opengl.windows.wgl</package>
                 <package>jogamp.opengl.windows.wgl.awt</package>
                 <package>jogamp.opengl.x11.glx</package>
+                <package>junit.extensions</package>
+                <package>junit.framework</package>
+                <package>junit.runner</package>
+                <package>junit.textui</package>
                 <package>morfologik.fsa</package>
                 <package>morfologik.fsa.builders</package>
                 <package>morfologik.speller</package>
@@ -976,8 +999,12 @@
                 <package>nl.jqno.equalsverifier.internal.instantiation.vintage</package>
                 <package>nl.jqno.equalsverifier.internal.instantiation.vintage.factories</package>
                 <package>nl.jqno.equalsverifier.internal.instantiation.vintage.reflection</package>
+                <package>nl.jqno.equalsverifier.internal.prefabvalues</package>
+                <package>nl.jqno.equalsverifier.internal.prefabvalues.factories</package>
+                <package>nl.jqno.equalsverifier.internal.prefabvalues.factoryproviders</package>
                 <package>nl.jqno.equalsverifier.internal.reflection</package>
                 <package>nl.jqno.equalsverifier.internal.reflection.annotations</package>
+                <package>nl.jqno.equalsverifier.internal.testhelpers</package>
                 <package>nl.jqno.equalsverifier.internal.util</package>
                 <package>nl.jqno.equalsverifier.internal.versionspecific</package>
                 <package>opennlp.tools.chunker</package>
@@ -1049,6 +1076,11 @@
                 <package>org.HdrHistogram</package>
                 <package>org.HdrHistogram.packedarray</package>
                 <package>org.LatencyUtils</package>
+                <package>org.apache.commons.beanutils</package>
+                <package>org.apache.commons.beanutils.converters</package>
+                <package>org.apache.commons.beanutils.expression</package>
+                <package>org.apache.commons.beanutils.locale</package>
+                <package>org.apache.commons.beanutils.locale.converters</package>
                 <package>org.apache.commons.codec</package>
                 <package>org.apache.commons.codec.binary</package>
                 <package>org.apache.commons.codec.cli</package>
@@ -1520,6 +1552,36 @@
                 <package>org.assertj.core.util.diff.myers</package>
                 <package>org.assertj.core.util.introspection</package>
                 <package>org.assertj.core.util.xml</package>
+                <package>org.checkerframework.checker.builder.qual</package>
+                <package>org.checkerframework.checker.calledmethods.qual</package>
+                <package>org.checkerframework.checker.compilermsgs.qual</package>
+                <package>org.checkerframework.checker.fenum.qual</package>
+                <package>org.checkerframework.checker.formatter.qual</package>
+                <package>org.checkerframework.checker.guieffect.qual</package>
+                <package>org.checkerframework.checker.i18n.qual</package>
+                <package>org.checkerframework.checker.i18nformatter.qual</package>
+                <package>org.checkerframework.checker.index.qual</package>
+                <package>org.checkerframework.checker.initialization.qual</package>
+                <package>org.checkerframework.checker.interning.qual</package>
+                <package>org.checkerframework.checker.lock.qual</package>
+                <package>org.checkerframework.checker.mustcall.qual</package>
+                <package>org.checkerframework.checker.nullness.qual</package>
+                <package>org.checkerframework.checker.optional.qual</package>
+                <package>org.checkerframework.checker.propkey.qual</package>
+                <package>org.checkerframework.checker.regex.qual</package>
+                <package>org.checkerframework.checker.signature.qual</package>
+                <package>org.checkerframework.checker.signedness.qual</package>
+                <package>org.checkerframework.checker.tainting.qual</package>
+                <package>org.checkerframework.checker.units.qual</package>
+                <package>org.checkerframework.common.aliasing.qual</package>
+                <package>org.checkerframework.common.initializedfields.qual</package>
+                <package>org.checkerframework.common.reflection.qual</package>
+                <package>org.checkerframework.common.returnsreceiver.qual</package>
+                <package>org.checkerframework.common.subtyping.qual</package>
+                <package>org.checkerframework.common.util.report.qual</package>
+                <package>org.checkerframework.common.value.qual</package>
+                <package>org.checkerframework.dataflow.qual</package>
+                <package>org.checkerframework.framework.qual</package>
                 <package>org.codehaus.jackson</package>
                 <package>org.codehaus.jackson.annotate</package>
                 <package>org.codehaus.jackson.impl</package>
@@ -1617,12 +1679,18 @@
                 <package>org.eclipse.jetty.server.handler.jmx</package>
                 <package>org.eclipse.jetty.server.internal</package>
                 <package>org.eclipse.jetty.server.jmx</package>
+                <package>org.eclipse.jetty.server.resource</package>
+                <package>org.eclipse.jetty.server.session</package>
+                <package>org.eclipse.jetty.servlet</package>
+                <package>org.eclipse.jetty.servlet.jmx</package>
+                <package>org.eclipse.jetty.servlet.listener</package>
                 <package>org.eclipse.jetty.session</package>
                 <package>org.eclipse.jetty.util</package>
                 <package>org.eclipse.jetty.util.annotation</package>
                 <package>org.eclipse.jetty.util.component</package>
                 <package>org.eclipse.jetty.util.compression</package>
                 <package>org.eclipse.jetty.util.jndi</package>
+                <package>org.eclipse.jetty.util.log</package>
                 <package>org.eclipse.jetty.util.preventers</package>
                 <package>org.eclipse.jetty.util.resource</package>
                 <package>org.eclipse.jetty.util.security</package>
@@ -1798,6 +1866,10 @@
                 <package>org.geotools.filter.identity</package>
                 <package>org.geotools.filter.spatial</package>
                 <package>org.geotools.filter.temporal</package>
+                <package>org.geotools.filter.text.commons</package>
+                <package>org.geotools.filter.text.cql2</package>
+                <package>org.geotools.filter.text.ecql</package>
+                <package>org.geotools.filter.text.generated.parsers</package>
                 <package>org.geotools.filter.v1_0</package>
                 <package>org.geotools.filter.v1_0.capabilities</package>
                 <package>org.geotools.filter.v1_1</package>
@@ -1809,6 +1881,7 @@
                 <package>org.geotools.geojson.feature</package>
                 <package>org.geotools.geojson.geom</package>
                 <package>org.geotools.geometry</package>
+                <package>org.geotools.geometry.iso.text</package>
                 <package>org.geotools.geometry.jts</package>
                 <package>org.geotools.geometry.jts.coordinatesequence</package>
                 <package>org.geotools.geometry.util</package>
@@ -1855,9 +1928,17 @@
                 <package>org.geotools.metadata.i18n</package>
                 <package>org.geotools.metadata.iso</package>
                 <package>org.geotools.metadata.iso.citation</package>
+                <package>org.geotools.metadata.iso.constraint</package>
+                <package>org.geotools.metadata.iso.content</package>
+                <package>org.geotools.metadata.iso.distribution</package>
                 <package>org.geotools.metadata.iso.extent</package>
+                <package>org.geotools.metadata.iso.identification</package>
+                <package>org.geotools.metadata.iso.lineage</package>
+                <package>org.geotools.metadata.iso.maintenance</package>
                 <package>org.geotools.metadata.iso.quality</package>
+                <package>org.geotools.metadata.iso.spatial</package>
                 <package>org.geotools.metadata.math</package>
+                <package>org.geotools.metadata.sql</package>
                 <package>org.geotools.nature</package>
                 <package>org.geotools.ows</package>
                 <package>org.geotools.ows.bindings</package>
@@ -2047,6 +2128,40 @@
                 <package>org.json.simple</package>
                 <package>org.json.simple.parser</package>
                 <package>org.jspecify.annotations</package>
+                <package>org.junit</package>
+                <package>org.junit.experimental</package>
+                <package>org.junit.experimental.categories</package>
+                <package>org.junit.experimental.max</package>
+                <package>org.junit.experimental.results</package>
+                <package>org.junit.experimental.runners</package>
+                <package>org.junit.experimental.theories</package>
+                <package>org.junit.experimental.theories.internal</package>
+                <package>org.junit.experimental.theories.suppliers</package>
+                <package>org.junit.function</package>
+                <package>org.junit.internal</package>
+                <package>org.junit.internal.builders</package>
+                <package>org.junit.internal.management</package>
+                <package>org.junit.internal.matchers</package>
+                <package>org.junit.internal.requests</package>
+                <package>org.junit.internal.runners</package>
+                <package>org.junit.internal.runners.model</package>
+                <package>org.junit.internal.runners.rules</package>
+                <package>org.junit.internal.runners.statements</package>
+                <package>org.junit.matchers</package>
+                <package>org.junit.rules</package>
+                <package>org.junit.runner</package>
+                <package>org.junit.runner.manipulation</package>
+                <package>org.junit.runner.notification</package>
+                <package>org.junit.runners</package>
+                <package>org.junit.runners.model</package>
+                <package>org.junit.runners.parameterized</package>
+                <package>org.junit.validator</package>
+                <package>org.jvnet.fastinfoset</package>
+                <package>org.jvnet.fastinfoset.sax</package>
+                <package>org.jvnet.fastinfoset.sax.helpers</package>
+                <package>org.jvnet.fastinfoset.stax</package>
+                <package>org.jvnet.staxex</package>
+                <package>org.jvnet.staxex.util</package>
                 <package>org.languagetool</package>
                 <package>org.languagetool.bitext</package>
                 <package>org.languagetool.broker</package>
@@ -2154,6 +2269,7 @@
                 <package>org.locationtech.jts.triangulate.tri</package>
                 <package>org.locationtech.jts.util</package>
                 <package>org.mockito</package>
+                <package>org.mockito.codegen</package>
                 <package>org.mockito.configuration</package>
                 <package>org.mockito.creation.instance</package>
                 <package>org.mockito.exceptions.base</package>
@@ -2234,6 +2350,45 @@
                 <package>org.objenesis.instantiator.sun</package>
                 <package>org.objenesis.instantiator.util</package>
                 <package>org.objenesis.strategy</package>
+                <package>org.opengis.annotation</package>
+                <package>org.opengis.coverage</package>
+                <package>org.opengis.coverage.grid</package>
+                <package>org.opengis.coverage.processing</package>
+                <package>org.opengis.feature</package>
+                <package>org.opengis.feature.simple</package>
+                <package>org.opengis.feature.type</package>
+                <package>org.opengis.filter</package>
+                <package>org.opengis.filter.capability</package>
+                <package>org.opengis.filter.expression</package>
+                <package>org.opengis.filter.identity</package>
+                <package>org.opengis.filter.sort</package>
+                <package>org.opengis.filter.spatial</package>
+                <package>org.opengis.filter.temporal</package>
+                <package>org.opengis.geometry</package>
+                <package>org.opengis.geometry.aggregate</package>
+                <package>org.opengis.geometry.complex</package>
+                <package>org.opengis.geometry.coordinate</package>
+                <package>org.opengis.geometry.primitive</package>
+                <package>org.opengis.metadata</package>
+                <package>org.opengis.metadata.citation</package>
+                <package>org.opengis.metadata.constraint</package>
+                <package>org.opengis.metadata.content</package>
+                <package>org.opengis.metadata.distribution</package>
+                <package>org.opengis.metadata.extent</package>
+                <package>org.opengis.metadata.identification</package>
+                <package>org.opengis.metadata.lineage</package>
+                <package>org.opengis.metadata.maintenance</package>
+                <package>org.opengis.metadata.quality</package>
+                <package>org.opengis.metadata.spatial</package>
+                <package>org.opengis.parameter</package>
+                <package>org.opengis.referencing</package>
+                <package>org.opengis.referencing.crs</package>
+                <package>org.opengis.referencing.cs</package>
+                <package>org.opengis.referencing.datum</package>
+                <package>org.opengis.referencing.operation</package>
+                <package>org.opengis.style</package>
+                <package>org.opengis.temporal</package>
+                <package>org.opengis.util</package>
                 <package>org.openjdk.nashorn.api.linker</package>
                 <package>org.openjdk.nashorn.api.scripting</package>
                 <package>org.openjdk.nashorn.api.tree</package>
@@ -2424,11 +2579,25 @@
                 <package>org.python.bouncycastle.asn1</package>
                 <package>org.python.bouncycastle.asn1.anssi</package>
                 <package>org.python.bouncycastle.asn1.bc</package>
+                <package>org.python.bouncycastle.asn1.cryptlib</package>
                 <package>org.python.bouncycastle.asn1.cryptopro</package>
+                <package>org.python.bouncycastle.asn1.edec</package>
                 <package>org.python.bouncycastle.asn1.gm</package>
+                <package>org.python.bouncycastle.asn1.gnu</package>
+                <package>org.python.bouncycastle.asn1.iana</package>
+                <package>org.python.bouncycastle.asn1.isara</package>
+                <package>org.python.bouncycastle.asn1.iso</package>
+                <package>org.python.bouncycastle.asn1.kisa</package>
+                <package>org.python.bouncycastle.asn1.microsoft</package>
+                <package>org.python.bouncycastle.asn1.misc</package>
+                <package>org.python.bouncycastle.asn1.mozilla</package>
                 <package>org.python.bouncycastle.asn1.nist</package>
+                <package>org.python.bouncycastle.asn1.nsri</package>
+                <package>org.python.bouncycastle.asn1.ntt</package>
                 <package>org.python.bouncycastle.asn1.ocsp</package>
+                <package>org.python.bouncycastle.asn1.oiw</package>
                 <package>org.python.bouncycastle.asn1.pkcs</package>
+                <package>org.python.bouncycastle.asn1.rosstandart</package>
                 <package>org.python.bouncycastle.asn1.sec</package>
                 <package>org.python.bouncycastle.asn1.teletrust</package>
                 <package>org.python.bouncycastle.asn1.ua</package>
@@ -2593,13 +2762,18 @@
                 <package>org.python.bouncycastle.pqc.crypto.falcon</package>
                 <package>org.python.bouncycastle.pqc.crypto.frodo</package>
                 <package>org.python.bouncycastle.pqc.crypto.gemss</package>
+                <package>org.python.bouncycastle.pqc.crypto.gmss</package>
+                <package>org.python.bouncycastle.pqc.crypto.gmss.util</package>
                 <package>org.python.bouncycastle.pqc.crypto.hqc</package>
                 <package>org.python.bouncycastle.pqc.crypto.lms</package>
+                <package>org.python.bouncycastle.pqc.crypto.mceliece</package>
                 <package>org.python.bouncycastle.pqc.crypto.newhope</package>
                 <package>org.python.bouncycastle.pqc.crypto.ntru</package>
                 <package>org.python.bouncycastle.pqc.crypto.ntruprime</package>
                 <package>org.python.bouncycastle.pqc.crypto.picnic</package>
+                <package>org.python.bouncycastle.pqc.crypto.qtesla</package>
                 <package>org.python.bouncycastle.pqc.crypto.rainbow</package>
+                <package>org.python.bouncycastle.pqc.crypto.rainbow.util</package>
                 <package>org.python.bouncycastle.pqc.crypto.saber</package>
                 <package>org.python.bouncycastle.pqc.crypto.sphincs</package>
                 <package>org.python.bouncycastle.pqc.crypto.sphincsplus</package>
@@ -2622,6 +2796,7 @@
                 <package>org.python.bouncycastle.pqc.jcajce.provider.ntru</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.ntruprime</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.picnic</package>
+                <package>org.python.bouncycastle.pqc.jcajce.provider.qtesla</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.rainbow</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.saber</package>
                 <package>org.python.bouncycastle.pqc.jcajce.provider.sphincs</package>
@@ -2640,6 +2815,7 @@
                 <package>org.python.bouncycastle.pqc.legacy.math.ntru.euclid</package>
                 <package>org.python.bouncycastle.pqc.legacy.math.ntru.polynomial</package>
                 <package>org.python.bouncycastle.pqc.legacy.math.ntru.util</package>
+                <package>org.python.bouncycastle.pqc.math.linearalgebra</package>
                 <package>org.python.bouncycastle.pqc.math.ntru</package>
                 <package>org.python.bouncycastle.pqc.math.ntru.parameters</package>
                 <package>org.python.bouncycastle.tsp</package>
@@ -2832,6 +3008,7 @@
                 <package>org.w3.xlink</package>
                 <package>org.w3.xlink.impl</package>
                 <package>org.w3.xlink.util</package>
+                <package>org.w3c.dom.html</package>
                 <package>pabeles.concurrency</package>
                 <package>processing.awt</package>
                 <package>processing.core</package>
@@ -2841,7 +3018,9 @@
                 <package>processing.opengl</package>
                 <package>si.uom</package>
                 <package>si.uom.quantity</package>
+                <package>si.uom.quantity.impl</package>
                 <package>systems.uom.common</package>
+                <package>systems.uom.common.ancient</package>
                 <package>systems.uom.common.historic</package>
                 <package>systems.uom.common.spi</package>
                 <package>tech.units.indriya</package>
@@ -2850,6 +3029,7 @@
                 <package>tech.units.indriya.internal.format</package>
                 <package>tech.units.indriya.internal.format.l10n</package>
                 <package>tech.units.indriya.internal.function</package>
+                <package>tech.units.indriya.internal.function.calc</package>
                 <package>tech.units.indriya.internal.function.radix</package>
                 <package>tech.units.indriya.internal.function.simplify</package>
                 <package>tech.units.indriya.quantity</package>
