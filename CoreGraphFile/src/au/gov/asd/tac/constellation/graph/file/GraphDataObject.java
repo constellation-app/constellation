@@ -127,7 +127,8 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
      */
     private Color graphColor;
 
-    private FileLock channelLock;
+    /* for file lock control */
+    private FileLock fileLock;
     private FileChannel fileChannel;
 
     /**
@@ -190,8 +191,9 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
         }
 
         String s = FileUtil.getFileDisplayName(getPrimaryFile());
-        if (gdo != null) {
-            s = String.format("%s - %s", gdo.getName(), s);
+        final NebulaDataObject nebulaDataObject = getNebulaDataObject();
+        if (nebulaDataObject != null) {
+            s = String.format("%s - %s", nebulaDataObject.getName(), s);
         }
 
         return s;
@@ -223,13 +225,13 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
         if (graphFile != null) {
             try {
                 final RandomAccessFile randomaccessfile = new RandomAccessFile(graphFile.getAbsoluteFile(), "rw");
-                final FileChannel fileChannel = randomaccessfile.getChannel();
-                final FileLock lock = fileChannel.tryLock(0, Long.MAX_VALUE, false);
+                final FileChannel channel = randomaccessfile.getChannel();
+                final FileLock lock = channel.tryLock(0, Long.MAX_VALUE, false);
                 if (lock != null) {
-                    setChannelLock(lock);
-                    setFileChannel(fileChannel);
+                    setFileLock(lock);
+                    setFileChannel(channel);
                 } else {
-                    LOGGER.log(Level.SEVERE, "Lock on file %s cannot be obtained", graphFile.getAbsoluteFile());
+                    LOGGER.log(Level.SEVERE, "Lock on file {0} cannot be obtained", graphFile.getAbsoluteFile());
                 }
             } catch (final IOException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -242,7 +244,7 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
      */
     public void unlockFile() {
 
-        final FileLock lock = getChannelLock();
+        final FileLock lock = getFileLock();
 
         if (lock != null) {
             try {
@@ -257,30 +259,30 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
     }
 
     /**
-     * @return the fileChannel
+     * @return the channel
      */
     public FileChannel getFileChannel() {
         return fileChannel;
     }
 
     /**
-     * @param fileChannel the fileChannel to set
+     * @param fileChannel the channel to set
      */
     public void setFileChannel(final FileChannel fileChannel) {
         this.fileChannel = fileChannel;
     }
 
     /**
-     * @return the channelLock
+     * @return the fileLock
      */
-    public FileLock getChannelLock() {
-        return channelLock;
+    public FileLock getFileLock() {
+        return fileLock;
     }
 
     /**
-     * @param channelLock the channelLock to set
+     * @param channelLock the fileLock to set
      */
-    public void setChannelLock(final FileLock channelLock) {
-        this.channelLock = channelLock;
+    public void setFileLock(final FileLock channelLock) {
+        this.fileLock = channelLock;
     }
 }

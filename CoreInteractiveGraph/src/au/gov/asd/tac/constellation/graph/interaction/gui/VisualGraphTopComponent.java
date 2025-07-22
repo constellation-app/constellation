@@ -669,7 +669,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         // if it was not being modified; lock also needs to be released if
         // save with gdo.createFromTemplate in handleSave() is called
         final GraphDataObject gdo = graphNode.getDataObject();
-        if (gdo.getChannelLock() != null && gdo.getFileChannel() != null) {
+        if (gdo.getFileLock() != null && gdo.getFileChannel() != null) {
             gdo.unlockFile();
         }
         if (savable.isModified()) {
@@ -1117,7 +1117,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             final Path currentFilePath = Paths.get(dataObject.getPrimaryFile().getPath());
             
             // release the lock on the current file as SaveAs may have been requested on an existing file
-            if (dataObject.getChannelLock() != null && dataObject.getFileChannel() != null) {
+            if (dataObject.getFileLock() != null && dataObject.getFileChannel() != null) {
                 dataObject.unlockFile();
             }
 
