@@ -49,6 +49,7 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Window;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbPreferences;
@@ -209,7 +210,7 @@ public class JsonIO {
             final String defaultKeyboardShortcut = "Alt+" + index;
             
             if (!shortcuts.keySet().contains(defaultKeyboardShortcut)) {                
-                final String fileNameStartsWith = "[" + StringUtils.replace(defaultKeyboardShortcut, "+", " ") + "]";
+                final String fileNameStartsWith = "[" + Strings.CS.replace(defaultKeyboardShortcut, "+", " ") + "]";
                 final FilenameFilter filenameFilter = (d, s) -> s.startsWith(fileNameStartsWith);
 
                 if (ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
@@ -279,7 +280,7 @@ public class JsonIO {
             }
 
             userInputWithKs = Optional.ofNullable(ksResult.get().getFileName());
-            ks = Optional.of("[" + StringUtils.replace(ksResult.get().getKeyboardShortcut(), "+", " ") + "]");
+            ks = Optional.of("[" + Strings.CS.replace(ksResult.get().getKeyboardShortcut(), "+", " ") + "]");
 
         } else {
             return;
@@ -333,7 +334,7 @@ public class JsonIO {
                 } else if (ksResult.isPresent() && ksResult.get().isAlreadyAssigned() && Objects.nonNull(ksResult.get().getExisitngTemplateWithKs())) {
                     //remove shortcut from existing template to be re-assign to new template
                     final String rename = FilenameEncoder.decode(ksResult.get().getExisitngTemplateWithKs().getName())
-                            .replaceAll("\\[" + StringUtils.replace(ksResult.get().getKeyboardShortcut(), "+", StringUtils.SPACE) + "\\]", StringUtils.EMPTY).trim();                    
+                            .replaceAll("\\[" + Strings.CS.replace(ksResult.get().getKeyboardShortcut(), "+", StringUtils.SPACE) + "\\]", StringUtils.EMPTY).trim();                    
                     ksResult.get().getExisitngTemplateWithKs().renameTo(new File(preferenceDirectory, FilenameEncoder.encode(rename.trim())));                    
                 }
 
@@ -493,8 +494,8 @@ public class JsonIO {
         final String[] names;
         if (preferenceDirectory.isDirectory()) {
             names = preferenceDirectory.list((final File dir, final String name)
-                    -> StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON)
-                    && (filePrefix.isEmpty() || StringUtils.startsWithIgnoreCase(name, filePrefix.get()))
+                    -> Strings.CI.endsWith(name, FileExtensionConstants.JSON)
+                    && (filePrefix.isEmpty() || Strings.CI.startsWith(name, filePrefix.get()))
             );
         } else {
             // Nothing to select from - return an empty array
@@ -601,8 +602,8 @@ public class JsonIO {
         final String[] names;
         if (preferenceDirectory.isDirectory()) {
             names = preferenceDirectory.list((File dir, String name)
-                    -> StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON)
-                    && (filePrefix.isEmpty() || StringUtils.startsWithIgnoreCase(name, filePrefix.get()))
+                    -> Strings.CI.endsWith(name, FileExtensionConstants.JSON)
+                    && (filePrefix.isEmpty() || Strings.CI.startsWith(name, filePrefix.get()))
             );
         } else {
             // Nothing to select from - return an empty array

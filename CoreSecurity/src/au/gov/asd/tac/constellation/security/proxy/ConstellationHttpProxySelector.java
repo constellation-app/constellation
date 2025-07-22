@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.util.Pair;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.NbPreferences;
 
 /**
@@ -146,7 +146,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
      */
     private static boolean isLocalHost(final String host, final List<String> localHosts) {
         final String hostLowerCase = host.toLowerCase();
-        if (StringUtils.equalsAny(hostLowerCase, "localhost", "127.0.0.1")) {
+        if (Strings.CS.equalsAny(hostLowerCase, "localhost", "127.0.0.1")) {
             return true;
         }
 

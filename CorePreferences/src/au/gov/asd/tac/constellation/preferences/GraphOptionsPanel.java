@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.LayoutStyle;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -136,7 +137,7 @@ final class GraphOptionsPanel extends JPanel {
 
                 for (final JPanel panel : colorPanels) {
                     final String panelColor = getHTMLColor(panel.getBackground());
-                    if (!StringUtils.equals(panelColor, getHTMLColor(DEFAULT_COLOR))) {
+                    if (!Strings.CS.equals(panelColor, getHTMLColor(DEFAULT_COLOR))) {
                         colorStringBuilder.append(panelColor);
                         colorStringBuilder.append(";");
                     } else {

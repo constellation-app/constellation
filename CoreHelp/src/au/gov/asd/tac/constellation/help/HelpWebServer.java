@@ -25,10 +25,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.http.HttpURI;
+import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
@@ -70,10 +72,12 @@ public class HelpWebServer {
                         }
                     }
                 });
-
+                
                 // Make our own handler so we can log requests with the CONSTELLATION logs.
-                final RequestLog requestLog = (request, response) ->
-                    LOGGER.log(Level.INFO, "Request at {0} from {1} {2}, status {3}", new Object[]{LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), request.getRemoteAddr(), request.getRequestURI(), response.getStatus()});
+                final RequestLog requestLog = (request, response) -> {
+                    final HttpURI requestURI = HttpURI.build(request.getHttpURI()).query(null);
+                    LOGGER.log(Level.INFO, "Request at {0} from {1} {2}, status {3}", new Object[]{LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), Request.getRemoteAddr(request), requestURI.asString(), response.getStatus()});
+                };
                 server.setRequestLog(requestLog);
                 
                 LOGGER.log(Level.INFO, "Starting Jetty version {0} on {1}:{2}...", new Object[]{Server.getVersion(), loopback, port});

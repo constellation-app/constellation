@@ -142,6 +142,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.netbeans.api.actions.Savable;
 import org.netbeans.spi.actions.AbstractSavable;
 import org.openide.DialogDisplayer;
@@ -286,7 +287,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                         @SuppressWarnings("unchecked") //files will be list of file which extends from object type
                         final List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
                         for (final File file : files) {
-                            try (final InputStream in = StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.GZIP) ? new GZIPInputStream(new FileInputStream(file)) : new FileInputStream(file)) {
+                            try (final InputStream in = Strings.CI.endsWith(file.getName(), FileExtensionConstants.GZIP) ? new GZIPInputStream(new FileInputStream(file)) : new FileInputStream(file)) {
                                 final RecordStore recordStore = RecordStoreUtilities.fromTsv(in);
                                 PluginExecution.withPlugin(new ImportRecordFile(recordStore)).executeLater(graph);
                             }

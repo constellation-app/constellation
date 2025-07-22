@@ -40,7 +40,6 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -75,7 +74,6 @@ public class ReplaceTabNGTest {
     private int vxId1;
 
     private FindViewTopComponent findViewTopComponent;
-    private FindViewTopComponent spyTopComponent;
     
     private BasicFindTab basicFindTab;
     private ReplaceTab replaceTab;
@@ -103,7 +101,6 @@ public class ReplaceTabNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         findViewTopComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(findViewTopComponent);
 
         findViewPane = mock(FindViewPane.class);
         findViewTabs = mock(FindViewTabs.class);
@@ -198,7 +195,7 @@ public class ReplaceTabNGTest {
 
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(spyTopComponent);
+        mockController.init(findViewTopComponent);
         doNothing().when(mockController).replaceMatchingElements(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
 
         /**
@@ -254,7 +251,7 @@ public class ReplaceTabNGTest {
 
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(spyTopComponent);
+        mockController.init(findViewTopComponent);
         doNothing().when(mockController).replaceMatchingElements(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
 
         /**
