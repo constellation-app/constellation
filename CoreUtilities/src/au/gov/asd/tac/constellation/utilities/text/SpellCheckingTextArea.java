@@ -141,9 +141,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
 
         // CheckMenuItem to toggle turn On/Off Spell Checking. On by default
         final CheckMenuItem toggleSpellCheckMenuItem = new CheckMenuItem("Turn On Spell Checking");
-        toggleSpellCheckMenuItem.setSelected(true);
-        toggleSpellCheckMenuItem.setDisable(!enableSpellChecking);
-        toggleSpellCheckMenuItem.setVisible(enableSpellChecking);
+        toggleSpellCheckMenuItem.setSelected(enableSpellChecking);
         toggleSpellCheckMenuItem.setOnAction(event -> {
             spellChecker.turnOffSpellChecking(!toggleSpellCheckMenuItem.isSelected());
             spellChecker.checkSpelling();

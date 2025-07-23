@@ -82,7 +82,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
             rc.setVgrow(Priority.ALWAYS);
             controls.getRowConstraints().add(rc);            
             
-            spellCheckingTextArea = new SpellCheckingTextArea(true);
+            spellCheckingTextArea = new SpellCheckingTextArea(false);
             spellCheckingTextArea.setWrapText(true);
             spellCheckingTextArea.textProperty().addListener((o, n, v) -> update());
             spellCheckingTextArea.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
