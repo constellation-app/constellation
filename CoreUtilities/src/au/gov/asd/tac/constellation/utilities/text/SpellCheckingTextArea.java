@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities.text;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import java.text.BreakIterator;
 import java.util.prefs.Preferences;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -45,9 +44,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private final SpellChecker spellChecker = new SpellChecker(this);
     private final Insets insets = new Insets(4, 8, 4, 8);
-    public static final double EXTRA_HEIGHT = 3;
-    private BreakIterator wordIterator;
-    private BreakIterator charIterator;
+    public static final double EXTRA_HEIGHT = 3;    
 
     private static final String UNDERLINE_AND_HIGHLIGHT_STYLE = "-rtfx-background-color:derive(yellow,-30%);"
             + "-rtfx-underline-color: red; "
@@ -179,155 +176,4 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             return selectionRange == null || selectionRange.getLength() == 0;
         }, this.selectionProperty());
     }
-    
-     /**
-     * Moves the caret to the beginning of next word. This does not cause
-     * the selection to be cleared. Rather, the anchor stays put and the caretPosition is
-     * moved to the beginning of next word.
-     */
-    public void selectNextWord() {
-        nextWord(true);
-    }
-    
-    /**
-     * Moves the caret to the beginning of previous word. This does not cause
-     * the selection to be cleared. Rather, the anchor stays put and the caretPosition is
-     * moved to the beginning of previous word.
-     */
-    public void selectPreviousWord() {
-        previousWord(true);
-    }
-    
-    /**
-     * Moves the caret to the beginning of next word. This function
-     * also has the effect of clearing the selection.
-     */
-    public void nextWord() {
-        nextWord(false);
-    }
-  
-    /**
-     * Moves the caret to the beginning of previous word. This function also has
-     * the effect of clearing the selection.
-     */
-    public void previousWord() {
-        previousWord(false);
-    }
-    
-    /**
-     * Moves the selection forward one char in the text. This may have the
-     * effect of deselecting, depending on the location of the anchor relative
-     * to the caretPosition. This function effectively just moves the caret forward.
-     */
-    public void selectForward() {
-        final int textLength = getLength();
-        if (textLength > 0 && getCaretPosition() < textLength) {
-            if (charIterator == null) {
-                charIterator = BreakIterator.getCharacterInstance();
-            }
-            charIterator.setText(getText());
-            selectRange(getAnchor(), charIterator.following(getCaretPosition()));
-        }
-    }
-    
-    /**
-     * Moves the selection backward one char in the text. This may have the
-     * effect of deselecting, depending on the location of the anchor relative
-     * to the caretPosition. This function effectively just moves the caretPosition.
-     */
-    public void selectBackward() {
-        if (getCaretPosition() > 0 && getLength() > 0) {
-            // because the anchor stays put, by moving the caret to the left
-            // we ensure that a selection is registered and that it is correct
-            if (charIterator == null) {
-                charIterator = BreakIterator.getCharacterInstance();
-            }
-            charIterator.setText(getText());
-            selectRange(getAnchor(), charIterator.preceding(getCaretPosition()));
-        }
-    }
-    
-    private void nextWord(final boolean select) {
-        final int textLength = getLength();
-        final String text = getText();
-        if (textLength <= 0) {
-            return;
-        }
-
-        if (wordIterator == null) {
-            wordIterator = BreakIterator.getWordInstance();
-        }
-        wordIterator.setText(text);
-
-        int last = wordIterator.following(clamp(0, getCaretPosition(), textLength - 1));
-        int current = wordIterator.next();
-
-        // Skip whitespace characters to the beginning of next word, but
-        // stop at newline. Then move the caret or select a range.
-        while (current != BreakIterator.DONE) {
-            for (int p = last; p <= current; p++) {
-                final char ch = text.charAt(clamp(0, p, textLength - 1));
-                // Avoid using Character.isSpaceChar() and Character.isWhitespace(),
-                // because they include LINE_SEPARATOR, PARAGRAPH_SEPARATOR, etc.
-                if (ch != ' ' && ch != '\t') {
-                    selectRange(select ? getAnchor() : p, p);                    
-                    return;
-                }
-            }
-            last = current;
-            current = wordIterator.next();
-        }
-
-        // move/select to the end
-        if (select) {
-            selectRange(getAnchor(), textLength);
-        } else {
-            end();
-        }
-    }
-    
-    private void previousWord(final boolean select) {
-        final int textLength = getLength();
-        final String text = getText();
-        if (textLength <= 0) {
-            return;
-        }
-
-        if (wordIterator == null) {
-            wordIterator = BreakIterator.getWordInstance();
-        }
-        wordIterator.setText(text);
-
-        int pos = wordIterator.preceding(clamp(0, getCaretPosition(), textLength));
-
-        // Skip the non-word region, then move/select to the beginning of the word.
-        while (pos != BreakIterator.DONE
-                && !Character.isLetterOrDigit(text.charAt(clamp(0, pos, textLength - 1)))) {
-            pos = wordIterator.preceding(clamp(0, pos, textLength));
-        }
-
-        // move/select
-        selectRange(select ? getAnchor() : pos, pos);
-    }
-
-    /**
-     * Simple utility function which clamps the given value to be strictly
-     * between the min and max values.
-     */
-    private int clamp(final int min, final int value, final int max) {
-        return Math.clamp(value, min, max);        
-    }
-    
-    /**
-     * Moves the caret to after the last char of the text. This function
-     * also has the effect of clearing the selection.
-     */
-    public void end() {
-        // user wants to go to end
-        final int textLength = getLength();
-        if (textLength > 0) {
-            selectRange(textLength, textLength);
-        }
-    }
-    
 }
