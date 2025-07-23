@@ -15,7 +15,10 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,6 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ReflectJSON extends RestService {
 
     private static final String NAME = "reflect_json";
+    private static final String REQUEST_BODY_PARAMETER_ID = "request";
 
     @Override
     public String getName() {
@@ -55,6 +59,19 @@ public class ReflectJSON extends RestService {
     @Override
     public RestServiceUtilities.HttpMethod getHttpMethod() {
         return RestServiceUtilities.HttpMethod.POST;
+    }
+    
+    @Override
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
+        
+        final PluginParameter<StringParameterValue> requestBodyParam = StringParameterType.build(REQUEST_BODY_PARAMETER_ID);
+        requestBodyParam.setName("(body)");
+        requestBodyParam.setDescription("A JSON object to test reflect json in response body.");
+        requestBodyParam.setRequestBodyExampleJson("#/components/examples/refelctJsonExample/request");        
+        parameters.addParameter(requestBodyParam);
+
+        return parameters;
     }
 
     @Override

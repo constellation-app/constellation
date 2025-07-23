@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * Provides various string operations such as escaping and pretty printing.
@@ -52,7 +53,7 @@ public class StringUtilities {
     * @return 
     */
     public static boolean endsWithAny(final String base, final String... endings) {
-        return StringUtils.endsWithAny(base, endings);
+        return Strings.CS.endsWithAny(base, endings);
     }
 
     /**
@@ -64,7 +65,7 @@ public class StringUtilities {
     * @return 
     */
     public static boolean equalsAny(final String reference, final String... targets) {
-        return StringUtils.equalsAny(reference, targets);
+        return Strings.CS.equalsAny(reference, targets);
     }
 
     /**

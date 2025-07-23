@@ -77,7 +77,7 @@ public class AnalyticViewStateIoProvider extends AbstractGraphIOProvider {
                     final JsonNode pluginEntry = pluginIterator.next();
                     final SelectableAnalyticPlugin selectablePlugin = AnalyticConfigurationPane.lookupSelectablePlugin(pluginEntry.get("name").asText());
                     if (selectablePlugin != null) {
-                        final Iterator<Map.Entry<String, JsonNode>> parametersIterator = pluginEntry.get("parameters").fields();
+                        final Iterator<Map.Entry<String, JsonNode>> parametersIterator = pluginEntry.get("parameters").properties().iterator();
                         while (parametersIterator.hasNext()) {
                             final Map.Entry<String, JsonNode> parametersEntry = parametersIterator.next();
                             final String parameterName = parametersEntry.getKey();

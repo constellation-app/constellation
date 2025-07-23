@@ -201,14 +201,13 @@ public class TabContextMenuNGTest {
                         
                         // The code constructs a plugin finder and then calls find. Need to inject
                         // a mock into that construction
-                        final MockedConstruction<PluginFinder> mockedPluginFinders =
-                                Mockito.mockConstruction(PluginFinder.class);
-                        
-                        action.run();
-                        
-                        // Verify the plugin finder was created and used as expected
-                        assertEquals(mockedPluginFinders.constructed().size(), 1);
-                        verify(mockedPluginFinders.constructed().get(0)).find(queryPhasePane);
+                        try (final MockedConstruction<PluginFinder> mockedPluginFinders = Mockito.mockConstruction(PluginFinder.class)) {
+                            action.run();
+
+                            // Verify the plugin finder was created and used as expected
+                            assertEquals(mockedPluginFinders.constructed().size(), 1);
+                            verify(mockedPluginFinders.constructed().get(0)).find(queryPhasePane);
+                        }
                         
                         return null;
                     });

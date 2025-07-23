@@ -55,6 +55,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -205,8 +206,8 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
         return (StringUtils.isNotBlank(filterText.getText())
                 && StringUtils.isNotBlank(propertyValue))
                 && (startsWithRb.isSelected()
-                ? StringUtils.startsWithIgnoreCase(propertyValue, filterInputText)
-                : StringUtils.containsIgnoreCase(propertyValue, filterInputText));
+                ? Strings.CI.startsWith(propertyValue, filterInputText)
+                : Strings.CI.contains(propertyValue, filterInputText));
     }
 
     @Override

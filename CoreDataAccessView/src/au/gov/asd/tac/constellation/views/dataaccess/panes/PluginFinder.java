@@ -32,7 +32,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * Present the user with a list of plugins and allow it to select one, then
@@ -170,7 +170,7 @@ public class PluginFinder {
                             final String newValue) {
             if (!newValue.isEmpty()) {
                 final List<String> ls = texts.stream()
-                        .filter(a -> StringUtils.containsIgnoreCase(a, newValue))
+                        .filter(a -> Strings.CI.contains(a, newValue))
                         .collect(Collectors.toList());
                 
                 final ObservableList<String> filtered = FXCollections.observableArrayList(ls);

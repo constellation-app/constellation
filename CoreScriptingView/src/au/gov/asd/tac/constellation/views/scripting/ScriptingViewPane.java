@@ -39,7 +39,6 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -73,7 +72,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.BadLocationException;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -271,7 +270,7 @@ public class ScriptingViewPane extends JPanel {
                     @Override
                     public boolean accept(final File pathName) {
                         final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() &&StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PYTHON)) {
+                        if (pathName.isFile() && Strings.CI.endsWith(name, FileExtensionConstants.PYTHON)) {
                             return true;
                         }
                         return pathName.isDirectory();
@@ -298,7 +297,7 @@ public class ScriptingViewPane extends JPanel {
                     @Override
                     public boolean accept(final File pathName) {
                         final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PYTHON)) {
+                        if (pathName.isFile() && Strings.CI.endsWith(name, FileExtensionConstants.PYTHON)) {
                             return true;
                         }
                         return pathName.isDirectory();
@@ -318,7 +317,7 @@ public class ScriptingViewPane extends JPanel {
         final int state = fileChooser.showSaveDialog(this);
         if (state == JFileChooser.APPROVE_OPTION) {
             String fileName = fileChooser.getSelectedFile().getPath();
-            if (!StringUtils.endsWithIgnoreCase(fileName, FileExtensionConstants.PYTHON)) {
+            if (!Strings.CI.endsWith(fileName, FileExtensionConstants.PYTHON)) {
                 fileName += FileExtensionConstants.PYTHON;
             }
             final String text = scriptEditor.getText();
