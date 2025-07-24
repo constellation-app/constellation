@@ -33,3 +33,27 @@
 .histogram-text{
     -fx-text-fill: #C0C0C0;/*Silver*/
 }
+
+.noheader .column-header-background {
+    -fx-max-height: 0;
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+}
+
+.table-row-cell:noValue {
+    -fx-text-fill: #FFFF00;/*Yellow*/
+    -fx-fill: #FFFF00;/*Yellow*/
+}
+
+.table-view {
+    -fx-background-color: null;
+    -fx-border-color: null;
+}
+
+.table-row-cell {
+    -fx-background-color: null;
+}
+
+.table-cell {
+    -fx-border-color: null;
+}
