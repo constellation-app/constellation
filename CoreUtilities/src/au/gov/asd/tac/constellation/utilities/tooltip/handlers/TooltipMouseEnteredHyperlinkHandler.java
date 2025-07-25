@@ -30,7 +30,7 @@ import javafx.scene.input.MouseEvent;
  *
  * @author aldebaran30701
  */
-public class TooltipMouseEnteredHyperlinkHandler implements EventHandler {
+public class TooltipMouseEnteredHyperlinkHandler implements EventHandler<Event> {
     
     private static final double HYPERLINK_TOOLTIP_VERTICAL_GAP = 15.0;
     

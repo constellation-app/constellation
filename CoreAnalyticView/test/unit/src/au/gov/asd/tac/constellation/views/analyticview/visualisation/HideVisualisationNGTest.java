@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
-import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractHideTranslator;
-import au.gov.asd.tac.constellation.views.analyticview.translators.AnalyticTranslator;
+import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.translators.ScoreToHideTranslator;
 import java.util.Arrays;
 import java.util.List;
@@ -84,8 +84,8 @@ public class HideVisualisationNGTest {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
             final boolean reset = true;
-            final AbstractHideTranslator translator = new ScoreToHideTranslator();
-            final HideVisualisation instance = new HideVisualisation(translator);
+            final ScoreToHideTranslator translator = new ScoreToHideTranslator();
+            final HideVisualisation<ElementScore> instance = new HideVisualisation<>(translator);
             instance.deactivate(reset);
             
             final boolean isActive = instance.isActive();
@@ -101,8 +101,8 @@ public class HideVisualisationNGTest {
     public void testGetName() {
         System.out.println("getName");
         
-        final AbstractHideTranslator translator = new ScoreToHideTranslator();
-        final HideVisualisation instance = new HideVisualisation(translator);
+        final ScoreToHideTranslator translator = new ScoreToHideTranslator();
+        final HideVisualisation<ElementScore> instance = new HideVisualisation<>(translator);
         String expResult = "Hide Elements";
         String result = instance.getName();
         assertEquals(result, expResult);
@@ -115,9 +115,9 @@ public class HideVisualisationNGTest {
     public void testGetTranslator() {
         System.out.println("getTranslator");
         
-        final AbstractHideTranslator translator = new ScoreToHideTranslator();
-        final HideVisualisation instance = new HideVisualisation(translator);
-        final AnalyticTranslator result = instance.getTranslator();
+        final ScoreToHideTranslator translator = new ScoreToHideTranslator();
+        final HideVisualisation<ElementScore> instance = new HideVisualisation<>(translator);
+        final ScoreToHideTranslator result = (ScoreToHideTranslator) instance.getTranslator();
         assertEquals(result, translator);
     }
 
@@ -128,12 +128,12 @@ public class HideVisualisationNGTest {
     public void testGetAffectedAttributes() {
         System.out.println("getAffectedAttributes");
         
-        final AbstractHideTranslator translator = new ScoreToHideTranslator();
-        final HideVisualisation instance = new HideVisualisation(translator);
-        final List expResult = Arrays.asList(
+        final ScoreToHideTranslator translator = new ScoreToHideTranslator();
+        final HideVisualisation<ElementScore> instance = new HideVisualisation<>(translator);
+        final List<SchemaAttribute> expResult = Arrays.asList(
                 VisualConcept.VertexAttribute.VISIBILITY,
-                VisualConcept.TransactionAttribute.VISIBILITY);;
-        final List result = instance.getAffectedAttributes();
+                VisualConcept.TransactionAttribute.VISIBILITY);
+        final List<SchemaAttribute> result = instance.getAffectedAttributes();
         assertEquals(result, expResult);
     }
 
@@ -144,8 +144,8 @@ public class HideVisualisationNGTest {
     public void testIsActive() {
         System.out.println("isActive");
         
-        final AbstractHideTranslator translator = new ScoreToHideTranslator();
-        final HideVisualisation instance = new HideVisualisation(translator);
+        final ScoreToHideTranslator translator = new ScoreToHideTranslator();
+        final HideVisualisation<ElementScore> instance = new HideVisualisation<>(translator);
         final boolean expResult = false;
         final boolean result = instance.isActive();
         assertEquals(result, expResult);
@@ -159,8 +159,8 @@ public class HideVisualisationNGTest {
         System.out.println("setSelected");
         
         final boolean selected = false;
-        final AbstractHideTranslator translator = new ScoreToHideTranslator();
-        final HideVisualisation instance = new HideVisualisation(translator);
+        final ScoreToHideTranslator translator = new ScoreToHideTranslator();
+        final HideVisualisation<ElementScore> instance = new HideVisualisation<>(translator);
         instance.setSelected(selected);
         final boolean result = instance.isActive();
         assertEquals(result, selected);

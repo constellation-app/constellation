@@ -180,7 +180,7 @@ public class DataAccessPaneStateNGTest {
         // initial state
         assertTrue(DataAccessPaneState.getRunningPlugins().isEmpty());
 
-        final CompletableFuture runningPluginFuture = CompletableFuture.completedFuture(null);
+        final CompletableFuture<?> runningPluginFuture = CompletableFuture.completedFuture(null);
 
         // add a running plugin
         DataAccessPaneState.addRunningPlugin(
@@ -218,7 +218,7 @@ public class DataAccessPaneStateNGTest {
         // initial state
         assertTrue(DataAccessPaneState.getRunningPlugins(GRAPH_ID).isEmpty());
 
-        final CompletableFuture runningPluginFuture = CompletableFuture.completedFuture(null);
+        final CompletableFuture<?> runningPluginFuture = CompletableFuture.completedFuture(null);
 
         // add a running plugin
         DataAccessPaneState.addRunningPlugin(

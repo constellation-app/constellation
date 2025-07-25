@@ -132,7 +132,7 @@ public final class QualityControlViewPane extends BorderPane {
     private static final String SELECTED_COLOR = JavafxStyleManager.isDarkTheme() ? "#E8E8E8" : "#808080";
     private static final String SELECTED_UNFOCUSED_COLOR = JavafxStyleManager.isDarkTheme() ? "#808080" : "#BEBEBE";
 
-    private ArrayList<TableRow<QualityControlEvent>> selectedRowList = new ArrayList();
+    private ArrayList<TableRow<QualityControlEvent>> selectedRowList = new ArrayList<>();
 
     /*firstClick is a workaround for currently a existing bug within ControlsFX object, which causes two clicks 
     to be registered upon the user's first click within the view pane when calling value.getClickCount()*/

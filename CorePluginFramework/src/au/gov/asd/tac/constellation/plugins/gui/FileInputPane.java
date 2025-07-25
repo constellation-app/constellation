@@ -300,9 +300,8 @@ public class FileInputPane extends HBox {
                     final String ext = name.lastIndexOf('.') > -1
                             ? name.substring(name.lastIndexOf('.')).toLowerCase()
                             : "" ;
-                    final boolean isValidExtension = extensionFilter.getExtensions() != null 
-                            ? extensionFilter.getExtensions().contains(ext)
-                            : true;
+                    final boolean isValidExtension = extensionFilter.getExtensions() == null 
+                            || extensionFilter.getExtensions().contains(ext);
                     return (file.isFile() && isValidExtension) || file.isDirectory();
                 }
 

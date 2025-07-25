@@ -434,7 +434,7 @@ public class Matrix44fNGTest {
         int num = 3;
         final Matrix44f expected = new Matrix44f();
 
-        final Matrix44f arr[] = Matrix44f.createArray(num);
+        final Matrix44f[] arr = Matrix44f.createArray(num);
 
         // the correct number were created, and they are all distinct objects
         assertEquals(arr.length, num);

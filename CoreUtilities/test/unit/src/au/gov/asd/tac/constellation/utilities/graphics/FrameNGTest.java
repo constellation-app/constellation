@@ -429,7 +429,7 @@ public class FrameNGTest {
     @Test
     public void testCreateArray() {
         final int length = 3;
-        final Frame frames[] = Frame.createArray(length);
+        final Frame[] frames = Frame.createArray(length);
 
         assertEquals(frames.length, length);
         for (Frame f : frames) {

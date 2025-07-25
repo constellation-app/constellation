@@ -31,11 +31,9 @@ import org.testng.annotations.Test;
  * @author Andromeda-224
  */
 public class AnimateInterruptActionNGTest {
+    
     private MockedStatic<AnimationUtilities> animationUtilitiesMocked;
     
-    public AnimateInterruptActionNGTest() {
-    }
-
     @BeforeMethod
     public void setUpMethod() throws Exception {
         animationUtilitiesMocked = mockStatic(AnimationUtilities.class);

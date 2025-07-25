@@ -59,8 +59,8 @@ public class DateTimePicker {
         datePicker.setChronology(Chronology.ofLocale(Locale.ENGLISH));
 
         datePicker.setConverter(new StringConverter<LocalDate>() {
-            final String pattern = "yyyy-MM-dd";
-            final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+            static final String PATTERN = "yyyy-MM-dd";
+            final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(PATTERN);
 
             @Override
             public String toString(final LocalDate object) {

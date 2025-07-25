@@ -59,7 +59,7 @@ public class BidirectionalTextUtilities {
             int end = bidi.getRunLimit(index);
             final int level = levels[index];
             if ((level & 1) != 0) {
-                for (; --end >= start;) {
+                while (--end >= start) {
                     result.append(s.charAt(end));
                 }
             } else {

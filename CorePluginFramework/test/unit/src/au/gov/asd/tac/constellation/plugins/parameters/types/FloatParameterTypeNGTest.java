@@ -66,7 +66,7 @@ public class FloatParameterTypeNGTest {
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof FloatParameterType);
-        assertEquals(((FloatParameterValue) result.getParameterValue()).get(), 0F);
+        assertEquals(result.getParameterValue().get(), 0F);
     }
 
     /**
@@ -82,7 +82,7 @@ public class FloatParameterTypeNGTest {
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof FloatParameterType);
-        assertEquals(((FloatParameterValue) result.getParameterValue()).get(), 1.2F);
+        assertEquals(result.getParameterValue().get(), 1.2F);
     }
 
     /**

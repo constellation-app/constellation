@@ -152,7 +152,7 @@ public final class AbstractGraphLabelsIOProviderNGTest {
         instance.readObject(attributeId, elementId, testNode, mockGraphWriteMethods, null, null, null, null);
         Mockito.verify(mockGraphWriteMethods, times(0)).setStringValue(anyInt(), anyInt(), anyString());
         Mockito.verify(mockGraphWriteMethods, times(1)).setObjectValue(captorAtributeId.capture(), captorElementId.capture(), captorAttrVal.capture());
-        GraphLabels labels = (GraphLabels)captorAttrVal.getValue();
+        GraphLabels labels = captorAttrVal.getValue();
         assertEquals((int)captorAtributeId.getValue(), attributeId);
         assertEquals((int)captorElementId.getValue(), elementId);
         assertEquals(labels.getNumberOfLabels(), 2);

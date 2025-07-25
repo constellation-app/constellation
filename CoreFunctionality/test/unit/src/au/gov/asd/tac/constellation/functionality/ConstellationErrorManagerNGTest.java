@@ -91,14 +91,14 @@ public class ConstellationErrorManagerNGTest {
     private void simulateException(final Level logLevel, final boolean autoBlockPopup){
         LOGGER.log(Level.INFO, "\n ------- simulating {0} exception", logLevel.getName());
         final Exception e = new Exception((autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG : "") + "Something totally not unexpected happened !");
-        LOGGER.log(logLevel, "Simulating a " + logLevel.getName() + " exception !", e);
+        LOGGER.log(logLevel, e, () ->  "Simulating a " + logLevel.getName() + " exception !");
         LOGGER.info("\n ------- simulated.");
     }
     
     private void delay(final long milliseconds){
         // may need to wait for the error handler to do it's thing
         final Executor delayed = CompletableFuture.delayedExecutor(milliseconds, TimeUnit.MILLISECONDS);
-        final CompletableFuture cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
+        final CompletableFuture<Void> cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
             .thenAccept(LOGGER::info);
         try {
             cf.get();

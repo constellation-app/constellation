@@ -39,12 +39,10 @@ import org.testng.annotations.Test;
 public class ConstellationLAFSettingsNGTest {
     
     private static final Logger LOGGER = Logger.getLogger(ConstellationLAFSettingsNGTest.class.getName());
-    final static PseudoLookAndFeel pseudoLAF = new PseudoLookAndFeel();
-    final static PseudoUIDefaults pseudoUIdefaults = new PseudoUIDefaults();
-    final static PseudoViewTabDisplayerUI pseudoViewDisplayerUI = new PseudoViewTabDisplayerUI();
-    final static PseudoTabDisplayerUI pseudoTabDisplayerUI = new PseudoTabDisplayerUI();
-    final static Class<?> pseudoViewDisplayerUIclass = pseudoViewDisplayerUI.getClass();
-    final static Class<?> pseudoTabDisplayerUIclass = pseudoTabDisplayerUI.getClass();
+    static final PseudoLookAndFeel pseudoLAF = new PseudoLookAndFeel();
+    static final PseudoUIDefaults pseudoUIdefaults = new PseudoUIDefaults();
+    static final Class<?> pseudoViewDisplayerUIclass = PseudoViewTabDisplayerUI.class;
+    static final Class<?> pseudoTabDisplayerUIclass = PseudoTabDisplayerUI.class;
 
     @Test
     public void runSetWindowsXPTabColors() throws UnsupportedLookAndFeelException {
@@ -285,12 +283,12 @@ public class ConstellationLAFSettingsNGTest {
             ConstellationLAFSettings.ouputUIDefaultValues(null, "Tabbed");
             ConstellationLAFSettings.ouputUIDefaultValues("Tabbed", null);
             
-            new ConstellationLAFSettings.NimbusCustomGradientTabPainter();
-            new ConstellationLAFSettings.NimbusCustomGradientTabPainter(null);
-            new ConstellationLAFSettings.NimbusCustomGradientTabPainter(Color.ORANGE);
-            new ConstellationLAFSettings.NimbusCustomGradientTabPainter(null, null);
-            new ConstellationLAFSettings.NimbusCustomGradientTabPainter(null, Color.ORANGE);
-            new ConstellationLAFSettings.NimbusCustomGradientTabPainter(Color.ORANGE, null);            
+            new ConstellationLAFSettings.NimbusCustomGradientTabPainter<>();
+            new ConstellationLAFSettings.NimbusCustomGradientTabPainter<>(null);
+            new ConstellationLAFSettings.NimbusCustomGradientTabPainter<>(Color.ORANGE);
+            new ConstellationLAFSettings.NimbusCustomGradientTabPainter<>(null, null);
+            new ConstellationLAFSettings.NimbusCustomGradientTabPainter<>(null, Color.ORANGE);
+            new ConstellationLAFSettings.NimbusCustomGradientTabPainter<>(Color.ORANGE, null);            
                                     
             pseudoLAF.setName("Windows 95");
             UIManager.getDefaults().put("org.netbeans.swing.tabcontrol.plaf.Windows8VectorViewTabDisplayerUI", null);

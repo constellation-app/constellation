@@ -54,8 +54,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     private float[] data = new float[0];
     private float defaultValue = DEFAULT_VALUE;
-
-    @SuppressWarnings("unchecked") // Casts are manually checked
+    
     private float convertFromObject(final Object object) throws IllegalArgumentException {
         switch (object) {
             case Number number -> {

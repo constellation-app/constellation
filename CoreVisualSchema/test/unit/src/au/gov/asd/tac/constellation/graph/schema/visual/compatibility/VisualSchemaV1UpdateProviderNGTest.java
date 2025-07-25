@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
@@ -45,6 +44,7 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
+@SuppressWarnings("deprecation") // refers to deprecated classes for backwards compatibility
 public class VisualSchemaV1UpdateProviderNGTest {
     
     StoreGraph mockStoreGraph;
@@ -146,7 +146,7 @@ public class VisualSchemaV1UpdateProviderNGTest {
         GraphLabelsAndDecoratorsV0 labelsAndDecorators = new GraphLabelsAndDecoratorsV0();
         labelsAndDecorators.addBottomLabel(new GraphLabelV0("bottom;red;1"));
         labelsAndDecorators.addTopLabel(new GraphLabelV0("top;red;1"));
-        labelsAndDecorators.addTopLabel(new GraphLabelV0("top;red;2"));;
+        labelsAndDecorators.addTopLabel(new GraphLabelV0("top;red;2"));
         labelsAndDecorators.addConnectionLabel(new GraphLabelV0("connection;red;1"));
         labelsAndDecorators.addConnectionLabel(new GraphLabelV0("connection;red;2"));
         labelsAndDecorators.addConnectionLabel(new GraphLabelV0("connection;red;3"));

@@ -35,7 +35,6 @@ public class ShortObjectAttributeDescription extends AbstractObjectAttributeDesc
     }
 
     @Override
-    @SuppressWarnings("unchecked") //Casts are manually checked
     protected Short convertFromObject(final Object object) {
         try {
             return super.convertFromObject(object);

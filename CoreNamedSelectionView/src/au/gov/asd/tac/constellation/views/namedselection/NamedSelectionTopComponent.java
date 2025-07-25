@@ -32,6 +32,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -204,7 +205,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
      * @see NamedSelection
      * @see NamedSelectionTopComponent
      */
-    public void updateState(final ArrayList<NamedSelection> selections) {
+    public void updateState(final List<NamedSelection> selections) {
         if (selections != null) {
             // Clear everything so we can start fresh:
             clearAllNamedSelections();
@@ -740,7 +741,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
             }
         }
 
-        if (removeSelections.size() > 0) {
+        if (!removeSelections.isEmpty()) {
             NamedSelectionManager.getDefault().clearSelections(removeSelections);
         }
     }

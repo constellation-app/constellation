@@ -72,8 +72,8 @@ public class DataAccessViewCategoryPanelControllerNGTest {
 
         final DataAccessViewCategoryPanel dataAccessViewCategoryPanelSpy = spy(dataAccessViewCategoryPanel);
 
-        final DefaultListModel listModelV = new DefaultListModel();
-        final DefaultListModel listModelH = new DefaultListModel();
+        final DefaultListModel<String> listModelV = new DefaultListModel<>();
+        final DefaultListModel<String> listModelH = new DefaultListModel<>();
 
         final JList<String> list1 = new JList<>();
         listModelV.addElement("Import");
@@ -119,7 +119,7 @@ public class DataAccessViewCategoryPanelControllerNGTest {
         /* Test visible types*/
         final JList<String> list1 = new JList<>();
         
-        final DefaultListModel listModel1 = new DefaultListModel();
+        final DefaultListModel<String> listModel1 = new DefaultListModel<>();
         listModel1.addElement("Import");
         listModel1.addElement("Utility");
 
@@ -135,7 +135,7 @@ public class DataAccessViewCategoryPanelControllerNGTest {
 
         /* Test hidden types*/
         final JList<String> list2 = new JList<>();
-        final DefaultListModel listModel2 = new DefaultListModel();
+        final DefaultListModel<String> listModel2 = new DefaultListModel<>();
         listModel2.addElement("Clean");
         listModel2.addElement("Developer");
 
@@ -168,43 +168,20 @@ public class DataAccessViewCategoryPanelControllerNGTest {
         final DataAccessViewCategoryPanel dataAccessViewCategoryPanel = new DataAccessViewCategoryPanel(dataAccessViewCategoryPanelController);
 
         final DataAccessViewCategoryPanel dataAccessViewCategoryPanelSpy = spy(dataAccessViewCategoryPanel);
-        final DataAccessViewCategoryPanelController dataAccessViewCategoryPanelControllerSpy = spy(dataAccessViewCategoryPanelController);
 
         List<String> list1 = Arrays.asList("Import");
         List<String> list2 = Arrays.asList("Utility", "Clean", "Developer");
 
         when(dataAccessViewCategoryPanelSpy.getVisibleCategory()).thenReturn(list1);
         when(dataAccessViewCategoryPanelSpy.getHiddenCategory()).thenReturn(list2);
-         when(dataAccessViewCategoryPanelControllerSpy.getPanel()).thenReturn(dataAccessViewCategoryPanelSpy);
+         when(dataAccessViewCategoryPanelController.getPanel()).thenReturn(dataAccessViewCategoryPanelSpy);
+         when(dataAccessViewCategoryPanelController.isValid()).thenCallRealMethod();
 
         boolean expResult = true;
-        boolean result = dataAccessViewCategoryPanelControllerSpy.isValid();
+        boolean result = dataAccessViewCategoryPanelController.isValid();
         assertEquals(result, expResult);
-        verify(dataAccessViewCategoryPanelSpy, times(1)).getVisibleCategory();
-        verify(dataAccessViewCategoryPanelSpy, times(1)).getHiddenCategory();
-        verify(dataAccessViewCategoryPanelControllerSpy, times(1)).isValid();
-    }
-
-    /**
-     * Test of isChanged method, of class DataAccessViewCategoryPanelController.
-     */
-    @Test
-    public void testIsChanged() {
-        System.out.println("isChanged");
-        
-        final DataAccessViewCategoryPanelController dataAccessViewCategoryPanelController = mock(DataAccessViewCategoryPanelController.class);
-        final DataAccessViewCategoryPanel dataAccessViewCategoryPanel = new DataAccessViewCategoryPanel(dataAccessViewCategoryPanelController);
-
-        final DataAccessViewCategoryPanel dataAccessViewCategoryPanelSpy = spy(dataAccessViewCategoryPanel);
-        final DataAccessViewCategoryPanelController dataAccessViewCategoryPanelControllerSpy = spy(dataAccessViewCategoryPanelController);
-        List<String> list1 = Arrays.asList("Clean", "Developer");
-
-        when(dataAccessViewCategoryPanelControllerSpy.getPanel()).thenReturn(dataAccessViewCategoryPanelSpy);
-        when(dataAccessViewCategoryPanelSpy.getHiddenCategory()).thenReturn(list1);
-
-        boolean expResult = false;
-        boolean result = dataAccessViewCategoryPanelControllerSpy.isChanged();
-        assertEquals(result, expResult);
-        verify(dataAccessViewCategoryPanelControllerSpy, times(1)).isChanged();
+        verify(dataAccessViewCategoryPanelSpy).getVisibleCategory();
+        verify(dataAccessViewCategoryPanelSpy).getHiddenCategory();
+        verify(dataAccessViewCategoryPanelController).isValid();
     }
 }

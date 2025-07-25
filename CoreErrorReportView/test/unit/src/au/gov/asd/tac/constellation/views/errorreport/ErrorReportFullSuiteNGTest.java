@@ -215,8 +215,8 @@ public class ErrorReportFullSuiteNGTest {
         final List<String> checked = new ArrayList<>();
         checked.add(ErrorReportTopComponent.SeverityCode.WARNING.getCode());
         multiChoiceValue.setChoices(checked);
-        final PluginParameter<MultiChoiceParameterValue> filterTypeParameter 
-                        = (PluginParameter<MultiChoiceParameterValue>) ertcInstance.getParams().getParameters().get(REPORT_SETTINGS_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // REPORT_SETTINGS_PARAMETER will always be of type MultiChoiceParameter
+        final PluginParameter<MultiChoiceParameterValue> filterTypeParameter = (PluginParameter<MultiChoiceParameterValue>) ertcInstance.getParams().getParameters().get(REPORT_SETTINGS_PARAMETER_ID);
         filterTypeParameter.fireChangeEvent(ParameterChange.PROPERTY);
         
         System.out.println("\n\n>>>> Waiting for TC dialogs");
@@ -248,7 +248,7 @@ public class ErrorReportFullSuiteNGTest {
     private void delay(final long milliseconds) {
         // may need to wait for timers to trigger and do their thing
         final Executor delayed = CompletableFuture.delayedExecutor(milliseconds, TimeUnit.MILLISECONDS);
-        final CompletableFuture cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
+        final CompletableFuture<Void> cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
                 .thenAccept(LOGGER::info);
         try {
             cf.get();

@@ -44,11 +44,11 @@ public class MultiChoiceInputFieldNGTest {
 
     private MultiChoiceInputField<String> field;
     private List<String> data;
-    private String OPTION1;
-    private String OPTION2;
-    private String OPTION3;
-    private String OPTION4;
-    private String OPTION5;
+    private String option1;
+    private String option2;
+    private String option3;
+    private String option4;
+    private String option5;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -69,18 +69,18 @@ public class MultiChoiceInputFieldNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        OPTION1 = "Option 1";
-        OPTION2 = "Option 2";
-        OPTION3 = "Option 3";
-        OPTION4 = "Option 4";
-        OPTION5 = "Option 5"; 
+        option1 = "Option 1";
+        option2 = "Option 2";
+        option3 = "Option 3";
+        option4 = "Option 4";
+        option5 = "Option 5"; 
         
         data = new ArrayList<>();
-        data.add(OPTION1);
-        data.add(OPTION2);
-        data.add(OPTION3);
-        data.add(OPTION4);
-        data.add(OPTION5);  
+        data.add(option1);
+        data.add(option2);
+        data.add(option3);
+        data.add(option4);
+        data.add(option5);  
         
         field = new MultiChoiceInputField<>();      
         field.getItems().addAll(data);
@@ -140,7 +140,7 @@ public class MultiChoiceInputFieldNGTest {
         
         //Make sure the the a MenuButton is returned
         MenuButton expectedClass = new MenuButton();
-        Class menuButtonClass = menuButton.getClass();
+        Class<?> menuButtonClass = menuButton.getClass();
         Assert.assertTrue(menuButtonClass.isInstance(expectedClass));
         
         //Assert that the menu button only has two initial Options, Select all         

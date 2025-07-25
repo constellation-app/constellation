@@ -125,4 +125,13 @@ public abstract class RestService {
     public String getMimeType() {
         return RestServiceUtilities.APPLICATION_JSON;
     }
+    
+    /**
+     * Returns path in json file to look for example response body
+     * 
+     * @return path in json to look for example response body
+     */
+    public String getExampleResponsesPath() {
+        return null;
+    }
 }

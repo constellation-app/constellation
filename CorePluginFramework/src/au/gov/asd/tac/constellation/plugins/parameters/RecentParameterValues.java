@@ -153,7 +153,7 @@ public class RecentParameterValues {
                         while (jp.nextToken() != JsonToken.END_OBJECT) {
                             if (jp.getCurrentToken() == JsonToken.START_ARRAY) {
                                 List<String> recentVals = new ArrayList<>();
-                                String fieldName = jp.getCurrentName();
+                                String fieldName = jp.currentName();
                                 while (jp.nextToken() != JsonToken.END_ARRAY) {
                                     recentVals.add(jp.getValueAsString());
                                 }

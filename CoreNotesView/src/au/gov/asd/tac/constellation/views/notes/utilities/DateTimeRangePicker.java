@@ -105,7 +105,7 @@ public class DateTimeRangePicker {
         timeZones.addAll(minusFromGMT);
         timeZones.addAll(plusFromGMT);
 
-        timeZoneChoiceBox = new ComboBox(FXCollections.observableList(timeZones));
+        timeZoneChoiceBox = new ComboBox<>(FXCollections.observableList(timeZones));
 
         final String localTimeString = offSet.format(ZoneId.systemDefault().getRules().getOffset(Instant.now())) + " " + ZoneId.systemDefault().getId();
 

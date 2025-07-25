@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -439,7 +440,7 @@ public class ModCountNGTest {
 
             wg = g.getWritableGraph("", true);
             try {
-                assertEquals(null, (Object) wg.getObjectValue(attribute, vertex));
+                assertNull(wg.getObjectValue(attribute, vertex));
                 assertEquals(modCount, wg.getGlobalModificationCounter());
             } finally {
                 wg.commit();

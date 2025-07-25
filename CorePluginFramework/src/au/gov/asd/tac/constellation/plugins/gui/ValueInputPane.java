@@ -32,7 +32,6 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
@@ -141,23 +140,21 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             };
             recentValuesCombo.setButtonCell(button);
 
-            recentValuesCombo.setCellFactory((final ListView<String> param) -> {
-                return new ListCell<String>() {
-                    @Override
-                    public void updateItem(final String item, final boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                            setText(item);
-                            final int textLength = getText().length();
-                            if ((textLength > STRING_LENGTH) && (comboBoxWidth < DEFAULT_WIDTH) && (comboBoxWidth < STRING_LENGTH * textLength)) {
-                                comboBoxWidth = (STRING_LENGTH * textLength) > DEFAULT_WIDTH ? DEFAULT_WIDTH : STRING_LENGTH * textLength;
-                            }
-                        } else {
-                            setText(null);
+            recentValuesCombo.setCellFactory(param -> new ListCell<>() {
+                @Override
+                public void updateItem(final String item, final boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item != null) {
+                        setText(item);
+                        final int textLength = getText().length();
+                        if ((textLength > STRING_LENGTH) && (comboBoxWidth < DEFAULT_WIDTH) && (comboBoxWidth < STRING_LENGTH * textLength)) {
+                            comboBoxWidth = (STRING_LENGTH * textLength) > DEFAULT_WIDTH ? DEFAULT_WIDTH : STRING_LENGTH * textLength;
                         }
-                        getListView().setPrefWidth(comboBoxWidth);
+                    } else {
+                        setText(null);
                     }
-                };
+                    getListView().setPrefWidth(comboBoxWidth);
+                }
             });
 
             field = new SpellCheckingTextArea(parameter.isSpellCheckEnabled());
@@ -171,7 +168,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             Platform.runLater(() -> {
                 final Text t = (Text) field.lookup(".text");
                 if (t != null) {
-                    field.setPrefHeight(numberOfLines * t.getBoundsInLocal().getHeight() + field.EXTRA_HEIGHT);
+                    field.setPrefHeight(numberOfLines * t.getBoundsInLocal().getHeight() + SpellCheckingTextArea.EXTRA_HEIGHT);
                 }
             });
 

@@ -68,7 +68,7 @@ public class PluginParameter<V extends ParameterValue> {
     private boolean enabled = true;
     private String helpID;
     private boolean isSuppressed = false;
-    private String requestBodyExample;
+    private String requestBodyExample;    
     private boolean required = false;
     private boolean isSpellCheckEnabled = false;
 
@@ -435,9 +435,8 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @return a copy of this parameter.
      */
-    @SuppressWarnings("unchecked") // Below cast will always work.
     public final PluginParameter<V> copy() {
-        final PluginParameter<V> copy = (PluginParameter<V>) create(value, type, id);
+        final PluginParameter<V> copy = create(value, type, id);
         copy.setName(name);
         copy.setDescription(description);
         copy.setIcon(icon);
@@ -776,7 +775,7 @@ public class PluginParameter<V extends ParameterValue> {
             this.requestBodyExample = requestBodyExample;
         }
     }
-
+    
     /**
      * Is the parameter required?
      *

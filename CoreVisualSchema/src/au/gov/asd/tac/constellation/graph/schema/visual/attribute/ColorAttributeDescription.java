@@ -58,7 +58,6 @@ public final class ColorAttributeDescription extends AbstractObjectAttributeDesc
     }
 
     @Override
-    @SuppressWarnings("unchecked") //Casts are checked manually
     public ConstellationColor convertFromObject(final Object object) {
         try {
             return super.convertFromObject(object);
@@ -78,7 +77,7 @@ public final class ColorAttributeDescription extends AbstractObjectAttributeDesc
 
     @Override
     public void setDefault(final Object value) {
-        defaultValue = value instanceof String ? ConstellationColor.getColorValue((String) value) : (ConstellationColor) value;
+        defaultValue = value instanceof String stringValue ? ConstellationColor.getColorValue(stringValue) : (ConstellationColor) value;
     }
 
     @Override

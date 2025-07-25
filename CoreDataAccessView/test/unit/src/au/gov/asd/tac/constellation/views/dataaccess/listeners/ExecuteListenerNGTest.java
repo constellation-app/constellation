@@ -408,8 +408,8 @@ public class ExecuteListenerNGTest {
         when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList());
         
         // Add some existing running plugins for the current graph.
-        final Future plugin1Future = mock(Future.class);
-        final Future plugin2Future = mock(Future.class);
+        final Future<?> plugin1Future = mock(Future.class);
+        final Future<?> plugin2Future = mock(Future.class);
         
         DataAccessPaneState.addRunningPlugin(plugin1Future, "Plugin 1");
         DataAccessPaneState.addRunningPlugin(plugin2Future, "Plugin 2");
@@ -435,8 +435,8 @@ public class ExecuteListenerNGTest {
         when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(mock(Tab.class)));
         
         // Add some existing running plugins for the current graph.
-        final Future plugin1Future = mock(Future.class);
-        final Future plugin2Future = mock(Future.class);
+        final Future<?> plugin1Future = mock(Future.class);
+        final Future<?> plugin2Future = mock(Future.class);
         
         DataAccessPaneState.addRunningPlugin(plugin1Future, "Plugin 1");
         DataAccessPaneState.addRunningPlugin(plugin2Future, "Plugin 2");

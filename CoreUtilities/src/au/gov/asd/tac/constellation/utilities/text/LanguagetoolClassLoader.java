@@ -52,14 +52,14 @@ public class LanguagetoolClassLoader {
             try {
                 final List<URL> urls = LanguageToolDependencyUrlLoader.loadUrls();
                 languagetoolClassLoader = new LanguagetoolClassLoader(urls);
-                LoadOtherClasses();
+                loadOtherClasses();
             } catch (final MalformedURLException | ClassNotFoundException ex) {
                 LOGGER.log(Level.SEVERE, "An error occured loading LanguageTool Classes", ex);
             }
         }
     }
 
-    private static void LoadOtherClasses() throws ClassNotFoundException {
+    private static void loadOtherClasses() throws ClassNotFoundException {
         // Load JLanguagetool
         jLanguagetool = classLoader.loadClass("org.languagetool.JLanguageTool");
 

@@ -45,11 +45,11 @@ import org.openide.util.NbPreferences;
  */
 public class ImportPane extends BorderPane {
 
-    private final static Insets GRIDPANE_PADDING = new Insets(0, 0, 10, 0);
-    private final static Insets ACTIONPANE_PADDING = new Insets(0, 0, 20, 0);
-    private final static int GRIDPANE_CONSTRAINT = 200;
-    private final static int ACTIONPANE_MIN_HEIGHT = 40;
-    private final static Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16,
+    private static final Insets GRIDPANE_PADDING = new Insets(0, 0, 10, 0);
+    private static final Insets ACTIONPANE_PADDING = new Insets(0, 0, 20, 0);
+    private static final int GRIDPANE_CONSTRAINT = 200;
+    private static final int ACTIONPANE_MIN_HEIGHT = 40;
+    private static final Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16,
             ConstellationColor.SKY.getJavaColor());
 
     protected final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
@@ -60,7 +60,7 @@ public class ImportPane extends BorderPane {
     protected final TitledPane titledConfigurationPane;
     protected final ActionPane actionPane;
 
-    protected ImportController importController;
+    protected ImportController<?> importController;
     protected ImportTopComponent importTopComponent;
     protected ConfigurationPane configurationPane;
     protected SourcePane sourcePane;
@@ -72,7 +72,7 @@ public class ImportPane extends BorderPane {
     public static final String LOAD_TEMPLATE_LOGO = "resources/ImportExportLoadTemplate.png";
     private final ImageView loadTemplateImage = new ImageView(new Image(ImportTopComponent.class.getResourceAsStream(LOAD_TEMPLATE_LOGO)));
 
-    public ImportPane(final ImportTopComponent importTopComponent, final ImportController controller,
+    public ImportPane(final ImportTopComponent importTopComponent, final ImportController<?> controller,
             final ConfigurationPane configurationPane, final SourcePane sourcePane) {
         this.importTopComponent = importTopComponent;
         this.importController = controller;
@@ -166,7 +166,7 @@ public class ImportPane extends BorderPane {
         setCenter(root);
     }
 
-    public void update(final ImportController importController, final List<ImportDefinition> definitions) {
+    public void update(final ImportController<?> importController, final List<ImportDefinition> definitions) {
         sourcePane.update(importController);
         configurationPane.update(definitions);
     }
