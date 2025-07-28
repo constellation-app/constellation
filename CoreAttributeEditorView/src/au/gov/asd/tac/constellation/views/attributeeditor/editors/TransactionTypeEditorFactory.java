@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,8 +48,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<SchemaTransactionType> {
 
     @Override
-    public AbstractEditor<SchemaTransactionType> createEditor(final EditOperation editOperation, final DefaultGetter<SchemaTransactionType> defaultGetter, final ValueValidator<SchemaTransactionType> validator, final String editedItemName, final SchemaTransactionType initialValue) {
-        return new TransactionTypeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<SchemaTransactionType> createEditor(final EditOperation editOperation, final SchemaTransactionType defaultValue, final ValueValidator<SchemaTransactionType> validator, final String editedItemName, final SchemaTransactionType initialValue) {
+        return new TransactionTypeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -64,8 +63,8 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
         private TextField nameText;
         private boolean selectionIsActive = false;
 
-        protected TransactionTypeEditor(final EditOperation editOperation, final DefaultGetter<SchemaTransactionType> defaultGetter, final ValueValidator<SchemaTransactionType> validator, final String editedItemName, final SchemaTransactionType initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected TransactionTypeEditor(final EditOperation editOperation, final SchemaTransactionType defaultValue, final ValueValidator<SchemaTransactionType> validator, final String editedItemName, final SchemaTransactionType initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue);
         }
 
         @Override

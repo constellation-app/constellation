@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.io.File;
 import java.util.ArrayList;
@@ -71,8 +70,8 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
     private static final String TITLE = "Add New Icon(s)";
 
     @Override
-    public AbstractEditor<ConstellationIcon> createEditor(final EditOperation editOperation, final DefaultGetter<ConstellationIcon> defaultGetter, final ValueValidator<ConstellationIcon> validator, final String editedItemName, final ConstellationIcon initialValue) {
-        return new IconEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<ConstellationIcon> createEditor(final EditOperation editOperation, final ConstellationIcon defaultValue, final ValueValidator<ConstellationIcon> validator, final String editedItemName, final ConstellationIcon initialValue) {
+        return new IconEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -90,8 +89,8 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         private TreeItem<IconNode> treeRoot;
         private TreeItem<IconNode> builtInItem;
 
-        protected IconEditor(final EditOperation editOperation, final DefaultGetter<ConstellationIcon> defaultGetter, final ValueValidator<ConstellationIcon> validator, final String editedItemName, final ConstellationIcon initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected IconEditor(final EditOperation editOperation, final ConstellationIcon defaultValue, final ValueValidator<ConstellationIcon> validator, final String editedItemName, final ConstellationIcon initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue);
         }
 
         @Override

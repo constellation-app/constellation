@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.DoubleObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import static au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor.CONTROLS_DEFAULT_VERTICAL_SPACING;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -34,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Double> {
 
     @Override
-    public AbstractEditor<Double> createEditor(final EditOperation editOperation, final DefaultGetter<Double> defaultGetter, final ValueValidator<Double> validator, final String editedItemName, final Double initialValue) {
-        return new DoubleObjectEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Double> createEditor(final EditOperation editOperation, final Double defaultValue, final ValueValidator<Double> validator, final String editedItemName, final Double initialValue) {
+        return new DoubleObjectEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -47,8 +46,8 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
 
         private TextField numberField;
 
-        protected DoubleObjectEditor(final EditOperation editOperation, final DefaultGetter<Double> defaultGetter, final ValueValidator<Double> validator, final String editedItemName, final Double initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
+        protected DoubleObjectEditor(final EditOperation editOperation, final Double defaultValue, final ValueValidator<Double> validator, final String editedItemName, final Double initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
         }
 
         @Override

@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.TransactionGra
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.attributeeditor.AttributeEditorDialog;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +56,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFactory<GraphLabels> {
 
     @Override
-    public AbstractEditor<GraphLabels> createEditor(final EditOperation editOperation, final DefaultGetter<GraphLabels> defaultGetter, final ValueValidator<GraphLabels> validator, final String editedItemName, final GraphLabels initialValue) {
-        return new GraphLabelsEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<GraphLabels> createEditor(final EditOperation editOperation, final GraphLabels defaultValue, final ValueValidator<GraphLabels> validator, final String editedItemName, final GraphLabels initialValue) {
+        return new GraphLabelsEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -74,8 +73,8 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
         private final Button addButton = new Button("", new ImageView(UserInterfaceIconProvider.ADD.buildImage(16)));
         private final List<String> attributeNames = new ArrayList<>();
 
-        protected GraphLabelsEditor(final EditOperation editOperation, final DefaultGetter<GraphLabels> defaultGetter, final ValueValidator<GraphLabels> validator, final String editedItemName, final GraphLabels initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected GraphLabelsEditor(final EditOperation editOperation, final GraphLabels defaultValue, final ValueValidator<GraphLabels> validator, final String editedItemName, final GraphLabels initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue);
         }
 
         @Override
@@ -253,7 +252,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
                         update();
                     };
 
-                    final AbstractEditor<ConstellationColor> editor = editorFactory.createEditor(setColorEditOperation, ValueValidator.getAlwaysSucceedValidator(), "label color", ConstellationColor.fromFXColor(color));
+                    final AbstractEditor<ConstellationColor> editor = editorFactory.createEditor(setColorEditOperation, "label color", ConstellationColor.fromFXColor(color));
                     final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
                     dialog.showDialog();
                 };

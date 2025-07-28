@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescri
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -56,8 +55,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDateTime> {
 
     @Override
-    public AbstractEditor<ZonedDateTime> createEditor(final EditOperation editOperation, final DefaultGetter<ZonedDateTime> defaultGetter, final ValueValidator<ZonedDateTime> validator, final String editedItemName, final ZonedDateTime initialValue) {
-        return new DateTimeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<ZonedDateTime> createEditor(final EditOperation editOperation, final ZonedDateTime defaultValue, final ValueValidator<ZonedDateTime> validator, final String editedItemName, final ZonedDateTime initialValue) {
+        return new DateTimeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -91,8 +90,8 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             return offsetCompare != 0 ? offsetCompare : t1.getId().compareTo(t2.getId());
         };
 
-        protected DateTimeEditor(final EditOperation editOperation, final DefaultGetter<ZonedDateTime> defaultGetter, final ValueValidator<ZonedDateTime> validator, final String editedItemName, final ZonedDateTime initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
+        protected DateTimeEditor(final EditOperation editOperation, final ZonedDateTime defaultValue, final ValueValidator<ZonedDateTime> validator, final String editedItemName, final ZonedDateTime initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
         }
 
         @Override

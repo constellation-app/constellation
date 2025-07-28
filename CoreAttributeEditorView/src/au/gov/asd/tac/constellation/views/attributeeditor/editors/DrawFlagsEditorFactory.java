@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DrawFlagsAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -33,8 +32,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlags> {
 
     @Override
-    public AbstractEditor<DrawFlags> createEditor(final EditOperation editOperation, final DefaultGetter<DrawFlags> defaultGetter, final ValueValidator<DrawFlags> validator, final String editedItemName, final DrawFlags initialValue) {
-        return new DrawFlagsEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<DrawFlags> createEditor(final EditOperation editOperation, final DrawFlags defaultValue, final ValueValidator<DrawFlags> validator, final String editedItemName, final DrawFlags initialValue) {
+        return new DrawFlagsEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -50,8 +49,8 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
         private CheckBox drawConnectionLabelsCheckBox;
         private CheckBox drawBlazesCheckBox;
 
-        protected DrawFlagsEditor(final EditOperation editOperation, final DefaultGetter<DrawFlags> defaultGetter, final ValueValidator<DrawFlags> validator, final String editedItemName, final DrawFlags initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected DrawFlagsEditor(final EditOperation editOperation, final DrawFlags defaultValue, final ValueValidator<DrawFlags> validator, final String editedItemName, final DrawFlags initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue);
         }
 
         @Override

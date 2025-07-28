@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,8 +34,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
     @Override
-    public AbstractEditor<URI> createEditor(final EditOperation editOperation, final DefaultGetter<URI> defaultGetter, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
-        return new HyperlinkEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<URI> createEditor(final EditOperation editOperation, final URI defaultValue, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
+        return new HyperlinkEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -48,8 +47,8 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
         private TextField textField;
 
-        protected HyperlinkEditor(final EditOperation editOperation, final DefaultGetter<URI> defaultGetter, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
+        protected HyperlinkEditor(final EditOperation editOperation, final URI defaultValue, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
         }
 
         @Override

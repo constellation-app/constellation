@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.LocalDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,8 +46,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<LocalDateTime> {
 
     @Override
-    public AbstractEditor<LocalDateTime> createEditor(final EditOperation editOperation, final DefaultGetter<LocalDateTime> defaultGetter, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
-        return new LocalDateTimeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<LocalDateTime> createEditor(final EditOperation editOperation, final LocalDateTime defaultValue, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
+        return new LocalDateTimeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -70,8 +69,8 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         private Spinner<Integer> secSpinner;
         private Spinner<Integer> milliSpinner;
 
-        protected LocalDateTimeEditor(final EditOperation editOperation, final DefaultGetter<LocalDateTime> defaultGetter, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
+        protected LocalDateTimeEditor(final EditOperation editOperation, final LocalDateTime defaultValue, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
         }
 
         @Override

@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.TimeZoneAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -43,8 +42,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
 
     @Override
-    public AbstractEditor<ZoneId> createEditor(final EditOperation editOperation, final DefaultGetter<ZoneId> defaultGetter, final ValueValidator<ZoneId> validator, final String editedItemName, final ZoneId initialValue) {
-        return new TimeZoneEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<ZoneId> createEditor(final EditOperation editOperation, final ZoneId defaultValue, final ValueValidator<ZoneId> validator, final String editedItemName, final ZoneId initialValue) {
+        return new TimeZoneEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -61,8 +60,8 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
             return offsetCompare != 0 ? offsetCompare : t1.getId().compareTo(t2.getId());
         };
 
-        protected TimeZoneEditor(final EditOperation editOperation, final DefaultGetter<ZoneId> defaultGetter, final ValueValidator<ZoneId> validator, final String editedItemName, final ZoneId initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected TimeZoneEditor(final EditOperation editOperation, final ZoneId defaultValue, final ValueValidator<ZoneId> validator, final String editedItemName, final ZoneId initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue);
         }
 
         @Override

@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,8 +48,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaVertexType> {
 
     @Override
-    public AbstractEditor<SchemaVertexType> createEditor(final EditOperation editOperation, final DefaultGetter<SchemaVertexType> defaultGetter, final ValueValidator<SchemaVertexType> validator, final String editedItemName, final SchemaVertexType initialValue) {
-        return new VertexTypeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<SchemaVertexType> createEditor(final EditOperation editOperation, final SchemaVertexType defaultValue, final ValueValidator<SchemaVertexType> validator, final String editedItemName, final SchemaVertexType initialValue) {
+        return new VertexTypeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -64,8 +63,8 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
         private TextField nameText;
         private boolean selectionIsActive = false;
 
-        protected VertexTypeEditor(final EditOperation editOperation, final DefaultGetter<SchemaVertexType> defaultGetter, final ValueValidator<SchemaVertexType> validator, final String editedItemName, final SchemaVertexType initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected VertexTypeEditor(final EditOperation editOperation, final SchemaVertexType defaultValue, final ValueValidator<SchemaVertexType> validator, final String editedItemName, final SchemaVertexType initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue);
         }
 
         @Override

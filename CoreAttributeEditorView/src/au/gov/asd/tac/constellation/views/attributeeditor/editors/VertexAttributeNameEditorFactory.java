@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.VertexAttributeNameAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,8 +41,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactory<String> {
 
     @Override
-    public AbstractEditor<String> createEditor(final EditOperation editOperation, final DefaultGetter<String> defaultGetter, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
-        return new VertexAttributeNameEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<String> createEditor(final EditOperation editOperation, final String defaultValue, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
+        return new VertexAttributeNameEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -57,8 +56,8 @@ public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactor
         private TextField nameText;
         private boolean selectionIsActive = false;
 
-        protected VertexAttributeNameEditor(final EditOperation editOperation, final DefaultGetter<String> defaultGetter, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected VertexAttributeNameEditor(final EditOperation editOperation, final String defaultValue, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue);
         }
 
         @Override

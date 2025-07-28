@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.PluginSequenceEditOperation;
 import javafx.beans.property.BooleanProperty;
@@ -38,18 +37,18 @@ import javafx.scene.control.Label;
 public abstract class AbstractEditorFactory<V> {
 
     public AbstractEditor<V> createEditor(final EditOperation editOperation, final ValueValidator<V> validator, final String editedItemName, final V initialValue) {
-        return createEditor(editOperation, DefaultGetter.getDefaultUnsupported(), validator, editedItemName, initialValue);
+        return createEditor(editOperation, null, validator, editedItemName, initialValue);
     }
 
     public AbstractEditor<V> createEditor(final EditOperation editOperation, final String editedItemName, final V initialValue) {
-        return createEditor(editOperation, DefaultGetter.getDefaultUnsupported(), ValueValidator.getAlwaysSucceedValidator(), editedItemName, initialValue);
+        return createEditor(editOperation, null, ValueValidator.getAlwaysSucceedValidator(), editedItemName, initialValue);
     }
 
-    public AbstractEditor<V> createEditor(final EditOperation editOperation, final DefaultGetter<V> defaultGetter, final String editedItemName, final V initialValue) {
+    public AbstractEditor<V> createEditor(final EditOperation editOperation, final V defaultGetter, final String editedItemName, final V initialValue) {
         return createEditor(editOperation, defaultGetter, ValueValidator.getAlwaysSucceedValidator(), editedItemName, initialValue);
     }
 
-    public abstract AbstractEditor<V> createEditor(final EditOperation editOperation, final DefaultGetter<V> defaultGetter, final ValueValidator<V> validator, final String editedItemName, final V initialValue);
+    public abstract AbstractEditor<V> createEditor(final EditOperation editOperation, final V defaultValue, final ValueValidator<V> validator, final String editedItemName, final V initialValue);
 
     public abstract static class AbstractEditor<V> {
 
@@ -58,26 +57,26 @@ public abstract class AbstractEditorFactory<V> {
         protected static final int CONTROLS_DEFAULT_VERTICAL_SPACING = 10;
 
         protected final EditOperation editOperation;
-        protected final DefaultGetter<V> defaultGetter;
+        protected final V defaultValue;
         protected final ValueValidator<V> validator;
         protected final BooleanProperty disableEditProperty;
         protected final StringProperty errorMessageProperty;
         protected final String editedItemName;
+        private final boolean noValueAllowed;
         protected V currentValue;
         protected V savedValue;
         protected Node editorHeading = null;
         protected Node editorControls = null;
-        private final boolean noValueAllowed;
 
         protected boolean updateInProgress = false;
 
-        protected AbstractEditor(final EditOperation editOperation, final DefaultGetter<V> defaultGetter, final ValueValidator<V> validator, final String editedItemName, final V initialValue) {
-            this(editOperation, defaultGetter, validator, editedItemName, initialValue, false);
+        protected AbstractEditor(final EditOperation editOperation, final V defaultValue, final ValueValidator<V> validator, final String editedItemName, final V initialValue) {
+            this(editOperation, defaultValue, validator, editedItemName, initialValue, false);
         }
         
-        protected AbstractEditor(final EditOperation editOperation, final DefaultGetter<V> defaultGetter, final ValueValidator<V> validator, final String editedItemName, final V initialValue, final boolean noValueAllowed) {
+        protected AbstractEditor(final EditOperation editOperation, final V defaultValue, final ValueValidator<V> validator, final String editedItemName, final V initialValue, final boolean noValueAllowed) {
             this.editOperation = editOperation;
-            this.defaultGetter = defaultGetter;
+            this.defaultValue = defaultValue;
             this.validator = validator;
             this.disableEditProperty = new SimpleBooleanProperty();
             this.errorMessageProperty = new SimpleStringProperty();
@@ -123,7 +122,7 @@ public abstract class AbstractEditorFactory<V> {
                     disableEditProperty.set(error != null);
                 } catch (final ControlsInvalidException ex) {
                     disableEditProperty.set(true);
-                    errorMessageProperty.set(ex.getReason());
+                    errorMessageProperty.set(ex.getLocalizedMessage());
                 }
 
                 updateInProgress = false;
@@ -156,11 +155,11 @@ public abstract class AbstractEditorFactory<V> {
         }
 
         public final void setDefaultValue() {
-            setCurrentValue(defaultGetter.getDefaultValue());
+            setCurrentValue(defaultValue);
         }
 
         public final boolean isDefaultValueNull() {
-            return defaultGetter.getDefaultValue() == null;
+            return defaultValue == null;
         }
 
         public final Node getEditorControls() {
@@ -193,9 +192,9 @@ public abstract class AbstractEditorFactory<V> {
 
         public final void performEdit() {
             if (!disableEditProperty.get()) {
-                if (editOperation instanceof PluginSequenceEditOperation) {
-                    ((PluginSequenceEditOperation) editOperation).setPreEdit(preEdit());
-                    ((PluginSequenceEditOperation) editOperation).setPostEdit(postEdit());
+                if (editOperation instanceof PluginSequenceEditOperation psEditOperation) {
+                    psEditOperation.setPreEdit(preEdit());
+                    psEditOperation.setPostEdit(postEdit());
                 }
 
                 editOperation.performEdit(getCurrentValue());
@@ -253,14 +252,8 @@ public abstract class AbstractEditorFactory<V> {
      */
     protected static class ControlsInvalidException extends Exception {
 
-        private final String reason;
-
         public ControlsInvalidException(final String reason) {
-            this.reason = reason;
-        }
-
-        public String getReason() {
-            return reason;
+            super(reason);
         }
     }
 }

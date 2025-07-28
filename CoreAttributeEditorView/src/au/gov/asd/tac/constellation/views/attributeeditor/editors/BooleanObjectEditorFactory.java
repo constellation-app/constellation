@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.BooleanObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -33,8 +32,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
     @Override
-    public AbstractEditor<Boolean> createEditor(final EditOperation editOperation, final DefaultGetter<Boolean> defaultGetter, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
-        return new BooleanObjectEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Boolean> createEditor(final EditOperation editOperation, final Boolean defaultValue, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
+        return new BooleanObjectEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -46,8 +45,8 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
 
         private CheckBox checkBox;
 
-        protected BooleanObjectEditor(final EditOperation editOperation, final DefaultGetter<Boolean> defaultGetter, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
+        protected BooleanObjectEditor(final EditOperation editOperation, final Boolean defaultValue, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
         }
 
         @Override

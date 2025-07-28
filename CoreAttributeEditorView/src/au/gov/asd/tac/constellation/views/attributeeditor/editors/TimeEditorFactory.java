@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.TimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
@@ -39,8 +38,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
 
     @Override
-    public AbstractEditor<LocalTime> createEditor(final EditOperation editOperation, final DefaultGetter<LocalTime> defaultGetter, final ValueValidator<LocalTime> validator, final String editedItemName, final LocalTime initialValue) {
-        return new TimeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<LocalTime> createEditor(final EditOperation editOperation, final LocalTime defaultValue, final ValueValidator<LocalTime> validator, final String editedItemName, final LocalTime initialValue) {
+        return new TimeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -62,8 +61,8 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
         private Spinner<Integer> secSpinner;
         private Spinner<Integer> milliSpinner;
 
-        protected TimeEditor(final EditOperation editOperation, final DefaultGetter<LocalTime> defaultGetter, final ValueValidator<LocalTime> validator, final String editedItemName, final LocalTime initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
+        protected TimeEditor(final EditOperation editOperation, final LocalTime defaultValue, final ValueValidator<LocalTime> validator, final String editedItemName, final LocalTime initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
         }
 
         @Override

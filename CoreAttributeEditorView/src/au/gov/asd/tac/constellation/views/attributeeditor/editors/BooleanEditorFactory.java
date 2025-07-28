@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -33,8 +32,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
     @Override
-    public AbstractEditor<Boolean> createEditor(final EditOperation editOperation, final DefaultGetter<Boolean> defaultGetter, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
-        return new BooleanEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Boolean> createEditor(final EditOperation editOperation, final Boolean defaultValue, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
+        return new BooleanEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -46,8 +45,8 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
         private CheckBox checkBox;
 
-        protected BooleanEditor(final EditOperation editOperation, final DefaultGetter<Boolean> defaultGetter, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected BooleanEditor(final EditOperation editOperation, final Boolean defaultValue, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue);
         }
 
         @Override

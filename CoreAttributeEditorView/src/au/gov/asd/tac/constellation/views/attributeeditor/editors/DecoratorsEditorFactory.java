@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DecoratorsAttributeDescription;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,8 +41,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexDecorators> {
 
     @Override
-    public AbstractEditor<VertexDecorators> createEditor(final EditOperation editOperation, final DefaultGetter<VertexDecorators> defaultGetter, final ValueValidator<VertexDecorators> validator, final String editedItemName, final VertexDecorators initialValue) {
-        return new DecoratorsEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<VertexDecorators> createEditor(final EditOperation editOperation, final VertexDecorators defaultValue, final ValueValidator<VertexDecorators> validator, final String editedItemName, final VertexDecorators initialValue) {
+        return new DecoratorsEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -60,8 +59,8 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         ComboBox<String> seCombo;
         ComboBox<String> swCombo;
 
-        protected DecoratorsEditor(final EditOperation editOperation, final DefaultGetter<VertexDecorators> defaultGetter, final ValueValidator<VertexDecorators> validator, final String editedItemName, final VertexDecorators initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected DecoratorsEditor(final EditOperation editOperation, final VertexDecorators defaultValue, final ValueValidator<VertexDecorators> validator, final String editedItemName, final VertexDecorators initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue);
         }
 
         @Override

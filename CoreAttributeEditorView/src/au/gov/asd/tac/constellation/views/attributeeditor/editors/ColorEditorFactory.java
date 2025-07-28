@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -43,8 +42,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ColorEditorFactory extends AttributeValueEditorFactory<ConstellationColor> {
 
     @Override
-    public AbstractEditor<ConstellationColor> createEditor(final EditOperation editOperation, final DefaultGetter<ConstellationColor> defaultGetter, final ValueValidator<ConstellationColor> validator, final String editedItemName, final ConstellationColor initialValue) {
-        return new ColorEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<ConstellationColor> createEditor(final EditOperation editOperation, final ConstellationColor defaultValue, final ValueValidator<ConstellationColor> validator, final String editedItemName, final ConstellationColor initialValue) {
+        return new ColorEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -57,8 +56,8 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
         private ComboBox<ConstellationColor> colorCombo;
         private ColorPicker picker;
 
-        protected ColorEditor(final EditOperation editOperation, final DefaultGetter<ConstellationColor> defaultGetter, final ValueValidator<ConstellationColor> validator, final String editedItemName, final ConstellationColor initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
+        protected ColorEditor(final EditOperation editOperation, final ConstellationColor defaultValue, final ValueValidator<ConstellationColor> validator, final String editedItemName, final ConstellationColor initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
         }
 
         @Override

@@ -17,6 +17,9 @@ package au.gov.asd.tac.constellation.views.attributeeditor;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import static au.gov.asd.tac.constellation.graph.GraphElementType.GRAPH;
+import static au.gov.asd.tac.constellation.graph.GraphElementType.TRANSACTION;
+import static au.gov.asd.tac.constellation.graph.GraphElementType.VERTEX;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
@@ -55,10 +58,8 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.ListSelectionE
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.TimeZoneEditorFactory;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.AttributeValueEditOperation;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.CreateAttributeEditOperation;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.ModifyAttributeEditOperation;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.PrimaryKeyDefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.PrimaryKeyEditOperation;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.UpdateTimeZonePlugin;
 import java.time.ZoneId;
@@ -76,6 +77,7 @@ import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -199,8 +201,6 @@ public class AttributeEditorPanel extends BorderPane {
      * @param parent The TopComponent that the AttributeEditor is in.
      */
     public AttributeEditorPanel(final AttributeEditorTopComponent parent) {
-
-        initComponents();
         this.topComponent = parent;
 
         titledPaneHeadingsContainer = new VBox();
@@ -897,8 +897,8 @@ public class AttributeEditorPanel extends BorderPane {
         final List<String> allAttributes = new ArrayList<>();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (graph != null) {
-            final ReadableGraph rg = graph.getReadableGraph();
-            try {
+            List<SchemaAttribute> keysList = new ArrayList<>();
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
                 int[] keys = rg.getPrimaryKey(elementType);
                 for (int key : keys) {
                     currentKeyAttributes.add(rg.getAttributeName(key));
@@ -906,12 +906,15 @@ public class AttributeEditorPanel extends BorderPane {
                 for (int i = 0; i < rg.getAttributeCount(elementType); i++) {
                     allAttributes.add(rg.getAttributeName(rg.getAttribute(elementType, i)));
                 }
-            } finally {
-                rg.release();
+                if (rg.getSchema() != null) {
+                    keysList = rg.getSchema().getFactory().getKeyAttributes(elementType);
+                }
             }
+            
+            final List<String> keyNames = keysList.stream().map(s -> s.getName()).collect(Collectors.toList());
             final EditOperation editOperation = new PrimaryKeyEditOperation(elementType);
-            final DefaultGetter<List<String>> defaultGetter = new PrimaryKeyDefaultGetter(elementType);
-            final AbstractEditor<List<String>> editor = LIST_SELECTION_EDITOR_FACTORY.createEditor(editOperation, defaultGetter, String.format("Edit primary key for %ss", elementType.getShortLabel()), currentKeyAttributes);
+            
+            final AbstractEditor<List<String>> editor = LIST_SELECTION_EDITOR_FACTORY.createEditor(editOperation, keyNames, String.format("Edit primary key for %ss", elementType.getShortLabel()), currentKeyAttributes);
             ((ListSelectionEditor) editor).setPossibleItems(allAttributes);
             final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
             dialog.showDialog();
@@ -926,8 +929,7 @@ public class AttributeEditorPanel extends BorderPane {
         final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
         final ValueValidator<?> validator = interaction.fromEditValidator(editType);
         final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
-        final DefaultGetter<?> defaultGetter = attributeData::getDefaultValue;
-        final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
+        final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, attributeData.getDefaultValue(), validator, attributeData.getAttributeName(), toTranslator.translate(value));
         final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();
     }
@@ -952,16 +954,7 @@ public class AttributeEditorPanel extends BorderPane {
         }
         return maxWidth;
     }
-
-    /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
-     */
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-    }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // End of variables declaration//GEN-END:variables
-
+    
     private Node createAttributeValueNode(final Object[] values, final AttributeData attribute, final AttributeTitledPane parent, final boolean multiValue) {
 
         final boolean noneSelected = values == null;

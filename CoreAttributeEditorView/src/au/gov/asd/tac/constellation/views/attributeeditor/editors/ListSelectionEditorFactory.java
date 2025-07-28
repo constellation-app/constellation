@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +38,8 @@ import javafx.scene.layout.VBox;
 public class ListSelectionEditorFactory extends AbstractEditorFactory<List<String>> {
 
     @Override
-    public AbstractEditor<List<String>> createEditor(final EditOperation editOperation, final DefaultGetter<List<String>> defaultGetter, final ValueValidator<List<String>> validator, final String editedItemName, final List<String> initialValue) {
-        return new ListSelectionEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<List<String>> createEditor(final EditOperation editOperation, final List<String> defaultValue, final ValueValidator<List<String>> validator, final String editedItemName, final List<String> initialValue) {
+        return new ListSelectionEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     public class ListSelectionEditor extends AbstractEditor<List<String>> {
@@ -49,8 +48,8 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
         private ObservableList<String> availableItemsList;
         private ObservableList<String> selectedItemsList;
 
-        protected ListSelectionEditor(final EditOperation editOperation, final DefaultGetter<List<String>> defaultGetter, final ValueValidator<List<String>> validator, final String editedItemName, final List<String> initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected ListSelectionEditor(final EditOperation editOperation, final List<String> defaultValue, final ValueValidator<List<String>> validator, final String editedItemName, final List<String> initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue);
         }
 
         public void setPossibleItems(final List<String> possibleItems) {

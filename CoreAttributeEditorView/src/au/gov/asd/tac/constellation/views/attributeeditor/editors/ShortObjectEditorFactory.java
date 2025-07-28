@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.ShortObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import static au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor.CONTROLS_DEFAULT_VERTICAL_SPACING;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -34,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ShortObjectEditorFactory extends AttributeValueEditorFactory<Short> {
 
     @Override
-    public AbstractEditor<Short> createEditor(final EditOperation editOperation, final DefaultGetter<Short> defaultGetter, final ValueValidator<Short> validator, final String editedItemName, final Short initialValue) {
-        return new ShortObjectEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Short> createEditor(final EditOperation editOperation, final Short defaultValue, final ValueValidator<Short> validator, final String editedItemName, final Short initialValue) {
+        return new ShortObjectEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -47,8 +46,8 @@ public class ShortObjectEditorFactory extends AttributeValueEditorFactory<Short>
 
         private TextField numberField;
 
-        protected ShortObjectEditor(final EditOperation editOperation, final DefaultGetter<Short> defaultGetter, final ValueValidator<Short> validator, final String editedItemName, final Short initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
+        protected ShortObjectEditor(final EditOperation editOperation, final Short defaultValue, final ValueValidator<Short> validator, final String editedItemName, final Short initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
         }
 
         @Override

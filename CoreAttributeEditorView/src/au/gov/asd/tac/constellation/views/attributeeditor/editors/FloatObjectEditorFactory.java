@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.FloatObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -33,8 +32,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class FloatObjectEditorFactory extends AttributeValueEditorFactory<Float> {
 
     @Override
-    public AbstractEditor<Float> createEditor(final EditOperation editOperation, final DefaultGetter<Float> defaultGetter, final ValueValidator<Float> validator, final String editedItemName, final Float initialValue) {
-        return new FloatObjectEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Float> createEditor(final EditOperation editOperation, final Float defaultValue, final ValueValidator<Float> validator, final String editedItemName, final Float initialValue) {
+        return new FloatObjectEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -46,8 +45,8 @@ public class FloatObjectEditorFactory extends AttributeValueEditorFactory<Float>
 
         private TextField numberField;
 
-        protected FloatObjectEditor(final EditOperation editOperation, final DefaultGetter<Float> defaultGetter, final ValueValidator<Float> validator, final String editedItemName, final Float initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
+        protected FloatObjectEditor(final EditOperation editOperation, final Float defaultValue, final ValueValidator<Float> validator, final String editedItemName, final Float initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
         }
 
         @Override

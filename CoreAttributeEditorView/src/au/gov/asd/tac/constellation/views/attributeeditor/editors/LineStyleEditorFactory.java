@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.LineStyleAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,8 +39,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyle> {
 
     @Override
-    public AbstractEditor<LineStyle> createEditor(final EditOperation editOperation, final DefaultGetter<LineStyle> defaultGetter, final ValueValidator<LineStyle> validator, final String editedItemName, final LineStyle initialValue) {
-        return new LineStyleEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<LineStyle> createEditor(final EditOperation editOperation, final LineStyle defaultValue, final ValueValidator<LineStyle> validator, final String editedItemName, final LineStyle initialValue) {
+        return new LineStyleEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -53,8 +52,8 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
 
         private ComboBox<LineStyle> lineStyleComboBox;
 
-        protected LineStyleEditor(final EditOperation editOperation, final DefaultGetter<LineStyle> defaultGetter, final ValueValidator<LineStyle> validator, final String editedItemName, final LineStyle initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected LineStyleEditor(final EditOperation editOperation, final LineStyle defaultValue, final ValueValidator<LineStyle> validator, final String editedItemName, final LineStyle initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue);
         }
 
         @Override

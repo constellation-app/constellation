@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.BlazeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -52,8 +51,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
     @Override
-    public AbstractEditor<Blaze> createEditor(final EditOperation editOperation, final DefaultGetter<Blaze> defaultGetter, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
-        return new BlazeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Blaze> createEditor(final EditOperation editOperation, final Blaze defaultValue, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
+        return new BlazeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -66,8 +65,8 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
         private TextField angleTextField;
         private ColorPicker picker;
 
-        protected BlazeEditor(final EditOperation editOperation, final DefaultGetter<Blaze> defaultGetter, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue, true);
+        protected BlazeEditor(final EditOperation editOperation, final Blaze defaultValue, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
         }
 
         @Override

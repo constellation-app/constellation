@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.IconEditorFactory.IconEditor;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.io.File;
 import java.io.IOException;
@@ -71,7 +70,7 @@ public class IconEditorFactoryNGTest {
 
         final AbstractEditor<ConstellationIcon> instance = new IconEditorFactory().createEditor(
                 mock(EditOperation.class),
-                mock(DefaultGetter.class),
+                mock(ConstellationIcon.class),
                 mock(ValueValidator.class),
                 "",
                 mock(ConstellationIcon.class));
@@ -94,7 +93,7 @@ public class IconEditorFactoryNGTest {
 
         final IconEditor instance = (IconEditor) new IconEditorFactory().createEditor(
                 mock(EditOperation.class),
-                mock(DefaultGetter.class),
+                mock(ConstellationIcon.class),
                 mock(ValueValidator.class),
                 "",
                 mock(ConstellationIcon.class));
@@ -141,7 +140,7 @@ public class IconEditorFactoryNGTest {
 
         final IconEditor instance = (IconEditor) new IconEditorFactory().createEditor(
                 mock(EditOperation.class),
-                mock(DefaultGetter.class),
+                mock(ConstellationIcon.class),
                 mock(ValueValidator.class),
                 "",
                 mock(ConstellationIcon.class));

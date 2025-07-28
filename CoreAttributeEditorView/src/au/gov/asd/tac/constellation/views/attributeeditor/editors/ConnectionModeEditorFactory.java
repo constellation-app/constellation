@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ConnectionModeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,8 +39,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<ConnectionMode> {
 
     @Override
-    public AbstractEditor<ConnectionMode> createEditor(final EditOperation editOperation, final DefaultGetter<ConnectionMode> defaultGetter, final ValueValidator<ConnectionMode> validator, final String editedItemName, final ConnectionMode initialValue) {
-        return new ConnectionModeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<ConnectionMode> createEditor(final EditOperation editOperation, final ConnectionMode defaultValue, final ValueValidator<ConnectionMode> validator, final String editedItemName, final ConnectionMode initialValue) {
+        return new ConnectionModeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -53,8 +52,8 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
 
         private ComboBox<ConnectionMode> connectionModeComboBox;
 
-        protected ConnectionModeEditor(final EditOperation editOperation, final DefaultGetter<ConnectionMode> defaultGetter, final ValueValidator<ConnectionMode> validator, final String editedItemName, final ConnectionMode initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected ConnectionModeEditor(final EditOperation editOperation, final ConnectionMode defaultValue, final ValueValidator<ConnectionMode> validator, final String editedItemName, final ConnectionMode initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue);
         }
 
         @Override

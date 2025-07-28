@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.AttributeValueTr
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.views.attributeeditor.AttributeEditorDialog;
 import au.gov.asd.tac.constellation.views.attributeeditor.AttributePrototype;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,8 +45,8 @@ import javafx.scene.layout.HBox;
 public class AttributeEditorFactory extends AbstractEditorFactory<AttributePrototype> {
 
     @Override
-    public AbstractEditor<AttributePrototype> createEditor(final EditOperation editOperation, final DefaultGetter<AttributePrototype> defaultGetter, final ValueValidator<AttributePrototype> validator, final String editedItemName, final AttributePrototype initialValue) {
-        return new AttributeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<AttributePrototype> createEditor(final EditOperation editOperation, final AttributePrototype defaultValue, final ValueValidator<AttributePrototype> validator, final String editedItemName, final AttributePrototype initialValue) {
+        return new AttributeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
     }
 
     public class AttributeEditor extends AbstractEditor<AttributePrototype> {
@@ -62,8 +61,8 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
         private Object defaultValue;
         private boolean isTypeModifiable;
 
-        protected AttributeEditor(final EditOperation editOperation, final DefaultGetter<AttributePrototype> defaultGetter, final ValueValidator<AttributePrototype> validator, final String editedItemName, final AttributePrototype initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected AttributeEditor(final EditOperation editOperation, final AttributePrototype defaultValue, final ValueValidator<AttributePrototype> validator, final String editedItemName, final AttributePrototype initialValue) {
+            super(editOperation, defaultValue, validator, editedItemName, initialValue);
         }
 
         public void setGraphElementType(final GraphElementType elementType) {
