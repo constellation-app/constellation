@@ -126,12 +126,8 @@ public class StartJupyterNotebookAction implements ActionListener {
         }
     }
 
-    private boolean isHeadless() {
-        return Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"));
-    }
-
     private void alertUserUnableToStart() {
-        if (isHeadless()) {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))) {
             return;
         }
 
