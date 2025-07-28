@@ -33,7 +33,7 @@ import org.openide.util.NbPreferences;
 
 /**
  * AttributeTitledPanes are used to display individual attributes and their set
- * of values for CONSTELLATION's attribute editor. The attribute editor UI
+ * of values for Constellation's attribute editor. The attribute editor UI
  * primarily consists of a number of AttributeTitledPanes for each graph element
  * type.
  * <br>
@@ -61,7 +61,6 @@ public class AttributeTitledPane extends TitledPane {
     }
 
     public AttributeTitledPane(final EventHandler<ActionEvent> removeEventHandler, final EventHandler<ActionEvent> modifyEventHandler) {
-
         if (removeEventHandler == null) {
             ctxMenu = new ContextMenu(copyValueMenuItem, separatorMenuItem, hideAttributeMenuItem);
         } else {
@@ -70,13 +69,13 @@ public class AttributeTitledPane extends TitledPane {
             modifyAttributeMenuItem.setOnAction(modifyEventHandler);
         }
 
-        copyValueMenuItem.setOnAction((final ActionEvent event) -> {
+        copyValueMenuItem.setOnAction(event -> {
             final StringSelection ss = new StringSelection(attributeValue);
             final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
         });
 
-        hideAttributeMenuItem.setOnAction((final ActionEvent event) -> {
+        hideAttributeMenuItem.setOnAction(event -> {
             if (hideAttributeMenuItem.isSelected()) {
                 hide();
                 addToPreference();

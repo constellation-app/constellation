@@ -158,7 +158,7 @@ public class AttributeEditorPanel extends BorderPane {
     private static final String SCHEMA_ATTRIBUTE_COLOR = DARK_MODE ? "#333333" : "#d6d6d6";
 
     private StackPane root;
-    private ArrayList<VBox> valueTitledPaneContainers = new ArrayList<>();
+    private List<VBox> valueTitledPaneContainers = new ArrayList<>();
     private VBox titledPaneHeadingsContainer;
     private final ScrollPane scrollPane = new ScrollPane();
     private final MenuBar optionsBar = new MenuBar();
@@ -398,8 +398,7 @@ public class AttributeEditorPanel extends BorderPane {
                 if (currentGraph != null) {
                     final Map<String, Set<SchemaAttribute>> categoryAttributes = new TreeMap<>();
                     final Set<SchemaAttribute> otherAttributes = new TreeSet<>();
-                    final ReadableGraph rg = currentGraph.getReadableGraph();
-                    try {
+                    try (final ReadableGraph rg = currentGraph.getReadableGraph()) {
                         if (currentGraph.getSchema() != null) {
                             final SchemaFactory schemaFactory = currentGraph.getSchema().getFactory();
                             for (final SchemaAttribute attribute : schemaFactory.getRegisteredAttributes(elementType).values()) {
@@ -420,15 +419,13 @@ public class AttributeEditorPanel extends BorderPane {
                                 }
                             }
                         }
-                    } finally {
-                        rg.release();
                     }
 
                     for (final Entry<String, Set<SchemaAttribute>> entry : categoryAttributes.entrySet()) {
                         final Menu submenu = new Menu(entry.getKey());
                         for (final SchemaAttribute attribute : entry.getValue()) {
                             final MenuItem item = new MenuItem(attribute.getName());
-                            item.setOnAction((ActionEvent event1)
+                            item.setOnAction(event1
                                     -> PluginExecution.withPlugin(new AddAttributePlugin(attribute)).executeLater(currentGraph));
                             submenu.getItems().add(item);
                         }
@@ -439,7 +436,7 @@ public class AttributeEditorPanel extends BorderPane {
                         final Menu otherSubmenu = new Menu("Other");
                         for (final SchemaAttribute attribute : otherAttributes) {
                             final MenuItem item = new MenuItem(attribute.getName());
-                            item.setOnAction((final ActionEvent event1)
+                            item.setOnAction(event1
                                     -> PluginExecution.withPlugin(new AddAttributePlugin(attribute)).executeLater(currentGraph));
                             otherSubmenu.getItems().add(item);
                         }
@@ -463,7 +460,7 @@ public class AttributeEditorPanel extends BorderPane {
         editKeyButton.setTooltip(new Tooltip("Edit primary key"));
 
         if (elementType != GraphElementType.GRAPH) {
-            editKeyButton.setOnMouseClicked((MouseEvent event) -> {
+            editKeyButton.setOnMouseClicked(event -> {
                 event.consume();
                 editKeysAction(elementType);
             });
@@ -730,7 +727,7 @@ public class AttributeEditorPanel extends BorderPane {
     private Button createLoadMoreButton(final VBox parent, final AttributeData attribute) {
         final Button loadMoreButton = new Button("Load all data");
         loadMoreButton.setPrefHeight(CELL_HEIGHT);
-        loadMoreButton.setOnAction((ActionEvent t) -> {
+        loadMoreButton.setOnAction(event -> {
             final Object[] moreData = topComponent.getMoreData(attribute);
             final ObservableList<Object> listData = FXCollections.observableArrayList();
             listData.addAll(moreData);
@@ -749,14 +746,12 @@ public class AttributeEditorPanel extends BorderPane {
         newList.setCellFactory((ListView<Object> p) -> new AttributeValueCell(attribute.getDataType()));
 
         addCopyHandlersToListView(newList, attribute);
-        newList.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+        newList.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.isShortcutDown() && (event.getCode() == KeyCode.C)) {
                 copySelectedItems(newList, attribute.getDataType());
                 event.consume();
             } else if (event.isShortcutDown() && (event.getCode() == KeyCode.A)) {
                 event.consume();
-            } else {
-                // Do nothing
             }
         });
         return newList;
@@ -767,11 +762,7 @@ public class AttributeEditorPanel extends BorderPane {
         final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(dataType);
         final StringBuilder buffer = new StringBuilder();
         selectedItems.stream().map(item -> {
-            if (item == null) {
-                buffer.append(NO_VALUE_TEXT);
-            } else {
-                buffer.append(interaction.getDisplayText(item));
-            }
+            buffer.append(item == null ? NO_VALUE_TEXT : interaction.getDisplayText(item));
             return item;
         }).forEach(itm -> buffer.append(SeparatorConstants.NEWLINE));
 

@@ -63,7 +63,7 @@ public class DoubleEditorFactory extends AttributeValueEditorFactory<Double> {
         @Override
         protected Double getValueFromControls() throws ControlsInvalidException {
             try {
-                return Double.parseDouble(numberField.getText());
+                return Double.valueOf(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a double.");
             }

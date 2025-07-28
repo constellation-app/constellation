@@ -63,7 +63,7 @@ public class FloatEditorFactory extends AttributeValueEditorFactory<Float> {
         @Override
         protected Float getValueFromControls() throws ControlsInvalidException {
             try {
-                return Float.parseFloat(numberField.getText());
+                return Float.valueOf(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a float.");
             }

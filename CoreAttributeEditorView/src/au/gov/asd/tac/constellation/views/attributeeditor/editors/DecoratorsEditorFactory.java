@@ -54,10 +54,10 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
 
     public class DecoratorsEditor extends AbstractEditor<VertexDecorators> {
 
-        ComboBox<String> nwCombo;
-        ComboBox<String> neCombo;
-        ComboBox<String> seCombo;
-        ComboBox<String> swCombo;
+        private ComboBox<String> nwCombo;
+        private ComboBox<String> neCombo;
+        private ComboBox<String> seCombo;
+        private ComboBox<String> swCombo;
 
         protected DecoratorsEditor(final EditOperation editOperation, final VertexDecorators defaultValue, final ValueValidator<VertexDecorators> validator, final String editedItemName, final VertexDecorators initialValue) {
             super(editOperation, defaultValue, validator, editedItemName, initialValue);
@@ -92,13 +92,10 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         protected Node createEditorControls() {
             // get all vertex attributes currently in the graph
             final List<String> attributeNames = new ArrayList<>();
-            final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
-            try {
+            try (final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph()) {
                 for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
                     attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.VERTEX, i)));
                 }
-            } finally {
-                rg.release();
             }
             Collections.sort(attributeNames);
             attributeNames.add(0, NO_DECORATOR);

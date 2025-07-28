@@ -63,7 +63,7 @@ public class LongEditorFactory extends AttributeValueEditorFactory<Long> {
         @Override
         protected Long getValueFromControls() throws AbstractEditorFactory.ControlsInvalidException {
             try {
-                return Long.parseLong(numberField.getText());
+                return Long.valueOf(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a long.");
             }

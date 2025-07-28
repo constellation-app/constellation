@@ -60,7 +60,7 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
         @Override
         protected Byte getValueFromControls() throws ControlsInvalidException {
             try {
-                return Byte.parseByte(numberField.getText());
+                return Byte.valueOf(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a byte.");
             }

@@ -26,9 +26,7 @@ import java.util.Set;
  */
 public class AttributePreferenceKey {
 
-    /*
-     attribute hiding preference
-     */
+    // attribute hiding preference
     public static final char SPLIT_CHAR = ';';
     protected static final char[] META_CHARS = {SPLIT_CHAR};
     protected static final Set<Character> SPLIT_CHAR_SET = new HashSet<>();

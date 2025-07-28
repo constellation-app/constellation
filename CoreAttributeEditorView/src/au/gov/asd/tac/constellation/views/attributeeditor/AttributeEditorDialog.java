@@ -96,7 +96,7 @@ public class AttributeEditorDialog extends ConstellationDialog {
                     noValueCheckBox.setSelected(editor.isDefaultValueNull());
                 }
 
-                editor.setDefaultValue();
+                editor.setToDefaultValue();
             });
             
             okCancelHBox.getChildren().add(defaultButton);

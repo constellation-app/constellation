@@ -86,7 +86,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
             textArea.textProperty().addListener((o, n, v) -> update());
             textArea.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
                 if (e.getCode() == KeyCode.DELETE) {
-                    IndexRange selection = textArea.getSelection();
+                    final IndexRange selection = textArea.getSelection();
                     if (selection.getLength() == 0) {
                         textArea.deleteNextChar();
                     } else {
@@ -116,8 +116,6 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
                     e.consume();
                 } else if (e.getCode() == KeyCode.ESCAPE) {
                     e.consume();
-                } else {
-                    // Do nothing
                 }
             });
 

@@ -35,10 +35,6 @@ public class CreateAttributeEditOperation implements EditOperation {
 
     private AttributePrototype attrNew;
 
-    public CreateAttributeEditOperation() {
-        // Method intentionally left blank
-    }
-
     @Override
     public void performEdit(final Object value) {
         this.attrNew = (AttributePrototype) value;

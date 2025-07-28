@@ -59,9 +59,9 @@ public class ShowInAttributeEditorContextMenu implements ContextMenuProvider {
     public List<String> getItems(final GraphReadMethods graph, final GraphElementType elementType, final int elementId) {
         if (elementType == GraphElementType.VERTEX || elementType == GraphElementType.TRANSACTION) {
             return Arrays.asList(TEXT);
-        } else {
-            return Collections.emptyList();
         }
+        
+        return Collections.emptyList();
     }
 
     @Override

@@ -59,7 +59,7 @@ public class IntegerObjectEditorFactory extends AttributeValueEditorFactory<Inte
         @Override
         protected Integer getValueFromControls() throws ControlsInvalidException {
             try {
-                return Integer.parseInt(numberField.getText());
+                return Integer.valueOf(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not an integer.");
             }

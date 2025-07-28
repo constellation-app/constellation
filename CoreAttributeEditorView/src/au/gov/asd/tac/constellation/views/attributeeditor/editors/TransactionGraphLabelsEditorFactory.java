@@ -101,13 +101,10 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
         @Override
         protected Node createEditorControls() {
             // get all transaction attributes currently in the graph
-            final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
-            try {
+            try (final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph()) {
                 for (int i = 0; i < rg.getAttributeCount(GraphElementType.TRANSACTION); i++) {
                     attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.TRANSACTION, i)));
                 }
-            } finally {
-                rg.release();
             }
             attributeNames.sort(String::compareTo);
 

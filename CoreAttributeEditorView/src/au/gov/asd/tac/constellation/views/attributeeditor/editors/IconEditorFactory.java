@@ -419,7 +419,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         private final TreeSet<String> icons = new TreeSet<>();
         private final TreeMap<String, IconNode> children = new TreeMap<>();
 
-        public IconNode(String name, IconNode parent) {
+        public IconNode(final String name, final IconNode parent) {
             this.name = name;
             this.parent = parent;
         }
@@ -437,15 +437,9 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                     for (int i = 0; i < splitString.length - 1; i++) {
                         final IconNode childNode = new IconNode(splitString[i], currentNode);
                         final IconNode tempNode = currentNode.addChild(childNode);
-                        if (tempNode == null) {
-                            currentNode = childNode;
-                        } else {
-                            currentNode = tempNode;
-                        }
+                        currentNode = tempNode == null ? childNode : tempNode;
                     }
                     currentNode.icons.add(iconName);
-                } else {
-                    // Do nothing
                 }
             }
         }
@@ -455,8 +449,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         }
 
         public String[] getIconLabels() {
-            String[] type = new String[0];
-            return icons.toArray(type);
+            return icons.toArray(String[]::new);
         }
 
         public IconNode getParent() {
@@ -464,8 +457,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         }
 
         public IconNode[] getChildren() {
-            IconNode[] type = new IconNode[0];
-            return children.values().toArray(type);
+            return children.values().toArray(IconNode[]::new);
         }
 
         public IconNode addChild(final IconNode child) {
@@ -481,14 +473,12 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj == null) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
+            
             final IconNode other = (IconNode) obj;
-            return (this.getName() == null) ? (other.getName() == null) : this.name.equals(other.name);
+            return this.getName() == null ? other.getName() == null : this.name.equals(other.name);
         }
 
         @Override

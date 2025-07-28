@@ -66,7 +66,6 @@ public class AttributeValueEditOperation extends PluginSequenceEditOperation {
 
         @Override
         protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
             final Object newValue = translator.translate(value);
             final NativeAttributeType nativeType = graph.getNativeAttributeType(attributeData.getAttributeId());
             final NativeAttributeType.NativeValue nativeValue = nativeType.create(newValue);

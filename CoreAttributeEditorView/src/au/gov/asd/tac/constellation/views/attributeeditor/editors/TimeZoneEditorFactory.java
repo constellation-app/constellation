@@ -92,7 +92,7 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
             timeZoneComboBox.setItems(timeZones.sorted(zoneIdComparator));
             final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<ZoneId>() {
                 @Override
-                protected void updateItem(final ZoneId item, boolean empty) {
+                protected void updateItem(final ZoneId item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
                         setText(TimeZoneUtilities.getTimeZoneAsString(item));

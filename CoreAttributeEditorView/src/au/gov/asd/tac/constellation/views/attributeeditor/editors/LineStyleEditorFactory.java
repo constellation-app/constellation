@@ -83,7 +83,7 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
             lineStyleComboBox = new ComboBox<>(lineStyles);
             final Callback<ListView<LineStyle>, ListCell<LineStyle>> cellFactory = (final ListView<LineStyle> p) -> new ListCell<LineStyle>() {
                 @Override
-                protected void updateItem(final LineStyle item, boolean empty) {
+                protected void updateItem(final LineStyle item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
                         setText(item.name());

@@ -44,8 +44,8 @@ public abstract class AbstractEditorFactory<V> {
         return createEditor(editOperation, null, ValueValidator.getAlwaysSucceedValidator(), editedItemName, initialValue);
     }
 
-    public AbstractEditor<V> createEditor(final EditOperation editOperation, final V defaultGetter, final String editedItemName, final V initialValue) {
-        return createEditor(editOperation, defaultGetter, ValueValidator.getAlwaysSucceedValidator(), editedItemName, initialValue);
+    public AbstractEditor<V> createEditor(final EditOperation editOperation, final V defaultValue, final String editedItemName, final V initialValue) {
+        return createEditor(editOperation, defaultValue, ValueValidator.getAlwaysSucceedValidator(), editedItemName, initialValue);
     }
 
     public abstract AbstractEditor<V> createEditor(final EditOperation editOperation, final V defaultValue, final ValueValidator<V> validator, final String editedItemName, final V initialValue);
@@ -88,16 +88,64 @@ public abstract class AbstractEditorFactory<V> {
         protected final V getCurrentValue() {
             return currentValue;
         }
+        
+        public final void setCurrentValue(final V value) {
+            if (canSet(value)) {
+                this.currentValue = value;
+                if (editorControls != null) {
+                    updateInProgress = true;
+                    updateControlsWithValue(currentValue);
+                    updateInProgress = false;
+                }
+                final String error = validateCurrentValue();
+                errorMessageProperty.set(error);
+                disableEditProperty.set(error != null);
+            }
+        }
+        
+        /**
+         * Prevents values being explicitly set which are not valid for this
+         * type and can't be reflected in the controls.
+         *
+         * @param value the candidate value to be set.
+         * @return true only if the candidate value is valid for this type.
+         */
+        protected boolean canSet(final V value) {
+            return true;
+        }
 
+        /**
+         * Store the current value for the purpose of recovering later.
+         * Useful when setting a value to no value
+         */
         public final void storeValue() {
             if (currentValue != null) {
                 savedValue = currentValue;
             }
         }
 
+        /**
+         * Restore the current value to the previously stored value.
+         */
         public final void restoreValue() {
             setCurrentValue(savedValue);
             update();
+        }
+        
+        /**
+         * Set current value to the default value.
+         */
+        public final void setToDefaultValue() {
+            setCurrentValue(defaultValue);
+        }
+
+        /**
+         * Check if the default value for this editor is null
+         * 
+         * @return true if the default value is null 
+         */
+        public final boolean isDefaultValueNull() {
+            return defaultValue == null;
         }
 
         public final ReadOnlyBooleanProperty getEditDisabledProperty() {
@@ -127,39 +175,6 @@ public abstract class AbstractEditorFactory<V> {
 
                 updateInProgress = false;
             }
-        }
-
-        /**
-         * Prevents values being explicitly set which are not valid for this
-         * type and can't be reflected in the controls.
-         *
-         * @param value the candidate value to be set.
-         * @return true only if the candidate value is valid for this type.
-         */
-        protected boolean canSet(final V value) {
-            return true;
-        }
-
-        public final void setCurrentValue(final V value) {
-            if (canSet(value)) {
-                this.currentValue = value;
-                if (editorControls != null) {
-                    updateInProgress = true;
-                    updateControlsWithValue(currentValue);
-                    updateInProgress = false;
-                }
-                final String error = validateCurrentValue();
-                errorMessageProperty.set(error);
-                disableEditProperty.set(error != null);
-            }
-        }
-
-        public final void setDefaultValue() {
-            setCurrentValue(defaultValue);
-        }
-
-        public final boolean isDefaultValueNull() {
-            return defaultValue == null;
         }
 
         public final Node getEditorControls() {

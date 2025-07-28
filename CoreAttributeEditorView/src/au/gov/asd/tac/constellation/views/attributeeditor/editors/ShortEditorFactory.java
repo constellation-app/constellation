@@ -63,7 +63,7 @@ public class ShortEditorFactory extends AttributeValueEditorFactory<Short> {
         @Override
         protected Short getValueFromControls() throws ControlsInvalidException {
             try {
-                return Short.parseShort(numberField.getText());
+                return Short.valueOf(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a short.");
             }

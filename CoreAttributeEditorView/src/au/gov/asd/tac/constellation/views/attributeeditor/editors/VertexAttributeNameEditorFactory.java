@@ -91,13 +91,10 @@ public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactor
 
             final List<String> attributeNames = new ArrayList<>();
             // get all vertex attributes currently in the graph
-            final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
-            try {
+            try (final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph()) {
                 for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
                     attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.VERTEX, i)));
                 }
-            } finally {
-                rg.release();
             }
 
             final Label nameLabel = new Label("Attribute name:");

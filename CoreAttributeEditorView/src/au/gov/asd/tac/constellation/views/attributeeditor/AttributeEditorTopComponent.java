@@ -123,7 +123,6 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
         setToolTipText(Bundle.HINT_AttributeEditorTopComponent());
 
         refreshRunnable = () -> {
-
             final List<Object> devNull = new ArrayList<>();
 
             while (!queue.isEmpty()) {
@@ -133,7 +132,6 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
             if (reader != null) {
                 attributePanel.updateEditorPanel(reader.refreshAttributes());
             }
-
         };
 
 
@@ -254,8 +252,8 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
     @Override
     public UndoRedo getUndoRedo() {
-        GraphNode graphNode = GraphNode.getGraphNode(activeGraph);
-        return (graphNode == null) ? null : graphNode.getUndoRedoManager();
+        final GraphNode graphNode = GraphNode.getGraphNode(activeGraph);
+        return graphNode == null ? null : graphNode.getUndoRedoManager();
     }
 
     @Override

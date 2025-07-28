@@ -91,7 +91,7 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
             colorCombo = new ComboBox<>(namedColors);
             final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
                 @Override
-                protected void updateItem(final ConstellationColor item, boolean empty) {
+                protected void updateItem(final ConstellationColor item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
                         final Rectangle r = new Rectangle(12, 12, item.getJavaFXColor());

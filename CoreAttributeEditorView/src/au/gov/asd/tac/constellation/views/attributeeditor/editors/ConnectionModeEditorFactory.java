@@ -83,7 +83,7 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
             connectionModeComboBox = new ComboBox<>(connectionModes);
             final Callback<ListView<ConnectionMode>, ListCell<ConnectionMode>> cellFactory = (final ListView<ConnectionMode> p) -> new ListCell<ConnectionMode>() {
                 @Override
-                protected void updateItem(final ConnectionMode item, boolean empty) {
+                protected void updateItem(final ConnectionMode item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
                         setText(item.name());

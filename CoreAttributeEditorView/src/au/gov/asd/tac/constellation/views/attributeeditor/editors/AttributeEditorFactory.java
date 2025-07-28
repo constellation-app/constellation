@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.views.attributeeditor.AttributePrototype;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -58,7 +59,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
         private TextField nameText;
         private Button clearDefaultButton;
         TextField descText;
-        private Object defaultValue;
+        private Object defaultVal;
         private boolean isTypeModifiable;
 
         protected AttributeEditor(final EditOperation editOperation, final AttributePrototype defaultValue, final ValueValidator<AttributePrototype> validator, final String editedItemName, final AttributePrototype initialValue) {
@@ -86,8 +87,8 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             nameText.setText(value.getAttributeName());
             descText.setText(value.getAttributeDescription());
             typeCombo.getSelectionModel().select(value.getDataType());
-            defaultValue = value.getDefaultValue();
-            clearDefaultButton.setDisable(defaultValue == null);
+            defaultVal = value.getDefaultValue();
+            clearDefaultButton.setDisable(defaultVal == null);
         }
 
         @Override
@@ -95,7 +96,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             if (nameText.getText().isEmpty()) {
                 throw new ControlsInvalidException("Attribute name can't be empty.");
             }
-            return new AttributePrototype(nameText.getText(), descText.getText(), elementType, typeCombo.getSelectionModel().getSelectedItem(), defaultValue);
+            return new AttributePrototype(nameText.getText(), descText.getText(), elementType, typeCombo.getSelectionModel().getSelectedItem(), defaultVal);
         }
 
         @Override
@@ -120,13 +121,13 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             setDefaultButton.setOnAction(getSelectDefaultHandler());
             clearDefaultButton = new Button("Clear Default");
             clearDefaultButton.setOnAction(e -> {
-                defaultValue = null;
+                defaultVal = null;
                 clearDefaultButton.setDisable(true);
                 update();
             });
 
             // Populate the type combo with all of the possible graph types.
-            final ArrayList<String> attributeTypes = new ArrayList<>();
+            final List<String> attributeTypes = new ArrayList<>();
             AttributeRegistry.getDefault().getAttributes().entrySet().stream().forEach(entry -> {
                 final Class<? extends AttributeDescription> attrTypeDescr = entry.getValue();
                 final boolean isObject = ObjectAttributeDescription.class.isAssignableFrom(attrTypeDescr);
@@ -156,12 +157,12 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
                 final ValueValidator<T> validator = interaction.fromEditValidator(editType);
 
                 final EditOperation restoreDefaultEditOperation = value -> {
-                    defaultValue = fromTranslator.translate(value);
-                    clearDefaultButton.setDisable(defaultValue == null);
+                    defaultVal = fromTranslator.translate(value);
+                    clearDefaultButton.setDisable(defaultVal == null);
                     update();
                 };
 
-                final AbstractEditor<T> editor = editorFactory.createEditor(restoreDefaultEditOperation, validator, "the default", (T) toTranslator.translate(defaultValue));
+                final AbstractEditor<T> editor = editorFactory.createEditor(restoreDefaultEditOperation, validator, "the default", (T) toTranslator.translate(defaultVal));
                 final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
                 dialog.showDialog();
             };

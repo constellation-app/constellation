@@ -101,17 +101,14 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
         @Override
         protected Node createEditorControls() {
             // get all vertex attributes currently in the graph
-            final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
-            try {
+            try (final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph()) {
                 for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
                     attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.VERTEX, i)));
                 }
-            } finally {
-                rg.release();
             }
             attributeNames.sort(String::compareTo);
 
-            HBox labelTitles = new HBox();
+            final HBox labelTitles = new HBox();
             final Label attrLabel = new Label("Attribute");
             attrLabel.setAlignment(Pos.CENTER);
             attrLabel.setPrefWidth(150);
@@ -163,7 +160,6 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
             private final Pane visualHost;
 
             public LabelEntry(final List<LabelEntry> host, final Pane visualHost, final String attributeName, final ConstellationColor color, final float size) {
-
                 attrCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
                 attrCombo.setPrefWidth(150);
                 attrCombo.getSelectionModel().select(attributeName);
