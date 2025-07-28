@@ -181,6 +181,8 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         final PluginParameter<IntegerParameterValue> amountParam = IntegerParameterType.build(NUM_TRIALS_PARAMETER_ID);
         amountParam.setName(NUM_TRIALS_PARAMETER_ID_NAME);
         amountParam.setIntegerValue(NUM_TRIALS_PARAMETER_ID_DEFAULT);
+        IntegerParameterType.setMinimum(amountParam, 0);
+        IntegerParameterType.setMaximum(amountParam, 10000);
         parameters.addParameter(amountParam);
 
         return parameters;
