@@ -17,7 +17,11 @@ package au.gov.asd.tac.constellation.webserver;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import static au.gov.asd.tac.constellation.webserver.WebServer.getNotebookDir;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -27,6 +31,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Stage;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -46,12 +54,26 @@ public class StartJupyterNotebookAction implements ActionListener {
     private static final String JUPYTER_NOTEBOOK = "jupyter-notebook";
     private static final String JUPYTER_OUTPUT = "Jupyter Notebook";
 
+    private static final String ALERT_HEADER_TEXT = "Unable to start Jupyter Notebook in directory:\n%s\n\nAs this directory does not exist.";
+    private static final String ALERT_CONTEXT_TEXT = "Jupyter Notebook will start in %s instead";
+
     @Override
     public void actionPerformed(final ActionEvent e) {
         WebServer.start();
 
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final String dir = prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
+        final boolean useDefaultDirectory = prefs.getBoolean(ApplicationPreferenceKeys.CONSTY_DIR_AS_NOTEBOOK_DIR, ApplicationPreferenceKeys.CONSTY_DIR_AS_NOTEBOOK_DIR_DEFAULT);
+        String prefDir = useDefaultDirectory ? ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT : prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
+        File dirFile = new File(prefDir);
+
+        // If folder doesnt exist, alert user
+        if (!dirFile.exists()) {
+            alertUserUnableToStart();
+            prefDir = ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT;
+            dirFile = new File(prefDir);
+        }
+
+        final String dir = prefDir;
 
         try {
             // Start the jupyter-notebook process with its stderr redirected to
@@ -62,7 +84,7 @@ public class StartJupyterNotebookAction implements ActionListener {
             final List<String> exe = new ArrayList<>();
             exe.add(JUPYTER_NOTEBOOK);
             final ProcessBuilder pb = new ProcessBuilder(exe)
-                    .directory(new File(dir))
+                    .directory(dirFile)
                     .redirectErrorStream(true);
 
             final Process jupyter = pb.start();
@@ -102,5 +124,36 @@ public class StartJupyterNotebookAction implements ActionListener {
                     null
             );
         }
+    }
+
+    private boolean isHeadless() {
+        return Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"));
+    }
+
+    private void alertUserUnableToStart() {
+        if (isHeadless()) {
+            return;
+        }
+
+        Platform.runLater(() -> {
+            final Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Attention");
+            alert.setHeaderText(String.format(ALERT_HEADER_TEXT, getNotebookDir()));
+            alert.setContentText(String.format(ALERT_CONTEXT_TEXT, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
+
+            // Make sure alert is centered above main consty window
+            final Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            final Point point = ScreenWindowsHelper.getMainWindowCentrePoint();
+            if (point != null) {
+                stage.setX(point.getX() - alert.getDialogPane().getWidth() / 2);
+                stage.setY(point.getY() - alert.getDialogPane().getHeight() / 2);
+            }
+
+            stage.setAlwaysOnTop(true);
+
+            alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+
+            alert.showAndWait();
+        });
     }
 }
