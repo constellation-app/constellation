@@ -76,6 +76,7 @@ public final class EnhancedTextArea extends InlineCssTextArea {
         this.appendText(text + "\n");
         //make sure to request focus everytime text area is loaded so ensure cached text been wrapped correctly.
         this.requestFocus();
+        this.autosize();
         
         // Implementation for the 'Copy' context menu option.
         final MenuItem copyTextMenuItem = new MenuItem("Copy");
