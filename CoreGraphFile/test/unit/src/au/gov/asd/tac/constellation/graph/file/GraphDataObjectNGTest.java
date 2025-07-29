@@ -19,10 +19,6 @@ import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -37,6 +33,7 @@ import org.openide.loaders.DataNode;
 import org.openide.nodes.Node;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.Test;
 
 /**
  *
@@ -45,18 +42,6 @@ import static org.testng.Assert.assertTrue;
 public class GraphDataObjectNGTest {
 
     public GraphDataObjectNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
@@ -124,15 +109,16 @@ public class GraphDataObjectNGTest {
         
         // test when is not in memory
         when(gdoMock.getNebulaDataObject()).thenReturn(nebDataOjMock);
-        MockedStatic<FileUtil> fileUtilMockStatic = mockStatic(FileUtil.class);
-        fileUtilMockStatic.when(() -> FileUtil.getFileDisplayName(fileObjectMock)).thenReturn("TestFileName2");
-        
-        when(gdoMock.isInMemory()).thenReturn(false);
-        when(gdoMock.getNebulaDataObject()).thenReturn(nebDataOjMock);
-        when(gdoMock.getName()).thenReturn("gdoName");
-        when(nebDataOjMock.getName()).thenReturn("gdoName");
-        
-        toolTipText = gdoMock.getToolTipText();
-        assertEquals(toolTipText, "gdoName - TestFileName2");
+        try (final MockedStatic<FileUtil> fileUtilMockStatic = mockStatic(FileUtil.class)) {
+            fileUtilMockStatic.when(() -> FileUtil.getFileDisplayName(fileObjectMock)).thenReturn("TestFileName2");
+
+            when(gdoMock.isInMemory()).thenReturn(false);
+            when(gdoMock.getNebulaDataObject()).thenReturn(nebDataOjMock);
+            when(gdoMock.getName()).thenReturn("gdoName");
+            when(nebDataOjMock.getName()).thenReturn("gdoName");
+
+            toolTipText = gdoMock.getToolTipText();
+            assertEquals(toolTipText, "gdoName - TestFileName2");
+        }
     }
 }
