@@ -384,11 +384,6 @@ final class ApplicationOptionsPanel extends JPanel {
                 useConstellationFolderCheckBoxStateChanged(evt);
             }
         });
-        useConstellationFolderCheckBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                useConstellationFolderCheckBoxActionPerformed(evt);
-            }
-        });
 
         GroupLayout notebookPanelLayout = new GroupLayout(notebookPanel);
         notebookPanel.setLayout(notebookPanelLayout);
@@ -652,10 +647,6 @@ final class ApplicationOptionsPanel extends JPanel {
     private void useConstellationFolderCheckBoxStateChanged(ChangeEvent evt) {//GEN-FIRST:event_useConstellationFolderCheckBoxStateChanged
         notebookDirectoryText.setEnabled(!useConstellationFolderCheckBox.isSelected());
     }//GEN-LAST:event_useConstellationFolderCheckBoxStateChanged
-
-    private void useConstellationFolderCheckBoxActionPerformed(ActionEvent evt) {//GEN-FIRST:event_useConstellationFolderCheckBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_useConstellationFolderCheckBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JCheckBox autosaveCheckBox;
