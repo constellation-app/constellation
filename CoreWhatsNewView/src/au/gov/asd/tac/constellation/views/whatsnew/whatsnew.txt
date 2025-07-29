@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2025-07-29 New Default Option for Launching Jupyter Notebook
+<p>New option to always launch Jupyter Notebook in constellation's current directory. This is enabled by default.
+
 == 2025-07-10 Shortcuts for Data Access View Workflow templates
 <p>Data Access View Workflow templates can now be saved with keyboard shortcuts
 <p>Allocated keyboard shortcut can be used to load up the workflow template instead of clicking the menu items.
