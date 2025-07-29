@@ -108,8 +108,8 @@ public final class ApplicationPreferenceKeys {
     /**
      * Use Consty directory as notebook directory.
      */
-    public static final String CONSTY_DIR_AS_NOTEBOOK_DIR = "useConstyDirAsNotebookDir";
-    public static final boolean CONSTY_DIR_AS_NOTEBOOK_DIR_DEFAULT = true;
+    public static final String CONSTELLATION_DIR_AS_NOTEBOOK_DIR = "useConstellationDirAsNotebookDir";
+    public static final boolean CONSTELLATION_DIR_AS_NOTEBOOK_DIR_DEFAULT = true;
 
     /**
      * File Save location.

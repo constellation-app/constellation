@@ -368,8 +368,8 @@
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="downloadPythonClientCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="38" max="32767" attributes="0"/>
-                          <Component id="useConstyFolderCheckBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="36" max="32767" attributes="0"/>
+                          <Component id="useConstellationFolderCheckBox" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -388,7 +388,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="downloadPythonClientCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="useConstyFolderCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="useConstellationFolderCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -431,15 +431,16 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="useConstyFolderCheckBox">
+        <Component class="javax.swing.JCheckBox" name="useConstellationFolderCheckBox">
           <Properties>
             <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="ApplicationOptionsPanel.useConstyFolderCheckBox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="ApplicationOptionsPanel.useConstellationFolderCheckBox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="useConstyFolderCheckBoxStateChanged"/>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="useConstellationFolderCheckBoxStateChanged"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="useConstellationFolderCheckBoxActionPerformed"/>
           </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_allCodePost" type="java.lang.String" value="initUseConstyCheckBox();"/>

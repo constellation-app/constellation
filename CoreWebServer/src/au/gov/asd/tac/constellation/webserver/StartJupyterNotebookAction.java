@@ -62,7 +62,7 @@ public class StartJupyterNotebookAction implements ActionListener {
         WebServer.start();
 
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final boolean useDefaultDirectory = prefs.getBoolean(ApplicationPreferenceKeys.CONSTY_DIR_AS_NOTEBOOK_DIR, ApplicationPreferenceKeys.CONSTY_DIR_AS_NOTEBOOK_DIR_DEFAULT);
+        final boolean useDefaultDirectory = prefs.getBoolean(ApplicationPreferenceKeys.CONSTELLATION_DIR_AS_NOTEBOOK_DIR, ApplicationPreferenceKeys.CONSTELLATION_DIR_AS_NOTEBOOK_DIR_DEFAULT);
         String prefDir = useDefaultDirectory ? ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT : prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
         File dirFile = new File(prefDir);
 

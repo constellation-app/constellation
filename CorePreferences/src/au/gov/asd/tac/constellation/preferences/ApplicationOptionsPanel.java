@@ -167,15 +167,15 @@ final class ApplicationOptionsPanel extends JPanel {
     }
 
     public boolean isUseConstyFolderCheckBoxSelected() {
-        return useConstyFolderCheckBox.isSelected();
+        return useConstellationFolderCheckBox.isSelected();
     }
 
     public void setUseConstyFolderCheckBox(final boolean useConstyFolder) {
-        useConstyFolderCheckBox.setSelected(useConstyFolder);
+        useConstellationFolderCheckBox.setSelected(useConstyFolder);
     }
 
     private void initUseConstyCheckBox() {
-        useConstyFolderCheckBoxStateChanged(null);
+        useConstellationFolderCheckBoxStateChanged(null);
     }
 
     /**
@@ -208,7 +208,7 @@ final class ApplicationOptionsPanel extends JPanel {
         notebookDirectoryText = new JTextField();
         notebookDirectoryButton = new JButton();
         downloadPythonClientCheckBox = new JCheckBox();
-        useConstyFolderCheckBox = new JCheckBox();
+        useConstellationFolderCheckBox = new JCheckBox();
         fontPanel = new JPanel();
         fontLbl = new JLabel();
         fontSizeLbl = new JLabel();
@@ -377,11 +377,16 @@ final class ApplicationOptionsPanel extends JPanel {
         downloadPythonClientCheckBox.setSelected(true);
         Mnemonics.setLocalizedText(downloadPythonClientCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.downloadPythonClientCheckBox.text")); // NOI18N
 
-        useConstyFolderCheckBox.setSelected(true);
-        Mnemonics.setLocalizedText(useConstyFolderCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.useConstyFolderCheckBox.text")); // NOI18N
-        useConstyFolderCheckBox.addChangeListener(new ChangeListener() {
+        useConstellationFolderCheckBox.setSelected(true);
+        Mnemonics.setLocalizedText(useConstellationFolderCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.useConstellationFolderCheckBox.text")); // NOI18N
+        useConstellationFolderCheckBox.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent evt) {
-                useConstyFolderCheckBoxStateChanged(evt);
+                useConstellationFolderCheckBoxStateChanged(evt);
+            }
+        });
+        useConstellationFolderCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                useConstellationFolderCheckBoxActionPerformed(evt);
             }
         });
 
@@ -399,8 +404,8 @@ final class ApplicationOptionsPanel extends JPanel {
                         .addComponent(notebookDirectoryButton))
                     .addGroup(notebookPanelLayout.createSequentialGroup()
                         .addComponent(downloadPythonClientCheckBox)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
-                        .addComponent(useConstyFolderCheckBox)))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                        .addComponent(useConstellationFolderCheckBox)))
                 .addContainerGap())
         );
         notebookPanelLayout.setVerticalGroup(notebookPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -413,7 +418,7 @@ final class ApplicationOptionsPanel extends JPanel {
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(notebookPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(downloadPythonClientCheckBox)
-                    .addComponent(useConstyFolderCheckBox))
+                    .addComponent(useConstellationFolderCheckBox))
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -644,9 +649,13 @@ final class ApplicationOptionsPanel extends JPanel {
         restWarningText.setVisible(!"".equals(restDirectoryText.getText()));
     }//GEN-LAST:event_restDirectoryTextKeyTyped
 
-    private void useConstyFolderCheckBoxStateChanged(ChangeEvent evt) {//GEN-FIRST:event_useConstyFolderCheckBoxStateChanged
-        notebookDirectoryText.setEnabled(!useConstyFolderCheckBox.isSelected());
-    }//GEN-LAST:event_useConstyFolderCheckBoxStateChanged
+    private void useConstellationFolderCheckBoxStateChanged(ChangeEvent evt) {//GEN-FIRST:event_useConstellationFolderCheckBoxStateChanged
+        notebookDirectoryText.setEnabled(!useConstellationFolderCheckBox.isSelected());
+    }//GEN-LAST:event_useConstellationFolderCheckBoxStateChanged
+
+    private void useConstellationFolderCheckBoxActionPerformed(ActionEvent evt) {//GEN-FIRST:event_useConstellationFolderCheckBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_useConstellationFolderCheckBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JCheckBox autosaveCheckBox;
@@ -678,7 +687,7 @@ final class ApplicationOptionsPanel extends JPanel {
     private JPanel startupPanel;
     private JCheckBox startupWelcomeCheckbox;
     private JCheckBox startupWhatsNewCheckbox;
-    private JCheckBox useConstyFolderCheckBox;
+    private JCheckBox useConstellationFolderCheckBox;
     private JButton userDirectoryButton;
     private JLabel userDirectoryLabel;
     private JTextField userDirectoryText;
