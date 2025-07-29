@@ -233,8 +233,10 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         if (event == null) { // can be null at this point in time
             return;
         }
+        
         final GraphChangeEvent newEvent = event.getLatest();
-        if (newEvent == null) { // latest event may be null - defensive check
+        final String hideElementsDescription = "Analytic View: Hide Elements";
+        if (newEvent == null || newEvent.getDescription() == hideElementsDescription) { // latest event may be null - defensive check
             return;
         }
         if (newEvent.getId() > latestGraphChangeID) {
