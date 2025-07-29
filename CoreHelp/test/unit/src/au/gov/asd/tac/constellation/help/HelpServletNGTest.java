@@ -22,7 +22,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import static java.lang.Thread.sleep;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -139,50 +138,48 @@ public class HelpServletNGTest {
             verify(requestMock1, times(1)).getHeader(Mockito.anyString());
         }
     }
-    	
-	 /**
-	     * Test of doGet/tryResponseRedirect method, of class HelpServlet,
-             * with spaces in the filepath. Redirect is required.
-	     *
-	     * @throws java.io.IOException
-	     * @throws jakarta.servlet.ServletException
-	     */
-	    @Test
-	    public void testDoGetResponseRedirectWithSpaces() throws IOException, ServletException, InterruptedException {
-	        System.out.println("doGetRedirect");
-	        
-	        final HttpServletRequest requestMock1 = mock(HttpServletRequest.class);
-	        final HttpServletResponse responseMock1 = mock(HttpServletResponse.class);
-	
-	        try (final MockedStatic<ConstellationHelpDisplayer> helpDisplayerStaticMock = Mockito.mockStatic(ConstellationHelpDisplayer.class);
-	                final MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class);
-	                final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class)) {
-	            helpDisplayerStaticMock.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
-	
-	            when(requestMock1.getRequestURI()).thenReturn("/file:/C:/Projects/test%20constellation/build/cluster/modules/ext/docs/"
-	                    + "CoreAnalyticView/ext/docs/CoreAnalyticView/question-best-connects-network.md");
-	            doNothing().when(responseMock1).sendRedirect(Mockito.eq("/file:/C:/Projects/test%20constellation/build/cluster/modules/ext/docs/"
-	                    + "CoreAnalyticView/question-best-connects-network.md"));
-	            when(requestMock1.getHeader("referer")).thenReturn("/file:/C:/Projects/test%20constellation/build/cluster/modules/ext/docs/"
-	                    + "CoreAnalyticView/analytic-view.md");
-	            
-	            final Map<String, String> mappings = new HashMap<>();
-	            final String sep = File.separator;
-	            final String helpPagePath = "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "question-best-connects-network.md";
-	            mappings.put("test", helpPagePath);
-	            helpMapperStaticMock.when(HelpMapper::getMappings).thenReturn(mappings);
-	            generatorStaticMock.when(Generator::getBaseDirectory).thenReturn("test constellation" + sep + "build" + "sep" + "cluster" + sep + "modules");
-	
-	            final HelpServlet instance = new HelpServlet();
-	            instance.doGet(requestMock1, responseMock1);                        
-	            helpDisplayerStaticMock.verify(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any()), times(1));
-	            verify(requestMock1, times(1)).getRequestURI();
-	            verify(requestMock1, times(1)).getHeader(Mockito.anyString());
-	            verify(responseMock1, times(1)).sendRedirect(Mockito.anyString());
-	        }
-	    }
+    
+    /**
+     * Test of doGet/tryResponseRedirect method, of class HelpServlet, with
+     * spaces in the filepath. Redirect is required.
+     *
+     * @throws java.io.IOException
+     * @throws jakarta.servlet.ServletException
+     */
+    @Test
+    public void testDoGetResponseRedirectWithSpaces() throws IOException, ServletException, InterruptedException {
+        System.out.println("doGetResponseRedirectWithSpaces");
 
+        final HttpServletRequest requestMock1 = mock(HttpServletRequest.class);
+        final HttpServletResponse responseMock1 = mock(HttpServletResponse.class);
 
+        try (final MockedStatic<ConstellationHelpDisplayer> helpDisplayerStaticMock = Mockito.mockStatic(ConstellationHelpDisplayer.class); final MockedStatic<HelpMapper> helpMapperStaticMock = Mockito.mockStatic(HelpMapper.class); final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class)) {
+            helpDisplayerStaticMock.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
+
+            when(requestMock1.getRequestURI()).thenReturn("/file:/C:/Projects/test%20constellation/build/cluster/modules/ext/docs/"
+                    + "CoreAnalyticView/ext/docs/CoreAnalyticView/question-best-connects-network.md");
+            doNothing().when(responseMock1).sendRedirect(Mockito.eq("/file:/C:/Projects/test%20constellation/build/cluster/modules/ext/docs/"
+                    + "CoreAnalyticView/question-best-connects-network.md"));
+            when(requestMock1.getHeader("referer")).thenReturn("/file:/C:/Projects/test%20constellation/build/cluster/modules/ext/docs/"
+                    + "CoreAnalyticView/analytic-view.md");
+
+            final Map<String, String> mappings = new HashMap<>();
+            final String sep = File.separator;
+            final String helpPagePath = "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "question-best-connects-network.md";
+            mappings.put("test", helpPagePath);
+            helpMapperStaticMock.when(HelpMapper::getMappings).thenReturn(mappings);
+            generatorStaticMock.when(Generator::getBaseDirectory).thenReturn("test constellation" + sep + "build" + "sep" + "cluster" + sep + "modules");
+
+            final HelpServlet instance = new HelpServlet();
+            instance.doGet(requestMock1, responseMock1);
+            helpDisplayerStaticMock.verify(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any()), times(1));
+            verify(requestMock1, times(1)).getRequestURI();
+            verify(requestMock1, times(1)).getHeader(Mockito.anyString());
+            verify(responseMock1, times(1)).sendRedirect(Mockito.anyString());
+        }
+    }
+
+    
     /**
      * Test of doGet method, of class HelpServlet. throw an exception
      *
