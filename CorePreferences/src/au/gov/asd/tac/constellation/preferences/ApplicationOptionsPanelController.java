@@ -78,7 +78,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         applicationOptionsPanel.setNotebookDirectory(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
         applicationOptionsPanel.setRestDirectory(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT));
         applicationOptionsPanel.setDownloadPythonClient(prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
-        applicationOptionsPanel.isUseConstellationFolderCheckBoxSelected(prefs.getBoolean(ApplicationPreferenceKeys.CONSTELLATION_DIR_AS_NOTEBOOK_DIR, ApplicationPreferenceKeys.CONSTELLATION_DIR_AS_NOTEBOOK_DIR_DEFAULT));
+        applicationOptionsPanel.setUseConstellationFolderCheckBox(prefs.getBoolean(ApplicationPreferenceKeys.CONSTELLATION_DIR_AS_NOTEBOOK_DIR, ApplicationPreferenceKeys.CONSTELLATION_DIR_AS_NOTEBOOK_DIR_DEFAULT));
         applicationOptionsPanel.setCurrentFont(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT));
         applicationOptionsPanel.setFontSize(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
         applicationOptionsPanel.setEnableSpellChecking(prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
