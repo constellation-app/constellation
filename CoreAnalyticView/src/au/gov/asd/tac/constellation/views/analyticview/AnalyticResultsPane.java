@@ -136,7 +136,6 @@ public class AnalyticResultsPane extends VBox {
                     Node visualisationNode = graphVisualisation.getVisualisation();
 
                     if (graphVisualisations.containsKey(graphVisualisation)) {
-                        graphVisualisation.setSelected(graphVisualisations.get(graphVisualisation));
                         for (final Map.Entry<GraphVisualisation, Boolean> visualisation : graphVisualisations.entrySet()) {
                             if (visualisation.getKey().getClass() == graphVisualisation.getClass()) {
                                 graphVisualisation = visualisation.getKey();
