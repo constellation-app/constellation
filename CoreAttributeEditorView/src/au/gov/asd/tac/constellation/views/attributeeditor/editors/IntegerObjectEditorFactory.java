@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.Edi
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -67,12 +67,13 @@ public class IntegerObjectEditorFactory extends AttributeValueEditorFactory<Inte
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
+            final VBox controls = new VBox();
             controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
+
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-            controls.addRow(0, numberField);
+
+            controls.getChildren().add(numberField);
             return controls;
         }
     }

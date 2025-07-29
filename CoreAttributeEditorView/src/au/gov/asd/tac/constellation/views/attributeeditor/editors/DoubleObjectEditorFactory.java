@@ -17,12 +17,11 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.DoubleObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import static au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor.CONTROLS_DEFAULT_VERTICAL_SPACING;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -68,12 +67,13 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
+            final VBox controls = new VBox();
             controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
+
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-            controls.addRow(0, numberField);
+
+            controls.getChildren().add(numberField);
             return controls;
         }
     }

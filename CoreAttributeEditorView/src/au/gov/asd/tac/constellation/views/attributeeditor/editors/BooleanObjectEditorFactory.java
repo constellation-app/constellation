@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.Edi
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -62,13 +62,15 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
+            final VBox controls = new VBox();
             controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            checkBox = new CheckBox("True:");
+            controls.setFillWidth(true);
+            
+            checkBox = new CheckBox("True");
             checkBox.setAlignment(Pos.CENTER);
             checkBox.selectedProperty().addListener((v, o, n) -> update());
-            controls.addRow(0, checkBox);
+            
+            controls.getChildren().add(checkBox);
             return controls;
         }
     }

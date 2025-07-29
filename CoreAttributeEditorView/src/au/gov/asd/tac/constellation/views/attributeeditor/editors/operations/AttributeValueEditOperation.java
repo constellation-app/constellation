@@ -92,7 +92,7 @@ public class AttributeValueEditOperation extends PluginSequenceEditOperation {
             // create a string of the previous values separated by a comma
             final StringBuilder sb = new StringBuilder();
             previousValues.stream().forEach(previousValue -> {
-                if (sb.length() > 0) {
+                if (!sb.isEmpty()) {
                     sb.append(",");
                 }
                 sb.append(previousValue);

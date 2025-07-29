@@ -157,8 +157,7 @@ public abstract class AbstractEditorFactory<V> {
         }
 
         /**
-         * Should be called when anything in the gui changes (and on the javafx
-         * thread).
+         * Should be called when anything in the gui changes (and on the javafx thread).
          */
         protected final void update() {
             if (!updateInProgress) {

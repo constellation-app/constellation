@@ -84,12 +84,16 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
             controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
 
             final Label namedLabel = new Label("Named:");
-            final ObservableList<ConstellationColor> namedColors = FXCollections.observableArrayList();
-            for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
-                namedColors.add(c);
-            }
+            final ObservableList<ConstellationColor> namedColors = FXCollections.observableArrayList(ConstellationColor.NAMED_COLOR_LIST);
             colorCombo = new ComboBox<>(namedColors);
-            final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
+            namedLabel.setLabelFor(colorCombo);
+            colorCombo.valueProperty().addListener((o, oldValue, newValue) -> {
+                if (newValue != null && !newValue.equals(oldValue)) {
+                    picker.setValue(newValue.getJavaFXColor());
+                }
+            });
+            
+            final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<>() {
                 @Override
                 protected void updateItem(final ConstellationColor item, final boolean empty) {
                     super.updateItem(item, empty);
@@ -101,16 +105,8 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
                     }
                 }
             };
-
             colorCombo.setCellFactory(cellFactory);
             colorCombo.setButtonCell(cellFactory.call(null));
-            namedLabel.setLabelFor(colorCombo);
-
-            colorCombo.valueProperty().addListener((o, oldValue, newValue) -> {
-                if (newValue != null && !newValue.equals(oldValue)) {
-                    picker.setValue(newValue.getJavaFXColor());
-                }
-            });
 
             final Label pickerLabel = new Label("Pallete:");
             picker = new ColorPicker();

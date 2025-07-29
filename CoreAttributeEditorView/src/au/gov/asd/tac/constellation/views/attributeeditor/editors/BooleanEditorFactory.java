@@ -58,7 +58,7 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
         @Override
         public void updateControlsWithValue(final Boolean value) {
             // A null boolean is treated as false
-            checkBox.setSelected((value != null) && value);
+            checkBox.setSelected(value != null && value);
         }
 
         @Override
@@ -77,7 +77,6 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
             checkBox.selectedProperty().addListener((v, o, n) -> update());
 
             controls.getChildren().add(checkBox);
-
             return controls;
         }
     }

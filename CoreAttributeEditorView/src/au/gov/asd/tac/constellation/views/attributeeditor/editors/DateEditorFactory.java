@@ -81,12 +81,14 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
+            
             datePicker = new DatePicker();
             datePicker.setConverter(new LocalDateStringConverter(
                     TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
             datePicker.getEditor().textProperty().addListener((v, o, n) -> update());
             datePicker.setValue(LocalDate.now());
             datePicker.valueProperty().addListener((v, o, n) -> update());
+            
             controls.addRow(0, datePicker);
             return controls;
         }

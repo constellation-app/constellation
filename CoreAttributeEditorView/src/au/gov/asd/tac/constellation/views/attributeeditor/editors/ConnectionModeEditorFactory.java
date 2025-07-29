@@ -81,6 +81,9 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
             final Label connectionModeLabel = new Label("Connection Mode:");
             final ObservableList<ConnectionMode> connectionModes = FXCollections.observableArrayList(ConnectionMode.values());
             connectionModeComboBox = new ComboBox<>(connectionModes);
+            connectionModeLabel.setLabelFor(connectionModeComboBox);
+            connectionModeComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
+            
             final Callback<ListView<ConnectionMode>, ListCell<ConnectionMode>> cellFactory = (final ListView<ConnectionMode> p) -> new ListCell<ConnectionMode>() {
                 @Override
                 protected void updateItem(final ConnectionMode item, final boolean empty) {
@@ -92,8 +95,6 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
             };
             connectionModeComboBox.setCellFactory(cellFactory);
             connectionModeComboBox.setButtonCell(cellFactory.call(null));
-            connectionModeLabel.setLabelFor(connectionModeComboBox);
-            connectionModeComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
 
             controls.addRow(0, connectionModeLabel, connectionModeComboBox);
             return controls;
