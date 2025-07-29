@@ -443,7 +443,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="useConstellationFolderCheckBoxActionPerformed"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_allCodePost" type="java.lang.String" value="initUseConstyCheckBox();"/>
+            <AuxValue name="JavaCodeGenerator_allCodePost" type="java.lang.String" value="initUseConstellationCheckBox();"/>
           </AuxValues>
         </Component>
       </SubComponents>

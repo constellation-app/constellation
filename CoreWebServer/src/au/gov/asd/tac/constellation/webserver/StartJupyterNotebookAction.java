@@ -137,7 +137,7 @@ public class StartJupyterNotebookAction implements ActionListener {
             alert.setHeaderText(String.format(ALERT_HEADER_TEXT, getNotebookDir()));
             alert.setContentText(String.format(ALERT_CONTEXT_TEXT, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
 
-            // Make sure alert is centered above main consty window
+            // Make sure alert is centered above main constellation window
             final Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
             final Point point = ScreenWindowsHelper.getMainWindowCentrePoint();
             if (point != null) {

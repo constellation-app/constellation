@@ -166,15 +166,15 @@ final class ApplicationOptionsPanel extends JPanel {
         colorblindDropdown.setSelectedItem(currentColorMode);
     }
 
-    public boolean isUseConstyFolderCheckBoxSelected() {
+    public boolean isUseConstellationFolderCheckBoxSelected() {
         return useConstellationFolderCheckBox.isSelected();
     }
 
-    public void setUseConstyFolderCheckBox(final boolean useConstyFolder) {
-        useConstellationFolderCheckBox.setSelected(useConstyFolder);
+    public void setUseConstellationFolderCheckBox(final boolean useConstellationFolder) {
+        useConstellationFolderCheckBox.setSelected(useConstellationFolder);
     }
 
-    private void initUseConstyCheckBox() {
+    private void initUseConstellationCheckBox() {
         useConstellationFolderCheckBoxStateChanged(null);
     }
 
@@ -422,7 +422,7 @@ final class ApplicationOptionsPanel extends JPanel {
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        initUseConstyCheckBox();
+        initUseConstellationCheckBox();
 
         fontPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.fontPanel.border.title"))); // NOI18N
 

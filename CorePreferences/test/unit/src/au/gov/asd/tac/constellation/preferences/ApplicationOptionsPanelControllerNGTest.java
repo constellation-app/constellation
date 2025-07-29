@@ -172,7 +172,7 @@ public class ApplicationOptionsPanelControllerNGTest {
             verify(constructedAP.get(0), times(2)).getFontSize();
             verify(constructedAP.get(0), times(2)).getColorModeSelection();
             verify(constructedAP.get(0), times(1)).isEnableSpellCheckingSelected();
-            verify(constructedAP.get(0), times(2)).isUseConstyFolderCheckBoxSelected();
+            verify(constructedAP.get(0), times(2)).isUseConstellationFolderCheckBoxSelected();
         }
     }
 
