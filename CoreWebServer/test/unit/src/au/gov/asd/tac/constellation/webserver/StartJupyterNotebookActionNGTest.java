@@ -110,13 +110,13 @@ public class StartJupyterNotebookActionNGTest {
             // Assert the following functions were run
             webserverMock.verify(() -> WebServer.start(), times(1));
 
-            assertEquals(mockProcessBuilderConstructor.constructed().size(), 1);
+            assertEquals(mockProcessBuilderConstructor.constructed().size(), 0);
             assertTrue(mockFileConstructor.constructed().size() >= 2);
 
-            verify(mockProcessBuilder, times(1)).redirectErrorStream(anyBoolean());
-            verify(mockProcessBuilder, times(1)).start();
-            verify(mockProcess, times(1)).getInputStream();
-            verify(mockInputStream, times(1)).read(any());
+            verify(mockProcessBuilder, times(0)).redirectErrorStream(anyBoolean());
+            verify(mockProcessBuilder, times(0)).start();
+            verify(mockProcess, times(0)).getInputStream();
+            verify(mockInputStream, times(0)).read(any());
         }
     }
 }

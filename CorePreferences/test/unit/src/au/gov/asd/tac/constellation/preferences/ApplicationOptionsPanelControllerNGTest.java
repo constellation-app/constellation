@@ -159,20 +159,19 @@ public class ApplicationOptionsPanelControllerNGTest {
             assertEquals(constructedPCS.size(), 1);
 
             // Assert that these methods were run during isValid() and isChanged
-            verify(constructedAP.get(0), times(3)).getUserDirectory();
-            verify(constructedAP.get(0), times(2)).isAutosaveEnabled();
-            verify(constructedAP.get(0), times(3)).getAutosaveFrequency();
-            verify(constructedAP.get(0), times(2)).isWelcomeOnStartupSelected();
-            verify(constructedAP.get(0), times(2)).isWhatsNewOnStartupSelected();
-            verify(constructedAP.get(0), times(3)).getWebserverPort();
-            verify(constructedAP.get(0), times(3)).getNotebookDirectory();
-            verify(constructedAP.get(0), times(3)).getRestDirectory();
-            verify(constructedAP.get(0), times(2)).isDownloadPythonClientSelected();
+            verify(constructedAP.get(0), times(2)).getUserDirectory();
+            verify(constructedAP.get(0), times(1)).isAutosaveEnabled();
+            verify(constructedAP.get(0), times(2)).getAutosaveFrequency();
+            verify(constructedAP.get(0), times(1)).isWelcomeOnStartupSelected();
+            verify(constructedAP.get(0), times(1)).isWhatsNewOnStartupSelected();
+            verify(constructedAP.get(0), times(2)).getWebserverPort();
+            verify(constructedAP.get(0), times(2)).getNotebookDirectory();
+            verify(constructedAP.get(0), times(2)).getRestDirectory();
+            verify(constructedAP.get(0), times(1)).isDownloadPythonClientSelected();
             verify(constructedAP.get(0), times(2)).getCurrentFont();
             verify(constructedAP.get(0), times(2)).getFontSize();
             verify(constructedAP.get(0), times(2)).getColorModeSelection();
             verify(constructedAP.get(0), times(1)).isEnableSpellCheckingSelected();
-            verify(constructedAP.get(0), times(2)).isUseConstellationFolderCheckBoxSelected();
         }
     }
 

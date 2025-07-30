@@ -55,25 +55,21 @@ public class StartJupyterNotebookAction implements ActionListener {
     private static final String JUPYTER_OUTPUT = "Jupyter Notebook";
 
     private static final String ALERT_HEADER_TEXT = "Unable to start Jupyter Notebook in directory:\n%s\n\nAs this directory does not exist.";
-    private static final String ALERT_CONTEXT_TEXT = "Jupyter Notebook will start in %s instead";
+    private static final String ALERT_CONTEXT_TEXT = "To update the Notebook directory go to Setup->Options->CONSTELLATION and edit the Notebook directory field";
 
     @Override
     public void actionPerformed(final ActionEvent e) {
         WebServer.start();
 
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final boolean useDefaultDirectory = prefs.getBoolean(ApplicationPreferenceKeys.CONSTELLATION_DIR_AS_NOTEBOOK_DIR, ApplicationPreferenceKeys.CONSTELLATION_DIR_AS_NOTEBOOK_DIR_DEFAULT);
-        String prefDir = useDefaultDirectory ? ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT : prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
-        File dirFile = new File(prefDir);
+        final String dir = prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
+        final File dirFile = new File(dir);
 
         // If folder doesnt exist, alert user
         if (!dirFile.exists()) {
             alertUserUnableToStart();
-            prefDir = ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT;
-            dirFile = new File(prefDir);
+            return;
         }
-
-        final String dir = prefDir;
 
         try {
             // Start the jupyter-notebook process with its stderr redirected to
@@ -135,7 +131,7 @@ public class StartJupyterNotebookAction implements ActionListener {
             final Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Attention");
             alert.setHeaderText(String.format(ALERT_HEADER_TEXT, getNotebookDir()));
-            alert.setContentText(String.format(ALERT_CONTEXT_TEXT, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
+            alert.setContentText(ALERT_CONTEXT_TEXT);
 
             // Make sure alert is centered above main constellation window
             final Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();

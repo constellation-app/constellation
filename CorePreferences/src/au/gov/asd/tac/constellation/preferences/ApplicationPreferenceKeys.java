@@ -104,12 +104,6 @@ public final class ApplicationPreferenceKeys {
      */
     public static final String JUPYTER_NOTEBOOK_DIR = "jupyterNotebookDir";
     public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new File(System.getProperty("user.dir")).getPath();
-    
-    /**
-     * Use Constellation directory as notebook directory.
-     */
-    public static final String CONSTELLATION_DIR_AS_NOTEBOOK_DIR = "useConstellationDirAsNotebookDir";
-    public static final boolean CONSTELLATION_DIR_AS_NOTEBOOK_DIR_DEFAULT = true;
 
     /**
      * File Save location.
