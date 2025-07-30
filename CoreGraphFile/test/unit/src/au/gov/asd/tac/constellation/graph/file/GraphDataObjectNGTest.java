@@ -72,25 +72,25 @@ public class GraphDataObjectNGTest {
         final NebulaDataObject nebulaDataObjectMock = mock(NebulaDataObject.class);
         gdoMock.setNebulaDataObject(nebulaDataObjectMock);
         verify(gdoMock, times(1)).setNebulaDataObject(nebulaDataObjectMock);
-        
-        NebulaDataObject nebulaDataObject = gdoMock.getNebulaDataObject();        
+
+        NebulaDataObject nebulaDataObject = gdoMock.getNebulaDataObject();
         assertEquals(null, nebulaDataObject);
-        when(gdoMock.getNebulaDataObject()).thenReturn(nebulaDataObjectMock);     
+        when(gdoMock.getNebulaDataObject()).thenReturn(nebulaDataObjectMock);
         nebulaDataObject = gdoMock.getNebulaDataObject();
         assertEquals(nebulaDataObject, nebulaDataObjectMock);
         verify(gdoMock, times(2)).getNebulaDataObject();
     }
-    
-     @Test
+
+    @Test
     public void nebulaColortTest() throws IOException {
         final GraphDataObject gdoMock = mock(GraphDataObject.class);
         final Color nebulaColorMock = mock(Color.class);
         gdoMock.setNebulaColor(nebulaColorMock);
         verify(gdoMock, times(1)).setNebulaColor(nebulaColorMock);
-        
-        Color nebulaColor = gdoMock.getNebulaColor();        
+
+        Color nebulaColor = gdoMock.getNebulaColor();
         assertEquals(null, nebulaColor);
-        when(gdoMock.getNebulaColor()).thenReturn(nebulaColorMock);     
+        when(gdoMock.getNebulaColor()).thenReturn(nebulaColorMock);
         nebulaColor = gdoMock.getNebulaColor();
         assertEquals(nebulaColor, nebulaColorMock);
         verify(gdoMock, times(2)).getNebulaColor();
@@ -106,26 +106,27 @@ public class GraphDataObjectNGTest {
         gdoMock.setFileLock(fileLockMock);
         assertTrue(gdoMock.getFileLock() == fileLockMock);
     }
-    
+
     @Test
     public void getToolTipTextTest() throws IOException {
-        final GraphDataObject gdoMock = mock(GraphDataObject.class);
-        final NebulaDataObject nebDataOjMock = mock(NebulaDataObject.class);
-        doCallRealMethod().when(gdoMock).setNebulaDataObject(nebDataOjMock);
-        
-        final FileObject fileObjectMock = mock(FileObject.class);
-        // test when in memory
-        when(gdoMock.isInMemory()).thenReturn(true);
-        when(gdoMock.getPrimaryFile()).thenReturn(fileObjectMock);
-        when(fileObjectMock.getName()).thenReturn("TestFileName");
-        doCallRealMethod().when(gdoMock).getToolTipText();
-            
-        String toolTipText = gdoMock.getToolTipText();
-        assertEquals(toolTipText, "TestFileName (unsaved)");
-        
-        // test when is not in memory
-        when(gdoMock.getNebulaDataObject()).thenReturn(nebDataOjMock);
+
         try (final MockedStatic<FileUtil> fileUtilMockStatic = mockStatic(FileUtil.class)) {
+            final GraphDataObject gdoMock = mock(GraphDataObject.class);
+            final NebulaDataObject nebDataOjMock = mock(NebulaDataObject.class);
+            doCallRealMethod().when(gdoMock).setNebulaDataObject(nebDataOjMock);
+
+            final FileObject fileObjectMock = mock(FileObject.class);
+            // test when in memory
+            when(gdoMock.isInMemory()).thenReturn(true);
+            when(gdoMock.getPrimaryFile()).thenReturn(fileObjectMock);
+            when(fileObjectMock.getName()).thenReturn("TestFileName");
+            doCallRealMethod().when(gdoMock).getToolTipText();
+
+            String toolTipText = gdoMock.getToolTipText();
+            assertEquals(toolTipText, "TestFileName (unsaved)");
+
+            // test when is not in memory
+            when(gdoMock.getNebulaDataObject()).thenReturn(nebDataOjMock);
             fileUtilMockStatic.when(() -> FileUtil.getFileDisplayName(fileObjectMock)).thenReturn("TestFileName2");
 
             when(gdoMock.isInMemory()).thenReturn(false);
