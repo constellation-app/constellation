@@ -50,7 +50,6 @@ public class StartJupyterNotebookAction implements ActionListener {
     private static final String JUPYTER_OUTPUT = "Jupyter Notebook";
 
     private static final String ALERT_HEADER_TEXT = "Unable to start Jupyter Notebook in directory:\n%s\n\nAs this directory does not exist.";
-    private static final String ALERT_CONTEXT_TEXT = "To update the Notebook directory go to Setup->Options->CONSTELLATION and edit the Notebook directory field";
 
     @Override
     public void actionPerformed(final ActionEvent e) {
