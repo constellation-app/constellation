@@ -130,7 +130,6 @@ public class GraphDataObjectNGTest {
 
             when(gdoMock.isInMemory()).thenReturn(false);
             when(gdoMock.getNebulaDataObject()).thenReturn(nebDataOjMock);
-            when(gdoMock.getName()).thenReturn("gdoName");
             when(nebDataOjMock.getName()).thenReturn("gdoName");
 
             toolTipText = gdoMock.getToolTipText();
