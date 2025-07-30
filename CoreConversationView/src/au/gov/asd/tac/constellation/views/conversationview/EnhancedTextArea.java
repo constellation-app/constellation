@@ -73,7 +73,7 @@ public final class EnhancedTextArea extends InlineCssTextArea {
         this.setWrapText(true);
         this.setEditable(false);
         this.setPadding(insets);
-        this.appendText(text + "\n");
+        this.appendText(text + "\n\n\n");//append extra lines to accomodate tooltip graphic
         //make sure to request focus everytime text area is loaded so ensure cached text been wrapped correctly.
         this.requestFocus();
         this.autosize();
