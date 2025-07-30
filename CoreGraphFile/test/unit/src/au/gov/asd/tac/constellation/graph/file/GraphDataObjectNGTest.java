@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.file;
 
 import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
+import java.awt.Color;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
@@ -46,18 +47,18 @@ public class GraphDataObjectNGTest {
 
     @Test
     public void createNodeDelegateTest() {
-        GraphDataObject gdoMock = mock(GraphDataObject.class);
-        Node nodeMock = mock(DataNode.class);
+        final GraphDataObject gdoMock = mock(GraphDataObject.class);
+        final Node nodeMock = mock(DataNode.class);
         when(gdoMock.createNodeDelegate()).thenReturn(nodeMock);
-        Node node = gdoMock.createNodeDelegate();
+        final Node node = gdoMock.createNodeDelegate();
         assertTrue(node == nodeMock);
         verify(gdoMock, times(1)).createNodeDelegate();
     }
 
     @Test
     public void fileChannelTest() throws IOException {
-        GraphDataObject gdoMock = mock(GraphDataObject.class);
-        FileChannel fileChannelMock = mock(FileChannel.class);
+        final GraphDataObject gdoMock = mock(GraphDataObject.class);
+        final FileChannel fileChannelMock = mock(FileChannel.class);
         doCallRealMethod().when(gdoMock).setFileChannel(Mockito.any());
         doCallRealMethod().when(gdoMock).getFileChannel();
 
@@ -67,8 +68,8 @@ public class GraphDataObjectNGTest {
 
     @Test
     public void nebulaObjectTest() throws IOException {
-        GraphDataObject gdoMock = mock(GraphDataObject.class);
-        NebulaDataObject nebulaDataObjectMock = mock(NebulaDataObject.class);
+        final GraphDataObject gdoMock = mock(GraphDataObject.class);
+        final NebulaDataObject nebulaDataObjectMock = mock(NebulaDataObject.class);
         gdoMock.setNebulaDataObject(nebulaDataObjectMock);
         verify(gdoMock, times(1)).setNebulaDataObject(nebulaDataObjectMock);
         
@@ -79,11 +80,26 @@ public class GraphDataObjectNGTest {
         assertEquals(nebulaDataObject, nebulaDataObjectMock);
         verify(gdoMock, times(2)).getNebulaDataObject();
     }
+    
+     @Test
+    public void nebulaColortTest() throws IOException {
+        final GraphDataObject gdoMock = mock(GraphDataObject.class);
+        final Color nebulaColorMock = mock(Color.class);
+        gdoMock.setNebulaColor(nebulaColorMock);
+        verify(gdoMock, times(1)).setNebulaColor(nebulaColorMock);
+        
+        Color nebulaColor = gdoMock.getNebulaColor();        
+        assertEquals(null, nebulaColor);
+        when(gdoMock.getNebulaColor()).thenReturn(nebulaColorMock);     
+        nebulaColor = gdoMock.getNebulaColor();
+        assertEquals(nebulaColor, nebulaColorMock);
+        verify(gdoMock, times(2)).getNebulaColor();
+    }
 
     @Test
     public void fileLockTest() {
-        GraphDataObject gdoMock = mock(GraphDataObject.class);
-        FileLock fileLockMock = mock(FileLock.class);
+        final GraphDataObject gdoMock = mock(GraphDataObject.class);
+        final FileLock fileLockMock = mock(FileLock.class);
         doCallRealMethod().when(gdoMock).setFileLock(Mockito.any());
         doCallRealMethod().when(gdoMock).getFileLock();
 
@@ -93,11 +109,11 @@ public class GraphDataObjectNGTest {
     
     @Test
     public void getToolTipTextTest() throws IOException {
-        GraphDataObject gdoMock = mock(GraphDataObject.class);
-        NebulaDataObject nebDataOjMock = mock(NebulaDataObject.class);
+        final GraphDataObject gdoMock = mock(GraphDataObject.class);
+        final NebulaDataObject nebDataOjMock = mock(NebulaDataObject.class);
         doCallRealMethod().when(gdoMock).setNebulaDataObject(nebDataOjMock);
         
-        FileObject fileObjectMock = mock(FileObject.class);
+        final FileObject fileObjectMock = mock(FileObject.class);
         // test when in memory
         when(gdoMock.isInMemory()).thenReturn(true);
         when(gdoMock.getPrimaryFile()).thenReturn(fileObjectMock);
