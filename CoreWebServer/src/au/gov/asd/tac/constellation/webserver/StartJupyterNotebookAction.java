@@ -17,11 +17,9 @@ package au.gov.asd.tac.constellation.webserver;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import static au.gov.asd.tac.constellation.webserver.WebServer.getNotebookDir;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -31,10 +29,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.stage.Stage;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -44,6 +38,7 @@ import org.openide.util.NbPreferences;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
+import org.openide.NotifyDescriptor;
 
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.webserver.StartJupyterNotebookAction")
 @ActionRegistration(displayName = "#CTL_StartJupyterNotebookAction", iconBase = "au/gov/asd/tac/constellation/webserver/resources/jupyter.png")
@@ -127,25 +122,6 @@ public class StartJupyterNotebookAction implements ActionListener {
             return;
         }
 
-        Platform.runLater(() -> {
-            final Alert alert = new Alert(AlertType.WARNING);
-            alert.setTitle("Attention");
-            alert.setHeaderText(String.format(ALERT_HEADER_TEXT, getNotebookDir()));
-            alert.setContentText(ALERT_CONTEXT_TEXT);
-
-            // Make sure alert is centered above main constellation window
-            final Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-            final Point point = ScreenWindowsHelper.getMainWindowCentrePoint();
-            if (point != null) {
-                stage.setX(point.getX() - alert.getDialogPane().getWidth() / 2);
-                stage.setY(point.getY() - alert.getDialogPane().getHeight() / 2);
-            }
-
-            stage.setAlwaysOnTop(true);
-
-            alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-
-            alert.showAndWait();
-        });
+        NotifyDisplayer.display(String.format(ALERT_HEADER_TEXT, getNotebookDir()), NotifyDescriptor.WARNING_MESSAGE);
     }
 }
