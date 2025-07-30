@@ -18,9 +18,13 @@ package au.gov.asd.tac.constellation.graph.utilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -81,5 +85,33 @@ public class AttributeUtilities {
         }
 
         return attributeIds;
+    }
+    
+    /**
+     * Get a list of the names of all the attributes for a given element type on the active graph.
+     * 
+     * @param elementType The graph element type to get attributes from
+     * @return a list of attribute names for the given graph element type on the active graph
+     */
+    public static List<String> getAttributeNames(final GraphElementType elementType) {
+        try (final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph()) {
+            return getAttributeNames(rg, elementType);
+        }
+    }
+    
+    /**
+     * Get a list of the names of all the attributes for a given element type on the given graph.
+     * 
+     * @param graph The graph to extract attribute names from
+     * @param elementType The graph element type to get attributes from
+     * @return a list of attribute names for the given graph element type on the given graph
+     */
+    public static List<String> getAttributeNames(final GraphReadMethods graph, final GraphElementType elementType) {
+        final List<String> attributeNames = new ArrayList<>();
+        for (int i = 0; i < graph.getAttributeCount(elementType); i++) {
+            attributeNames.add(graph.getAttributeName(graph.getAttribute(elementType, i)));
+        }
+        
+        return attributeNames;
     }
 }

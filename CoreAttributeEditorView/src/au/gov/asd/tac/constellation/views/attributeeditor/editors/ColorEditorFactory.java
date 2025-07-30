@@ -78,11 +78,6 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
-
             final Label namedLabel = new Label("Named:");
             final ObservableList<ConstellationColor> namedColors = FXCollections.observableArrayList(ConstellationColor.NAMED_COLOR_LIST);
             colorCombo = new ComboBox<>(namedColors);
@@ -130,6 +125,11 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
 
                 update();
             });
+            
+            final GridPane controls = new GridPane();
+            controls.setAlignment(Pos.CENTER);
+            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
+            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
 
             controls.addRow(0, namedLabel, colorCombo);
             controls.addRow(1, pickerLabel, picker);

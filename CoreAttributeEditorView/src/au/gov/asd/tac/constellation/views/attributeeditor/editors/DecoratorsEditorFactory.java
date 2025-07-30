@@ -16,16 +16,16 @@
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DecoratorsAttributeDescription;
+import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -91,36 +91,34 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         @Override
         protected Node createEditorControls() {
             // get all vertex attributes currently in the graph
-            final List<String> attributeNames = new ArrayList<>();
-            try (final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph()) {
-                for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
-                    attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.VERTEX, i)));
-                }
-            }
+            final List<String> attributeNames = AttributeUtilities.getAttributeNames(GraphElementType.VERTEX);
             Collections.sort(attributeNames);
             attributeNames.add(0, NO_DECORATOR);
-
+            final ObservableList<String> observableAttributeNames = FXCollections.observableList(attributeNames);
+            
             final Label nwLabel = new Label("NW:");
-            final Label neLabel = new Label("NE:");
-            final Label seLabel = new Label("SE:");
-            final Label swLabel = new Label("SW:");
-            nwCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
+            nwCombo = new ComboBox<>(observableAttributeNames);
             nwCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
-            neCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
+            
+            final Label neLabel = new Label("NE:");
+            neCombo = new ComboBox<>(observableAttributeNames);
             neCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
-            seCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
+            
+            final Label seLabel = new Label("SE:");
+            seCombo = new ComboBox<>(observableAttributeNames);
             seCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
-            swCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
+            
+            final Label swLabel = new Label("SW:");
+            swCombo = new ComboBox<>(observableAttributeNames);
             swCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
 
             final GridPane controls = new GridPane();
-            controls.getColumnConstraints().add(new ColumnConstraints(50));
+            controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            controls.addRow(0, nwLabel, nwCombo);
-            controls.addRow(3, neLabel, neCombo);
-            controls.addRow(2, seLabel, seCombo);
-            controls.addRow(1, swLabel, swCombo);
-
+            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
+            
+            controls.addRow(0, nwLabel, nwCombo, neLabel, neCombo);
+            controls.addRow(1, swLabel, swCombo, seLabel, seCombo);
             return controls;
         }
 

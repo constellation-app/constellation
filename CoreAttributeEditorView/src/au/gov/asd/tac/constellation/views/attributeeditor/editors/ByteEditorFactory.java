@@ -71,11 +71,11 @@ public class ByteEditorFactory extends AttributeValueEditorFactory<Byte> {
 
         @Override
         protected Node createEditorControls() {
-            final VBox controls = new VBox();
-            controls.setAlignment(Pos.CENTER);
-
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
+            
+            final VBox controls = new VBox();
+            controls.setAlignment(Pos.CENTER);
 
             controls.getChildren().add(numberField);
             return controls;

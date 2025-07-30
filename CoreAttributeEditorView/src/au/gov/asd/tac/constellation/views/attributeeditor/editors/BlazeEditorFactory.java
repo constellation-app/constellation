@@ -92,11 +92,6 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
-
             // create the angle controls
             final Label angleLabel = new Label("Angle:");
             angleTextField = new TextField();
@@ -167,6 +162,11 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
                 update();
             });
+            
+            final GridPane controls = new GridPane();
+            controls.setAlignment(Pos.CENTER);
+            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
+            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
 
             controls.addRow(0, angleLabel, angleTextField);
             controls.add(angleHBox, 0, 1, 2, 1);

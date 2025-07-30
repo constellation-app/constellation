@@ -51,14 +51,12 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
     }
 
     public class AttributeEditor extends AbstractEditor<AttributePrototype> {
-
-        private static final int CONTROLPANE_SPACING = 10;
-
+        
         private GraphElementType elementType;
         private ComboBox<String> typeCombo;
         private TextField nameText;
         private Button clearDefaultButton;
-        TextField descText;
+        private TextField descText;
         private Object defaultVal;
         private boolean isTypeModifiable;
 
@@ -101,23 +99,21 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setHgap(5);
-            controls.setVgap(CONTROLPANE_SPACING);
-
-            final Button setDefaultButton = new Button("Set Default");
             final Label nameLabel = new Label("Attribute Name:");
-            final Label typeLabel = new Label("Attribute Type:");
-            final Label descLabel = new Label("Attribute Description:");
-            final Label defaultLabel = new Label("Default Value:");
-
             nameText = new TextField();
             nameText.textProperty().addListener((o, n, v) -> update());
+            
+            final Label typeLabel = new Label("Attribute Type:");
             typeCombo = new ComboBox<>();
             typeCombo.setDisable(!isTypeModifiable);
             typeCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
+            
+            final Label descLabel = new Label("Attribute Description:");
             descText = new TextField();
             descText.textProperty().addListener((o, n, v) -> update());
+            
+            final Label defaultLabel = new Label("Default Value:");
+            final Button setDefaultButton = new Button("Set Default");
             setDefaultButton.setOnAction(getSelectDefaultHandler());
             clearDefaultButton = new Button("Clear Default");
             clearDefaultButton.setOnAction(e -> {
@@ -138,6 +134,10 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             });
             Collections.sort(attributeTypes);
             typeCombo.setItems(FXCollections.observableList(attributeTypes));
+            
+            final GridPane controls = new GridPane();
+            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
+            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
             controls.addRow(0, nameLabel, nameText);
             controls.addRow(1, typeLabel, typeCombo);
@@ -154,7 +154,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
                 final String editType = editorFactory.getAttributeType();
                 final AttributeValueTranslator fromTranslator = interaction.fromEditTranslator(editType);
                 final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
-                final ValueValidator<T> validator = interaction.fromEditValidator(editType);
+                final ValueValidator<T> valueValidator = interaction.fromEditValidator(editType);
 
                 final EditOperation restoreDefaultEditOperation = value -> {
                     defaultVal = fromTranslator.translate(value);
@@ -162,7 +162,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
                     update();
                 };
 
-                final AbstractEditor<T> editor = editorFactory.createEditor(restoreDefaultEditOperation, validator, "the default", (T) toTranslator.translate(defaultVal));
+                final AbstractEditor<T> editor = editorFactory.createEditor(restoreDefaultEditOperation, valueValidator, "the default", (T) toTranslator.translate(defaultVal));
                 final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
                 dialog.showDialog();
             };

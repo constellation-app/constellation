@@ -34,13 +34,13 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
@@ -102,6 +102,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
                 minSpinner.getValueFactory().setValue(value.toLocalDateTime().get(ChronoField.MINUTE_OF_HOUR));
                 secSpinner.getValueFactory().setValue(value.toLocalDateTime().get(ChronoField.SECOND_OF_MINUTE));
                 milliSpinner.getValueFactory().setValue(value.toLocalDateTime().get(ChronoField.MILLI_OF_SECOND));
+                
                 timeZoneComboBox.getSelectionModel().selectedItemProperty().removeListener(updateTimeFromZone);
                 timeZoneComboBox.setValue(value.getZone());
                 timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener(updateTimeFromZone);
@@ -124,15 +125,17 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
             final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
             ZoneId.getAvailableZoneIds().forEach(id -> timeZones.add(ZoneId.of(id)));
-            timeZoneComboBox = new ComboBox<>();
-            timeZoneComboBox.setItems(timeZones.sorted(zoneIdComparator));
-            final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<ZoneId>() {
+            timeZoneComboBox = new ComboBox<>(timeZones.sorted(zoneIdComparator));
+            timeZoneComboBox.getSelectionModel().select(TimeZoneUtilities.UTC);
+            timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener(updateTimeFromZone);
+            
+            final Label timeZoneComboBoxLabel = new Label("Time Zone:");
+            timeZoneComboBoxLabel.setId(LABEL_ID);
+            timeZoneComboBoxLabel.setLabelFor(timeZoneComboBox);
+            
+            final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<>() {
                 @Override
                 protected void updateItem(final ZoneId item, final boolean empty) {
                     super.updateItem(item, empty);
@@ -141,106 +144,44 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
                     }
                 }
             };
-
-            final Label timeZoneComboBoxLabel = new Label("Time Zone:");
-            timeZoneComboBoxLabel.setId(LABEL_ID);
-            timeZoneComboBoxLabel.setLabelFor(timeZoneComboBoxLabel);
-
             timeZoneComboBox.setCellFactory(cellFactory);
             timeZoneComboBox.setButtonCell(cellFactory.call(null));
-            timeZoneComboBox.getSelectionModel().select(TimeZoneUtilities.UTC);
-            timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener(updateTimeFromZone);
+
 
             final HBox timeZoneHbox = new HBox(timeZoneComboBoxLabel, timeZoneComboBox);
-            timeZoneHbox.setSpacing(5);
+            timeZoneHbox.setSpacing(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
             final HBox timeSpinnerContainer = createTimeSpinners();
+            
+            final VBox controls = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
+            controls.setAlignment(Pos.CENTER);
+            controls.setFillWidth(true);
 
-            controls.addRow(0, timeSpinnerContainer);
-            controls.addRow(1, timeZoneHbox);
+            controls.getChildren().addAll(timeSpinnerContainer, timeZoneHbox);
             return controls;
-        }
-
-        private void updateTimeZoneList() {
-            timeZoneComboBox.getSelectionModel().selectedItemProperty().removeListener(updateTimeFromZone);
-            final ZoneId selected = timeZoneComboBox.getValue();
-            timeZoneComboBox.setItems(timeZoneComboBox.getItems().sorted(zoneIdComparator));
-            timeZoneComboBox.setValue(selected);
-            timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener(updateTimeFromZone);
         }
 
         private HBox createTimeSpinners() {
             datePicker = new DatePicker();
             datePicker.setConverter(new LocalDateStringConverter(
                     TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
-            datePicker.getEditor().textProperty().addListener((v, o, n) -> {
-                update();
-                updateTimeZoneList();
-            });
-
-            hourSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23));
-            minSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59));
-            secSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59));
-            milliSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 999));
-            hourSpinner.getValueFactory().setValue(LocalTime.now(ZoneOffset.UTC).getHour());
-            minSpinner.getValueFactory().setValue(LocalTime.now(ZoneOffset.UTC).getMinute());
-            secSpinner.getValueFactory().setValue(LocalTime.now(ZoneOffset.UTC).getSecond());
-            milliSpinner.getValueFactory().setValue(0);
-
             datePicker.setValue(LocalDate.now());
-            datePicker.valueProperty().addListener((v, o, n) -> {
-                update();
-                updateTimeZoneList();
-            });
-
-            final HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
-            final Label dateLabel = new Label("Date:");
-            dateLabel.setId(LABEL_ID);
-            dateLabel.setLabelFor(datePicker);
-
-            final Label hourSpinnerLabel = new Label("Hour:");
-            hourSpinnerLabel.setId(LABEL_ID);
-            hourSpinnerLabel.setLabelFor(hourSpinner);
-
-            final Label minSpinnerLabel = new Label("Minute:");
-            minSpinnerLabel.setId(LABEL_ID);
-            minSpinnerLabel.setLabelFor(minSpinner);
-
-            final Label secSpinnerLabel = new Label("Second:");
-            secSpinnerLabel.setId(LABEL_ID);
-            secSpinnerLabel.setLabelFor(secSpinner);
-
-            final Label milliSpinnerLabel = new Label("Millis:");
-            milliSpinnerLabel.setId(LABEL_ID);
-            milliSpinnerLabel.setLabelFor(milliSpinner);
-
-            hourSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
-            minSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
-            secSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
-            milliSpinner.setPrefWidth(MILLIS_SPINNER_WIDTH);
-
-            hourSpinner.setEditable(true);
-            minSpinner.setEditable(true);
-            secSpinner.setEditable(true);
-            milliSpinner.setEditable(true);
-
-            hourSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-                updateTimeZoneList();
-            });
-            minSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-                updateTimeZoneList();
-            });
-            secSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-                updateTimeZoneList();
-            });
-            milliSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-                updateTimeZoneList();
-            });
-
+            datePicker.valueProperty().addListener((v, o, n) -> update());
+            final Label dateLabel = createLabel("Date:", datePicker);          
+            
+            hourSpinner = createTimeSpinner(23, LocalTime.now(ZoneOffset.UTC).getHour(), NUMBER_SPINNER_WIDTH);
+            final Label hourSpinnerLabel = createLabel("Hour:", hourSpinner);
+            
+            minSpinner = createTimeSpinner(59, LocalTime.now(ZoneOffset.UTC).getMinute(), NUMBER_SPINNER_WIDTH);
+            final Label minSpinnerLabel = createLabel("Minute:", minSpinner);
+            
+            secSpinner = createTimeSpinner(59, LocalTime.now(ZoneOffset.UTC).getSecond(), NUMBER_SPINNER_WIDTH);
+            final Label secSpinnerLabel = createLabel("Second:", secSpinner);
+            
+            milliSpinner = createTimeSpinner(999, 0, MILLIS_SPINNER_WIDTH);
+            final Label milliSpinnerLabel = createLabel("Millis:", milliSpinner);
+            
+            final HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
+            
             final VBox dateLabelNode = new VBox(5);
             dateLabelNode.getChildren().addAll(dateLabel, datePicker);
             final VBox hourLabelNode = new VBox(5);
@@ -255,6 +196,39 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             timeSpinnerContainer.getChildren().addAll(dateLabelNode, hourLabelNode, minLabelNode, secLabelNode, milliLabelNode);
 
             return timeSpinnerContainer;
+        }
+        
+        /**
+         * Creates a spinner for a measurement of time, for the editor
+         * 
+         * @param maxValue The maximum value on the spinner
+         * @param initialValue The initial value on the spinner
+         * @param spinnerWidth The preferred width of the spinner
+         * @return The newly created spinner object
+         */
+        private Spinner<Integer> createTimeSpinner(final int maxValue, final int initialValue, final int spinnerWidth) {
+            final Spinner<Integer> timeSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, maxValue));
+            timeSpinner.getValueFactory().setValue(initialValue);
+            timeSpinner.setPrefWidth(spinnerWidth);
+            timeSpinner.setEditable(true);
+            timeSpinner.valueProperty().addListener((o, n, v) -> update());
+            
+            return timeSpinner;
+        }
+        
+        /**
+         * Creates a label associated with the given time spinner
+         * 
+         * @param labelText The label text
+         * @param associatedObject The object to set the label for
+         * @return The newly created label
+         */
+        private Label createLabel(final String labelText, final Control associatedObject) {
+            final Label spinnerLabel = new Label(labelText);
+            spinnerLabel.setId(LABEL_ID);
+            spinnerLabel.setLabelFor(associatedObject);
+            
+            return spinnerLabel;
         }
     }
 }

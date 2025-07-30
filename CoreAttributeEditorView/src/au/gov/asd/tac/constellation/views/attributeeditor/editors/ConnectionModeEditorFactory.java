@@ -74,10 +74,6 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
-
             final Label connectionModeLabel = new Label("Connection Mode:");
             final ObservableList<ConnectionMode> connectionModes = FXCollections.observableArrayList(ConnectionMode.values());
             connectionModeComboBox = new ComboBox<>(connectionModes);
@@ -95,6 +91,10 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
             };
             connectionModeComboBox.setCellFactory(cellFactory);
             connectionModeComboBox.setButtonCell(cellFactory.call(null));
+            
+            final GridPane controls = new GridPane();
+            controls.setAlignment(Pos.CENTER);
+            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
 
             controls.addRow(0, connectionModeLabel, connectionModeComboBox);
             return controls;

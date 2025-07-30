@@ -20,13 +20,11 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.util.converter.LocalDateStringConverter;
-import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -63,25 +61,11 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
 
         @Override
         protected LocalDate getValueFromControls() throws ControlsInvalidException {
-            final String dateString = datePicker.getEditor().getText();
-            // The converter is being used here to try and determine if the entered date is a LocalDate
-            // It will throw an exception and won't convert it if its invalid
-            try {
-                if (StringUtils.isNotBlank(dateString)) {
-                    datePicker.setValue(datePicker.getConverter().fromString(dateString));
-                }
-            } catch (final DateTimeParseException ex) {
-                throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
-            }
             return datePicker.getValue();
         }
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            
             datePicker = new DatePicker();
             datePicker.setConverter(new LocalDateStringConverter(
                     TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
@@ -89,7 +73,11 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             datePicker.setValue(LocalDate.now());
             datePicker.valueProperty().addListener((v, o, n) -> update());
             
-            controls.addRow(0, datePicker);
+            final VBox controls = new VBox();
+            controls.setAlignment(Pos.CENTER);
+            controls.setFillWidth(true);
+            
+            controls.getChildren().add(datePicker);
             return controls;
         }
     }

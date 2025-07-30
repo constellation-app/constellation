@@ -68,13 +68,13 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
         @Override
         protected Node createEditorControls() {
-            final VBox controls = new VBox();
-            controls.setAlignment(Pos.CENTER);
-            controls.setFillWidth(true);
-
             checkBox = new CheckBox("True");
             checkBox.setAlignment(Pos.CENTER);
             checkBox.selectedProperty().addListener((v, o, n) -> update());
+            
+            final VBox controls = new VBox();
+            controls.setAlignment(Pos.CENTER);
+            controls.setFillWidth(true);
 
             controls.getChildren().add(checkBox);
             return controls;
