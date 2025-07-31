@@ -159,7 +159,7 @@ public abstract class AbstractInclusionGraph {
             if (isVertexIncluded(vxId)) {
                 incCount++;
             }
-            if (!wg.getBooleanValue(pinnedAttr, vxId)) {
+            if (wg.getBooleanValue(pinnedAttr, vxId)) {
                 pinnedCount++;
             }
         }
