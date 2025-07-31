@@ -46,7 +46,7 @@ import org.fxmisc.richtext.InlineCssTextArea;
  */
 public final class EnhancedTextArea extends InlineCssTextArea {
 
-    private final Insets insets = new Insets(6, 10, -8, 10);
+    private final Insets insets = new Insets(6, 10, 15, 10);
 
     /**
      * Default constructor.
@@ -68,15 +68,15 @@ public final class EnhancedTextArea extends InlineCssTextArea {
      */
     public EnhancedTextArea(final String text, final ConversationContribution contribution) {
 
-        this.setBackground(Background.EMPTY);
-        this.setAutoHeight(true);
+        this.setBackground(Background.EMPTY);        
         this.setWrapText(true);
         this.setEditable(false);
         this.setPadding(insets);
-        this.appendText(text + "\n\n\n");//append extra lines to accomodate tooltip graphic
+        this.appendText(text);        
         //make sure to request focus everytime text area is loaded so ensure cached text been wrapped correctly.
         this.requestFocus();
         this.autosize();
+        this.setAutoHeight(true);
         
         // Implementation for the 'Copy' context menu option.
         final MenuItem copyTextMenuItem = new MenuItem("Copy");
