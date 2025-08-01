@@ -17,7 +17,9 @@ package au.gov.asd.tac.constellation.webserver;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import static au.gov.asd.tac.constellation.webserver.WebServer.getNotebookDir;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -36,6 +38,7 @@ import org.openide.util.NbPreferences;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
+import org.openide.NotifyDescriptor;
 
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.webserver.StartJupyterNotebookAction")
 @ActionRegistration(displayName = "#CTL_StartJupyterNotebookAction", iconBase = "au/gov/asd/tac/constellation/webserver/resources/jupyter.png")
@@ -46,12 +49,21 @@ public class StartJupyterNotebookAction implements ActionListener {
     private static final String JUPYTER_NOTEBOOK = "jupyter-notebook";
     private static final String JUPYTER_OUTPUT = "Jupyter Notebook";
 
+    private static final String ALERT_TEXT = "Unable to start Jupyter Notebook in directory:\n%s\n\nPlease enter a valid path in\nSetup -> Options -> Constellation :: Notebook Directory:";
+
     @Override
     public void actionPerformed(final ActionEvent e) {
         WebServer.start();
 
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String dir = prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
+        final File dirFile = new File(dir);
+
+        // If folder doesnt exist, alert user
+        if (!dirFile.exists()) {
+            alertUserUnableToStart();
+            return;
+        }
 
         try {
             // Start the jupyter-notebook process with its stderr redirected to
@@ -62,7 +74,7 @@ public class StartJupyterNotebookAction implements ActionListener {
             final List<String> exe = new ArrayList<>();
             exe.add(JUPYTER_NOTEBOOK);
             final ProcessBuilder pb = new ProcessBuilder(exe)
-                    .directory(new File(dir))
+                    .directory(dirFile)
                     .redirectErrorStream(true);
 
             final Process jupyter = pb.start();
@@ -102,5 +114,13 @@ public class StartJupyterNotebookAction implements ActionListener {
                     null
             );
         }
+    }
+
+    private void alertUserUnableToStart() {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))) {
+            return;
+        }
+
+        NotifyDisplayer.display(String.format(ALERT_TEXT, getNotebookDir()), NotifyDescriptor.WARNING_MESSAGE);
     }
 }

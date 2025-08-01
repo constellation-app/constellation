@@ -281,7 +281,7 @@ public class WebServer {
         return ipython;
     }
 
-    public static String getNotebookDir() {
+    protected static String getNotebookDir() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         // Return path to directory
         return prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
