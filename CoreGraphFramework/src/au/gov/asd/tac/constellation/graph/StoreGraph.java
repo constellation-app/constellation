@@ -1113,9 +1113,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         // the undo/redo.
         // The apparent solution is to manually swap the source and destination vertex ids to be in the "correct"
         // uphill order before we do the out-of-edit remove/add, so no swapping occurs.
-        removeTransaction(transaction);
-        addTransaction(oldSourceVertex, newDestinationVertex, directed);
-
+        // NOTE: Aug 2025 - There was a change in addTransaction to not swap source and destination when transaction
+        // is undirected. This means that it doesn't need to be swapped here if the transaction is undirected; the
+        // code has been modified to swap only if the transaction is directed.
+        if (directed) {
+            removeTransaction(transaction);
+            addTransaction(oldSourceVertex, newDestinationVertex, directed);
+        }
         graphEdit = savedGraphEdit;
         operationMode = savedOperationMode;
 
