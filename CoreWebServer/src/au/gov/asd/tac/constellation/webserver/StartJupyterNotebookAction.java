@@ -49,7 +49,7 @@ public class StartJupyterNotebookAction implements ActionListener {
     private static final String JUPYTER_NOTEBOOK = "jupyter-notebook";
     private static final String JUPYTER_OUTPUT = "Jupyter Notebook";
 
-    private static final String ALERT_HEADER_TEXT = "Unable to start Jupyter Notebook in directory:\n%s\n\nAs this directory does not exist.";
+    private static final String ALERT_TEXT = "Unable to start Jupyter Notebook in directory:\n%s\n\nPlease enter a valid path in\nSetup -> Options -> Constellation :: Notebook Directory:";
 
     @Override
     public void actionPerformed(final ActionEvent e) {
@@ -121,6 +121,6 @@ public class StartJupyterNotebookAction implements ActionListener {
             return;
         }
 
-        NotifyDisplayer.display(String.format(ALERT_HEADER_TEXT, getNotebookDir()), NotifyDescriptor.WARNING_MESSAGE);
+        NotifyDisplayer.display(String.format(ALERT_TEXT, getNotebookDir()), NotifyDescriptor.WARNING_MESSAGE);
     }
 }
