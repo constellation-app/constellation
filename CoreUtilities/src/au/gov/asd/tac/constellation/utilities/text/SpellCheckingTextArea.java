@@ -16,27 +16,19 @@
 package au.gov.asd.tac.constellation.utilities.text;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import java.util.List;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
-import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.IndexRange;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Popup;
-import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.richtext.InlineCssTextArea;
 import org.fxmisc.richtext.util.UndoUtils;
 import org.openide.util.NbPreferences;
@@ -52,7 +44,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private final SpellChecker spellChecker = new SpellChecker(this);
     private final Insets insets = new Insets(4, 8, 4, 8);
-    public static final double EXTRA_HEIGHT = 3;
+    public static final double EXTRA_HEIGHT = 3;    
 
     private static final String UNDERLINE_AND_HIGHLIGHT_STYLE = "-rtfx-background-color:derive(yellow,-30%);"
             + "-rtfx-underline-color: red; "
@@ -149,9 +141,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
 
         // CheckMenuItem to toggle turn On/Off Spell Checking. On by default
         final CheckMenuItem toggleSpellCheckMenuItem = new CheckMenuItem("Turn On Spell Checking");
-        toggleSpellCheckMenuItem.setSelected(true);
-        toggleSpellCheckMenuItem.setDisable(!enableSpellChecking);
-        toggleSpellCheckMenuItem.setVisible(enableSpellChecking);
+        toggleSpellCheckMenuItem.setSelected(enableSpellChecking);
         toggleSpellCheckMenuItem.setOnAction(event -> {
             spellChecker.turnOffSpellChecking(!toggleSpellCheckMenuItem.isSelected());
             spellChecker.checkSpelling();
@@ -183,48 +173,5 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             final IndexRange selectionRange = this.getSelection();
             return selectionRange == null || selectionRange.getLength() == 0;
         }, this.selectionProperty());
-    }
-
-    public void autoComplete(final List<String> suggestions) {
-        final Popup popup = new Popup();
-        popup.setWidth(this.getWidth());
-        final ListView<String> listView = new ListView<>();
-        listView.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue != null) {
-                this.replaceText​(newValue);
-            }
-            popup.hide();
-        });
-
-        this.setOnKeyTyped((final KeyEvent event) -> {
-            final String input = this.getText();
-            popup.hide();
-            popup.setAutoFix(true);
-            popup.setAutoHide(true);
-            popup.setHideOnEscape(true);
-            popup.getContent().clear();
-            listView.getItems().clear();
-
-            if (StringUtils.isNotBlank(input) && !suggestions.isEmpty()) {
-                final List<String> filteredSuggestions = suggestions.stream()
-                        .filter(suggestion -> suggestion.toLowerCase().startsWith(input.toLowerCase()) && !suggestion.equals(input))
-                        .collect(Collectors.toList());
-                listView.setItems(FXCollections.observableArrayList(filteredSuggestions));
-
-                popup.getContent().add(listView);
-
-                Platform.runLater(() -> {
-                    final ListCell<?> cell = (ListCell<?>) listView.lookup(".list-cell");
-                    if (cell != null) {
-                        listView.setPrefHeight(listView.getItems().size() * cell.getHeight() + EXTRA_HEIGHT);
-                    }
-                });
-
-                // Show the popup under this text area
-                if (!listView.getItems().isEmpty()) {
-                    popup.show(this, this.localToScreen(0, 0).getX(), this.localToScreen(0, 0).getY() + this.heightProperty().getValue());
-                }
-            }
-        });
     }
 }
