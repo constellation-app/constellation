@@ -37,7 +37,7 @@ import org.testng.annotations.Test;
 public class DateTimePickerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(DateTimePickerNGTest.class.getName());
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -63,7 +63,6 @@ public class DateTimePickerNGTest {
     public void tearDownMethod() throws Exception {
         // Not currently required
     }
-
 
     /**
      * Test of setCurrentDateTime method, of class DateTimePicker.
@@ -102,20 +101,6 @@ public class DateTimePickerNGTest {
         assertTrue(currentTime.getHour() == instance.getCurrentDateTime().getHour());
     }
 
-    /**
-     * Test of isActive method, of class DateTimePicker.
-     */
-    @Test
-    public void testIsActive() {
-        System.out.println("isActive");
-        final DateTimePicker instance = new DateTimePicker(true);
-        final boolean expResult = false;
-        final boolean result = instance.isActive();
-        assertEquals(result, expResult);
-        instance.setActive(true);
-        assertTrue(instance.isActive());
-    }
-    
     /**
      * Test of getCurrentDateTime method, of class DateTimePicker.
      */
