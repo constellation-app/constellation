@@ -103,6 +103,7 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
         GraphManager.getDefault().addGraphManagerListener(this);
         GraphReportManager.addGraphReportListener(this);
         handleNewGraph(GraphManager.getDefault().getActiveGraph());
+        setFloating(Bundle.CTL_PluginReporterTopComponent(), 0, 0, Spawn.RIGHT);
     }
 
     @Override
