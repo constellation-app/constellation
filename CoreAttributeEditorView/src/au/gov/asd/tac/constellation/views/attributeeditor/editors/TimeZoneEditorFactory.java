@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.TimeZone;
 import javafx.collections.FXCollections;
@@ -35,6 +34,7 @@ import javafx.util.Callback;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type time_zone
  *
  * @author twilight_sparkle
  */
@@ -82,15 +82,13 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
 
         @Override
         protected Node createEditorControls() {
-            final VBox controls = new VBox();
-            controls.setSpacing(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            controls.setAlignment(Pos.CENTER);
-
             final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
             ZoneId.getAvailableZoneIds().forEach(id -> timeZones.add(ZoneId.of(id)));
-            timeZoneComboBox = new ComboBox<>();
-            timeZoneComboBox.setItems(timeZones.sorted(zoneIdComparator));
-            final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<ZoneId>() {
+            timeZoneComboBox = new ComboBox<>(timeZones.sorted(zoneIdComparator));
+            timeZoneComboBox.getSelectionModel().select(TimeZoneUtilities.UTC);
+            timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
+            
+            final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<>() {
                 @Override
                 protected void updateItem(final ZoneId item, final boolean empty) {
                     super.updateItem(item, empty);
@@ -101,10 +99,10 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
             };
             timeZoneComboBox.setCellFactory(cellFactory);
             timeZoneComboBox.setButtonCell(cellFactory.call(null));
-            timeZoneComboBox.getSelectionModel().select(TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
-            timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
-
-            controls.getChildren().addAll(timeZoneComboBox);
+            
+            final VBox controls = new VBox(timeZoneComboBox);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
         }
     }

@@ -30,6 +30,7 @@ import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type vertex_attribute_name
  *
  * @author twilight_sparkle
  */
@@ -104,10 +105,8 @@ public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactor
                 selectionIsActive = false;
             });
             
-            final VBox controls = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
-            controls.getChildren().addAll(nameLabel, nameText, listLabel, attributeList);
-            return controls;
+            return new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, 
+                    nameLabel, nameText, listLabel, attributeList);
         }
     }
 }

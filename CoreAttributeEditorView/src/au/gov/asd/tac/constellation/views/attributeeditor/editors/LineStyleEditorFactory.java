@@ -27,11 +27,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type line_style
  *
  * @author twilight_sparkle
  */
@@ -74,14 +75,13 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
-
             final Label lineStyleLabel = new Label("Line Style:");
             final ObservableList<LineStyle> lineStyles = FXCollections.observableArrayList(LineStyle.values());
             lineStyleComboBox = new ComboBox<>(lineStyles);
-            final Callback<ListView<LineStyle>, ListCell<LineStyle>> cellFactory = (final ListView<LineStyle> p) -> new ListCell<LineStyle>() {
+            lineStyleComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
+            lineStyleLabel.setLabelFor(lineStyleComboBox);
+            
+            final Callback<ListView<LineStyle>, ListCell<LineStyle>> cellFactory = (final ListView<LineStyle> p) -> new ListCell<>() {
                 @Override
                 protected void updateItem(final LineStyle item, final boolean empty) {
                     super.updateItem(item, empty);
@@ -92,10 +92,11 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
             };
             lineStyleComboBox.setCellFactory(cellFactory);
             lineStyleComboBox.setButtonCell(cellFactory.call(null));
-            lineStyleLabel.setLabelFor(lineStyleComboBox);
-            lineStyleComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
-
-            controls.addRow(0, lineStyleLabel, lineStyleComboBox);
+            
+            final HBox controls = new HBox(CONTROLS_DEFAULT_HORIZONTAL_SPACING, 
+                    lineStyleLabel, lineStyleComboBox);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
         }
     }

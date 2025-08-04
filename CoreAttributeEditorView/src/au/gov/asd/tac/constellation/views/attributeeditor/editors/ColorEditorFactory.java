@@ -35,6 +35,7 @@ import javafx.util.Callback;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type color
  *
  * @author twilight_sparkle
  */
@@ -126,10 +127,8 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
                 update();
             });
             
-            final GridPane controls = new GridPane();
+            final GridPane controls = new GridPane(CONTROLS_DEFAULT_HORIZONTAL_SPACING, CONTROLS_DEFAULT_VERTICAL_SPACING);
             controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
 
             controls.addRow(0, namedLabel, colorCombo);
             controls.addRow(1, pickerLabel, picker);

@@ -25,6 +25,7 @@ import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type draw_flags
  *
  * @author twilight_sparkle
  */
@@ -82,9 +83,6 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
 
         @Override
         protected Node createEditorControls() {
-            final VBox controls = new VBox();
-            controls.setFillWidth(true);
-
             drawNodesCheckBox = new CheckBox("Nodes");
             drawNodesCheckBox.selectedProperty().addListener((v, o, n) -> update());
 
@@ -99,9 +97,11 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
 
             drawBlazesCheckBox = new CheckBox("Blazes");
             drawBlazesCheckBox.selectedProperty().addListener((v, o, n) -> update());
-
-            controls.getChildren().addAll(drawNodesCheckBox, drawConnectionsCheckBox, drawNodeLabelsCheckBox, drawConnectionLabelsCheckBox, drawBlazesCheckBox);
-
+            
+            final VBox controls = new VBox(drawNodesCheckBox, drawConnectionsCheckBox, drawNodeLabelsCheckBox, 
+                    drawConnectionLabelsCheckBox, drawBlazesCheckBox);
+            controls.setFillWidth(true);
+            
             return controls;
         }
     }

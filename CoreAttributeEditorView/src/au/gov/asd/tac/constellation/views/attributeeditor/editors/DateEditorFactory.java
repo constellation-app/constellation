@@ -28,6 +28,7 @@ import javafx.util.converter.LocalDateStringConverter;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type date
  *
  * @author twilight_sparkle
  */
@@ -73,11 +74,10 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             datePicker.setValue(LocalDate.now());
             datePicker.valueProperty().addListener((v, o, n) -> update());
             
-            final VBox controls = new VBox();
+            final VBox controls = new VBox(datePicker);
             controls.setAlignment(Pos.CENTER);
             controls.setFillWidth(true);
             
-            controls.getChildren().add(datePicker);
             return controls;
         }
     }

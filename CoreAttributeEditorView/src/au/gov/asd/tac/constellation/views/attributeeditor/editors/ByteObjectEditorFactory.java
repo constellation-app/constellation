@@ -25,6 +25,7 @@ import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type byte_or_null
  *
  * @author cygnus_x-1
  */
@@ -70,10 +71,9 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
             
-            final VBox controls = new VBox();
+            final VBox controls = new VBox(numberField);
             controls.setAlignment(Pos.CENTER);
-
-            controls.getChildren().add(numberField);
+            
             return controls;
         }
     }

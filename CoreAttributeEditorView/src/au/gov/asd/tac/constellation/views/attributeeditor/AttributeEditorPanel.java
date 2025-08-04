@@ -891,7 +891,7 @@ public class AttributeEditorPanel extends BorderPane {
             List<SchemaAttribute> keysList = new ArrayList<>();
             try (final ReadableGraph rg = graph.getReadableGraph()) {
                 int[] keys = rg.getPrimaryKey(elementType);
-                for (int key : keys) {
+                for (final int key : keys) {
                     currentKeyAttributes.add(rg.getAttributeName(key));
                 }
                 for (int i = 0; i < rg.getAttributeCount(elementType); i++) {

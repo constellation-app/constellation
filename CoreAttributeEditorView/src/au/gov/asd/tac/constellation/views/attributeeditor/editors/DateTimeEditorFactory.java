@@ -48,6 +48,7 @@ import javafx.util.converter.LocalDateStringConverter;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type datetime
  *
  * @author twilight_sparkle
  */
@@ -146,17 +147,16 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             };
             timeZoneComboBox.setCellFactory(cellFactory);
             timeZoneComboBox.setButtonCell(cellFactory.call(null));
-
-
-            final HBox timeZoneHbox = new HBox(timeZoneComboBoxLabel, timeZoneComboBox);
-            timeZoneHbox.setSpacing(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
+            
+            final HBox timeZoneHbox = new HBox(CONTROLS_DEFAULT_HORIZONTAL_SPACING, 
+                    timeZoneComboBoxLabel, timeZoneComboBox);
             final HBox timeSpinnerContainer = createTimeSpinners();
             
-            final VBox controls = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
+            final VBox controls = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, 
+                    timeSpinnerContainer, timeZoneHbox);
             controls.setAlignment(Pos.CENTER);
             controls.setFillWidth(true);
-
-            controls.getChildren().addAll(timeSpinnerContainer, timeZoneHbox);
+            
             return controls;
         }
 
@@ -166,7 +166,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
                     TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
             datePicker.setValue(LocalDate.now());
             datePicker.valueProperty().addListener((v, o, n) -> update());
-            final Label dateLabel = createLabel("Date:", datePicker);          
+            final Label dateLabel = createLabel("Date:", datePicker);
             
             hourSpinner = createTimeSpinner(23, LocalTime.now(ZoneOffset.UTC).getHour(), NUMBER_SPINNER_WIDTH);
             final Label hourSpinnerLabel = createLabel("Hour:", hourSpinner);
@@ -180,22 +180,15 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             milliSpinner = createTimeSpinner(999, 0, MILLIS_SPINNER_WIDTH);
             final Label milliSpinnerLabel = createLabel("Millis:", milliSpinner);
             
-            final HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
             
-            final VBox dateLabelNode = new VBox(5);
-            dateLabelNode.getChildren().addAll(dateLabel, datePicker);
-            final VBox hourLabelNode = new VBox(5);
-            hourLabelNode.getChildren().addAll(hourSpinnerLabel, hourSpinner);
-            final VBox minLabelNode = new VBox(5);
-            minLabelNode.getChildren().addAll(minSpinnerLabel, minSpinner);
-            final VBox secLabelNode = new VBox(5);
-            secLabelNode.getChildren().addAll(secSpinnerLabel, secSpinner);
-            final VBox milliLabelNode = new VBox(5);
-            milliLabelNode.getChildren().addAll(milliSpinnerLabel, milliSpinner);
+            final VBox dateLabelNode = new VBox(5, dateLabel, datePicker);
+            final VBox hourLabelNode = new VBox(5, hourSpinnerLabel, hourSpinner);
+            final VBox minLabelNode = new VBox(5, minSpinnerLabel, minSpinner);
+            final VBox secLabelNode = new VBox(5, secSpinnerLabel, secSpinner);
+            final VBox milliLabelNode = new VBox(5, milliSpinnerLabel, milliSpinner);
 
-            timeSpinnerContainer.getChildren().addAll(dateLabelNode, hourLabelNode, minLabelNode, secLabelNode, milliLabelNode);
-
-            return timeSpinnerContainer;
+            return new HBox(CONTROLS_DEFAULT_HORIZONTAL_SPACING, 
+                    dateLabelNode, hourLabelNode, minLabelNode, secLabelNode, milliLabelNode);
         }
         
         /**

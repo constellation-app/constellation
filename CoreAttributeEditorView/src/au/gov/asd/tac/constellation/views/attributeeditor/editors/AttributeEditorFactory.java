@@ -40,6 +40,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 /**
+ * Editor Factory for creating a custom attribute
  *
  * @author twilight_sparkle
  */
@@ -104,7 +105,18 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             nameText.textProperty().addListener((o, n, v) -> update());
             
             final Label typeLabel = new Label("Attribute Type:");
-            typeCombo = new ComboBox<>();
+            // Populate the type combo with all of the possible graph types.
+            final List<String> attributeTypes = new ArrayList<>();
+            AttributeRegistry.getDefault().getAttributes().entrySet().stream().forEach(entry -> {
+                final Class<? extends AttributeDescription> attrTypeDescr = entry.getValue();
+                final boolean isObject = ObjectAttributeDescription.class.isAssignableFrom(attrTypeDescr);
+                if (!isObject) {
+                    final String attrTypeName = entry.getKey();
+                    attributeTypes.add(attrTypeName);
+                }
+            });
+            Collections.sort(attributeTypes);
+            typeCombo = new ComboBox<>(FXCollections.observableList(attributeTypes));
             typeCombo.setDisable(!isTypeModifiable);
             typeCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
             
@@ -121,28 +133,16 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
                 clearDefaultButton.setDisable(true);
                 update();
             });
-
-            // Populate the type combo with all of the possible graph types.
-            final List<String> attributeTypes = new ArrayList<>();
-            AttributeRegistry.getDefault().getAttributes().entrySet().stream().forEach(entry -> {
-                final Class<? extends AttributeDescription> attrTypeDescr = entry.getValue();
-                final boolean isObject = ObjectAttributeDescription.class.isAssignableFrom(attrTypeDescr);
-                if (!isObject) {
-                    final String attrTypeName = entry.getKey();
-                    attributeTypes.add(attrTypeName);
-                }
-            });
-            Collections.sort(attributeTypes);
-            typeCombo.setItems(FXCollections.observableList(attributeTypes));
             
-            final GridPane controls = new GridPane();
-            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
+            final HBox defaultBox = new HBox(CONTROLS_DEFAULT_HORIZONTAL_SPACING, 
+                    setDefaultButton, clearDefaultButton);
+            
+            final GridPane controls = new GridPane(CONTROLS_DEFAULT_HORIZONTAL_SPACING, CONTROLS_DEFAULT_VERTICAL_SPACING);
 
             controls.addRow(0, nameLabel, nameText);
             controls.addRow(1, typeLabel, typeCombo);
             controls.addRow(2, descLabel, descText);
-            controls.addRow(3, defaultLabel, new HBox(5, setDefaultButton, clearDefaultButton));
+            controls.addRow(3, defaultLabel, defaultBox);
             return controls;
         }
 
@@ -162,7 +162,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
                     update();
                 };
 
-                final AbstractEditor<T> editor = editorFactory.createEditor(restoreDefaultEditOperation, valueValidator, "the default", (T) toTranslator.translate(defaultVal));
+                final AbstractEditor<T> editor = editorFactory.createEditor(restoreDefaultEditOperation, valueValidator, "Default Value", (T) toTranslator.translate(defaultVal));
                 final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
                 dialog.showDialog();
             };

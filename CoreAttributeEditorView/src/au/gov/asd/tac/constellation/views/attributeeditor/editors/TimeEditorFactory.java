@@ -22,15 +22,16 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type time
  *
  * @author twilight_sparkle
  */
@@ -88,69 +89,67 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
             final HBox timeSpinnerContainer = createTimeSpinners();
-            controls.addRow(0, timeSpinnerContainer);
+            
+            final VBox controls = new VBox(timeSpinnerContainer);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
         }
         
         private HBox createTimeSpinners() {
-            hourSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23));
-            minSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59));
-            secSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59));
-            milliSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 999));
-            hourSpinner.getValueFactory().setValue(LocalTime.now(ZoneOffset.UTC).getHour());
-            minSpinner.getValueFactory().setValue(LocalTime.now(ZoneOffset.UTC).getMinute());
-            secSpinner.getValueFactory().setValue(LocalTime.now(ZoneOffset.UTC).getSecond());
-            milliSpinner.getValueFactory().setValue(0);
+            hourSpinner = createTimeSpinner(23, LocalTime.now(ZoneOffset.UTC).getHour(), NUMBER_SPINNER_WIDTH);
+            final Label hourSpinnerLabel = createLabel("Hour:", hourSpinner);
+            
+            minSpinner = createTimeSpinner(59, LocalTime.now(ZoneOffset.UTC).getMinute(), NUMBER_SPINNER_WIDTH);
+            final Label minSpinnerLabel = createLabel("Minute:", minSpinner);
+            
+            secSpinner = createTimeSpinner(59, LocalTime.now(ZoneOffset.UTC).getSecond(), NUMBER_SPINNER_WIDTH);
+            final Label secSpinnerLabel = createLabel("Second:", secSpinner);
+            
+            milliSpinner = createTimeSpinner(999, 0, MILLIS_SPINNER_WIDTH);
+            final Label milliSpinnerLabel = createLabel("Millis:", milliSpinner);
+            
+            final VBox hourLabelNode = new VBox(5, hourSpinnerLabel, hourSpinner);
+            final VBox minLabelNode = new VBox(5, minSpinnerLabel, minSpinner);
+            final VBox secLabelNode = new VBox(5, secSpinnerLabel, secSpinner);
+            final VBox milliLabelNode = new VBox(5, milliSpinnerLabel, milliSpinner);
 
-            final HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
-            final Label hourSpinnerLabel = new Label("hr:");
-            hourSpinnerLabel.setId(LABEL);
-            hourSpinnerLabel.setLabelFor(hourSpinner);
-
-            final Label minSpinnerLabel = new Label("min:");
-            minSpinnerLabel.setId(LABEL);
-            minSpinnerLabel.setLabelFor(minSpinner);
-
-            final Label secSpinnerLabel = new Label("sec:");
-            secSpinnerLabel.setId(LABEL);
-            secSpinnerLabel.setLabelFor(secSpinner);
-
-            final Label milliSpinnerLabel = new Label("ms:");
-            milliSpinnerLabel.setId(LABEL);
-            milliSpinnerLabel.setLabelFor(milliSpinner);
-
-            hourSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
-            minSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
-            secSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
-            milliSpinner.setPrefWidth(MILLIS_SPINNER_WIDTH);
-
-            hourSpinner.setEditable(true);
-            minSpinner.setEditable(true);
-            secSpinner.setEditable(true);
-            milliSpinner.setEditable(true);
-
-            hourSpinner.valueProperty().addListener((o, n, v) -> update());
-            minSpinner.valueProperty().addListener((o, n, v) -> update());
-            secSpinner.valueProperty().addListener((o, n, v) -> update());
-            milliSpinner.valueProperty().addListener((o, n, v) -> update());
-
-            final VBox hourLabelNode = new VBox(5);
-            hourLabelNode.getChildren().addAll(hourSpinnerLabel, hourSpinner);
-            final VBox minLabelNode = new VBox(5);
-            minLabelNode.getChildren().addAll(minSpinnerLabel, minSpinner);
-            final VBox secLabelNode = new VBox(5);
-            secLabelNode.getChildren().addAll(secSpinnerLabel, secSpinner);
-            final VBox milliLabelNode = new VBox(5);
-            milliLabelNode.getChildren().addAll(milliSpinnerLabel, milliSpinner);
-
-            timeSpinnerContainer.getChildren().addAll(hourLabelNode, minLabelNode, secLabelNode, milliLabelNode);
-
-            return timeSpinnerContainer;
+            return new HBox(CONTROLS_DEFAULT_HORIZONTAL_SPACING, 
+                    hourLabelNode, minLabelNode, secLabelNode, milliLabelNode);
+        }
+        
+        /**
+         * Creates a spinner for a measurement of time, for the editor
+         * 
+         * @param maxValue The maximum value on the spinner
+         * @param initialValue The initial value on the spinner
+         * @param spinnerWidth The preferred width of the spinner
+         * @return The newly created spinner object
+         */
+        private Spinner<Integer> createTimeSpinner(final int maxValue, final int initialValue, final int spinnerWidth) {
+            final Spinner<Integer> timeSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, maxValue));
+            timeSpinner.getValueFactory().setValue(initialValue);
+            timeSpinner.setPrefWidth(spinnerWidth);
+            timeSpinner.setEditable(true);
+            timeSpinner.valueProperty().addListener((o, n, v) -> update());
+            
+            return timeSpinner;
+        }
+        
+        /**
+         * Creates a label associated with the given time spinner
+         * 
+         * @param labelText The label text
+         * @param associatedObject The object to set the label for
+         * @return The newly created label
+         */
+        private Label createLabel(final String labelText, final Control associatedObject) {
+            final Label spinnerLabel = new Label(labelText);
+            spinnerLabel.setId(LABEL);
+            spinnerLabel.setLabelFor(associatedObject);
+            
+            return spinnerLabel;
         }
     }
 }

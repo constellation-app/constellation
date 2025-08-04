@@ -25,6 +25,7 @@ import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type boolean
  *
  * @author twilight_sparkle
  */
@@ -72,11 +73,10 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
             checkBox.setAlignment(Pos.CENTER);
             checkBox.selectedProperty().addListener((v, o, n) -> update());
             
-            final VBox controls = new VBox();
+            final VBox controls = new VBox(checkBox);
             controls.setAlignment(Pos.CENTER);
             controls.setFillWidth(true);
-
-            controls.getChildren().add(checkBox);
+            
             return controls;
         }
     }

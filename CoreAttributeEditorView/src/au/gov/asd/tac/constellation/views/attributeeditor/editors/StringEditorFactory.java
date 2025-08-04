@@ -24,13 +24,11 @@ import javafx.scene.control.IndexRange;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type string
  *
  * @author twilight_sparkle
  */
@@ -48,8 +46,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
     }
 
     public class StringEditor extends AbstractEditor<String> {
-
-        private static final int CONTROLS_SPACING = 10;
+        
         private TextArea textArea;
 
         protected StringEditor(final EditOperation editOperation, final String defaultValue, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
@@ -70,17 +67,6 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_SPACING);
-
-            final ColumnConstraints cc = new ColumnConstraints();
-            cc.setHgrow(Priority.ALWAYS);
-            controls.getColumnConstraints().add(cc);
-            final RowConstraints rc = new RowConstraints();
-            rc.setVgrow(Priority.ALWAYS);
-            controls.getRowConstraints().add(rc);
-
             textArea = new TextArea();
             textArea.setWrapText(true);
             textArea.textProperty().addListener((o, n, v) -> update());
@@ -118,8 +104,10 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
                     e.consume();
                 }
             });
-
-            controls.addRow(0, textArea);
+            
+            final VBox controls = new VBox(textArea);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
         }
     }

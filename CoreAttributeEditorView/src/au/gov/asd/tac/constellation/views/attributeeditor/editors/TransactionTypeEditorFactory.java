@@ -36,11 +36,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type transaction_type
  *
  * @author twilight_sparkle
  */
@@ -86,21 +86,16 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
-            typeList = new ListView<>();
-            typeList.setCellFactory(p -> new ListCell<SchemaTransactionType>() {
-                @Override
-                protected void updateItem(final SchemaTransactionType item, final boolean empty) {
-                    super.updateItem(item, empty);
-                    if (!empty && item != null) {
-                        setText(item.getName());
-                    }
+            final Label nameLabel = new Label("Type Name:");
+            final VBox nameBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, nameLabel, nameText);
+            nameText = new TextField();
+            nameText.textProperty().addListener(ev -> {
+                if (!selectionIsActive) {
+                    typeList.getSelectionModel().select(null);
                 }
+                update();
             });
-
+            
             // get all types supported by the current schema
             final List<SchemaTransactionType> types = new ArrayList<>();
             final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
@@ -114,21 +109,19 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
                 types.add(SchemaTransactionTypeUtilities.getDefaultType());
             }
 
-            final Label nameLabel = new Label("Type Name:");
-            nameText = new TextField();
-            final VBox nameBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            nameBox.getChildren().addAll(nameLabel, nameText);
-
-            nameText.textProperty().addListener(ev -> {
-                if (!selectionIsActive) {
-                    typeList.getSelectionModel().select(null);
-                }
-                update();
-            });
-
             final Label listLabel = new Label("Schema Types:");
             Collections.sort(types);
+            typeList = new ListView<>();
             typeList.getItems().addAll(types);
+            typeList.setCellFactory(p -> new ListCell<>() {
+                @Override
+                protected void updateItem(final SchemaTransactionType item, final boolean empty) {
+                    super.updateItem(item, empty);
+                    if (!empty && item != null) {
+                        setText(item.getName());
+                    }
+                }
+            });
 
             typeList.getSelectionModel().selectedItemProperty().addListener(ev -> {
                 selectionIsActive = true;
@@ -138,10 +131,11 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
                 }
                 selectionIsActive = false;
             });
-
-            controls.addRow(0, nameBox);
-            controls.addRow(1, listLabel);
-            controls.addRow(2, typeList);
+            
+            final VBox controls = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, 
+                    nameBox, listLabel, typeList);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
         }
     }

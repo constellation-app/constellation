@@ -32,6 +32,7 @@ import javafx.util.Callback;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type connection_mode
  *
  * @author twilight_sparkle
  */

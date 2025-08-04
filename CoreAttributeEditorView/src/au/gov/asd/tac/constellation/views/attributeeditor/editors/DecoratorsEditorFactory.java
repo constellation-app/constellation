@@ -29,11 +29,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type decorators
  *
  * @author twilight_sparkle
  */
@@ -112,10 +112,8 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
             swCombo = new ComboBox<>(observableAttributeNames);
             swCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
 
-            final GridPane controls = new GridPane();
+            final GridPane controls = new GridPane(CONTROLS_DEFAULT_HORIZONTAL_SPACING, CONTROLS_DEFAULT_VERTICAL_SPACING);
             controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
             
             controls.addRow(0, nwLabel, nwCombo, neLabel, neCombo);
             controls.addRow(1, swLabel, swCombo, seLabel, seCombo);

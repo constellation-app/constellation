@@ -16,12 +16,11 @@
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.TransactionGraphLabelsAttributeDescription;
+import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.attributeeditor.AttributeEditorDialog;
@@ -49,6 +48,7 @@ import javafx.scene.shape.Rectangle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type graph_labels_transactions
  *
  * @author twilight_sparkle
  */
@@ -68,7 +68,6 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
     public class GraphLabelsEditor extends AbstractEditor<GraphLabels> {
 
         private final List<LabelEntry> labels = new ArrayList<>();
-        private final VBox labelPaneContent = new VBox(5);
         private final VBox labelEntries = new VBox(5);
         private final Button addButton = new Button("", new ImageView(UserInterfaceIconProvider.ADD.buildImage(16)));
         private final List<String> attributeNames = new ArrayList<>();
@@ -101,35 +100,22 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
         @Override
         protected Node createEditorControls() {
             // get all transaction attributes currently in the graph
-            try (final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph()) {
-                for (int i = 0; i < rg.getAttributeCount(GraphElementType.TRANSACTION); i++) {
-                    attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.TRANSACTION, i)));
-                }
-            }
+            attributeNames.addAll(AttributeUtilities.getAttributeNames(GraphElementType.TRANSACTION));
             attributeNames.sort(String::compareTo);
 
-            final HBox labelTitles = new HBox();
-            final Label attrLabel = new Label("Attribute");
-            attrLabel.setAlignment(Pos.CENTER);
-            attrLabel.setPrefWidth(150);
-            final Label colorLabel = new Label("Color");
-            colorLabel.setPrefWidth(40);
-            colorLabel.setAlignment(Pos.CENTER);
-            final Label sizeLabel = new Label("Size");
-            sizeLabel.setPrefWidth(50);
-            sizeLabel.setAlignment(Pos.CENTER);
-            final Label positionLabel = new Label("Position");
-            positionLabel.setPrefWidth(115);
-            positionLabel.setAlignment(Pos.CENTER);
-            labelTitles.getChildren().addAll(attrLabel, colorLabel, sizeLabel, positionLabel);
+            final Label attrLabel = createLabel("Attribute", 150);
+            final Label colorLabel = createLabel("Color", 40);
+            final Label sizeLabel = createLabel("Size", 50);
+            final Label positionLabel = createLabel("Position", 115);
+            final HBox labelTitles = new HBox(attrLabel, colorLabel, sizeLabel, positionLabel);
+            
+            final VBox labelPaneContent = new VBox(5, labelTitles, labelEntries);
             labelPaneContent.setPadding(new Insets(5));
-            labelPaneContent.getChildren().addAll(labelTitles, labelEntries);
 
-            final ScrollPane labelsScrollPane = new ScrollPane();
+            final ScrollPane labelsScrollPane = new ScrollPane(labelPaneContent);
             labelsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             labelsScrollPane.setPrefHeight(200);
             labelsScrollPane.setPrefWidth(400);
-            labelsScrollPane.setContent(labelPaneContent);
 
             addButton.setOnAction(e -> {
                 new LabelEntry(labels, labelEntries, attributeNames.isEmpty() ? "" : attributeNames.get(0), ConstellationColor.WHITE, 1);
@@ -137,16 +123,23 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
                 update();
             });
             final Label addButtonLabel = new Label("Add Label");
-            final FlowPane addPane = new FlowPane();
+            final FlowPane addPane = new FlowPane(addButtonLabel, addButton);
             addPane.setHgap(10);
             addPane.setAlignment(Pos.CENTER_RIGHT);
-            addPane.getChildren().addAll(addButtonLabel, addButton);
 
-            final VBox controls = new VBox(10);
+            final VBox controls = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, 
+                    labelsScrollPane, addPane);
             controls.setPrefWidth(400);
-            controls.getChildren().addAll(labelsScrollPane, addPane);
 
             return controls;
+        }
+        
+        private Label createLabel(final String labelText, final double prefWidth) {
+            final Label label = new Label(labelText);
+            label.setAlignment(Pos.CENTER);
+            label.setPrefWidth(prefWidth);
+            
+            return label;
         }
 
         private class LabelEntry {
@@ -241,7 +234,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
 
             private EventHandler<? super MouseEvent> getChooseColorEventHandler() {
                 return e -> {
-                    final AttributeValueEditorFactory<ConstellationColor> editorFactory = new ColorEditorFactory();
+                    final ColorEditorFactory editorFactory = new ColorEditorFactory();
 
                     final EditOperation setColorEditOperation = value -> {
                         color = value == null ? ConstellationColor.WHITE.getJavaFXColor() : ((ConstellationColor) value).getJavaFXColor();

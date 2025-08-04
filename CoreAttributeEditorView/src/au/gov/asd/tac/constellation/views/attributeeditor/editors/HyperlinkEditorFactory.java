@@ -23,10 +23,11 @@ import java.net.URISyntaxException;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type hyperlink
  *
  * @author twilight_sparkle
  */
@@ -69,12 +70,12 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
             textField = new TextField();
             textField.textProperty().addListener((o, n, v) -> update());
-            controls.addRow(0, textField);
+            
+            final VBox controls = new VBox(textField);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
         }
     }

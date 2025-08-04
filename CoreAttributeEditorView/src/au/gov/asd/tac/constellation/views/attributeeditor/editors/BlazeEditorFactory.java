@@ -41,7 +41,7 @@ import javafx.util.Callback;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Blaze Editor Factory
+ * Editor Factory for attributes of type blaze
  *
  * @author twilight_sparkle
  */
@@ -106,8 +106,8 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             final Button westButton = createAngleButton("W", "270");
             final Button northWestButton = createAngleButton("NW", "315");
             
-            final HBox angleHBox = new HBox();
-            angleHBox.getChildren().addAll(northButton, northEastButton, eastButton, southEastButton, southButton, southWestButton, westButton, northWestButton);
+            final HBox angleHBox = new HBox(northButton, northEastButton, eastButton, southEastButton, 
+                    southButton, southWestButton, westButton, northWestButton);
             angleLabel.setLabelFor(angleHBox);
 
             // create the color controls
@@ -163,10 +163,8 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
                 update();
             });
             
-            final GridPane controls = new GridPane();
+            final GridPane controls = new GridPane(CONTROLS_DEFAULT_HORIZONTAL_SPACING, CONTROLS_DEFAULT_VERTICAL_SPACING);
             controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
 
             controls.addRow(0, angleLabel, angleTextField);
             controls.add(angleHBox, 0, 1, 2, 1);

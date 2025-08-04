@@ -25,6 +25,7 @@ import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type long_or_null
  *
  * @author messier
  */
@@ -67,13 +68,12 @@ public class LongObjectEditorFactory extends AttributeValueEditorFactory<Long> {
 
         @Override
         protected Node createEditorControls() {
-            final VBox controls = new VBox();
-            controls.setAlignment(Pos.CENTER);
-
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-
-            controls.getChildren().add(numberField);
+            
+            final VBox controls = new VBox(numberField);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
         }
     }
