@@ -170,7 +170,7 @@ public class ClusteringManager {
         }
     }
 
-    public void dimOrHideTree(final long lowerTimeExtent, final long upperTimeExtent, int exclusionState) {
+    protected void dimOrHideTree(final long lowerTimeExtent, final long upperTimeExtent, int exclusionState) {
         final List<TreeElement> stack = new ArrayList<>();
 
         stack.add(tree);
@@ -180,24 +180,26 @@ public class ClusteringManager {
         oldElementsToUnhide = elementsToUnhide;
         elementsToUnhide = new HashSet<>();
 
-        if (tree != null) {
-            while (!stack.isEmpty()) {
-                final TreeElement te = stack.remove(stack.size() - 1);
-                if (te.getUpperTimeExtent() < lowerTimeExtent || te.getLowerTimeExtent() > upperTimeExtent) {
-                    continue;
-                }
+        if (tree == null) {
+            return;
+        }
 
-                if (te.getUpperTimeExtent() <= upperTimeExtent && te.getLowerTimeExtent() >= lowerTimeExtent) {
-                    if (exclusionState == 1) {
-                        elementsToUndim.add(te);
-                    } else if (exclusionState == 2) {
-                        elementsToUnhide.add(te);
-                    }
-                } else {
-                    final TreeNode node = (TreeNode) te;
-                    stack.add(node.firstChild);
-                    stack.add(node.lastChild);
+        while (!stack.isEmpty()) {
+            final TreeElement te = stack.removeLast();
+            if (te.getUpperTimeExtent() < lowerTimeExtent || te.getLowerTimeExtent() > upperTimeExtent) {
+                continue;
+            }
+
+            if (te.getUpperTimeExtent() <= upperTimeExtent && te.getLowerTimeExtent() >= lowerTimeExtent) {
+                if (exclusionState == 1) {
+                    elementsToUndim.add(te);
+                } else if (exclusionState == 2) {
+                    elementsToUnhide.add(te);
                 }
+            } else {
+                final TreeNode node = (TreeNode) te;
+                stack.add(node.firstChild);
+                stack.add(node.lastChild);
             }
         }
     }
@@ -296,7 +298,6 @@ public class ClusteringManager {
 
                                 if (element instanceof TreeLeaf leaf) {
                                     transactionsToUndim.add(leaf.getId());
-
                                     final Integer countA = undimmedVerticesOnGraph.get(leaf.vertexIdA);
                                     final Integer countB = undimmedVerticesOnGraph.get(leaf.vertexIdB);
                                     undimmedVerticesOnGraph.put(leaf.vertexIdA, countA == null ? 1 : countA + 1);
@@ -391,6 +392,7 @@ public class ClusteringManager {
             final Set<Integer> verticesToBeHidden = new HashSet<>();
 
             final WritableGraph wg = graph.getGraph().getWritableGraph(getName(), false, this);
+
             try {
                 dimOrHideTree(lowerTimeExtent, upperTimeExtent, exclusionState);
 
@@ -402,11 +404,15 @@ public class ClusteringManager {
                 final List<TreeElement> stack = new ArrayList<>();
 
                 if (exclusionState == 1) {
-                    populate(stack, verticesToBeDimmed, undimmedVerticesOnGraph, elementsToUndim, oldElementsToUndim, wg, transDimAttr, transHideAttr, true);
+                    populate(stack, verticesToBeDimmed, verticesToBeUndimmed, undimmedVerticesOnGraph, elementsToUndim, oldElementsToUndim, wg, transDimAttr, transHideAttr, true);
                 } else if (exclusionState == 2) {
-                    populate(stack, verticesToBeHidden, unhiddenVerticesOnGraph, elementsToUnhide, oldElementsToUnhide, wg, transDimAttr, transHideAttr, false);
+                    populate(stack, verticesToBeHidden, verticesToBeUnhidden, unhiddenVerticesOnGraph, elementsToUnhide, oldElementsToUnhide, wg, transDimAttr, transHideAttr, false);
                 }
 
+//                System.out.println("verticesToBeUndimmed " + verticesToBeUndimmed);
+//                System.out.println("verticesToBeDimmed " + verticesToBeDimmed);
+//                System.out.println("verticesToBeUnhidden " + verticesToBeUnhidden);
+//                System.out.println("verticesToBeHidden " + verticesToBeHidden);
                 for (final Integer vertexId : verticesToBeUndimmed) {
                     if (!verticesToBeDimmed.contains(vertexId)) {
                         wg.setBooleanValue(vertDimAttr, vertexId, false);
@@ -438,11 +444,25 @@ public class ClusteringManager {
             }
         }
 
-        private void populate(final List<TreeElement> stack, final Set<Integer> vertices, final Map<Integer, Integer> verticesOnGraph, final Set<TreeElement> elements, final Set<TreeElement> oldElements, final WritableGraph wg, final int transDimAttr, final int transHideAttr, final boolean dimVertices) {
+        // TODO: figure out how to reorgnise to have less arguments
+        // Figure out if stack can be a local variable
+        private void populate(final List<TreeElement> stack,
+                final Set<Integer> vertices,
+                final Set<Integer> verticesToUn,
+                final Map<Integer, Integer> verticesOnGraph,
+                final Set<TreeElement> elements,
+                final Set<TreeElement> oldElements,
+                final WritableGraph wg,
+                final int transDimAttr,
+                final int transHideAttr,
+                final boolean dimVertices) {
+
             if (oldElements == null || elements == null) {
                 return;
             }
 
+            // TODO: these two blocks could be turned into a function, mayhaps
+            // OLD is dim/hide
             for (final TreeElement te : oldElements) {
                 if (elements.contains(te)) {
                     continue;
@@ -452,7 +472,7 @@ public class ClusteringManager {
                 } else {
                     stack.add(te);
                     while (!stack.isEmpty()) {
-                        final TreeElement element = stack.remove(stack.size() - 1);
+                        final TreeElement element = stack.removeLast();
 
                         if (element instanceof TreeLeaf leaf) {
                             processLeafOldGraph(vertices, verticesOnGraph, leaf, wg, transDimAttr, transHideAttr, dimVertices);
@@ -466,19 +486,21 @@ public class ClusteringManager {
                 }
             }
 
+            // NEW is UN-whatever
             for (final TreeElement te : elements) {
                 if (oldElements.contains(te)) {
                     continue;
                 }
+
                 if (te instanceof TreeLeaf leaf) {
-                    processLeaf(vertices, verticesOnGraph, leaf, wg, transDimAttr, transHideAttr);
+                    processLeaf(verticesToUn, verticesOnGraph, leaf, wg, transDimAttr, transHideAttr);
                 } else {
                     stack.add(te);
                     while (!stack.isEmpty()) {
-                        final TreeElement element = stack.remove(stack.size() - 1);
+                        final TreeElement element = stack.removeLast();
 
                         if (element instanceof TreeLeaf leaf) {
-                            processLeaf(vertices, verticesOnGraph, leaf, wg, transDimAttr, transHideAttr);
+                            processLeaf(verticesToUn, verticesOnGraph, leaf, wg, transDimAttr, transHideAttr);
                         } else {
                             final TreeNode node = (TreeNode) element;
 
@@ -491,8 +513,13 @@ public class ClusteringManager {
         }
 
         private void processLeafOldGraph(final Set<Integer> vertices, final Map<Integer, Integer> verticesOnGraph, final TreeLeaf leaf, final WritableGraph wg, final int transDimAttr, final int transHideAttr, final boolean dimVertices) {
-            final int countA = verticesOnGraph.get(leaf.vertexIdA) - 1;
-            final int countB = verticesOnGraph.get(leaf.vertexIdB) - 1;
+            final Integer countAObject = verticesOnGraph.get(leaf.vertexIdA);
+            // final int countA = (countAObject != null ? countAObject : 0) - 1;
+            final int countA = countAObject != null ? countAObject - 1 : 0;
+
+            final Integer countBObject = verticesOnGraph.get(leaf.vertexIdB);
+//        final int countB = (countBObject != null ? countBObject : 0) - 1;
+            final int countB = countBObject != null ? countBObject - 1 : 0;
 
             if (countA == 0) {
                 vertices.add(leaf.vertexIdA);
