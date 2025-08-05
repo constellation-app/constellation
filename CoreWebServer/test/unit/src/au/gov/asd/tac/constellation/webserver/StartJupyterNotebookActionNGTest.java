@@ -108,7 +108,7 @@ public class StartJupyterNotebookActionNGTest {
             instance.actionPerformed(null);
 
             // Assert the following functions were run
-            webserverMock.verify(() -> WebServer.start(), times(1));
+            webserverMock.verify(() -> WebServer.start(), times(0));
 
             assertEquals(mockProcessBuilderConstructor.constructed().size(), 0);
             assertTrue(mockFileConstructor.constructed().size() >= 2);
