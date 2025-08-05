@@ -23,6 +23,7 @@ import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -108,7 +109,7 @@ public class StartJupyterNotebookActionNGTest {
             instance.actionPerformed(null);
 
             // Assert the following functions were run
-            webserverMock.verify(() -> WebServer.start(), times(0));
+            webserverMock.verify(() -> WebServer.start(), never());
 
             assertEquals(mockProcessBuilderConstructor.constructed().size(), 0);
             assertTrue(mockFileConstructor.constructed().size() >= 2);
