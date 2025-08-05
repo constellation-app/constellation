@@ -44,6 +44,7 @@ import java.util.Set;
  *
  * @author betelgeuse
  */
+/**/
 public class ClusteringManager {
 
     private final List<TreeLeaf> leaves = new ArrayList<>();
@@ -171,10 +172,6 @@ public class ClusteringManager {
     }
 
     protected void dimOrHideTree(final long lowerTimeExtent, final long upperTimeExtent, int exclusionState) {
-        final List<TreeElement> stack = new ArrayList<>();
-
-        stack.add(tree);
-
         oldElementsToUndim = elementsToUndim;
         elementsToUndim = new HashSet<>();
         oldElementsToUnhide = elementsToUnhide;
@@ -183,6 +180,9 @@ public class ClusteringManager {
         if (tree == null) {
             return;
         }
+
+        final List<TreeElement> stack = new ArrayList<>();
+        stack.add(tree);
 
         while (!stack.isEmpty()) {
             final TreeElement te = stack.removeLast();
@@ -408,10 +408,6 @@ public class ClusteringManager {
                     populateDimOrHideSets(verticesToBeHidden, verticesToBeUnhidden, unhiddenVerticesOnGraph, elementsToUnhide, oldElementsToUnhide, wg, transDimAttr, transHideAttr, false);
                 }
 
-//                System.out.println("verticesToBeUndimmed " + verticesToBeUndimmed);
-//                System.out.println("verticesToBeDimmed " + verticesToBeDimmed);
-//                System.out.println("verticesToBeUnhidden " + verticesToBeUnhidden);
-//                System.out.println("verticesToBeHidden " + verticesToBeHidden);
                 for (final Integer vertexId : verticesToBeUndimmed) {
                     if (!verticesToBeDimmed.contains(vertexId)) {
                         wg.setBooleanValue(vertDimAttr, vertexId, false);
@@ -459,7 +455,7 @@ public class ClusteringManager {
 
             final List<TreeElement> stack = new ArrayList<>();
 
-            // OLD is dim/hide
+            // Figures out which vertices to dim/hide
             for (final TreeElement te : oldElements) {
                 if (elements.contains(te)) {
                     continue;
@@ -477,7 +473,7 @@ public class ClusteringManager {
                 }
             }
 
-            // NEW is UN-whatever
+            // Figures out which vertices to undim/unhide
             for (final TreeElement te : elements) {
                 if (oldElements.contains(te)) {
                     continue;

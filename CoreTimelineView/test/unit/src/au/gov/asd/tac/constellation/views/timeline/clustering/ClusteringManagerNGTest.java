@@ -26,11 +26,11 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.views.timeline.TimeExtents;
 import au.gov.asd.tac.constellation.views.timeline.clustering.ClusteringManager.UpdateDimOrHidePlugin;
-import org.eclipse.emf.ecore.resource.URIConverter;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -177,11 +177,105 @@ public class ClusteringManagerNGTest {
 //        fail("The test case is a prototype.");
 //    }
     @Test
-    public void testUpdateDimOrHidePluginExecute() throws Exception {
-        System.out.println("UpdateDimOrHidePlugin execute");
+    public void testUpdateDimOrHidePluginFullDim() throws Exception {
+        System.out.println("UpdateDimOrHidePlugin execute full dim");
 
-        // Generate Tree
+        // Setup arguments
         final DualGraph graph = createGraph();
+        final long lowerTimeExtent = 0L;
+        final long upperTimeExtent = 1L;
+
+        final int exclusionState = 1;
+
+        updateDimOrHidePluginHelper(graph, lowerTimeExtent, upperTimeExtent, exclusionState);
+
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            final int vertDimAttr = VisualConcept.VertexAttribute.DIMMED.get(rg);
+            //final int vertHideAttr = VisualConcept.VertexAttribute.VISIBILITY.get(rg);
+            //rg.getIntValue(vertHideAttr, vxID);
+
+            for (int pos = 0; pos < rg.getVertexCount(); pos++) {
+                int vxID = rg.getVertex(pos);
+                assertTrue(rg.getBooleanValue(vertDimAttr, vxID));
+            }
+        }
+    }
+
+    @Test
+    public void testUpdateDimOrHidePluginPartialDim() throws Exception {
+        System.out.println("UpdateDimOrHidePlugin execute partial dim");
+
+        // Setup arguments
+        final DualGraph graph = createGraph();
+        final long lowerTimeExtent = 94677120000L;
+        final long upperTimeExtent = 946944000000L;
+
+        final int exclusionState = 1;
+
+        updateDimOrHidePluginHelper(graph, lowerTimeExtent, upperTimeExtent, exclusionState);
+
+        final boolean[] expectedResults = {false, false, false, false, true};
+
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            final int vertDimAttr = VisualConcept.VertexAttribute.DIMMED.get(rg);
+
+            for (int pos = 0; pos < rg.getVertexCount(); pos++) {
+                int vxID = rg.getVertex(pos);
+                assertEquals(rg.getBooleanValue(vertDimAttr, vxID), expectedResults[pos]);
+            }
+        }
+    }
+
+    @Test
+    public void testUpdateDimOrHidePluginFullHide() throws Exception {
+        System.out.println("UpdateDimOrHidePlugin execute full hide");
+
+        // Setup arguments
+        final DualGraph graph = createGraph();
+        final long lowerTimeExtent = 0L;
+        final long upperTimeExtent = 1L;
+        final int exclusionState = 2;
+
+        final int expectedResult = 0;
+
+        updateDimOrHidePluginHelper(graph, lowerTimeExtent, upperTimeExtent, exclusionState);
+
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            final int vertHideAttr = VisualConcept.VertexAttribute.VISIBILITY.get(rg);
+
+            for (int pos = 0; pos < rg.getVertexCount(); pos++) {
+                int vxID = rg.getVertex(pos);
+                assertEquals(rg.getIntValue(vertHideAttr, vxID), expectedResult);
+            }
+        }
+    }
+
+    @Test
+    public void testUpdateDimOrHidePluginPartialHide() throws Exception {
+        System.out.println("UpdateDimOrHidePlugin execute partial hide");
+
+        // Setup arguments
+        final DualGraph graph = createGraph();
+        final long lowerTimeExtent = 94677120000L;
+        final long upperTimeExtent = 946944000000L;
+        final int exclusionState = 2;
+
+        final int[] expectedResults = {1, 1, 1, 1, 0};
+
+        updateDimOrHidePluginHelper(graph, lowerTimeExtent, upperTimeExtent, exclusionState);
+
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            final int vertHideAttr = VisualConcept.VertexAttribute.VISIBILITY.get(rg);
+
+            for (int pos = 0; pos < rg.getVertexCount(); pos++) {
+                int vxID = rg.getVertex(pos);
+                assertEquals(rg.getIntValue(vertHideAttr, vxID), expectedResults[pos]);
+            }
+        }
+    }
+
+    private void updateDimOrHidePluginHelper(final DualGraph graph, final long lowerTimeExtent, final long upperTimeExtent, final int exclusionState) throws Exception {
+
         final String datetimeAttribute = "DateTime";
         final boolean selectedOnly = false;
 
@@ -189,35 +283,19 @@ public class ClusteringManagerNGTest {
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             clusteringManager.generateTree(rg, datetimeAttribute, selectedOnly);
         }
-        // Dim or Hide tree
-        // Execute plugin
 
         final ClusteringManager.ExclusionStateNotifier mockNotifier = mock(ClusteringManager.ExclusionStateNotifier.class);
-        final long lowerTimeExtent = 0;
-        final long upperTimeExtent = 1422230401001L;
-        //final long upperTimeExtent = Long.MAX_VALUE;
-        final int exclusionState = 1;
-
-        final ClusteringManager.UpdateDimOrHidePlugin plugin = clusteringManager.new UpdateDimOrHidePlugin(lowerTimeExtent, upperTimeExtent, exclusionState, mockNotifier);
 
         final PluginGraphs mockPluginGraphs = mock(PluginGraphs.class);
-//        final Graph mockGraph = mock(Graph.class);
-//        final WritableGraph mockWritableGraph = mock(WritableGraph.class);
-//
         when(mockPluginGraphs.getGraph()).thenReturn(graph);
-//        when(mockGraph.getWritableGraph(anyString(), anyBoolean(), any())).thenReturn(mockWritableGraph);
 
-        plugin.execute(mockPluginGraphs, null, null);
+        // Execute plugin to setup tree
+        final ClusteringManager.UpdateDimOrHidePlugin plugin1 = clusteringManager.new UpdateDimOrHidePlugin(0, Long.MAX_VALUE, exclusionState, mockNotifier);
+        plugin1.execute(mockPluginGraphs, null, null);
 
-        try (final ReadableGraph rg = graph.getReadableGraph()) {
-            final int vertDimAttr = VisualConcept.VertexAttribute.DIMMED.get(rg);
-            final int vertHideAttr = VisualConcept.VertexAttribute.VISIBILITY.get(rg);
-
-            for (int pos = 0; pos < rg.getVertexCount(); pos++) {
-                int vxID = rg.getVertex(pos);
-                System.out.println(rg.getBooleanValue(vertDimAttr, vxID) + " " + rg.getIntValue(vertHideAttr, vxID));
-            }
-        }
+        // Execute plugin with desired upper and lower extents
+        final ClusteringManager.UpdateDimOrHidePlugin plugin2 = clusteringManager.new UpdateDimOrHidePlugin(lowerTimeExtent, upperTimeExtent, exclusionState, mockNotifier);
+        plugin2.execute(mockPluginGraphs, null, null);
     }
 
     private DualGraph createGraph() throws Exception {
@@ -242,7 +320,7 @@ public class ClusteringManagerNGTest {
             final int tId4 = wg.addTransaction(vxId3, vxId4, false);
 
             final int selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            final int selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+            VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
             final int datetimeAttributeId = TemporalConcept.TransactionAttribute.DATETIME.ensure(wg);
 
             // make the selection
@@ -250,11 +328,11 @@ public class ClusteringManagerNGTest {
             wg.setBooleanValue(selectedVertexAttr, vxId2, true);
 
             //ZonedDateTime min = ZonedDateTime.ofInstant(Instant.now(), TimeZoneUtilities.UTC);
-            wg.setStringValue(datetimeAttributeId, tId0, "2015-01-26 00:00:01.000 +00:00 [UTC]");
-            wg.setStringValue(datetimeAttributeId, tId1, "2015-01-27 00:00:01.000 +00:00 [UTC]");
-            wg.setStringValue(datetimeAttributeId, tId2, "2015-01-28 00:00:01.000 +00:00 [UTC]");
-            wg.setStringValue(datetimeAttributeId, tId3, "2015-01-29 00:00:01.000 +00:00 [UTC]");
-            wg.setStringValue(datetimeAttributeId, tId4, "2015-01-30 00:00:01.000 +00:00 [UTC]");
+            wg.setStringValue(datetimeAttributeId, tId0, "2000-01-01 00:00:00.000 +00:00 [UTC]");
+            wg.setStringValue(datetimeAttributeId, tId1, "2000-01-02 00:00:00.000 +00:00 [UTC]");
+            wg.setStringValue(datetimeAttributeId, tId2, "2000-01-03 00:00:00.000 +00:00 [UTC]");
+            wg.setStringValue(datetimeAttributeId, tId3, "2000-01-04 00:00:00.000 +00:00 [UTC]");
+            wg.setStringValue(datetimeAttributeId, tId4, "2000-01-05 00:00:00.000 +00:00 [UTC]");
 
         } finally {
             wg.commit();
