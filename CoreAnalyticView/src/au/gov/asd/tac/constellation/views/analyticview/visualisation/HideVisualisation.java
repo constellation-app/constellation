@@ -110,7 +110,7 @@ public class HideVisualisation<C> extends GraphVisualisation {
     @Override
     public void setSelected(final boolean selected) {
         hideButton.setSelected(selected);
-        hideSlider.setDisable(selected);
+        hideSlider.setDisable(!selected);
         activated = selected;
     }
     
