@@ -160,6 +160,8 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             field = new SpellCheckingTextArea(parameter.isSpellCheckEnabled());
             if (suggestedHeight > 1) {
                 field.setWrapText(true);
+            } else {
+                field.autoComplete(recentValuesCombo.getItems());
             }
 
             Platform.runLater(() -> {
