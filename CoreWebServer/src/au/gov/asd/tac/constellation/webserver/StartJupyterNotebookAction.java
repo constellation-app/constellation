@@ -53,8 +53,6 @@ public class StartJupyterNotebookAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        WebServer.start();
-
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String dir = prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
         final File dirFile = new File(dir);
@@ -64,6 +62,8 @@ public class StartJupyterNotebookAction implements ActionListener {
             alertUserUnableToStart();
             return;
         }
+
+        WebServer.start();
 
         try {
             // Start the jupyter-notebook process with its stderr redirected to
