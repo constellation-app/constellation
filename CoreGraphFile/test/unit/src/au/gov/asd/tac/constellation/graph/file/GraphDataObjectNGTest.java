@@ -42,9 +42,6 @@ import org.testng.annotations.Test;
  */
 public class GraphDataObjectNGTest {
 
-    public GraphDataObjectNGTest() {
-    }
-
     @Test
     public void createNodeDelegateTest() {
         final GraphDataObject gdoMock = mock(GraphDataObject.class);

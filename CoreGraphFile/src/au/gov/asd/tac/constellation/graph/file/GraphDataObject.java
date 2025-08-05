@@ -243,7 +243,6 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
      * Release the lock on the primary file currently stored in this GraphDataObject.
      */
     public void unlockFile() {
-
         final FileLock lock = getFileLock();
 
         if (lock != null) {
