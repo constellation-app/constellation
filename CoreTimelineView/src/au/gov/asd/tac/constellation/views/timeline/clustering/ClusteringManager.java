@@ -44,7 +44,6 @@ import java.util.Set;
  *
  * @author betelgeuse
  */
-/**/
 public class ClusteringManager {
 
     private final List<TreeLeaf> leaves = new ArrayList<>();
