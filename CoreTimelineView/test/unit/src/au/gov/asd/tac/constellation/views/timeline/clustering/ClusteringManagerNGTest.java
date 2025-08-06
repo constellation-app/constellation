@@ -231,7 +231,6 @@ public class ClusteringManagerNGTest {
             wg.setBooleanValue(selectedVertexAttr, vxId0, true);
             wg.setBooleanValue(selectedVertexAttr, vxId2, true);
 
-            //ZonedDateTime min = ZonedDateTime.ofInstant(Instant.now(), TimeZoneUtilities.UTC);
             wg.setStringValue(datetimeAttributeId, tId0, "2000-01-01 00:00:00.000 +00:00 [UTC]");
             wg.setStringValue(datetimeAttributeId, tId1, "2000-01-02 00:00:00.000 +00:00 [UTC]");
             wg.setStringValue(datetimeAttributeId, tId2, "2000-01-03 00:00:00.000 +00:00 [UTC]");
