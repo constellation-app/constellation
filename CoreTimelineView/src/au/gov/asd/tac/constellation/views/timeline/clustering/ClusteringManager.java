@@ -399,12 +399,11 @@ public class ClusteringManager {
                 final int vertDimAttr = VisualConcept.VertexAttribute.DIMMED.ensure(wg);
                 final int transDimAttr = VisualConcept.TransactionAttribute.DIMMED.ensure(wg);
                 final int vertHideAttr = VisualConcept.VertexAttribute.VISIBILITY.ensure(wg);
-                final int transHideAttr = VisualConcept.TransactionAttribute.VISIBILITY.ensure(wg);
 
                 if (exclusionState == 1) {
-                    populateDimOrHideSets(verticesToBeDimmed, verticesToBeUndimmed, undimmedVerticesOnGraph, elementsToUndim, oldElementsToUndim, wg, transDimAttr, transHideAttr, true);
+                    populateDimOrHideSets(verticesToBeDimmed, verticesToBeUndimmed, undimmedVerticesOnGraph, elementsToUndim, oldElementsToUndim, wg, true);
                 } else if (exclusionState == 2) {
-                    populateDimOrHideSets(verticesToBeHidden, verticesToBeUnhidden, unhiddenVerticesOnGraph, elementsToUnhide, oldElementsToUnhide, wg, transDimAttr, transHideAttr, false);
+                    populateDimOrHideSets(verticesToBeHidden, verticesToBeUnhidden, unhiddenVerticesOnGraph, elementsToUnhide, oldElementsToUnhide, wg, false);
                 }
 
                 for (final Integer vertexId : verticesToBeUndimmed) {
@@ -444,8 +443,6 @@ public class ClusteringManager {
                 final Set<TreeElement> elements,
                 final Set<TreeElement> oldElements,
                 final WritableGraph wg,
-                final int transDimAttr,
-                final int transHideAttr,
                 final boolean dimVertices) {
 
             if (oldElements == null || elements == null) {
@@ -465,7 +462,7 @@ public class ClusteringManager {
                     final TreeElement element = stack.removeLast();
 
                     if (element instanceof TreeLeaf leaf) {
-                        processLeafOldGraph(vertices, verticesOnGraph, leaf, wg, transDimAttr, transHideAttr, dimVertices);
+                        processLeafOldGraph(vertices, verticesOnGraph, leaf, wg, dimVertices);
                     } else {
                         addLeavesToStack(element, stack);
                     }
@@ -483,7 +480,7 @@ public class ClusteringManager {
                     final TreeElement element = stack.removeLast();
 
                     if (element instanceof TreeLeaf leaf) {
-                        processLeaf(verticesToUn, verticesOnGraph, leaf, wg, transDimAttr, transHideAttr);
+                        processLeaf(verticesToUn, verticesOnGraph, leaf, wg);
                     } else {
                         addLeavesToStack(element, stack);
                     }
@@ -491,7 +488,7 @@ public class ClusteringManager {
             }
         }
 
-        private void processLeafOldGraph(final Set<Integer> vertices, final Map<Integer, Integer> verticesOnGraph, final TreeLeaf leaf, final WritableGraph wg, final int transDimAttr, final int transHideAttr, final boolean dimVertices) {
+        private void processLeafOldGraph(final Set<Integer> vertices, final Map<Integer, Integer> verticesOnGraph, final TreeLeaf leaf, final WritableGraph wg, final boolean dimVertices) {
             final Integer countAObject = verticesOnGraph.get(leaf.vertexIdA);
             final int countA = countAObject != null ? countAObject - 1 : 0;
 
@@ -511,11 +508,17 @@ public class ClusteringManager {
                 verticesOnGraph.put(leaf.vertexIdB, countB);
             }
 
+            final int transDimAttr = VisualConcept.TransactionAttribute.DIMMED.ensure(wg);
+            final int transHideAttr = VisualConcept.TransactionAttribute.VISIBILITY.ensure(wg);
+
             wg.setBooleanValue(transDimAttr, leaf.getId(), dimVertices);
             wg.setIntValue(transHideAttr, leaf.getId(), dimVertices ? 1 : 0);
         }
 
-        private void processLeaf(final Set<Integer> vertices, final Map<Integer, Integer> verticesOnGraph, final TreeLeaf leaf, final WritableGraph wg, final int transDimAttr, final int transHideAttr) {
+        private void processLeaf(final Set<Integer> vertices, final Map<Integer, Integer> verticesOnGraph, final TreeLeaf leaf, final WritableGraph wg) {
+            final int transDimAttr = VisualConcept.TransactionAttribute.DIMMED.ensure(wg);
+            final int transHideAttr = VisualConcept.TransactionAttribute.VISIBILITY.ensure(wg);
+
             wg.setBooleanValue(transDimAttr, leaf.getId(), false);
             wg.setIntValue(transHideAttr, leaf.getId(), 1);
 
