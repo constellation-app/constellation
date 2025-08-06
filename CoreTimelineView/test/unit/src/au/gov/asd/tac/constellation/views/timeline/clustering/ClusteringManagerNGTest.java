@@ -43,23 +43,24 @@ import org.testng.annotations.Test;
  */
 public class ClusteringManagerNGTest {
 
-    public ClusteringManagerNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Left intentionally empty
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Left intentionally empty
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Left intentionally empty
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Left intentionally empty
     }
 
     /**
@@ -81,101 +82,6 @@ public class ClusteringManagerNGTest {
         assertEquals(result.getClass(), TimeExtents.class);
     }
 
-//    /**
-//     * Test of filterTree method, of class ClusteringManager.
-//     */
-//    @Test
-//    public void testFilterTree() {
-//        System.out.println("filterTree");
-//        double pixelsPerTransaction = 0.0;
-//        long lowerTimeExtent = 0L;
-//        long upperTimeExtent = 0L;
-//        ClusteringManager instance = new ClusteringManager();
-//        instance.filterTree(pixelsPerTransaction, lowerTimeExtent, upperTimeExtent);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of dimOrHideTree method, of class ClusteringManager.
-//     */
-//    @Test
-//    public void testDimOrHideTree() {
-//        System.out.println("dimOrHideTree");
-//        long lowerTimeExtent = 0L;
-//        long upperTimeExtent = 0L;
-//        int exclusionState = 0;
-//        ClusteringManager instance = new ClusteringManager();
-//        instance.dimOrHideTree(lowerTimeExtent, upperTimeExtent, exclusionState);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getLowestObservedTime method, of class ClusteringManager.
-//     */
-//    @Test
-//    public void testGetLowestObservedTime() {
-//        System.out.println("getLowestObservedTime");
-//        ClusteringManager instance = new ClusteringManager();
-//        long expResult = 0L;
-//        long result = instance.getLowestObservedTime();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getHighestObservedTime method, of class ClusteringManager.
-//     */
-//    @Test
-//    public void testGetHighestObservedTime() {
-//        System.out.println("getHighestObservedTime");
-//        ClusteringManager instance = new ClusteringManager();
-//        long expResult = 0L;
-//        long result = instance.getHighestObservedTime();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getElementsToDraw method, of class ClusteringManager.
-//     */
-//    @Test
-//    public void testGetElementsToDraw() {
-//        System.out.println("getElementsToDraw");
-//        ClusteringManager instance = new ClusteringManager();
-//        Set expResult = null;
-//        Set result = instance.getElementsToDraw();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of cleanupVariables method, of class ClusteringManager.
-//     */
-//    @Test
-//    public void testCleanupVariables() {
-//        System.out.println("cleanupVariables");
-//        ClusteringManager instance = new ClusteringManager();
-//        instance.cleanupVariables();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of clearTree method, of class ClusteringManager.
-//     */
-//    @Test
-//    public void testClearTree() {
-//        System.out.println("clearTree");
-//        ClusteringManager instance = new ClusteringManager();
-//        instance.clearTree();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     @Test
     public void testUpdateDimOrHidePluginFullDim() throws Exception {
         System.out.println("UpdateDimOrHidePlugin execute full dim");
