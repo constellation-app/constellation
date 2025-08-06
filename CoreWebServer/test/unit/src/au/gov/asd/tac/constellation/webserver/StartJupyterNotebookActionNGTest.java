@@ -97,15 +97,15 @@ public class StartJupyterNotebookActionNGTest {
         when(mockProcess.getInputStream()).thenReturn(mockInputStream);
         when(mockInputStream.read(any())).thenReturn(inputStreamReadResult);
 
-        try (MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class); MockedConstruction<ProcessBuilder> mockProcessBuilderConstructor = Mockito.mockConstruction(ProcessBuilder.class, (mock, context) -> {
+        try (final MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class); final MockedConstruction<ProcessBuilder> mockProcessBuilderConstructor = Mockito.mockConstruction(ProcessBuilder.class, (mock, context) -> {
             when(mock.directory(any(File.class))).thenReturn(mockProcessBuilder);
-        }); MockedConstruction<File> mockFileConstructor = Mockito.mockConstruction(File.class, (mock, context) -> {
+        }); final MockedConstruction<File> mockFileConstructor = Mockito.mockConstruction(File.class, (mock, context) -> {
             when(mock.exists()).thenReturn(false);
         })) {
             webserverMock.when(WebServer::start).thenReturn(0);
 
             // Create and run instance
-            StartJupyterNotebookAction instance = new StartJupyterNotebookAction();
+            final StartJupyterNotebookAction instance = new StartJupyterNotebookAction();
             instance.actionPerformed(null);
 
             // Assert the following functions were run
