@@ -29,6 +29,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
+import javafx.application.Platform;
+import javafx.scene.control.Alert.AlertType;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -38,7 +40,6 @@ import org.openide.util.NbPreferences;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
-import org.openide.NotifyDescriptor;
 
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.webserver.StartJupyterNotebookAction")
 @ActionRegistration(displayName = "#CTL_StartJupyterNotebookAction", iconBase = "au/gov/asd/tac/constellation/webserver/resources/jupyter.png")
@@ -49,7 +50,8 @@ public class StartJupyterNotebookAction implements ActionListener {
     private static final String JUPYTER_NOTEBOOK = "jupyter-notebook";
     private static final String JUPYTER_OUTPUT = "Jupyter Notebook";
 
-    private static final String ALERT_TEXT = "Unable to start Jupyter Notebook in directory:\n%s\n\nPlease enter a valid path in\nSetup -> Options -> Constellation : Notebook Directory";
+    private static final String ALERT_HEADER_TEXT = "Unable to start Jupyter Notebook in directory:\n%s";
+    private static final String ALERT_TEXT = "Please enter a valid path in\nSetup -> Options -> Constellation : Notebook Directory";
 
     @Override
     public void actionPerformed(final ActionEvent e) {
@@ -121,6 +123,6 @@ public class StartJupyterNotebookAction implements ActionListener {
             return;
         }
 
-        NotifyDisplayer.display(String.format(ALERT_TEXT, getNotebookDir()), NotifyDescriptor.WARNING_MESSAGE);
+        Platform.runLater(() -> NotifyDisplayer.displayAlert("Attention", String.format(ALERT_HEADER_TEXT, getNotebookDir()), ALERT_TEXT, AlertType.WARNING));
     }
 }
