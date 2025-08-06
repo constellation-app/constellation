@@ -237,7 +237,9 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             return;
         }
         final GraphChangeEvent newEvent = event.getLatest();
-        if (newEvent == null) { // latest event may be null - defensive check
+        // Don't trigger the refresh when the graph event is the hide slider being updated
+        final String hideElementsDescription = "Analytic View: Hide Elements";
+        if (newEvent == null || newEvent.getDescription() == hideElementsDescription) { // latest event may be null - defensive check
             return;
         }
         if (newEvent.getId() > latestGraphChangeID) {

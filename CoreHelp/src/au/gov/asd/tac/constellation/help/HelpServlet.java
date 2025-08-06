@@ -116,7 +116,8 @@ public class HelpServlet extends HttpServlet {
      */
     private void tryResponseRedirect(final URL fileUrl, final HttpServletResponse response) {
         try {
-            response.sendRedirect("/" + fileUrl.toString());
+            // Note: base dir may have spaces, so replace
+            response.sendRedirect("/" + fileUrl.toString().replace("%20", " "));
         } catch (final IOException ex) {
             LOGGER.log(Level.WARNING, ex, () -> "Failed to send redirect while navigating to {0}" + fileUrl.toString());
         }
@@ -189,7 +190,8 @@ public class HelpServlet extends HttpServlet {
                                 final URL fileUrl = pageFile.toURI().toURL();
                                 // if these match then no redirect is required as the resulting file path is the same
                                 // check substring(1) as request path has leading /
-                                if (fileUrl.toString().equals(requestPath.substring(1))) {
+                                // Note: base dir may have spaces, so replace and check
+                                if (fileUrl.toString().replace("%20", " ").equals(requestPath.substring(1))) {
                                     return null;
                                 }
                                 
