@@ -97,8 +97,6 @@ public class ClusteringManagerNGTest {
 
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int vertDimAttr = VisualConcept.VertexAttribute.DIMMED.get(rg);
-            //final int vertHideAttr = VisualConcept.VertexAttribute.VISIBILITY.get(rg);
-            //rg.getIntValue(vertHideAttr, vxID);
 
             for (int pos = 0; pos < rg.getVertexCount(); pos++) {
                 int vxID = rg.getVertex(pos);
