@@ -30,6 +30,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * The definition of a row filter.
@@ -127,7 +128,7 @@ public class RowFilter {
             //Amend the script with the relevant ith column header containing columnHeaderPrefix
             for (int i = 1; i < columns.length; i++) {
                 if (columns[i].equals(validHeader)) {
-                    modifiedScript = StringUtils.replaceOnce(script, validHeader, COLUMN_HEADER_PREFIX + i);
+                    modifiedScript = Strings.CS.replaceOnce(script, validHeader, COLUMN_HEADER_PREFIX + i);
                     break;
                 }
             }

@@ -34,7 +34,7 @@ import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 public class JDBCDriver {
 
@@ -77,7 +77,7 @@ public class JDBCDriver {
                             for (final Enumeration<JarEntry> e = jf.entries(); e.hasMoreElements();) {
                                 final JarEntry je = e.nextElement();
                                 final String classname = je.getName();
-                                if (StringUtils.endsWithIgnoreCase(classname, FileExtensionConstants.CLASS)) {
+                                if (Strings.CI.endsWith(classname, FileExtensionConstants.CLASS)) {
                                     try {
                                         // Remove ".class", convert '/' to '.' to create a proper class name.
                                         final int len = classname.length();
@@ -118,7 +118,7 @@ public class JDBCDriver {
         this.jarFile = jarFile;
     }
 
-    public Driver getDriver() throws MalformedURLException, ClassNotFoundException, NoSuchMethodException, NoSuchMethodException, InstantiationException, InstantiationException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public Driver getDriver() throws MalformedURLException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         final URL[] searchPath = new URL[]{jarFile.toURI().toURL()};
         final ClassLoader clloader = URLClassLoader.newInstance(searchPath);
 

@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.help.utilities.toc;
 
 import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  *
@@ -56,8 +56,8 @@ public class TOCItem {
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof TOCItem tocItem
-                && StringUtils.equals(text, tocItem.getText())
-                && StringUtils.equals(target, tocItem.getTarget());
+                && Strings.CS.equals(text, tocItem.getText())
+                && Strings.CS.equals(target, tocItem.getTarget());
     }
 
     @Override

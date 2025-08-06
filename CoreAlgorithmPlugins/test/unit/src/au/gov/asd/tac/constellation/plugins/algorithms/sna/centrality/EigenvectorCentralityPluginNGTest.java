@@ -81,7 +81,7 @@ public class EigenvectorCentralityPluginNGTest {
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         graph = null;
     }
 

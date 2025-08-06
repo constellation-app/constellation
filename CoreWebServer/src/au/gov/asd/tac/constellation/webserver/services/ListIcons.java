@@ -40,6 +40,7 @@ public class ListIcons extends RestService {
 
     private static final String NAME = "list_icons";
     private static final String EDITABLE_PARAMETER_ID = "editable";
+    private static final String EXAMPLE_RESPONSES_PATH = "listIconsExample";
 
     @Override
     public String getName() {
@@ -80,5 +81,10 @@ public class ListIcons extends RestService {
         names.forEach(root::add);
 
         mapper.writeValue(out, root);
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

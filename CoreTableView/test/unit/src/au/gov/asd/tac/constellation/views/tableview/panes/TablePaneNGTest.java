@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.tableview.panes;
 
-import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview.components.ProgressBar;

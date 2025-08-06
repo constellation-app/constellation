@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
-import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractHideTranslator;
 import au.gov.asd.tac.constellation.views.analyticview.translators.ScoreToHideTranslator;
 import java.util.Arrays;
 import java.util.List;
@@ -133,7 +132,7 @@ public class HideVisualisationNGTest {
         final HideVisualisation<ElementScore> instance = new HideVisualisation<>(translator);
         final List<SchemaAttribute> expResult = Arrays.asList(
                 VisualConcept.VertexAttribute.VISIBILITY,
-                VisualConcept.TransactionAttribute.VISIBILITY);;
+                VisualConcept.TransactionAttribute.VISIBILITY);
         final List<SchemaAttribute> result = instance.getAffectedAttributes();
         assertEquals(result, expResult);
     }

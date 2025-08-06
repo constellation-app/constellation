@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -217,7 +218,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             label = resolved.toString();
 
             // write changes to graph
-            if (!StringUtils.equals(identifier, graph.getStringValue(vertexIdentifierAttribute, vertexId))) {
+            if (!Strings.CS.equals(identifier, graph.getStringValue(vertexIdentifierAttribute, vertexId))) {
                 graph.setStringValue(vertexIdentifierAttribute, vertexId, identifier);
             }
 
@@ -229,16 +230,16 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 graph.setObjectValue(vertexRawAttribute, vertexId, raw);
             }
 
-            if (!StringUtils.equals(label, graph.getStringValue(vertexLabelAttribute, vertexId))) {
+            if (!Strings.CS.equals(label, graph.getStringValue(vertexLabelAttribute, vertexId))) {
                 graph.setStringValue(vertexLabelAttribute, vertexId, label);
             }
 
-            if (type != null && ((!modifiedDefaultVtxType && (type != SchemaVertexTypeUtilities.getDefaultType()) || graph.isDefaultValue(vertexColorAttribute, vertexId)))
+            if (type != null && (!modifiedDefaultVtxType && (type != SchemaVertexTypeUtilities.getDefaultType()) || graph.isDefaultValue(vertexColorAttribute, vertexId))
                     && !Objects.equals(type.getColor(), graph.getObjectValue(vertexColorAttribute, vertexId))) {
                 graph.setObjectValue(vertexColorAttribute, vertexId, type.getColor());
             }
 
-            if (type != null && ((!modifiedDefaultVtxType && (type != SchemaVertexTypeUtilities.getDefaultType()) || graph.isDefaultValue(vertexBackgroundIconAttribute, vertexId)))
+            if (type != null && (!modifiedDefaultVtxType && (type != SchemaVertexTypeUtilities.getDefaultType()) || graph.isDefaultValue(vertexBackgroundIconAttribute, vertexId))
                     && !Objects.equals(type.getBackgroundIcon(), graph.getObjectValue(vertexBackgroundIconAttribute, vertexId))) {
                 graph.setObjectValue(vertexBackgroundIconAttribute, vertexId, type.getBackgroundIcon().getExtendedName());
             }
@@ -354,7 +355,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             label = type == null ? null : type.getName();
 
             // set new values on the graph
-            if (!StringUtils.equals(identifier, graph.getStringValue(transactionIdentifierAttribute, transactionId))) {
+            if (!Strings.CS.equals(identifier, graph.getStringValue(transactionIdentifierAttribute, transactionId))) {
                 graph.setStringValue(transactionIdentifierAttribute, transactionId, identifier);
             }
 
@@ -362,7 +363,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 graph.setObjectValue(transactionTypeAttribute, transactionId, type);
             }
 
-            if (!StringUtils.equals(label, graph.getStringValue(transactionLabelAttribute, transactionId))) {
+            if (!Strings.CS.equals(label, graph.getStringValue(transactionLabelAttribute, transactionId))) {
                 graph.setStringValue(transactionLabelAttribute, transactionId, label);
             }
 

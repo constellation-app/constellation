@@ -170,9 +170,9 @@ public class ContentAnalysisManager {
         final ThreadAllocator allocator = getGraphElementThreadAllocator();
         final DefaultTokenHandler th = new DefaultTokenHandler();
         ContentTokenizingServices.createDocumentClusteringTokenizingService(th, clusterDocumentsParams, allocator);
-
-       final  ContentVectorClusteringServices cvcs = ContentVectorClusteringServices.createKMeansClusteringService(th, clusterDocumentsParams, querySize);
-       cvcs.createAndRunThreads(allocator);
+        
+        final ContentVectorClusteringServices cvcs = ContentVectorClusteringServices.createKMeansClusteringService(th, clusterDocumentsParams, querySize);
+        cvcs.createAndRunThreads(allocator);
 
         final ContentAnalysisGraphProcessing gp = new ContentAnalysisGraphProcessing(graph, cvcs, elementType, clusterDocumentsParams.getFollowUpChoice());
         gp.performFollowUp();

@@ -133,8 +133,7 @@ public class SaveResultsFileWriterNGTest {
             }
 
             // Return properties (which are ignored)
-            Properties properties = new Properties();
-            return properties;
+            return new Properties();
         });
         try {
             SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
@@ -204,8 +203,7 @@ public class SaveResultsFileWriterNGTest {
             }
 
             // Return properties (which are ignored)
-            Properties properties = new Properties();
-            return properties;
+            return new Properties();
         });
         SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
         mockedRecordStoreUtilities.verify(() -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()), times(1));

@@ -312,11 +312,11 @@ public final class Frame implements Serializable {
         // Apply translation too.
         final Matrix44f trans = new Matrix44f();
         trans.makeTranslationMatrix(-origin.a[0], -origin.a[1], -origin.a[2]);
-        final Matrix44f M = new Matrix44f();
-        M.multiply(m, trans);
+        final Matrix44f mTrans = new Matrix44f();
+        mTrans.multiply(m, trans);
 
         // Copy result back into m.
-        m.set(M);
+        m.set(mTrans);
     }
 
     /**
