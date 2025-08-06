@@ -21,10 +21,12 @@ import java.time.ZonedDateTime;
 import java.time.chrono.Chronology;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.regex.Pattern;
 import javafx.geometry.Insets;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.StringConverter;
@@ -37,16 +39,18 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DateTimePicker {
 
-    private static final String PICKER_LABEL = "picker-label";
     private final Pane dateTimePane;
     private final DatePicker datePicker = new DatePicker();
     private final Spinner<Integer> hourPicker = new Spinner<>(0, 23, 0);
     private final Spinner<Integer> minPicker = new Spinner<>(0, 59, 0);
     private final Spinner<Integer> secPicker = new Spinner<>(0, 59, 0);
     private final GridPane mainGridPane = new GridPane();
+    private ZoneId zone;
+
     private static final String FROM_TEXT = "From:";
     private static final String TO_TEXT = "To:";
-    private ZoneId zone;
+    private static final String PICKER_LABEL = "picker-label";
+    private static final Pattern NUMBERS_ONLY_REGEX = Pattern.compile("\\d*");
 
     public DateTimePicker(final boolean from) {
         dateTimePane = new Pane();
@@ -84,6 +88,7 @@ public class DateTimePicker {
         datePickerGridPane.add(datePickerLabel, 0, 0);
         datePickerGridPane.add(datePicker, 1, 0);
         datePicker.setMaxWidth(150);
+        datePicker.setEditable(false);
 
         final Label hourLabel = new Label("Hour");
         final Label minLabel = new Label("Minute");
@@ -124,12 +129,19 @@ public class DateTimePicker {
     }
 
     private void validateInput(final String oldValue, final String newValue, final Spinner spinner) {
-        if (!newValue.matches("\\d*")) { // If the new typed text is not a number, revert to old text.
-            spinner.getEditor().setText(oldValue);
+        final TextField editor = spinner.getEditor();
+
+        if (!NUMBERS_ONLY_REGEX.matcher(newValue).matches() || newValue.length() > 2) {
+            editor.setText(oldValue);
         }
-        if (newValue.isBlank()) {
-            spinner.getEditor().setText("0");
-        }
+
+        editor.focusedProperty().addListener((o, ov, nv) -> {
+            if (!editor.isFocused()) {
+                if (editor.getText().isBlank()) {
+                    editor.setText("0");
+                }
+            }
+        });
     }
 
     public void disableControls(final boolean disable) {
