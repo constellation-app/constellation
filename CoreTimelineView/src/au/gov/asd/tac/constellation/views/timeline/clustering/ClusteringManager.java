@@ -493,11 +493,9 @@ public class ClusteringManager {
 
         private void processLeafOldGraph(final Set<Integer> vertices, final Map<Integer, Integer> verticesOnGraph, final TreeLeaf leaf, final WritableGraph wg, final int transDimAttr, final int transHideAttr, final boolean dimVertices) {
             final Integer countAObject = verticesOnGraph.get(leaf.vertexIdA);
-            // final int countA = (countAObject != null ? countAObject : 0) - 1;
             final int countA = countAObject != null ? countAObject - 1 : 0;
 
             final Integer countBObject = verticesOnGraph.get(leaf.vertexIdB);
-//        final int countB = (countBObject != null ? countBObject : 0) - 1;
             final int countB = countBObject != null ? countBObject - 1 : 0;
 
             if (countA == 0) {
