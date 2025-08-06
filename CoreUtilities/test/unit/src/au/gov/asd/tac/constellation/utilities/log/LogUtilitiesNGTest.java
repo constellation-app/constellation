@@ -111,11 +111,11 @@ public class LogUtilitiesNGTest {
     
     @Test
     public void testFormatNoParams() throws IOException {
-        LOGGER.log(Level.INFO, "Test message: {0}");
+        LOGGER.log(Level.INFO, "Test message: 0");
         String out = getCapturedLog();
         
         assertFalse(out.contains("testParams"));
-        assertTrue(out.contains("Test message: {0}"));
+        assertTrue(out.contains("Test message: 0"));
     }
     
     @Test

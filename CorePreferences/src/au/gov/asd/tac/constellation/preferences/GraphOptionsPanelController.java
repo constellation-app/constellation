@@ -94,7 +94,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
                 prefs.putInt(GraphPreferenceKeys.BLAZE_OPACITY, graphOptionsPanel.getBlazeOpacity());
                 prefs.put(GraphPreferenceKeys.LEFT_COLOR, graphOptionsPanel.getLeftColor());
                 prefs.put(GraphPreferenceKeys.RIGHT_COLOR, graphOptionsPanel.getRightColor());
-                prefs.putBoolean(GraphPreferenceKeys.ENABLE_ANIMATIONS, graphOptionsPanel.getAnimationsEnabled());
+                prefs.putBoolean(GraphPreferenceKeys.ENABLE_ANIMATIONS, graphOptionsPanel.isAnimationsEnabled());
             }
         }
     }
@@ -123,7 +123,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
                 && graphOptionsPanel.getBlazeOpacity() == prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)
                 && graphOptionsPanel.getLeftColor().equals(prefs.get(GraphPreferenceKeys.LEFT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT))
                 && graphOptionsPanel.getRightColor().equals(prefs.get(GraphPreferenceKeys.RIGHT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT))
-                && graphOptionsPanel.getAnimationsEnabled() == prefs.getBoolean(GraphPreferenceKeys.ENABLE_ANIMATIONS, GraphPreferenceKeys.ENABLE_ANIMATIONS_DEFAULT));
+                && graphOptionsPanel.isAnimationsEnabled() == prefs.getBoolean(GraphPreferenceKeys.ENABLE_ANIMATIONS, GraphPreferenceKeys.ENABLE_ANIMATIONS_DEFAULT));
     }
 
     @Override

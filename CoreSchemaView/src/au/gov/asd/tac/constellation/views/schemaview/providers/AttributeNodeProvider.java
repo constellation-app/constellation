@@ -53,7 +53,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -133,7 +133,7 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
             final ObservableList<AttributeEntry> items = FXCollections.observableArrayList();
             attributeInfo.stream().forEach(si -> {
                 final String nameLc = si.attr.getName().toLowerCase();
-                final boolean found = st ? StringUtils.startsWithIgnoreCase(nameLc, newValue) : StringUtils.containsIgnoreCase(nameLc, newValue);
+                final boolean found = st ? Strings.CI.startsWith(nameLc, newValue) : Strings.CI.contains(nameLc, newValue);
                 if (found) {
                     items.add(si);
                 }

@@ -224,9 +224,7 @@ public abstract class ImportController<D> {
             case TRANSACTION -> {
                 return autoAddedTransactionAttributes.containsKey(label);
             }
-            default -> {
-                throw new IllegalArgumentException("Element type must be VERTEX or TRANSACTION");
-            }
+            default -> throw new IllegalArgumentException("Element type must be VERTEX or TRANSACTION");
         }
     }
 

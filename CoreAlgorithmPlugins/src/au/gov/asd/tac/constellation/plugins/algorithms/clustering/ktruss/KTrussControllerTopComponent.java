@@ -675,7 +675,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             while (iter.hasNext()) {
                 final int key = (Integer) iter.next();
                 if (state.isKTrussExtant(key)) {
-                    ((JLabel) labelTable.get(key)).setFont(labelBoldFont);
+                    labelTable.get(key).setFont(labelBoldFont);
                 }
             }
             stepSlider.setLabelTable(labelTable);

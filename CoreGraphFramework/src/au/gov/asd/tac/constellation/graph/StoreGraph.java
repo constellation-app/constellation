@@ -1067,8 +1067,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
         // Fix a nasty interaction with undo. (See also setTransactionDestinationVertex().)
         // For the full story, see the comment inside setTransactionDestinationVertex().
-        removeTransaction(transaction);
-        addTransaction(newSourceVertex, oldDestinationVertex, directed);
+        // NOTE: Aug 2025 - There was a change in addTransaction to not swap source and 
+        // destination when transaction is undirected. This means that it doesn't need to 
+        // be swapped back here; the code has been modified to swap only if the transaction is directed.
+        if (directed) {
+            removeTransaction(transaction);
+            addTransaction(newSourceVertex, oldDestinationVertex, directed);
+        }
 
         graphEdit = savedGraphEdit;
         operationMode = savedOperationMode;
@@ -1113,9 +1118,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         // the undo/redo.
         // The apparent solution is to manually swap the source and destination vertex ids to be in the "correct"
         // uphill order before we do the out-of-edit remove/add, so no swapping occurs.
-        removeTransaction(transaction);
-        addTransaction(oldSourceVertex, newDestinationVertex, directed);
-
+        // NOTE: Aug 2025 - There was a change in addTransaction to not swap source and destination when transaction
+        // is undirected. This means that it doesn't need to be swapped back here; the code has been modified to swap
+        // only if the transaction is directed.
+        if (directed) {
+            removeTransaction(transaction);
+            addTransaction(oldSourceVertex, newDestinationVertex, directed);
+        }
         graphEdit = savedGraphEdit;
         operationMode = savedOperationMode;
 
@@ -1465,30 +1474,30 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         // Clear all the unused attribute values
         switch (entry.getElementType()) {
             case VERTEX -> {
-                for (int id = 0; id < vStore.getCapacity(); id++) {
-                    if (!vStore.elementExists(id)) {
-                        description.clear(id);
+                for (int vId = 0; vId < vStore.getCapacity(); vId++) {
+                    if (!vStore.elementExists(vId)) {
+                        description.clear(vId);
                     }
                 }
             }
             case LINK -> {
-                for (int id = 0; id < lStore.getCapacity(); id++) {
-                    if (!lStore.elementExists(id)) {
-                        description.clear(id);
+                for (int lId = 0; lId < lStore.getCapacity(); lId++) {
+                    if (!lStore.elementExists(lId)) {
+                        description.clear(lId);
                     }
                 }
             }
             case EDGE -> {
-                for (int id = 0; id < eStore.getCapacity(); id++) {
-                    if (!eStore.elementExists(id)) {
-                        description.clear(id);
+                for (int eId = 0; eId < eStore.getCapacity(); eId++) {
+                    if (!eStore.elementExists(eId)) {
+                        description.clear(eId);
                     }
                 }
             }
             case TRANSACTION -> {
-                for (int id = 0; id < tStore.getCapacity(); id++) {
-                    if (!tStore.elementExists(id)) {
-                        description.clear(id);
+                for (int tId = 0; tId < tStore.getCapacity(); tId++) {
+                    if (!tStore.elementExists(tId)) {
+                        description.clear(tId);
                     }
                 }
             }

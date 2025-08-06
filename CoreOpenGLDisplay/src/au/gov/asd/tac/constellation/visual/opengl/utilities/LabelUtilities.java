@@ -16,7 +16,9 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utility methods and constants relating to the rendering of labels in the
@@ -61,11 +63,10 @@ public final class LabelUtilities {
      *
      * @return array of strings
      */
-    public static ArrayList<String> splitTextIntoLines(final String text) {
-        final ArrayList<String> lines = new ArrayList<>();
+    public static List<String> splitTextIntoLines(final String text) {
+        final List<String> lines = new ArrayList<>();
 
         if (text != null) {
-
             String remaining = text.trim();
             int prevSpace = Integer.MIN_VALUE;
             while (!remaining.isEmpty() && lines.size() < MAX_LINES_PER_ATTRIBUTE) {

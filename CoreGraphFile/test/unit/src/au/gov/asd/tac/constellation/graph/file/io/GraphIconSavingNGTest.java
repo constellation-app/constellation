@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2010-2025 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.gov.asd.tac.constellation.graph.file.io;
 
@@ -71,7 +81,7 @@ public class GraphIconSavingNGTest {
     
     private Graph graph;
 
-    final static String TEST_ICON_NAME = "Category1.TestIcon1";
+    static final String TEST_ICON_NAME = "Category1.TestIcon1";
     
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -162,7 +172,7 @@ public class GraphIconSavingNGTest {
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         graph = null;
     }
 
@@ -180,14 +190,14 @@ public class GraphIconSavingNGTest {
             defaultCustomIconProviderMock.when(() -> DefaultCustomIconProvider.loadIcons()).thenCallRealMethod();
             
             // Create a test icon to be added and saved with the graph data
-            final ConstellationColor ICON_COLOR = ConstellationColor.BLUEBERRY;
-            final ConstellationIcon ICON_BACKGROUND = DefaultIconProvider.FLAT_SQUARE;
-            final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.STAR;
+            final ConstellationColor iconColor = ConstellationColor.BLUEBERRY;
+            final ConstellationIcon iconBackground = DefaultIconProvider.FLAT_SQUARE;
+            final ConstellationIcon iconSymbol = AnalyticIconProvider.STAR;
 
             ConstellationIcon icon = new ConstellationIcon.Builder(TEST_ICON_NAME,
                     new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
-                            ICON_BACKGROUND.buildBufferedImage(16, ICON_COLOR.getJavaColor()),
-                            ICON_SYMBOL.buildBufferedImage(16), 0, 0)))
+                            iconBackground.buildBufferedImage(16, iconColor.getJavaColor()),
+                            iconSymbol.buildBufferedImage(16), 0, 0)))
                     .build();
             icon.setEditable(true);
             System.out.println("===== INITIALISE TEST ENVIRONMENT =====");
@@ -272,14 +282,14 @@ public class GraphIconSavingNGTest {
     }
     
     // determine whether the node of the specified name exists in the graph and contains an icon value
-    private boolean nodeIconFound(ReadableGraph graph, String base_name, String iconName) {
+    private boolean nodeIconFound(ReadableGraph graph, String baseName, String iconName) {
         int nameAttrId = graph.getAttribute(GraphElementType.VERTEX, "name");
         int iconAttrId = graph.getAttribute(GraphElementType.VERTEX, "icon");
         boolean found = false;
         for (int i = 0; i < graph.getVertexCount(); i++) {
             int id = graph.getVertex(i);
             String name = graph.getStringValue(nameAttrId, id);
-            if (base_name.equals(name)) {
+            if (baseName.equals(name)) {
                 String loadedIconName = graph.getStringValue(iconAttrId, id);
                 if (iconName.equals(loadedIconName)) {
                     found = true;

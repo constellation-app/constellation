@@ -45,6 +45,7 @@ import org.testng.annotations.Test;
  * @author Andromeda-224
  */
 public class AnimationUtilitiesNGTest {
+    
     private Graph graph;
     private GraphManager graphManagerMock;
     private AnimationManager animationManager;
@@ -60,8 +61,6 @@ public class AnimationUtilitiesNGTest {
     private MockedStatic<GraphNode> graphNodeStaticMock;
     private MockedStatic<GraphManager> graphManagerStaticMock;
     
-    public AnimationUtilitiesNGTest() {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {

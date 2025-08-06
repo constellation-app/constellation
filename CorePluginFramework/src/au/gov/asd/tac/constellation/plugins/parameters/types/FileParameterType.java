@@ -407,7 +407,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             final File validationFile = new File(s);
             final String[] names = s.split(SeparatorConstants.SEMICOLON);
             if (names.length > 1) {
-                if ((this.kind.equals(FileParameterKind.OPEN_MULTIPLE) && files.size() != names.length)) {
+                if ((this.kind == FileParameterKind.OPEN_MULTIPLE && files.size() != names.length)) {
                     return "Wrong number of files";
                 } else {
                     return null;

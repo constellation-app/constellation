@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.find.components.advanced.utilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.find.components.advanced.StringCriteriaPanel;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -73,7 +72,7 @@ public class UseListInputWindow extends Stage {
         setContent();
         setAlwaysOnTop(true);
 
-        splitLinesChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
+        splitLinesChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement)
                 -> splitLinesChoiceAction(newElement)
         );
 

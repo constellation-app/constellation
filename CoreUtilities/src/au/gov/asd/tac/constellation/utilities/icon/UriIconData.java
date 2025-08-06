@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * An IconData implementation allowing an icon to be built using a {@link URI}.
@@ -53,7 +54,7 @@ public class UriIconData extends IconData {
     protected InputStream createRasterInputStream() throws IOException {
         InputStream stream;
         try {
-            if (StringUtils.equalsIgnoreCase(uri.getScheme(), "HTTPS")) {
+            if (Strings.CI.equals(uri.getScheme(), "HTTPS")) {
                 final HttpsURLConnection connection = HttpsConnection.withUrl(uri.toURL().toString()).get();
                 stream = HttpsUtilities.getInputStream(connection);
             } else {

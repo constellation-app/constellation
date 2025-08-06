@@ -35,9 +35,7 @@ public class AnimationUtilities {
      * Stops all running animations on all graphs.
      */
     public static final void stopAllAnimations() {
-        GraphManager.getDefault().getAllGraphs().keySet().forEach(graphId -> {
-            stopAllAnimations(graphId);
-        });
+        GraphManager.getDefault().getAllGraphs().keySet().forEach(AnimationUtilities::stopAllAnimations);
     }
     
     /**
@@ -75,7 +73,7 @@ public class AnimationUtilities {
         if (StringUtils.isNotBlank(graphId)){
             final GraphNode gn = GraphNode.getGraphNode(graphId);
             if (gn != null) {
-             return ((VisualGraphTopComponent) gn.getTopComponent()).getAnimationManager();
+                return ((VisualGraphTopComponent) gn.getTopComponent()).getAnimationManager();
             }
         }
         return null; 
@@ -128,9 +126,8 @@ public class AnimationUtilities {
      * Interrupt all running animations on all animated graphs.
      */
     public static final synchronized void interruptAllAnimations() {
-        GraphManager.getDefault().getAllGraphs().values().forEach(graph -> {
-            ((VisualGraphTopComponent) GraphNode.getGraphNode(graph).getTopComponent()).getAnimationManager().interruptAllAnimations();
-        });
+        GraphManager.getDefault().getAllGraphs().values().forEach(graph 
+                -> ((VisualGraphTopComponent) GraphNode.getGraphNode(graph).getTopComponent()).getAnimationManager().interruptAllAnimations());
     }
     
     /**

@@ -28,12 +28,12 @@ import java.util.List;
 public class Resizer {
 
     public static <T> void resize(final List<T> al, final int size, final T value) {
-        if (al instanceof ArrayList) {
+        if (al instanceof ArrayList arrayList) {
             while (al.size() > size) {
                 al.remove(size);
             }
 
-            ((ArrayList)al).ensureCapacity(size);
+            arrayList.ensureCapacity(size);
             while (al.size() < size) {
                 al.add(value);
             }
