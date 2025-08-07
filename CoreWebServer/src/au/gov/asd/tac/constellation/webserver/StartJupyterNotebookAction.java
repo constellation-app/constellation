@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.webserver;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import static au.gov.asd.tac.constellation.webserver.WebServer.getNotebookDir;
 import java.awt.event.ActionEvent;
@@ -123,6 +124,6 @@ public class StartJupyterNotebookAction implements ActionListener {
             return;
         }
 
-        Platform.runLater(() -> NotifyDisplayer.displayAlert("Attention", String.format(ALERT_HEADER_TEXT, getNotebookDir()), ALERT_TEXT, AlertType.WARNING));
+        Platform.runLater(() -> NotifyDisplayer.displayAlert("Attention", String.format(ALERT_HEADER_TEXT, getNotebookDir()), ALERT_TEXT, AlertType.WARNING, ScreenWindowsHelper.getMainWindowCentrePoint()));
     }
 }
