@@ -40,11 +40,6 @@
     -fx-min-height: 0;
 }
 
-.table-row-cell:noValue {
-    -fx-text-fill: #FFFF00;/*Yellow*/
-    -fx-fill: #FFFF00;/*Yellow*/
-}
-
 .table-view {
     -fx-background-color: null;
     -fx-border-color: null;
@@ -52,6 +47,10 @@
 
 .table-row-cell {
     -fx-background-color: null;
+}
+
+.table-cell:noValue{
+    -fx-text-fill: #FFFF00; /*Yellow*/
 }
 
 .table-cell {

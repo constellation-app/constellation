@@ -43,6 +43,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -168,10 +169,30 @@ public class HistogramDisplay2 extends BorderPane {
         //tableView.widthProperty().addListener((obs, oldVal, newVal) -> drawBars((double) newVal * 0.69));
 
         final TableColumn<HistogramBar, String> propertyCol = new TableColumn<>("Property");
-        propertyCol.setCellValueFactory(new PropertyValueFactory("propertyName"));
+        propertyCol.setCellValueFactory(new PropertyValueFactory<>("propertyName"));
         propertyCol.setResizable(false);
         propertyCol.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));// TODO: fix these magic numbers
         propertyCol.setMinWidth(MINIMUM_TEXT_WIDTH);
+
+        final PseudoClass noValueClass = PseudoClass.getPseudoClass("noValue");
+        propertyCol.setCellFactory(tableColumn -> {
+            final TableCell<HistogramBar, String> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    // Requires this for text to appear, for some reason
+                    this.setText(item);
+
+                    if (NO_VALUE.equals(item)) {
+                        this.pseudoClassStateChanged(noValueClass, true);
+                    } else {
+                        this.pseudoClassStateChanged(noValueClass, false);
+                    }
+                }
+            };
+            return cell;
+        });
 
         final TableColumn<HistogramBar, Node> iconCol = new TableColumn<>("Icon");
         iconCol.setCellValueFactory(new PropertyValueFactory("icon"));
@@ -192,25 +213,17 @@ public class HistogramDisplay2 extends BorderPane {
         tableView.getStyleClass().add("noheader");
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        VBox.setVgrow(tableView, Priority.ALWAYS);
-        //tableView.getStyleClass().add(TABLE_VIEW_CSS_CLASS);
 
-        // Below doesnt work
-        final PseudoClass foo = PseudoClass.getPseudoClass("noValue");
+        VBox.setVgrow(tableView, Priority.ALWAYS);
+
         tableView.setRowFactory(tv -> {
-            TableRow<HistogramBar> row = new TableRow<>();
-            row.itemProperty().addListener((obs, oldItem, newItem) -> {
-                if (true) {
-                    //System.out.println("THIS CALLED");
-                    //row.pseudoClassStateChanged(foo, true);
-                    row.getStyleClass().add("no-value");
-                } else {
-                    //row.pseudoClassStateChanged(foo, false);
-                }
-            });
+            final TableRow<HistogramBar> row = new TableRow<>();
+            row.selectedProperty().addListener(
+                    (obs, oldVal, newVal) -> {
+                        System.out.println("row.selectedProperty() obs " + obs + " oldVal " + oldVal + " newVal " + newVal);
+                    });
             return row;
         });
-//end
 
         headerCountHBox.minWidthProperty().bind(barCol.widthProperty());
 
@@ -318,11 +331,13 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private void populateTable(final boolean updateBinCounts, final double width) {
+        System.out.println("populateTable");
         if (binCollection == null) {
             // No data, so just have text saying so
             this.setCenter(new Label(NO_DATA));
             return;
         }
+        System.out.println("passed early return");
 
         if (binCollection.getBins().length == 0) {
             // Draw nothing: there is data, but the user doesn't want to see it.
