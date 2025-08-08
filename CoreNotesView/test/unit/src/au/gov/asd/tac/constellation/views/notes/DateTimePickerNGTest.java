@@ -21,6 +21,7 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.TextField;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -37,7 +38,7 @@ import org.testng.annotations.Test;
 public class DateTimePickerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(DateTimePickerNGTest.class.getName());
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -63,7 +64,6 @@ public class DateTimePickerNGTest {
     public void tearDownMethod() throws Exception {
         // Not currently required
     }
-
 
     /**
      * Test of setCurrentDateTime method, of class DateTimePicker.
@@ -103,20 +103,6 @@ public class DateTimePickerNGTest {
     }
 
     /**
-     * Test of isActive method, of class DateTimePicker.
-     */
-    @Test
-    public void testIsActive() {
-        System.out.println("isActive");
-        final DateTimePicker instance = new DateTimePicker(true);
-        final boolean expResult = false;
-        final boolean result = instance.isActive();
-        assertEquals(result, expResult);
-        instance.setActive(true);
-        assertTrue(instance.isActive());
-    }
-    
-    /**
      * Test of getCurrentDateTime method, of class DateTimePicker.
      */
     @Test
@@ -144,5 +130,24 @@ public class DateTimePickerNGTest {
 
         final ZoneId result = instance.getZoneId();
         assertEquals(result, zone);
+    }
+
+    /**
+     * Test of validateInput method, of class DateTimePicker.
+     */
+    @Test
+    public void testValidateInput() {
+        System.out.println("validateInput");
+        final DateTimePicker instance = new DateTimePicker(false);
+        final TextField textField = new TextField();
+
+        instance.validateInput("2", "2p", textField);
+        assertEquals(textField.getText(), "2");
+
+        instance.validateInput("22", "22pp", textField);
+        assertEquals(textField.getText(), "22");
+
+        instance.validateInput("22", "", textField);
+        assertEquals(textField.getText(), "22");
     }
 }
