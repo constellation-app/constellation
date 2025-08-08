@@ -21,6 +21,7 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.TextField;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -129,5 +130,24 @@ public class DateTimePickerNGTest {
 
         final ZoneId result = instance.getZoneId();
         assertEquals(result, zone);
+    }
+
+    /**
+     * Test of validateInput method, of class DateTimePicker.
+     */
+    @Test
+    public void testValidateInput() {
+        System.out.println("validateInput");
+        final DateTimePicker instance = new DateTimePicker(false);
+        final TextField textField = new TextField();
+
+        instance.validateInput("2", "2p", textField);
+        assertEquals(textField.getText(), "2");
+
+        instance.validateInput("22", "22pp", textField);
+        assertEquals(textField.getText(), "22");
+
+        instance.validateInput("22", "", textField);
+        assertEquals(textField.getText(), "22");
     }
 }

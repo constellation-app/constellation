@@ -103,9 +103,9 @@ public class DateTimePicker {
         timePickerGrid.add(minLabel, 1, 0);
         timePickerGrid.add(secLabel, 2, 0);
 
-        hourPicker.getEditor().textProperty().addListener((observable, oldValue, newValue) -> validateInput(oldValue, newValue, hourPicker));
-        minPicker.getEditor().textProperty().addListener((observable, oldValue, newValue) -> validateInput(oldValue, newValue, minPicker));
-        secPicker.getEditor().textProperty().addListener((observable, oldValue, newValue) -> validateInput(oldValue, newValue, secPicker));
+        hourPicker.getEditor().textProperty().addListener((observable, oldValue, newValue) -> validateInput(oldValue, newValue, hourPicker.getEditor()));
+        minPicker.getEditor().textProperty().addListener((observable, oldValue, newValue) -> validateInput(oldValue, newValue, minPicker.getEditor()));
+        secPicker.getEditor().textProperty().addListener((observable, oldValue, newValue) -> validateInput(oldValue, newValue, secPicker.getEditor()));
 
         hourPicker.setMinWidth(60);
         minPicker.setMinWidth(60);
@@ -128,18 +128,14 @@ public class DateTimePicker {
         mainGridPane.setPadding(new Insets(1, 1, 1, 1));
     }
 
-    private void validateInput(final String oldValue, final String newValue, final Spinner spinner) {
-        final TextField editor = spinner.getEditor();
-
+    public void validateInput(final String oldValue, final String newValue, final TextField textField) {
         if (!NUMBERS_ONLY_REGEX.matcher(newValue).matches() || newValue.length() > 2) {
-            editor.setText(oldValue);
+            textField.setText(oldValue);
         }
 
-        editor.focusedProperty().addListener((o, ov, nv) -> {
-            if (!editor.isFocused()) {
-                if (editor.getText().isBlank()) {
-                    editor.setText("0");
-                }
+        textField.focusedProperty().addListener((o, ov, nv) -> {
+            if (!textField.isFocused() && textField.getText().isBlank()) {
+                textField.setText("0");
             }
         });
     }
@@ -177,26 +173,24 @@ public class DateTimePicker {
      * @param convertTo - id of zone to convert to
      */
     public void convertCurrentDateTime(final ZoneId convertTo) {
-        if (convertTo == null || zone == convertTo) {
-            return;
+        if (convertTo != null || zone != convertTo) {
+            ZonedDateTime currentTime = ZonedDateTime.of(datePicker.getValue().getYear(),
+                    datePicker.getValue().getMonthValue(),
+                    datePicker.getValue().getDayOfMonth(),
+                    hourPicker.getValue(),
+                    minPicker.getValue(),
+                    secPicker.getValue(),
+                    0,
+                    zone);
+
+            currentTime = currentTime.withZoneSameInstant(convertTo);
+            zone = convertTo;
+
+            datePicker.valueProperty().set(currentTime.toLocalDate());
+            hourPicker.getValueFactory().setValue(currentTime.getHour());
+            minPicker.getValueFactory().setValue(currentTime.getMinute());
+            secPicker.getValueFactory().setValue(currentTime.getSecond());
         }
-
-        ZonedDateTime currentTime = ZonedDateTime.of(datePicker.getValue().getYear(),
-                datePicker.getValue().getMonthValue(),
-                datePicker.getValue().getDayOfMonth(),
-                hourPicker.getValue(),
-                minPicker.getValue(),
-                secPicker.getValue(),
-                0,
-                zone);
-
-        currentTime = currentTime.withZoneSameInstant(convertTo);
-        zone = convertTo;
-
-        datePicker.valueProperty().set(currentTime.toLocalDate());
-        hourPicker.getValueFactory().setValue(currentTime.getHour());
-        minPicker.getValueFactory().setValue(currentTime.getMinute());
-        secPicker.getValueFactory().setValue(currentTime.getSecond());
     }
 
     /**
