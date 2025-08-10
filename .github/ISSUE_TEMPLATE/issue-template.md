@@ -52,9 +52,10 @@ https://github.com/constellation-app/constellation/blob/master/CODE_OF_CONDUCT.m
 
 3.  \[and so on…\]
 
-<!--
 
 ### Behaviour
+
+<!--
 
 * Try to include measurable metrics that can be aimed for (if applicable to the issue),
 e.g. if it's a time issue then "should take 5 seconds or less to finish"

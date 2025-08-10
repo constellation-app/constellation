@@ -143,8 +143,6 @@ public class AnalyticUtilities {
      * @return path
      */
     public static String getHelpPath() {
-        final String codebaseName = "constellation";
-        return Generator.getBaseDirectory() + SEP + "ext" + SEP + "docs" + SEP + "CoreAnalyticView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP
-                + "asd" + SEP + "tac" + SEP + codebaseName + SEP + "views" + SEP + "analyticview" +  SEP;
+        return Generator.getBaseDirectory() + SEP + "ext" + SEP + "docs" + SEP + "CoreAnalyticView" + SEP;
     }
 }
