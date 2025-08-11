@@ -69,10 +69,10 @@ public class IconEditorFactoryNGTest {
         System.out.println("testCreateEditor");
 
         final AbstractEditor<ConstellationIcon> instance = new IconEditorFactory().createEditor(
-                mock(EditOperation.class),
-                mock(ConstellationIcon.class),
-                mock(ValueValidator.class),
                 "",
+                mock(EditOperation.class),
+                mock(ValueValidator.class),
+                mock(ConstellationIcon.class),
                 mock(ConstellationIcon.class));
 
         assertEquals(instance.getClass(), IconEditor.class);
@@ -92,10 +92,10 @@ public class IconEditorFactoryNGTest {
         final String fileChooserDescription = "Image Files (*" + FileExtensionConstants.JPG + ";*" + FileExtensionConstants.GIF + ";*" + FileExtensionConstants.PNG + ")";
 
         final IconEditor instance = (IconEditor) new IconEditorFactory().createEditor(
-                mock(EditOperation.class),
-                mock(ConstellationIcon.class),
-                mock(ValueValidator.class),
                 "",
+                mock(EditOperation.class),
+                mock(ValueValidator.class),
+                mock(ConstellationIcon.class),
                 mock(ConstellationIcon.class));
 
         final JFileChooser fileChooser = instance.getIconEditorFileChooser().createFileChooser();
@@ -139,10 +139,10 @@ public class IconEditorFactoryNGTest {
         final String fileChooserTitle = "Add New Icon(s)";
 
         final IconEditor instance = (IconEditor) new IconEditorFactory().createEditor(
-                mock(EditOperation.class),
-                mock(ConstellationIcon.class),
-                mock(ValueValidator.class),
                 "",
+                mock(EditOperation.class),
+                mock(ValueValidator.class),
+                mock(ConstellationIcon.class),
                 mock(ConstellationIcon.class));
 
         final JFileChooser fileChooser = instance.getIconEditorFolderChooser().createFileChooser();

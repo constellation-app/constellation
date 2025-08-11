@@ -43,8 +43,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ColorEditorFactory extends AttributeValueEditorFactory<ConstellationColor> {
 
     @Override
-    public AbstractEditor<ConstellationColor> createEditor(final EditOperation editOperation, final ConstellationColor defaultValue, final ValueValidator<ConstellationColor> validator, final String editedItemName, final ConstellationColor initialValue) {
-        return new ColorEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<ConstellationColor> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationColor> validator, final ConstellationColor defaultValue, final ConstellationColor initialValue) {
+        return new ColorEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -57,8 +57,8 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
         private ComboBox<ConstellationColor> colorCombo;
         private ColorPicker picker;
 
-        protected ColorEditor(final EditOperation editOperation, final ConstellationColor defaultValue, final ValueValidator<ConstellationColor> validator, final String editedItemName, final ConstellationColor initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
+        protected ColorEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationColor> validator, final ConstellationColor defaultValue, final ConstellationColor initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
 
         @Override
@@ -89,7 +89,7 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
                 }
             });
             
-            final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<>() {
+            final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = p -> new ListCell<>() {
                 @Override
                 protected void updateItem(final ConstellationColor item, final boolean empty) {
                     super.updateItem(item, empty);

@@ -33,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
     @Override
-    public AbstractEditor<Boolean> createEditor(final EditOperation editOperation, final Boolean defaultValue, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
-        return new BooleanEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<Boolean> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Boolean> validator, final Boolean defaultValue, final Boolean initialValue) {
+        return new BooleanEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
         private CheckBox checkBox;
 
-        protected BooleanEditor(final EditOperation editOperation, final Boolean defaultValue, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue);
+        protected BooleanEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Boolean> validator, final Boolean defaultValue, final Boolean initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override

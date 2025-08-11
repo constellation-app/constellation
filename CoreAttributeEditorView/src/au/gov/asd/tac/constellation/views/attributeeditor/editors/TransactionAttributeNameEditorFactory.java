@@ -38,8 +38,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class TransactionAttributeNameEditorFactory extends AttributeValueEditorFactory<String> {
 
     @Override
-    public AbstractEditor<String> createEditor(final EditOperation editOperation, final String defaultValue, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
-        return new TransactionAttributeNameEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<String> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<String> validator, final String defaultValue, final String initialValue) {
+        return new TransactionAttributeNameEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -53,8 +53,8 @@ public class TransactionAttributeNameEditorFactory extends AttributeValueEditorF
         private TextField nameText;
         private boolean selectionIsActive = false;
 
-        protected TransactionAttributeNameEditor(final EditOperation editOperation, final String defaultValue, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue);
+        protected TransactionAttributeNameEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<String> validator, final String defaultValue, final String initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override

@@ -35,8 +35,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
     @Override
-    public AbstractEditor<URI> createEditor(final EditOperation editOperation, final URI defaultValue, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
-        return new HyperlinkEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<URI> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<URI> validator, final URI defaultValue, final URI initialValue) {
+        return new HyperlinkEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -48,8 +48,8 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
         private TextField textField;
 
-        protected HyperlinkEditor(final EditOperation editOperation, final URI defaultValue, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
+        protected HyperlinkEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<URI> validator, final URI defaultValue, final URI initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
 
         @Override

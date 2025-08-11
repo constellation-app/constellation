@@ -36,19 +36,19 @@ import javafx.scene.control.Label;
  */
 public abstract class AbstractEditorFactory<V> {
 
-    public AbstractEditor<V> createEditor(final EditOperation editOperation, final ValueValidator<V> validator, final String editedItemName, final V initialValue) {
-        return createEditor(editOperation, null, validator, editedItemName, initialValue);
+    public AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<V> validator, final V initialValue) {
+        return createEditor(editedItemName, editOperation, validator, null, initialValue);
     }
 
-    public AbstractEditor<V> createEditor(final EditOperation editOperation, final String editedItemName, final V initialValue) {
-        return createEditor(editOperation, null, ValueValidator.getAlwaysSucceedValidator(), editedItemName, initialValue);
+    public AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final V initialValue) {
+        return createEditor(editedItemName, editOperation, ValueValidator.getAlwaysSucceedValidator(), null, initialValue);
     }
 
-    public AbstractEditor<V> createEditor(final EditOperation editOperation, final V defaultValue, final String editedItemName, final V initialValue) {
-        return createEditor(editOperation, defaultValue, ValueValidator.getAlwaysSucceedValidator(), editedItemName, initialValue);
+    public AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final V defaultValue, final V initialValue) {
+        return createEditor(editedItemName, editOperation, ValueValidator.getAlwaysSucceedValidator(), defaultValue, initialValue);
     }
 
-    public abstract AbstractEditor<V> createEditor(final EditOperation editOperation, final V defaultValue, final ValueValidator<V> validator, final String editedItemName, final V initialValue);
+    public abstract AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<V> validator, final V defaultValue, final V initialValue);
 
     public abstract static class AbstractEditor<V> {
 
@@ -56,31 +56,31 @@ public abstract class AbstractEditorFactory<V> {
         protected static final int CONTROLS_DEFAULT_HORIZONTAL_SPACING = 5;
         protected static final int CONTROLS_DEFAULT_VERTICAL_SPACING = 10;
 
+        protected final String editedItemName;
         protected final EditOperation editOperation;
-        protected final V defaultValue;
         protected final ValueValidator<V> validator;
+        protected final V defaultValue;
         protected final BooleanProperty disableEditProperty;
         protected final StringProperty errorMessageProperty;
-        protected final String editedItemName;
-        private final boolean noValueAllowed;
         protected V currentValue;
         protected V savedValue;
+        private final boolean noValueAllowed;
         protected Node editorHeading = null;
         protected Node editorControls = null;
 
         protected boolean updateInProgress = false;
 
-        protected AbstractEditor(final EditOperation editOperation, final V defaultValue, final ValueValidator<V> validator, final String editedItemName, final V initialValue) {
-            this(editOperation, defaultValue, validator, editedItemName, initialValue, false);
+        protected AbstractEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<V> validator, final V defaultValue, final V initialValue) {
+            this(editedItemName, editOperation, validator, defaultValue, initialValue, false);
         }
         
-        protected AbstractEditor(final EditOperation editOperation, final V defaultValue, final ValueValidator<V> validator, final String editedItemName, final V initialValue, final boolean noValueAllowed) {
+        protected AbstractEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<V> validator, final V defaultValue, final V initialValue, final boolean noValueAllowed) {
+            this.editedItemName = editedItemName;
             this.editOperation = editOperation;
-            this.defaultValue = defaultValue;
             this.validator = validator;
+            this.defaultValue = defaultValue;
             this.disableEditProperty = new SimpleBooleanProperty();
             this.errorMessageProperty = new SimpleStringProperty();
-            this.editedItemName = editedItemName;
             setCurrentValue(initialValue);
             this.noValueAllowed = noValueAllowed;
         }
@@ -101,6 +101,16 @@ public abstract class AbstractEditorFactory<V> {
                 errorMessageProperty.set(error);
                 disableEditProperty.set(error != null);
             }
+        }
+        
+        /**
+         * Whether or not the currentValue of type V is suitable to be used to
+         * performEdit()
+         *
+         * @return true if the current value is valid.
+         */
+        public final String validateCurrentValue() {
+            return validator.validateValue(currentValue);
         }
         
         /**
@@ -213,16 +223,6 @@ public abstract class AbstractEditorFactory<V> {
 
                 editOperation.performEdit(getCurrentValue());
             }
-        }
-
-        /**
-         * Whether or not the currentValue of type V is suitable to be used to
-         * performEdit()
-         *
-         * @return true if the current value is valid.
-         */
-        public final String validateCurrentValue() {
-            return validator.validateValue(currentValue);
         }
 
         /**

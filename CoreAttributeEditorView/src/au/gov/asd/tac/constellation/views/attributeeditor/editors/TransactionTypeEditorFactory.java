@@ -48,8 +48,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<SchemaTransactionType> {
 
     @Override
-    public AbstractEditor<SchemaTransactionType> createEditor(final EditOperation editOperation, final SchemaTransactionType defaultValue, final ValueValidator<SchemaTransactionType> validator, final String editedItemName, final SchemaTransactionType initialValue) {
-        return new TransactionTypeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<SchemaTransactionType> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<SchemaTransactionType> validator, final SchemaTransactionType defaultValue, final SchemaTransactionType initialValue) {
+        return new TransactionTypeEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -63,8 +63,8 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
         private TextField nameText;
         private boolean selectionIsActive = false;
 
-        protected TransactionTypeEditor(final EditOperation editOperation, final SchemaTransactionType defaultValue, final ValueValidator<SchemaTransactionType> validator, final String editedItemName, final SchemaTransactionType initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue);
+        protected TransactionTypeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<SchemaTransactionType> validator, final SchemaTransactionType defaultValue, final SchemaTransactionType initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override

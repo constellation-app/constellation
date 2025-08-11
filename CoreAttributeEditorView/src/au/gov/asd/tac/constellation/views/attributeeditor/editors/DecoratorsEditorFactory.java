@@ -41,8 +41,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexDecorators> {
 
     @Override
-    public AbstractEditor<VertexDecorators> createEditor(final EditOperation editOperation, final VertexDecorators defaultValue, final ValueValidator<VertexDecorators> validator, final String editedItemName, final VertexDecorators initialValue) {
-        return new DecoratorsEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<VertexDecorators> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<VertexDecorators> validator, final VertexDecorators defaultValue, final VertexDecorators initialValue) {
+        return new DecoratorsEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -59,8 +59,8 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         private ComboBox<String> seCombo;
         private ComboBox<String> swCombo;
 
-        protected DecoratorsEditor(final EditOperation editOperation, final VertexDecorators defaultValue, final ValueValidator<VertexDecorators> validator, final String editedItemName, final VertexDecorators initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue);
+        protected DecoratorsEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<VertexDecorators> validator, final VertexDecorators defaultValue, final VertexDecorators initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override

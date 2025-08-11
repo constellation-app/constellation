@@ -36,8 +36,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
     @Override
-    public AbstractEditor<String> createEditor(final EditOperation editOperation, final String defaultValue, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
-        return new StringEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<String> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<String> validator, final String defaultValue, final String initialValue) {
+        return new StringEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -49,8 +49,8 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
         
         private TextArea textArea;
 
-        protected StringEditor(final EditOperation editOperation, final String defaultValue, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
+        protected StringEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<String> validator, final String defaultValue, final String initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
 
         @Override

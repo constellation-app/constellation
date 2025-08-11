@@ -39,8 +39,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
 
     @Override
-    public AbstractEditor<LocalTime> createEditor(final EditOperation editOperation, final LocalTime defaultValue, final ValueValidator<LocalTime> validator, final String editedItemName, final LocalTime initialValue) {
-        return new TimeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<LocalTime> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<LocalTime> validator, final LocalTime defaultValue, final LocalTime initialValue) {
+        return new TimeEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -62,8 +62,8 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
         private Spinner<Integer> secSpinner;
         private Spinner<Integer> milliSpinner;
 
-        protected TimeEditor(final EditOperation editOperation, final LocalTime defaultValue, final ValueValidator<LocalTime> validator, final String editedItemName, final LocalTime initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
+        protected TimeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<LocalTime> validator, final LocalTime defaultValue, final LocalTime initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
 
         @Override

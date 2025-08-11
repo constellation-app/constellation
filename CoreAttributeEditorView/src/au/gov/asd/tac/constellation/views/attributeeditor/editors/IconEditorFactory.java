@@ -68,8 +68,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class IconEditorFactory extends AttributeValueEditorFactory<ConstellationIcon> {
 
     @Override
-    public AbstractEditor<ConstellationIcon> createEditor(final EditOperation editOperation, final ConstellationIcon defaultValue, final ValueValidator<ConstellationIcon> validator, final String editedItemName, final ConstellationIcon initialValue) {
-        return new IconEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<ConstellationIcon> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationIcon> validator, final ConstellationIcon defaultValue, final ConstellationIcon initialValue) {
+        return new IconEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -89,8 +89,8 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         private TreeItem<IconNode> treeRoot;
         private TreeItem<IconNode> builtInItem;
 
-        protected IconEditor(final EditOperation editOperation, final ConstellationIcon defaultValue, final ValueValidator<ConstellationIcon> validator, final String editedItemName, final ConstellationIcon initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue);
+        protected IconEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationIcon> validator, final ConstellationIcon defaultValue, final ConstellationIcon initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override

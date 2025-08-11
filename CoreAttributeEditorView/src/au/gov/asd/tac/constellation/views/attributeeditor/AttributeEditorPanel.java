@@ -287,7 +287,7 @@ public class AttributeEditorPanel extends BorderPane {
         schemaMenuItem.setOnAction(e -> {
             final EditOperation editOperation = value -> prefs.put(correspondingPreference, ((ConstellationColor) value).getHtmlColor());
             @SuppressWarnings("unchecked") // return type of createEditor will actually be AbstractEditor<ConstellationColor>
-            final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(editOperation, String.format("for %s", itemName), ConstellationColor.fromFXColor(color));
+            final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(String.format("For %s", itemName), editOperation, ConstellationColor.fromFXColor(color));
             final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
             dialog.showDialog();
         });
@@ -854,7 +854,7 @@ public class AttributeEditorPanel extends BorderPane {
         final List<String> extantAttributeNames = currentAttributeNames.get(elementType);
         final ValueValidator<AttributePrototype> validator = v
                 -> extantAttributeNames.contains(v.getAttributeName()) ? "An attribute with that name already exists." : null;
-        final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Create %s attribute", elementType.getShortLabel()), AttributePrototype.getBlankPrototype(elementType));
+        final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(String.format("Create %s attribute", elementType.getShortLabel()), editOperation, validator, AttributePrototype.getBlankPrototype(elementType));
 
         ((AttributeEditor) editor).setGraphElementType(elementType);
         ((AttributeEditor) editor).setTypeModifiable(true);
@@ -867,7 +867,7 @@ public class AttributeEditorPanel extends BorderPane {
         final List<String> extantAttributeNames = currentAttributeNames.get(attr.getElementType());
         final ValueValidator<AttributePrototype> validator = v
                 -> extantAttributeNames.contains(v.getAttributeName()) && !attr.getAttributeName().equals(v.getAttributeName()) ? "An attribute with that name already exists." : null;
-        final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Modify %s attribute %s", attr.getElementType().getShortLabel(), attr.getAttributeName()), attr);
+        final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor( String.format("Modify %s attribute %s", attr.getElementType().getShortLabel(), attr.getAttributeName()), editOperation, validator, attr);
 
         ((AttributeEditor) editor).setGraphElementType(attr.getElementType());
         ((AttributeEditor) editor).setTypeModifiable(false);
@@ -878,7 +878,7 @@ public class AttributeEditorPanel extends BorderPane {
     private void updateTimeZoneAction(final AttributeData attr) {
         final EditOperation editOperation = zoneId
                 -> PluginExecution.withPlugin(new UpdateTimeZonePlugin((ZoneId) zoneId, attr)).executeLater(GraphManager.getDefault().getActiveGraph());
-        final AbstractEditor<ZoneId> editor = UPDATE_TIME_ZONE_EDITOR_FACTORY.createEditor(editOperation, String.format("Set time-zone for attribute %s", attr.getAttributeName()), TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
+        final AbstractEditor<ZoneId> editor = UPDATE_TIME_ZONE_EDITOR_FACTORY.createEditor(String.format("Set time-zone for attribute %s", attr.getAttributeName()), editOperation, TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
         final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();
     }
@@ -905,7 +905,7 @@ public class AttributeEditorPanel extends BorderPane {
             final List<String> keyNames = keysList.stream().map(s -> s.getName()).collect(Collectors.toList());
             final EditOperation editOperation = new PrimaryKeyEditOperation(elementType);
             
-            final AbstractEditor<List<String>> editor = LIST_SELECTION_EDITOR_FACTORY.createEditor(editOperation, keyNames, String.format("Edit primary key for %ss", elementType.getShortLabel()), currentKeyAttributes);
+            final AbstractEditor<List<String>> editor = LIST_SELECTION_EDITOR_FACTORY.createEditor(String.format("Edit primary key for %ss", elementType.getShortLabel()), editOperation, keyNames, currentKeyAttributes);
             ((ListSelectionEditor) editor).setPossibleItems(allAttributes);
             final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
             dialog.showDialog();
@@ -920,7 +920,7 @@ public class AttributeEditorPanel extends BorderPane {
         final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
         final ValueValidator<?> validator = interaction.fromEditValidator(editType);
         final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
-        final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, toTranslator.translate(attributeData.getDefaultValue()), validator, attributeData.getAttributeName(), toTranslator.translate(value));
+        final AbstractEditor<?> editor = editorFactory.createEditor(attributeData.getAttributeName(), editOperation, validator, toTranslator.translate(attributeData.getDefaultValue()), toTranslator.translate(value));
         final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();
     }

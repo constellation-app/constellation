@@ -49,8 +49,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
     @Override
-    public AbstractEditor<Blaze> createEditor(final EditOperation editOperation, final Blaze defaultValue, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
-        return new BlazeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<Blaze> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Blaze> validator, final Blaze defaultValue, final Blaze initialValue) {
+        return new BlazeEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -63,8 +63,8 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
         private TextField angleTextField;
         private ColorPicker picker;
 
-        protected BlazeEditor(final EditOperation editOperation, final Blaze defaultValue, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
+        protected BlazeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Blaze> validator, final Blaze defaultValue, final Blaze initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
 
         @Override
@@ -125,7 +125,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
                 }
             });
             
-            final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<>() {
+            final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = p -> new ListCell<>() {
                 @Override
                 protected void updateItem(final ConstellationColor item, final boolean empty) {
                     super.updateItem(item, empty);

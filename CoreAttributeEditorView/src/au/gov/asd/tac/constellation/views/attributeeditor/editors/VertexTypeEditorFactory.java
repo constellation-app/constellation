@@ -48,8 +48,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaVertexType> {
 
     @Override
-    public AbstractEditor<SchemaVertexType> createEditor(final EditOperation editOperation, final SchemaVertexType defaultValue, final ValueValidator<SchemaVertexType> validator, final String editedItemName, final SchemaVertexType initialValue) {
-        return new VertexTypeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<SchemaVertexType> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<SchemaVertexType> validator, final SchemaVertexType defaultValue, final SchemaVertexType initialValue) {
+        return new VertexTypeEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -63,8 +63,8 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
         private TextField nameText;
         private boolean selectionIsActive = false;
 
-        protected VertexTypeEditor(final EditOperation editOperation, final SchemaVertexType defaultValue, final ValueValidator<SchemaVertexType> validator, final String editedItemName, final SchemaVertexType initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue);
+        protected VertexTypeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<SchemaVertexType> validator, final SchemaVertexType defaultValue, final SchemaVertexType initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override

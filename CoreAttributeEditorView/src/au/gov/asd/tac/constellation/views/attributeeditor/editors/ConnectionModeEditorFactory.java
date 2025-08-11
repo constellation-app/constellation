@@ -40,8 +40,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<ConnectionMode> {
 
     @Override
-    public AbstractEditor<ConnectionMode> createEditor(final EditOperation editOperation, final ConnectionMode defaultValue, final ValueValidator<ConnectionMode> validator, final String editedItemName, final ConnectionMode initialValue) {
-        return new ConnectionModeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<ConnectionMode> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConnectionMode> validator, final ConnectionMode defaultValue, final ConnectionMode initialValue) {
+        return new ConnectionModeEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -53,8 +53,8 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
 
         private ComboBox<ConnectionMode> connectionModeComboBox;
 
-        protected ConnectionModeEditor(final EditOperation editOperation, final ConnectionMode defaultValue, final ValueValidator<ConnectionMode> validator, final String editedItemName, final ConnectionMode initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue);
+        protected ConnectionModeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConnectionMode> validator, final ConnectionMode defaultValue, final ConnectionMode initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override
@@ -81,7 +81,7 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
             connectionModeLabel.setLabelFor(connectionModeComboBox);
             connectionModeComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
             
-            final Callback<ListView<ConnectionMode>, ListCell<ConnectionMode>> cellFactory = (final ListView<ConnectionMode> p) -> new ListCell<ConnectionMode>() {
+            final Callback<ListView<ConnectionMode>, ListCell<ConnectionMode>> cellFactory = p -> new ListCell<>() {
                 @Override
                 protected void updateItem(final ConnectionMode item, final boolean empty) {
                     super.updateItem(item, empty);

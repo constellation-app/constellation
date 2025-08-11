@@ -40,8 +40,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyle> {
 
     @Override
-    public AbstractEditor<LineStyle> createEditor(final EditOperation editOperation, final LineStyle defaultValue, final ValueValidator<LineStyle> validator, final String editedItemName, final LineStyle initialValue) {
-        return new LineStyleEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<LineStyle> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<LineStyle> validator, final LineStyle defaultValue, final LineStyle initialValue) {
+        return new LineStyleEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -53,8 +53,8 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
 
         private ComboBox<LineStyle> lineStyleComboBox;
 
-        protected LineStyleEditor(final EditOperation editOperation, final LineStyle defaultValue, final ValueValidator<LineStyle> validator, final String editedItemName, final LineStyle initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue);
+        protected LineStyleEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<LineStyle> validator, final LineStyle defaultValue, final LineStyle initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override
@@ -81,7 +81,7 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
             lineStyleComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
             lineStyleLabel.setLabelFor(lineStyleComboBox);
             
-            final Callback<ListView<LineStyle>, ListCell<LineStyle>> cellFactory = (final ListView<LineStyle> p) -> new ListCell<>() {
+            final Callback<ListView<LineStyle>, ListCell<LineStyle>> cellFactory = p -> new ListCell<>() {
                 @Override
                 protected void updateItem(final LineStyle item, final boolean empty) {
                     super.updateItem(item, empty);

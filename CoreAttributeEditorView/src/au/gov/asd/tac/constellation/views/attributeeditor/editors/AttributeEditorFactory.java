@@ -47,8 +47,8 @@ import javafx.scene.layout.HBox;
 public class AttributeEditorFactory extends AbstractEditorFactory<AttributePrototype> {
 
     @Override
-    public AbstractEditor<AttributePrototype> createEditor(final EditOperation editOperation, final AttributePrototype defaultValue, final ValueValidator<AttributePrototype> validator, final String editedItemName, final AttributePrototype initialValue) {
-        return new AttributeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<AttributePrototype> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<AttributePrototype> validator, final AttributePrototype defaultValue, final AttributePrototype initialValue) {
+        return new AttributeEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     public class AttributeEditor extends AbstractEditor<AttributePrototype> {
@@ -61,8 +61,8 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
         private Object defaultVal;
         private boolean isTypeModifiable;
 
-        protected AttributeEditor(final EditOperation editOperation, final AttributePrototype defaultValue, final ValueValidator<AttributePrototype> validator, final String editedItemName, final AttributePrototype initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue);
+        protected AttributeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<AttributePrototype> validator, final AttributePrototype defaultValue, final AttributePrototype initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         public void setGraphElementType(final GraphElementType elementType) {
@@ -162,7 +162,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
                     update();
                 };
 
-                final AbstractEditor<T> editor = editorFactory.createEditor(restoreDefaultEditOperation, valueValidator, "Default Value", (T) toTranslator.translate(defaultVal));
+                final AbstractEditor<T> editor = editorFactory.createEditor( "Default Value", restoreDefaultEditOperation, valueValidator, (T) toTranslator.translate(defaultVal));
                 final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
                 dialog.showDialog();
             };

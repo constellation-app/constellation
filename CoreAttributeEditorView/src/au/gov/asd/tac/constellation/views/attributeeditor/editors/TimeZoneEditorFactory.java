@@ -42,8 +42,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
 
     @Override
-    public AbstractEditor<ZoneId> createEditor(final EditOperation editOperation, final ZoneId defaultValue, final ValueValidator<ZoneId> validator, final String editedItemName, final ZoneId initialValue) {
-        return new TimeZoneEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<ZoneId> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ZoneId> validator, final ZoneId defaultValue, final ZoneId initialValue) {
+        return new TimeZoneEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -60,8 +60,8 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
             return offsetCompare != 0 ? offsetCompare : t1.getId().compareTo(t2.getId());
         };
 
-        protected TimeZoneEditor(final EditOperation editOperation, final ZoneId defaultValue, final ValueValidator<ZoneId> validator, final String editedItemName, final ZoneId initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue);
+        protected TimeZoneEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ZoneId> validator, final ZoneId defaultValue, final ZoneId initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override
@@ -88,7 +88,7 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
             timeZoneComboBox.getSelectionModel().select(TimeZoneUtilities.UTC);
             timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
             
-            final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<>() {
+            final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = p -> new ListCell<>() {
                 @Override
                 protected void updateItem(final ZoneId item, final boolean empty) {
                     super.updateItem(item, empty);

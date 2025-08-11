@@ -33,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlags> {
 
     @Override
-    public AbstractEditor<DrawFlags> createEditor(final EditOperation editOperation, final DrawFlags defaultValue, final ValueValidator<DrawFlags> validator, final String editedItemName, final DrawFlags initialValue) {
-        return new DrawFlagsEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<DrawFlags> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<DrawFlags> validator, final DrawFlags defaultValue, final DrawFlags initialValue) {
+        return new DrawFlagsEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -50,8 +50,8 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
         private CheckBox drawConnectionLabelsCheckBox;
         private CheckBox drawBlazesCheckBox;
 
-        protected DrawFlagsEditor(final EditOperation editOperation, final DrawFlags defaultValue, final ValueValidator<DrawFlags> validator, final String editedItemName, final DrawFlags initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue);
+        protected DrawFlagsEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<DrawFlags> validator, final DrawFlags defaultValue, final DrawFlags initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override

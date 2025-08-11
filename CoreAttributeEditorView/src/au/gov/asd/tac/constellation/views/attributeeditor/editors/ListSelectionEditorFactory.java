@@ -39,8 +39,8 @@ import javafx.scene.layout.VBox;
 public class ListSelectionEditorFactory extends AbstractEditorFactory<List<String>> {
 
     @Override
-    public AbstractEditor<List<String>> createEditor(final EditOperation editOperation, final List<String> defaultValue, final ValueValidator<List<String>> validator, final String editedItemName, final List<String> initialValue) {
-        return new ListSelectionEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<List<String>> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<List<String>> validator, final List<String> defaultValue, final List<String> initialValue) {
+        return new ListSelectionEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     public class ListSelectionEditor extends AbstractEditor<List<String>> {
@@ -49,8 +49,8 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
         private ObservableList<String> availableItemsList;
         private ObservableList<String> selectedItemsList;
 
-        protected ListSelectionEditor(final EditOperation editOperation, final List<String> defaultValue, final ValueValidator<List<String>> validator, final String editedItemName, final List<String> initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue);
+        protected ListSelectionEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<List<String>> validator, final List<String> defaultValue, final List<String> initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         public void setPossibleItems(final List<String> possibleItems) {

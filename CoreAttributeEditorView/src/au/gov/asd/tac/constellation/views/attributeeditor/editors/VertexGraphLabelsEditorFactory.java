@@ -56,8 +56,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<GraphLabels> {
 
     @Override
-    public AbstractEditor<GraphLabels> createEditor(final EditOperation editOperation, final GraphLabels defaultValue, final ValueValidator<GraphLabels> validator, final String editedItemName, final GraphLabels initialValue) {
-        return new GraphLabelsEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<GraphLabels> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<GraphLabels> validator, final GraphLabels defaultValue, final GraphLabels initialValue) {
+        return new GraphLabelsEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -72,8 +72,8 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
         private final Button addButton = new Button("", new ImageView(UserInterfaceIconProvider.ADD.buildImage(16)));
         private final List<String> attributeNames = new ArrayList<>();
 
-        protected GraphLabelsEditor(final EditOperation editOperation, final GraphLabels defaultValue, final ValueValidator<GraphLabels> validator, final String editedItemName, final GraphLabels initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue);
+        protected GraphLabelsEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<GraphLabels> validator, final GraphLabels defaultValue, final GraphLabels initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override
@@ -242,7 +242,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
                         update();
                     };
 
-                    final AbstractEditor<ConstellationColor> editor = editorFactory.createEditor(setColorEditOperation, "label color", ConstellationColor.fromFXColor(color));
+                    final AbstractEditor<ConstellationColor> editor = editorFactory.createEditor("Label Color", setColorEditOperation, ConstellationColor.fromFXColor(color));
                     final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
                     dialog.showDialog();
                 };

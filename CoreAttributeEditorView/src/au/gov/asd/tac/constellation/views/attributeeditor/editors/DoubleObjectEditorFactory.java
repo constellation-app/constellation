@@ -33,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Double> {
 
     @Override
-    public AbstractEditor<Double> createEditor(final EditOperation editOperation, final Double defaultValue, final ValueValidator<Double> validator, final String editedItemName, final Double initialValue) {
-        return new DoubleObjectEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<Double> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Double> validator, final Double defaultValue, final Double initialValue) {
+        return new DoubleObjectEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
 
         private TextField numberField;
 
-        protected DoubleObjectEditor(final EditOperation editOperation, final Double defaultValue, final ValueValidator<Double> validator, final String editedItemName, final Double initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
+        protected DoubleObjectEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Double> validator, final Double defaultValue, final Double initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
 
         @Override

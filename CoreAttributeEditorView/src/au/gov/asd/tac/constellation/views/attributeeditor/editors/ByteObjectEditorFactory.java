@@ -33,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
 
     @Override
-    public AbstractEditor<Byte> createEditor(final EditOperation editOperation, final Byte defaultValue, final ValueValidator<Byte> validator, final String editedItemName, final Byte initialValue) {
-        return new ByteObjectEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<Byte> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Byte> validator, final Byte defaultValue, final Byte initialValue) {
+        return new ByteObjectEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
 
         private TextField numberField;
 
-        protected ByteObjectEditor(final EditOperation editOperation, final Byte defaultValue, final ValueValidator<Byte> validator, final String editedItemName, final Byte initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
+        protected ByteObjectEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Byte> validator, final Byte defaultValue, final Byte initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
 
         @Override

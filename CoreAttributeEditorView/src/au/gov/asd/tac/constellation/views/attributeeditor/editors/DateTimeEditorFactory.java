@@ -56,8 +56,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDateTime> {
 
     @Override
-    public AbstractEditor<ZonedDateTime> createEditor(final EditOperation editOperation, final ZonedDateTime defaultValue, final ValueValidator<ZonedDateTime> validator, final String editedItemName, final ZonedDateTime initialValue) {
-        return new DateTimeEditor(editOperation, defaultValue, validator, editedItemName, initialValue);
+    public AbstractEditor<ZonedDateTime> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ZonedDateTime> validator, final ZonedDateTime defaultValue, final ZonedDateTime initialValue) {
+        return new DateTimeEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -91,8 +91,8 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             return offsetCompare != 0 ? offsetCompare : t1.getId().compareTo(t2.getId());
         };
 
-        protected DateTimeEditor(final EditOperation editOperation, final ZonedDateTime defaultValue, final ValueValidator<ZonedDateTime> validator, final String editedItemName, final ZonedDateTime initialValue) {
-            super(editOperation, defaultValue, validator, editedItemName, initialValue, true);
+        protected DateTimeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ZonedDateTime> validator, final ZonedDateTime defaultValue, final ZonedDateTime initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
 
         @Override
@@ -136,7 +136,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             timeZoneComboBoxLabel.setId(LABEL_ID);
             timeZoneComboBoxLabel.setLabelFor(timeZoneComboBox);
             
-            final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<>() {
+            final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = p -> new ListCell<>() {
                 @Override
                 protected void updateItem(final ZoneId item, final boolean empty) {
                     super.updateItem(item, empty);
@@ -179,8 +179,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             
             milliSpinner = createTimeSpinner(999, 0, MILLIS_SPINNER_WIDTH);
             final Label milliSpinnerLabel = createLabel("Millis:", milliSpinner);
-            
-            
+                        
             final VBox dateLabelNode = new VBox(5, dateLabel, datePicker);
             final VBox hourLabelNode = new VBox(5, hourSpinnerLabel, hourSpinner);
             final VBox minLabelNode = new VBox(5, minSpinnerLabel, minSpinner);
