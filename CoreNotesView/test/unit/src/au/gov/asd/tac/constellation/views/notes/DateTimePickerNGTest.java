@@ -22,6 +22,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.TextField;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -133,21 +135,49 @@ public class DateTimePickerNGTest {
     }
 
     /**
-     * Test of validateInput method, of class DateTimePicker.
+     * Test of validateBlankInput method, of class DateTimePicker.
      */
     @Test
     public void testValidateInput() {
         System.out.println("validateInput");
         final DateTimePicker instance = new DateTimePicker(false);
-        final TextField textField = new TextField();
 
-        instance.validateInput("2", "2p", textField);
-        assertEquals(textField.getText(), "2");
+        // Not numbers only, greater than 2 in length.
+        assertEquals(instance.validateInput("23", "23x"), "23");
 
-        instance.validateInput("22", "22pp", textField);
-        assertEquals(textField.getText(), "22");
+        // Numbers only, greater than 2 in length.
+        assertEquals(instance.validateInput("23", "230"), "23");
 
-        instance.validateInput("22", "", textField);
-        assertEquals(textField.getText(), "22");
+        // Not numbers only, lesser than 2 in length.
+        assertEquals(instance.validateInput("", "x"), "");
+
+        // Numbers only, lesser than 2 in length.
+        assertEquals(instance.validateInput("23", "2"), "2");
+    }
+
+    /**
+     * Test of validateBlankInput method, of class DateTimePicker.
+     */
+    @Test
+    public void testValidateBlankInput() {
+        System.out.println("validateBlankInput");
+        final DateTimePicker instance = new DateTimePicker(false);
+        final TextField textField = mock(TextField.class);
+
+        when(textField.isFocused()).thenReturn(false);
+
+        when(textField.getText()).thenReturn("");
+        assertEquals(instance.validateBlankInput(textField), "0");
+
+        when(textField.getText()).thenReturn("23");
+        assertEquals(instance.validateBlankInput(textField), "23");
+
+        when(textField.isFocused()).thenReturn(true);
+
+        when(textField.getText()).thenReturn("");
+        assertEquals(instance.validateBlankInput(textField), "");
+
+        when(textField.getText()).thenReturn("23");
+        assertEquals(instance.validateBlankInput(textField), "23");
     }
 }
