@@ -920,7 +920,7 @@ public class AttributeEditorPanel extends BorderPane {
         final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
         final ValueValidator<?> validator = interaction.fromEditValidator(editType);
         final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
-        final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, attributeData.getDefaultValue(), validator, attributeData.getAttributeName(), toTranslator.translate(value));
+        final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, toTranslator.translate(attributeData.getDefaultValue()), validator, attributeData.getAttributeName(), toTranslator.translate(value));
         final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();
     }
