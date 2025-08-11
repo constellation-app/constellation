@@ -103,9 +103,17 @@ public class DateTimePicker {
         timePickerGrid.add(minLabel, 1, 0);
         timePickerGrid.add(secLabel, 2, 0);
 
-        hourPicker.getEditor().textProperty().addListener((observable, oldValue, newValue) -> validateInput(oldValue, newValue, hourPicker.getEditor()));
-        minPicker.getEditor().textProperty().addListener((observable, oldValue, newValue) -> validateInput(oldValue, newValue, minPicker.getEditor()));
-        secPicker.getEditor().textProperty().addListener((observable, oldValue, newValue) -> validateInput(oldValue, newValue, secPicker.getEditor()));
+        final TextField hourField = hourPicker.getEditor();
+        final TextField minField = minPicker.getEditor();
+        final TextField secField = secPicker.getEditor();
+
+        hourField.textProperty().addListener((observable, oldValue, newValue) -> hourField.setText(validateInput(oldValue, newValue)));
+        minField.textProperty().addListener((observable, oldValue, newValue) -> minField.setText(validateInput(oldValue, newValue)));
+        secField.textProperty().addListener((observable, oldValue, newValue) -> secField.setText(validateInput(oldValue, newValue)));
+
+        hourField.focusedProperty().addListener((observable, oldValue, newValue) -> hourField.setText(validateBlankInput(hourField)));
+        minField.focusedProperty().addListener((observable, oldValue, newValue) -> minField.setText(validateBlankInput(minField)));
+        secField.focusedProperty().addListener((observable, oldValue, newValue) -> secField.setText(validateBlankInput(secField)));
 
         hourPicker.setMinWidth(60);
         minPicker.setMinWidth(60);
@@ -128,16 +136,20 @@ public class DateTimePicker {
         mainGridPane.setPadding(new Insets(1, 1, 1, 1));
     }
 
-    public void validateInput(final String oldValue, final String newValue, final TextField textField) {
+    public String validateInput(final String oldValue, final String newValue) {
         if (!NUMBERS_ONLY_REGEX.matcher(newValue).matches() || newValue.length() > 2) {
-            textField.setText(oldValue);
+            return oldValue;
+        } else {
+            return newValue;
         }
+    }
 
-        textField.focusedProperty().addListener((o, ov, nv) -> {
-            if (!textField.isFocused() && textField.getText().isBlank()) {
-                textField.setText("0");
-            }
-        });
+    public String validateBlankInput(final TextField textField) {
+        if (!textField.isFocused() && textField.getText().isBlank()) {
+            return "0";
+        } else {
+            return textField.getText();
+        }
     }
 
     public void disableControls(final boolean disable) {
