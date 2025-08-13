@@ -1,0 +1,969 @@
+/*
+ * Copyright 2010-2025 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.views.histogram.rewrite;
+
+import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavaFxUtilities;
+import au.gov.asd.tac.constellation.views.histogram.Bin;
+import au.gov.asd.tac.constellation.views.histogram.BinCollection;
+import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
+import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import javafx.scene.input.KeyEvent;
+import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+
+/**
+ * The HistogramDisplay provides a panel the actually shows the histogram bins with their associated bars and labels.
+ *
+ * @author sirius
+ * @author antares
+ * @author sol695510
+ * @author Quasar985
+ */
+public class HistogramDisplay2 extends BorderPane {
+
+    public static final String BACKGROUND_COLOR_STRING = "#444444";
+    public static final Color BACKGROUND_COLOR = Color.decode(BACKGROUND_COLOR_STRING);
+    public static final Color BAR_COLOR = new Color(0.1176F, 0.5647F, 1.0F);
+    public static final Color SELECTED_COLOR = Color.RED.darker();
+    public static final Color ACTIVE_COLOR = Color.YELLOW;
+
+    static final String NO_VALUE = "<No Value>";
+    private static final String PROPERTY_VALUE = "Property Value";
+    private static final String COUNT = "Count";
+    private static final String TOTAL_BINS_COUNT = "Selected / Total Bin Count: ";
+
+    // The color that shows where a bar would be if it was bigger.
+    // This provides a guide to the user so they can click anywhere level with a bar,
+    // even if the bar is really short.
+    private static final Color CLICK_AREA_COLOR = BACKGROUND_COLOR.brighter();
+    private static final Color ACTIVE_AREA_COLOR = CLICK_AREA_COLOR.brighter();
+    private static final String NO_DATA = "<No Data>";
+    private static final int GAP_BETWEEN_BARS = 5;
+    private static final int MINIMUM_BAR_HEIGHT = 2;
+    private static final int MAXIMUM_BAR_HEIGHT = 99;
+    private static final int MINIMUM_BAR_WIDTH = 4;
+    private static final int MINIMUM_SELECTED_WIDTH = 3;
+    private static final int MINIMUM_TEXT_WIDTH = 150;
+    private static final int PREFERRED_HEIGHT = 600;
+    private static final int ROWS_SPACING = 5;
+    private static final int DEFAULT_FONT_SIZE = 12;
+
+    private final HistogramTopComponent2 topComponent;
+    private int barHeightBase = 18;
+    private int barHeight = (barHeightBase * FontUtilities.getApplicationFontSize()) / DEFAULT_FONT_SIZE;   // the vertical thickness of the bars
+    private BinCollection binCollection = null;
+    private BinIconMode binIconMode = BinIconMode.NONE;
+    private BinSelectionMode binSelectionMode = BinSelectionMode.ADD_TO_SELECTION;
+    private int activeBin = -1;
+    private int prevDragEnd = -2; // Set to -2, so value is different to dragEnd
+    private int dragStart = -1;
+    private int dragEnd = -1;
+    private boolean shiftDown;
+    private boolean controlDown;
+    private final ContextMenu copyMenu = new ContextMenu();
+
+    private final VBox propertyColumn = new VBox();
+    private final VBox barColumn = new VBox();
+    private final VBox iconColumn = new VBox();
+    private final HBox columns = new HBox();
+
+    private final VBox barsHbox = new VBox(); // Holds the spacer and vbox containing the bars
+    private final Pane barSpacer = new Pane(); // Matches the width of the property value column
+    private final VBox barsVbox = new VBox(); // Holds just the bars, width of bars are based on barColum width
+
+    private final VBox binCountsVbox = new VBox(); // Holds 
+
+    // Pane that holds everything, stacks the bars on top
+    //final StackPane stackPane = new StackPane();
+    final VBox mainVBox = new VBox();
+
+    private static final int COLUMNS_SPACING = 5;
+    private double barsWidth = 0;
+    private static final float FONT_SCALE_FACTOR = 0.66F;
+
+    private static final String STYLE_SETTING = "-fx-background-color: %s;";
+    private static final String HEADER_ROW_CSS_CLASS = "header-row";
+    private static final String FONT_SIZE_CSS_PROPERTY = "-fx-font-size: ";
+
+    private static final String TABLE_VIEW_CSS_CLASS = "histogramTable";
+
+    // new 
+    private final ListView<StackPane> listView = new ListView<>();
+    private final TableView<HistogramBar> tableView = new TableView<>();
+
+    // Table view columns
+    private final TableColumn<HistogramBar, StackPane> barCol = new TableColumn<>("Bar");
+
+    final HBox headerRow = new HBox();
+    final HBox headerCountHBox = new HBox();
+
+    public HistogramDisplay2(final HistogramTopComponent2 topComponent) {
+        this.topComponent = topComponent;
+
+        initializeSettings();
+        initializeListeners();
+
+        final MenuItem copyValuesMenuItem = new MenuItem("Copy Selected Property Values");
+        copyValuesMenuItem.setOnAction(e -> copySelectedToClipboard(false));
+        copyMenu.getItems().add(copyValuesMenuItem);
+
+        final MenuItem copyValuesAndCountsMenuItem = new MenuItem("Copy Selected Property Values & Counts");
+        copyValuesAndCountsMenuItem.setOnAction(e -> copySelectedToClipboard(true));
+        copyMenu.getItems().add(copyValuesAndCountsMenuItem);
+
+        setPrefHeight(PREFERRED_HEIGHT);
+
+        barColumn.widthProperty().addListener((obs, oldVal, newVal) -> drawBars((double) newVal));
+        listView.widthProperty().addListener((obs, oldVal, newVal) -> drawBars((double) newVal));
+        //tableView.widthProperty().addListener((obs, oldVal, newVal) -> drawBars((double) newVal * 0.69));
+
+        final TableColumn<HistogramBar, String> propertyCol = new TableColumn<>("Property");
+        propertyCol.setCellValueFactory(new PropertyValueFactory("propertyName"));
+        propertyCol.setResizable(false);
+        propertyCol.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));// TODO: fix these magic numbers
+        propertyCol.setMinWidth(MINIMUM_TEXT_WIDTH);
+
+        final TableColumn<HistogramBar, Node> iconCol = new TableColumn<>("Icon");
+        iconCol.setCellValueFactory(new PropertyValueFactory("icon"));
+        iconCol.setResizable(false);
+        //iconCol.prefWidthProperty().bind(tableView.widthProperty().multiply(0.1));// TODO: fix these magic numbers
+        iconCol.setPrefWidth(barHeight);
+
+        barCol.setCellValueFactory(new PropertyValueFactory("bar"));
+        barCol.setResizable(false);
+        barCol.prefWidthProperty().bind(tableView.widthProperty().multiply(0.6)); // TODO: fix these magic numbers
+
+        barCol.widthProperty().addListener((obs, oldVal, newVal) -> {
+            //drawBars((double) newVal - 20);
+            populateTable(true, (double) newVal - 20);
+        });
+
+        tableView.getColumns().setAll(iconCol, propertyCol, barCol);
+        tableView.getStyleClass().add("noheader");
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        VBox.setVgrow(tableView, Priority.ALWAYS);
+        //tableView.getStyleClass().add(TABLE_VIEW_CSS_CLASS);
+
+        // Below doesnt work
+        final PseudoClass foo = PseudoClass.getPseudoClass("noValue");
+        tableView.setRowFactory(tv -> {
+            TableRow<HistogramBar> row = new TableRow<>();
+            row.itemProperty().addListener((obs, oldItem, newItem) -> {
+                if (true) {
+                    //System.out.println("THIS CALLED");
+                    //row.pseudoClassStateChanged(foo, true);
+                    row.getStyleClass().add("no-value");
+                } else {
+                    //row.pseudoClassStateChanged(foo, false);
+                }
+            });
+            return row;
+        });
+//end
+
+        headerCountHBox.minWidthProperty().bind(barCol.widthProperty());
+
+        headerRow.setAlignment(Pos.CENTER_RIGHT);
+        headerRow.setMinHeight(barHeight);
+
+        columns.getChildren().addAll(iconColumn, propertyColumn, barColumn);
+        columns.setMouseTransparent(true);
+        columns.setSpacing(COLUMNS_SPACING);
+        HBox.setHgrow(columns, Priority.ALWAYS);
+
+        iconColumn.setSpacing(ROWS_SPACING);
+
+        propertyColumn.setMinWidth(MINIMUM_TEXT_WIDTH);
+        propertyColumn.setSpacing(ROWS_SPACING);
+
+        barColumn.setSpacing(ROWS_SPACING);
+        HBox.setHgrow(barColumn, Priority.ALWAYS);
+
+        //stackPane.getChildren().addAll(columns, barsHbox, binCountsVbox);
+//        stackPane.getChildren().add(listView);
+        //stackPane.getChildren().add(tableView);
+        mainVBox.getChildren().addAll(headerRow, tableView);
+
+        barsVbox.setSpacing(ROWS_SPACING);
+        barsVbox.setMouseTransparent(true);
+
+        HBox.setHgrow(barSpacer, Priority.ALWAYS);
+        barsHbox.setAlignment(Pos.TOP_RIGHT);
+        barsHbox.getChildren().addAll(barSpacer, barsVbox);
+
+        propertyColumn.widthProperty().addListener((obs, oldVal, newVal) -> barSpacer.setMaxWidth((double) newVal));
+
+        binCountsVbox.setAlignment(Pos.TOP_RIGHT);
+        binCountsVbox.setSpacing(ROWS_SPACING);
+
+//        this.setCenter(stackPane);
+        this.setCenter(mainVBox);
+
+        updateBarHeight();
+
+        initializeListeners();
+    }
+
+    private void initializeSettings() {
+        setStyle(String.format(STYLE_SETTING, BACKGROUND_COLOR_STRING));
+        requestFocus(); // Focus the Histogram View so 'key' actions can be registered.
+    }
+
+    private void initializeListeners() {
+        // Set up mouse listeners
+        this.setOnMouseClicked(e -> handleMouseClicked(e));
+        this.setOnMousePressed(e -> handleMousePressed(e));
+        this.setOnMouseDragged(e -> handleMouseDragged(e));
+        this.setOnMouseReleased(e -> handleMouseReleased(e));
+        this.setOnMouseEntered(e -> handleMouseEntered());
+
+        this.setOnKeyPressed(e -> handleKeyPressed(e));
+    }
+
+    public void setBinCollection(final BinCollection binCollection, final BinIconMode binIconMode) {
+        this.binCollection = binCollection;
+        this.binIconMode = binIconMode;
+        activeBin = -1;
+        Platform.runLater(() -> updateDisplay());
+    }
+
+    // For testing
+    protected BinCollection getBinCollection() {
+        return binCollection;
+    }
+
+    // For testing
+    protected BinIconMode getBinIconMode() {
+        return binIconMode;
+    }
+
+    public void updateBinCollection() {
+        binCollection.deactivateBins();
+        activeBin = -1;
+        Platform.runLater(() -> updateDisplay());
+    }
+
+    public void setBinSelectionMode(final BinSelectionMode binSelectionMode) {
+        this.binSelectionMode = binSelectionMode;
+    }
+
+    public BinSelectionMode getBinSelectionMode() {
+        return binSelectionMode;
+    }
+
+    private void setDragEnd(final int newValue) {
+        prevDragEnd = dragEnd;
+        dragEnd = newValue;
+    }
+
+    private boolean requireUpdate() {
+        return prevDragEnd != dragEnd;// drag start doesnt change per mouseDragged fire
+    }
+
+    public synchronized void updateDisplay() {
+        updateIcons();
+        updatePropertyText();
+        updateBars(true);
+    }
+
+    private void populateTable(final boolean updateBinCounts, final double width) {
+        if (binCollection == null) {
+            // No data, so just have text saying so
+            this.setCenter(new Label(NO_DATA));
+            return;
+        }
+
+        if (binCollection.getBins().length == 0) {
+            // Draw nothing: there is data, but the user doesn't want to see it.
+            this.setCenter(null);
+            return;
+        }
+
+        // TODO check what should display in this case, probably empty bars idk
+        final int maxCount = binCollection.getMaxElementCount();
+        if (maxCount < 1) {
+            return;
+        }
+
+        // There is data and the user wants to see it
+        final Bin[] bins = binCollection.getBins();
+
+        // Two columns, property values and bars
+        barColumn.getChildren().clear();
+        propertyColumn.getChildren().clear();
+
+        final Label headerValue = new Label(PROPERTY_VALUE);
+        final Label headerCount = new Label(COUNT);
+        final Label headerTotalBins = new Label(TOTAL_BINS_COUNT + binCollection.getSelectedBins().length + "/" + bins.length);
+
+        // Set styling
+        headerValue.getStyleClass().add(HEADER_ROW_CSS_CLASS);
+        headerCount.getStyleClass().add(HEADER_ROW_CSS_CLASS);
+        headerTotalBins.getStyleClass().add(HEADER_ROW_CSS_CLASS);
+
+        final double fontSize = barHeight * FONT_SCALE_FACTOR;
+        headerValue.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
+        headerCount.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
+        headerTotalBins.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
+
+        headerValue.setMinHeight(barHeight);
+
+        final Pane spacer = new Pane();
+        final Pane spacer2 = new Pane();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        HBox.setHgrow(spacer2, Priority.ALWAYS);
+
+        headerCountHBox.getChildren().clear();
+        headerCountHBox.getChildren().addAll(headerCount, spacer, headerTotalBins);
+
+        headerRow.getChildren().clear();
+        headerRow.getChildren().addAll(headerValue, spacer2, headerCountHBox);
+
+        final ObservableList<HistogramBar> listOfHistogrambars = FXCollections.observableArrayList();
+
+        // TODO move elsewhere if this works
+        tableView.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
+
+        for (int i = 0; i < bins.length; i++) {
+            final Bin bin = bins[i];
+
+            // Property Text
+            final String category = bin.getLabel();
+            // TODO: Make text yellow if text is <no value>
+            final String propertyString = category == null ? NO_VALUE : category;
+
+            // Bars
+            final StackPane rectBar = constructBar(bin, maxCount, updateBinCounts, width, i, fontSize);
+
+            // Icon
+            final Node icon = binIconMode.createFXIcon(bin, barHeight);
+
+            // Finally, put the bar in array
+            listOfHistogrambars.add(new HistogramBar(icon, propertyString, rectBar));
+        }
+
+        tableView.getItems().clear();
+        tableView.setItems(listOfHistogrambars);
+
+        this.setCenter(mainVBox);
+
+    }
+
+    private StackPane constructBar(final Bin bin, final int maxCount, final boolean updateBinCounts, final double width, final int barIndex, final double fontSize) {
+        final int selectedCount = bin.selectedCount;
+        final int elementCount = bin.elementCount;
+
+        final float lengthPerElement = (float) width / maxCount;
+        final int arc = barHeight / 3;
+
+        // Setup bar colours
+        final javafx.scene.paint.Color barColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getBarColor());
+        final javafx.scene.paint.Color darkerBarColor = barColor.darker();
+
+        final javafx.scene.paint.Color activatedBarColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getActivatedBarColor());
+        final javafx.scene.paint.Color darkerActivatedBarColor = activatedBarColor.darker();
+
+        final javafx.scene.paint.Color selectedColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getSelectedColor());
+        final javafx.scene.paint.Color darkerSelectedColor = selectedColor.darker();
+
+        final javafx.scene.paint.Color activatedSelectedColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getActivatedSelectedColor());
+        final javafx.scene.paint.Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
+
+        // Always draw something, even if there aren't enough pixels to draw the actual length.
+        final int barLength = Math.max((int) (elementCount * lengthPerElement), MINIMUM_BAR_WIDTH);
+
+        // Rectangle will be a stack pane with the different sections layer on top of each other
+        final StackPane rectBar = new StackPane();
+
+        // Draw the background of the bar
+        if (elementCount < maxCount) {
+            final Rectangle rect = new Rectangle(width, Double.valueOf(barHeight));
+
+            rect.setArcHeight(arc);
+            rect.setArcWidth(arc);
+            rect.setFill(JavaFxUtilities.awtColorToFXColor(barIndex == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR));
+
+            rectBar.getChildren().add(rect);
+        }
+
+        // Calculate the length of the selected component of the bar
+        final int selectedLength = (selectedCount > 0) ? Math.max(barLength * selectedCount / elementCount, MINIMUM_SELECTED_WIDTH) : 0;
+
+        // Draw the unselected component of the bar
+        if (selectedLength < barLength) {
+            //Setting the linear gradient 
+            final Stop[] stops = bin.activated
+                    ? new Stop[]{new Stop(0, activatedBarColor), new Stop(1, darkerActivatedBarColor)}
+                    : new Stop[]{new Stop(0, barColor), new Stop(1, darkerBarColor)};
+
+            final LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+
+            final Rectangle rect = new Rectangle(Double.valueOf(barLength), Double.valueOf(barHeight), linearGradient);
+            rect.setArcHeight(arc);
+            rect.setArcWidth(arc);
+
+            rectBar.getChildren().add(rect);
+            StackPane.setAlignment(rect, Pos.CENTER_LEFT);
+        }
+
+        // Draw the selected component of the bar
+        if (selectedLength > 0) {
+            //Setting the linear gradient 
+            final Stop[] stops = bin.activated
+                    ? new Stop[]{new Stop(0, activatedSelectedColor), new Stop(1, darkerActivatedSelectedColor)}
+                    : new Stop[]{new Stop(0, selectedColor), new Stop(1, darkerSelectedColor)};
+
+            final LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+
+            final Rectangle rect = new Rectangle(Double.valueOf(selectedLength), Double.valueOf(barHeight), linearGradient);
+            rect.setArcHeight(arc);
+            rect.setArcWidth(arc);
+
+            rectBar.getChildren().add(rect);
+            StackPane.setAlignment(rect, Pos.CENTER_LEFT);
+        }
+
+        // Draw bin count text
+        if (updateBinCounts) {
+            final String binCount = (bin.selectedCount > 0) ? Integer.toString(bin.selectedCount) + "/" + Integer.toString(bin.elementCount) : Integer.toString(bin.elementCount);
+            final Label binCountlabel = new Label(binCount);
+            binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count"), true); // Set styling
+            binCountlabel.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
+
+            binCountlabel.setMinHeight(barHeight);
+            binCountsVbox.getChildren().add(binCountlabel);
+            StackPane.setAlignment(binCountlabel, Pos.CENTER_RIGHT);
+        }
+
+        return rectBar;
+    }
+
+    private void updatePropertyText() {
+        if (binCollection == null) {
+            // No data, so just have text saying so
+            final Label text = new Label(NO_DATA);
+            this.setCenter(text);
+        } else if (binCollection.getBins().length == 0) {
+            // Draw nothing: there is data, but the user doesn't want to see it.
+            this.setCenter(null);
+        } else {
+            // There is data and the user wants to see it
+            final Bin[] bins = binCollection.getBins();
+            final int maxCount = binCollection.getMaxElementCount();
+
+            if (maxCount > 0) {
+                // Two columns, property values and bars
+                barColumn.getChildren().clear();
+                propertyColumn.getChildren().clear();
+
+                final Label headerValue = new Label(PROPERTY_VALUE);
+                final Label headerCount = new Label(COUNT);
+                final Label headerTotalBins = new Label(TOTAL_BINS_COUNT + binCollection.getSelectedBins().length + "/" + bins.length);
+
+                // Set styling
+                headerValue.getStyleClass().add(HEADER_ROW_CSS_CLASS);
+                headerCount.getStyleClass().add(HEADER_ROW_CSS_CLASS);
+                headerTotalBins.getStyleClass().add(HEADER_ROW_CSS_CLASS);
+
+                final double fontSize = barHeight * FONT_SCALE_FACTOR;
+                headerValue.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
+                headerCount.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
+                headerTotalBins.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
+
+                headerValue.setMinHeight(barHeight);
+
+                final Pane spacer = new Pane();
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+
+                propertyColumn.getChildren().add(headerValue);
+                final HBox headerRow = new HBox();
+                headerRow.setAlignment(Pos.CENTER_RIGHT);
+                headerRow.setMinHeight(barHeight);
+                headerRow.getChildren().addAll(headerCount, spacer, headerTotalBins);
+                barColumn.getChildren().add(headerRow);
+
+                final Label[] propertyValuesArray = new Label[bins.length];
+
+                // Populate category text column
+                for (int bar = 0; bar < bins.length; bar++) {
+                    final Bin bin = bins[bar];
+                    final String category = bin.getLabel();
+                    final Label propertyValue;
+
+                    if (category == null) {
+                        // Make text yellow, and <no value>
+                        propertyValue = new Label(NO_VALUE);
+                        // Sets a psuedo class for css that changes the text colour to yellow
+                        propertyValue.getStyleClass().add("no-value");
+                    } else {
+                        // Regular grey text
+                        propertyValue = new Label(category);
+                        propertyValue.setTextFill(javafx.scene.paint.Color.grayRgb(192));
+                        propertyValue.getStyleClass().add("histogram-text");
+                    }
+
+                    // For some reason, setting font size with setFont() doesn't work. So the styling is set like this
+                    propertyValue.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
+                    propertyValue.setMinHeight(barHeight);
+                    propertyValuesArray[bar] = propertyValue;
+                }
+                //propertyColumn.getChildren().addAll(propertyValuesArray);
+                //this.setCenter(stackPane);
+                this.setCenter(mainVBox);
+            }
+        }
+    }
+
+    private void updateIcons() {
+        iconColumn.getChildren().clear();
+
+        if (binIconMode == BinIconMode.NONE) {
+            return;
+        }
+
+        // Create an empty rectangle to pad the icons down one
+        final Rectangle emptyIcon = new Rectangle(0, Double.valueOf(barHeight));
+        iconColumn.getChildren().add(emptyIcon);
+
+        // For each bin, add icon to column
+        for (final Bin bin : binCollection.getBins()) {
+            final Node icon = binIconMode.createFXIcon(bin, barHeight);
+            if (icon != null) {
+                iconColumn.getChildren().add(icon);
+            } else {
+                // Create an empty rectangle to pad the icons down one
+                final Rectangle empty = new Rectangle(0, Double.valueOf(barHeight));
+                iconColumn.getChildren().add(empty);
+            }
+        }
+    }
+
+    private void updateBars() {
+        updateBars(false);
+    }
+
+    private void updateBars(final boolean updateBinCounts) {
+        // If nothing has changed, dont need to update
+        if (!requireUpdate()) {
+            return;
+        }
+
+        drawBars(updateBinCounts);
+    }
+
+    private void drawBars(final double width) {
+        drawBars(false, width);
+    }
+
+    private void drawBars(final boolean updateBinCounts) {
+        drawBars(updateBinCounts, barsWidth);
+    }
+
+    private void drawBars(final boolean updateBinCounts, final double width) {
+        if (binCollection == null || binSelectionMode == null) {
+            return;
+        }
+
+        final Bin[] bins = binCollection.getBins();
+        final int maxCount = binCollection.getMaxElementCount();
+        barsWidth = width;
+
+        final float lengthPerElement = (float) width / maxCount;
+        final int arc = barHeight / 3;
+
+        // Setup bar colours
+        final javafx.scene.paint.Color barColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getBarColor());
+        final javafx.scene.paint.Color darkerBarColor = barColor.darker();
+
+        final javafx.scene.paint.Color activatedBarColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getActivatedBarColor());
+        final javafx.scene.paint.Color darkerActivatedBarColor = activatedBarColor.darker();
+
+        final javafx.scene.paint.Color selectedColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getSelectedColor());
+        final javafx.scene.paint.Color darkerSelectedColor = selectedColor.darker();
+
+        final javafx.scene.paint.Color activatedSelectedColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getActivatedSelectedColor());
+        final javafx.scene.paint.Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
+
+        final double fontSize = barHeight * FONT_SCALE_FACTOR;
+
+        final StackPane[] barsArray = new StackPane[bins.length + 1]; // one extra for blank (could replace with header)
+
+        final ObservableList<StackPane> listOfBars = FXCollections.observableArrayList();
+        final ObservableList<HistogramBar> listOfHistogrambars = FXCollections.observableArrayList();
+
+        //final TableView table = new TableView<>();
+        // Create an empty rectangle to pad the bars array
+        final Rectangle emptyRect = new Rectangle(0, Double.valueOf(barHeight));
+        final StackPane emptyPane = new StackPane();
+        emptyPane.getChildren().add(emptyRect);
+        barsArray[0] = emptyPane;// empty
+
+        listOfBars.add(emptyPane);
+
+        if (updateBinCounts) {
+            binCountsVbox.getChildren().clear();
+            final Label emptyLabel = new Label();
+            emptyLabel.setMinHeight(barHeight);
+            binCountsVbox.getChildren().add(emptyLabel);
+        }
+
+        // For each bar
+        for (int bar = 0; bar < bins.length; bar++) {
+            final Bin bin = bins[bar];
+
+            final int selectedCount = bin.selectedCount;
+            final int elementCount = bin.elementCount;
+
+            // Always draw something, even if there aren't enough pixels to draw the actual length.
+            final int barLength = Math.max((int) (elementCount * lengthPerElement), MINIMUM_BAR_WIDTH);
+
+            // Rectangle will be a stack pane with the different sections layer on top of each other
+            final StackPane rectBar = new StackPane();
+
+            // Draw the background of the bar
+            if (elementCount < maxCount) {
+                final Rectangle rect = new Rectangle(width, Double.valueOf(barHeight));
+
+                rect.setArcHeight(arc);
+                rect.setArcWidth(arc);
+                rect.setFill(JavaFxUtilities.awtColorToFXColor(bar == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR));
+
+                rectBar.getChildren().add(rect);
+            }
+
+            // Calculate the length of the selected component of the bar
+            final int selectedLength = (selectedCount > 0) ? Math.max(barLength * selectedCount / elementCount, MINIMUM_SELECTED_WIDTH) : 0;
+
+            // Draw the unselected component of the bar
+            if (selectedLength < barLength) {
+                //Setting the linear gradient 
+                final Stop[] stops = bin.activated
+                        ? new Stop[]{new Stop(0, activatedBarColor), new Stop(1, darkerActivatedBarColor)}
+                        : new Stop[]{new Stop(0, barColor), new Stop(1, darkerBarColor)};
+
+                final LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+
+                final Rectangle rect = new Rectangle(Double.valueOf(barLength), Double.valueOf(barHeight), linearGradient);
+                rect.setArcHeight(arc);
+                rect.setArcWidth(arc);
+
+                rectBar.getChildren().add(rect);
+                StackPane.setAlignment(rect, Pos.CENTER_LEFT);
+            }
+
+            // Draw the selected component of the bar
+            if (selectedLength > 0) {
+                //Setting the linear gradient 
+                final Stop[] stops = bin.activated
+                        ? new Stop[]{new Stop(0, activatedSelectedColor), new Stop(1, darkerActivatedSelectedColor)}
+                        : new Stop[]{new Stop(0, selectedColor), new Stop(1, darkerSelectedColor)};
+
+                final LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+
+                final Rectangle rect = new Rectangle(Double.valueOf(selectedLength), Double.valueOf(barHeight), linearGradient);
+                rect.setArcHeight(arc);
+                rect.setArcWidth(arc);
+
+                rectBar.getChildren().add(rect);
+                StackPane.setAlignment(rect, Pos.CENTER_LEFT);
+            }
+
+            // Draw bin count text
+            if (updateBinCounts) {
+                final String binCount = (bin.selectedCount > 0) ? Integer.toString(bin.selectedCount) + "/" + Integer.toString(bin.elementCount) : Integer.toString(bin.elementCount);
+                final Label binCountlabel = new Label(binCount);
+                binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count"), true); // Set styling
+                binCountlabel.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
+
+                binCountlabel.setMinHeight(barHeight);
+                binCountsVbox.getChildren().add(binCountlabel);
+                StackPane.setAlignment(binCountlabel, Pos.CENTER_RIGHT);
+            }
+
+            // Finally, put the bar in array
+            barsArray[bar + 1] = rectBar;
+            listOfBars.add(rectBar);
+            listOfHistogrambars.add(new HistogramBar(null, "", rectBar));
+        }
+
+        listView.getItems().clear();
+        listView.getItems().addAll(listOfBars);
+
+        tableView.getItems().clear();
+        tableView.setItems(listOfHistogrambars);
+
+        barsVbox.getChildren().clear();
+//        barsVbox.getChildren().addAll(barsArray);
+
+        // barsVbox.getChildren().add(listView);
+//        table.setItems(listOfBars);
+//        barsVbox.getChildren().add(table);
+        barsVbox.setMaxWidth(width);
+    }
+
+    /**
+     * Determine the bar that is under the specified point.
+     * <p>
+     * The bar number is mathematically calculated based on the position of bar 0, the current bar height, and the
+     * specified position. If bounded is false, no attempt is made to limit the bar number to the actual number of bins,
+     * so the value returned may be less than zero or greater than the number of bins. If bounded is true, the bar
+     * number is bounded by the number of bins (between 0 and bins-1 inclusive). by the actual number of bins
+     *
+     * @param p A Point on the bar that will be returned.
+     * @param bounded is the return value bounded by the number of bins?
+     *
+     * @return The index of the prospective bar under the Point, even if that bar doesn't exist.
+     */
+    private int getBarAtPoint(final Point p, final boolean bounded) {
+        int n = (int) ((p.y - 2 + GAP_BETWEEN_BARS / 2F) / (GAP_BETWEEN_BARS + barHeight)) - 1;
+        if (bounded) {
+            n = Math.min(Math.max(n, 0), binCollection.getBins().length - 1);
+        }
+
+        return n;
+    }
+
+    private void updateBarHeight() {
+        barHeight = (barHeightBase * FontUtilities.getApplicationFontSize()) / DEFAULT_FONT_SIZE;
+    }
+
+    /**
+     * Decrease height of barHeight
+     *
+     */
+    public void decreaseBarHeight() {
+        barHeightBase -= 2;
+        if (barHeightBase < MINIMUM_BAR_HEIGHT) {
+            barHeightBase = MINIMUM_BAR_HEIGHT;
+        }
+
+        updateBarHeight();
+
+        updateDisplay();
+    }
+
+    /**
+     * Increase height of barHeight
+     *
+     */
+    public void increaseBarHeight() {
+        barHeightBase += 2;
+        if (barHeightBase > MAXIMUM_BAR_HEIGHT) {
+            barHeightBase = MAXIMUM_BAR_HEIGHT;
+        }
+
+        updateBarHeight();
+
+        updateDisplay();
+    }
+
+    // For testing
+    protected int getBarHeightBase() {
+        return barHeightBase;
+    }
+
+    /**
+     * Copy the values of the selected bars on the Histogram to the clipboard.
+     * <p>
+     * Iterates through the current collection of bins, bins representing the bars, and determines if they are selected
+     * by checking their selectedCount value, 1 if selected, 0 if not selected.
+     *
+     * @param includeCounts True if the counts corresponding to the values are also to be copied to the clipboard.
+     */
+    protected void copySelectedToClipboard(final boolean includeCounts) {
+        final StringBuilder buf = new StringBuilder();
+        for (final Bin bin : binCollection.getBins()) {
+            // Check if the bar(s) on the Histogram are selected.
+            if (bin.selectedCount > 0) {
+                final String label = bin.getLabel() != null ? bin.getLabel() : HistogramDisplay2.NO_VALUE;
+                if (includeCounts) {
+                    buf.append(String.format("%s\t%d%n", label, bin.elementCount));
+                } else {
+                    buf.append(String.format("%s%n", label));
+                }
+            }
+        }
+
+        final StringSelection ss = new StringSelection(buf.toString());
+        final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
+    }
+
+    protected void handleMouseClicked(final MouseEvent e) {
+        if (binCollection != null && e.getButton() == MouseButton.SECONDARY) {
+            copyMenu.show(this, e.getScreenX(), e.getScreenY());
+        }
+    }
+
+    /**
+     * Function to handle when the user presses their mouse button on the display Made protected for testing
+     */
+    protected void handleMousePressed(final MouseEvent e) {
+        if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
+            final Point pointOnHistogram = new Point((int) Math.round(e.getX()), (int) Math.round(e.getY())); // May need to be getScreenX(), no actually
+            final int bar = getBarAtPoint(pointOnHistogram, false);
+
+            shiftDown = e.isShiftDown();
+            controlDown = e.isControlDown();
+
+            dragStart = (shiftDown && activeBin >= 0) ? activeBin : bar;
+            setDragEnd(bar);
+
+            binSelectionMode.mousePressed(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd);
+
+            // Only need to update bars
+            updateBars();
+        }
+    }
+
+    protected void handleMouseDragged(final MouseEvent e) {
+        if (binCollection != null && e.isPrimaryButtonDown()) {
+            final Point pointOnHistogram = new Point((int) Math.round(e.getX()), (int) Math.round(e.getY()));
+            final int bar = getBarAtPoint(pointOnHistogram, false);
+
+            final int newDragEnd = bar;
+            binSelectionMode.mouseDragged(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, newDragEnd);
+            setDragEnd(newDragEnd);
+
+            // Only need to update bars
+            updateBars();
+        }
+    }
+
+    protected void handleMouseReleased(final MouseEvent e) {
+        this.requestFocus();
+        if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
+            binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
+            activeBin = dragStart == dragEnd ? dragStart : -1;
+
+            // Only need to update bars
+            updateBars();
+        }
+    }
+
+    protected void handleMouseEntered() {
+        this.requestFocus(); // Focus the Histogram View so 'key' actions can be registered.
+    }
+
+    protected void handleKeyPressed(final KeyEvent e) {
+        if (binCollection != null
+                && this.isFocused() // Check if Histogram Display is focused before allowing Ctrl + C to be registered.
+                && ((e.isControlDown()) && (e.getCode() == KeyCode.C))) {
+            copySelectedToClipboard(false);
+        }
+    }
+
+    public class HistogramBar {
+
+        // Icon
+        private ObjectProperty<Node> icon;
+
+        public void setIcon(final Object value) {
+            iconProperty().set(value);
+        }
+
+        public Object getIcon() {
+            return iconProperty().get();
+        }
+
+        public ObjectProperty iconProperty() {
+            if (icon == null) {
+                icon = new SimpleObjectProperty<>(this, "icon");
+            }
+            return icon;
+        }
+
+        // PropertyName
+        private StringProperty propertyName;
+
+        public void setPropertyName(final String value) {
+            propertyNameProperty().set(value);
+        }
+
+        public String getPropertyName() {
+            return propertyNameProperty().get();
+        }
+
+        public StringProperty propertyNameProperty() {
+            if (propertyName == null) {
+                propertyName = new SimpleStringProperty(this, "propertyName");
+            }
+            return propertyName;
+        }
+
+        // Bar
+        private ObjectProperty<StackPane> bar;
+
+        public void setBar(final Object value) {
+            barProperty().set(value);
+        }
+
+        public Object getBar() {
+            return barProperty().get();
+        }
+
+        public ObjectProperty barProperty() {
+            if (bar == null) {
+                bar = new SimpleObjectProperty<>(this, "bar");
+            }
+            return bar;
+        }
+
+        public HistogramBar(final Node icon, final String propertName, final StackPane bar) {
+            setIcon(icon);
+            setPropertyName(propertName);
+            setBar(bar);
+        }
+    }
+}
