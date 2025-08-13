@@ -7,7 +7,14 @@
     },
     "paths": {      
     },
-    "components":{        
+    "components":{
+        "securitySchemes": {
+            "ConstellationSecret": {
+                "type": "apiKey",
+                "name": "X-CONSTELLATION-SECRET",
+                "in": "header"
+            }
+        },
         "examples":{
             "runPluginExample": {
                 "request": {
