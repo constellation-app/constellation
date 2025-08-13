@@ -117,7 +117,7 @@ public class ConversationBubble extends VBox {
                 hiddenLabel.heightProperty().addListener(new ChangeListener<Number>() {
                     @Override
                     public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {                        
-                        content.setPrefHeight(newValue.doubleValue());
+                        content.setPrefHeight(newValue.doubleValue() + insets.getBottom());
                         hiddenLabel.setManaged(false);
                     }
                 });                
