@@ -18,9 +18,12 @@ package au.gov.asd.tac.constellation.views.conversationview;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.util.List;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -73,7 +76,7 @@ public class ConversationBubble extends VBox {
         setMinHeight(USE_PREF_SIZE);
         setMaxHeight(USE_PREF_SIZE);
         setSpacing(-5);
-
+        
         final VBox bubbleContent = new VBox();
         bubbleContent.setAlignment(Pos.CENTER_LEFT);
         bubbleContent.setPadding(new Insets(2, 2, 0, 2));
@@ -88,9 +91,38 @@ public class ConversationBubble extends VBox {
         bubbleGraphic.heightProperty().bind(bubbleContent.heightProperty());
         bubbleGraphic.setManaged(false);
         bubbleContent.getChildren().add(bubbleGraphic);
+        
+        final Label hiddenLabel = new Label();        
+        hiddenLabel.setVisible(false);
+
+        final Insets insets = new Insets(6, 10, 10, 10);     
+        hiddenLabel.setPadding(insets);
+        hiddenLabel.setMaxWidth(190);
+        hiddenLabel.setMinWidth(190);
+        hiddenLabel.setAlignment(Pos.CENTER);
+        hiddenLabel.setWrapText(true);
 
         Region previousContent = null;
         for (final Region content : contents) {
+
+            //Couldn't disable EnhancedTextArea scroll through css or java code. Reason is setWraptText disables horizantal scroll 
+            //but unvoluntary enables vertical scroll. In this case, even setAutohegith / autosize doesn't make any difference.
+            //So, to resize EnhancedTextArea hegith tp fir to the content, capture EnhancedTextArea text height into hidden label 
+            //which auto grow as of text hegiht unlike EnhancedTextArea which is adding a scroll. Then set EnhancedTextArea pref height as of hidden label height.
+            if (content instanceof EnhancedTextArea enhancedTextArea) {
+                hiddenLabel.setManaged(true);
+                hiddenLabel.setText(((EnhancedTextArea) content).getText());
+                bubbleContent.getChildren().add(hiddenLabel);
+                
+                hiddenLabel.heightProperty().addListener(new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {                        
+                        content.setPrefHeight(newValue.doubleValue());
+                        hiddenLabel.setManaged(false);
+                    }
+                });                
+            }
+            
             if (previousContent != null) {
                 final Pane separator = new Pane();
                 separator.setPrefHeight(3);
@@ -98,9 +130,9 @@ public class ConversationBubble extends VBox {
                 separator.setMaxWidth(USE_PREF_SIZE);
                 separator.setStyle("-fx-background-color: black; -fx-background-insets: 2 0 0 0;");
                 bubbleContent.getChildren().addAll(separator, content);
-            } else {
-                bubbleContent.getChildren().add(content);
-            }
+            } else {               
+                bubbleContent.getChildren().add(content);                
+            }            
             previousContent = content;
         }
 
