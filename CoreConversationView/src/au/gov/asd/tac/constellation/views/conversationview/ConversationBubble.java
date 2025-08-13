@@ -18,8 +18,6 @@ package au.gov.asd.tac.constellation.views.conversationview;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.util.List;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
@@ -37,6 +35,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 /**
  * A speech bubble that holds all the contributions relating to a single
@@ -90,37 +90,35 @@ public class ConversationBubble extends VBox {
         bubbleGraphic.widthProperty().bind(bubbleContent.widthProperty());
         bubbleGraphic.heightProperty().bind(bubbleContent.heightProperty());
         bubbleGraphic.setManaged(false);
-        bubbleContent.getChildren().add(bubbleGraphic);
+        bubbleContent.getChildren().add(bubbleGraphic);  
         
-        final Label hiddenLabel = new Label();        
+        final Label hiddenLabel = new Label();
         hiddenLabel.setVisible(false);
-
-        final Insets insets = new Insets(6, 10, 10, 10);     
+        hiddenLabel.setManaged(false);
+        final Insets insets = new Insets(6, 10, 10, 10);
         hiddenLabel.setPadding(insets);
         hiddenLabel.setMaxWidth(190);
         hiddenLabel.setMinWidth(190);
         hiddenLabel.setAlignment(Pos.CENTER);
         hiddenLabel.setWrapText(true);
-
+        
         Region previousContent = null;
         for (final Region content : contents) {
 
             //Couldn't disable EnhancedTextArea scroll through css or java code. Reason is setWraptText disables horizantal scroll 
             //but unvoluntary enables vertical scroll. In this case, even setAutohegith / autosize doesn't make any difference.
-            //So, to resize EnhancedTextArea hegith tp fir to the content, capture EnhancedTextArea text height into hidden label 
+            //So, to resize EnhancedTextArea hegith to fit to the content, capture EnhancedTextArea text height into hidden label 
             //which auto grow as of text hegiht unlike EnhancedTextArea which is adding a scroll. Then set EnhancedTextArea pref height as of hidden label height.
-            if (content instanceof EnhancedTextArea enhancedTextArea) {
-                hiddenLabel.setManaged(true);
-                hiddenLabel.setText(((EnhancedTextArea) content).getText());
-                bubbleContent.getChildren().add(hiddenLabel);
+            if (content instanceof EnhancedTextArea enhancedTextArea) {                
                 
-                hiddenLabel.heightProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {                        
-                        content.setPrefHeight(newValue.doubleValue() + insets.getBottom());
-                        hiddenLabel.setManaged(false);
-                    }
-                });                
+                hiddenLabel.setText(enhancedTextArea.getText());
+                final Text helper = new Text();
+                helper.setText(enhancedTextArea.getText() + "\n");
+                helper.setFont(hiddenLabel.getFont());
+                helper.setTextAlignment(TextAlignment.CENTER);
+                helper.setWrappingWidth(160); //consider EnhancedTextArea paddings
+                
+                content.setPrefHeight(helper.getLayoutBounds().getHeight() + insets.getBottom());
             }
             
             if (previousContent != null) {
@@ -190,6 +188,7 @@ public class ConversationBubble extends VBox {
         getChildren().addAll(bubbleContent, timeContent);
 
         setColor(message.getColor());
+        this.requestFocus();
     }
 
     public final void setColor(final Color color) {
