@@ -92,13 +92,7 @@ public class ConversationBubble extends VBox {
         bubbleGraphic.setManaged(false);
         bubbleContent.getChildren().add(bubbleGraphic);  
         
-        final Label hiddenLabel = new Label();
-        hiddenLabel.setVisible(false);
-        hiddenLabel.setManaged(false);
-        final Insets insets = new Insets(6, 10, 10, 10);
-        hiddenLabel.setPadding(insets);
-        hiddenLabel.setMaxWidth(190);
-        hiddenLabel.setMinWidth(190);
+        final Label hiddenLabel = new Label();    
         hiddenLabel.setAlignment(Pos.CENTER);
         hiddenLabel.setWrapText(true);
         
@@ -113,12 +107,12 @@ public class ConversationBubble extends VBox {
                 
                 hiddenLabel.setText(enhancedTextArea.getText());
                 final Text helper = new Text();
-                helper.setText(enhancedTextArea.getText() + "\n");
+                helper.setText(enhancedTextArea.getText());
                 helper.setFont(hiddenLabel.getFont());
                 helper.setTextAlignment(TextAlignment.CENTER);
                 helper.setWrappingWidth(160); //consider EnhancedTextArea paddings
                 
-                content.setPrefHeight(helper.getLayoutBounds().getHeight() + insets.getBottom());
+                content.setPrefHeight(helper.getLayoutBounds().getHeight() + 20);
             }
             
             if (previousContent != null) {
