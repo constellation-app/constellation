@@ -6,7 +6,7 @@
 <p>Notes View -> New Note Pane
 <p>Conversation View -> Create Translation / Edit Translation
 <p>Import/Export -> New Attribute Dialog
-<p>Attribute Editor -> All string attributes (Spell checking in Attribute Editor is default to turned off. User can right click to 'Turn on Spell checking')
+<p>Attribute Editor -> All string attributes (Spell checking in Attribute Editor is turned off by default. User can right click to 'Turn on Spell checking')
 
 == 2025-07-10 Shortcuts for Data Access View Workflow templates
 <p>Data Access View Workflow templates can now be saved with keyboard shortcuts

@@ -33,8 +33,6 @@ import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.IndexRange;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -92,18 +90,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
             this.transactionId = message.getTransaction();
             this.text = text;
 
-            editTranslationTextArea.setStyle("-fx-text-fill: #000000");
-            editTranslationTextArea.setOnKeyPressed(e -> {
-                if (e.getCode() == KeyCode.DELETE) {
-                    IndexRange selection = editTranslationTextArea.getSelection();
-                    if (selection.getLength() == 0) {
-                        editTranslationTextArea.deleteNextChar();
-                    } else {
-                        editTranslationTextArea.deleteText(selection);
-                    }
-                    e.consume();
-                }
-            });
+            editTranslationTextArea.setStyle("-fx-text-fill: #000000");           
         }
 
         @Override

@@ -22,9 +22,6 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.Def
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.IndexRange;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -84,18 +81,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
             
             spellCheckingTextArea = new SpellCheckingTextArea(false);
             spellCheckingTextArea.setWrapText(true);
-            spellCheckingTextArea.textProperty().addListener((o, n, v) -> update());
-            spellCheckingTextArea.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-                if (e.getCode() == KeyCode.DELETE) {
-                    IndexRange selection = spellCheckingTextArea.getSelection();
-                    if (selection.getLength() == 0) {
-                        spellCheckingTextArea.deleteNextChar();
-                    } else {
-                        spellCheckingTextArea.deleteText(selection);
-                    }
-                    e.consume();
-                }
-            });
+            spellCheckingTextArea.textProperty().addListener((o, n, v) -> update());            
 
             controls.addRow(0, spellCheckingTextArea);
             return controls;
