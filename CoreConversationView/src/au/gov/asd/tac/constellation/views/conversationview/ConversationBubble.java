@@ -100,9 +100,9 @@ public class ConversationBubble extends VBox {
         for (final Region content : contents) {
 
             //Couldn't disable EnhancedTextArea scroll through css or java code. Reason is setWraptText disables horizantal scroll 
-            //but unvoluntary enables vertical scroll. In this case, even setAutohegith / autosize doesn't make any difference.
+            //but unvoluntary enables vertical scroll. In this case, even setAutoHeight / autosize doesn't make any difference.
             //So, to resize EnhancedTextArea hegith to fit to the content, capture EnhancedTextArea text height into hidden label 
-            //which auto grow as of text hegiht unlike EnhancedTextArea which is adding a scroll. Then set EnhancedTextArea pref height as of hidden label height.
+            //which auto grow as of text height unlike EnhancedTextArea which is adding a scroll. Then set EnhancedTextArea pref height as of hidden label height.
             if (content instanceof EnhancedTextArea enhancedTextArea) {                
                 
                 hiddenLabel.setText(enhancedTextArea.getText());
@@ -110,7 +110,7 @@ public class ConversationBubble extends VBox {
                 helper.setText(enhancedTextArea.getText());
                 helper.setFont(hiddenLabel.getFont());
                 helper.setTextAlignment(TextAlignment.CENTER);
-                helper.setWrappingWidth(160); //consider EnhancedTextArea paddings
+                helper.setWrappingWidth(160);
                 
                 content.setPrefHeight(helper.getLayoutBounds().getHeight() 
                         + (enhancedTextArea.getPadding().getLeft() + enhancedTextArea.getPadding().getRight()- enhancedTextArea.getParagraphs().size()));
