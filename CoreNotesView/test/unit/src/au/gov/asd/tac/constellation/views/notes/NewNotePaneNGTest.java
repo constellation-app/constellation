@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.notes;
 
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import au.gov.asd.tac.constellation.views.notes.utilities.NewNotePane;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
@@ -83,7 +83,7 @@ public class NewNotePaneNGTest {
     public void testGetContentField() {
         System.out.println("getContentField");
         final NewNotePane instance = new NewNotePane("#000000");
-        assertTrue(instance.getContentField() instanceof TextArea);
+        assertTrue(instance.getContentField() instanceof SpellCheckingTextArea);
     }
 
     /**
