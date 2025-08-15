@@ -112,7 +112,8 @@ public class ConversationBubble extends VBox {
                 helper.setTextAlignment(TextAlignment.CENTER);
                 helper.setWrappingWidth(160); //consider EnhancedTextArea paddings
                 
-                content.setPrefHeight(helper.getLayoutBounds().getHeight() + 20);
+                content.setPrefHeight(helper.getLayoutBounds().getHeight() 
+                        + (enhancedTextArea.getPadding().getLeft() + enhancedTextArea.getPadding().getRight()- enhancedTextArea.getParagraphs().size()));
             }
             
             if (previousContent != null) {
