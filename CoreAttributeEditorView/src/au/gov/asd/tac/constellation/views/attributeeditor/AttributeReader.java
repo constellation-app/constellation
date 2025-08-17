@@ -129,12 +129,9 @@ public class AttributeReader {
             valueModified = populateValues(toPopulate, selectionModified, attributeModified, preferenceChanged, rg);
         }
         
-        AttributeState result = null;
-        if (selectionModified || attributeModified || valueModified || preferenceChanged) {
-            result = new AttributeState(ACCEPTED_ELEMENT_TYPES, selectionModified ? activeElementTypes : Collections.emptyList(), elementAttributeData, elementAttributeValues, elementAttributeCounts);
-        }
-
-        return result;
+        return selectionModified || attributeModified || valueModified || preferenceChanged 
+                ? new AttributeState(ACCEPTED_ELEMENT_TYPES, selectionModified ? activeElementTypes : Collections.emptyList(), elementAttributeData, elementAttributeValues, elementAttributeCounts) 
+                : null;
 
     }
 
@@ -294,61 +291,60 @@ public class AttributeReader {
     }
 
     public Object[] loadMoreDataFor(final AttributeData attribute) {
-        final int AttributeID = attribute.getAttributeId();
         final Set<Object> values = new HashSet<>();
-        final IntArray selectedElement = switch (attribute.getElementType()) {
+        final IntArray selectedElements = switch (attribute.getElementType()) {
             case VERTEX -> selectedNodes;
             case TRANSACTION -> selectedTransactions;
             default -> null;
         };
         try (final ReadableGraph rg = graph.getReadableGraph()) {
-            if (selectedElement != null) {
-                int elementSize = selectedElement.size();
-                for (int i = 0; i < elementSize; i++) {
-                    values.add(rg.getObjectValue(AttributeID, selectedElement.get(i)));
-                }
+            final int attributeID = attribute.getAttributeId();
+            for (final int selectedElement : selectedElements) {
+                values.add(rg.getObjectValue(attributeID, selectedElement));
             }
         }
         return sortHashMap(values);
     }
 
     private Object[] sortHashMap(final Set<Object> values) {
+        if (values.isEmpty()) {
+            return new Object[0];
+        }
+        
         // If the values are Comparable, compare them.
         // This allows numbers to be sorted correctly, for example.
-        if (!values.isEmpty()) {
-            final Object o = values.iterator().next();
-            if (o instanceof Comparable) {
-                final Comparable<Object>[] valuesArray = new Comparable[values.size()];
-                values.toArray(valuesArray);
-                Arrays.sort(valuesArray, (a, b) -> {
-                    if (a == null) {
-                        if (b == null) {
-                            return 0;
-                        }
-                        return -1;
-                    } else {
-                        if (b == null) {
-                            return 1;
-                        }
-                        return a.compareTo(b);
+        final Object o = values.iterator().next();
+        if (o instanceof Comparable) {
+            final Comparable<Object>[] valuesArray = new Comparable[values.size()];
+            values.toArray(valuesArray);
+            Arrays.sort(valuesArray, (a, b) -> {
+                if (a == null) {
+                    if (b == null) {
+                        return 0;
                     }
-                });
+                    return -1;
+                } else {
+                    if (b == null) {
+                        return 1;
+                    }
+                    return a.compareTo(b);
+                }
+            });
 
-                return valuesArray;
-            }
+            return valuesArray;
+        } else {
+            final Object[] valuesArray = values.toArray();
+
+            Arrays.sort(valuesArray, (o1, o2) -> {
+                if (o1 == null || o1.toString() == null) {
+                    return 1;
+                }
+                if (o2 == null || o2.toString() == null) {
+                    return -1;
+                }
+                return o1.toString().compareToIgnoreCase(o2.toString());
+            });
+            return valuesArray;
         }
-
-        final Object[] valuesArray = values.toArray();
-
-        Arrays.sort(valuesArray, (final Object o1, final Object o2) -> {
-            if ((o1 == null) || (o1.toString() == null)) {
-                return 1;
-            }
-            if ((o2 == null) || (o2.toString() == null)) {
-                return -1;
-            }
-            return o1.toString().compareToIgnoreCase(o2.toString());
-        });
-        return valuesArray;
     }
 }

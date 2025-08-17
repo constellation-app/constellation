@@ -54,5 +54,4 @@ public class CreateAttributeEditOperation implements EditOperation {
             graph.addAttribute(attrNew.getElementType(), attrNew.getDataType(), attrNew.getAttributeName(), attrNew.getAttributeDescription(), attrNew.getDefaultValue(), null);
         }
     }
-
 }

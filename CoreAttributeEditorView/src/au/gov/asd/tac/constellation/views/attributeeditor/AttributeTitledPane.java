@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -124,9 +125,8 @@ public class AttributeTitledPane extends TitledPane {
     }
 
     private void addToPreference() {
-        String hiddenAttributes = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, "");
         final String elementTypeAndAttributeName = attributeData.getElementType().toString() + attributeData.getAttributeName();
-        hiddenAttributes = hiddenAttributes + StringUtilities.escapeString(elementTypeAndAttributeName, AttributePreferenceKey.META_CHARS) + AttributePreferenceKey.SPLIT_CHAR;
+        final String hiddenAttributes = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, "") + StringUtilities.escapeString(elementTypeAndAttributeName, AttributePreferenceKey.META_CHARS) + SeparatorConstants.SEMICOLON;
         prefs.put(AttributePreferenceKey.HIDDEN_ATTRIBUTES, hiddenAttributes);
     }
 
@@ -142,7 +142,7 @@ public class AttributeTitledPane extends TitledPane {
                 }
                 if (!attrName.equals(elementTypeAndAttributeName)) {
                     newLabel.append(StringUtilities.escapeString(attrName, AttributePreferenceKey.META_CHARS));
-                    newLabel.append(AttributePreferenceKey.SPLIT_CHAR);
+                    newLabel.append(SeparatorConstants.SEMICOLON);
                 }
             }
             prefs.put(AttributePreferenceKey.HIDDEN_ATTRIBUTES, newLabel.toString());

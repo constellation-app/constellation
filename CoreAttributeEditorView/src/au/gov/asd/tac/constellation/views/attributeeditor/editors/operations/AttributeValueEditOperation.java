@@ -103,5 +103,4 @@ public class AttributeValueEditOperation extends PluginSequenceEditOperation {
             ConstellationLoggerHelper.updatePropertyBuilder(this, sb.toString(), newValue == null ? "" : newValue.toString());
         }
     }
-
 }

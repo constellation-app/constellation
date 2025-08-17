@@ -46,5 +46,4 @@ public abstract class PluginSequenceEditOperation implements EditOperation {
     }
 
     public abstract Plugin mainEdit(final Object value);
-
 }

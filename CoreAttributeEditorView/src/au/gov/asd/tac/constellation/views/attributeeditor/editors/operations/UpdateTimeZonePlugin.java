@@ -39,18 +39,18 @@ import java.time.ZonedDateTime;
  */
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public class UpdateTimeZonePlugin extends SimpleEditPlugin {
-
-    @Override
-    public String getName() {
-        return "Attribute Editor: Update Time Zone";
-    }
-
+    
     private final AttributeData attributeData;
     private final ZoneId zoneId;
 
     public UpdateTimeZonePlugin(final ZoneId zoneId, final AttributeData attributeData) {
         this.attributeData = attributeData;
         this.zoneId = zoneId;
+    }
+    
+    @Override
+    public String getName() {
+        return "Attribute Editor: Update Time Zone";
     }
 
     @Override
