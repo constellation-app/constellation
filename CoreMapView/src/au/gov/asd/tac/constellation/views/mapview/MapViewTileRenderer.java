@@ -142,6 +142,14 @@ public class MapViewTileRenderer extends PApplet {
 
         currentProvider = provider;
         map.mapDisplay.setMapProvider(provider);
+
+        // Adjust zoom level to fit the new provider
+        if (map.getZoomLevel() > provider.zoomLevels()) {
+            map.zoomToLevel(provider.zoomLevels());
+        }
+
+        map.setZoomRange(1, provider.zoomLevels());
+
     }
 
     public void zoomToLocation(final Location location) {
