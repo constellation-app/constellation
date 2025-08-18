@@ -21,6 +21,7 @@ import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -34,6 +35,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 /**
  * A speech bubble that holds all the contributions relating to a single
@@ -73,7 +76,7 @@ public class ConversationBubble extends VBox {
         setMinHeight(USE_PREF_SIZE);
         setMaxHeight(USE_PREF_SIZE);
         setSpacing(-5);
-
+        
         final VBox bubbleContent = new VBox();
         bubbleContent.setAlignment(Pos.CENTER_LEFT);
         bubbleContent.setPadding(new Insets(2, 2, 0, 2));
@@ -87,10 +90,32 @@ public class ConversationBubble extends VBox {
         bubbleGraphic.widthProperty().bind(bubbleContent.widthProperty());
         bubbleGraphic.heightProperty().bind(bubbleContent.heightProperty());
         bubbleGraphic.setManaged(false);
-        bubbleContent.getChildren().add(bubbleGraphic);
-
+        bubbleContent.getChildren().add(bubbleGraphic);  
+        
+        final Label hiddenLabel = new Label();    
+        hiddenLabel.setAlignment(Pos.CENTER);
+        hiddenLabel.setWrapText(true);
+        
         Region previousContent = null;
         for (final Region content : contents) {
+
+            //Couldn't disable EnhancedTextArea scroll through css or java code. Reason is setWraptText disables horizantal scroll 
+            //but unvoluntary enables vertical scroll. In this case, even setAutoHeight / autosize doesn't make any difference.
+            //So, to resize EnhancedTextArea hegith to fit to the content, capture EnhancedTextArea text height into hidden label 
+            //which auto grow as of text height unlike EnhancedTextArea which is adding a scroll. Then set EnhancedTextArea pref height as of hidden label height.
+            if (content instanceof EnhancedTextArea enhancedTextArea) {                
+                
+                hiddenLabel.setText(enhancedTextArea.getText());
+                final Text helper = new Text();
+                helper.setText(enhancedTextArea.getText());
+                helper.setFont(hiddenLabel.getFont());
+                helper.setTextAlignment(TextAlignment.CENTER);
+                helper.setWrappingWidth(160);
+                
+                content.setPrefHeight(helper.getLayoutBounds().getHeight() 
+                        + (enhancedTextArea.getPadding().getLeft() + enhancedTextArea.getPadding().getRight()- enhancedTextArea.getParagraphs().size()));
+            }
+            
             if (previousContent != null) {
                 final Pane separator = new Pane();
                 separator.setPrefHeight(3);
@@ -98,9 +123,9 @@ public class ConversationBubble extends VBox {
                 separator.setMaxWidth(USE_PREF_SIZE);
                 separator.setStyle("-fx-background-color: black; -fx-background-insets: 2 0 0 0;");
                 bubbleContent.getChildren().addAll(separator, content);
-            } else {
-                bubbleContent.getChildren().add(content);
-            }
+            } else {               
+                bubbleContent.getChildren().add(content);                
+            }            
             previousContent = content;
         }
 
@@ -158,6 +183,7 @@ public class ConversationBubble extends VBox {
         getChildren().addAll(bubbleContent, timeContent);
 
         setColor(message.getColor());
+        this.requestFocus();
     }
 
     public final void setColor(final Color color) {
