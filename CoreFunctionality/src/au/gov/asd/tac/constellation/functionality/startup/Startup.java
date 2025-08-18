@@ -20,9 +20,19 @@ import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.log.ConstellationLogFormatter;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
+import javax.swing.Action;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+import org.netbeans.modules.quicksearch.QuickSearchAction;
+import org.openide.util.Utilities;
+import org.openide.util.actions.Presenter;
 import org.openide.windows.OnShowing;
 import org.openide.windows.WindowManager;
 
@@ -61,7 +71,17 @@ public class Startup implements Runnable {
         }
 
         ConstellationSecurityManager.startSecurityLater(null);
-
+        
+        List<? extends Action> actions = Utilities.actionsForPath("Actions/Edit");
+        for (Action action : actions) {
+            if (action instanceof QuickSearchAction) {
+                Component toolbarPresenter = ((Presenter.Toolbar) action).getToolbarPresenter();
+                for (Component c : ((Container)toolbarPresenter).getComponents()) {
+                    processComponentTree(c);
+                }
+            }
+        }
+        
         // application environment
         final String environment = System.getProperty(SYSTEM_ENVIRONMENT);
         final String name = environment != null
@@ -83,5 +103,32 @@ public class Startup implements Runnable {
         FontUtilities.initialiseApplicationFontPreferenceOnFirstUse();
 
         ProxyUtilities.setProxySelector(null);
+    }
+
+    /**
+     * Traverse the component tree to find the right source to set the size.
+     * @param source component to traverse.
+     */
+    public void processComponentTree(Component source) {
+
+        if (source instanceof JScrollPane jsp) {
+            Dimension origSize = jsp.getSize();
+            Dimension newDimension;
+            if (UIManager.get("customFontSize") == null) {
+                newDimension = origSize;
+            } else {
+                Integer customFontSize = (Integer) UIManager.get("customFontSize");
+                newDimension = new Dimension(origSize.width, 18 * customFontSize / 12);
+            }
+            jsp.setMinimumSize(newDimension);
+            jsp.setPreferredSize(newDimension);
+            jsp.getViewport().setPreferredSize(newDimension);
+        }
+
+        if (source instanceof Container sc) {
+            for (Component c : sc.getComponents()) {
+                processComponentTree(c);
+            }
+        }   
     }
 }
