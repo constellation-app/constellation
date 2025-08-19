@@ -72,13 +72,14 @@ public class Startup implements Runnable {
 
         ConstellationSecurityManager.startSecurityLater(null);
         
-        List<? extends Action> actions = Utilities.actionsForPath("Actions/Edit");
-        for (Action action : actions) {
+        final List<? extends Action> actions = Utilities.actionsForPath("Actions/Edit");
+        for (final Action action : actions) {
             if (action instanceof QuickSearchAction) {
-                Component toolbarPresenter = ((Presenter.Toolbar) action).getToolbarPresenter();
-                for (Component c : ((Container)toolbarPresenter).getComponents()) {
+                final Component toolbarPresenter = ((Presenter.Toolbar) action).getToolbarPresenter();
+                for (final Component c : ((Container)toolbarPresenter).getComponents()) {
                     processComponentTree(c);
                 }
+                break;
             }
         }
         
@@ -109,10 +110,10 @@ public class Startup implements Runnable {
      * Traverse the component tree to find the right source to set the size.
      * @param source component to traverse.
      */
-    public void processComponentTree(Component source) {
+    public void processComponentTree(final Component source) {
 
         if (source instanceof JScrollPane jsp) {
-            Dimension origSize = jsp.getSize();
+            final Dimension origSize = jsp.getSize();
             Dimension newDimension;
             if (UIManager.get("customFontSize") == null) {
                 newDimension = origSize;
@@ -124,9 +125,9 @@ public class Startup implements Runnable {
             jsp.setPreferredSize(newDimension);
             jsp.getViewport().setPreferredSize(newDimension);
         }
-
+        // traverse the component tree
         if (source instanceof Container sc) {
-            for (Component c : sc.getComponents()) {
+            for (final Component c : sc.getComponents()) {
                 processComponentTree(c);
             }
         }   
