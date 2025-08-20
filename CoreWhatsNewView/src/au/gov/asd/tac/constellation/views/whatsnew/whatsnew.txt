@@ -3,9 +3,9 @@
 
 == 2025-07-23 Add spell checking in Notes View
 <p>Spell check now added to following functions:
-<p>Notes View -> New Note Pane
+<p>Notes View -> New Note / Edit Note Pane
 <p>Conversation View -> Create Translation / Edit Translation
-<p>Import/Export -> New Attribute Dialog
+<p>Import/Export -> Import From File/Import From Database -> Attributes pane -> New Attribute -> Description
 <p>Attribute Editor -> All string attributes (Spell checking in Attribute Editor is turned off by default. User can right click to 'Turn on Spell checking')
 
 == 2025-07-10 Shortcuts for Data Access View Workflow templates
