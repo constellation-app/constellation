@@ -49,6 +49,7 @@ import au.gov.asd.tac.constellation.views.histogram.HistogramConcept;
 import au.gov.asd.tac.constellation.views.histogram.HistogramFilterOnSelectionPlugin;
 import au.gov.asd.tac.constellation.views.histogram.HistogramState;
 import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
+import java.util.BitSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.openide.awt.ActionID;
@@ -514,6 +515,12 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
             PluginExecution.withPlugin(new HistogramSelectOnlyBins(firstBin, lastBin)).executeLater(currentGraph);
         }
     }
+    
+    public void selectBinsFromBitSet(final BitSet selectedBitSet) {
+        if (currentGraph != null) {
+            PluginExecution.withPlugin(new HistogramSelectBinsFromBitSet(selectedBitSet)).executeLater(currentGraph);
+        }
+    }
 
     public void filterOnSelection() {
         if (currentGraph != null) {
@@ -621,6 +628,33 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         @Override
         protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
             currentBinCollection.selectOnlyBins(graph, firstBin, lastBin);
+            if (selectedAttribute != Graph.NOT_FOUND) {
+                currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
+            }
+        }
+    }
+    
+    // Does this even need to be a plugin
+    /**
+     * Plugin to select bins from a given bit set.
+     */
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
+    private class HistogramSelectBinsFromBitSet extends SimpleEditPlugin {
+
+        private final BitSet selectedBitSet;
+
+        public HistogramSelectBinsFromBitSet(final BitSet selectedBitSet) {
+            this.selectedBitSet = selectedBitSet;
+        }
+
+        @Override
+        public String getName() {
+            return "Histogram View: Select Bins From BitSet";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            currentBinCollection.selectBinsFromBitSet(graph, selectedBitSet);
             if (selectedAttribute != Graph.NOT_FOUND) {
                 currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
             }

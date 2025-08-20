@@ -40,7 +40,7 @@
     -fx-min-height: 0;
 }
 
-.table-view {
+/*.table-view {
     -fx-background-color: null;
     -fx-border-color: null;
 }
@@ -50,9 +50,13 @@
 }
 
 .table-cell:noValue{
-    -fx-text-fill: #FFFF00; /*Yellow*/
+    -fx-text-fill: #FFFF00; Yellow
 }
 
 .table-cell {
     -fx-border-color: null;
+}*/
+
+.table-view .table-column{
+    -fx-alignment: CENTER-LEFT;
 }
