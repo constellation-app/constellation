@@ -30,7 +30,6 @@ import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
-import org.netbeans.modules.quicksearch.QuickSearchAction;
 import org.openide.util.Utilities;
 import org.openide.util.actions.Presenter;
 import org.openide.windows.OnShowing;
@@ -74,7 +73,7 @@ public class Startup implements Runnable {
         
         final List<? extends Action> actions = Utilities.actionsForPath("Actions/Edit");
         for (final Action action : actions) {
-            if (action instanceof QuickSearchAction) {
+            if (action.getClass().getName().toLowerCase().contains("quicksearchaction")) {
                 final Component toolbarPresenter = ((Presenter.Toolbar) action).getToolbarPresenter();
                 for (final Component c : ((Container)toolbarPresenter).getComponents()) {
                     processComponentTree(c);
@@ -114,16 +113,15 @@ public class Startup implements Runnable {
 
         if (source instanceof JScrollPane jsp) {
             final Dimension origSize = jsp.getSize();
-            Dimension newDimension;
-            if (UIManager.get("customFontSize") == null) {
-                newDimension = origSize;
-            } else {
+            // only resize if there is a custom font set
+            if (UIManager.get("customFontSize") != null) {                
                 Integer customFontSize = (Integer) UIManager.get("customFontSize");
-                newDimension = new Dimension(origSize.width, 18 * customFontSize / 12);
+                final Dimension newDimension = new Dimension(origSize.width, 18 * customFontSize / 12);
+            
+                jsp.setMinimumSize(newDimension);
+                jsp.setPreferredSize(newDimension);
+                jsp.getViewport().setPreferredSize(newDimension);
             }
-            jsp.setMinimumSize(newDimension);
-            jsp.setPreferredSize(newDimension);
-            jsp.getViewport().setPreferredSize(newDimension);
         }
         // traverse the component tree
         if (source instanceof Container sc) {
