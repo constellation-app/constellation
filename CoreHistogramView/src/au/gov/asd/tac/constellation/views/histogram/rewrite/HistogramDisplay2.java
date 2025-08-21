@@ -250,7 +250,7 @@ public class HistogramDisplay2 extends BorderPane {
                     (obs, oldVal, newVal) -> {
                         //if (newVal) {
                         hoveredRowIndex = row.getIndex();
-                        //System.out.println("hoveredRowIndex " + hoveredRowIndex);
+                        System.out.println("hoveredRowIndex " + hoveredRowIndex);
                         //}
                     });
             // WORKS KINDA
@@ -279,9 +279,10 @@ public class HistogramDisplay2 extends BorderPane {
 //            // for shift clicked rows, theres a -1 in the new value between the two clicked rows
 //            // But it's proabbly better to just listen for the shift key becuase there's no pattern like this to differentiate control click and normal click
 //        });
+
         headerCountHBox.minWidthProperty().bind(barCol.widthProperty());
         headerCountHBox.setAlignment(Pos.CENTER_RIGHT);
-        
+
         headerRow.setAlignment(Pos.CENTER_RIGHT);
         headerRow.setMinHeight(barHeight);
 
@@ -350,11 +351,11 @@ public class HistogramDisplay2 extends BorderPane {
             return;
         }
 
-        recomputeVisibleIndexes(prevScrollValue);
+        recalculateVisibleIndexes(prevScrollValue);
 
         verticalBar.valueProperty().addListener((obs, oldVal, newVal) -> {
             System.out.println("Scroll value listener");
-            recomputeVisibleIndexes((double) newVal);
+            recalculateVisibleIndexes((double) newVal);
             updateTable(true, tableWidth);
         });
     }
@@ -400,7 +401,7 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     public synchronized void updateDisplay() {
-        recomputeVisibleIndexes(prevScrollValue);
+        recalculateVisibleIndexes(prevScrollValue);
         updateTable(true, tableWidth);
     }
 
@@ -410,7 +411,7 @@ public class HistogramDisplay2 extends BorderPane {
 //        updatePropertyText();
 //        updateBars(true);
         System.out.println("updateDisplay");
-        recomputeVisibleIndexes(prevScrollValue);
+        recalculateVisibleIndexes(prevScrollValue);
         updateTable(true, tableWidth);
     }
 
@@ -500,7 +501,7 @@ public class HistogramDisplay2 extends BorderPane {
             return;
         }
 
-//        recomputeVisibleIndexes();
+//        recalculateVisibleIndexes();
 //        System.out.println("firstIndex: " + firstIndex + " lastIndex: " + lastIndex);
         final double fontSize = barHeight * FONT_SCALE_FACTOR;
 
@@ -516,7 +517,7 @@ public class HistogramDisplay2 extends BorderPane {
         }
     }
 
-    private void recomputeVisibleIndexes(final double scrollValue) {
+    private void recalculateVisibleIndexes(final double scrollValue) {
         System.out.println("recomputeVisibleIndexes " + scrollValue);
         prevScrollValue = scrollValue;
 
@@ -1107,6 +1108,7 @@ public class HistogramDisplay2 extends BorderPane {
 //    }
     protected void handleMouseReleased(final MouseEvent e) {
         System.out.println("handleMouseReleased");
+        System.out.println("hoveredRowIndex " + hoveredRowIndex);
         this.requestFocus();
         if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
             System.out.println("dragStart " + dragStart + " dragEnd " + dragEnd);
