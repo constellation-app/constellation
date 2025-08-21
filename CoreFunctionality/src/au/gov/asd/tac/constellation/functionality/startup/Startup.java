@@ -73,7 +73,8 @@ public class Startup implements Runnable {
         
         final List<? extends Action> actions = Utilities.actionsForPath("Actions/Edit");
         for (final Action action : actions) {
-            if (action.getClass().getName().toLowerCase().contains("quicksearchaction")) {
+            // only process for quicksearch and if fontsize is customised
+            if (action.getClass().getName().toLowerCase().contains("quicksearchaction") && UIManager.get("customFontSize") != null) {
                 final Component toolbarPresenter = ((Presenter.Toolbar) action).getToolbarPresenter();
                 for (final Component c : ((Container)toolbarPresenter).getComponents()) {
                     processComponentTree(c);
@@ -113,15 +114,12 @@ public class Startup implements Runnable {
 
         if (source instanceof JScrollPane jsp) {
             final Dimension origSize = jsp.getSize();
-            // only resize if there is a custom font set
-            if (UIManager.get("customFontSize") != null) {                
-                Integer customFontSize = (Integer) UIManager.get("customFontSize");
-                final Dimension newDimension = new Dimension(origSize.width, 18 * customFontSize / 12);
+            final Integer customFontSize = (Integer) UIManager.get("customFontSize");
+            final Dimension newDimension = new Dimension(origSize.width, 19 * customFontSize / 12);
             
-                jsp.setMinimumSize(newDimension);
-                jsp.setPreferredSize(newDimension);
-                jsp.getViewport().setPreferredSize(newDimension);
-            }
+            jsp.setMinimumSize(newDimension);
+            jsp.setPreferredSize(newDimension);
+            jsp.getViewport().setPreferredSize(newDimension);            
         }
         // traverse the component tree
         if (source instanceof Container sc) {
