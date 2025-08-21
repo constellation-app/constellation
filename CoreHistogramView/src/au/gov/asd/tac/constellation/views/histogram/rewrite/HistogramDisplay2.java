@@ -280,7 +280,8 @@ public class HistogramDisplay2 extends BorderPane {
 //            // But it's proabbly better to just listen for the shift key becuase there's no pattern like this to differentiate control click and normal click
 //        });
         headerCountHBox.minWidthProperty().bind(barCol.widthProperty());
-
+        headerCountHBox.setAlignment(Pos.CENTER_RIGHT);
+        
         headerRow.setAlignment(Pos.CENTER_RIGHT);
         headerRow.setMinHeight(barHeight);
 
@@ -450,17 +451,6 @@ public class HistogramDisplay2 extends BorderPane {
 
         final boolean rebuildRows = (prevNumBars != bins.length);
 
-//        if (rebuildRows) {
-//            for (final Bin bin : bins) {
-//                listOfHistogrambars.add(new HistogramBar(null, null, null));
-//            }
-//
-//            tableView.getItems().clear();
-//            tableView.setItems(listOfHistogrambars);
-//        }
-//
-//        System.out.println("After rebuild rows loop");
-//        recomputeVisibleIndexes(prevScrollValue);
         for (int i = 0; i < bins.length; i++) {
             final Bin bin = bins[i];
 
@@ -619,6 +609,7 @@ public class HistogramDisplay2 extends BorderPane {
             rect.setFill(JavaFxUtilities.awtColorToFXColor(barIndex == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR));
 
             rectBar.getChildren().add(rect);
+            StackPane.setAlignment(rect, Pos.CENTER_LEFT);
         }
 
         // Calculate the length of the selected component of the bar
@@ -665,8 +656,11 @@ public class HistogramDisplay2 extends BorderPane {
             binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count"), true); // Set styling
             binCountlabel.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
 
+            binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("barBinCount"), true); // Set styling
+
             binCountlabel.setMinHeight(barHeight);
             binCountsVbox.getChildren().add(binCountlabel);
+            rectBar.getChildren().add(binCountlabel);
             StackPane.setAlignment(binCountlabel, Pos.CENTER_RIGHT);
         }
 

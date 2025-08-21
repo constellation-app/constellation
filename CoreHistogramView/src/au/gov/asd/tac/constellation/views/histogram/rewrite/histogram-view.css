@@ -21,8 +21,12 @@
 }
 
 .bar-bin-count {
-    -fx-text-fill: #C0C0C0;/*Silver*/
+    -fx-text-fill: #C0C0C0; /*Silver*/
     -fx-padding: 0 0.5em 0 0;
+}
+
+.label:barBinCount {
+    -fx-padding: 0 2em 0 0;
 }
 
 .header-row{
