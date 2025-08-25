@@ -97,9 +97,12 @@ public class HistogramDisplay2 extends BorderPane {
     private static final int MINIMUM_BAR_WIDTH = 4;
     private static final int MINIMUM_SELECTED_WIDTH = 3;
     private static final int MINIMUM_TEXT_WIDTH = 150;
+    private static final int MAXIMUM_TEXT_WIDTH = 300;
     private static final int PREFERRED_HEIGHT = 600;
     private static final int ROWS_SPACING = 5;
     private static final int DEFAULT_FONT_SIZE = 12;
+    private static final int BAR_PADDING = 30;
+    private static final int ICON_PADDING = 10;
 
     private final HistogramTopComponent2 topComponent;
     private int barHeightBase = 18;
@@ -192,6 +195,7 @@ public class HistogramDisplay2 extends BorderPane {
         propertyCol.setResizable(false);
         propertyCol.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));// TODO: fix these magic numbers
         propertyCol.setMinWidth(MINIMUM_TEXT_WIDTH);
+        propertyCol.setMaxWidth(MAXIMUM_TEXT_WIDTH);
 
         final PseudoClass noValueClass = PseudoClass.getPseudoClass("noValue");
         propertyCol.setCellFactory(tableColumn -> {
@@ -217,16 +221,20 @@ public class HistogramDisplay2 extends BorderPane {
         iconCol.setResizable(false);
         //iconCol.prefWidthProperty().bind(tableView.widthProperty().multiply(0.1));// TODO: fix these magic numbers
         iconCol.setMinWidth(barHeight);
-        iconCol.setPrefWidth(barHeight + 10);
+        iconCol.setPrefWidth(barHeight + ICON_PADDING);
         iconCol.setStyle("-fx-alignment: CENTER;");
 
         barCol.setCellValueFactory(new PropertyValueFactory("bar"));
         barCol.setResizable(false);
-        barCol.prefWidthProperty().bind(tableView.widthProperty().multiply(0.6)); // TODO: fix these magic numbers
+        barCol.setStyle("-fx-alignment: CENTER-LEFT;");
+        // Automatically adjusts width of the column to fit
+        tableView.widthProperty().addListener((obs, oldVal, newVal) -> barCol.setPrefWidth((double) newVal - propertyCol.getWidth() - iconCol.getWidth() - BAR_PADDING));
 
+        // Update table whenever histogram is resized
         barCol.widthProperty().addListener((obs, oldVal, newVal) -> {
             //drawBars((double) newVal - 20);
-            updateTable(true, (double) newVal - 20);
+            // TODO update this function because in this case the header doesnt need to be remade
+            updateTable(true, (double) newVal - 3); // Need to take 3 because otherwise the right of the bar is cut off
         });
 
         tableView.getColumns().setAll(iconCol, propertyCol, barCol);
@@ -250,7 +258,7 @@ public class HistogramDisplay2 extends BorderPane {
                     (obs, oldVal, newVal) -> {
                         //if (newVal) {
                         hoveredRowIndex = row.getIndex();
-                        System.out.println("hoveredRowIndex " + hoveredRowIndex);
+                        //System.out.println("hoveredRowIndex " + hoveredRowIndex);
                         //}
                     });
             // WORKS KINDA
@@ -280,7 +288,7 @@ public class HistogramDisplay2 extends BorderPane {
 //            // But it's proabbly better to just listen for the shift key becuase there's no pattern like this to differentiate control click and normal click
 //        });
 
-        headerCountHBox.minWidthProperty().bind(barCol.widthProperty());
+        headerCountHBox.minWidthProperty().bind(barCol.widthProperty().add(BAR_PADDING));
         headerCountHBox.setAlignment(Pos.CENTER_RIGHT);
 
         headerRow.setAlignment(Pos.CENTER_RIGHT);
@@ -364,7 +372,7 @@ public class HistogramDisplay2 extends BorderPane {
         this.binCollection = binCollection;
         this.binIconMode = binIconMode;
         activeBin = -1;
-        Platform.runLater(() -> updateDisplayInternal());
+        Platform.runLater(() -> updateDisplay());
     }
 
     // For testing
@@ -380,7 +388,7 @@ public class HistogramDisplay2 extends BorderPane {
     public void updateBinCollection() {
         binCollection.deactivateBins();
         activeBin = -1;
-        Platform.runLater(() -> updateDisplayInternal());
+        Platform.runLater(() -> updateDisplay());
     }
 
     public void setBinSelectionMode(final BinSelectionMode binSelectionMode) {
@@ -401,22 +409,17 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     public synchronized void updateDisplay() {
-        recalculateVisibleIndexes(prevScrollValue);
-        updateTable(true, tableWidth);
-    }
-
-    // TODO clean this funciton or whatever
-    private synchronized void updateDisplayInternal() {
-//        updateIcons();
+        //        updateIcons();
 //        updatePropertyText();
 //        updateBars(true);
-        System.out.println("updateDisplay");
         recalculateVisibleIndexes(prevScrollValue);
+
+        updateHeader(barHeight * FONT_SCALE_FACTOR);
         updateTable(true, tableWidth);
     }
 
     private synchronized void updateTable(final boolean updateBinCounts, final double width) {
-        System.out.println("updateTable " + firstVisibleIndex + " " + lastVisibleIndex);
+        //System.out.println("updateTable " + firstVisibleIndex + " " + lastVisibleIndex);
         if (binCollection == null) {
             // No data, so just have text saying so
             this.setCenter(new Label(NO_DATA));
@@ -443,7 +446,7 @@ public class HistogramDisplay2 extends BorderPane {
         final Bin[] bins = binCollection.getBins();
 
         final double fontSize = barHeight * FONT_SCALE_FACTOR;
-        updateHeader(bins.length, fontSize);
+//        updateHeader(bins.length, fontSize);
 
         final ObservableList<HistogramBar> listOfHistogrambars = FXCollections.observableArrayList();
 
@@ -489,7 +492,7 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private void updateTableBars(final boolean updateBinCounts, final double width) {
-
+        System.out.println("updateTableBars");
         final Bin[] bins = binCollection.getBins();
         tableWidth = width;
         //final List<HistogramBar> items = tableView.getItems();
@@ -546,11 +549,15 @@ public class HistogramDisplay2 extends BorderPane {
         lastVisibleIndex = (int) Math.ceil(upper / heightPerRow) + VISIBLE_INDEX_EXTEND;
     }
 
-    private void updateHeader(final int numBins, final double fontSize) {
+    private void updateHeader(final double fontSize) {
         final Label headerValue = new Label(PROPERTY_VALUE);
         final Label headerCount = new Label(COUNT);
-        final Label headerTotalBins = new Label(TOTAL_BINS_COUNT + binCollection.getSelectedBins().length + "/" + numBins);
-
+        final Label headerTotalBins;
+        if (binCollection != null) {
+            headerTotalBins = new Label(TOTAL_BINS_COUNT + binCollection.getSelectedBins().length + "/" + binCollection.getBins().length);
+        } else {
+            headerTotalBins = new Label(TOTAL_BINS_COUNT + "0/0");
+        }
         // Set styling
         headerValue.getStyleClass().add(HEADER_ROW_CSS_CLASS);
         headerCount.getStyleClass().add(HEADER_ROW_CSS_CLASS);
@@ -969,7 +976,7 @@ public class HistogramDisplay2 extends BorderPane {
 
         updateBarHeight();
 
-        updateDisplayInternal();
+        updateDisplay();
     }
 
     /**
@@ -984,7 +991,7 @@ public class HistogramDisplay2 extends BorderPane {
 
         updateBarHeight();
 
-        updateDisplayInternal();
+        updateDisplay();
     }
 
     // For testing
@@ -1063,7 +1070,7 @@ public class HistogramDisplay2 extends BorderPane {
             // Only need to update bars
             updateTableBars(true, tableWidth);
 
-            updateHeader(binCollection.getBins().length, barHeight * FONT_SCALE_FACTOR);
+            updateHeader(barHeight * FONT_SCALE_FACTOR);
         }
     }
 
@@ -1081,7 +1088,7 @@ public class HistogramDisplay2 extends BorderPane {
 //        }
 //    }
     protected void handleMouseDragged(final MouseEvent e) {
-        // System.out.println("handleMouseDragged hoveredRowIndex:" + hoveredRowIndex);
+        System.out.println("handleMouseDragged hoveredRowIndex:" + hoveredRowIndex);
         if (binCollection != null && e.isPrimaryButtonDown()) {
             final int bar = tableView.getSelectionModel().getSelectedIndex();
 
@@ -1091,8 +1098,7 @@ public class HistogramDisplay2 extends BorderPane {
 
             // Only need to update bars
             updateTableBars(true, tableWidth);
-
-            updateHeader(binCollection.getBins().length, barHeight * FONT_SCALE_FACTOR);
+            updateHeader(barHeight * FONT_SCALE_FACTOR);
         }
     }
 
@@ -1107,20 +1113,23 @@ public class HistogramDisplay2 extends BorderPane {
 //        }
 //    }
     protected void handleMouseReleased(final MouseEvent e) {
-        System.out.println("handleMouseReleased");
-        System.out.println("hoveredRowIndex " + hoveredRowIndex);
-        this.requestFocus();
-        if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
-            System.out.println("dragStart " + dragStart + " dragEnd " + dragEnd);
+        Platform.runLater(() -> {
+            System.out.println("handleMouseReleased");
+            System.out.println("hoveredRowIndex " + hoveredRowIndex);
+            this.requestFocus();
+            if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
+                setDragEnd(hoveredRowIndex);
+                System.out.println("dragStart " + dragStart + " dragEnd " + dragEnd);
 
-            binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
-            activeBin = dragStart == dragEnd ? dragStart : -1;
+                binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
+                activeBin = dragStart == dragEnd ? dragStart : -1;
 
-            // Only need to update bars
-            updateTableBars(true, tableWidth);
+                // Only need to update bars
+                updateTableBars(true, tableWidth);
 
-            updateHeader(binCollection.getBins().length, barHeight * FONT_SCALE_FACTOR);
-        }
+                updateHeader(barHeight * FONT_SCALE_FACTOR);
+            }
+        });
     }
 
     protected void handleMouseEntered() {
