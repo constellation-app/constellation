@@ -67,6 +67,14 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
 
+        protected String getAngleText() {
+            return angleTextField.getText();
+        }
+
+        protected Color getPickerColor() {
+            return picker.getValue();
+        }
+        
         @Override
         public void updateControlsWithValue(final Blaze value) {
             if (value != null) {

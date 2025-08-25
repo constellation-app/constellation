@@ -49,6 +49,10 @@ public class ShortEditorFactory extends AttributeValueEditorFactory<Short> {
         protected ShortEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Short> validator, final Short defaultValue, final Short initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
+        
+        protected String getNumberText() {
+            return numberField.getText();
+        }
 
         @Override
         protected boolean canSet(final Short value) {

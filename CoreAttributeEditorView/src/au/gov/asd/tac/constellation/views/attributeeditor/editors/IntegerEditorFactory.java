@@ -49,6 +49,10 @@ public class IntegerEditorFactory extends AttributeValueEditorFactory<Integer> {
         protected IntegerEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Integer> validator, final Integer defaultValue, final Integer initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
+        
+        protected String getNumberText() {
+            return numberField.getText();
+        }
 
         @Override
         protected boolean canSet(final Integer value) {

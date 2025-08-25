@@ -60,6 +60,14 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
         protected ColorEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationColor> validator, final ConstellationColor defaultValue, final ConstellationColor initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
+        
+        protected ConstellationColor getComboBoxColor() {
+            return colorCombo.getValue();
+        }
+        
+        protected Color getPickerColor() {
+            return picker.getValue();
+        }
 
         @Override
         public void updateControlsWithValue(final ConstellationColor value) {

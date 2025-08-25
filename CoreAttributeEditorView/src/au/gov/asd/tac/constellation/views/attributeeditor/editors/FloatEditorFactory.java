@@ -49,6 +49,10 @@ public class FloatEditorFactory extends AttributeValueEditorFactory<Float> {
         protected FloatEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Float> validator, final Float defaultValue, final Float initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
+        
+        protected String getNumberText() {
+            return numberField.getText();
+        }
 
         @Override
         protected boolean canSet(final Float value) {

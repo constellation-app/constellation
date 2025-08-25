@@ -49,6 +49,10 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
         protected DoubleObjectEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Double> validator, final Double defaultValue, final Double initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
+        
+        protected String getNumberText() {
+            return numberField.getText();
+        }
 
         @Override
         public void updateControlsWithValue(final Double value) {

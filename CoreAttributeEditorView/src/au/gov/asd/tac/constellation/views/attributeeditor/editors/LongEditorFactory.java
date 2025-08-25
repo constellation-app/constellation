@@ -49,6 +49,10 @@ public class LongEditorFactory extends AttributeValueEditorFactory<Long> {
         protected LongEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Long> validator, final Long defaultValue, final Long initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
+        
+        protected String getNumberText() {
+            return numberField.getText();
+        }
 
         @Override
         protected boolean canSet(final Long value) {

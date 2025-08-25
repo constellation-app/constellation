@@ -49,6 +49,10 @@ public class IntegerObjectEditorFactory extends AttributeValueEditorFactory<Inte
         protected IntegerObjectEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Integer> validator, final Integer defaultValue, final Integer initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
+        
+        protected String getNumberText() {
+            return numberField.getText();
+        }
 
         @Override
         public void updateControlsWithValue(final Integer value) {

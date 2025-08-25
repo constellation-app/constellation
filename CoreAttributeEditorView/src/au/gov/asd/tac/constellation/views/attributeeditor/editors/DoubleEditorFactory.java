@@ -49,6 +49,10 @@ public class DoubleEditorFactory extends AttributeValueEditorFactory<Double> {
         protected DoubleEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Double> validator, final Double defaultValue, final Double initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
+        
+        protected String getNumberText() {
+            return numberField.getText();
+        }
 
         @Override
         protected boolean canSet(final Double value) {

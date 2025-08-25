@@ -49,6 +49,10 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
         protected ByteObjectEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Byte> validator, final Byte defaultValue, final Byte initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
+        
+        protected String getNumberText() {
+            return numberField.getText();
+        }
 
         @Override
         public void updateControlsWithValue(final Byte value) {
