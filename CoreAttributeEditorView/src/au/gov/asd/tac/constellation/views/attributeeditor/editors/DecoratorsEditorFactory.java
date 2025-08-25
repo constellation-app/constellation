@@ -62,6 +62,22 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         protected DecoratorsEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<VertexDecorators> validator, final VertexDecorators defaultValue, final VertexDecorators initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
+        
+        protected String getNWValue() {
+            return nwCombo.getValue();
+        }
+        
+        protected String getNEValue() {
+            return neCombo.getValue();
+        }
+        
+        protected String getSEValue() {
+            return seCombo.getValue();
+        }
+        
+        protected String getSWValue() {
+            return swCombo.getValue();
+        }
 
         @Override
         protected boolean canSet(final VertexDecorators value) {

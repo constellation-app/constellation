@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditor
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.DoubleObjectEditorFactory.DoubleObjectEditor;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
