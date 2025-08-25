@@ -284,9 +284,9 @@ public enum UndoGraphEditOperation {
             // If the high bit of the current id has been set then the transaction source and destination vertices will have been swapped during the execute phase
             // to keep the source vertex <= the destination vertex. This means that the undo step must operate on the destination vertex instead of the source vertex.
             if (state.getCurrentId() >= 0) {
-                graph.setTransactionSourceVertex(state.getCurrentId(), state.getCurrentInt() ^ graph.getTransactionSourceVertex(state.getCurrentId()));
+                graph.setTransactionSourceVertex(state.getCurrentId(), state.getCurrentInt() ^ graph.getTransactionSourceVertex(state.getCurrentId()), true);
             } else {
-                graph.setTransactionDestinationVertex(state.getCurrentId() & 0x7FFFFFFF, state.getCurrentInt() ^ graph.getTransactionDestinationVertex(state.getCurrentId()));
+                graph.setTransactionDestinationVertex(state.getCurrentId() & 0x7FFFFFFF, state.getCurrentInt() ^ graph.getTransactionDestinationVertex(state.getCurrentId()), true);
             }
         }
 
