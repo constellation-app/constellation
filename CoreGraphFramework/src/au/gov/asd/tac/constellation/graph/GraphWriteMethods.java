@@ -590,4 +590,21 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @see GraphIndexType#ORDERED
      */
     public void setAttributeIndexType(final int attribute, final GraphIndexType indexType);
+
+    /**
+     * Sets the source vertex of the transaction.
+     * @param transaction Identifier of the transaction.
+     * @param newSourceVertex New source vertex identifier.
+     * @param isUndo This is from an Undo operation.
+     */
+    public void setTransactionSourceVertex(final int transaction, final int newSourceVertex, final boolean isUndo);
+     
+    /**
+     * Sets the destination vertex of the transaction.
+     * @param transaction Identifier of the transaction.
+     * @param newSourceVertex New destination vertex identifier.
+     * @param isUndo This is from an Undo operation.
+     */
+    public void setTransactionDestinationVertex(final int transaction, final int newDestinationVertex, final boolean isUndo);
+
 }

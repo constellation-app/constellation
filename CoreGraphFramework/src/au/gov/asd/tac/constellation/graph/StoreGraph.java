@@ -53,15 +53,15 @@ enum Operator {
 }
 
 /**
- * A StoreGraph is an array-based implementation of GraphWriteMethods designed for performance and memory efficiency. It
- * is currently the default implementation used in Constellation.
+ * A StoreGraph is an array-based implementation of GraphWriteMethods designed
+ * for performance and memory efficiency. It is currently the default
+ * implementation used in Constellation.
  *
  * @author sirius
  */
 public class StoreGraph extends LockingTarget implements GraphWriteMethods, Serializable {
 
     private static final Logger LOGGER = Logger.getLogger(StoreGraph.class.getName());
-    
 
     private static final int HIGH_BIT = 0x80000000;
     private static final int LOW_BITS = 0x7FFFFFFF;
@@ -118,8 +118,10 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
      * @param vertexCapacity the initial number of vertices the graph can hold.
      * @param linkCapacity the initial number of links the graph can hold.
      * @param edgeCapacity the initial number of edges the graph can hold.
-     * @param transactionCapacity the initial number of transactions the graph can hold.
-     * @param attributeCapacity the initial number of attributes the graph can hold.
+     * @param transactionCapacity the initial number of transactions the graph
+     * can hold.
+     * @param attributeCapacity the initial number of attributes the graph can
+     * hold.
      */
     public StoreGraph(final int vertexCapacity, final int linkCapacity, final int edgeCapacity, final int transactionCapacity, final int attributeCapacity) {
         this(UUID.randomUUID().toString(), null, vertexCapacity, linkCapacity, edgeCapacity, transactionCapacity, attributeCapacity);
@@ -138,7 +140,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     /**
      * Construct a new StoreGraph.
      * <p>
-     * The capacity of each store will be adjusted up automatically when necessary.
+     * The capacity of each store will be adjusted up automatically when
+     * necessary.
      *
      * @param id the id for this StoreGraph.
      * @param schema the schema for this StoreGraph.
@@ -232,7 +235,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * Creates a new StoreGraph with default capacities, and a specified id and schema.
+     * Creates a new StoreGraph with default capacities, and a specified id and
+     * schema.
      *
      * @param schema the schema for the new StoreGraph.
      * @param graphId the id for the new StoreGraph.
@@ -242,7 +246,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * Creates a new StoreGraph with a random, unique id, a specified schema and specified capacities.
+     * Creates a new StoreGraph with a random, unique id, a specified schema and
+     * specified capacities.
      *
      * @param schema the schema for this graph.
      */
@@ -260,7 +265,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * Creates a new StoreGraph that is a copy of the original StoreGraph with the option of creating a new id.
+     * Creates a new StoreGraph that is a copy of the original StoreGraph with
+     * the option of creating a new id.
      *
      * @param original the original StoreGraph to be copied.
      * @param useNewId should a new id be created for this StoreGraph.
@@ -270,17 +276,20 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * Creates a new StoreGraph this is a copy of the original StoreGraph with the option of creating a new id.
+     * Creates a new StoreGraph this is a copy of the original StoreGraph with
+     * the option of creating a new id.
      *
      * @param original the original StoreGraph to be copied.
-     * @param graphId the id for the new StoreGraph (if null then the id is copied from the original StoreGraph)
+     * @param graphId the id for the new StoreGraph (if null then the id is
+     * copied from the original StoreGraph)
      */
     public StoreGraph(final StoreGraph original, final String graphId) {
         this(graphId == null ? original.getId() : graphId, original.getSchema() == null ? null : original.getSchema().getFactory().createSchema(), original);
     }
 
     /**
-     * Creates a new StoreGraph that is a copy of the original StoreGraph but with the specified id and schema.
+     * Creates a new StoreGraph that is a copy of the original StoreGraph but
+     * with the specified id and schema.
      *
      * @param id the id of this StoreGraph.
      * @param schema the Schema for this StoreGraph.
@@ -1042,7 +1051,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public void setTransactionSourceVertex(final int transaction, final int newSourceVertex) {
+    public void setTransactionSourceVertex(final int transaction, final int newSourceVertex, final boolean isUndo) {
         // Ensure that the transaction exists
         if (!tStore.elementExists(transaction)) {
             throw new IllegalArgumentException("Attempt to set the source vertex of a transaction that does not exist: " + transaction);
@@ -1069,8 +1078,12 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         // For the full story, see the comment inside setTransactionDestinationVertex().
         // NOTE: Aug 2025 - There was a change in addTransaction to not swap source and 
         // destination when transaction is undirected. This means that it doesn't need to 
-        // be swapped back here; the code has been modified to swap only if the transaction is directed.
-        if (directed) {
+        // be swapped back here on an undo as the code has been modified to swap only if the transaction is directed.
+        // On import of file/database, this function is used to "merge" the nodes that are processed later.
+        // This requires the remove/addTransaction to be performed as the earlier transactions need to be recreated
+        // to point to the latter created "merged" node (even though it is referring to the same node).
+        // So we need to do this bit if it's not coming from an undo operation or if it is undo operation on directed transaction.
+        if (!isUndo || (isUndo && directed)) {
             removeTransaction(transaction);
             addTransaction(newSourceVertex, oldDestinationVertex, directed);
         }
@@ -1084,7 +1097,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public void setTransactionDestinationVertex(final int transaction, final int newDestinationVertex) {
+    public void setTransactionDestinationVertex(final int transaction, final int newDestinationVertex, final boolean isUndo) {
         // Ensure that the transaction exists
         if (!tStore.elementExists(transaction)) {
             throw new IllegalArgumentException("Attempt to set the destination vertex of a transaction that does not exist: " + transaction);
@@ -1118,10 +1131,14 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         // the undo/redo.
         // The apparent solution is to manually swap the source and destination vertex ids to be in the "correct"
         // uphill order before we do the out-of-edit remove/add, so no swapping occurs.
-        // NOTE: Aug 2025 - There was a change in addTransaction to not swap source and destination when transaction
-        // is undirected. This means that it doesn't need to be swapped back here; the code has been modified to swap
-        // only if the transaction is directed.
-        if (directed) {
+        // NOTE: Aug 2025 - There was a change in addTransaction to not swap source and 
+        // destination when transaction is undirected. This means that it doesn't need to 
+        // be swapped back here on an undo as the code has been modified to swap only if the transaction is directed.
+        // On import of file/database, this function is used to "merge" the nodes that are processed later.
+        // This requires the remove/addTransaction to be performed as the earlier transactions need to be recreated
+        // to point to the latter created "merged" node (even though it is referring to the same node).
+        // So we need to do this bit if it's not coming from an undo operation or if it is undo operation on directed transaction.
+        if (!isUndo || (isUndo && directed)) {
             removeTransaction(transaction);
             addTransaction(oldSourceVertex, newDestinationVertex, directed);
         }
@@ -1547,12 +1564,18 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeDescription.setDefault(defaultValue);
 
             switch (elementType) {
-                case META, GRAPH -> attributeDescription.setCapacity(1);
-                case VERTEX -> attributeDescription.setCapacity(vStore.getCapacity());
-                case LINK -> attributeDescription.setCapacity(lStore.getCapacity());
-                case EDGE -> attributeDescription.setCapacity(eStore.getCapacity());
-                case TRANSACTION -> attributeDescription.setCapacity(tStore.getCapacity());
-                default -> throw new IllegalArgumentException("Unrecognised element type " + elementType);
+                case META, GRAPH ->
+                    attributeDescription.setCapacity(1);
+                case VERTEX ->
+                    attributeDescription.setCapacity(vStore.getCapacity());
+                case LINK ->
+                    attributeDescription.setCapacity(lStore.getCapacity());
+                case EDGE ->
+                    attributeDescription.setCapacity(eStore.getCapacity());
+                case TRANSACTION ->
+                    attributeDescription.setCapacity(tStore.getCapacity());
+                default ->
+                    throw new IllegalArgumentException("Unrecognised element type " + elementType);
             }
         } catch (final IllegalAccessException | IllegalArgumentException | InstantiationException
                 | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
@@ -2176,6 +2199,18 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     public int[] getPrimaryKey(final GraphElementType elementType) {
         final int[] keys = primaryKeys[elementType.ordinal()];
         return Arrays.copyOf(keys, keys.length);
+    }
+
+    @Override
+    public void setTransactionSourceVertex(final int transaction, final int newSourceVertex) {
+        //isUndo is default to false
+        setTransactionSourceVertex(transaction, newSourceVertex, false);
+    }
+
+    @Override
+    public void setTransactionDestinationVertex(final int transaction, final int newDestinationVertex) {
+        //isUndo is default to false
+        setTransactionDestinationVertex(transaction, newDestinationVertex, false);
     }
 
     private class ElementKeySet extends IntHashSet {
