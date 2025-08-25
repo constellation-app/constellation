@@ -140,22 +140,24 @@ public class GraphReport implements UndoRedoReportListener {
     @Override
     public void fireNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
         if (hasMatchingPluginReport(undoRedoReport)) {
-            getMatchingPluginReport(undoRedoReport).setUndone(undoRedoReport.getActionType() == UNDO);
+            getMatchingPluginReport(undoRedoReport);
         }
     }
 
-    private PluginReport getMatchingPluginReport(final UndoRedoReport undoRedoReport) {
+    private void getMatchingPluginReport(final UndoRedoReport undoRedoReport) {
         if (undoRedoReport.getActionType() == UNDO) {
-            return getPluginReports().stream()
+            getPluginReports().stream()
                     .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName())
                     && !entry.isUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
-                    .max(Comparator.comparing(PluginReport::getStartTime)).get();
+                    .max(Comparator.comparing(PluginReport::getStartTime))
+                    .ifPresent(pr -> pr.setUndone(true));
 
         } else {
-            return getPluginReports().stream()
+            getPluginReports().stream()
                     .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName())
                     && entry.isUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
-                    .min(Comparator.comparing(PluginReport::getStartTime)).get();
+                    .min(Comparator.comparing(PluginReport::getStartTime))
+                    .ifPresent(pr -> pr.setUndone(false));
         }
     }
 
