@@ -74,13 +74,9 @@
                           }
                           // Parse the response body as JSON
                           return oriAction(payload);
-                        })
-                        .catch(error => {
-                          // Handle any errors during the fetch operation
-                          return;
-                        });
+                        })                        
                   } else {
-                      oriAction(payload);
+                      return oriAction(payload);
                   }     
                 }
               }
