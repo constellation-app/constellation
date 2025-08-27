@@ -27,7 +27,6 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.util.BitSet;
 import javafx.application.Platform;
 import javafx.scene.input.KeyEvent;
 import javafx.beans.property.ObjectProperty;
@@ -163,10 +162,6 @@ public class HistogramDisplay2 extends BorderPane {
     final HBox headerRow = new HBox();
     final HBox headerCountHBox = new HBox();
 
-    final BitSet selectedRows = new BitSet(0);
-
-    private int hoveredRowIndex = 0;
-
     private double prevScrollValue = 0;
 
     private int prevNumBars = 0;
@@ -256,21 +251,13 @@ public class HistogramDisplay2 extends BorderPane {
         tableView.setRowFactory(tv -> {
             final TableRow<HistogramBar> row = new TableRow<>();
 
-            row.hoverProperty().addListener(
-                    (obs, oldVal, newVal) -> {
-                        //if (newVal) {
-                        hoveredRowIndex = row.getIndex();
-                        //System.out.println("hoveredRowIndex " + hoveredRowIndex);
-                        //}
-                    });
-
             // handle drag start
             row.addEventHandler(MouseEvent.DRAG_DETECTED, event -> {
                 event.consume();
                 row.startFullDrag();
             });
 
-            // handle selecting items when the mouse-drag enters the cell
+            // handle selecting items when the mouse-drag enters the row
             row.addEventHandler(MouseDragEvent.MOUSE_DRAG_ENTERED, event -> {
                 event.consume();
                 if (event.getGestureSource() != row) {
@@ -529,7 +516,7 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private void updateTableBars(final boolean updateBinCounts, final double width) {
-        //System.out.println("updateTableBars");
+        System.out.println("updateTableBars " + width);
         final Bin[] bins = binCollection.getBins();
         tableWidth = width;
 
@@ -547,45 +534,48 @@ public class HistogramDisplay2 extends BorderPane {
             // Bars
             // TODO port over what i did in update bars
             final StackPane rectBar = (i >= firstVisibleIndex && i <= lastVisibleIndex) ? constructBar(bin, maxCount, updateBinCounts, width, i, fontSize) : null;
-// Bar
-//            final StackPane rectBar;
-//            System.out.println("i " + i);
-//            // If not visible, set null
-//            if (i < firstVisibleIndex && i > lastVisibleIndex) {
-//                System.out.println("not visible");
-//                rectBar = null;
-//            } else {
-//
-//                // Should the bar be updated?
-//                // if we need to completely rebuild all rows
-//                if (rebuildRows) {
-//                    System.out.println("rebuildRows");
-//                    rectBar = constructBar(bin, maxCount, updateBinCounts, width, i, fontSize);
-//                } else {
-//                    final HistogramBar histogramBar = tableView.getItems().get(i);
-//                    // If the bar is already built and requires an update
-//                    if (tableView.getItems().get(i).isBarUpdateRequired(bin.selectedCount, maxCount)) {
-//                        System.out.println("Required update");
-//
-//                        rectBar = constructBar(bin, maxCount, updateBinCounts, width, i, fontSize);
-//
-//                        // Also update selected and total counts
-//                        histogramBar.setSelectedCount(bin.selectedCount);
-//                        histogramBar.setTotalCount(maxCount);
-//                    } else {
-//                        System.out.println("Stayed the same");
-//                        // Otherwise the bar stays the same
-//                        rectBar = (StackPane) histogramBar.getBar();
-//                    }
-//                }
-//            }
+// New Bar thing
+/*
+            final StackPane rectBar;
+            System.out.println("i " + i);
+            // If not visible, set null
+            if (i < firstVisibleIndex && i > lastVisibleIndex) {
+                System.out.println("not visible");
+                rectBar = null;
+            } else {
 
+                // Should the bar be updated?
+                // if we need to completely rebuild all rows
+                if (rebuildRows) {
+                    System.out.println("rebuildRows");
+                    rectBar = constructBar(bin, maxCount, updateBinCounts, width, i, fontSize);
+                } else {
+                    final HistogramBar histogramBar = tableView.getItems().get(i);
+                    // If the bar is already built and requires an update
+                    if (tableView.getItems().get(i).isBarUpdateRequired(bin.selectedCount, maxCount)) {
+                        System.out.println("Required update");
+
+                        rectBar = constructBar(bin, maxCount, updateBinCounts, width, i, fontSize);
+
+                        // Also update selected and total counts
+                        histogramBar.setSelectedCount(bin.selectedCount);
+                        histogramBar.setTotalCount(maxCount);
+                    } else {
+                        System.out.println("Stayed the same");
+                        // Otherwise the bar stays the same
+                        rectBar = (StackPane) histogramBar.getBar();
+                    }
+                }
+            }
+             */
             tableView.getItems().get(i).setBar(rectBar);
         }
     }
 
+    // Quite slow, but doesnt flicker text. Honestly i think flickering is better
     private void resizeBars(final double width) {
         System.out.println("resize bars");
+        tableWidth = width;
         for (final HistogramBar bar : tableView.getItems()) {
             bar.adjustBarWidth(width);
         }
@@ -1186,11 +1176,8 @@ public class HistogramDisplay2 extends BorderPane {
     protected void handleMouseReleased(final MouseEvent e) {
         Platform.runLater(() -> {
             System.out.println("handleMouseReleased");
-            System.out.println("hoveredRowIndex " + hoveredRowIndex);
             this.requestFocus();
             if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
-                setDragEnd(hoveredRowIndex);
-                System.out.println("dragStart " + dragStart + " dragEnd " + dragEnd);
 
                 binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
                 activeBin = dragStart == dragEnd ? dragStart : -1;
