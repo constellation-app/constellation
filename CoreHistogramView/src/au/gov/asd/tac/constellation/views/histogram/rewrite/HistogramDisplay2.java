@@ -263,53 +263,27 @@ public class HistogramDisplay2 extends BorderPane {
                         //System.out.println("hoveredRowIndex " + hoveredRowIndex);
                         //}
                     });
-            // WORKS KINDA
-//            row.selectedProperty().addListener(
-//                    (obs, oldVal, newVal) -> {
-//
-//                        final int bar = tableView.getSelectionModel().getSelectedIndex();
-//                        //System.out.println("row: " + row + " row.selectedProperty() obs: " + obs + " oldVal: " + oldVal + " newVal: " + newVal + " bar: " + bar + " row.getIndex(): " + row.getIndex());
-//                        System.out.println("bar: " + bar + " row.getIndex(): " + row.getIndex() + " newVal: " + newVal);
-//
-//                        if (row.getIndex() == -1) {
-//                            return;
-//                        }
-//
-//                        // NEW
-//                        selectedRows.set(row.getIndex(), newVal);
-//                        binSelectionMode.populateFromBitSet(binCollection.getBins(), selectedRows, topComponent);
-//                        Platform.runLater(() -> updateTableBars(true, tableWidth));
-//                    });
+
+            // handle drag start
+            row.addEventHandler(MouseEvent.DRAG_DETECTED, event -> {
+                event.consume();
+                row.startFullDrag();
+            });
+
+            // handle selecting items when the mouse-drag enters the cell
+            row.addEventHandler(MouseDragEvent.MOUSE_DRAG_ENTERED, event -> {
+                event.consume();
+                if (event.getGestureSource() != row) {
+                    final int newDragEnd = row.getIndex();
+                    binSelectionMode.mouseDragged(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, newDragEnd);
+                    setDragEnd(newDragEnd);
+
+                    // Only need to update bars
+                    updateTableBars();
+                    updateHeader(barHeight * FONT_SCALE_FACTOR);
+                }
+            });
             return row;
-        });
-//        // TODO put listner on  selectedIndexProperty(), probably more reliable that this setup
-//        tableView.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> {
-//            System.out.println("selectedIndexProperty oldVal: " + oldVal + " newVal: " + newVal + " shiftDown " + shiftDown + " controlDown " + controlDown);
-//
-//            // for shift clicked rows, theres a -1 in the new value between the two clicked rows
-//            // But it's proabbly better to just listen for the shift key becuase there's no pattern like this to differentiate control click and normal click
-//        });
-
-        //TODO find a way to add these to cell factory instead of calling old factory in new
-        final var barColCellFactroy = barCol.getCellFactory();
-        barCol.setCellFactory(vf -> {
-            final TableCell<HistogramBar, StackPane> cell = barColCellFactroy.call(vf);
-            addDraggableToCell(cell);
-            return cell;
-        });
-
-        final var iconColCellFactroy = iconCol.getCellFactory();
-        iconCol.setCellFactory(vf -> {
-            final TableCell<HistogramBar, Node> cell = iconColCellFactroy.call(vf);
-            addDraggableToCell(cell);
-            return cell;
-        });
-
-        final var propertyColCellFactroy = propertyCol.getCellFactory();
-        propertyCol.setCellFactory(vf -> {
-            final TableCell<HistogramBar, String> cell = propertyColCellFactroy.call(vf);
-            addDraggableToCell(cell);
-            return cell;
         });
 
         headerCountHBox.minWidthProperty().bind(barCol.widthProperty().add(BAR_PADDING));
@@ -390,32 +364,6 @@ public class HistogramDisplay2 extends BorderPane {
             recalculateVisibleIndexes((double) newVal);
             updateTable(true, tableWidth);
         });
-    }
-
-    private void addDraggableToCell(final TableCell<?, ?> cell) {
-
-        // handle drag start
-        cell.addEventHandler(MouseEvent.DRAG_DETECTED, event -> {
-            System.out.println("DRAG DETECTED " + cell.getIndex());
-            event.consume();
-            cell.startFullDrag();
-        });
-
-        // handle selecting items when the mouse-drag enters the cell
-        cell.addEventHandler(MouseDragEvent.MOUSE_DRAG_ENTERED, event -> {
-            System.out.println("MOUSE DRAG ENTERED " + cell.getIndex());
-            event.consume();
-            if (event.getGestureSource() != cell) {
-                final int newDragEnd = cell.getIndex();
-                binSelectionMode.mouseDragged(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, newDragEnd);
-                setDragEnd(newDragEnd);
-
-                // Only need to update bars
-                updateTableBars();
-                updateHeader(barHeight * FONT_SCALE_FACTOR);
-            }
-        });
-
     }
 
     public void setBinCollection(final BinCollection binCollection, final BinIconMode binIconMode) {
