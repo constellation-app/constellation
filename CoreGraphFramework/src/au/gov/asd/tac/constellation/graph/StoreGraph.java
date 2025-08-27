@@ -845,6 +845,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             } else {
                 lowDirection = highDirection = UNDIRECTED;
                 sourceDirection = destinationDirection = UNDIRECTED;
+                sourceVertex = lowVertex;
+                destinationVertex = highVertex;
             }
         }
 
