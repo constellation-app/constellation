@@ -53,30 +53,55 @@
                   //clear any existing auth errors
                   err.clear({ source: "auth" });
                   if(payload && payload.ConstellationSecret && payload.ConstellationSecret.value) {
-                      //call any example endpoint to check authorization with entered secret
-                      fetch(`${currServer}/v2/service/reflect_json`, {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json',                      
-                          'accept': '*/*',
-                          'X-CONSTELLATION-SECRET':payload.ConstellationSecret.value
-                        }
-                      }).then(response => {
-                          // Check if the response was successful (e.g., status code 200-299)
-                          if (!response.ok) {
-                              err.newAuthErr( {
-                                authId: "ConstellationSecret",
-                                source: "auth",
-                                level: "error",
-                                message: `HTTP error! status: ${response.status} ${response.statusText}`
+                      if ( payload.ConstellationSecret.value.trim().length > 0) {
+                          //call any example endpoint to check authorization with entered secret
+                            fetch(`${currServer}/v2/service/reflect_json`, {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',                      
+                                'accept': '*/*',
+                                'X-CONSTELLATION-SECRET':payload.ConstellationSecret.value
+                              }
+                            }).then(response => {
+                                // Check if the response was successful (e.g., status code 200-299)
+                                if (!response.ok) {
+                                    err.newAuthErr( {
+                                      authId: "ConstellationSecret",
+                                      source: "auth",
+                                      level: "error",
+                                      message: `HTTP error! status: ${response.status} ${response.statusText}`
+                                    });
+                                  return;
+                                }
+                                // Parse the response body as JSON
+                                return oriAction(payload);
+                              }) .catch(error => {
+                                  err.newAuthErr( {
+                                        authId: "ConstellationSecret",
+                                        source: "auth",
+                                        level: "error",
+                                        message: `Error connecting to the rest server`
+                                    });                                    
+                                  return;
                               });
-                            return;
-                          }
-                          // Parse the response body as JSON
-                          return oriAction(payload);
-                        })                        
+                      } else {
+                          err.newAuthErr( {
+                              authId: "ConstellationSecret",
+                              source: "auth",
+                              level: "error",
+                              message: `ConstellationSecret can not be empty`
+                          });
+                          return;
+                      }
+                      
                   } else {
-                      return oriAction(payload);
+                     err.newAuthErr( {
+                              authId: "ConstellationSecret",
+                              source: "auth",
+                              level: "error",
+                              message: `ConstellationSecret can not be empty`
+                          });
+                          return;
                   }     
                 }
               }
