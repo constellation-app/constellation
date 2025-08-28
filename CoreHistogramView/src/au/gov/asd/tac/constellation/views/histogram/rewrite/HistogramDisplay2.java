@@ -264,7 +264,6 @@ public class HistogramDisplay2 extends BorderPane {
 
         tableView.setOnMouseClicked(e -> handleMouseClicked(e));
         tableView.setOnMousePressed(e -> handleMousePressed(e));
-        tableView.setOnMouseDragged(e -> handleMouseDragged(e));
         tableView.setOnMouseReleased(e -> handleMouseReleased(e));
     }
 

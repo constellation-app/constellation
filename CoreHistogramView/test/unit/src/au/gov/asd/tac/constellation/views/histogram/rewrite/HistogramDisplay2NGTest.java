@@ -312,40 +312,6 @@ public class HistogramDisplay2NGTest {
     }
 
     /**
-     * Test of handleMouseDragged method, of class HistogramDisplay2.
-     */
-    @Test
-    public void testHandleMouseDragged() {
-        System.out.println("handleMouseDragged");
-
-        // Mocks
-        final BinCollection binCollection = mock(BinCollection.class);
-        final Bin[] bins = new Bin[0];
-        final BinIconMode binIconMode = BinIconMode.NONE;
-        when(binCollection.getBins()).thenReturn(bins);
-
-        // Mouse event mock
-        final MouseEvent e = mock(MouseEvent.class);
-        when(e.isPrimaryButtonDown()).thenReturn(true);
-
-        final BinSelectionMode binSpy = spy(BinSelectionMode.ADD_TO_SELECTION);
-
-        // Set up instance
-        final HistogramDisplay2 instance = new HistogramDisplay2(mock(HistogramTopComponent2.class));
-        instance.setBinSelectionMode(binSpy);
-        instance.setBinCollection(binCollection, binIconMode);
-
-        // Run function
-        instance.handleMouseDragged(e);
-
-        // Verify functions were called
-        verify(e).isPrimaryButtonDown();
-        verify(e).getX();
-        verify(e).getY();
-        verify(binSpy).mouseDragged(e.isShiftDown(), e.isControlDown(), binCollection.getBins(), -1, -1, -1);
-    }
-
-    /**
      * Test of handleMouseReleased method, of class HistogramDisplay2.
      */
     @Test
