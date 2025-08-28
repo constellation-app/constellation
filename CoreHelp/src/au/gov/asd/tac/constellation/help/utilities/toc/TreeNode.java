@@ -97,12 +97,12 @@ public class TreeNode<T> {
      * @param writer the writer to use to write the details of node
      * @param indent the level of indentation to use when writing
      */
-    public static <T> void writeTree(final TreeNode<T> node, final FileWriter writer, final int indent) {
+    public static <T> void writeTree(final TreeNode<T> node, final FileWriter writer, final int indent, final boolean online) {
         if (cachedHelpMappings == null) {
             cachedHelpMappings = HelpMapper.getMappings();
         }
 
-        write(node, writer, indent);
+        write(node, writer, indent, online);
     }
 
     /**
@@ -113,7 +113,7 @@ public class TreeNode<T> {
      * @param writer the writer to use to write the details of node
      * @param indent the level of indentation to use when writing
      */
-    private static <T> void write(final TreeNode<T> node, final FileWriter writer, final int indent) {
+    private static <T> void write(final TreeNode<T> node, final FileWriter writer, final int indent, final boolean online) {
         final TOCItem item = (TOCItem) (node.getData());
 
         if (StringUtils.isBlank(item.getTarget())) {
@@ -124,14 +124,14 @@ public class TreeNode<T> {
             if (StringUtils.isBlank(helpLink)) {
                 TOCGenerator.writeItem(writer, item.getText(), indent);
             } else {
-                TOCGenerator.writeItem(writer, TOCGenerator.generateHTMLLink(item.getText(), helpLink), indent);
+                TOCGenerator.writeItem(writer, TOCGenerator.generateHTMLLink(item.getText(), helpLink, online), indent);
             }
         }
 
         TOCGenerator.writeText(writer, Platform.getNewline());
         if (node.getChildren().isEmpty()) {
             // Base level nodes with no children get written with no indent
-            node.getChildren().forEach(each -> write(each, writer, indent));
+            node.getChildren().forEach(each -> write(each, writer, indent, online));
         } else {
             // Nodes with children get written with an extra level of indent
             // Write start of div which will hold children of current TOC Item
@@ -141,13 +141,13 @@ public class TreeNode<T> {
                 TOCGenerator.writeText(writer, div);
 
                 // Recurse and call same method to write children
-                node.getChildren().forEach(each -> write(each, writer, indent + 1));
+                node.getChildren().forEach(each -> write(each, writer, indent + 1, online));
 
                 // Close div which holds children of current TOC Item
                 TOCGenerator.writeText(writer, "</a> </div> </div> </div>");
             } else {
                 // Recurse and call same method to write children
-                node.getChildren().forEach(each -> write(each, writer, indent + 1));
+                node.getChildren().forEach(each -> write(each, writer, indent + 1, online));
             }
 
         }
