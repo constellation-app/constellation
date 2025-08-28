@@ -27,7 +27,6 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,23 +108,6 @@ public class BinCollection {
                 if (binSelector.isSelected(graph, element)) {
                     bin.selectedCount++;
                 }
-                position = binElements[position];
-            }
-        }
-    }
-
-    public void selectBinsFromBitSet(final GraphWriteMethods graph, final BitSet selectedBitSet) {
-        binSelector.setElementType(graph, elementType);
-        for (int binPosition = 0; binPosition < bins.length; binPosition++) {
-            final Bin bin = bins[binPosition];
-
-            final boolean select = selectedBitSet.get(binPosition);
-            //System.out.println("binPosition " + binPosition + " select " + select);
-            
-            int position = bin.firstElement;
-            while (position >= 0) {
-                final int element = elementType.getElement(graph, position);
-                binSelector.select(graph, element, select);
                 position = binElements[position];
             }
         }
@@ -261,7 +243,7 @@ public class BinCollection {
         binCollection.elementType = elementType;
         binCollection.bins = bins.keySet().toArray(new Bin[bins.size()]);
         binCollection.binElements = binElements;
-        System.out.println(Arrays.toString(binElements));
+
         return binCollection;
     }
 
