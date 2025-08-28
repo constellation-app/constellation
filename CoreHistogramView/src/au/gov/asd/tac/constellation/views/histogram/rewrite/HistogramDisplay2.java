@@ -448,8 +448,18 @@ public class HistogramDisplay2 extends BorderPane {
         final Label headerValue = new Label(PROPERTY_VALUE);
         final Label headerCount = new Label(COUNT);
 
-        final String headerTotalString = TOTAL_BINS_COUNT + (binCollection != null ? binCollection.getSelectedBins().length + "/" + binCollection.getBins().length : "0/0");
-        final Label headerTotalBins = new Label(headerTotalString);
+        final int numSelectedBins;
+        final int numTotalBins;
+
+        if (binCollection == null) {
+            numSelectedBins = 0;
+            numTotalBins = 0;
+        } else {
+            numSelectedBins = binCollection.getSelectedBins() != null ? binCollection.getSelectedBins().length : 0;
+            numTotalBins = binCollection.getBins() != null ? binCollection.getBins().length : 0;
+        }
+
+        final Label headerTotalBins = new Label(TOTAL_BINS_COUNT + String.valueOf(numSelectedBins) + "/" + String.valueOf(numTotalBins));
 
         // Set styling
         headerValue.getStyleClass().add(HEADER_ROW_CSS_CLASS);
@@ -658,19 +668,17 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     protected void handleMouseReleased(final MouseEvent e) {
-        Platform.runLater(() -> {
-            this.requestFocus();
-            if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
+        this.requestFocus();
+        if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
 
-                binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
-                activeBin = dragStart == dragEnd ? dragStart : -1;
+            binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
+            activeBin = dragStart == dragEnd ? dragStart : -1;
 
-                // Only need to update bars
-                updateTableBars();
+            // Only need to update bars
+            updateTableBars();
 
-                updateHeader(barHeight * FONT_SCALE_FACTOR);
-            }
-        });
+            updateHeader(barHeight * FONT_SCALE_FACTOR);
+        }
     }
 
     protected void handleMouseEntered() {
