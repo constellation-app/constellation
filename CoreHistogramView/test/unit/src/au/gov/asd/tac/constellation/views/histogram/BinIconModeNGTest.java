@@ -91,7 +91,7 @@ public class BinIconModeNGTest {
      * Test of createFXIcon method, of class BinIconMode.
      */
     @Test
-    public void testCreateFXIconIcon() {
+    public void testCreateFXIconIcon() throws Exception {
         System.out.println("createFXIconIcon");
 
         // Set up mocks
