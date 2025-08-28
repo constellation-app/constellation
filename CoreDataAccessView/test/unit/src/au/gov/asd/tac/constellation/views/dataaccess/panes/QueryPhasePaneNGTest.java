@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,7 +101,7 @@ public class QueryPhasePaneNGTest {
 
         pluginList = Arrays.asList(new TestDataAccessPlugin(), new AnotherTestDataAccessPlugin());
         plugins = new HashMap<>();
-        plugins.put("test", new Pair(1, pluginList));
+        plugins.put("test", new Pair<>(1, pluginList));
     }
 
     /**
@@ -287,8 +287,8 @@ public class QueryPhasePaneNGTest {
     public void testShowMatchingPluginsOneMatch() {
         System.out.println("showMatchingPluginsOneMatch");
 
-        plugins.put("test", new Pair(2, Arrays.asList(new TestDataAccessPlugin())));
-        plugins.put("anothertest", new Pair(3, Arrays.asList(new AnotherTestDataAccessPlugin())));
+        plugins.put("test", new Pair<>(2, Arrays.asList(new TestDataAccessPlugin())));
+        plugins.put("anothertest", new Pair<>(3, Arrays.asList(new AnotherTestDataAccessPlugin())));
 
         final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
         for (final Node child : instance.getDataSourceListChildren()) {
@@ -313,8 +313,8 @@ public class QueryPhasePaneNGTest {
     public void testShowMatchingPluginsMultipleMatch() {
         System.out.println("showMatchingPluginsMultipleMatch");
 
-        plugins.put("test", new Pair(4, Arrays.asList(new TestDataAccessPlugin())));
-        plugins.put("anothertest", new Pair(5, Arrays.asList(new AnotherTestDataAccessPlugin())));
+        plugins.put("test", new Pair<>(4, Arrays.asList(new TestDataAccessPlugin())));
+        plugins.put("anothertest", new Pair<>(5, Arrays.asList(new AnotherTestDataAccessPlugin())));
 
         final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
         for (final Node child : instance.getDataSourceListChildren()) {
@@ -348,8 +348,8 @@ public class QueryPhasePaneNGTest {
         // Setup the global parameters
         final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
         final PluginParameters globalPluginParameters = mock(PluginParameters.class);
-        final PluginParameter globalPluginParameter1 = mock(PluginParameter.class);
-        final PluginParameter globalPluginParameter2 = mock(PluginParameter.class);
+        final PluginParameter<?> globalPluginParameter1 = mock(PluginParameter.class);
+        final PluginParameter<?> globalPluginParameter2 = mock(PluginParameter.class);
 
         doReturn(globalParametersPane).when(instance).getGlobalParametersPane();
         when(globalParametersPane.getParams()).thenReturn(globalPluginParameters);
@@ -380,8 +380,8 @@ public class QueryPhasePaneNGTest {
         // the global parameters which means its value will be overriden with
         // the global value.
         final PluginParameters pluginParameters = mock(PluginParameters.class);
-        final PluginParameter pluginParameter1 = mock(PluginParameter.class);
-        final PluginParameter pluginParameter2 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter1 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter2 = mock(PluginParameter.class);
         when(pluginParameters.getParameters()).thenReturn(Map.of(
                 "abc.parameter1", pluginParameter1,
                 "abc.parameter2", pluginParameter2

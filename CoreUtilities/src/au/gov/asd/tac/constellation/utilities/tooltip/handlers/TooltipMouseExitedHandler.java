@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import javafx.event.EventHandler;
  *
  * @author aldebaran30701
  */
-public class TooltipMouseExitedHandler implements EventHandler {
+public class TooltipMouseExitedHandler implements EventHandler<Event> {
 
     private final TooltipPane tooltipPane;
     

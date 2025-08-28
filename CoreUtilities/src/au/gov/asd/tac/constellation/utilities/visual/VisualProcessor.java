@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -248,7 +248,6 @@ public abstract class VisualProcessor {
      * properties for.
      * @return The set of properties trumped by the supplied property.
      */
-    @SuppressWarnings("unchecked")
     protected Set<VisualProperty> getTrumpedProperties(final VisualProperty property) {
         return Collections.emptySet();
     }

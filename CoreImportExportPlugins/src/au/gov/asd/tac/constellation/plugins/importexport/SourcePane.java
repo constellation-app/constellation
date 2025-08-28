@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public abstract class SourcePane extends GridPane {
     protected final ColumnConstraints column2Constraints = new ColumnConstraints();
     protected final ImportController importController;
 
-    protected SourcePane(final ImportController importController) {
+    protected SourcePane(final ImportController<?> importController) {
         this.importController = importController;
         graphComboBox = new ComboBox<>();
         updateDestinationGraphCombo();
@@ -79,7 +79,7 @@ public abstract class SourcePane extends GridPane {
         getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
     }
 
-    public abstract void update(final ImportController importController);
+    public abstract void update(final ImportController<?> importController);
 
     public void setParameters(final PluginParameters parameters) {
         parametersPane.getChildren().clear();

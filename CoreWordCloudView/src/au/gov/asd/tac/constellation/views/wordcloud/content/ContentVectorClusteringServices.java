@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class ContentVectorClusteringServices {
 
     private ContentVectorClusteringServices(final SparseMatrix<Integer> tokenElementMatrix) {
         this.tokenElementMatrix = tokenElementMatrix;
-        this.elementTokenMatrix = SparseMatrix.constructMatrix(0F);
+        this.elementTokenMatrix = (SparseMatrix<Float>) SparseMatrix.constructMatrix(0F);
         this.elementToCluster = new ConcurrentSkipListMap<>();
         this.clusterCentres = new ArrayList<>();
         moduli = new ConcurrentSkipListMap<>();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.Lookup;
 
 /**
@@ -273,7 +274,7 @@ public class QueryPhasePane extends VBox {
 
                 for (final DataSourceTitledPane titledPane : headingPane.getDataSources()) {
                     titledPane.getStyleClass().remove(DataSourceTitledPane.MATCHED_STYLE);
-                    if (StringUtils.isNotBlank(text) && StringUtils.containsIgnoreCase(titledPane.getPlugin().getName(), text)) {
+                    if (StringUtils.isNotBlank(text) && Strings.CI.contains(titledPane.getPlugin().getName(), text)) {
                         titledPane.getStyleClass().add(DataSourceTitledPane.MATCHED_STYLE);
                         shouldExpand = true;
                     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ import javax.swing.SwingUtilities;
 public class DefaultConversationMessageProvider implements ConversationMessageProvider {
 
     private int totalMessageCount = 0;
-    private int currentVertex = -1;
 
     @Override
     public void getMessages(final GraphReadMethods graph, final List<ConversationMessage> messages) {
@@ -50,7 +49,6 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
             final GraphIndexResult selectedVertices = GraphIndexUtilities.filterElements(graph, vertexSelectedAttribute, true);
             final int vertex = selectedVertices.getNextElement();
             if (vertex != Graph.NOT_FOUND) {
-                currentVertex = vertex;
                 final int secondVertex = selectedVertices.getNextElement();
                 if (secondVertex == Graph.NOT_FOUND) {
                     final int transactionCount = graph.getVertexTransactionCount(vertex);

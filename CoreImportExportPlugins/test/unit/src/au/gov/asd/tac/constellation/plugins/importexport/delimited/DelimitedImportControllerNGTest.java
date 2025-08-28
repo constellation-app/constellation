@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ public class DelimitedImportControllerNGTest {
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         filesToValidate.clear();
     }
 
@@ -98,9 +98,8 @@ public class DelimitedImportControllerNGTest {
     public void testGetColumnHeaders() {
         System.out.println("getColumnHeaders");
         final File file = new File(this.getClass().getResource("./resources/testCSV.csv").getFile());
-        // final DelimitedImportController instance = new DelimitedImportController();
         final List<String> expResult = Arrays.asList("Source$name", "Source@Type", "ab cd", "Transaction.Time", "name");
-        final List result = delimitedImportController.getColumnHeaders(file);
+        final List<String> result = delimitedImportController.getColumnHeaders(file);
         assertEquals(result, expResult);
     }
 
@@ -111,12 +110,12 @@ public class DelimitedImportControllerNGTest {
     @Test
     public void testValidateFileStructure_emptyFiles() {
         System.out.println("validateFileStructure");
-        final List<File> filesToValidate = new ArrayList<>();
+        final List<File> fileListToValidate = new ArrayList<>();
         final File file = new File(this.getClass().getResource("./resources/testCSV.csv").getFile());
 
-        delimitedImportController.setFiles(filesToValidate, file);
+        delimitedImportController.setFiles(fileListToValidate, file);
         assertTrue(delimitedImportController.getFiles().isEmpty());
-        List<File> invalidFiles = delimitedImportController.validateFileStructure(filesToValidate);
+        List<File> invalidFiles = delimitedImportController.validateFileStructure(fileListToValidate);
         assertTrue(invalidFiles.isEmpty());
         assertTrue(delimitedImportController.getFiles().isEmpty());
     }
@@ -128,13 +127,13 @@ public class DelimitedImportControllerNGTest {
     @Test
     public void testValidateFileStructure_singleFile() {
         System.out.println("validateFileStructure");
-        final List<File> filesToValidate = new ArrayList<>();
+        final List<File> fileListToValidate = new ArrayList<>();
         final File file = new File(this.getClass().getResource("./resources/testCSV.csv").getFile());
-        filesToValidate.add(file);
+        fileListToValidate.add(file);
 
-        delimitedImportController.setFiles(filesToValidate, file);
+        delimitedImportController.setFiles(fileListToValidate, file);
         assertEquals(delimitedImportController.getFiles().size(), 1);
-        List<File> invalidFiles = delimitedImportController.validateFileStructure(filesToValidate);
+        List<File> invalidFiles = delimitedImportController.validateFileStructure(fileListToValidate);
         assertTrue(invalidFiles.isEmpty());
         assertEquals(delimitedImportController.getFiles().size(), 1);
     }
@@ -173,5 +172,4 @@ public class DelimitedImportControllerNGTest {
         assertEquals(invalidFiles.size(), 1);
         assertEquals(delimitedImportController.getFiles().size(), 3);
     }
-
 }

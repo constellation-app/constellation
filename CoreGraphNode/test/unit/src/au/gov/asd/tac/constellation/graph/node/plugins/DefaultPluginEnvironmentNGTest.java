@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,7 +128,7 @@ public class DefaultPluginEnvironmentNGTest {
         });
 
         Object expResult = null;
-        Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        Future<?> future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         Object result = future.get();
         assertEquals(result, expResult);
     }
@@ -157,7 +157,7 @@ public class DefaultPluginEnvironmentNGTest {
         });
 
         Object expResult = null;
-        Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        Future<?> future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         Object result = future.get();
         assertEquals(result, expResult);
     }
@@ -186,7 +186,7 @@ public class DefaultPluginEnvironmentNGTest {
         });
 
         Object expResult = null;
-        Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        Future<?> future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         Object result = future.get();
         assertEquals(result, expResult);
     }
@@ -217,7 +217,7 @@ public class DefaultPluginEnvironmentNGTest {
         });
 
         Object expResult = null;
-        Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        Future<?> future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         Object result = future.get();
         assertEquals(result, expResult);
     }
@@ -250,7 +250,7 @@ public class DefaultPluginEnvironmentNGTest {
         });
 
         Object expResult = null;
-        Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        Future<?> future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         Object result = future.get();
         assertEquals(result, expResult);
     }
@@ -281,7 +281,7 @@ public class DefaultPluginEnvironmentNGTest {
         });
 
         Object expResult = null;
-        Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        Future<?> future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         Object result = future.get();
         assertEquals(result, expResult);
     }
@@ -545,22 +545,22 @@ public class DefaultPluginEnvironmentNGTest {
 
         final Object expResult = null;
         System.out.println("TEST settings: parent plugin report defined, and current thread plugin report defined.");
-        final Future future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        final Future<?> future = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         final Object result = future.get();
         assertEquals(result, expResult);
         
         System.out.println("TEST settings: parent plugin report NULL, and current thread plugin report defined");
-        final Future future2 = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        final Future<?> future2 = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         final Object result2 = future2.get();
         assertEquals(result2, expResult);
 
         System.out.println("TEST settings: parent plugin report defined, and current thread plugin report NULL");
-        final Future future3 = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        final Future<?> future3 = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         final Object result3 = future3.get();
         assertEquals(result3, expResult);
 
         System.out.println("TEST settings: parent plugin report NULL, and current thread plugin report NULL");
-        final Future future4 = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
+        final Future<?> future4 = instance.executePluginLater(graph, plugin, parameters, interactive, async, synchronizer);
         final Object result4 = future4.get();
         assertEquals(result4, expResult);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class PasswordParameterTypeNGTest {
         System.out.println("build");
         String id = "password parameter";
 
-        PluginParameter result = PasswordParameterType.build(id);
+        PluginParameter<PasswordParameterValue> result = PasswordParameterType.build(id);
         PasswordParameterValue expResult = new PasswordParameterValue();
         System.out.println(expResult.toString());
 
@@ -78,7 +78,7 @@ public class PasswordParameterTypeNGTest {
         String id = "stringParameter";
 
         PasswordParameterValue parameterValue = new PasswordParameterValue();
-        PluginParameter result = PasswordParameterType.build(id, parameterValue);
+        PluginParameter<PasswordParameterValue> result = PasswordParameterType.build(id, parameterValue);
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof PasswordParameterType);

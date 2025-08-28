@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ public class NifiClient extends RestClient {
         // in the headers and nifi will apply this as an attribute which can be
         // routed on instead.
         final List<Tuple<String, String>> headers = new ArrayList<>();
-        headers.add(new Tuple("flexloader.type", "flowfile-v3"));
+        headers.add(new Tuple<>("flexloader.type", "flowfile-v3"));
         
         
         

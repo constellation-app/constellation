@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * This class produces a menu action for the 'set draw nodes' action available
+ * This class produces a menu action for the 'set draw blazes' action available
  * on the graph toolbar.
  *
  * @author altair
@@ -35,14 +35,9 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.display.MenuDrawBlazesAction")
 @ActionRegistration(displayName = "#CTL_MenuDrawBlazesAction", lazy = false)
 @ActionReference(path = "Menu/Display/Element Visibility", position = 500)
-@Messages({
-    "CTL_MenuDrawBlazesAction=Blazes"
-})
+@Messages("CTL_MenuDrawBlazesAction=Blazes")
 public class MenuDrawBlazesAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuDrawBlazesAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuDrawBlazesAction(), true);
@@ -58,7 +53,7 @@ public class MenuDrawBlazesAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         final Graph graph = getContext().getGraph();
-        boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.BLAZES) != 0;
+        final boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.BLAZES) != 0;
         menuButton.setSelected(flag);
     }
 }

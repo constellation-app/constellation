@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.Comp
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.CompositeStatus;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -67,7 +67,7 @@ public class CompositeNodeStateAttributeInteraction extends AbstractAttributeInt
 
     @Override
     public AttributeValueTranslator toEditTranslator(final String dataType) {
-        if (StringUtils.equals(dataType, StringAttributeDescription.ATTRIBUTE_NAME)) {
+        if (Strings.CS.equals(dataType, StringAttributeDescription.ATTRIBUTE_NAME)) {
             return v -> v == null ? v : getDisplayText(v);
         }
         return super.toEditTranslator(dataType);

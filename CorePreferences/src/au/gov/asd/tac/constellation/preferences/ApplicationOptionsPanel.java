@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.InputMethodListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -150,6 +148,14 @@ final class ApplicationOptionsPanel extends JPanel {
         return fonts.clone();
     }
 
+    public boolean isEnableSpellCheckingSelected() {
+        return enableSpellCheckingCheckBox.isSelected();
+    }
+
+    public void setEnableSpellChecking(final boolean enableSpellChecking) {
+        this.enableSpellCheckingCheckBox.setSelected(enableSpellChecking);
+    }
+
     public String getColorModeSelection() {
         return colorblindDropdown.getSelectedItem().toString();
     }
@@ -188,6 +194,7 @@ final class ApplicationOptionsPanel extends JPanel {
         notebookDirectoryText = new JTextField();
         notebookDirectoryButton = new JButton();
         downloadPythonClientCheckBox = new JCheckBox();
+        resetNotebookDirectoryButton = new JButton();
         fontPanel = new JPanel();
         fontLbl = new JLabel();
         fontSizeLbl = new JLabel();
@@ -198,6 +205,9 @@ final class ApplicationOptionsPanel extends JPanel {
         colorblindDropdown = new JComboBox<>();
         colorblindLabel = new JLabel();
         restartLabel = new JLabel();
+        spellCheckingPanel = new JPanel();
+        enableSpellCheckingCheckBox = new JCheckBox();
+        leftClickRemindertLabel = new JLabel();
 
         Mnemonics.setLocalizedText(userDirectoryLabel, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.userDirectoryLabel.text")); // NOI18N
 
@@ -234,7 +244,7 @@ final class ApplicationOptionsPanel extends JPanel {
                 .addComponent(autosaveSpinner, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(autosaveLabel, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(202, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         autosavePanelLayout.setVerticalGroup(autosavePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(autosavePanelLayout.createSequentialGroup()
@@ -311,13 +321,13 @@ final class ApplicationOptionsPanel extends JPanel {
                         .addGroup(webserverPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addGroup(webserverPanelLayout.createSequentialGroup()
                                 .addComponent(webserverPortSpinner, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 404, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(restDirectoryText))
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(restDirectoryButton)
                         .addGap(4, 4, 4))
                     .addGroup(webserverPanelLayout.createSequentialGroup()
-                        .addComponent(restWarningText)
+                        .addComponent(restWarningText, GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
                         .addContainerGap())))
         );
         webserverPanelLayout.setVerticalGroup(webserverPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -353,6 +363,13 @@ final class ApplicationOptionsPanel extends JPanel {
         downloadPythonClientCheckBox.setSelected(true);
         Mnemonics.setLocalizedText(downloadPythonClientCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.downloadPythonClientCheckBox.text")); // NOI18N
 
+        Mnemonics.setLocalizedText(resetNotebookDirectoryButton, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.resetNotebookDirectoryButton.text")); // NOI18N
+        resetNotebookDirectoryButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                resetNotebookDirectoryButtonActionPerformed(evt);
+            }
+        });
+
         GroupLayout notebookPanelLayout = new GroupLayout(notebookPanel);
         notebookPanel.setLayout(notebookPanelLayout);
         notebookPanelLayout.setHorizontalGroup(notebookPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -360,14 +377,15 @@ final class ApplicationOptionsPanel extends JPanel {
                 .addGap(17, 17, 17)
                 .addGroup(notebookPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(notebookPanelLayout.createSequentialGroup()
-                        .addComponent(downloadPythonClientCheckBox)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(notebookPanelLayout.createSequentialGroup()
                         .addComponent(notebookDirectoryLabel)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(notebookDirectoryText)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(notebookDirectoryButton)))
+                        .addComponent(notebookDirectoryButton))
+                    .addGroup(notebookPanelLayout.createSequentialGroup()
+                        .addComponent(downloadPythonClientCheckBox)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(resetNotebookDirectoryButton)))
                 .addContainerGap())
         );
         notebookPanelLayout.setVerticalGroup(notebookPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -378,7 +396,9 @@ final class ApplicationOptionsPanel extends JPanel {
                     .addComponent(notebookDirectoryText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(notebookDirectoryButton))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(downloadPythonClientCheckBox)
+                .addGroup(notebookPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(downloadPythonClientCheckBox)
+                    .addComponent(resetNotebookDirectoryButton))
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -468,6 +488,37 @@ final class ApplicationOptionsPanel extends JPanel {
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
+        spellCheckingPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.spellCheckingPanel.border.title"))); // NOI18N
+
+        enableSpellCheckingCheckBox.setSelected(true);
+        Mnemonics.setLocalizedText(enableSpellCheckingCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.enableSpellCheckingCheckBox.text")); // NOI18N
+        enableSpellCheckingCheckBox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.enableSpellCheckingCheckBox.actionCommand")); // NOI18N
+
+        leftClickRemindertLabel.setIcon(new ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/preferences/resources/warning.png"))); // NOI18N
+        Mnemonics.setLocalizedText(leftClickRemindertLabel, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.leftClickRemindertLabel.text")); // NOI18N
+
+        GroupLayout spellCheckingPanelLayout = new GroupLayout(spellCheckingPanel);
+        spellCheckingPanel.setLayout(spellCheckingPanelLayout);
+        spellCheckingPanelLayout.setHorizontalGroup(spellCheckingPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(spellCheckingPanelLayout.createSequentialGroup()
+                .addGroup(spellCheckingPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addGroup(spellCheckingPanelLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(enableSpellCheckingCheckBox))
+                    .addGroup(spellCheckingPanelLayout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(leftClickRemindertLabel)))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        spellCheckingPanelLayout.setVerticalGroup(spellCheckingPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(spellCheckingPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(enableSpellCheckingCheckBox)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(leftClickRemindertLabel)
+                .addContainerGap(7, Short.MAX_VALUE))
+        );
+
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -485,6 +536,7 @@ final class ApplicationOptionsPanel extends JPanel {
                     .addComponent(webserverPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(notebookPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(fontPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(spellCheckingPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(colorblindPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -506,11 +558,14 @@ final class ApplicationOptionsPanel extends JPanel {
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(fontPanel, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spellCheckingPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(colorblindPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         notebookPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.notebookPanel.AccessibleContext.accessibleName")); // NOI18N
+        spellCheckingPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.spellCheckingPanel.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
     private void userDirectoryButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_userDirectoryButtonActionPerformed
@@ -572,6 +627,10 @@ final class ApplicationOptionsPanel extends JPanel {
         restWarningText.setVisible(!"".equals(restDirectoryText.getText()));
     }//GEN-LAST:event_restDirectoryTextKeyTyped
 
+    private void resetNotebookDirectoryButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_resetNotebookDirectoryButtonActionPerformed
+        setNotebookDirectory(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
+    }//GEN-LAST:event_resetNotebookDirectoryButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JCheckBox autosaveCheckBox;
     private JLabel autosaveLabel;
@@ -581,21 +640,25 @@ final class ApplicationOptionsPanel extends JPanel {
     private JLabel colorblindLabel;
     private JPanel colorblindPanel;
     private JCheckBox downloadPythonClientCheckBox;
+    private JCheckBox enableSpellCheckingCheckBox;
     private JComboBox<String> fontCombo;
     private JLabel fontLbl;
     private JPanel fontPanel;
     private JLabel fontSizeLbl;
     private JSpinner fontSizeSpinner;
+    private JLabel leftClickRemindertLabel;
     private JButton notebookDirectoryButton;
     private JLabel notebookDirectoryLabel;
     private JTextField notebookDirectoryText;
     private JPanel notebookPanel;
     private JButton resetBtn;
+    private JButton resetNotebookDirectoryButton;
     private JButton restDirectoryButton;
     private JLabel restDirectoryLabel;
     private JTextField restDirectoryText;
     private JLabel restWarningText;
     private JLabel restartLabel;
+    private JPanel spellCheckingPanel;
     private JPanel startupPanel;
     private JCheckBox startupWelcomeCheckbox;
     private JCheckBox startupWhatsNewCheckbox;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -169,8 +169,8 @@ public class BlazeUtilities {
 
                 final ListView<String> colourListView = new ListView<>(FXCollections.observableList(colorsList));
                 colourListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-                colourListView.setCellFactory((ListView<String> list) -> {
-                    final ListCell<String> cell = new ListCell<>() {
+                colourListView.setCellFactory((final ListView<String> list) ->
+                    new ListCell<>() {
                         @Override
                         public void updateItem(final String item, final boolean empty) {
                             super.updateItem(item, empty);
@@ -186,10 +186,7 @@ public class BlazeUtilities {
                                 setGraphic(rect);
                             }
                         }
-                    };
-
-                    return cell;
-                });
+                    });
 
                 colourListView.getSelectionModel().selectFirst();
 

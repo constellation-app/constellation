@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import java.util.Map;
  */
 public class ThrobbingNodeAnimation extends Animation {
     
-    public static String NAME = "Throbbing Node Animation";
+    public static final String NAME = "Throbbing Node Animation";
     private static final float LOWER_LIMIT = 0.5F;
     private static final float UPPER_LIMIT = 1.5F;
     

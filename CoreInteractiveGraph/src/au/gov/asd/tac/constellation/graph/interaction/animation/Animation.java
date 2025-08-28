@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,12 +167,11 @@ public abstract class Animation {
     private void editGraph(final Graph graph) throws InterruptedException {
         while (!finished) {
             
-            if (!AnimationUtilities.isGraphAnimationsPaused(this.graphID)){    
+            if (!AnimationUtilities.isGraphAnimationsPaused(this.graphID)
+                    && lockGraphSafely(graph)){    
                 // Animate a frame
-                if (lockGraphSafely(graph)) {
-                    animate(wg);
-                    wg.commit();
-                }
+                animate(wg);
+                wg.commit();
             }
             
             // Sleep until it is time for the next frame
@@ -227,7 +226,7 @@ public abstract class Animation {
                 wg.commit();
             }
         }
-    };
+    }
     
     public abstract void setFinalFrame(final GraphWriteMethods wg);
 }

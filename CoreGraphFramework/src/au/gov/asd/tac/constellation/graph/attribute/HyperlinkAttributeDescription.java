@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,6 @@ public class HyperlinkAttributeDescription extends AbstractObjectAttributeDescri
     }
 
     @Override
-    @SuppressWarnings("unchecked") // Casts are manually checked
     protected URI convertFromObject(final Object object) {
         try {
             return super.convertFromObject(object);

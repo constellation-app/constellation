@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.netbeans.spi.quicksearch.SearchProvider;
 import org.netbeans.spi.quicksearch.SearchRequest;
 import org.netbeans.spi.quicksearch.SearchResponse;
@@ -86,14 +87,14 @@ public class DataAccessSearchProvider implements SearchProvider {
                 // Flatten everything to a single stream of plugins
                 .flatMap(Collection::stream)
                 // Filter out plugins whose name do NOT contain the filter text
-                .filter(plugin -> StringUtils.containsIgnoreCase(plugin.getName(), comparisonText))
+                .filter(plugin -> Strings.CI.contains(plugin.getName(), comparisonText))
                 .map(DataAccessPlugin::getName)
                 .sorted((a, b) -> a.compareToIgnoreCase(b))
                 .collect(Collectors.toList());
 
         for (final String name : pluginNames) {
             final String displayName = QuickSearchUtilities.CIRCLED_D + "  " + QuickSearchUtilities.replaceBrackets(name);
-            if (!prevPluginName.isEmpty() && StringUtils.containsIgnoreCase(name, prevPluginName)) {
+            if (!prevPluginName.isEmpty() && Strings.CI.contains(name, prevPluginName)) {
                 // Found the recent DAV plugin search result. Set it and exit immediately
                 response.addResult(new ShowDataAccessPluginTask(name), displayName);
                 return;

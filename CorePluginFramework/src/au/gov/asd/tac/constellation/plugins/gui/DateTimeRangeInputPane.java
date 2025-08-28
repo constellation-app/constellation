@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,7 +122,7 @@ public final class DateTimeRangeInputPane extends Pane {
 
         // The change listener for the absolute range controls.
         // This called (directly or indirectly) when anything in the absolute range area is clicked or changed.
-        final ChangeListener<String> changed = (final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
+        final ChangeListener<String> changed = (observable, oldValue, newValue) -> {
             if (isAdjusting) {
                 return;
             }
@@ -143,7 +143,7 @@ public final class DateTimeRangeInputPane extends Pane {
 
         // When the timezone changes, we need to update the datetimes to match.
         // We keep the same instant with the new timezone.
-        timeZonesCombo.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
+        timeZonesCombo.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (!isAdjusting) {
                 final ZonedDateTime[] zdt = getAbsoluteRange(getZoneId(oldValue));
                 isAdjusting = true;
@@ -552,7 +552,7 @@ public final class DateTimeRangeInputPane extends Pane {
         final VBox picker = new VBox(dpBox, spinnerBox);
         picker.setStyle("-fx-padding:4; -fx-border-radius:4; -fx-border-color: grey;");
 
-        dp.getEditor().textProperty().addListener((final ObservableValue<? extends String> v, final String o, final String n) -> {
+        dp.getEditor().textProperty().addListener((v, o, n) -> {
             if (StringUtils.isEmpty(n)) {
                 dp.getEditor().setText(o);
             }

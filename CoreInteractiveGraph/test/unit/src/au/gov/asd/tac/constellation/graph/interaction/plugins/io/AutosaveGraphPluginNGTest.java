@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ public class AutosaveGraphPluginNGTest {
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
         graph = new DualGraph(schema);
 
-        WritableGraph wg = graph.getWritableGraph("Autosave", true);
+        final WritableGraph wg = graph.getWritableGraph("Autosave", true);
         try {
             attrX = VisualConcept.VertexAttribute.X.ensure(wg);
             attrY = VisualConcept.VertexAttribute.Y.ensure(wg);
@@ -144,11 +144,12 @@ public class AutosaveGraphPluginNGTest {
         // check the autosave file doesn't exist before running the plugin
         assertEquals(saveFile.exists(), false);
 
-        TopComponent tc = new TopComponent();
+        final TopComponent tc = new TopComponent();
         tc.setName("TestName");
         final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
         final GraphNode graphNode = new GraphNode(graph, gdo, tc, null);
-        AutosaveGraphPlugin instance = new AutosaveGraphPlugin();
+        
+        final AutosaveGraphPlugin instance = new AutosaveGraphPlugin();
         PluginExecution.withPlugin(instance).executeNow(graph);
 
         // check that the autosave file does now exist

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,8 +76,6 @@ public class TableViewStateIoProviderNGTest {
         verify(graph, times(1)).setObjectValue(eq(ATTRIBUTE_ID), eq(ELEMENT_ID), captor.capture());
 
         final TableViewState actual = captor.getValue();
-
-        final TableViewState expected = new TableViewState();
 
         assertTrue(actual.isSelectedOnly());
         assertEquals(actual.getElementType(), GraphElementType.VERTEX);

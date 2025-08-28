@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.openide.util.actions.Presenter;
  * @author altair
  * @author capricornuncorn123
  */
-public abstract class MenuBaseAction extends AbstractAction implements Presenter.Menu, ActionListener, LookupListener, GraphChangeListener {
+public abstract class MenuBaseAction extends AbstractAction implements Presenter.Menu, LookupListener, GraphChangeListener {
 
     protected final Lookup.Result<GraphNode> graphNodeSet;
     protected final Lookup lookup;

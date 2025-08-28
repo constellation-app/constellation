@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,7 +152,7 @@ public final class AbstractGraphLabelsIOProviderNGTest {
         instance.readObject(attributeId, elementId, testNode, mockGraphWriteMethods, null, null, null, null);
         Mockito.verify(mockGraphWriteMethods, times(0)).setStringValue(anyInt(), anyInt(), anyString());
         Mockito.verify(mockGraphWriteMethods, times(1)).setObjectValue(captorAtributeId.capture(), captorElementId.capture(), captorAttrVal.capture());
-        GraphLabels labels = (GraphLabels)captorAttrVal.getValue();
+        GraphLabels labels = captorAttrVal.getValue();
         assertEquals((int)captorAtributeId.getValue(), attributeId);
         assertEquals((int)captorElementId.getValue(), elementId);
         assertEquals(labels.getNumberOfLabels(), 2);

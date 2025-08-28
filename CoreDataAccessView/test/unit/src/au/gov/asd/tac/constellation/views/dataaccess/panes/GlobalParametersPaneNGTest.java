@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,8 +108,8 @@ public class GlobalParametersPaneNGTest {
 
     @Test
     public void getParamLabels() {
-        final PluginParameter param1 = mock(PluginParameter.class);
-        final PluginParameter param2 = mock(PluginParameter.class);
+        final PluginParameter<?> param1 = mock(PluginParameter.class);
+        final PluginParameter<?> param2 = mock(PluginParameter.class);
 
         when(parameters.getParameters())
                 .thenReturn(Map.of("hello", param1, "world", param2));

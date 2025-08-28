@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,6 +57,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -85,7 +86,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -193,7 +193,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         final StringParameterValue string2pv = new StringParameterValue();
         string2pv.setGuiInit(control -> {
-            final TextArea field = (TextArea) control;
+            final SpellCheckingTextArea field = (SpellCheckingTextArea) control;
             field.getStylesheets().add(css);
         });
         final PluginParameter<StringParameterValue> string2 = StringParameterType.build(TEST2_PARAMETER_ID, string2pv);
@@ -236,7 +236,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
                     final float f = empty ? 0 : item.toString().length() / 11F;
                     final Color c = Color.color(1 - f / 2F, 0, 0);
                     setTextFill(c);
-                    setGraphic(new ImageView(img));
+                    setGraphic(empty ? null : new ImageView(img));
                 }
             });
         });

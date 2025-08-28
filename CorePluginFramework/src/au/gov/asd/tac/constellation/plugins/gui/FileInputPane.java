@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -300,9 +300,8 @@ public class FileInputPane extends HBox {
                     final String ext = name.lastIndexOf('.') > -1
                             ? name.substring(name.lastIndexOf('.')).toLowerCase()
                             : "" ;
-                    final boolean isValidExtension = extensionFilter.getExtensions() != null 
-                            ? extensionFilter.getExtensions().contains(ext)
-                            : true;
+                    final boolean isValidExtension = extensionFilter.getExtensions() == null 
+                            || extensionFilter.getExtensions().contains(ext);
                     return (file.isFile() && isValidExtension) || file.isDirectory();
                 }
 

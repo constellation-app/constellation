@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,17 +41,16 @@ import org.testng.annotations.Test;
  */
 public class TextPluginInteractionNGTest {
 
-    public final int CURRENT_STEP = 1;
-    public final int TOTAL_STEP = 2;
-    public final String TEST_MESSAGE = "Test Message";
-    public final String RUNNING_STATE = "Running State";
-    public final Boolean CANCELLABLE_TRUE = true;
-    public final Boolean CANCELLABLE_FALSE = false;
-    public final int SELECTED_ITEMS = 1;
-    public static final String GRAPH_ID = "Graph ID";
-    public static final String HELP_ID = "Help_ID";
-    public static final String DIALOG_BOX = "Dialog box";
-    public static final String DISCLAIMER_MESSAGE = "Disclaimer Message";
+    private final int currentStep = 1;
+    private final int totalStep = 2;
+    private final String testMessage = "Test Message";
+    private final String runningState = "Running State";
+    private final Boolean cancellableTrue = true;
+    private final int selectedItems = 1;
+    private static final String GRAPH_ID = "Graph ID";
+    private static final String HELP_ID = "Help_ID";
+    private static final String DIALOG_BOX = "Dialog box";
+    private static final String DISCLAIMER_MESSAGE = "Disclaimer Message";
     
     private static final Logger LOGGER = Logger.getLogger(TextPluginInteraction.class.getName());
     private static OutputStream logCapturingStream;
@@ -125,7 +124,7 @@ public class TextPluginInteractionNGTest {
     @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testConfirm() {
         final PluginInteraction interaction = new TextPluginInteraction();
-        interaction.confirm(TEST_MESSAGE);
+        interaction.confirm(testMessage);
     }
     
     @Test(expectedExceptions = UnsupportedOperationException.class)
@@ -145,65 +144,65 @@ public class TextPluginInteractionNGTest {
     @Test
     public void testGetCurrentMessage() {
         final PluginInteraction interaction =  spy(TextPluginInteraction.class);
-        when(interaction.getCurrentMessage()).thenReturn(TEST_MESSAGE);
+        when(interaction.getCurrentMessage()).thenReturn(testMessage);
         String currentMessage = interaction.getCurrentMessage();
         verify(interaction, times(1)).getCurrentMessage();
-        assertEquals(currentMessage, TEST_MESSAGE);
+        assertEquals(currentMessage, testMessage);
     }
     
     @Test
     public void testSetProgressAllParameters() throws Exception {
         final PluginInteraction interaction = new TextPluginInteraction();
         final PluginParameters params = spy(PluginParameters.class);
-        interaction.setProgress(CURRENT_STEP, TOTAL_STEP, TEST_MESSAGE, CANCELLABLE_TRUE, params, SELECTED_ITEMS);
+        interaction.setProgress(currentStep, totalStep, testMessage, cancellableTrue, params, selectedItems);
         
-        assertTrue(getCapturedLog().contains("currentStep=" + CURRENT_STEP));
-        assertTrue(getCapturedLog().contains("totalSteps=" + TOTAL_STEP));
-        assertTrue(getCapturedLog().contains("message=" + TEST_MESSAGE));
+        assertTrue(getCapturedLog().contains("currentStep=" + currentStep));
+        assertTrue(getCapturedLog().contains("totalSteps=" + totalStep));
+        assertTrue(getCapturedLog().contains("message=" + testMessage));
         assertTrue(getCapturedLog().contains("parameters="));
-        assertTrue(getCapturedLog().contains("selected=" + SELECTED_ITEMS));       
+        assertTrue(getCapturedLog().contains("selected=" + selectedItems));       
     }
 
     @Test
     public void testSetProgressPluginParameters() throws Exception {
         final PluginInteraction interaction = new TextPluginInteraction();
         final PluginParameters params = spy(PluginParameters.class);
-        interaction.setProgress(CURRENT_STEP, TOTAL_STEP, TEST_MESSAGE, CANCELLABLE_TRUE, params);
-        assertTrue(getCapturedLog().contains("currentStep=" + CURRENT_STEP));
-        assertTrue(getCapturedLog().contains("totalSteps=" + TOTAL_STEP));
-        assertTrue(getCapturedLog().contains("message=" + TEST_MESSAGE));
+        interaction.setProgress(currentStep, totalStep, testMessage, cancellableTrue, params);
+        assertTrue(getCapturedLog().contains("currentStep=" + currentStep));
+        assertTrue(getCapturedLog().contains("totalSteps=" + totalStep));
+        assertTrue(getCapturedLog().contains("message=" + testMessage));
         assertTrue(getCapturedLog().contains("parameters="));
-        assertFalse(getCapturedLog().contains("selected=" + SELECTED_ITEMS));      
+        assertFalse(getCapturedLog().contains("selected=" + selectedItems));      
     }
     
     @Test
     public void testSetProgressCancellable() throws Exception {
         final PluginInteraction interaction = new TextPluginInteraction();
-        interaction.setProgress(CURRENT_STEP, TOTAL_STEP, CANCELLABLE_TRUE);
-        assertTrue(getCapturedLog().contains("currentStep="+ CURRENT_STEP));
-        assertTrue(getCapturedLog().contains("totalSteps="+ TOTAL_STEP));
-        assertFalse(getCapturedLog().contains("message=" + TEST_MESSAGE));
+        interaction.setProgress(currentStep, totalStep, cancellableTrue);
+        assertTrue(getCapturedLog().contains("currentStep="+ currentStep));
+        assertTrue(getCapturedLog().contains("totalSteps="+ totalStep));
+        assertFalse(getCapturedLog().contains("message=" + testMessage));
         assertFalse(getCapturedLog().contains("parameters="));
-        assertFalse(getCapturedLog().contains("selected=" + SELECTED_ITEMS));                
+        assertFalse(getCapturedLog().contains("selected=" + selectedItems));                
     }
 
     @Test
     public void testSetExecutionStageAllParameters() throws Exception {
         
         final PluginInteraction interaction = new TextPluginInteraction();
-        interaction.setExecutionStage(CURRENT_STEP, TOTAL_STEP, RUNNING_STATE, TEST_MESSAGE, CANCELLABLE_TRUE);        
-        assertTrue(getCapturedLog().contains("currentStep="+ CURRENT_STEP));
-        assertTrue(getCapturedLog().contains("totalSteps="+ TOTAL_STEP));
-        assertTrue(getCapturedLog().contains("message=" + TEST_MESSAGE));
+        interaction.setExecutionStage(currentStep, totalStep, runningState, testMessage, cancellableTrue);        
+        assertTrue(getCapturedLog().contains("currentStep="+ currentStep));
+        assertTrue(getCapturedLog().contains("totalSteps="+ totalStep));
+        assertTrue(getCapturedLog().contains("message=" + testMessage));
         assertFalse(getCapturedLog().contains("parameters="));
-        assertFalse(getCapturedLog().contains("selected=" + SELECTED_ITEMS)); 
+        assertFalse(getCapturedLog().contains("selected=" + selectedItems)); 
     }        
     
     @Test
     public void testNotify() throws IOException {
         final PluginInteraction interaction = new TextPluginInteraction();
-        interaction.notify(PluginNotificationLevel.FATAL, TEST_MESSAGE);
+        interaction.notify(PluginNotificationLevel.FATAL, testMessage);
         assertTrue(getCapturedLog().contains("level=" + PluginNotificationLevel.FATAL));
-        assertTrue(getCapturedLog().contains("message=" + TEST_MESSAGE));
+        assertTrue(getCapturedLog().contains("message=" + testMessage));
     }
 }

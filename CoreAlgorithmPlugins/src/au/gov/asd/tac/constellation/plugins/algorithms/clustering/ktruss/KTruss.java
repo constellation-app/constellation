@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,7 +135,97 @@ public class KTruss {
             graph.setObjectValue(kTrussStateAttr, 0, state);
 
         }
+        
+        /**
+         * Calculates the connected components of the k-trusses in the graph as k increases.
+         * Apart from links which is a clone of the links remaining in the graph that serves only as an in parameter, 
+         * all parameters are in/out parameters which need to be managed by the KTruss method itself.
+         * 
+         * @param graph the graph in focus
+         * @param links links in the graph
+         * @param nodeToComponent a map of the smallest components that each node lies in
+         * @param linkToComponent a map of the smallest components that each link lies in
+         * @param componentTree a map of the hierarchy of nested components
+         * @param componentSizes a map of the number of nodes in each component
+         * @param currentComponentNum total number of components
+         * @return 
+         */
+        private static int getComponents(final GraphWriteMethods graph, final BitSet links, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, final int currentComponentNum) {
+            int nextComponentNum = currentComponentNum;
+            // For each link remaining in the graph find all links connected to it, record them and their end vertices as belonging to the same component, and clear them.
+            for (int linkPosition = links.nextSetBit(0); linkPosition >= 0; linkPosition = links.nextSetBit(linkPosition + 1)) {
+                getComponentsHopper(graph, links, nodeToComponent, linkToComponent, componentTree, nextComponentNum, linkPosition);
+                int componentCounter = 0;
+                for (final Map.Entry<Integer, Integer> entry : nodeToComponent.entrySet()) {
+                    if (entry.getValue() == nextComponentNum) {
+                        componentCounter++;
+                    }
+                }
+                componentSizes.put(nextComponentNum, componentCounter);
+                nextComponentNum++;
+            }
+            return nextComponentNum;
+        }
+        
+        /**
+         * Helper method for getComponents which uses recursion to 'hop out one'.
+         * Iterates through the links adjacent of a given link, adding them to the same component, clearing them, and then calling itself recursively, 
+         * until it reaches a link with no adjacent links that haven't already been cleared.
+         * 
+         * @param graph
+         * @param links
+         * @param nodeToComponent
+         * @param linkToComponent
+         * @param componentTree
+         * @param currentComponentNum
+         * @param initialLinkPosition 
+         */
+        private static void getComponentsHopper(final GraphWriteMethods graph, final BitSet links, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final int currentComponentNum, final int initialLinkPosition) {
+            final Deque<Integer> linksToHopFrom = new LinkedList<>();
+            linksToHopFrom.add(initialLinkPosition);
+            links.clear(initialLinkPosition);
 
+            while (!linksToHopFrom.isEmpty()) {
+
+                final int linkPosition = linksToHopFrom.pop();
+                final int link = graph.getLink(linkPosition);
+                final int lowVertex = graph.getLinkLowVertex(link);
+                final int highVertex = graph.getLinkHighVertex(link);
+
+                // If the current link is already in a component, record the current component as being nested inside the link's previous component.
+                if (linkToComponent.get(link) != null) {
+                    componentTree.put(currentComponentNum, linkToComponent.get(link));
+                    // If the current link is not in a component, record the current component as being it's own parent (ie. not nested inside any other components)
+                } else {
+                    componentTree.put(currentComponentNum, currentComponentNum);
+                }
+                // Record the current link and its two end nodes as belonging to the current component, then clear the link
+                linkToComponent.put(link, currentComponentNum);
+                nodeToComponent.put(lowVertex, currentComponentNum);
+                nodeToComponent.put(highVertex, currentComponentNum);
+
+                // Iterate through the links adjacent to this link's low vertex, adding them to the stack if they haven't already been
+                for (int i = 0; i < graph.getVertexLinkCount(lowVertex); i++) {
+                    final int neighbourLink = graph.getVertexLink(lowVertex, i);
+                    final int neighbourLinkPosition = graph.getLinkPosition(neighbourLink);
+                    if (links.get(neighbourLinkPosition)) {
+
+                        links.clear(neighbourLinkPosition);
+                        linksToHopFrom.push(neighbourLinkPosition);
+                    }
+                }
+                // Iterate through the links adjacent to this link's high vertex, calling this method recursively to record the component for and hop out from these links
+                for (int i = 0; i < graph.getVertexLinkCount(highVertex); i++) {
+                    final int neighbourLink = graph.getVertexLink(highVertex, i);
+                    final int neighbourLinkPosition = graph.getLinkPosition(neighbourLink);
+                    if (links.get(neighbourLinkPosition)) {
+                        links.clear(neighbourLinkPosition);
+                        linksToHopFrom.push(neighbourLinkPosition);
+
+                    }
+                }
+            }
+        }
     }
 
     public static void run(final GraphWriteMethods graph, final KTrussResultHandler resultHandler) {
@@ -243,80 +333,6 @@ public class KTruss {
                 }
                 modifiedThisK = false;
                 lastK = currentK++;
-            }
-        }
-    }
-
-    // Calculates the connected components of the k-trusses in the graph as k increases.
-    // Apart from links which is a clone of the links remaining in the graph that serves only as an in parameter,
-    // all parameters are in/out parameters which need to be managed by the KTruss method itself.
-    // nodeToComponent and linkToComponent record the smallest components that each node and link lies in
-    // componentTree records the heirarchy of nested components
-    // componentSizes records the number of nodes in each componenent
-    // nextComponentNum keeps track of the total number of components
-    private static int getComponents(final GraphWriteMethods graph, final BitSet links, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, final int currentComponentNum) {
-        int nextComponentNum = currentComponentNum;
-        // For each link remaining in the graph find all links connected to it, record them and their end vertices as belonging to the same component, and clear them.
-        for (int linkPosition = links.nextSetBit(0); linkPosition >= 0; linkPosition = links.nextSetBit(linkPosition + 1)) {
-            getComponentsHopper(graph, links, nodeToComponent, linkToComponent, componentTree, nextComponentNum, linkPosition);
-            int componentCounter = 0;
-            for (final Map.Entry<Integer, Integer> entry : nodeToComponent.entrySet()) {
-                if (entry.getValue() == nextComponentNum) {
-                    componentCounter++;
-                }
-            }
-            componentSizes.put(nextComponentNum, componentCounter);
-            nextComponentNum++;
-        }
-        return nextComponentNum;
-    }
-
-    // Helper method for getComponents which uses recursion to 'hop out one'.
-    // Iterates through the links adjacent of a given link, adding them to the same componenent, clearing them, and then calling itself recursively,
-    // until it reaches a link with no adjacent links that haven't already been cleared.
-    private static void getComponentsHopper(final GraphWriteMethods graph, final BitSet links, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final int currentComponentNum, final int initialLinkPosition) {
-        final Deque<Integer> linksToHopFrom = new LinkedList<>();
-        linksToHopFrom.add(initialLinkPosition);
-        links.clear(initialLinkPosition);
-
-        while (!linksToHopFrom.isEmpty()) {
-
-            final int linkPosition = linksToHopFrom.pop();
-            final int link = graph.getLink(linkPosition);
-            final int lowVertex = graph.getLinkLowVertex(link);
-            final int highVertex = graph.getLinkHighVertex(link);
-
-            // If the current link is already in a component, record the current component as being nested inside the link's previous component.
-            if (linkToComponent.get(link) != null) {
-                componentTree.put(currentComponentNum, linkToComponent.get(link));
-                // If the current link is not in a component, record the current component as being it's own parent (ie. not nested inside any other components)
-            } else {
-                componentTree.put(currentComponentNum, currentComponentNum);
-            }
-            // Record the current link and its two end nodes as belonging to the current component, then clear the link
-            linkToComponent.put(link, currentComponentNum);
-            nodeToComponent.put(lowVertex, currentComponentNum);
-            nodeToComponent.put(highVertex, currentComponentNum);
-
-            // Iterate through the links adjacent to this link's low vertex, adding them to the stack if they haven't already been
-            for (int i = 0; i < graph.getVertexLinkCount(lowVertex); i++) {
-                final int neighbourLink = graph.getVertexLink(lowVertex, i);
-                final int neighbourLinkPosition = graph.getLinkPosition(neighbourLink);
-                if (links.get(neighbourLinkPosition)) {
-
-                    links.clear(neighbourLinkPosition);
-                    linksToHopFrom.push(neighbourLinkPosition);
-                }
-            }
-            // Iterate through the links adjacent to this link's high vertex, calling this method recursively to record the component for and hop out from these links
-            for (int i = 0; i < graph.getVertexLinkCount(highVertex); i++) {
-                final int neighbourLink = graph.getVertexLink(highVertex, i);
-                final int neighbourLinkPosition = graph.getLinkPosition(neighbourLink);
-                if (links.get(neighbourLinkPosition)) {
-                    links.clear(neighbourLinkPosition);
-                    linksToHopFrom.push(neighbourLinkPosition);
-
-                }
             }
         }
     }

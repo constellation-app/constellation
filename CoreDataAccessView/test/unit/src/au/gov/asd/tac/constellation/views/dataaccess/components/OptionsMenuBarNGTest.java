@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
@@ -155,14 +156,16 @@ public class OptionsMenuBarNGTest {
             final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
             final TabPane tabPane = mock(TabPane.class);
             final ActionEvent actionEvent = mock(ActionEvent.class);
+            final Scene scene = mock(Scene.class);
 
             when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
+            when(dataAccessPane.getScene()).thenReturn(scene);
             when(dataAccessTabPane.getTabPane()).thenReturn(tabPane);
 
             optionsMenuBar.getSaveMenuItem().getOnAction().handle(actionEvent);
 
             prefProviderMockedStatic.verify(() -> DataAccessParametersIoProvider
-                    .saveParameters(tabPane));
+                    .saveParameters(tabPane, null));
             verify(actionEvent).consume();
         }
 

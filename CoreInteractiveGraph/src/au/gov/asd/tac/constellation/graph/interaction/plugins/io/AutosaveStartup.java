@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ public final class AutosaveStartup implements Runnable {
             for (final File f : saveFiles) {
                 try {
                     final Properties props = new Properties();
-                    try (InputStream in = new FileInputStream(f)) {
+                    try (final InputStream in = new FileInputStream(f)) {
                         props.load(in);
                     }
 
@@ -100,13 +100,9 @@ public final class AutosaveStartup implements Runnable {
                                             GraphOpener.getDefault().openGraph(g, name, false);
 
                                             AutosaveUtilities.deleteAutosave(f);
-                                        } catch (GraphParseException | IOException ex) {
-                                            final Throwable gpioEx;
-                                            if (ex instanceof IOException) {
-                                                gpioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + GRAPH_LOAD_ERROR);
-                                            } else {
-                                                gpioEx = new GraphParseException(NotifyDisplayer.BLOCK_POPUP_FLAG + GRAPH_LOAD_ERROR);
-                                            }
+                                        } catch (final GraphParseException | IOException ex) {
+                                            final String errorMessage = NotifyDisplayer.BLOCK_POPUP_FLAG + GRAPH_LOAD_ERROR;
+                                            final Throwable gpioEx = ex instanceof IOException ? new IOException(errorMessage) : new GraphParseException(errorMessage);
                                             gpioEx.setStackTrace(ex.getStackTrace());
                                             LOGGER.log(Level.WARNING, GRAPH_LOAD_ERROR, gpioEx);
                                             NotifyDisplayer.display("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
@@ -120,14 +116,12 @@ public final class AutosaveStartup implements Runnable {
                         } else if (now - f.lastModified() > PURGE_PERIOD_MS) {
                             // This autosave is old enough to be purged; the user won't remember the details of the graph.
                             AutosaveUtilities.deleteAutosave(f);
-                        } else {
-                            // Do nothing
                         }
                     } else {
                         // Some information about this autosave is missing so get rid of it.
                         AutosaveUtilities.deleteAutosave(f);
                     }
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }

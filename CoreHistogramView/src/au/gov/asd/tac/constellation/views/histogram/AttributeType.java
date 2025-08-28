@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,15 +85,9 @@ public enum AttributeType {
                     binCreators.put("Incoming Transaction Count", DefaultBinCreators.INCOMING_TRANSACTION_COUNT_BIN_CREATOR);
                     binCreators.put("Undirected Transaction Count", DefaultBinCreators.UNDIRECTED_TRANSACTION_COUNT_BIN_CREATOR);
                 }
-                case LINK -> {
-                    binCreators.put(AttributeTypeConstants.TRANSACTION_COUNT, DefaultBinCreators.LINK_TRANSACTION_COUNT_BIN_CREATOR);
-                }
-                case EDGE -> {
-                    binCreators.put(AttributeTypeConstants.TRANSACTION_COUNT, DefaultBinCreators.EDGE_TRANSACTION_COUNT_BIN_CREATOR);
-                }
-                case TRANSACTION -> {
-                    binCreators.put("Transaction Direction", DefaultBinCreators.TRANSACTION_DIRECTION_BIN_CREATOR);
-                }
+                case LINK -> binCreators.put(AttributeTypeConstants.TRANSACTION_COUNT, DefaultBinCreators.LINK_TRANSACTION_COUNT_BIN_CREATOR);
+                case EDGE -> binCreators.put(AttributeTypeConstants.TRANSACTION_COUNT, DefaultBinCreators.EDGE_TRANSACTION_COUNT_BIN_CREATOR);
+                case TRANSACTION -> binCreators.put("Transaction Direction", DefaultBinCreators.TRANSACTION_DIRECTION_BIN_CREATOR);
                 default -> {
                     //Do Nothing
                 }

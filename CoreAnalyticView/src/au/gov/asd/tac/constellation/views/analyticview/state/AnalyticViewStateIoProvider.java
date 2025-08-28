@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ public class AnalyticViewStateIoProvider extends AbstractGraphIOProvider {
                     final JsonNode pluginEntry = pluginIterator.next();
                     final SelectableAnalyticPlugin selectablePlugin = AnalyticConfigurationPane.lookupSelectablePlugin(pluginEntry.get("name").asText());
                     if (selectablePlugin != null) {
-                        final Iterator<Map.Entry<String, JsonNode>> parametersIterator = pluginEntry.get("parameters").fields();
+                        final Iterator<Map.Entry<String, JsonNode>> parametersIterator = pluginEntry.get("parameters").properties().iterator();
                         while (parametersIterator.hasNext()) {
                             final Map.Entry<String, JsonNode> parametersEntry = parametersIterator.next();
                             final String parameterName = parametersEntry.getKey();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestio
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
+import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
@@ -165,11 +166,12 @@ public class AnalyticViewControllerNGTest {
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
-            final AnalyticQuestionDescription<?> currentQuestion = AnalyticUtilities.lookupAnalyticQuestionDescription(BestConnectsNetworkQuestion.class);
-            final AnalyticQuestion question = new AnalyticQuestion(currentQuestion);
+            final BestConnectsNetworkQuestion currentQuestion = (BestConnectsNetworkQuestion) AnalyticUtilities.lookupAnalyticQuestionDescription(BestConnectsNetworkQuestion.class);
+            final AnalyticQuestion<ScoreResult> question = new AnalyticQuestion<>(currentQuestion);
             final AnalyticViewController instance = AnalyticViewController.getDefault();
             instance.setQuestion(question);
-            final AnalyticQuestion result = instance.getQuestion();
+            @SuppressWarnings("unchecked") // result stored was of type ScoreResult
+            final AnalyticQuestion<ScoreResult> result = instance.getQuestion();
             assertEquals(question, result);
         }
     }
@@ -202,7 +204,7 @@ public class AnalyticViewControllerNGTest {
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
-            final SizeVisualisation sizeVisualisation = mock(SizeVisualisation.class);
+            final SizeVisualisation<?> sizeVisualisation = mock(SizeVisualisation.class);
             final Map<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
 
             graphVisualisations.put(sizeVisualisation, true);
@@ -224,7 +226,7 @@ public class AnalyticViewControllerNGTest {
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
-            final SizeVisualisation sizeVisualisation = mock(SizeVisualisation.class);
+            final SizeVisualisation<?> sizeVisualisation = mock(SizeVisualisation.class);
             boolean activated = false;
             final AnalyticViewController instance = AnalyticViewController.getDefault();
             instance.updateGraphVisualisations(sizeVisualisation, activated);
@@ -351,7 +353,7 @@ public class AnalyticViewControllerNGTest {
             when(controller.getParent()).thenReturn(topComponent);
             
             final boolean pluginWasSelected = true;
-            final ListView<AnalyticConfigurationPane.SelectableAnalyticPlugin> pluginList = new ListView();
+            final ListView<AnalyticConfigurationPane.SelectableAnalyticPlugin> pluginList = new ListView<>();
             final AnalyticViewPane pane = mock(AnalyticViewPane.class);
             when(topComponent.createContent()).thenReturn(pane);
             final AnalyticConfigurationPane configPane = mock(AnalyticConfigurationPane.class);

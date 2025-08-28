@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
-import java.util.ArrayList;
 import java.util.List;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -230,11 +229,11 @@ public class LabelUtilitiesNGTest {
      * @return A String of length len.
      */
     private static String ofLength(final int len, final int ch) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (int i = 0; i < len; i++) {
-            s += (char) (ch < 0 ? 'A' + i % 26 : ch);
+            s.append((char) (ch < 0 ? 'A' + i % 26 : ch));
         }
 
-        return s;
+        return s.toString();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
@@ -122,7 +121,7 @@ public class NumberInputPane<T> extends Pane {
         // For (FXcontrol) number spinners, we want to listen to the text property rather than the value property.
         // Just typing doesn't fire value property change events, and doesn't allow us to change the style
         // when the string doesn't validate.
-        field.getEditor().textProperty().addListener((final ObservableValue<? extends String> ov, final String oldValue, final String newValue) -> {
+        field.getEditor().textProperty().addListener((ov, oldValue, newValue) -> {
             if (newValue.isEmpty() || "-".equals(newValue)) {
                 // Detected a backspace/overwrite. The resulting value is just a minus sign, or an empty string. Reset to minimum value.
                 field.getEditor().setText(newValue + (pv.getMinimumValue() != null ? Integer.toString(pv.getMinimumValue().intValue()) : "0"));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,7 @@ public class AnimationUtilities {
      * Stops all running animations on all graphs.
      */
     public static final void stopAllAnimations() {
-        GraphManager.getDefault().getAllGraphs().keySet().forEach(graphId -> {
-            stopAllAnimations(graphId);
-        });
+        GraphManager.getDefault().getAllGraphs().keySet().forEach(AnimationUtilities::stopAllAnimations);
     }
     
     /**
@@ -75,7 +73,7 @@ public class AnimationUtilities {
         if (StringUtils.isNotBlank(graphId)){
             final GraphNode gn = GraphNode.getGraphNode(graphId);
             if (gn != null) {
-             return ((VisualGraphTopComponent) gn.getTopComponent()).getAnimationManager();
+                return ((VisualGraphTopComponent) gn.getTopComponent()).getAnimationManager();
             }
         }
         return null; 
@@ -128,9 +126,8 @@ public class AnimationUtilities {
      * Interrupt all running animations on all animated graphs.
      */
     public static final synchronized void interruptAllAnimations() {
-        GraphManager.getDefault().getAllGraphs().values().forEach(graph -> {
-            ((VisualGraphTopComponent) GraphNode.getGraphNode(graph).getTopComponent()).getAnimationManager().interruptAllAnimations();
-        });
+        GraphManager.getDefault().getAllGraphs().values().forEach(graph 
+                -> ((VisualGraphTopComponent) GraphNode.getGraphNode(graph).getTopComponent()).getAnimationManager().interruptAllAnimations());
     }
     
     /**

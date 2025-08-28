@@ -2,972 +2,972 @@
     "id": 0,
     "title": "About Constellation",
     "category": "Overview",
-    "link": "..\\ext\\docs\\CoreFunctionality\\src\\au\\gov\\asd\\tac\\constellation\\functionality\\about-constellation.html"
+    "link": "ext\\docs\\CoreFunctionality\\about-constellation.html"
 }
 ,{
     "id": 1,
     "title": "Getting Started",
     "category": "Overview",
-    "link": "..\\ext\\docs\\CoreFunctionality\\src\\au\\gov\\asd\\tac\\constellation\\functionality\\getting-started.html"
+    "link": "ext\\docs\\CoreFunctionality\\getting-started.html"
 }
 ,{
     "id": 2,
     "title": "The Graph Window",
     "category": "Overview",
-    "link": "..\\ext\\docs\\CoreFunctionality\\src\\au\\gov\\asd\\tac\\constellation\\functionality\\the-graph-window.html"
+    "link": "ext\\docs\\CoreFunctionality\\the-graph-window.html"
 }
 ,{
     "id": 3,
     "title": "The Constellation Graph Model",
     "category": "Graph",
-    "link": "..\\ext\\docs\\CoreGraphFramework\\src\\au\\gov\\asd\\tac\\constellation\\graph\\graph-model.html"
+    "link": "ext\\docs\\CoreGraphFramework\\graph-model.html"
 }
 ,{
     "id": 4,
     "title": "Attributes",
     "category": "Graph",
-    "link": "..\\ext\\docs\\CoreGraphFramework\\src\\au\\gov\\asd\\tac\\constellation\\graph\\attributes.html"
+    "link": "ext\\docs\\CoreGraphFramework\\attributes.html"
 }
 ,{
     "id": 5,
     "title": "Types",
     "category": "Graph",
-    "link": "..\\ext\\docs\\CoreGraphFramework\\src\\au\\gov\\asd\\tac\\constellation\\graph\\types.html"
+    "link": "ext\\docs\\CoreGraphFramework\\types.html"
 }
 ,{
     "id": 6,
     "title": "Schemas",
     "category": "Graph",
-    "link": "..\\ext\\docs\\CoreGraphFramework\\src\\au\\gov\\asd\\tac\\constellation\\graph\\schemas.html"
+    "link": "ext\\docs\\CoreGraphFramework\\schemas.html"
 }
 ,{
     "id": 7,
     "title": "Expressions Framework",
     "category": "Graph",
-    "link": "..\\ext\\docs\\CoreGraphFramework\\src\\au\\gov\\asd\\tac\\constellation\\graph\\expressions-framework.html"
+    "link": "ext\\docs\\CoreGraphFramework\\expressions-framework.html"
 }
 ,{
     "id": 8,
     "title": "The Constellation File Format",
     "category": "I/O",
-    "link": "..\\ext\\docs\\CoreGraphFramework\\src\\au\\gov\\asd\\tac\\constellation\\graph\\constellation-file-format.html"
+    "link": "ext\\docs\\CoreGraphFramework\\constellation-file-format.html"
 }
 ,{
     "id": 9,
     "title": "Example Constellation File Reader",
     "category": "I/O",
-    "link": "..\\ext\\docs\\CoreGraphFramework\\src\\au\\gov\\asd\\tac\\constellation\\graph\\example-file-reader-python.html"
+    "link": "ext\\docs\\CoreGraphFramework\\example-file-reader-python.html"
 }
 ,{
     "id": 10,
     "title": "Example Constellation File Writer",
     "category": "I/O",
-    "link": "..\\ext\\docs\\CoreGraphFramework\\src\\au\\gov\\asd\\tac\\constellation\\graph\\example-file-writer-python.html"
+    "link": "ext\\docs\\CoreGraphFramework\\example-file-writer-python.html"
 }
 ,{
     "id": 11,
     "title": "Autosave",
     "category": "File Operations",
-    "link": "..\\ext\\docs\\CoreGraphFile\\src\\au\\gov\\asd\\tac\\constellation\\graph\\file\\autosave.html"
+    "link": "ext\\docs\\CoreGraphFile\\autosave.html"
 }
 ,{
     "id": 12,
     "title": "Nebula",
     "category": "File Operations",
-    "link": "..\\ext\\docs\\CoreGraphFile\\src\\au\\gov\\asd\\tac\\constellation\\graph\\file\\nebula.html"
+    "link": "ext\\docs\\CoreGraphFile\\nebula.html"
 }
 ,{
     "id": 13,
     "title": "New Graph",
     "category": "File Operations",
-    "link": "..\\ext\\docs\\CoreGraphFile\\src\\au\\gov\\asd\\tac\\constellation\\graph\\file\\new-graph.html"
+    "link": "ext\\docs\\CoreGraphFile\\new-graph.html"
 }
 ,{
     "id": 14,
     "title": "Open Graph",
     "category": "File Operations",
-    "link": "..\\ext\\docs\\CoreGraphFile\\src\\au\\gov\\asd\\tac\\constellation\\graph\\file\\open-graph.html"
+    "link": "ext\\docs\\CoreGraphFile\\open-graph.html"
 }
 ,{
     "id": 15,
     "title": "Save Graph",
     "category": "File Operations",
-    "link": "..\\ext\\docs\\CoreGraphFile\\src\\au\\gov\\asd\\tac\\constellation\\graph\\file\\save-graph.html"
+    "link": "ext\\docs\\CoreGraphFile\\save-graph.html"
 }
 ,{
     "id": 16,
     "title": "Add and Selection Modes",
     "category": "Editing",
-    "link": "..\\ext\\docs\\CoreInteractiveGraph\\src\\au\\gov\\asd\\tac\\constellation\\graph\\interaction\\add-and-selection-modes.html"
+    "link": "ext\\docs\\CoreInteractiveGraph\\add-and-selection-modes.html"
 }
 ,{
     "id": 17,
     "title": "Cut, Copy, Paste",
     "category": "Editing",
-    "link": "..\\ext\\docs\\CoreInteractiveGraph\\src\\au\\gov\\asd\\tac\\constellation\\graph\\interaction\\cut-copy-paste.html"
+    "link": "ext\\docs\\CoreInteractiveGraph\\cut-copy-paste.html"
 }
 ,{
     "id": 18,
     "title": "Composite Nodes",
     "category": "Editing",
-    "link": "..\\ext\\docs\\CoreInteractiveGraph\\src\\au\\gov\\asd\\tac\\constellation\\graph\\interaction\\composite-nodes.html"
+    "link": "ext\\docs\\CoreInteractiveGraph\\composite-nodes.html"
 }
 ,{
     "id": 19,
     "title": "Animation",
     "category": "Visualisation",
-    "link": "..\\ext\\docs\\CoreInteractiveGraph\\src\\au\\gov\\asd\\tac\\constellation\\graph\\interaction\\general-animation.html"
+    "link": "ext\\docs\\CoreInteractiveGraph\\general-animation.html"
 }
 ,{
     "id": 20,
     "title": "Decorators",
     "category": "Visualisation",
-    "link": "..\\ext\\docs\\CoreUtilities\\src\\au\\gov\\asd\\tac\\constellation\\utilities\\decorators.html"
+    "link": "ext\\docs\\CoreUtilities\\decorators.html"
 }
 ,{
     "id": 21,
     "title": "Icons",
     "category": "Visualisation",
-    "link": "..\\ext\\docs\\CoreUtilities\\src\\au\\gov\\asd\\tac\\constellation\\utilities\\icons.html"
+    "link": "ext\\docs\\CoreUtilities\\icons.html"
 }
 ,{
     "id": 22,
     "title": "General Selection",
     "category": "Selection",
-    "link": "..\\ext\\docs\\CoreVisualGraph\\src\\au\\gov\\asd\\tac\\constellation\\graph\\visual\\general-selection.html"
+    "link": "ext\\docs\\CoreVisualGraph\\general-selection.html"
 }
 ,{
     "id": 23,
     "title": "Blaze Selection",
     "category": "Selection",
-    "link": "..\\ext\\docs\\CoreVisualGraph\\src\\au\\gov\\asd\\tac\\constellation\\graph\\visual\\blaze-selection.html"
+    "link": "ext\\docs\\CoreVisualGraph\\blaze-selection.html"
 }
 ,{
     "id": 24,
     "title": "Dimmed Selection",
     "category": "Selection",
-    "link": "..\\ext\\docs\\CoreVisualGraph\\src\\au\\gov\\asd\\tac\\constellation\\graph\\visual\\dimmed-selection.html"
+    "link": "ext\\docs\\CoreVisualGraph\\dimmed-selection.html"
 }
 ,{
     "id": 25,
     "title": "Structure Selection",
     "category": "Selection",
-    "link": "..\\ext\\docs\\CoreVisualGraph\\src\\au\\gov\\asd\\tac\\constellation\\graph\\visual\\structure-selection.html"
+    "link": "ext\\docs\\CoreVisualGraph\\structure-selection.html"
 }
 ,{
     "id": 26,
     "title": "Induced Subgraph",
     "category": "Selection",
-    "link": "..\\ext\\docs\\CoreVisualGraph\\src\\au\\gov\\asd\\tac\\constellation\\graph\\visual\\induced-subgraph.html"
+    "link": "ext\\docs\\CoreVisualGraph\\induced-subgraph.html"
 }
 ,{
     "id": 27,
     "title": "Hop Out",
     "category": "Selection",
-    "link": "..\\ext\\docs\\CoreVisualGraph\\src\\au\\gov\\asd\\tac\\constellation\\graph\\visual\\hop-out.html"
+    "link": "ext\\docs\\CoreVisualGraph\\hop-out.html"
 }
 ,{
     "id": 28,
     "title": "Shortest Paths",
     "category": "Selection",
-    "link": "..\\ext\\docs\\CoreAlgorithmPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\algorithms\\shortest-paths.html"
+    "link": "ext\\docs\\CoreAlgorithmPlugins\\shortest-paths.html"
 }
 ,{
     "id": 29,
     "title": "Compare Graph",
     "category": "Tools",
-    "link": "..\\ext\\docs\\CoreVisualGraph\\src\\au\\gov\\asd\\tac\\constellation\\graph\\visual\\compare-graph.html"
+    "link": "ext\\docs\\CoreVisualGraph\\compare-graph.html"
 }
 ,{
     "id": 30,
     "title": "Merge Nodes",
     "category": "Tools",
-    "link": "..\\ext\\docs\\CoreVisualGraph\\src\\au\\gov\\asd\\tac\\constellation\\graph\\visual\\merge-nodes-tool.html"
+    "link": "ext\\docs\\CoreVisualGraph\\merge-nodes-tool.html"
 }
 ,{
     "id": 31,
     "title": "Complete With Schema",
     "category": "Tools",
-    "link": "..\\ext\\docs\\CoreVisualSchema\\src\\au\\gov\\asd\\tac\\constellation\\graph\\schema\\visual\\complete-with-schema.html"
+    "link": "ext\\docs\\CoreVisualSchema\\complete-with-schema.html"
 }
 ,{
     "id": 32,
     "title": "Chinese Whispers",
     "category": "Cluster",
-    "link": "..\\ext\\docs\\CoreAlgorithmPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\algorithms\\chinese-whispers.html"
+    "link": "ext\\docs\\CoreAlgorithmPlugins\\chinese-whispers.html"
 }
 ,{
     "id": 33,
     "title": "K-Truss",
     "category": "Cluster",
-    "link": "..\\ext\\docs\\CoreAlgorithmPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\algorithms\\k-truss.html"
+    "link": "ext\\docs\\CoreAlgorithmPlugins\\k-truss.html"
 }
 ,{
     "id": 34,
     "title": "Hierarchical",
     "category": "Cluster",
-    "link": "..\\ext\\docs\\CoreAlgorithmPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\algorithms\\hierarchical-clustering.html"
+    "link": "ext\\docs\\CoreAlgorithmPlugins\\hierarchical-clustering.html"
 }
 ,{
     "id": 35,
     "title": "Info Map",
     "category": "Cluster",
-    "link": "..\\ext\\docs\\CoreAlgorithmPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\algorithms\\info-map-clustering.html"
+    "link": "ext\\docs\\CoreAlgorithmPlugins\\info-map-clustering.html"
 }
 ,{
     "id": 36,
     "title": "About The Jupyter Notebook Server",
     "category": "Jupyter",
-    "link": "..\\ext\\docs\\CoreUtilities\\src\\au\\gov\\asd\\tac\\constellation\\utilities\\about-jupyter-notebook-server.html"
+    "link": "ext\\docs\\CoreUtilities\\about-jupyter-notebook-server.html"
 }
 ,{
     "id": 37,
     "title": "About The Constellation REST Server",
     "category": "Jupyter",
-    "link": "..\\ext\\docs\\CoreUtilities\\src\\au\\gov\\asd\\tac\\constellation\\utilities\\about-rest-server.html"
+    "link": "ext\\docs\\CoreUtilities\\about-rest-server.html"
 }
 ,{
     "id": 38,
     "title": "Analytic View",
     "category": "Views",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-view.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-view.html"
 }
 ,{
     "id": 39,
     "title": "Connects the Network Best?",
     "category": "Questions",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\question-best-connects-network.html"
+    "link": "ext\\docs\\CoreAnalyticView\\question-best-connects-network.html"
 }
 ,{
     "id": 40,
     "title": "Has Closest Relationship?",
     "category": "Questions",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\question-has-closest-relationship.html"
+    "link": "ext\\docs\\CoreAnalyticView\\question-has-closest-relationship.html"
 }
 ,{
     "id": 41,
     "title": "Most Central?",
     "category": "Questions",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\question-most-central.html"
+    "link": "ext\\docs\\CoreAnalyticView\\question-most-central.html"
 }
 ,{
     "id": 42,
     "title": "Most Communicants?",
     "category": "Questions",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\question-most-communicants.html"
+    "link": "ext\\docs\\CoreAnalyticView\\question-most-communicants.html"
 }
 ,{
     "id": 43,
     "title": "Most Easily Reached?",
     "category": "Questions",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\question-most-easily-reached.html"
+    "link": "ext\\docs\\CoreAnalyticView\\question-most-easily-reached.html"
 }
 ,{
     "id": 44,
     "title": "Most Influential?",
     "category": "Questions",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\question-most-influential.html"
+    "link": "ext\\docs\\CoreAnalyticView\\question-most-influential.html"
 }
 ,{
     "id": 45,
     "title": "Most Likely Correlated?",
     "category": "Questions",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\question-most-likely-correlated.html"
+    "link": "ext\\docs\\CoreAnalyticView\\question-most-likely-correlated.html"
 }
 ,{
     "id": 46,
     "title": "Betweenness Centrality",
     "category": "Analytics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-betweenness-centrality.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-betweenness-centrality.html"
 }
 ,{
     "id": 47,
     "title": "Closeness Centrality",
     "category": "Analytics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-closeness-centrality.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-closeness-centrality.html"
 }
 ,{
     "id": 48,
     "title": "Degree Centrality",
     "category": "Analytics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-degree-centrality.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-degree-centrality.html"
 }
 ,{
     "id": 49,
     "title": "Eigenvector Centrality",
     "category": "Analytics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-eigenvector-centrality.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-eigenvector-centrality.html"
 }
 ,{
     "id": 50,
     "title": "HITS Centrality",
     "category": "Analytics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-hits-centrality.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-hits-centrality.html"
 }
 ,{
     "id": 51,
     "title": "Katz Centrality",
     "category": "Analytics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-katz-centrality.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-katz-centrality.html"
 }
 ,{
     "id": 52,
     "title": "Pagerank Centrality",
     "category": "Analytics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-pagerank-centrality.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-pagerank-centrality.html"
 }
 ,{
     "id": 53,
     "title": "Average Degree",
     "category": "Global",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-average-degree.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-average-degree.html"
 }
 ,{
     "id": 54,
     "title": "Component Count",
     "category": "Global",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-component-count.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-component-count.html"
 }
 ,{
     "id": 55,
     "title": "Global Clustering Coefficient",
     "category": "Global",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-global-clustering-coefficient.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-global-clustering-coefficient.html"
 }
 ,{
     "id": 56,
     "title": "Graph Density",
     "category": "Global",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-graph-density.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-graph-density.html"
 }
 ,{
     "id": 57,
     "title": "Graph Distance",
     "category": "Global",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-graph-distance.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-graph-distance.html"
 }
 ,{
     "id": 58,
     "title": "Connectivity Degree",
     "category": "Metrics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-connectivity-degree.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-connectivity-degree.html"
 }
 ,{
     "id": 59,
     "title": "Eccentricity",
     "category": "Metrics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-eccentricity.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-eccentricity.html"
 }
 ,{
     "id": 60,
     "title": "Effective Resistance",
     "category": "Metrics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-effective-resistance.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-effective-resistance.html"
 }
 ,{
     "id": 61,
     "title": "Local Clustering Coefficient",
     "category": "Metrics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-local-clustering-coefficient.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-local-clustering-coefficient.html"
 }
 ,{
     "id": 62,
     "title": "Multiplexity",
     "category": "Metrics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-multiplexity.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-multiplexity.html"
 }
 ,{
     "id": 63,
     "title": "Ratio of Reciprocity",
     "category": "Metrics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-ratio-of-reciprocity.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-ratio-of-reciprocity.html"
 }
 ,{
     "id": 64,
     "title": "Weight",
     "category": "Metrics",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-weight.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-weight.html"
 }
 ,{
     "id": 65,
     "title": "Adamic-Adar Index",
     "category": "Similarity",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-adamic-adar-index.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-adamic-adar-index.html"
 }
 ,{
     "id": 66,
     "title": "Common Neighbours",
     "category": "Similarity",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-common-neighbours.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-common-neighbours.html"
 }
 ,{
     "id": 67,
     "title": "Cosine Similarity",
     "category": "Similarity",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-cosine-similarity.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-cosine-similarity.html"
 }
 ,{
     "id": 68,
     "title": "Dice Similarity",
     "category": "Similarity",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-dice-similarity.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-dice-similarity.html"
 }
 ,{
     "id": 69,
     "title": "Jaccard Index",
     "category": "Similarity",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-jaccard-index.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-jaccard-index.html"
 }
 ,{
     "id": 70,
     "title": "Levenshtein Distance",
     "category": "Similarity",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-levenshtein-distance.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-levenshtein-distance.html"
 }
 ,{
     "id": 71,
     "title": "Preferential Attachment",
     "category": "Similarity",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-preferential-attachment.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-preferential-attachment.html"
 }
 ,{
     "id": 72,
     "title": "Resource Allocation Index",
     "category": "Similarity",
-    "link": "..\\ext\\docs\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\analytic-resource-allocation-index.html"
+    "link": "ext\\docs\\CoreAnalyticView\\analytic-resource-allocation-index.html"
 }
 ,{
     "id": 73,
     "title": "Attribute Editor",
     "category": "Attribute Editor",
-    "link": "..\\ext\\docs\\CoreAttributeEditorView\\src\\au\\gov\\asd\\tac\\constellation\\views\\attributeeditor\\attribute-editor.html"
+    "link": "ext\\docs\\CoreAttributeEditorView\\attribute-editor.html"
 }
 ,{
     "id": 74,
     "title": "Conversation View",
     "category": "Conversation View",
-    "link": "..\\ext\\docs\\CoreConversationView\\src\\au\\gov\\asd\\tac\\constellation\\views\\conversationview\\conversation-view.html"
+    "link": "ext\\docs\\CoreConversationView\\conversation-view.html"
 }
 ,{
     "id": 75,
-    "title": "Error Report",
-    "category": "Error Report View",
-    "link": "..\\ext\\docs\\CoreErrorReportView\\src\\au\\gov\\asd\\tac\\constellation\\views\\errorreport\\error-report.html"
+    "title": "Data Access View",
+    "category": "Data Access View",
+    "link": "ext\\docs\\CoreDataAccessView\\data-access-view.html"
 }
 ,{
     "id": 76,
-    "title": "Data Access View",
+    "title": "Data Access View: Options",
     "category": "Data Access View",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\data-access-view.html"
+    "link": "ext\\docs\\CoreDataAccessView\\data-access-options.html"
 }
 ,{
     "id": 77,
-    "title": "Data Access View: Options",
-    "category": "Data Access View",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\data-access-options.html"
+    "title": "Extract Types from Text",
+    "category": "Import",
+    "link": "ext\\docs\\CoreDataAccessView\\extract-types-from-text.html"
 }
 ,{
     "id": 78,
-    "title": "Extract Types from Text",
+    "title": "Extract Words from Text",
     "category": "Import",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\extract-types-from-text.html"
+    "link": "ext\\docs\\CoreDataAccessView\\extract-words-from-text.html"
 }
 ,{
     "id": 79,
-    "title": "Extract Words from Text",
+    "title": "Import Graph File",
     "category": "Import",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\extract-words-from-text.html"
+    "link": "ext\\docs\\CoreDataAccessView\\import-graph-file.html"
 }
 ,{
     "id": 80,
-    "title": "Import Graph File",
+    "title": "Import Entities From GDELT",
     "category": "Import",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\import-graph-file.html"
+    "link": "..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\import-entities-from-gdelt.html"
 }
 ,{
     "id": 81,
-    "title": "Import Entities From GDELT",
+    "title": "Import Relationships From GDELT",
     "category": "Import",
-    "link": "..\\..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\adaptors\\import-entities-from-gdelt.html"
+    "link": "..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\import-relationships-from-gdelt.html"
 }
 ,{
     "id": 82,
-    "title": "Import Relationships From GDELT",
-    "category": "Import",
-    "link": "..\\..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\adaptors\\import-relationships-from-gdelt.html"
+    "title": "Merge Nodes",
+    "category": "Clean",
+    "link": "ext\\docs\\CoreDataAccessView\\merge-nodes.html"
 }
 ,{
     "id": 83,
-    "title": "Merge Nodes",
+    "title": "Merge Transactions",
     "category": "Clean",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\merge-nodes.html"
+    "link": "ext\\docs\\CoreDataAccessView\\merge-transactions.html"
 }
 ,{
     "id": 84,
-    "title": "Merge Transactions",
+    "title": "Remove Nodes",
     "category": "Clean",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\merge-transactions.html"
+    "link": "ext\\docs\\CoreDataAccessView\\remove-nodes.html"
 }
 ,{
     "id": 85,
-    "title": "Remove Nodes",
+    "title": "Remove Unused Attributes",
     "category": "Clean",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\remove-nodes.html"
+    "link": "ext\\docs\\CoreDataAccessView\\remove-unused-attributes.html"
 }
 ,{
     "id": 86,
-    "title": "Remove Unused Attributes",
+    "title": "Split Nodes Based on Identifier",
     "category": "Clean",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\remove-unused-attributes.html"
+    "link": "ext\\docs\\CoreDataAccessView\\split-nodes.html"
 }
 ,{
     "id": 87,
-    "title": "Split Nodes Based on Identifier",
-    "category": "Clean",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\split-nodes.html"
+    "title": "Test Parameters",
+    "category": "Developer",
+    "link": "ext\\docs\\CoreDataAccessView\\test-parameters.html"
 }
 ,{
     "id": 88,
-    "title": "Test Parameters",
-    "category": "Developer",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\test-parameters.html"
+    "title": "Datetime Range",
+    "category": "Global Parameters",
+    "link": "ext\\docs\\CoreDataAccessView\\datetime-range.html"
 }
 ,{
     "id": 89,
-    "title": "Datetime Range",
-    "category": "Global Parameters",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\datetime-range.html"
+    "title": "Select All",
+    "category": "Utility",
+    "link": "ext\\docs\\CoreDataAccessView\\select-all.html"
 }
 ,{
     "id": 90,
-    "title": "Select All",
+    "title": "Select Top N",
     "category": "Utility",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\select-all.html"
+    "link": "ext\\docs\\CoreDataAccessView\\select-top-n.html"
 }
 ,{
     "id": 91,
-    "title": "Select Top N",
-    "category": "Utility",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\select-top-n.html"
+    "title": "Extend From Pajek File",
+    "category": "Extend",
+    "link": "..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\extend-from-pajek-file.html"
 }
 ,{
     "id": 92,
-    "title": "Extend From Pajek File",
+    "title": "Extend From GraphML File",
     "category": "Extend",
-    "link": "..\\..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\adaptors\\extend-from-pajek-file.html"
+    "link": "..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\extend-from-graphml-file.html"
 }
 ,{
     "id": 93,
-    "title": "Extend From GraphML File",
+    "title": "Extend From GML File",
     "category": "Extend",
-    "link": "..\\..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\adaptors\\extend-from-graphml-file.html"
+    "link": "..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\extend-from-gml-file.html"
 }
 ,{
     "id": 94,
-    "title": "Extend From GML File",
+    "title": "Extend From GDELT Knowledge Graph",
     "category": "Extend",
-    "link": "..\\..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\adaptors\\extend-from-gml-file.html"
+    "link": "..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\extend-from-gdelt.html"
 }
 ,{
     "id": 95,
-    "title": "Extend From GDELT Knowledge Graph",
-    "category": "Extend",
-    "link": "..\\..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\adaptors\\extend-from-gdelt.html"
+    "title": "Enrich From GraphML File",
+    "category": "Enrichment",
+    "link": "..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\enrich-from-graphml-file.html"
 }
 ,{
     "id": 96,
-    "title": "Enrich From GraphML File",
+    "title": "Enrich From GML File",
     "category": "Enrichment",
-    "link": "..\\..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\adaptors\\enrich-from-graphml-file.html"
+    "link": "..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\enrich-from-gml-file.html"
 }
 ,{
     "id": 97,
-    "title": "Enrich From GML File",
-    "category": "Enrichment",
-    "link": "..\\..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\adaptors\\enrich-from-gml-file.html"
+    "title": "Gaffer Simple Query Options",
+    "category": "Example",
+    "link": "..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\query-from-gaffer.html"
 }
 ,{
     "id": 98,
-    "title": "Gaffer Simple Query Options",
-    "category": "Example",
-    "link": "..\\..\\..\\..\\..\\constellation-adaptors\\build\\cluster\\modules\\ext\\docs\\AdaptorsDataAccessPlugins\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\adaptors\\query-from-gaffer.html"
+    "title": "Error Report",
+    "category": "Error Report View",
+    "link": "ext\\docs\\CoreErrorReportView\\error-report.html"
 }
 ,{
     "id": 99,
     "title": "Find and Replace",
     "category": "Find View",
-    "link": "..\\ext\\docs\\CoreFindView\\src\\au\\gov\\asd\\tac\\constellation\\views\\find\\find-view.html"
+    "link": "ext\\docs\\CoreFindView\\find-view.html"
 }
 ,{
     "id": 100,
     "title": "Histogram",
     "category": "Histogram View",
-    "link": "..\\ext\\docs\\CoreHistogramView\\src\\au\\gov\\asd\\tac\\constellation\\views\\histogram\\histogram-view.html"
+    "link": "ext\\docs\\CoreHistogramView\\histogram-view.html"
 }
 ,{
     "id": 101,
     "title": "Layers View",
     "category": "Layers View",
-    "link": "..\\ext\\docs\\CoreLayersView\\src\\au\\gov\\asd\\tac\\constellation\\views\\layers\\layers-view.html"
+    "link": "ext\\docs\\CoreLayersView\\layers-view.html"
 }
 ,{
     "id": 102,
     "title": "Map View",
     "category": "Map View",
-    "link": "..\\ext\\docs\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\map-view.html"
+    "link": "ext\\docs\\CoreMapView\\map-view.html"
 }
 ,{
     "id": 103,
     "title": "Day / Night Layer",
     "category": "Layers",
-    "link": "..\\ext\\docs\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\mapview-layers-day-night.html"
+    "link": "ext\\docs\\CoreMapView\\mapview-layers-day-night.html"
 }
 ,{
     "id": 104,
     "title": "Heatmap Layers",
     "category": "Layers",
-    "link": "..\\ext\\docs\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\mapview-layers-heatmap.html"
+    "link": "ext\\docs\\CoreMapView\\mapview-layers-heatmap.html"
 }
 ,{
     "id": 105,
     "title": "Paths Layers",
     "category": "Layers",
-    "link": "..\\ext\\docs\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\mapview-layers-paths.html"
+    "link": "ext\\docs\\CoreMapView\\mapview-layers-paths.html"
 }
 ,{
     "id": 106,
     "title": "Thiessen Polygons Layer",
     "category": "Layers",
-    "link": "..\\ext\\docs\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\mapview-layers-thiessen-polygons.html"
+    "link": "ext\\docs\\CoreMapView\\mapview-layers-thiessen-polygons.html"
 }
 ,{
     "id": 107,
     "title": "Info Overlay",
     "category": "Overlays",
-    "link": "..\\ext\\docs\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\mapview-overlays-info.html"
+    "link": "ext\\docs\\CoreMapView\\mapview-overlays-info.html"
 }
 ,{
     "id": 108,
     "title": "Tools Overlay",
     "category": "Overlays",
-    "link": "..\\ext\\docs\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\mapview-overlays-tools.html"
+    "link": "ext\\docs\\CoreMapView\\mapview-overlays-tools.html"
 }
 ,{
     "id": 109,
     "title": "Overview Overlay",
     "category": "Overlays",
-    "link": "..\\ext\\docs\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\mapview-overlays-overview.html"
+    "link": "ext\\docs\\CoreMapView\\mapview-overlays-overview.html"
 }
 ,{
     "id": 110,
     "title": "Named Selections",
     "category": "Named Selection View",
-    "link": "..\\ext\\docs\\CoreNamedSelectionView\\src\\au\\gov\\asd\\tac\\constellation\\views\\namedselection\\named-selections-view.html"
+    "link": "ext\\docs\\CoreNamedSelectionView\\named-selections-view.html"
 }
 ,{
     "id": 111,
     "title": "Notes View",
     "category": "Notes View",
-    "link": "..\\ext\\docs\\CoreNotesView\\src\\au\\gov\\asd\\tac\\constellation\\views\\notes\\notes-view.html"
+    "link": "ext\\docs\\CoreNotesView\\notes-view.html"
 }
 ,{
     "id": 112,
     "title": "Perspective Bookmarks (Experimental)",
     "category": "Perspective Bookmarks",
-    "link": "..\\ext\\docs\\CoreGraphUtilities\\src\\au\\gov\\asd\\tac\\constellation\\graph\\utilities\\perspective-bookmarks-view.html"
+    "link": "ext\\docs\\CoreGraphUtilities\\perspective-bookmarks-view.html"
 }
 ,{
     "id": 113,
     "title": "Plugin Reporter",
     "category": "Plugin Reporter View",
-    "link": "..\\ext\\docs\\CorePluginReporterView\\src\\au\\gov\\asd\\tac\\constellation\\views\\pluginreporter\\plugin-reporter-view.html"
+    "link": "ext\\docs\\CorePluginReporterView\\plugin-reporter-view.html"
 }
 ,{
     "id": 114,
     "title": "Quality Control View",
     "category": "Quality Control View",
-    "link": "..\\ext\\docs\\CoreQualityControlView\\src\\au\\gov\\asd\\tac\\constellation\\views\\qualitycontrol\\quality-control-view.html"
+    "link": "ext\\docs\\CoreQualityControlView\\quality-control-view.html"
 }
 ,{
     "id": 115,
     "title": "Scatter Plot",
     "category": "Scatter Plot View",
-    "link": "..\\ext\\docs\\CoreScatterPlotView\\src\\au\\gov\\asd\\tac\\constellation\\views\\scatterplot\\scatter-plot-view.html"
+    "link": "ext\\docs\\CoreScatterPlotView\\scatter-plot-view.html"
 }
 ,{
     "id": 116,
     "title": "Schema View",
     "category": "Schema View",
-    "link": "..\\ext\\docs\\CoreSchemaView\\src\\au\\gov\\asd\\tac\\constellation\\views\\schemaview\\schema-view.html"
+    "link": "ext\\docs\\CoreSchemaView\\schema-view.html"
 }
 ,{
     "id": 117,
     "title": "Attributes",
     "category": "Schema View Tabs",
-    "link": "..\\ext\\docs\\CoreSchemaView\\src\\au\\gov\\asd\\tac\\constellation\\views\\schemaview\\schema-view-attributes.html"
+    "link": "ext\\docs\\CoreSchemaView\\schema-view-attributes.html"
 }
 ,{
     "id": 118,
     "title": "Node Types",
     "category": "Schema View Tabs",
-    "link": "..\\ext\\docs\\CoreSchemaView\\src\\au\\gov\\asd\\tac\\constellation\\views\\schemaview\\schema-view-node-types.html"
+    "link": "ext\\docs\\CoreSchemaView\\schema-view-node-types.html"
 }
 ,{
     "id": 119,
     "title": "Transaction Types",
     "category": "Schema View Tabs",
-    "link": "..\\ext\\docs\\CoreSchemaView\\src\\au\\gov\\asd\\tac\\constellation\\views\\schemaview\\schema-view-transaction-types.html"
+    "link": "ext\\docs\\CoreSchemaView\\schema-view-transaction-types.html"
 }
 ,{
     "id": 120,
     "title": "Plugins",
     "category": "Schema View Tabs",
-    "link": "..\\ext\\docs\\CoreSchemaView\\src\\au\\gov\\asd\\tac\\constellation\\views\\schemaview\\schema-view-plugins.html"
+    "link": "ext\\docs\\CoreSchemaView\\schema-view-plugins.html"
 }
 ,{
     "id": 121,
     "title": "Scripting View",
     "category": "Scripting View",
-    "link": "..\\ext\\docs\\CoreScriptingView\\src\\au\\gov\\asd\\tac\\constellation\\views\\scripting\\scripting-view.html"
+    "link": "ext\\docs\\CoreScriptingView\\scripting-view.html"
 }
 ,{
     "id": 122,
     "title": "Table View",
     "category": "Table View",
-    "link": "..\\ext\\docs\\CoreTableView\\src\\au\\gov\\asd\\tac\\constellation\\views\\tableview\\table-view.html"
+    "link": "ext\\docs\\CoreTableView\\table-view.html"
 }
 ,{
     "id": 123,
     "title": "Timeline",
     "category": "Timeline View",
-    "link": "..\\ext\\docs\\CoreTimelineView\\src\\au\\gov\\asd\\tac\\constellation\\views\\timeline\\timeline-view.html"
+    "link": "ext\\docs\\CoreTimelineView\\timeline-view.html"
 }
 ,{
     "id": 124,
     "title": "Word Cloud View",
     "category": "Word Cloud View",
-    "link": "..\\ext\\docs\\CoreWordCloudView\\src\\au\\gov\\asd\\tac\\constellation\\views\\wordcloud\\word-cloud-view.html"
+    "link": "ext\\docs\\CoreWordCloudView\\word-cloud-view.html"
 }
 ,{
     "id": 125,
     "title": "Data Access Category",
     "category": "Preferences",
-    "link": "..\\ext\\docs\\CoreDataAccessView\\src\\au\\gov\\asd\\tac\\constellation\\views\\dataaccess\\data-access-view-preferences.html"
+    "link": "ext\\docs\\CoreDataAccessView\\data-access-view-preferences.html"
 }
 ,{
     "id": 126,
     "title": "Application",
     "category": "Preferences",
-    "link": "..\\ext\\docs\\CorePreferences\\src\\au\\gov\\asd\\tac\\constellation\\preferences\\application-preferences.html"
+    "link": "ext\\docs\\CorePreferences\\application-preferences.html"
 }
 ,{
     "id": 127,
     "title": "Developer",
     "category": "Preferences",
-    "link": "..\\ext\\docs\\CorePreferences\\src\\au\\gov\\asd\\tac\\constellation\\preferences\\developer-preferences.html"
+    "link": "ext\\docs\\CorePreferences\\developer-preferences.html"
 }
 ,{
     "id": 128,
     "title": "Graph",
     "category": "Preferences",
-    "link": "..\\ext\\docs\\CorePreferences\\src\\au\\gov\\asd\\tac\\constellation\\preferences\\graph-preferences.html"
+    "link": "ext\\docs\\CorePreferences\\graph-preferences.html"
 }
 ,{
     "id": 129,
     "title": "Label Fonts",
     "category": "Preferences",
-    "link": "..\\ext\\docs\\CoreOpenGLDisplay\\src\\au\\gov\\asd\\tac\\constellation\\visual\\opengl\\label-fonts-preferences.html"
+    "link": "ext\\docs\\CoreOpenGLDisplay\\label-fonts-preferences.html"
 }
 ,{
     "id": 130,
     "title": "Online Help",
     "category": "Preferences",
-    "link": "..\\ext\\docs\\CoreHelp\\src\\au\\gov\\asd\\tac\\constellation\\help\\help-options.html"
+    "link": "ext\\docs\\CoreHelp\\help-options.html"
 }
 ,{
     "id": 131,
     "title": "Proxy",
     "category": "Preferences",
-    "link": "..\\ext\\docs\\CoreSecurity\\src\\au\\gov\\asd\\tac\\constellation\\security\\proxy-preferences.html"
+    "link": "ext\\docs\\CoreSecurity\\proxy-preferences.html"
 }
 ,{
     "id": 132,
     "title": "Grid",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\grid-arrangement.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\grid-arrangement.html"
 }
 ,{
     "id": 133,
     "title": "Line",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\line-arrangement.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\line-arrangement.html"
 }
 ,{
     "id": 134,
     "title": "Circle",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\circle-arrangement.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\circle-arrangement.html"
 }
 ,{
     "id": 135,
     "title": "Tree",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\tree-arrangement.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\tree-arrangement.html"
 }
 ,{
     "id": 136,
     "title": "Proximity",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\proximity-arrangement.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\proximity-arrangement.html"
 }
 ,{
     "id": 137,
     "title": "Hierarchy",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\hierarchy-arrangement.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\hierarchy-arrangement.html"
 }
 ,{
     "id": 138,
     "title": "Node Attribute",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\node-attribute-arrangement.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\node-attribute-arrangement.html"
 }
 ,{
     "id": 139,
     "title": "Scatter 3D",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\scatter3d-arrangement.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\scatter3d-arrangement.html"
 }
 ,{
     "id": 140,
     "title": "Sphere",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\sphere-arrangement.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\sphere-arrangement.html"
 }
 ,{
     "id": 141,
     "title": "Bubble Tree 3D",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\bubble-tree-3d-arrangement.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\bubble-tree-3d-arrangement.html"
 }
 ,{
     "id": 142,
     "title": "Spectral 3D",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\spectral-arrangement.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\spectral-arrangement.html"
 }
 ,{
     "id": 143,
     "title": "HDE 3D",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\hde-arrangement.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\hde-arrangement.html"
 }
 ,{
     "id": 144,
     "title": "Flatten Z-Field",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\flatten-z-field.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\flatten-z-field.html"
 }
 ,{
     "id": 145,
     "title": "Contract Graph",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\contract-graph.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\contract-graph.html"
 }
 ,{
     "id": 146,
     "title": "Expand Graph",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\expand-graph.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\expand-graph.html"
 }
 ,{
     "id": 147,
     "title": "Uncollide",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\uncollide-arrangement.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\uncollide-arrangement.html"
 }
 ,{
     "id": 148,
     "title": "Layer by Time",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\layer-by-time.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\layer-by-time.html"
 }
 ,{
     "id": 149,
     "title": "Pin and Unpin Nodes",
     "category": "Arrangements",
-    "link": "..\\ext\\docs\\CoreArrangementPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\arrangements\\pin-unpin-nodes.html"
+    "link": "ext\\docs\\CoreArrangementPlugins\\pin-unpin-nodes.html"
 }
 ,{
     "id": 150,
     "title": "Import From File",
     "category": "Import/Export",
-    "link": "..\\ext\\docs\\CoreImportExportPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\importexport\\import-from-file.html"
+    "link": "ext\\docs\\CoreImportExportPlugins\\import-from-file.html"
 }
 ,{
     "id": 151,
     "title": "Import From Database",
     "category": "Import/Export",
-    "link": "..\\ext\\docs\\CoreImportExportPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\importexport\\import-from-database.html"
+    "link": "ext\\docs\\CoreImportExportPlugins\\import-from-database.html"
 }
 ,{
     "id": 152,
     "title": "Add Hashmod (Experimental)",
     "category": "Import/Export",
-    "link": "..\\ext\\docs\\CoreImportExportPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\importexport\\add-hashmod.html"
+    "link": "ext\\docs\\CoreImportExportPlugins\\add-hashmod.html"
 }
 ,{
     "id": 153,
     "title": "Export From Constellation",
     "category": "Export",
-    "link": "..\\ext\\docs\\CoreImportExportPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\importexport\\export-from-constellation.html"
+    "link": "ext\\docs\\CoreImportExportPlugins\\export-from-constellation.html"
 }
 ,{
     "id": 154,
     "title": "Export to Image",
     "category": "Export",
-    "link": "..\\ext\\docs\\CoreImportExportPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\importexport\\export-to-png.html"
+    "link": "ext\\docs\\CoreImportExportPlugins\\export-to-png.html"
 }
 ,{
     "id": 155,
     "title": "Export to SVG",
     "category": "Export",
-    "link": "..\\ext\\docs\\CoreImportExportPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\importexport\\export-to-svg.html"
+    "link": "ext\\docs\\CoreImportExportPlugins\\export-to-svg.html"
 }
 ,{
     "id": 156,
     "title": "Export to Shapefile",
     "category": "Export",
-    "link": "..\\ext\\docs\\CoreImportExportPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\importexport\\export-to-shapefile.html"
+    "link": "ext\\docs\\CoreImportExportPlugins\\export-to-shapefile.html"
 }
 ,{
     "id": 157,
     "title": "Export to KML",
     "category": "Export",
-    "link": "..\\ext\\docs\\CoreImportExportPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\importexport\\export-to-kml.html"
+    "link": "ext\\docs\\CoreImportExportPlugins\\export-to-kml.html"
 }
 ,{
     "id": 158,
     "title": "Export to GeoJson",
     "category": "Export",
-    "link": "..\\ext\\docs\\CoreImportExportPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\importexport\\export-to-geojson.html"
+    "link": "ext\\docs\\CoreImportExportPlugins\\export-to-geojson.html"
 }
 ,{
     "id": 159,
     "title": "Export to GeoPackage",
     "category": "Export",
-    "link": "..\\ext\\docs\\CoreImportExportPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\importexport\\export-to-geopackage.html"
+    "link": "ext\\docs\\CoreImportExportPlugins\\export-to-geopackage.html"
 }
 ,{
     "id": 160,
     "title": "Export to CSV",
     "category": "Export",
-    "link": "..\\ext\\docs\\CoreImportExportPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\importexport\\export-to-csv.html"
+    "link": "ext\\docs\\CoreImportExportPlugins\\export-to-csv.html"
 }
 ,{
     "id": 161,
     "title": "Export to XLSX",
     "category": "Export",
-    "link": "..\\ext\\docs\\CoreImportExportPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\importexport\\export-to-xlsx.html"
+    "link": "ext\\docs\\CoreImportExportPlugins\\export-to-xlsx.html"
 }
 ]

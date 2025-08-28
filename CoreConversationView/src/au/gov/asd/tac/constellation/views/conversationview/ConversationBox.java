@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -530,6 +530,8 @@ public final class ConversationBox extends StackPane {
         @Override
         protected void updateItem(final ConversationMessage message, final boolean empty) {
             super.updateItem(message, empty);
+            //refresh bubble cells 
+            super.getListView().refresh();
 
             // Handle the case where the cell is empty.
             if (empty || message == null) {

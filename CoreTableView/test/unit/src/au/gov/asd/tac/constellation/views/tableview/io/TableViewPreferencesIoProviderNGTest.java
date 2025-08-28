@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,9 +56,6 @@ public class TableViewPreferencesIoProviderNGTest {
     private static final Logger LOGGER = Logger.getLogger(TableViewPreferencesIoProviderNGTest.class.getName());
 
     private static MockedStatic<JsonIO> jsonIOStaticMock;
-
-    public TableViewPreferencesIoProviderNGTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {

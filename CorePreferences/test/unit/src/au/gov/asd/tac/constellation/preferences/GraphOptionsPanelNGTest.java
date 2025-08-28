@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,6 @@ import org.testng.annotations.Test;
 public class GraphOptionsPanelNGTest {
 
     private GraphOptionsPanel graphOptionsPanel;
-    
-    public GraphOptionsPanelNGTest() {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -40,14 +37,15 @@ public class GraphOptionsPanelNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     @Test
     public void graphOptionsPanel_animationEnabled() {
         graphOptionsPanel.setAnimationsEnabled(true);
-        assertTrue(graphOptionsPanel.getAnimationsEnabled());
+        assertTrue(graphOptionsPanel.isAnimationsEnabled());
         graphOptionsPanel.setAnimationsEnabled(false);
-        assertFalse(graphOptionsPanel.getAnimationsEnabled());
+        assertFalse(graphOptionsPanel.isAnimationsEnabled());
     }
     
     @Test

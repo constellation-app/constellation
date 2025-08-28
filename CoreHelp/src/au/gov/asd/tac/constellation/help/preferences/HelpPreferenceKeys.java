@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,10 @@ package au.gov.asd.tac.constellation.help.preferences;
  */
 public class HelpPreferenceKeys {
 
+    private HelpPreferenceKeys() {
+        throw new IllegalStateException("Key class");
+    }
+    
     /**
      * Online Offline Help
      */
@@ -33,9 +37,4 @@ public class HelpPreferenceKeys {
      */
     public static final String OFFLINE_HELP_PORT = "offlineHelpPort";
     public static final int OFFLINE_HELP_PORT_DEFAULT = 1518;
-
-    private HelpPreferenceKeys() {
-
-    }
-
 }

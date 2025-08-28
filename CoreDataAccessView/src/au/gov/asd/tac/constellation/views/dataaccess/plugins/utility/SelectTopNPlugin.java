@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -197,6 +197,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                     types.sort(String::compareTo);
                     MultiChoiceParameterType.setOptions(typeParamter, types);
                     MultiChoiceParameterType.setChoices(typeParamter, types);
+                    typeParamter.fireChangeEvent(ParameterChange.PROPERTY);
                 }
             }
         });

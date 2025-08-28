@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,16 +37,11 @@ import org.testng.annotations.Test;
 public class FindViewPaneNGTest {
 
     private FindViewTopComponent findViewTopComponent;
-    private FindViewTopComponent spyTopComponent;
 
     private BasicFindTab basicFindTab;
-    private BasicFindTab spyBasicFindTab;
     private ReplaceTab replaceTab;
-    private ReplaceTab spyReplaceTab;
     private FindViewPane findViewPane;
-    private FindViewPane spyFindViewPane;
     private FindViewTabs findViewTabs;
-    private FindViewTabs spyFindViewTabs;
     
     private static final Logger LOGGER = Logger.getLogger(FindViewPaneNGTest.class.getName());
     
@@ -69,25 +64,17 @@ public class FindViewPaneNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         findViewTopComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(findViewTopComponent);
-
-        findViewPane = new FindViewPane(spyTopComponent);
-        spyFindViewPane = spy(findViewPane);
+        findViewPane = spy(new FindViewPane(findViewTopComponent));
 
         findViewTabs = mock(FindViewTabs.class);
-        spyFindViewTabs = spy(findViewTabs);
-
         basicFindTab = mock(BasicFindTab.class);
-        spyBasicFindTab = spy(basicFindTab);
-
         replaceTab = mock(ReplaceTab.class);
-        spyReplaceTab = spy(replaceTab);
 
-        when(spyFindViewTabs.getParentComponent()).thenReturn(spyFindViewPane);
-        when(spyFindViewPane.getTabs()).thenReturn(spyFindViewTabs);
-        when(spyFindViewPane.getParentComponent()).thenReturn(spyTopComponent);
-        when(spyFindViewTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
-        when(spyFindViewTabs.getReplaceTab()).thenReturn(spyReplaceTab);
+        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
+        when(findViewPane.getTabs()).thenReturn(findViewTabs);
+        when(findViewPane.getParentComponent()).thenReturn(findViewTopComponent);
+        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
+        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
     }
 
     @AfterMethod
@@ -102,7 +89,7 @@ public class FindViewPaneNGTest {
     public void testGetParentComponent() {
         System.out.println("getParentComponent");
         
-        assertEquals(spyFindViewPane.getParentComponent(), spyTopComponent);
+        assertEquals(findViewPane.getParentComponent(), findViewTopComponent);
     }
 
     /**
@@ -112,6 +99,6 @@ public class FindViewPaneNGTest {
     public void testGetTabs() {
         System.out.println("getTabs");
         
-        assertEquals(spyFindViewPane.getTabs(), spyFindViewTabs);
+        assertEquals(findViewPane.getTabs(), findViewTabs);
     }
 }

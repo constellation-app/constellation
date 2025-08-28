@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -125,13 +125,13 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         final List<File> imageFiles = (List<File>) parameters.getObjectValue(IMAGE_FILE_PARAMETER_ID);
         final List<BufferedImage> images = new ArrayList<>();
 
-        final boolean addRight = (boolean) parameters.getBooleanValue(ADD_RIGHT_PARAMETER_ID);
-        final boolean addLayers = (boolean) parameters.getBooleanValue(ADD_LAYERS_PARAMETER_ID);
+        final boolean addRight = parameters.getBooleanValue(ADD_RIGHT_PARAMETER_ID);
+        final boolean addLayers = parameters.getBooleanValue(ADD_LAYERS_PARAMETER_ID);
         final int vertexBitmaskAttributeId = addLayers ? LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph) : Graph.NOT_FOUND;
         final int stateAttributeId = addLayers ? LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph) : Graph.NOT_FOUND;
         
         for (final File imageFile : imageFiles) {
-            if (StringUtils.endsWithIgnoreCase(imageFile.getName(), FileExtensionConstants.GIF)) {
+            if (Strings.CI.endsWith(imageFile.getName(), FileExtensionConstants.GIF)) {
                 final ThreeTuple<List<BufferedImage>, List<Integer>, List<Integer>> loadedImageData;
                 try {
                     loadedImageData = loadImagesFromStream(imageFile);

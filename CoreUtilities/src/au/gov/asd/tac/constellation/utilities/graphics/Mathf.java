@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -288,9 +288,9 @@ public final class Mathf {
      * @param vTangent a vector that will hold the calculated tangent.
      * @param vTriangle vectors that describe a triangle.
      * @param vTexCoords the texture coordinates.
-     * @param N the normal vector.
+     * @param n the normal vector.
      */
-    public static void calculateTangentBasis(final Vector3f vTangent, final Vector3f[] vTriangle, final Vector2f[] vTexCoords, final Vector3f N) {
+    public static void calculateTangentBasis(final Vector3f vTangent, final Vector3f[] vTriangle, final Vector2f[] vTexCoords, final Vector3f n) {
         final Vector3f dv2v1 = Vector3f.subtract(vTriangle[1], vTriangle[0]);
         final Vector3f dv3v1 = Vector3f.subtract(vTriangle[2], vTriangle[0]);
 
@@ -299,19 +299,19 @@ public final class Mathf {
         final float dc3c1t = vTexCoords[2].a[0] - vTexCoords[0].a[0];
         final float dc3c1b = vTexCoords[2].a[1] - vTexCoords[0].a[1];
 
-        float M = (dc2c1t * dc3c1b) - (dc3c1t * dc2c1b);
-        M = 1.0F / M;
+        float m = (dc2c1t * dc3c1b) - (dc3c1t * dc2c1b);
+        m = 1.0F / m;
 
         dv2v1.scale(dc3c1b);
         dv3v1.scale(dc2c1b);
 
         Vector3f.subtract(vTangent, dv2v1, dv3v1);
-        vTangent.scale(M);  // This potentially changes the direction of the vector
+        vTangent.scale(m);  // This potentially changes the direction of the vector
         vTangent.normalize();
 
         final Vector3f b = new Vector3f();
-        b.crossProduct(N, vTangent);
-        vTangent.crossProduct(b, N);
+        b.crossProduct(n, vTangent);
+        vTangent.crossProduct(b, n);
         vTangent.normalize();
     }
 

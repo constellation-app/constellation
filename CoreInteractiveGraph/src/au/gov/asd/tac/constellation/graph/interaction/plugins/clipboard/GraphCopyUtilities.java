@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class GraphCopyUtilities {
     
     /**
      * Copies the selected graph nodes and transactions, placing them on the
-     * CONSTELLATION specific clipboard.
+     * Constellation specific clipboard.
      *
      * @param rg The graph to copy elements from.
      * @return An array of length two containing a BitSet of the copied vertex
@@ -58,15 +58,8 @@ public class GraphCopyUtilities {
         final Clipboard cb = ConstellationClipboardOwner.getConstellationClipboard();
         cb.setContents(transferable, ConstellationClipboardOwner.getOwner());
 
-        final GraphElementType nodes = GraphElementType.VERTEX;
-        final int nodesCount = nodes.getElementCount(rg);
-        final int nodeSelectedAttribute = rg.getAttribute(nodes, "selected");
-        final GraphElementType transactions = GraphElementType.TRANSACTION;
-        final int transactionsCount = transactions.getElementCount(rg);
-        final int transactionSelectedAttribute = rg.getAttribute(transactions, "selected");
-
-        final BitSet vxCopied = getVxCopied(nodesCount, nodeSelectedAttribute, nodes, rg);
-        final BitSet txCopied = getSelectedTransactions(transactionsCount, transactionSelectedAttribute, transactions, rg);
+        final BitSet vxCopied = getSelectedGraphElements(GraphElementType.VERTEX, rg);
+        final BitSet txCopied = getSelectedGraphElements(GraphElementType.TRANSACTION, rg);
 
         return new BitSet[]{vxCopied, txCopied};
     }
@@ -109,51 +102,26 @@ public class GraphCopyUtilities {
     }
 
     /**
-     * Get the vertices selected on the graph
+     * Get the given graph elements selected on the graph
      *
-     * @param nodesCount
-     * @param nodeSelectedAttribute
-     * @param nodes
-     * @param rg
-     * @return A BitSet of selected vertices.
+     * @param elementType the graph element type
+     * @param rg the graph to read from
+     * 
+     * @return A BitSet of selected graph elements.
      */
-    private static BitSet getVxCopied(int nodesCount, int nodeSelectedAttribute, GraphElementType nodes, final GraphReadMethods rg) {
-        BitSet vxCopied = new BitSet(nodesCount);
-        if (nodeSelectedAttribute != Graph.NOT_FOUND) {
-            for (int i = 0; i < nodesCount; i++) {
-                int currElement = nodes.getElement(rg, i);
-                boolean selected = rg.getBooleanValue(nodeSelectedAttribute, currElement);
-                if (selected) {
-                    vxCopied.set(currElement, true);
+    private static BitSet getSelectedGraphElements(final GraphElementType elementType, final GraphReadMethods rg) {
+        final int elementCount = elementType.getElementCount(rg);
+        final BitSet selectedGraphElements = new BitSet(elementCount);
+        
+        final int selectedAttribute = rg.getAttribute(elementType, "selected");
+        if (selectedAttribute != Graph.NOT_FOUND) {
+            for (int i = 0; i < elementCount; i++) {
+                final int currElement = elementType.getElement(rg, i);
+                if (rg.getBooleanValue(selectedAttribute, currElement)) {
+                    selectedGraphElements.set(currElement, true);
                 }
-
             }
         }
-        return vxCopied;
+        return selectedGraphElements;
     }
-
-    /**
-     * Get the transactions selected on the graph.
-     *
-     * @param transactionsCount
-     * @param transactionSelectedAttribute
-     * @param transactions
-     * @param rg
-     * @return A BitSet of selected transactions.
-     */
-    private static BitSet getSelectedTransactions(int transactionsCount, int transactionSelectedAttribute, GraphElementType transactions, final GraphReadMethods rg) {
-        BitSet txCopied = new BitSet(transactionsCount);
-        if (transactionSelectedAttribute != Graph.NOT_FOUND) {
-            for (int i = 0; i < transactionsCount; i++) {
-                int currElement = transactions.getElement(rg, i);
-                boolean selected = rg.getBooleanValue(transactionSelectedAttribute, currElement);
-                if (selected) {
-                    txCopied.set(currElement, true);
-                }
-
-            }
-        }
-        return txCopied;
-    }
-
 }

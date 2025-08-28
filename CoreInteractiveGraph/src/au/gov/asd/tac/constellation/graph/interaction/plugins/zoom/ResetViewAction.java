@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -70,12 +69,10 @@ public final class ResetViewAction extends AbstractAction {
             negative = false;
         }
 
-        final Graph graph = context.getGraph();
-
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
                 .withParameter(ResetViewPlugin.AXIS_PARAMETER_ID, axis)
                 .withParameter(ResetViewPlugin.NEGATIVE_PARAMETER_ID, negative)
                 .withParameter(ResetViewPlugin.SIGNIFICANT_PARAMETER_ID, true)
-                .executeLater(graph);
+                .executeLater(context.getGraph());
     }
 }

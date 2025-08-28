@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.views.find.components.advanced.utilities.Use
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
@@ -54,7 +53,7 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
         setGridContent();
         useListCheckBox.setOnAction(action -> activateMoreDetails(useListCheckBox.selectedProperty().get()));
 
-        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
+        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement)
                 -> regexSelectionAction(newElement)
         );
 

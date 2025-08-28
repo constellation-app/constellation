@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -179,8 +179,6 @@ public final class FlyingAnimation extends Animation {
     }
 
     private Vector3f getNextVertex(final GraphReadMethods rg, final float mix) {
-        final Vector3f xyz;
-
         // If there is no valid graph just return a default vector
         if (rg.getVertexCount() == 0) {
             return new Vector3f(0, 0, 0);

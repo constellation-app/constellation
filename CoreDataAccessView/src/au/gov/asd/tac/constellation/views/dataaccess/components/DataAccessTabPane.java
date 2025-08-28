@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.WaitForQueriesToCompleteTask;
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -286,8 +285,7 @@ public class DataAccessTabPane implements PreferenceChangeListener {
                 tab.setGraphic(label);
             });
 
-            field.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                    Boolean newValue) -> {
+            field.focusedProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue) {
                     final String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().indexOf(tab) + 1);
                     label.setText(field.getText().trim());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.windows.WindowManager;
 
@@ -220,7 +221,7 @@ public class FileChooser {
                     @Override
                     public boolean accept(final File file) {
                         final String name = file.getName();
-                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, fileExtension)) || file.isDirectory();
+                        return (file.isFile() && Strings.CI.endsWith(name, fileExtension)) || file.isDirectory();
                     }
 
                     @Override

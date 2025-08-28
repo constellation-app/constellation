@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,6 +57,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -208,9 +209,9 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                 if (f.isDirectory()) {
                     addedFiles.add(f);
                 } else {
-                    if (StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.JPG)
-                            || StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.GIF)
-                            || StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.PNG)) {
+                    if (Strings.CI.endsWith(f.getAbsolutePath(), FileExtensionConstants.JPG)
+                            || Strings.CI.endsWith(f.getAbsolutePath(), FileExtensionConstants.GIF)
+                            || Strings.CI.endsWith(f.getAbsolutePath(), FileExtensionConstants.PNG)) {
                         addedFiles.add(f);
                     }
                 }
@@ -336,9 +337,9 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                         @Override
                         public boolean accept(final File file) {
                             final String name = file.getName();
-                            final boolean imageFilename = (StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JPG)
-                                    || StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.GIF)
-                                    || StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG));
+                            final boolean imageFilename = (Strings.CI.endsWith(name, FileExtensionConstants.JPG)
+                                    || Strings.CI.endsWith(name, FileExtensionConstants.GIF)
+                                    || Strings.CI.endsWith(name, FileExtensionConstants.PNG));
                             return ((file.isFile() && imageFilename) || file.isDirectory());
                         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.help;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 
@@ -24,6 +25,8 @@ import java.util.Map;
  * @author Delphinus8821
  */
 public abstract class HelpPageProvider {
+    
+    protected static final String SEP = File.separator;
     
     protected HelpPageProvider() {
         // Intentionally left blank

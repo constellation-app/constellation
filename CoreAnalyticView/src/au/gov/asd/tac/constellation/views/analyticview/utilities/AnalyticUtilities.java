@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestio
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.GraphVisualisationTranslator;
 import au.gov.asd.tac.constellation.views.analyticview.translators.InternalVisualisationTranslator;
+import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
+import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,10 +37,10 @@ import org.openide.util.Lookup;
  */
 public class AnalyticUtilities {
 
-    private static final Map<String, AnalyticQuestionDescription> ANALYTIC_QUESTION_DESCRIPTIONS = new HashMap<>();
+    private static final Map<String, AnalyticQuestionDescription<?>> ANALYTIC_QUESTION_DESCRIPTIONS = new HashMap<>();
     private static final Map<String, AnalyticAggregator<?>> ANALYTIC_AGGREGATORS = new HashMap<>();
-    private static final Map<String, InternalVisualisationTranslator> INTERNAL_VISUALISATION_TRANSLATORS = new HashMap<>();
-    private static final Map<String, GraphVisualisationTranslator> GRAPH_VISUALISATION_TRANSLATORS = new HashMap<>();
+    private static final Map<String, InternalVisualisationTranslator<? extends AnalyticResult<?>, ? extends InternalVisualisation>> INTERNAL_VISUALISATION_TRANSLATORS = new HashMap<>();
+    private static final Map<String, GraphVisualisationTranslator<? extends AnalyticResult<?>, ? extends GraphVisualisation>> GRAPH_VISUALISATION_TRANSLATORS = new HashMap<>();
     private static final String SEP = File.separator;
 
     static {
@@ -141,8 +143,6 @@ public class AnalyticUtilities {
      * @return path
      */
     public static String getHelpPath() {
-        final String codebaseName = "constellation";
-        return Generator.getBaseDirectory() + SEP + "ext" + SEP + "docs" + SEP + "CoreAnalyticView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP
-                + "asd" + SEP + "tac" + SEP + codebaseName + SEP + "views" + SEP + "analyticview" +  SEP;
+        return Generator.getBaseDirectory() + SEP + "ext" + SEP + "docs" + SEP + "CoreAnalyticView" + SEP;
     }
 }

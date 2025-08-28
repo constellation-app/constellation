@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * Describes a font and all its properties.
@@ -64,7 +64,7 @@ public class FontInfo {
 
     private static Font getFont(final String fontName, final int fontStyle, final int fontSize) {
         Font font = null;
-        if (StringUtils.endsWithIgnoreCase(fontName, FileExtensionConstants.OPEN_TYPE_FONT) || StringUtils.endsWithIgnoreCase(fontName, FileExtensionConstants.TRUE_TYPE_FONT)) {
+        if (Strings.CI.endsWith(fontName, FileExtensionConstants.OPEN_TYPE_FONT) || Strings.CI.endsWith(fontName, FileExtensionConstants.TRUE_TYPE_FONT)) {
             File otfFile = getOtfFont(fontName);
             if (otfFile != null) {
                 LOGGER.log(Level.INFO, "Reading font from {0}", otfFile);
@@ -154,7 +154,7 @@ public class FontInfo {
         } else {
             // If it is relative, look in operating system specific places for the font file.
             final String osName = System.getProperty("os.name");
-            if (StringUtils.containsIgnoreCase(osName, "win")) {
+            if (Strings.CI.contains(osName, "win")) {
                 // Look in the user's local profile, then the system font directory.
                 final String lap = System.getenv("LOCALAPPDATA");
                 if (lap != null) {
@@ -214,7 +214,7 @@ public class FontInfo {
             final Set<Character.UnicodeScript> mustNotHave = new HashSet<>();
             boolean ok = true;
             line = line.trim();
-            if (line.length() > 0 && !line.startsWith("#")) {
+            if (!line.isEmpty() && !line.startsWith("#")) {
                 final String[] parts = FONT_INFO_REGEX.split(line.trim());
                 final String fontName = parts[0];
                 if (fontName.isEmpty()) {

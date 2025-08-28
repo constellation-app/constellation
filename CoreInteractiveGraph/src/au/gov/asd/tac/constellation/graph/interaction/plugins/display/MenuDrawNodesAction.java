@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,14 +35,9 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.display.MenuDrawNodesAction")
 @ActionRegistration(displayName = "#CTL_MenuDrawNodesAction", lazy = false)
 @ActionReference(path = "Menu/Display/Element Visibility", position = 100)
-@Messages({
-    "CTL_MenuDrawNodesAction=Nodes"
-})
+@Messages("CTL_MenuDrawNodesAction=Nodes")
 public class MenuDrawNodesAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuDrawNodesAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuDrawNodesAction(), true);
@@ -58,7 +53,7 @@ public class MenuDrawNodesAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         final Graph graph = getContext().getGraph();
-        boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.NODES) != 0;
+        final boolean flag = (VisualGraphUtilities.getDrawFlags(graph) & DrawFlags.NODES) != 0;
         menuButton.setSelected(flag);
     }
 }

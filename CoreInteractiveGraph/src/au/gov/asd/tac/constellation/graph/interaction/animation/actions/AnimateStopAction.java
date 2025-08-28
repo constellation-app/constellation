@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.openide.util.NbBundle.Messages;
  * @author capricornunicorn123
  */
 @ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateStopAction")
-@ActionRegistration(displayName = "#CTL_AnimateStopAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_AnimateStopAction", surviveFocusChange = true, lazy = false)
 @ActionReferences({
     @ActionReference(path = "Menu/Experimental/Animations", position = 100, separatorBefore = 99),
     @ActionReference(path = "Shortcuts", name = "S-Escape")

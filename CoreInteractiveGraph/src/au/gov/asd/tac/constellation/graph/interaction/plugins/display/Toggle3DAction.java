@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,16 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.JToggleButton;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.actions.Presenter;
 
 /**
@@ -38,13 +36,12 @@ import org.openide.util.actions.Presenter;
  *
  * @author algol
  */
-@NbBundle.Messages("CTL_Toggle3DAction=Toggle 3D")
-public final class Toggle3DAction extends AbstractAction implements Presenter.Toolbar {
+@Messages("CTL_Toggle3DAction=Toggle 3D")
+public final class Toggle3DAction extends SimplePluginAction implements Presenter.Toolbar {
 
     private static final Icon MODE_2D_ICON = UserInterfaceIconProvider.MODE_2D.buildIcon(16);
     private static final Icon MODE_3D_ICON = UserInterfaceIconProvider.MODE_3D.buildIcon(16);
-
-    private final GraphNode context;
+    
     private final ButtonGroup buttonGroup;
 
     /**
@@ -54,30 +51,19 @@ public final class Toggle3DAction extends AbstractAction implements Presenter.To
      * @param buttonGroup The button group to which this action belongs.
      */
     public Toggle3DAction(final GraphNode context, final ButtonGroup buttonGroup) {
-        this.context = context;
+        super(context, InteractiveGraphPluginRegistry.TOGGLE_DISPLAY_MODE);
+        
         this.buttonGroup = buttonGroup;
-        final ReadableGraph rg = context.getGraph().getReadableGraph();
         final boolean isDisplayMode3D;
-        try {
+        try (final ReadableGraph rg = context.getGraph().getReadableGraph()) {
             final int displayMode3DAttribute = VisualConcept.GraphAttribute.DISPLAY_MODE_3D.get(rg);
             isDisplayMode3D = displayMode3DAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(displayMode3DAttribute, 0) : VisualGraphDefaults.DEFAULT_DISPLAY_MODE_3D;
-        } finally {
-            rg.release();
         }
-        putValue(
-                Action.SMALL_ICON,
-                isDisplayMode3D ? MODE_3D_ICON : MODE_2D_ICON
-        );
+        putValue(Action.SMALL_ICON, isDisplayMode3D ? MODE_3D_ICON : MODE_2D_ICON);
         putValue(Action.SHORT_DESCRIPTION, Bundle.CTL_Toggle3DAction());
         putValue(Action.SELECTED_KEY, isDisplayMode3D);
     }
-
-    @Override
-    public void actionPerformed(final ActionEvent ev) {
-        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.TOGGLE_DISPLAY_MODE)
-                .executeLater(context.getGraph());
-    }
-
+    
     @Override
     public Component getToolbarPresenter() {
         final JToggleButton tb = new JToggleButton(this);

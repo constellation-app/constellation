@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -329,8 +329,8 @@ public class GraphNode extends AbstractNode {
      *
      * @return list of IDs
      */
-    public static ArrayList<String> getGraphIDs() {
-        final ArrayList<String> list = new ArrayList<>();
+    public static List<String> getGraphIDs() {
+        final List<String> list = new ArrayList<>();
         final Iterator<Graph> iter = GraphNode.getAllGraphs().values().iterator();
         while (iter.hasNext()) {
             final GraphNode node = GraphNode.getGraphNode(iter.next());

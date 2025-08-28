@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -181,6 +181,8 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         final PluginParameter<IntegerParameterValue> amountParam = IntegerParameterType.build(NUM_TRIALS_PARAMETER_ID);
         amountParam.setName(NUM_TRIALS_PARAMETER_ID_NAME);
         amountParam.setIntegerValue(NUM_TRIALS_PARAMETER_ID_DEFAULT);
+        IntegerParameterType.setMinimum(amountParam, 0);
+        IntegerParameterType.setMaximum(amountParam, 10000);
         parameters.addParameter(amountParam);
 
         return parameters;

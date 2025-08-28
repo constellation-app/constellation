@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,6 @@ public class AnimationManagerNGTest {
     private Animation colorWarpAnimation;
     private Animation directionIndicatorAnimation;
     
-    public AnimationManagerNGTest() {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -48,7 +46,7 @@ public class AnimationManagerNGTest {
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         animationManager = null;
     }
 

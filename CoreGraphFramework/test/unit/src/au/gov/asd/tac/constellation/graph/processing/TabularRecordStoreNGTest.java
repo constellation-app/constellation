@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -260,11 +260,11 @@ public class TabularRecordStoreNGTest {
      */
     @Test
     public void testHasValueUsingKeyAndIndex() {
-        final int record = 0;
+        final int recordEntry = 0;
         final String key = "key1";
 
         final boolean expResult = true;
-        final boolean result = instance.hasValue(record, key);
+        final boolean result = instance.hasValue(recordEntry, key);
         assertEquals(result, expResult);
     }
 
@@ -304,10 +304,10 @@ public class TabularRecordStoreNGTest {
      */
     @Test
     public void testGetUsingValidKeyAndIndex() {
-        final int record = 0;
+        final int recordEntry = 0;
         final String key = "key1";
         final String expResult = "value1";
-        final String result = instance.get(record, key);
+        final String result = instance.get(recordEntry, key);
         assertEquals(result, expResult);
     }
 
@@ -331,14 +331,14 @@ public class TabularRecordStoreNGTest {
      */
     @Test
     public void testSetUsingKeyValueAndIndex() {
-        final int record = 0;
+        final int recordEntry = 0;
         final String key = "key1";
         final String value = "value1";
 
         instance.add();
-        instance.set(record, key, value);
+        instance.set(recordEntry, key, value);
 
-        assertEquals(instance.get(record, key), value);
+        assertEquals(instance.get(recordEntry, key), value);
     }
 
     /**
@@ -376,7 +376,7 @@ public class TabularRecordStoreNGTest {
      */
     @Test
     public void testValuesUsingIndex() {
-        final int record = 1;
+        final int recordEntry = 1;
 
         final List<String> expResult = new ArrayList<>();
         expResult.add("value2");
@@ -384,7 +384,7 @@ public class TabularRecordStoreNGTest {
         expResult.add("value3");
         expResult.add("value4");
 
-        final List<String> result = instance.values(record);
+        final List<String> result = instance.values(recordEntry);
         assertEquals(result, expResult);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +110,7 @@ public class RestClientNGTest {
         System.out.println("testGenerateUrl");
         String url = "https://testurl.tst/testEndpoint";
         List<Tuple<String, String>> params = new ArrayList<>();
-        params.add(new Tuple("", "value"));
+        params.add(new Tuple<>("", "value"));
         URL result = RestClient.generateUrl(url, params);
         assertEquals(result, URI.create(url).toURL());
     }
@@ -125,8 +125,8 @@ public class RestClientNGTest {
         System.out.println("testGenerateUrl");
         String url = "https://testurl.tst/testEndpoint";
         List<Tuple<String, String>> params = new ArrayList<>();
-        params.add(new Tuple("param 1", "value1 with spaces"));
-        params.add(new Tuple("param+2", "value2+with+plusses"));
+        params.add(new Tuple<>("param 1", "value1 with spaces"));
+        params.add(new Tuple<>("param+2", "value2+with+plusses"));
         URL result = RestClient.generateUrl(url, params);
         assertEquals(result, URI.create(String.format("%s?param%%201=value1%%20with%%20spaces&param%%2B2=value2%%2Bwith%%2Bplusses", url)).toURL());
     }
@@ -303,11 +303,10 @@ public class RestClientNGTest {
         final ConnectionLogging conLogging = Mockito.mock(ConnectionLogging.class);
         conLoggingStatic.when(ConnectionLogging::getInstance).thenReturn(conLogging);
         final StringBuilder outputLog = new StringBuilder();
-        final Answer testAnswer = (Answer) (final InvocationOnMock iom) -> {
+        doAnswer((final InvocationOnMock iom) -> {
             outputLog.append(iom.getArgument(1).toString()).append("\n");
             return null;            
-        };
-        doAnswer(testAnswer).when(conLogging).log(Mockito.any(), Mockito.anyString(), Mockito.any());
+        }).when(conLogging).log(Mockito.any(), Mockito.anyString(), Mockito.any());
         
         final String url = "SAMPLE URL";
         final List<Tuple<String, String>> params = new ArrayList<>();

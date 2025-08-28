@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.help.utilities.toc;
 
 import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  *
@@ -55,9 +55,9 @@ public class TOCItem {
      */
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof TOCItem
-                && StringUtils.equals(text, ((TOCItem) obj).getText())
-                && StringUtils.equals(target, ((TOCItem) obj).getTarget());
+        return obj instanceof TOCItem tocItem
+                && Strings.CS.equals(text, tocItem.getText())
+                && Strings.CS.equals(target, tocItem.getTarget());
     }
 
     @Override
@@ -67,5 +67,4 @@ public class TOCItem {
         hash = 97 * hash + Objects.hashCode(this.text);
         return hash;
     }
-
 }

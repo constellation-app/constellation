@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,8 +54,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     private double[] data = new double[0];
     private double defaultValue = DEFAULT_VALUE;
-
-    @SuppressWarnings("unchecked") // Casts are manually checked
+    
     private double convertFromObject(final Object object) throws IllegalArgumentException {
         switch (object) {
             case Number number -> {

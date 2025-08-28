@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -132,7 +132,7 @@ public class UpdateNGTest {
         try {
             wg.release();
         } catch (IllegalMonitorStateException ex) {
-            System.out.printf("%s\n", ex);
+            System.out.printf("%s%n", ex);
         }
     }
 
@@ -159,67 +159,10 @@ public class UpdateNGTest {
         try {
             wg.rollBack();
         } catch (IllegalMonitorStateException ex) {
-            System.out.printf("%s\n", ex);
+            System.out.printf("%s%n", ex);
         }
     }
-
-//    /**
-//     * This test is strange: sometimes it fails (and sometimes with a
-//     * CannotUndoException, sometimes with a NullPointerException), sometimes it
-//     * doesn't.
-//     */
-//    @Test
-//    public void rollbackNaN() {
-//        final float defaultValue = 3;
-//        try {
-//            final DualGraph g = new DualGraph(null);
-//            g.setUndoManager(new UndoRedo.Manager());
-//            final WritableGraph wg = g.getWritableGraph("add stuff", true);
-//            int attrId, vxId;
-//            try {
-//                attrId = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", defaultValue, null);
-//                vxId = wg.addVertex();
-//            } finally {
-//                wg.commit();
-//            }
-//
-//            final WritableGraph wg2 = g.getWritableGraph("set NaN", true);
-//            try {
-//                wg2.setFloatValue(attrId, vxId, Float.NaN);
-//            } finally {
-//                wg2.commit();
-//            }
-//
-//            // Update the graph.
-//            final ReadableGraph rg = g.getReadableGraph();
-//            float v;
-//            try {
-//                v = rg.getFloatValue(attrId, vxId);
-//            } finally {
-//                rg.release();
-//            }
-//            assertTrue("should be Nan", Float.isNaN(v));
-//
-//            // Undo the update: should go back to the previous value.
-//            try {
-//                SwingUtilities.invokeAndWait(() -> {
-//                    g.undo();
-//                });
-//            } catch (InterruptedException | InvocationTargetException ex) {
-//            }
-//
-//            final ReadableGraph rg2 = g.getReadableGraph();
-//            float v2;
-//            try {
-//                v2 = rg2.getFloatValue(attrId, vxId);
-//            } finally {
-//                rg2.release();
-//            }
-//            assertEquals(defaultValue, v2);
-//        } catch (InterruptedException ex) {
-//            Exceptions.printStackTrace(ex);
-//        }
-//    }
+    
     @Test
     public void createTransactionToNonexistentDestination() throws InterruptedException {
         final DualGraph g = new DualGraph(null);
@@ -242,7 +185,7 @@ public class UpdateNGTest {
             Assert.fail("Shouldn't get here, wg.addTransaction() should fail.");
         } catch (IllegalArgumentException ex) {
             // Expected result.
-            System.out.printf("Expected exception: %s\n", ex.getMessage());
+            System.out.printf("Expected exception: %s%n", ex.getMessage());
         }
 
         if (wg != null) {

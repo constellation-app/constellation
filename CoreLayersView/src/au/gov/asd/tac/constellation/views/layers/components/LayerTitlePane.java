@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -81,7 +80,7 @@ public class LayerTitlePane extends TitledPane {
         isValid = testQueryValidity(query.getQueryString());
         enabled = new CheckBox();
         
-        enabledChanged = (final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) -> {
+        enabledChanged = (observable, oldValue, newValue) -> {
             recolourLayer();
             LayersViewController.getDefault().changeLayerVisibility(layerId, enabled.isSelected());
         };

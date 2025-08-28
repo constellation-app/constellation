@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,6 +76,7 @@ public class Access {
 
     public final <D> AccessRegistry<D> getRegistry(final Class<D> destinationClass) {
         synchronized (registries) {
+            @SuppressWarnings("unchecked") // registry will match type of destination class
             AccessRegistry<D> registry = (AccessRegistry<D>) registries.get(destinationClass);
             if (registry == null) {
                 registry = new AccessRegistry<>(destinationClass);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import static au.gov.asd.tac.constellation.views.errorreport.ErrorReportTopComponent.REPORT_SETTINGS_PARAMETER_ID;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -204,19 +209,29 @@ public class ErrorReportFullSuiteNGTest {
 
         final ErrorReportEntry partialEntry5 = new ErrorReportEntry(Level.WARNING, null, "part summary", "part message", ErrorReportSessionData.getNextEntryId());
         session.storeSessionError(partialEntry5);
-
+        
+        // trigger new filter choice of WARNING
+        MultiChoiceParameterType.MultiChoiceParameterValue multiChoiceValue = ertcInstance.getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
+        final List<String> checked = new ArrayList<>();
+        checked.add(ErrorReportTopComponent.SeverityCode.WARNING.getCode());
+        multiChoiceValue.setChoices(checked);
+        @SuppressWarnings("unchecked") // REPORT_SETTINGS_PARAMETER will always be of type MultiChoiceParameter
+        final PluginParameter<MultiChoiceParameterValue> filterTypeParameter = (PluginParameter<MultiChoiceParameterValue>) ertcInstance.getParams().getParameters().get(REPORT_SETTINGS_PARAMETER_ID);
+        filterTypeParameter.fireChangeEvent(ParameterChange.PROPERTY);
+        
         System.out.println("\n\n>>>> Waiting for TC dialogs");
         storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.WARNING)), 1);
         System.out.println("\n\n>>>> Done Waiting");
 
         System.out.println("\n>>>> Check WARNINGS list size");
         assertEquals(storedList.size(), 1);
-
+        System.out.println("\n\n>>>> Waiting 5s for updates to flow through");
+        delay(5000);
         final boolean isFlashing = ertcInstance.isIconFlashing();
         assertTrue(isFlashing);
 
         ertcInstance.setReportsExpanded(false);
-        ertcInstance.refreshSessionErrors();
+        ertcInstance.refreshSessionErrors(); // sync sessionErrors & SessionErrorsBox
         final ErrorReportEntry checkEntry = ertcInstance.findActiveEntryWithId(storedList.get(0).getEntryId());
         System.out.println("\n>>>> Check ErrorReportEntry : " + checkEntry.toString());
         assertFalse(checkEntry.isExpanded());
@@ -233,7 +248,7 @@ public class ErrorReportFullSuiteNGTest {
     private void delay(final long milliseconds) {
         // may need to wait for timers to trigger and do their thing
         final Executor delayed = CompletableFuture.delayedExecutor(milliseconds, TimeUnit.MILLISECONDS);
-        final CompletableFuture cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
+        final CompletableFuture<Void> cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
                 .thenAccept(LOGGER::info);
         try {
             cf.get();

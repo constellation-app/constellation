@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
@@ -52,7 +52,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = ContextMenuProvider.class, position = 400),
     @ServiceProvider(service = Plugin.class)
 })
-@NbBundle.Messages("ContractCompositePlugin=Contract Composite")
+@Messages("ContractCompositePlugin=Contract Composite")
 @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class ContractCompositePlugin extends SimpleEditPlugin implements ContextMenuProvider {
 
@@ -60,14 +60,13 @@ public class ContractCompositePlugin extends SimpleEditPlugin implements Context
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         final int compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(graph);
         CompositeUtilities.contractComposite(graph, compositeAttr, selectedItem);
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }
 
     @Override
-    public void selectItem(String item, final Graph graph, GraphElementType elementType, int elementId, final Vector3f unprojected) {
+    public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
         selectedItem = elementId;
         PluginExecution.withPlugin(this).executeLater(graph);
     }
@@ -84,11 +83,9 @@ public class ContractCompositePlugin extends SimpleEditPlugin implements Context
             final CompositeNodeState compositeNodeState = (CompositeNodeState) graph.getObjectValue(compositeAttr, entity);
             if (compositeNodeState != null && compositeNodeState.comprisesAComposite()) {
                 return Arrays.asList("Contract Composite");
-            } else {
-                return Arrays.asList();
             }
-        } else {
-            return Collections.emptyList();
         }
+        
+        return Collections.emptyList();
     }
 }

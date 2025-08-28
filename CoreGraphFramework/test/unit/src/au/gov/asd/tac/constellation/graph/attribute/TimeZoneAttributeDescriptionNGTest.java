@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,15 +95,4 @@ public class TimeZoneAttributeDescriptionNGTest {
         String result = instance.getString(id);
         assertEquals(result, expResult);
     }
-
-//    /**
-//     * Test of hashCode method, of class TimeZoneAttributeDescription.
-//     */
-//    @Test
-//    public void testHashCode() {
-//        int id = 0;
-//        int expResult = 0;
-//        int result = instance.hashCode(id);
-//        assertEquals(result, expResult);
-//    }
 }

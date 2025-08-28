@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,13 +68,11 @@ public final class ResetViewPlugin extends SimpleEditPlugin {
         final PluginParameter<BooleanParameterValue> negativeParam = BooleanParameterType.build(NEGATIVE_PARAMETER_ID);
         negativeParam.setName("Negative");
         negativeParam.setDescription("True to reverse direction, default is False");
-        negativeParam.setBooleanValue(false);
         parameters.addParameter(negativeParam);
 
         final PluginParameter<BooleanParameterValue> significantParam = BooleanParameterType.build(SIGNIFICANT_PARAMETER_ID);
         significantParam.setName("Significant");
         significantParam.setDescription("Significant animations will make significant edits on the graph, meaning that their results can be undone/redone atomically. Default is False.");
-        significantParam.setBooleanValue(false);
         parameters.addParameter(significantParam);
 
         return parameters;
@@ -82,7 +80,6 @@ public final class ResetViewPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         // Get a copy of the graph's curent camera
         final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(graph);
         if (cameraAttribute != Graph.NOT_FOUND) {

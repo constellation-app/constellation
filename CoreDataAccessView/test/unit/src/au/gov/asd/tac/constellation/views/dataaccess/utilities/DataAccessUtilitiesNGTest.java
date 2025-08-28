@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -212,7 +212,7 @@ public class DataAccessUtilitiesNGTest {
         final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
         final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
         final PluginParameters pluginParameters = mock(PluginParameters.class);
-        final PluginParameter pluginParameter = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter = mock(PluginParameter.class);
 
         when(tab.getContent()).thenReturn(scrollPane);
         when(scrollPane.getContent()).thenReturn(queryPhasePane);
@@ -282,8 +282,8 @@ public class DataAccessUtilitiesNGTest {
             final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
             final PluginParameters globalPluginParameters = mock(PluginParameters.class);
 
-            final PluginParameter pluginParameter1 = mock(PluginParameter.class);
-            final PluginParameter pluginParameter2 = mock(PluginParameter.class);
+            final PluginParameter<?> pluginParameter1 = mock(PluginParameter.class);
+            final PluginParameter<?> pluginParameter2 = mock(PluginParameter.class);
 
             when(queryPhasePane.getGlobalParametersPane()).thenReturn(globalParametersPane);
             when(globalParametersPane.getParams()).thenReturn(globalPluginParameters);

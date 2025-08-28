@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ public class GetAttributes extends RestService {
 
     private static final String NAME = "get_attributes";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
+    private static final String EXAMPLE_RESPONSES_PATH = "getAttributesExample";
 
     @Override
     public String getName() {
@@ -65,7 +66,7 @@ public class GetAttributes extends RestService {
 
         final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphIdParam.setName("Graph id");
-        graphIdParam.setDescription("The id of the graph to get the attributes of. (Default is the active graph)");
+        graphIdParam.setDescription("The id of the graph to get the attributes of. (Default is the active graph)");        
         parameters.addParameter(graphIdParam);
 
         return parameters;
@@ -115,5 +116,10 @@ public class GetAttributes extends RestService {
         }
 
         mapper.writeValue(out, root);
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

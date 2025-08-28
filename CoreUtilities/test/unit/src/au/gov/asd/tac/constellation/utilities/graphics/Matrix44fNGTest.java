@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -434,7 +434,7 @@ public class Matrix44fNGTest {
         int num = 3;
         final Matrix44f expected = new Matrix44f();
 
-        final Matrix44f arr[] = Matrix44f.createArray(num);
+        final Matrix44f[] arr = Matrix44f.createArray(num);
 
         // the correct number were created, and they are all distinct objects
         assertEquals(arr.length, num);

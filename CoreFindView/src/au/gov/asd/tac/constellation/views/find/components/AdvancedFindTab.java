@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -105,7 +104,7 @@ public class AdvancedFindTab extends Tab {
     private final GridPane bottomGrid = new GridPane();
 
     private boolean firstSearch = true;
-    private final String foundLabelText = "Results Found: ";
+    private static final String FOUND_LABEL_TEXT = "Results Found: ";
     private final Label matchesFoundLabel = new Label("");
     private final Label matchesFoundCountLabel = new Label("");
 
@@ -126,11 +125,11 @@ public class AdvancedFindTab extends Tab {
         addCriteriaPaneButton.setOnAction(action -> addCriteriaPane(getSelectedGraphElementType()));
 
         // Change the displayed list based on the graph element type selection
-        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> changeDisplayedList(newElement));
+        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement) -> changeDisplayedList(newElement));
 
-        searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
+        searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement) -> updateSelectionFactors());
 
-        postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
+        postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement) -> updateSelectionFactors());
 
         findAllButton.setOnAction(action -> findAllAction());
         findNextButton.setOnAction(action -> findNextAction());
@@ -144,7 +143,7 @@ public class AdvancedFindTab extends Tab {
         
         FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> {
             if (firstSearch) {
-                matchesFoundLabel.setText(foundLabelText);
+                matchesFoundLabel.setText(FOUND_LABEL_TEXT);
                 firstSearch = false;
             }
 

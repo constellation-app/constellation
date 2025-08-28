@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class IconDataNGTest {
     private static MockedStatic<SVGObject> svgObjectStaticMock;
     private static InputStream inputStreamMock;
     private static BufferedImage bufferedImageMock;
-    private static IOException IOExceptionMock;
+    private static IOException ioExceptionMock;
 
     private final IconData instanceWithData;
 
@@ -78,7 +78,7 @@ public class IconDataNGTest {
         svgObjectStaticMock = Mockito.mockStatic(SVGObject.class);
         inputStreamMock = Mockito.mock(InputStream.class);
         bufferedImageMock = Mockito.mock(BufferedImage.class);
-        IOExceptionMock = Mockito.mock(IOException.class);
+        ioExceptionMock = Mockito.mock(IOException.class);
     }
 
     @AfterMethod
@@ -285,7 +285,7 @@ public class IconDataNGTest {
         System.out.println("testCreateData_inputStreamThrowsException");
 
         final IconData instance = spy(new IconDataImpl());
-        when(instance.createRasterInputStream()).thenThrow(IOExceptionMock);
+        when(instance.createRasterInputStream()).thenThrow(ioExceptionMock);
 
         final int size = 0;
         final Color color = null;
@@ -454,7 +454,7 @@ public class IconDataNGTest {
         System.out.println("testCreateSVGData_inputStreamThrowsException");
 
         final IconData instance = spy(new IconDataImpl());
-        when(instance.createVectorInputStream()).thenThrow(IOExceptionMock);
+        when(instance.createVectorInputStream()).thenThrow(ioExceptionMock);
 
         final int size = 0;
         final Color color = null;

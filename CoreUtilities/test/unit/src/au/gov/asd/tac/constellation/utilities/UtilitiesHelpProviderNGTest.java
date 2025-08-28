@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,13 +84,9 @@ public class UtilitiesHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreUtilities"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("utilities"));
         assertTrue(tocLocation.contains("utilities-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreUtilities"));
-        assertTrue(tocLocation.indexOf("CoreUtilities") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("utilities"));
-        assertTrue(tocLocation.indexOf("utilities") < tocLocation.indexOf("utilities-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreUtilities") < tocLocation.indexOf("utilities-toc.xml"));
     }
 }

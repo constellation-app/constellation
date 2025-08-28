@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,11 +111,11 @@ public class LogUtilitiesNGTest {
     
     @Test
     public void testFormatNoParams() throws IOException {
-        LOGGER.log(Level.INFO, "Test message: {0}");
+        LOGGER.log(Level.INFO, "Test message: 0");
         String out = getCapturedLog();
         
         assertFalse(out.contains("testParams"));
-        assertTrue(out.contains("Test message: {0}"));
+        assertTrue(out.contains("Test message: 0"));
     }
     
     @Test

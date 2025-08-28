@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentNavigableMap;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -63,19 +64,22 @@ public class SparseMatrixNGTest {
     @Test
     public void testConstructMatrix() {
         System.out.println("constructMatrix");
+        
         Number noEntryVal = 4;
-        SparseMatrix result = SparseMatrix.constructMatrix(noEntryVal);
-        ArithmeticHandler calc = result.getCalc();
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        SparseMatrix<Integer> result = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(noEntryVal);
+        ArithmeticHandler<Integer> calc = result.getCalc();
         assertEquals(calc.getClass(), IntegerArithmeticHandler.class);
         
         noEntryVal = 2.0F;
-        result = SparseMatrix.constructMatrix(noEntryVal);
-        calc = result.getCalc();
-        assertEquals(calc.getClass(), FloatArithmeticHandler.class);
+        @SuppressWarnings("unchecked") // parsing float will return float matrix
+        SparseMatrix<Float> result2 = (SparseMatrix<Float>) SparseMatrix.constructMatrix(noEntryVal);
+        ArithmeticHandler<Float> calc2 = result2.getCalc();
+        assertEquals(calc2.getClass(), FloatArithmeticHandler.class);
         
         noEntryVal = null;
-        result = SparseMatrix.constructMatrix(noEntryVal);
-        assertEquals(result, null);
+        SparseMatrix<?> result3 = SparseMatrix.constructMatrix(noEntryVal);
+        assertNull(result3);
     }
 
     /**
@@ -84,12 +88,14 @@ public class SparseMatrixNGTest {
     @Test
     public void testPutCell() {
         System.out.println("putCell");
+        
         final int i = 2;
         final int j = 6;
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final Integer val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(i, j, val);
-        final Number result = instance.getCell(i, j);
+        final Integer result = instance.getCell(i, j);
         assertEquals(result, val);
     }
 
@@ -99,12 +105,14 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetCellPrimitive() {
         System.out.println("getCellPrimitive");
+        
         final int i = 2;
         final int j = 6;
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         final Number expResult = 4;
-        final Number result = instance.getCellPrimitive(i, j);
+        final Integer result = instance.getCellPrimitive(i, j);
         assertEquals(result, expResult);
     }
 
@@ -114,13 +122,15 @@ public class SparseMatrixNGTest {
     @Test
     public void testClearCell() {
         System.out.println("clearCell");
+        
         final int i = 2;
         final int j = 6;
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(i, j, val);
         instance.clearCell(i, j);
-        assertTrue(instance.getData().get(i) == null);
+        assertNull(instance.getData().get(i));
     }
 
     /**
@@ -129,10 +139,12 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetColumnKeys() {
         System.out.println("getColumnKeys");
+        
         final int i = 2;
         final int j = 6;
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(i, j, val);
         final Integer[] expResult = {2};
         final Integer[] result = instance.getColumnKeys();
@@ -145,10 +157,12 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetNumColumns() {
         System.out.println("getNumColumns");
+        
         final int i = 2;
         final int j = 6;
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(i, j, val);
         final int expResult = 1;
         final int result = instance.getNumColumns();
@@ -161,8 +175,10 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetEuclidianDistanceBetweenColumns() {
         System.out.println("getEuclidianDistanceBetweenColumns");
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(1, 2, val);
         instance.putCell(0, 4, 6);
         instance.putCell(3, 8, 9);
@@ -179,8 +195,10 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetCommonalityDistanceBetweenColumns() {
         System.out.println("getCommonalityDistanceBetweenColumns");
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(1, 2, val);
         instance.putCell(2, 4, 6);
         instance.putCell(3, 8, 9);
@@ -197,16 +215,18 @@ public class SparseMatrixNGTest {
     @Test
     public void testCalculateCentreOfColumns() {
         System.out.println("calculateCentreOfColumns");
+        
         final Integer[] keys = {0, 1, 2, 3};
         final int keyToPlaceCentre = 0;
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(0, 0, 0);
         instance.putCell(1, 2, val);
         instance.putCell(2, 4, 6);
         instance.putCell(3, 8, 9);
         instance.calculateCentreOfColumns(keys, keyToPlaceCentre);
-        final ConcurrentNavigableMap<Integer, Number> result = (ConcurrentNavigableMap) instance.getData().get(keyToPlaceCentre);
+        final ConcurrentNavigableMap<Integer, Integer> result = instance.getData().get(keyToPlaceCentre);
         assertEquals(result.size(), 4);
     }
 
@@ -216,10 +236,12 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetColumnAsExpandedArray() {
         System.out.println("getColumnAsExpandedArray");
+        
         final int key = 1;
         final int fullColumnSize = 3;
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(0, 0, 0);
         instance.putCell(1, 2, val);
         instance.putCell(2, 4, 6);
@@ -235,9 +257,11 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetColumnAsArray() {
         System.out.println("getColumnAsArray");
+        
         final int key = 1;
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(0, 0, 0);
         instance.putCell(1, 2, val);
         instance.putCell(2, 4, 6);
@@ -253,9 +277,11 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetColumnSum() {
         System.out.println("getColumnSum");
+        
         final int key = 1;
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(0, 0, 0);
         instance.putCell(1, 2, val);
         instance.putCell(2, 4, 6);
@@ -271,17 +297,19 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetColumnElementUnion() {
         System.out.println("getColumnElementUnion");
-        final Set<Integer> set = new HashSet();
+        
+        final Set<Integer> set = new HashSet<>();
         set.add(0);
         set.add(1);
         final Iterable<Integer> keySet = set;
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(0, 0, 0);
         instance.putCell(1, 2, val);
         instance.putCell(2, 4, 6);
         instance.putCell(3, 8, 9);
-        final Set result = instance.getColumnElementUnion(keySet);
+        final Set<Integer> result = instance.getColumnElementUnion(keySet);
         assertTrue(result.size() == 2);
     }
 
@@ -291,15 +319,17 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetColumnElementIntersection() {
         System.out.println("getColumnElementIntersection");
-        final Set<Integer> set = new HashSet();
+        
+        final Set<Integer> set = new HashSet<>();
         set.add(0);
         set.add(1);
         final Iterable<Integer> keySet = set;
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(0, 0, 0);
         instance.putCell(1, 2, val);
-        final Set result = instance.getColumnElementIntersection(keySet);
+        final Set<Integer> result = instance.getColumnElementIntersection(keySet);
         assertEquals(result.size(), 0);
     }
 
@@ -309,13 +339,15 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetConstituentExtendedColumnAsArray() {
         System.out.println("getConstituentExtendedColumnAsArray");
+        
         final int key = 1;
-        final Set<Integer> set = new HashSet();
+        final Set<Integer> set = new HashSet<>();
         set.add(0);
         set.add(1);
         final Iterable<Integer> elements = set;
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(0, 0, 0);
         instance.putCell(1, 2, val);
         instance.putCell(2, 4, 6);
@@ -331,11 +363,13 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetLargestColumnSum_Set() {
         System.out.println("getLargestColumnSum");
-        final Set<Integer> keys = new HashSet();
+        
+        final Set<Integer> keys = new HashSet<>();
         keys.add(0);
         keys.add(1);
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(0, 0, 0);
         instance.putCell(1, 2, val);
         instance.putCell(2, 4, 6);
@@ -350,9 +384,11 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetColumnSize() {
         System.out.println("getColumnSize");
+        
         final int key = 1;
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(0, 0, 0);
         instance.putCell(1, 2, val);
         instance.putCell(2, 4, 6);
@@ -367,8 +403,10 @@ public class SparseMatrixNGTest {
     @Test
     public void testGetLargestColumnSize() {
         System.out.println("getLargestColumnSize");
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(0, 0, 0);
         instance.putCell(1, 2, val);
         instance.putCell(2, 4, 6);
@@ -383,13 +421,15 @@ public class SparseMatrixNGTest {
     @Test
     public void testConstructTokenSets() {
         System.out.println("constructTokenSets");
-        final Number val = 4;
-        final SparseMatrix instance = SparseMatrix.constructMatrix(val);
+        
+        final int val = 4;
+        @SuppressWarnings("unchecked") // parsing integer will return integer matrix
+        final SparseMatrix<Integer> instance = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(val);
         instance.putCell(0, 0, 0);
         instance.putCell(1, 2, val);
         instance.putCell(2, 4, 6);
         final int expResult = 3;
-        final Map result = instance.constructTokenSets();
+        final Map<Integer, Set<Integer>> result = instance.constructTokenSets();
         assertEquals(result.size(), expResult);
     }
     
@@ -398,31 +438,31 @@ public class SparseMatrixNGTest {
      */
     @Test
     public void testIntegerArithmeticHandler() {
-        final ArithmeticHandler instance = IntegerArithmeticHandler.INSTANCE;
+        final ArithmeticHandler<Integer> instance = IntegerArithmeticHandler.INSTANCE;
         
         // Test getZero
-        assertEquals(instance.getZero(), 0);
+        assertEquals(instance.getZero(), (Integer) 0);
         
         // Test max
-        assertEquals(instance.max(2, 4), 4);
+        assertEquals(instance.max(2, 4), (Integer) 4);
         
         // Test min
-        assertEquals(instance.min(2, 4), 2);
+        assertEquals(instance.min(2, 4), (Integer) 2);
         
         // Test add
-        assertEquals(instance.add(1, 3), 4);
+        assertEquals(instance.add(1, 3), (Integer) 4);
         
         // Test difference
-        assertEquals(instance.difference(3, 7), 4);
+        assertEquals(instance.difference(3, 7), (Integer) 4);
         
         // Test square
-        assertEquals(instance.square(3), 9);
+        assertEquals(instance.square(3), (Integer) 9);
         
         // Test sqrt
-        assertEquals(instance.sqrt(9), 3);
+        assertEquals(instance.sqrt(9), (Integer) 3);
         
         // Test scale
-        assertEquals(instance.scale(2, 1), 2);
+        assertEquals(instance.scale(2, 1), (Integer) 2);
         
         // Test makeArray
         assertEquals(instance.makeArray(2).length, 2);
@@ -433,10 +473,10 @@ public class SparseMatrixNGTest {
      */
     @Test
     public void testFloatArithmeticHandler() {
-        final ArithmeticHandler instance = FloatArithmeticHandler.INSTANCE;
+        final ArithmeticHandler<Float> instance = FloatArithmeticHandler.INSTANCE;
         
         // Test getZero
-        assertEquals(instance.getZero(), 0.0F);
+        assertEquals(instance.getZero(), 0F);
         
         // Test max
         assertEquals(instance.max(2.2F, 4.2F), 4.2F);
@@ -445,16 +485,16 @@ public class SparseMatrixNGTest {
         assertEquals(instance.min(2.5F, 4.8F), 2.5F);
         
         // Test add
-        assertEquals(instance.add(1.0F, 3.0F), 4.0F);
+        assertEquals(instance.add(1F, 3F), 4F);
         
         // Test difference
         assertEquals(instance.difference(3.7F, 7.7F), 3.9999998F);
         
         // Test square
-        assertEquals(instance.square(3.0F), 9.0F);
+        assertEquals(instance.square(3F), 9F);
         
         // Test sqrt
-        assertEquals(instance.sqrt(9.0F), 3.0F);
+        assertEquals(instance.sqrt(9F), 3F);
         
         // Test scale
         assertEquals(instance.scale(2.2F, 1.5F), 1.4666667F);

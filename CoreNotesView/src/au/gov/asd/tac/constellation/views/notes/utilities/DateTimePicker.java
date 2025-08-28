@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,8 +59,8 @@ public class DateTimePicker {
         datePicker.setChronology(Chronology.ofLocale(Locale.ENGLISH));
 
         datePicker.setConverter(new StringConverter<LocalDate>() {
-            final String pattern = "yyyy-MM-dd";
-            final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+            static final String PATTERN = "yyyy-MM-dd";
+            final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(PATTERN);
 
             @Override
             public String toString(final LocalDate object) {

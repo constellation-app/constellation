@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,7 +157,7 @@ public class UpdateDataTaskNGTest {
 
         when(activeTableReference.getUserTablePreferences()).thenReturn(userTablePreferences);
 
-        final TableFilter.Builder filterBuilder = mock(TableFilter.Builder.class);
+        final TableFilter.Builder<ObservableList<String>> filterBuilder = mock(TableFilter.Builder.class);
         final TableFilter<ObservableList<String>> filter = mock(TableFilter.class);
 
         final FilteredList<ObservableList<String>> filteredList = mock(FilteredList.class);
@@ -250,7 +250,7 @@ public class UpdateDataTaskNGTest {
 
     @Test
     public void runThreadInterruptedPartWayThrough() throws InterruptedException {
-        final TableFilter.Builder filterBuilder = mock(TableFilter.Builder.class);
+        final TableFilter.Builder<ObservableList<String>> filterBuilder = mock(TableFilter.Builder.class);
         final TableFilter<ObservableList<String>> filter = mock(TableFilter.class);
 
         final FilteredList<ObservableList<String>> filteredList = mock(FilteredList.class);

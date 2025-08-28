@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,8 @@ public class ContentPairwiseSimilarityServices {
     private final PairwiseComparisonTokenHandler handler;
     private final List<ElementSimilarity> pairwiseSimilarities = Collections.synchronizedList(new LinkedList<>());
     private final Map<Integer, Double> modulii = new HashMap<>();
+    
+    private final Map<Integer, MutableDouble>[] pairwiseSimilaritiesCalculation;
 
     private ContentPairwiseSimilarityServices(final PairwiseComparisonTokenHandler handler) {
         this.handler = handler;
@@ -101,8 +103,6 @@ public class ContentPairwiseSimilarityServices {
             }
         }
     }
-
-    private final Map[] pairwiseSimilaritiesCalculation;
 
     private void computeModulii(final Map<Integer, Integer> freqMap) {
         freqMap.entrySet().forEach(elementEntry -> {

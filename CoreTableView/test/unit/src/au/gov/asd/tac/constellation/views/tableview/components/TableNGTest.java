@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -442,7 +442,7 @@ public class TableNGTest {
     @Test
     public void updateColumns() {
         final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
-        final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
+        final ListChangeListener<?> selectedOnlySelectionListener = mock(ListChangeListener.class);
 
         doReturn(tableSelectionListener).when(table).getTableSelectionListener();
         doReturn(selectedOnlySelectionListener).when(table).getSelectedOnlySelectionListener();
@@ -551,7 +551,7 @@ public class TableNGTest {
     @Test
     public void updateColumnsStateColumnsNotSet() {
         final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
-        final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
+        final ListChangeListener<?> selectedOnlySelectionListener = mock(ListChangeListener.class);
 
         doReturn(tableSelectionListener).when(table).getTableSelectionListener();
         doReturn(selectedOnlySelectionListener).when(table).getSelectedOnlySelectionListener();
@@ -818,7 +818,7 @@ public class TableNGTest {
         when(table.getColumnIndex()).thenReturn(columnIndex);
 
         try (final MockedStatic<AbstractAttributeInteraction> attrInteractionMockedStatic = Mockito.mockStatic(AbstractAttributeInteraction.class)) {
-            final AbstractAttributeInteraction interaction = mock(AbstractAttributeInteraction.class);
+            final AbstractAttributeInteraction<?> interaction = mock(AbstractAttributeInteraction.class);
             attrInteractionMockedStatic.when(() -> AbstractAttributeInteraction.getInteraction("string")).thenReturn(interaction);
 
             when(interaction.getDisplayText(objectValue1)).thenReturn("column1Value");
@@ -886,7 +886,7 @@ public class TableNGTest {
         when(readableGraph.getObjectValue(102, transactionId)).thenReturn(transactionCoulmnValue);
 
         try (final MockedStatic<AbstractAttributeInteraction> attrInteractionMockedStatic = Mockito.mockStatic(AbstractAttributeInteraction.class)) {
-            final AbstractAttributeInteraction interaction = mock(AbstractAttributeInteraction.class);
+            final AbstractAttributeInteraction<?> interaction = mock(AbstractAttributeInteraction.class);
             attrInteractionMockedStatic.when(() -> AbstractAttributeInteraction.getInteraction("string")).thenReturn(interaction);
 
             when(interaction.getDisplayText(sourceVertexCoulmnValue)).thenReturn("sourceVertex_COLUMN_1_Value");

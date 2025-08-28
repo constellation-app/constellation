@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -153,7 +153,7 @@ public class DecoratorsIOProviderNGTest {
         Mockito.verify(mockGraphWriteMethods, times(1)).setStringValue(attributeId, elementId, null);
 //
         // Call method under test with JsonNode.isNull=true and JsonNode.isObject=true
-        resetMocking();;
+        resetMocking();
         when(mockJsonNode.isNull()).thenReturn(true);
         when(mockJsonNode.isObject()).thenReturn(true);
         instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);

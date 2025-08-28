@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
@@ -152,7 +153,7 @@ public class DefaultPluginInteractionNGTest {
         
         // add test for params
         final PluginParameters params = spy(PluginParameters.class);
-        final PluginParameter testParam = Mockito.mock(PluginParameter.class);
+        final PluginParameter<StringParameterValue> testParam = Mockito.mock(PluginParameter.class);
         when(testParam.getName()).thenReturn("key_name");
         when(testParam.getStringValue()).thenReturn("string_value");
         params.addParameter(testParam);

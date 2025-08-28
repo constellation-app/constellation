@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,6 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -84,7 +83,6 @@ public class BasicFindTabNGTest {
     private int vxId1;
 
     private FindViewTopComponent findViewTopComponent;
-    private FindViewTopComponent spyTopComponent;
     
     private BasicFindTab basicFindTab;
     private ReplaceTab replaceTab;
@@ -112,7 +110,6 @@ public class BasicFindTabNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         findViewTopComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(findViewTopComponent);
 
         findViewPane = mock(FindViewPane.class);
         findViewTabs = mock(FindViewTabs.class);
@@ -438,7 +435,7 @@ public class BasicFindTabNGTest {
 
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(spyTopComponent);
+        mockController.init(findViewTopComponent);
         doNothing().when(mockController).retriveMatchingElements(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
         Button mockButton = mock(Button.class);
 
@@ -493,7 +490,7 @@ public class BasicFindTabNGTest {
         setupGraph();
 
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(spyTopComponent);
+        mockController.init(findViewTopComponent);
         doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
 
         BasicFindTab basicFindMock = mock(BasicFindTab.class);
@@ -535,7 +532,7 @@ public class BasicFindTabNGTest {
         setupGraph();
 
         FindViewController mockController = mock(FindViewController.class);
-        mockController.init(spyTopComponent);
+        mockController.init(findViewTopComponent);
         doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(false), Mockito.eq(false));
 
         BasicFindTab basicFindMock = mock(BasicFindTab.class);
@@ -564,20 +561,6 @@ public class BasicFindTabNGTest {
             verify(basicFindMock, times(1)).updateBasicFindParamters();
             verify(mockController, times(1)).retriveMatchingElements(false, false, false);
         }
-    }
-
-    /**
-     * Test of requestTextFieldFocus method, of class BasicFindTab.
-     */
-    @Test
-    public void testRequestTextFieldFocus() {
-        System.out.println("requestTextFieldFocus");
-
-//        setupGraph();
-//
-//        basicFindTab.requestTextFieldFocus();
-//        assertEquals(basicFindTab.getFindTextField().isFocused(), true);
-//        basicFindTab.getFindTextField().requestFocus();
     }
 
     private void setupGraph() {
@@ -635,5 +618,4 @@ public class BasicFindTabNGTest {
             Thread.currentThread().interrupt();
         }
     }
-
 }

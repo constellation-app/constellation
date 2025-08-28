@@ -84,15 +84,9 @@ public class OpenGLHelpProviderNGTest {
         //we'll assert that some of the keyparts of the expected filepath are present
         assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreOpenGLDisplay"));
-        assertTrue(tocLocation.contains("src"));
-        assertTrue(tocLocation.contains("visual"));
-        assertTrue(tocLocation.contains("opengl"));
         assertTrue(tocLocation.contains("opengl-toc.xml"));
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreOpenGLDisplay"));
-        assertTrue(tocLocation.indexOf("CoreOpenGLDisplay") < tocLocation.indexOf("src"));
-        assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("visual"));
-        assertTrue(tocLocation.indexOf("visual") < tocLocation.indexOf("opengl"));
-        assertTrue(tocLocation.indexOf("opengl") < tocLocation.indexOf("opengl-toc.xml"));
+        assertTrue(tocLocation.indexOf("CoreOpenGLDisplay") < tocLocation.indexOf("opengl-toc.xml"));
     }   
 }

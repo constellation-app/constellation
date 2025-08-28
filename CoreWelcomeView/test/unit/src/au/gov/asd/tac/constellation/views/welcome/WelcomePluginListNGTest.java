@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ public class WelcomePluginListNGTest {
         System.out.println("getTopPlugins");
         final WelcomePluginList instance = new WelcomePluginList();
 
-        final List result = instance.getTopPlugins();
+        final List<WelcomePluginInterface> result = instance.getTopPlugins();
         assertTrue(result.size() == 7);
         assertEquals(result.get(0).getClass(), AddModeWelcomePlugin.class);
     }
@@ -86,7 +86,7 @@ public class WelcomePluginListNGTest {
         System.out.println("getSidePlugins");
         final WelcomePluginList instance = new WelcomePluginList();
 
-        final List result = instance.getSidePlugins();
+        final List<WelcomePluginInterface> result = instance.getSidePlugins();
         assertTrue(result.size() == 4);
         assertEquals(result.get(0).getClass(), GettingStartedWelcomePlugin.class);
     }

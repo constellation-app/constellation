@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,7 +114,7 @@ public class RecordStoreUtilities {
                     while (true) {
                         currentToken = parser.nextToken();
                         if (currentToken == JsonToken.FIELD_NAME) {
-                            final String fieldName = parser.getCurrentName();
+                            final String fieldName = parser.currentName();
 
                             String fieldValue;
                             currentToken = parser.nextToken();
@@ -283,7 +283,7 @@ public class RecordStoreUtilities {
                     }
                     line.append(",");
                 }
-                line.setLength(line.length() > 0 ? line.length() - 1 : 0);
+                line.setLength(!line.isEmpty() ? line.length() - 1 : 0);
                 line.append(SeparatorConstants.NEWLINE);
                 columnsWritten = true;
 
@@ -307,7 +307,7 @@ public class RecordStoreUtilities {
                 }
                 line.append(",");
             }
-            line.setLength(line.length() > 0 ? line.length() - 1 : 0);
+            line.setLength(!line.isEmpty() ? line.length() - 1 : 0);
             line.append(SeparatorConstants.NEWLINE);
 
             try {

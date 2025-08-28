@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -316,7 +315,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
                     setContent(DUMMY_LABEL);
                 }
 
-                expandedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) -> {
+                expandedProperty().addListener((observable, oldValue, newValue) -> {
                     DataAccessPreferenceUtilities.setExpanded(plugin.getName(), newValue);
                     if (newValue && !isLoaded) {
                         isLoaded = true;

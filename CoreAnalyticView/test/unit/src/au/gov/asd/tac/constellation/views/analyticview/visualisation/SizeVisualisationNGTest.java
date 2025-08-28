@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
+import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractSizeTranslator;
-import au.gov.asd.tac.constellation.views.analyticview.translators.AnalyticTranslator;
 import au.gov.asd.tac.constellation.views.analyticview.translators.ScoreToSizeTranslator;
 import java.util.Arrays;
 import java.util.List;
@@ -84,8 +85,8 @@ public class SizeVisualisationNGTest {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
             final boolean reset = true;
-            final AbstractSizeTranslator translator = new ScoreToSizeTranslator();
-            final SizeVisualisation instance = new SizeVisualisation(translator);
+            final ScoreToSizeTranslator translator = new ScoreToSizeTranslator();
+            final SizeVisualisation<ElementScore> instance = new SizeVisualisation<>(translator);
             instance.deactivate(reset);
             
             final boolean isActive = instance.isActive();
@@ -101,8 +102,8 @@ public class SizeVisualisationNGTest {
     public void testGetName() {
         System.out.println("getName");
         
-        final AbstractSizeTranslator translator = new ScoreToSizeTranslator();
-        final SizeVisualisation instance = new SizeVisualisation(translator);
+        final ScoreToSizeTranslator translator = new ScoreToSizeTranslator();
+        final SizeVisualisation<ElementScore> instance = new SizeVisualisation<>(translator);
         final String expResult = "Size Elements";
         final String result = instance.getName();
         assertEquals(result, expResult);
@@ -115,9 +116,9 @@ public class SizeVisualisationNGTest {
     public void testGetTranslator() {
         System.out.println("getTranslator");
         
-        final AbstractSizeTranslator translator = new ScoreToSizeTranslator();
-        final SizeVisualisation instance = new SizeVisualisation(translator);
-        final AnalyticTranslator result = instance.getTranslator();
+        final ScoreToSizeTranslator translator = new ScoreToSizeTranslator();
+        final SizeVisualisation<ElementScore> instance = new SizeVisualisation<>(translator);
+        final ScoreToSizeTranslator result = (ScoreToSizeTranslator) instance.getTranslator();
         assertEquals(result, translator);
     }
 
@@ -128,10 +129,10 @@ public class SizeVisualisationNGTest {
     public void testGetAffectedAttributes() {
         System.out.println("getAffectedAttributes");
         
-        final AbstractSizeTranslator translator = new ScoreToSizeTranslator();
-        final SizeVisualisation instance = new SizeVisualisation(translator);
-        final List expResult = Arrays.asList(VisualConcept.VertexAttribute.NODE_RADIUS, VisualConcept.TransactionAttribute.WIDTH);
-        final List result = instance.getAffectedAttributes();
+        final ScoreToSizeTranslator translator = new ScoreToSizeTranslator();
+        final SizeVisualisation<ElementScore> instance = new SizeVisualisation<>(translator);
+        final List<SchemaAttribute> expResult = Arrays.asList(VisualConcept.VertexAttribute.NODE_RADIUS, VisualConcept.TransactionAttribute.WIDTH);
+        final List<SchemaAttribute> result = instance.getAffectedAttributes();
         assertEquals(result, expResult);
     }
 
@@ -142,8 +143,8 @@ public class SizeVisualisationNGTest {
     public void testIsActive() {
         System.out.println("isActive");
         
-        final AbstractSizeTranslator translator = new ScoreToSizeTranslator();
-        final SizeVisualisation instance = new SizeVisualisation(translator);
+        final ScoreToSizeTranslator translator = new ScoreToSizeTranslator();
+        final SizeVisualisation<ElementScore> instance = new SizeVisualisation<>(translator);
         final boolean expResult = false;
         final boolean result = instance.isActive();
         assertEquals(result, expResult);
@@ -157,8 +158,8 @@ public class SizeVisualisationNGTest {
         System.out.println("setSelected");
         
         final boolean selected = false;
-        final AbstractSizeTranslator translator = new ScoreToSizeTranslator();
-        final SizeVisualisation instance = new SizeVisualisation(translator);
+        final ScoreToSizeTranslator translator = new ScoreToSizeTranslator();
+        final SizeVisualisation<ElementScore> instance = new SizeVisualisation<>(translator);
         instance.setSelected(selected);
         final boolean result = instance.isActive();
         assertEquals(result, selected);

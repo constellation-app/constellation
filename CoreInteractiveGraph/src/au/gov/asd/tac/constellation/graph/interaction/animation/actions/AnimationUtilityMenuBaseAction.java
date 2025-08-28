@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
  */
 public abstract class AnimationUtilityMenuBaseAction extends MenuBaseAction {
 
-    public AnimationUtilityMenuBaseAction(final String label) {
+    protected AnimationUtilityMenuBaseAction(final String label) {
         super();
         initMenuItem(label, false);
     }

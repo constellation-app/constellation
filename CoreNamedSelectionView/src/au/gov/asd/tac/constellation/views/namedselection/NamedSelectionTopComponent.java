@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -209,7 +210,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
      * @see NamedSelection
      * @see NamedSelectionTopComponent
      */
-    public void updateState(final ArrayList<NamedSelection> selections) {
+    public void updateState(final List<NamedSelection> selections) {
         if (selections != null) {
             // Clear everything so we can start fresh:
             clearAllNamedSelections();
@@ -762,7 +763,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
             }
         }
 
-        if (removeSelections.size() > 0) {
+        if (!removeSelections.isEmpty()) {
             NamedSelectionManager.getDefault().clearSelections(removeSelections);
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,10 +74,12 @@ public class ImportGraphFilePluginNGTest {
         assertEquals(params.getParameters().size(), 3);
         
         // now to test that the controller works as expected
+        @SuppressWarnings("unchecked") // file name will always be of type FileParameter
         final PluginParameter<FileParameterValue> fileName = (PluginParameter<FileParameterValue>) params.getParameters().get("ImportGraphFilePlugin.file_name");
         final ExtensionFilter filterTypesBeforeTypeChange = FileParameterType.getFileFilters(fileName);
         assertEquals(filterTypesBeforeTypeChange.getExtensions(), Arrays.asList(".gml"));
         
+        @SuppressWarnings("unchecked") // file type will always be of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> fileType = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get("ImportGraphFilePlugin.file_type");
         SingleChoiceParameterType.setChoice(fileType, "GraphML");
         final ExtensionFilter filterTypesAfterTypeChange = FileParameterType.getFileFilters(fileName);
@@ -95,6 +97,7 @@ public class ImportGraphFilePluginNGTest {
         final ImportGraphFilePlugin instance = new ImportGraphFilePlugin();
         final PluginParameters params = instance.createParameters();
         
+        @SuppressWarnings("unchecked") // file name will always be of type FileParameter
         final PluginParameter<FileParameterValue> fileName = (PluginParameter<FileParameterValue>) params.getParameters().get("ImportGraphFilePlugin.file_name");
         fileName.setStringValue(ImportGraphFilePluginNGTest.class.getResource("file/resources/test.gml").getPath());
        
@@ -118,6 +121,7 @@ public class ImportGraphFilePluginNGTest {
         final ImportGraphFilePlugin instance = new ImportGraphFilePlugin();
         final PluginParameters params = instance.createParameters();
         
+        @SuppressWarnings("unchecked") // file name will always be of type FileParameter
         final PluginParameter<FileParameterValue> fileName = (PluginParameter<FileParameterValue>) params.getParameters().get("ImportGraphFilePlugin.file_name");
         fileName.setStringValue(ImportGraphFilePluginNGTest.class.getResource("file/resources/test.gml").getPath());
         params.setBooleanValue("ImportGraphFilePlugin.retrieve_transactions", false);

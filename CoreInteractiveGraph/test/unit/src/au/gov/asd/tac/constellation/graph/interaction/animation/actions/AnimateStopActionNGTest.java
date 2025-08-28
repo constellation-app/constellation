@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,11 +35,9 @@ import org.testng.annotations.Test;
  * @author Andromeda-224
  */
 public class AnimateStopActionNGTest {
+    
     private MockedStatic<AnimationUtilities> animationUtilitiesMocked;
     
-    public AnimateStopActionNGTest() {
-    }
-
     @BeforeMethod
     public void setUpMethod() throws Exception {
         animationUtilitiesMocked = mockStatic(AnimationUtilities.class);

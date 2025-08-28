@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,6 @@ public class CreateCompositeFromSelectionPlugin extends SimpleEditPlugin impleme
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (selectedAttr != Graph.NOT_FOUND) {
             final Set<Integer> selectedVerts = new HashSet<>();
@@ -78,7 +77,6 @@ public class CreateCompositeFromSelectionPlugin extends SimpleEditPlugin impleme
             }
 
             if (selectedVerts.size() > 1) {
-
                 final int compositeStateAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.ensure(graph);
                 final int uniqueIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.get(graph);
                 final int identifierAttr = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
@@ -88,7 +86,6 @@ public class CreateCompositeFromSelectionPlugin extends SimpleEditPlugin impleme
                 final Set<Integer> addedVerts = new HashSet<>();
                 final Set<Integer> removedVerts = new HashSet<>();
                 selectedVerts.forEach(id -> {
-
                     final List<Integer> resultingVerts = CompositeUtilities.destroyComposite(graph, compositeStateAttr, uniqueIdAttr, id);
                     if (!resultingVerts.isEmpty()) {
                         removedVerts.add(id);
@@ -109,7 +106,7 @@ public class CreateCompositeFromSelectionPlugin extends SimpleEditPlugin impleme
                 final String compositeId = copyId;
 
                 // Make a record store representing the new composite that is about to be added
-                RecordStore newCompositeStore = new GraphRecordStore();
+                final RecordStore newCompositeStore = new GraphRecordStore();
                 newCompositeStore.add();
                 newCompositeStore.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, compositeId);
                 newCompositeStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, compositeIdentifier);
@@ -117,7 +114,7 @@ public class CreateCompositeFromSelectionPlugin extends SimpleEditPlugin impleme
 
                 // Construct and set an expanded composite node state for each of the nodes that will constitute the composite.
                 selectedVerts.forEach(id -> {
-                    ExpandedCompositeNodeState expandedState = new ExpandedCompositeNodeState(newCompositeStore, compositeId, true, selectedVerts.size());
+                    final ExpandedCompositeNodeState expandedState = new ExpandedCompositeNodeState(newCompositeStore, compositeId, true, selectedVerts.size());
                     graph.setObjectValue(compositeStateAttr, id, new CompositeNodeState(id, expandedState));
                 });
 
@@ -131,7 +128,7 @@ public class CreateCompositeFromSelectionPlugin extends SimpleEditPlugin impleme
     }
 
     @Override
-    public void selectItem(String item, final Graph graph, GraphElementType elementType, int elementId, final Vector3f unprojected) {
+    public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
         PluginExecution.withPlugin(this).executeLater(graph);
     }
 

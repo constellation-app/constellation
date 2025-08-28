@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -354,10 +354,10 @@ public class BoundingBoxNGTest {
                 new Vector3f(5.100006F, 5.199997F, 5.300003F).toString());
     }
 
-    Vector3f MIN_TINY = new Vector3f(0.000011F, 0.000012F, 0.000013F);
-    Vector3f MAX_TINY = new Vector3f(0.000091F, 0.000092F, 0.000093F);
-    Vector3f MIN2_TINY = new Vector3f(0.000021F, 0.000022F, 0.000023F);
-    Vector3f MAX2_TINY = new Vector3f(0.000081F, 0.000082F, 0.000083F);
+    Vector3f minTiny = new Vector3f(0.000011F, 0.000012F, 0.000013F);
+    Vector3f maxTiny = new Vector3f(0.000091F, 0.000092F, 0.000093F);
+    Vector3f min2Tiny = new Vector3f(0.000021F, 0.000022F, 0.000023F);
+    Vector3f max2Tiny = new Vector3f(0.000081F, 0.000082F, 0.000083F);
 
     /**
      * Can get an appropriate camera distance for viewing the contents of the
@@ -376,7 +376,7 @@ public class BoundingBoxNGTest {
         assertEquals(bb.getCameraDistance(1F, 2F), 396.94675F);
 
         // calculated distance is too small
-        bb.set(new Vector3f(MIN_TINY), new Vector3f(MAX_TINY), new Vector3f(MIN2_TINY), new Vector3f(MAX2_TINY));
+        bb.set(new Vector3f(minTiny), new Vector3f(maxTiny), new Vector3f(min2Tiny), new Vector3f(max2Tiny));
         assertEquals(bb.getCameraDistance(1F, 2F), MINIMUM_CAMERA_DISTANCE);
     }
     @Test

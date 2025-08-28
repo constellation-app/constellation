@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.LayoutStyle;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -48,7 +49,7 @@ final class GraphOptionsPanel extends JPanel {
 
     private final List<JPanel> colorPanels;
     final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
-    private final static Color DEFAULT_COLOR = new Color(255, 255, 254);
+    private static final Color DEFAULT_COLOR = new Color(255, 255, 254);
     private static final String[] EYE_COLORS = new String[]{"Blue", "Cyan", "Green", "Magenta", "Red", "Yellow"};
 
     public GraphOptionsPanel() {
@@ -136,7 +137,7 @@ final class GraphOptionsPanel extends JPanel {
 
                 for (final JPanel panel : colorPanels) {
                     final String panelColor = getHTMLColor(panel.getBackground());
-                    if (!StringUtils.equals(panelColor, getHTMLColor(DEFAULT_COLOR))) {
+                    if (!Strings.CS.equals(panelColor, getHTMLColor(DEFAULT_COLOR))) {
                         colorStringBuilder.append(panelColor);
                         colorStringBuilder.append(";");
                     } else {
@@ -168,7 +169,7 @@ final class GraphOptionsPanel extends JPanel {
         rightEyeColor.setSelectedItem(color);
     }
     
-    public boolean getAnimationsEnabled() {
+    public boolean isAnimationsEnabled() {
         return this.enableAnimationsCheckBox.isSelected();
     }
     

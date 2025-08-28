@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
@@ -31,10 +30,8 @@ import org.openide.util.NbBundle.Messages;
  */
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.functionality.composite.CreateCompositesFromDominantNodesAction")
 @ActionRegistration(displayName = "#CTL_CreateCompositesFromDominantNodesAction",
-        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/composite/compositeCorrelatedNodes.png")
-@ActionReferences({
-    @ActionReference(path = "Menu/Tools", position = 800)
-})
+        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/composite/resources/compositeCorrelatedNodes.png")
+@ActionReference(path = "Menu/Tools", position = 800)
 @Messages("CTL_CreateCompositesFromDominantNodesAction=Composite Correlated Nodes")
 public class CreateCompositesFromDominantNodesAction extends SimplePluginAction {
 

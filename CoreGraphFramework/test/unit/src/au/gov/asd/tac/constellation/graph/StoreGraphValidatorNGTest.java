@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import static org.testng.AssertJUnit.assertEquals;
@@ -43,8 +44,10 @@ public class StoreGraphValidatorNGTest {
             }
 
             validateGraph(validator, graph);
+            
+            final SecureRandom rand = new SecureRandom();
 
-            int operation = (int) (Math.random() * 4);
+            int operation = rand.nextInt(4);
             switch (operation) {
                 // Add vertex
                 case 0 -> {
@@ -60,9 +63,9 @@ public class StoreGraphValidatorNGTest {
                 // Add transaction
                 case 1 -> {
                     if (graph.getTransactionCount() < tCapacity) {
-                        int source = (int) (Math.random() * graph.getVertexCapacity());
-                        int destination = (int) (Math.random() * graph.getVertexCapacity());
-                        boolean directed = Math.random() > 0.5;
+                        int source = rand.nextInt(graph.getVertexCapacity());
+                        int destination = rand.nextInt(graph.getVertexCapacity());
+                        boolean directed = rand.nextDouble() > 0.5;
                         if (graph.vertexExists(source) && graph.vertexExists(destination)) {
                             int t = graph.addTransaction(source, destination, directed);
                             int l = graph.getTransactionLink(t);
@@ -75,7 +78,7 @@ public class StoreGraphValidatorNGTest {
                     }
                 }
                 case 2 -> {
-                    int t = (int) (Math.random() * graph.getTransactionCapacity());
+                    int t = rand.nextInt(graph.getTransactionCapacity());
                     if (graph.transactionExists(t)) {
                         graph.removeTransaction(t);
                         validator.removeTransaction(t);
@@ -96,6 +99,9 @@ public class StoreGraphValidatorNGTest {
                             System.out.println("g.removeVertex(" + v + ");");
                         }
                     }
+                }
+                default -> {
+                    // do nothing
                 }
             }
         }
@@ -219,9 +225,20 @@ public class StoreGraphValidatorNGTest {
             validatorIds.add(validator.getTransaction(i));
             graphIds.add(graph.getTransaction(i));
 
-            int t = graph.getTransaction(i);
-            assertEquals(validator.getTransactionDestinationVertex(t), graph.getTransactionDestinationVertex(t));
-            assertEquals(validator.getTransactionSourceVertex(t), graph.getTransactionSourceVertex(t));
+            int t = graph.getTransaction(i);            
+            if (validator.getTransactionDirection(t) == GraphConstants.UNDIRECTED) {
+                if (validator.getTransactionDestinationVertex(t) != graph.getTransactionDestinationVertex(t)) {                        
+                    // expect failure for undirected sometimes as it may be the other vertex
+                    assertEquals(validator.getTransactionSourceVertex(t), graph.getTransactionDestinationVertex(t));                
+                    assertEquals(validator.getTransactionDestinationVertex(t), graph.getTransactionSourceVertex(t));
+         
+                } else {
+                    assertEquals(validator.getTransactionDestinationVertex(t), graph.getTransactionDestinationVertex(t));
+                    assertEquals(validator.getTransactionSourceVertex(t), graph.getTransactionSourceVertex(t));
+                }
+            } else {
+                assertEquals(validator.getTransactionDestinationVertex(t), graph.getTransactionDestinationVertex(t));
+            }
             assertEquals(validator.getTransactionDirection(t), graph.getTransactionDirection(t));
             assertEquals(validator.getTransactionLink(t), graph.getTransactionLink(t));
         }

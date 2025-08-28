@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class IntegerParameterTypeNGTest {
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof IntegerParameterType);
-        assertEquals(((IntegerParameterValue) result.getParameterValue()).get(), 0);
+        assertEquals(result.getParameterValue().get(), 0);
     }
 
     /**
@@ -82,7 +82,7 @@ public class IntegerParameterTypeNGTest {
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof IntegerParameterType);
-        assertEquals(((IntegerParameterValue) result.getParameterValue()).get(), 1);
+        assertEquals(result.getParameterValue().get(), 1);
     }
 
     /**

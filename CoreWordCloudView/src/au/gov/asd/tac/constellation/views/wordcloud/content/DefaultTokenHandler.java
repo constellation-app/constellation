@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.util.Map;
 public class DefaultTokenHandler implements TokenHandler {
 
     @SuppressWarnings("unchecked") // type of SparseMatrix will be integer
-    private final SparseMatrix<Integer> tokenElementMatrix = SparseMatrix.constructMatrix(0);
+    private final SparseMatrix<Integer> tokenElementMatrix = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(0);
     private final Map<String, Integer> tokenHashes = new HashMap<>();
 
     public SparseMatrix<Integer> getTokenElementMatrix() {

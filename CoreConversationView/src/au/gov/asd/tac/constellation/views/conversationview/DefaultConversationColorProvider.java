@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,20 +54,18 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
 
         for (final ConversationMessage message : messages) {
             final int sender = message.getSender();
-            if (sender < colorPositions.length) {
-                final int senderPosition = graph.getVertexPosition(sender);
-                final int colorPosition = colorPositions[senderPosition];
-                if (colorPosition == 0) {
-                    switch (message.getConversationSide()) {
-                        case LEFT:
-                            colorPositions[senderPosition] = ++leftVertexCount;
-                            break;
-                        case RIGHT:
-                            colorPositions[senderPosition] = rightVertexCount--;
-                            break;
-                        default:
-                            break;
-                    }
+            final int senderPosition = graph.getVertexPosition(sender);
+            final int colorPosition = colorPositions[senderPosition];
+            if (colorPosition == 0) {
+                switch (message.getConversationSide()) {
+                    case LEFT:
+                        colorPositions[senderPosition] = ++leftVertexCount;
+                        break;
+                    case RIGHT:
+                        colorPositions[senderPosition] = rightVertexCount--;
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -87,12 +85,10 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
 
         for (final ConversationMessage message : messages) {
             final int sender = message.getSender();
-            if (sender < colorPositions.length) {
-                final int senderPosition = graph.getVertexPosition(sender);
-                final int colorPosition = colorPositions[senderPosition] - 1;
-                final Color vertexColor = vertexColors[colorPosition];
-                message.setColor(vertexColor);
-            }
+            final int senderPosition = graph.getVertexPosition(sender);
+            final int colorPosition = colorPositions[senderPosition] - 1;
+            final Color vertexColor = vertexColors[colorPosition];
+            message.setColor(vertexColor);
         }
     }
 

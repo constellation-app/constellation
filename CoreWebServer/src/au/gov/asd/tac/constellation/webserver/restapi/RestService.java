@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,5 +124,14 @@ public abstract class RestService {
      */
     public String getMimeType() {
         return RestServiceUtilities.APPLICATION_JSON;
+    }
+    
+    /**
+     * Returns path in json file to look for example response body
+     * 
+     * @return path in json to look for example response body
+     */
+    public String getExampleResponsesPath() {
+        return null;
     }
 }

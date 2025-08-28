@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -68,7 +67,7 @@ public class AdvancedCriteriaBorderPane extends BorderPane {
 
         deleteButton.setOnAction(action -> parentComponent.deleteCriteriaPane(this, graphElementType, -1));
 
-        typeChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
+        typeChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement)
                 -> parentComponent.changeCriteriaPane(this, graphElementType, newElement, updateUI));
     }
 

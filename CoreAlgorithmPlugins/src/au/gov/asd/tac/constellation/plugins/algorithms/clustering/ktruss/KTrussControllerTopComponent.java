@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -675,7 +675,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             while (iter.hasNext()) {
                 final int key = (Integer) iter.next();
                 if (state.isKTrussExtant(key)) {
-                    ((JLabel) labelTable.get(key)).setFont(labelBoldFont);
+                    labelTable.get(key).setFont(labelBoldFont);
                 }
             }
             stepSlider.setLabelTable(labelTable);

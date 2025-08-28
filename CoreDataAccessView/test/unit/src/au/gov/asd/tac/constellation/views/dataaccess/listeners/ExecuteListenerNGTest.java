@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -408,8 +408,8 @@ public class ExecuteListenerNGTest {
         when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList());
         
         // Add some existing running plugins for the current graph.
-        final Future plugin1Future = mock(Future.class);
-        final Future plugin2Future = mock(Future.class);
+        final Future<?> plugin1Future = mock(Future.class);
+        final Future<?> plugin2Future = mock(Future.class);
         
         DataAccessPaneState.addRunningPlugin(plugin1Future, "Plugin 1");
         DataAccessPaneState.addRunningPlugin(plugin2Future, "Plugin 2");
@@ -435,8 +435,8 @@ public class ExecuteListenerNGTest {
         when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(mock(Tab.class)));
         
         // Add some existing running plugins for the current graph.
-        final Future plugin1Future = mock(Future.class);
-        final Future plugin2Future = mock(Future.class);
+        final Future<?> plugin1Future = mock(Future.class);
+        final Future<?> plugin2Future = mock(Future.class);
         
         DataAccessPaneState.addRunningPlugin(plugin1Future, "Plugin 1");
         DataAccessPaneState.addRunningPlugin(plugin2Future, "Plugin 2");

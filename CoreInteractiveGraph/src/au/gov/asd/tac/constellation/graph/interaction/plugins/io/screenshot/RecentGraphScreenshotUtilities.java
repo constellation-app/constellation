@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,11 +88,8 @@ public class RecentGraphScreenshotUtilities {
         if (!saveDir.exists()) {
             saveDir.mkdir();
         } else if (!saveDir.isDirectory()) {
-            final String msg = String.format("Recent graph screenshots directory '%s' is not a directory", SCREENSHOTS_DIR);
-            LOGGER.warning(msg);
+            LOGGER.log(Level.WARNING, "Recent graph screenshots directory: {0} - is not a directory", SCREENSHOTS_DIR);
             return null;
-        } else {
-            return saveDir;
         }
 
         return saveDir;
@@ -104,10 +101,9 @@ public class RecentGraphScreenshotUtilities {
      * @param filepath The filepath of the graph
      * @return MD5 hash of filepath
      */
-    protected static String hashFilePath(final String filepath) {
-        final MessageDigest md;
+    protected static String hashFilePath(final String filepath) { 
         try {
-            md = MessageDigest.getInstance("SHA-256");
+            final MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(filepath.getBytes(StandardCharsets.UTF_8));
             final byte[] digest = md.digest();
             return DatatypeConverter.printHexBinary(digest).toUpperCase();
@@ -156,9 +152,6 @@ public class RecentGraphScreenshotUtilities {
      * @param graph The graph to take a screenshot of
      */
     public static synchronized void takeScreenshot(final String filepath, final Graph graph) {
-        final String pathHash = hashFilePath(filepath);
-        final String imageFile = getScreenshotsDir() + File.separator + pathHash + FileExtensionConstants.PNG;
-        final Path source = Paths.get(imageFile);
         final GraphNode graphNode = GraphNode.getGraphNode(graph);
 
         if (graphNode == null) {
@@ -176,7 +169,7 @@ public class RecentGraphScreenshotUtilities {
         final Semaphore waiter = new Semaphore(0);
 
         requestGraphActive(graph, waiter);
-
+        
         // Wait for requested graph to become active
         waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
         visualManager.exportToBufferedImage(originalImage, waiter); // Requires 0 permits, becomes 1 when done
@@ -184,8 +177,9 @@ public class RecentGraphScreenshotUtilities {
         // Wait for exporting to finish before moving on
         waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
         try {
+            final String imageFile = getScreenshotsDir() + File.separator + hashFilePath(filepath) + FileExtensionConstants.PNG;
             // resizeAndSave the buffered image in memory and write the image to disk
-            resizeAndSave(originalImage[0], source, IMAGE_SIZE, IMAGE_SIZE);
+            resizeAndSave(originalImage[0], Paths.get(imageFile), IMAGE_SIZE, IMAGE_SIZE);
             refreshScreenshotsDir();
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -196,6 +190,7 @@ public class RecentGraphScreenshotUtilities {
         final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
 
         if (topComponents == null || graph == null) {
+            semaphore.release();
             return;
         }
 
@@ -206,9 +201,7 @@ public class RecentGraphScreenshotUtilities {
                 try {
                     // Request graph to be active
                     EventQueue.invokeAndWait(() -> vgComponent.requestActiveWithLatch(latch));
-
                     latch.await(LATCH_WAIT_SECONDS, TimeUnit.SECONDS);
-                    semaphore.release();
                 } catch (final InterruptedException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     Thread.currentThread().interrupt();
@@ -217,6 +210,8 @@ public class RecentGraphScreenshotUtilities {
                 }
             }
         });
+        
+        semaphore.release();
     }
 
     /**
@@ -233,8 +228,7 @@ public class RecentGraphScreenshotUtilities {
      */
     public static synchronized void resizeAndSave(final BufferedImage originalImage, final Path target, final int height, final int width) throws IOException {
         // create a new BufferedImage for drawing
-        final BufferedImage newResizedImage
-                = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage newResizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         final Graphics2D g = newResizedImage.createGraphics();
 
         g.setComposite(AlphaComposite.Src);
@@ -262,7 +256,6 @@ public class RecentGraphScreenshotUtilities {
      * Refresh stored screenshots of recent files to match the recent files stored in history.
      */
     public static synchronized void refreshScreenshotsDir() {
-
         final List<String> filesInHistory = new ArrayList<>();
         final List<File> filesInDirectory = new ArrayList<>();
         final File screenShotsDir = getScreenshotsDir();

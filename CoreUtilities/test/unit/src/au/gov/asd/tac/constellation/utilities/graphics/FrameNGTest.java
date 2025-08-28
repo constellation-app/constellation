@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -429,7 +429,7 @@ public class FrameNGTest {
     @Test
     public void testCreateArray() {
         final int length = 3;
-        final Frame frames[] = Frame.createArray(length);
+        final Frame[] frames = Frame.createArray(length);
 
         assertEquals(frames.length, length);
         for (Frame f : frames) {

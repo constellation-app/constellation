@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,9 +44,9 @@ import org.testng.annotations.Test;
 public class HashmodCSVImportFileParserNGTest {
 
     private static HashmodInputSource hashmodInputSourceMock;
-    private static CSVParser CSVParserMock;
+    private static CSVParser csvParserMock;
     private static Iterator<CSVRecord> iteratorMock;
-    private static CSVRecord CSVRecordMock;
+    private static CSVRecord csvRecordMock;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -61,9 +61,9 @@ public class HashmodCSVImportFileParserNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         hashmodInputSourceMock = mock(HashmodInputSource.class);
-        CSVParserMock = mock(CSVParser.class);
+        csvParserMock = mock(CSVParser.class);
         iteratorMock = mock(Iterator.class);
-        CSVRecordMock = mock(CSVRecord.class);
+        csvRecordMock = mock(CSVRecord.class);
     }
 
     @AfterMethod
@@ -84,8 +84,8 @@ public class HashmodCSVImportFileParserNGTest {
         doCallRealMethod().when(instance).parse(any(HashmodInputSource.class));
 
         // When the CSV file is empty.
-        doReturn(CSVParserMock).when(instance).getCSVParser(hashmodInputSourceMock);
-        doReturn(iteratorMock).when(CSVParserMock).iterator();
+        doReturn(csvParserMock).when(instance).getCSVParser(hashmodInputSourceMock);
+        doReturn(iteratorMock).when(csvParserMock).iterator();
 
         final List<String[]> expResult1 = new ArrayList<>();
         final List<String[]> result1 = instance.parse(hashmodInputSourceMock);
@@ -94,9 +94,9 @@ public class HashmodCSVImportFileParserNGTest {
 
         // When there are CSV records to be parsed in the file.
         doReturn(true, true, false).when(iteratorMock).hasNext();
-        doReturn(CSVRecordMock, CSVRecordMock).when(iteratorMock).next();
-        doReturn(1).when(CSVRecordMock).size();
-        doReturn("test").when(CSVRecordMock).get(0);
+        doReturn(csvRecordMock, csvRecordMock).when(iteratorMock).next();
+        doReturn(1).when(csvRecordMock).size();
+        doReturn("test").when(csvRecordMock).get(0);
 
         final String[] line = new String[1];
         line[0] = "test";
@@ -124,8 +124,8 @@ public class HashmodCSVImportFileParserNGTest {
         doCallRealMethod().when(instance).preview(any(HashmodInputSource.class), anyInt());
 
         // When the CSV file is empty.
-        doReturn(CSVParserMock).when(instance).getCSVParser(hashmodInputSourceMock);
-        doReturn(iteratorMock).when(CSVParserMock).iterator();
+        doReturn(csvParserMock).when(instance).getCSVParser(hashmodInputSourceMock);
+        doReturn(iteratorMock).when(csvParserMock).iterator();
 
         // The limit value is irrelevant in this case.
         final SecureRandom rand = new SecureRandom();
@@ -138,9 +138,9 @@ public class HashmodCSVImportFileParserNGTest {
 
         // When there are 2 CSV records to be parsed in the file and the limit is 0.
         doReturn(true, true, false).when(iteratorMock).hasNext();
-        doReturn(CSVRecordMock, CSVRecordMock).when(iteratorMock).next();
-        doReturn(1).when(CSVRecordMock).size();
-        doReturn("test").when(CSVRecordMock).get(0);
+        doReturn(csvRecordMock, csvRecordMock).when(iteratorMock).next();
+        doReturn(1).when(csvRecordMock).size();
+        doReturn("test").when(csvRecordMock).get(0);
 
         final String[] line = new String[1];
         line[0] = "test";
@@ -156,7 +156,7 @@ public class HashmodCSVImportFileParserNGTest {
 
         // When there are 4 CSV records to be parsed in the file and the limit is 2
         doReturn(true, true, true, true, false).when(iteratorMock).hasNext();
-        doReturn(CSVRecordMock, CSVRecordMock, CSVRecordMock, CSVRecordMock).when(iteratorMock).next();
+        doReturn(csvRecordMock, csvRecordMock, csvRecordMock, csvRecordMock).when(iteratorMock).next();
 
         explist.add(line);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 package au.gov.asd.tac.constellation.graph.interaction.plugins.delete;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -67,7 +70,8 @@ public class DeleteSelectionPluginNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        graph = new StoreGraph();
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
+        graph = new StoreGraph(schema);
 
         attrX = VisualConcept.VertexAttribute.X.ensure(graph);
         attrY = VisualConcept.VertexAttribute.Y.ensure(graph);
@@ -129,8 +133,11 @@ public class DeleteSelectionPluginNGTest {
      */
     @Test
     public void testNothingSelected() throws InterruptedException, PluginException {
-        DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
+        System.out.println("nothingSelected");
+        
+        final DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
         PluginExecution.withPlugin(instance).executeNow(graph);
+        
         assertEquals(graph.getVertexCount(), 7);
         assertEquals(graph.getTransactionCount(), 5);
     }
@@ -144,12 +151,14 @@ public class DeleteSelectionPluginNGTest {
      */
     @Test
     public void testSomeVxSelected() throws InterruptedException, PluginException {
+        System.out.println("someVxSelected");
+        
         graph.setBooleanValue(vAttrId, vxId2, true);
         graph.setBooleanValue(vAttrId, vxId4, true);
         graph.setBooleanValue(vAttrId, vxId6, true);
         graph.setBooleanValue(vAttrId, vxId7, true);
-
-        DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
+        
+        final DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
         PluginExecution.withPlugin(instance).executeNow(graph);
 
         assertEquals(graph.getVertexCount(), 3);
@@ -164,10 +173,12 @@ public class DeleteSelectionPluginNGTest {
      */
     @Test
     public void testSomeTxSelected() throws InterruptedException, PluginException {
+        System.out.println("someTxSelected");
+        
         graph.setBooleanValue(tAttrId, txId1, true);
         graph.setBooleanValue(tAttrId, txId2, true);
-
-        DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
+        
+        final DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
         PluginExecution.withPlugin(instance).executeNow(graph);
 
         assertEquals(graph.getVertexCount(), 7);
@@ -183,6 +194,8 @@ public class DeleteSelectionPluginNGTest {
      */
     @Test
     public void testAllSelected() throws InterruptedException, PluginException {
+        System.out.println("allSelected");
+        
         graph.setBooleanValue(vAttrId, vxId1, true);
         graph.setBooleanValue(vAttrId, vxId2, true);
         graph.setBooleanValue(vAttrId, vxId3, true);
@@ -190,14 +203,14 @@ public class DeleteSelectionPluginNGTest {
         graph.setBooleanValue(vAttrId, vxId5, true);
         graph.setBooleanValue(vAttrId, vxId6, true);
         graph.setBooleanValue(vAttrId, vxId7, true);
-
+        
         graph.setBooleanValue(tAttrId, txId1, true);
         graph.setBooleanValue(tAttrId, txId2, true);
         graph.setBooleanValue(tAttrId, txId3, true);
         graph.setBooleanValue(tAttrId, txId4, true);
         graph.setBooleanValue(tAttrId, txId5, true);
-
-        DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
+        
+        final DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
         PluginExecution.withPlugin(instance).executeNow(graph);
 
         assertEquals(graph.getVertexCount(), 0);

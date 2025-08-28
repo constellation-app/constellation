@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -198,9 +198,7 @@ public class PluginReportNGTest {
 
         @Override
         public String[] getTags() {
-            final String[] testTags = {PluginTags.ANALYTIC, PluginTags.GENERAL,
-                PluginTags.SEARCH};
-            return testTags;
+            return new String[]{PluginTags.ANALYTIC, PluginTags.GENERAL, PluginTags.SEARCH};
         }
         
         @Override

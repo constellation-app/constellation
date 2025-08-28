@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,8 +53,8 @@ import org.openide.windows.TopComponent;
 public final class JDBCImportTopComponent extends ImportTopComponent {
 
     private final JDBCImportPane jdbcImportPane;
-    private final static String HELP_TEXT = """
-                                            1. Add the relevant JDBC Driver via 'Manage Connections' -> 'Drivers' tab. 
+    private static final String HELP_TEXT = """
+                                            1. Add the relevant JDBC Driver via 'Manage Connections' -> 'Drivers' tab.
                                             2. Add the Connection details in 'Manage Connections' -> 'Connections' tab. If the 'Username' and 'Password' are not required, leave them blank.
                                             3. Select the connection from the 'Connection' drop-down in the main Import window.
                                             4. Enter 'Username' and 'Password' if the connection requires them.

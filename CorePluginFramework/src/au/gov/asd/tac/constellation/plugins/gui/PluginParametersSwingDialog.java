@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ import javafx.scene.layout.VBox;
 import javax.swing.JButton;
 import javax.swing.UIManager;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -335,7 +336,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
             return acceptanceText;
         }
         for (final String keyWord : acceptanceButtonLabels){
-            if (StringUtils.containsIgnoreCase(title, keyWord)){
+            if (Strings.CI.contains(title, keyWord)){
                 return keyWord;
             }
         }

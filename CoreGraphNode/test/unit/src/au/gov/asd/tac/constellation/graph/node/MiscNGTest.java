@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ public class MiscNGTest {
                     final int tx = wg.addTransaction(vx, vx + 1, true);
 
                     Assert.fail("Shouldn't get here, wg.addTransaction() should fail.");
-                    System.out.printf("New transaction: %d\n", tx);
+                    System.out.printf("New transaction: %d%n", tx);
                 }
 
                 @Override

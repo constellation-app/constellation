@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class GetGraph extends RestService {
 
     private static final String NAME = "get_graph";
+    private static final String EXAMPLE_RESPONSES_PATH = "getGraphExample";
 
     @Override
     public String getName() {
@@ -52,7 +53,7 @@ public class GetGraph extends RestService {
     public String[] getTags() {
         return new String[]{"graph", "schema"};
     }
-
+    
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
@@ -72,7 +73,12 @@ public class GetGraph extends RestService {
         root.put("id", id);
         root.put("name", name);
         root.put("schema", schemaName);
-
+        
         mapper.writeValue(out, root);
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

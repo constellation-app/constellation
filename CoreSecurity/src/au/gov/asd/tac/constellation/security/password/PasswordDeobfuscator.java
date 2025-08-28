@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,6 @@ public class PasswordDeobfuscator {
      * @throws java.io.UnsupportedEncodingException
      * @throws IOException
      */
-    @SuppressWarnings("unused")
     public static void main(final String[] args) throws IOException {
         final BufferedReader input = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8.name()));
         LOGGER.log(Level.INFO, "Enter the obfuscated password to decrypt: ");

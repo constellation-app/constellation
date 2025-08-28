@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -64,6 +65,11 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
 
     private static final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.GRAPH;
     private static final ConstellationColor ICON_COLOR = ConstellationColor.CARROT;
+    
+    // A custom type is essentially a modified default type (its just a renamed copy).
+    // It should be processed (or not) in exactly the same that is done for a default type.
+    boolean modifiedDefaultVtxType = false;
+    boolean modifiedDefaultTxnType = false;
 
     @Override
     public String getName() {
@@ -160,6 +166,9 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             RawData raw = graph.getObjectValue(vertexRawAttribute, vertexId);
             String label = graph.getStringValue(vertexLabelAttribute, vertexId);
 
+            boolean updateStoredType = false;
+            modifiedDefaultVtxType = false;
+            
             // set the raw
             if (raw == null || raw.isEmpty()) {
                 raw = new RawData(identifier, type == null ? null : type.getName());
@@ -177,7 +186,17 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                     }
                 }
             } else if (type.isIncomplete()) {
+                final String initialType = type.toString();
                 type = graph.getSchema().resolveVertexType(type.toString());
+                if (!type.toString().equals(initialType)) {
+                    updateStoredType = true;
+                }
+            } else {
+                final SchemaVertexType resolvedType = SchemaVertexTypeUtilities.getType(type.toString());
+                if (SchemaConceptUtilities.getDefaultVertexType().equals(resolvedType)) {
+                    type = graph.getSchema().resolveVertexType(type.toString());
+                    modifiedDefaultVtxType = true;
+                }                
             }
 
             // set the identifier - preference is identifier > raw > label > unknown
@@ -199,11 +218,11 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             label = resolved.toString();
 
             // write changes to graph
-            if (!StringUtils.equals(identifier, graph.getStringValue(vertexIdentifierAttribute, vertexId))) {
+            if (!Strings.CS.equals(identifier, graph.getStringValue(vertexIdentifierAttribute, vertexId))) {
                 graph.setStringValue(vertexIdentifierAttribute, vertexId, identifier);
             }
 
-            if (type != null && type != SchemaVertexTypeUtilities.getDefaultType() && !type.equals(graph.getObjectValue(vertexTypeAttribute, vertexId))) {
+            if (type != null && ((!modifiedDefaultVtxType && type != SchemaVertexTypeUtilities.getDefaultType() && !type.equals(graph.getObjectValue(vertexTypeAttribute, vertexId))) || updateStoredType)) {
                 graph.setObjectValue(vertexTypeAttribute, vertexId, type);
             }
 
@@ -211,21 +230,21 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 graph.setObjectValue(vertexRawAttribute, vertexId, raw);
             }
 
-            if (!StringUtils.equals(label, graph.getStringValue(vertexLabelAttribute, vertexId))) {
+            if (!Strings.CS.equals(label, graph.getStringValue(vertexLabelAttribute, vertexId))) {
                 graph.setStringValue(vertexLabelAttribute, vertexId, label);
             }
 
-            if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexColorAttribute, vertexId))
+            if (type != null && (!modifiedDefaultVtxType && (type != SchemaVertexTypeUtilities.getDefaultType()) || graph.isDefaultValue(vertexColorAttribute, vertexId))
                     && !Objects.equals(type.getColor(), graph.getObjectValue(vertexColorAttribute, vertexId))) {
                 graph.setObjectValue(vertexColorAttribute, vertexId, type.getColor());
             }
 
-            if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexBackgroundIconAttribute, vertexId))
+            if (type != null && (!modifiedDefaultVtxType && (type != SchemaVertexTypeUtilities.getDefaultType()) || graph.isDefaultValue(vertexBackgroundIconAttribute, vertexId))
                     && !Objects.equals(type.getBackgroundIcon(), graph.getObjectValue(vertexBackgroundIconAttribute, vertexId))) {
                 graph.setObjectValue(vertexBackgroundIconAttribute, vertexId, type.getBackgroundIcon().getExtendedName());
             }
 
-            if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexForegroundIconAttribute, vertexId))) {
+            if (type != null && ((!modifiedDefaultVtxType && type != SchemaVertexTypeUtilities.getDefaultType()) || graph.isDefaultValue(vertexForegroundIconAttribute, vertexId))) {
                 if (!SchemaVertexTypeUtilities.getDefaultType().getForegroundIcon().equals(type.getForegroundIcon())) {
                     if (!Objects.equals(type.getForegroundIcon(), graph.getObjectValue(vertexForegroundIconAttribute, vertexId))) {
                         graph.setObjectValue(vertexForegroundIconAttribute, vertexId, type.getForegroundIcon().getExtendedName());
@@ -254,6 +273,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             if (SchemaConceptUtilities.getDefaultVertexType().equals(resolvedType)
                     && !SchemaConceptUtilities.getDefaultVertexType().getName().equals(type)) {
                 resolvedType = SchemaConceptUtilities.getDefaultVertexType().rename(type);
+                modifiedDefaultVtxType = true;
             }
 
             return resolvedType;
@@ -292,6 +312,9 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             SchemaTransactionType type = graph.getObjectValue(transactionTypeAttribute, transactionId);
             String label = graph.getStringValue(transactionLabelAttribute, transactionId);
 
+            boolean updateStoredType = false;
+            modifiedDefaultTxnType = false;
+            
             // set the type - preference is type > label > unknown
             if (type == null) {
                 if (StringUtils.isNotBlank(label)) {
@@ -303,7 +326,18 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                     type = SchemaTransactionTypeUtilities.getDefaultType();
                 }
             } else if (type.isIncomplete()) {
+                final String initialType = type.toString();
                 type = resolveTransactionType(type.getName());
+                if (!type.toString().equals(initialType)) {
+                    updateStoredType = true;
+                }
+            } else {
+                // current directed value doesn't match expected setting for the type.
+                final SchemaTransactionType resolvedType = SchemaTransactionTypeUtilities.getType(type.getName());
+                if (SchemaTransactionTypeUtilities.getDefaultType().equals(resolvedType)) {
+                    type = resolveTransactionType(type.getName());
+                    modifiedDefaultTxnType = true;
+                }
             }
 
             // set the identifier - preference is identifier > label > unknown
@@ -321,24 +355,24 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             label = type == null ? null : type.getName();
 
             // set new values on the graph
-            if (!StringUtils.equals(identifier, graph.getStringValue(transactionIdentifierAttribute, transactionId))) {
+            if (!Strings.CS.equals(identifier, graph.getStringValue(transactionIdentifierAttribute, transactionId))) {
                 graph.setStringValue(transactionIdentifierAttribute, transactionId, identifier);
             }
 
-            if (type != null && type != SchemaTransactionTypeUtilities.getDefaultType() && type != graph.getObjectValue(transactionTypeAttribute, transactionId)) {
+            if (type != null && ((type != SchemaTransactionTypeUtilities.getDefaultType() && !modifiedDefaultTxnType && type != graph.getObjectValue(transactionTypeAttribute, transactionId)) || updateStoredType)) {
                 graph.setObjectValue(transactionTypeAttribute, transactionId, type);
             }
 
-            if (!StringUtils.equals(label, graph.getStringValue(transactionLabelAttribute, transactionId))) {
+            if (!Strings.CS.equals(label, graph.getStringValue(transactionLabelAttribute, transactionId))) {
                 graph.setStringValue(transactionLabelAttribute, transactionId, label);
             }
 
-            if (type != null && (type != SchemaTransactionTypeUtilities.getDefaultType() || graph.isDefaultValue(transactionColorAttribute, transactionId))
+            if (type != null && !modifiedDefaultTxnType && (type != SchemaTransactionTypeUtilities.getDefaultType() || graph.isDefaultValue(transactionColorAttribute, transactionId))
                     && !Objects.equals(type.getColor(), graph.getObjectValue(transactionColorAttribute, transactionId))) {
                 graph.setObjectValue(transactionColorAttribute, transactionId, type.getColor());
             }
 
-            if (type != null && (type != SchemaTransactionTypeUtilities.getDefaultType() || graph.isDefaultValue(transactionStyleAttribute, transactionId))
+            if (type != null && !modifiedDefaultTxnType && (type != SchemaTransactionTypeUtilities.getDefaultType() || graph.isDefaultValue(transactionStyleAttribute, transactionId))
                     && !Objects.equals(type.getStyle(), graph.getObjectValue(transactionStyleAttribute, transactionId))) {
                 graph.setObjectValue(transactionStyleAttribute, transactionId, type.getStyle());
             }
@@ -347,7 +381,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             // some unexpected behaviour with blank types.
             // see https://github.com/constellation-app/constellation/issues/723#issuecomment-662241467
             // see also https://github.com/constellation-app/constellation/pull/735
-            if (type != null && type != SchemaTransactionTypeUtilities.getDefaultType() && !Objects.equals(type.isDirected(), graph.getBooleanValue(transactionDirectedAttribute, transactionId))) {
+            if (type != null && type != SchemaTransactionTypeUtilities.getDefaultType() && !modifiedDefaultTxnType && !Objects.equals(type.isDirected(), graph.getBooleanValue(transactionDirectedAttribute, transactionId))) {
                 graph.setBooleanValue(transactionDirectedAttribute, transactionId, type.isDirected());
             }
 
@@ -378,6 +412,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             if (SchemaTransactionTypeUtilities.getDefaultType().equals(resolvedType)
                     && !SchemaTransactionTypeUtilities.getDefaultType().getName().equals(type)) {
                 resolvedType = SchemaTransactionTypeUtilities.getDefaultType().rename(type);
+                modifiedDefaultTxnType = true;
             }
 
             return resolvedType;

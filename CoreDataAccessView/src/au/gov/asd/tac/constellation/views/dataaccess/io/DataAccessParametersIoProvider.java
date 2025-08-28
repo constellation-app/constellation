@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import java.util.Optional;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.stage.Window;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -58,7 +59,7 @@ public class DataAccessParametersIoProvider {
      * @param tabs the tabs to extract the global and plugin parameters from
      * @see JsonIO#saveJsonPreferences(Optional, ObjectMapper, Object)
      */
-    public static void saveParameters(final TabPane tabs) {
+    public static void saveParameters(final TabPane tabs, final Window parentWindow) {
         final List<DataAccessUserPreferences> dataAccessUserPreferenceses = new ArrayList<>();
 
         for (final Tab step : tabs.getTabs()) {
@@ -75,7 +76,7 @@ public class DataAccessParametersIoProvider {
         }
 
         // Can now save the preferences even if no query name parameter is present
-        JsonIO.saveJsonPreferences(Optional.of(DATA_ACCESS_DIR), dataAccessUserPreferenceses);
+        JsonIO.saveJsonPreferencesWithKeyboardShortcut(Optional.of(DATA_ACCESS_DIR), dataAccessUserPreferenceses, parentWindow);
     }
 
     /**
@@ -85,6 +86,51 @@ public class DataAccessParametersIoProvider {
      * @param dataAccessPane the pane to load the JSON parameter file into
      * @see JsonIO#loadJsonPreferences(Optional, TypeReference)
      */
+    public static void loadParameters(final DataAccessPane dataAccessPane, final String keyboardShortcut) {
+        final List<DataAccessUserPreferences> loadedParameters = JsonIO
+                .loadJsonPreferencesWithFilePrefix(
+                        Optional.of(DATA_ACCESS_DIR), Optional.of("[" + keyboardShortcut + "]"),
+                        new TypeReference<List<DataAccessUserPreferences>>() {
+                }
+                );
+
+        if (loadedParameters != null) {
+            dataAccessPane.getDataAccessTabPane().removeTabs();
+
+            loadedParameters.forEach(loadedParameter -> {
+                final QueryPhasePane pluginPane = dataAccessPane.getDataAccessTabPane().newTab(loadedParameter.getStepCaption());
+
+                // If an existing global parameter is in the JSON then update it,
+                // otherwise ignore it
+                pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream()
+                        .filter(param -> loadedParameter.getGlobalParameters().containsKey(param.getKey()))
+                        .forEach(param
+                                -> param.getValue().setStringValue(
+                                loadedParameter.getGlobalParameters().get(param.getKey())
+                        )
+                        );
+
+                // Groups all the parameters in to the plugin groups. Common parameters
+                // are based on the plugin name that is before the first '.' in the key values
+                pluginPane.getDataAccessPanes().stream()
+                        // Plugins are disabled by defult. Only load and enable from
+                        // the JSON if the JSON contains data for this plugin and it's
+                        // enabled.
+                        .filter(pane
+                                -> loadedParameter.getPluginParameters().containsKey(pane.getPlugin().getClass().getSimpleName())
+                        && loadedParameter.getPluginParameters().get(pane.getPlugin().getClass().getSimpleName()).containsKey(getEnabledPluginKey(pane))
+                        && Boolean.valueOf(
+                                loadedParameter.getPluginParameters().get(pane.getPlugin().getClass().getSimpleName()).get(
+                                        getEnabledPluginKey(pane)
+                                ))
+                        )
+                        .forEach(pane -> pane.setParameterValues(
+                        loadedParameter.getPluginParameters().get(pane.getPlugin().getClass().getSimpleName())
+                ));
+            });
+        }
+    }
+
     public static void loadParameters(final DataAccessPane dataAccessPane) {
         final List<DataAccessUserPreferences> loadedParameters = JsonIO
                 .loadJsonPreferences(

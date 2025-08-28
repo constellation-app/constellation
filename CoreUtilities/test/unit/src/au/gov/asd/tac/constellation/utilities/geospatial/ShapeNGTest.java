@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,11 +37,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
+import org.geotools.api.data.DataStore;
+import org.geotools.api.data.DataStoreFinder;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.referencing.FactoryException;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -67,8 +68,6 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.referencing.FactoryException;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
@@ -362,6 +361,24 @@ public class ShapeNGTest {
             new Tuple<>(BOX_LAT_MIN, BOX_LON_MAX),
             new Tuple<>(BOX_LAT_MAX, BOX_LON_MAX),
             new Tuple<>(BOX_LAT_MAX, BOX_LON_MIN));
+    
+    // alternate tuples for GeoPackage which enforces XY (i.e. lon/lat) coords
+    private static final List<Tuple<Double, Double>> POINT_XY_COORDS = Arrays.asList(new Tuple<>(POINT_LON, POINT_LAT));
+    private static final List<Tuple<Double, Double>> LINE_XY_COORDS = Arrays.asList(
+            new Tuple<>(LINE_LON1, LINE_LAT1),
+            new Tuple<>(LINE_LON2, LINE_LAT2));
+    private static final List<Tuple<Double, Double>> POLY_XY_COORDS = Arrays.asList(
+            new Tuple<>(POLY_LON1, POLY_LAT1),
+            new Tuple<>(POLY_LON2, POLY_LAT2),
+            new Tuple<>(POLY_LON3, POLY_LAT3),
+            new Tuple<>(POLY_LON4, POLY_LAT4),
+            new Tuple<>(POLY_LON5, POLY_LAT5),
+            new Tuple<>(POLY_LON6, POLY_LAT6));
+    private static final List<Tuple<Double, Double>> BOX_XY_COORDS = Arrays.asList(
+            new Tuple<>(BOX_LON_MIN, BOX_LAT_MIN),
+            new Tuple<>(BOX_LON_MAX, BOX_LAT_MIN),
+            new Tuple<>(BOX_LON_MAX, BOX_LAT_MAX),
+            new Tuple<>(BOX_LON_MIN, BOX_LAT_MAX));
 
     // test common properties for shapes
     private static final String POINT_ID = "pointId";
@@ -382,7 +399,7 @@ public class ShapeNGTest {
     // convenience method to get the bounding box part of GeoJson
     private String getGeoJsonBoundingBox(final List<Double> points) {
         return points.stream()
-                .map(p -> String.valueOf(p))
+                .map(String::valueOf)
                 .collect(Collectors.joining(","));
     }
 
@@ -392,13 +409,13 @@ public class ShapeNGTest {
         final List<String> c = new ArrayList<>();
 
         String first = null;
-        for (Tuple t : coords) {
+        for (final Tuple<Double, Double> t : coords) {
             // convert each coord to [123,456]
             final StringBuilder s = new StringBuilder();
             s.append("[");
             s.append(String.join(",",
-                    String.valueOf((Double) t.getFirst()),
-                    String.valueOf((Double) t.getSecond())));
+                    String.valueOf(t.getFirst()),
+                    String.valueOf(t.getSecond())));
             s.append("]");
             c.add(s.toString());
             // some shapes put the first coord in twice, beginning and end
@@ -760,52 +777,54 @@ public class ShapeNGTest {
                         assertTrue(geometryLc.startsWith(POLYGON.getGeomertyType().toLowerCase()));
                     }
                 }
+                
+                // GeoPackage forces over to XY coordinate format and so will have a slightly different check to other formats 
+                final boolean isGeoPackageExport = exportType == EXPORT_TYPE.GEOPACKAGE;
 
                 // assert other values
                 if (POINT_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(POINT_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? POINT_XY_COORDS : POINT_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), POINT_LON); // not a typo!
                     assertEquals(props.get(CENTRE_LON), POINT_LAT); // not a typo!
                     assertEquals(props.get(RADIUS), POINT_RADIUS);
                     assertEquals(props.get(POINT_ATTR_ID1), POINT_ATTR_VAL1);
                     assertEquals(props.get(POINT_ATTR_ID2), POINT_ATTR_VAL2.toString());
                 } else if (LINE_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(LINE_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? LINE_XY_COORDS : LINE_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), LINE_CENTRE_LAT);
                     assertEquals(props.get(CENTRE_LON), LINE_CENTRE_LON);
                     assertEquals(props.get(RADIUS), LINE_RADIUS);
                     assertEquals(props.get(LINE_ATTR_ID).toString(), LINE_ATTR_VAL.toString());
                 } else if (POLY_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(POLY_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? POLY_XY_COORDS : POLY_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), POLY_CENTRE_LAT);
                     assertEquals(props.get(CENTRE_LON), POLY_CENTRE_LON);
                     assertEquals(props.get(RADIUS), POLY_RADIUS);
                     assertEquals(props.get(POLY_ATTR_ID1), POLY_ATTR_VAL1);
                     assertEquals(props.get(POLY_ATTR_ID2), POLY_ATTR_VAL2.toString());
                 } else if (BOX_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(BOX_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? BOX_XY_COORDS : BOX_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), BOX_CENTRE_LAT);
                     assertEquals(props.get(CENTRE_LON), BOX_CENTRE_LON);
                     assertEquals(props.get(RADIUS), BOX_RADIUS);
                     assertEquals(props.get(BOX_ATTR_ID), BOX_ATTR_VAL.toString());
                 } else if (NULL_ATTR_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(BOX_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? BOX_XY_COORDS : BOX_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), BOX_CENTRE_LAT);
                     assertEquals(props.get(CENTRE_LON), BOX_CENTRE_LON);
                     assertEquals(props.get(RADIUS), BOX_RADIUS);
                 } else if (EMPTY_ATTR_MAP_ID.equals(props.get(NAME))) {
-                    assertTrue(((Geometry) props.get(GEOMETRY)).toString()
-                            .contains(getFeatureCoords(LINE_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? LINE_XY_COORDS : LINE_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), LINE_CENTRE_LAT);
                     assertEquals(props.get(CENTRE_LON), LINE_CENTRE_LON);
                     assertEquals(props.get(RADIUS), LINE_RADIUS);
                 } else if (NULL_ATTR_VAL_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(POINT_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? POINT_XY_COORDS : POINT_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), POINT_LON); // not a typo!
                     assertEquals(props.get(CENTRE_LON), POINT_LAT); // not a typo!
                     assertEquals(props.get(RADIUS), POINT_RADIUS);
                 } else if (ROGUE_SHAPE_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(POLY_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? POLY_XY_COORDS : POLY_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), POLY_CENTRE_LAT);
                     assertEquals(props.get(CENTRE_LON), POLY_CENTRE_LON);
                     assertEquals(props.get(RADIUS), POLY_RADIUS);
@@ -853,7 +872,7 @@ public class ShapeNGTest {
         // convert GeoJson string to a list of Features
         final FeatureJSON featureJson = new FeatureJSON(new GeometryJSON());
         featureJson.setFeatureType(featureJson.readFeatureCollectionSchema(s, false));
-        final FeatureCollection featureCollection;
+        final FeatureCollection<?, ?> featureCollection;
         try (final Reader stringReader = new StringReader(s)) {
             featureCollection = featureJson.readFeatureCollection(stringReader);
         }
@@ -916,18 +935,18 @@ public class ShapeNGTest {
             Shape.generateShapeCollection("dummy", shapes, Collections.emptyMap());
 
             // check that the Feature write was only called once
-            final ArgumentCaptor<FeatureCollection> fcCaptor
+            final ArgumentCaptor<FeatureCollection<?, ?>> fcCaptor
                     = ArgumentCaptor.forClass(FeatureCollection.class);
             verify(mockFeatureJson.constructed().get(0), times(1))
                     .writeFeatureCollection(fcCaptor.capture(), any());
 
             // check that the FeatureCollection to be output has only one Feature
-            final FeatureCollection fc = fcCaptor.getValue();
+            final FeatureCollection<?, ?> fc = fcCaptor.getValue();
             assertEquals(fc.size(), 1);
 
             // check that the written Feature is as expected
             try (final SimpleFeatureIterator it = (SimpleFeatureIterator) fc.features()) {
-                final SimpleFeature feature = (SimpleFeature) it.next();
+                final SimpleFeature feature = it.next();
                 final String featureName = (String) feature.getAttribute(NAME);
                 assertTrue(featureName.equals(POINT_ID) || featureName.equals(LINE_ID));
             }
@@ -1109,6 +1128,13 @@ public class ShapeNGTest {
                 store.dispose();
             }
         }
+        // try to generateGeoPackage to the same filename
+        try {
+            Shape.generateGeoPackage(id, getTestShapes(), getTestAttributes(), f, Shape.SpatialReference.WGS84);
+            assertTrue(true);  //successful if no exception 
+        } catch (final IOException ex) {
+            fail(ex.getMessage(), ex);
+        }      
     }
 
     /**
@@ -1166,7 +1192,7 @@ public class ShapeNGTest {
                 ArgumentCaptor<List<SimpleFeature>> captor
                         = ArgumentCaptor.forClass(List.class);
                 verify(mockFeatures.constructed().get(0)).addAll((Collection<SimpleFeature>) captor.capture());
-                final List<SimpleFeature> features = (List) captor.getValue();
+                final List<SimpleFeature> features = captor.getValue();
                 assertEquals(features.size(), 1);
                 final String featureName = (String) features.get(0).getAttribute(NAME);
                 assertTrue(featureName.equals(POINT_ID) || featureName.equals(LINE_ID));

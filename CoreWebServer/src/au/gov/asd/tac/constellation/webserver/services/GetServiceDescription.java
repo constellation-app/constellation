@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ public class GetServiceDescription extends RestService {
     private static final String NAME = "get_service_description";
     private static final String SERVICE_NAME_PARAMETER_ID = "service_name";
     private static final String METHOD_NAME_PARAMETER_ID = "http_method";
+    private static final String EXAMPLE_RESPONSES_PATH = "getServiceDescriptionExample";
 
     @Override
     public String getName() {
@@ -114,5 +115,10 @@ public class GetServiceDescription extends RestService {
         } catch (final IllegalArgumentException ex) {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, ex.getMessage());
         }
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }
