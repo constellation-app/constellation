@@ -20,11 +20,6 @@
     -fx-text-fill: #FFFF00;/*Yellow*/
 }
 
-.bar-bin-count {
-    -fx-text-fill: #C0C0C0; /*Silver*/
-    -fx-padding: 0 0.5em 0 0;
-}
-
 .label:barBinCount {
     -fx-padding: 0 1em 0 0;
 }
@@ -44,10 +39,10 @@
     -fx-min-height: 0;
 }
 
-/*.table-view {
+.table-view {
     -fx-background-color: null;
     -fx-border-color: null;
-}*/
+}
 
 .table-row-cell {
     -fx-background-color: null;
