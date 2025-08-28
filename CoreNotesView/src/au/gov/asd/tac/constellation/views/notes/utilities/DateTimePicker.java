@@ -164,7 +164,6 @@ public class DateTimePicker {
         this.zone = zone;
 
         final ZonedDateTime timeAtZone = ZonedDateTime.now(zone);
-
         datePicker.valueProperty().set(LocalDate.now(zone));
         hourPicker.getValueFactory().setValue(timeAtZone.getHour());
         minPicker.getValueFactory().setValue(timeAtZone.getMinute());
@@ -178,18 +177,9 @@ public class DateTimePicker {
      */
     public void convertCurrentDateTime(final ZoneId convertTo) {
         if (convertTo != null || zone != convertTo) {
-            final ZonedDateTime currentTime = ZonedDateTime.of(
-                    datePicker.getValue().getYear(),
-                    datePicker.getValue().getMonthValue(),
-                    datePicker.getValue().getDayOfMonth(),
-                    hourPicker.getValue(),
-                    minPicker.getValue(),
-                    secPicker.getValue(),
-                    0,
-                    zone).withZoneSameInstant(convertTo);
-
             zone = convertTo;
 
+            final ZonedDateTime currentTime = getCurrentDateTime().withZoneSameInstant(convertTo);
             datePicker.valueProperty().set(currentTime.toLocalDate());
             hourPicker.getValueFactory().setValue(currentTime.getHour());
             minPicker.getValueFactory().setValue(currentTime.getMinute());
@@ -207,9 +197,9 @@ public class DateTimePicker {
                 datePicker.getValue().getYear(),
                 datePicker.getValue().getMonthValue(),
                 datePicker.getValue().getDayOfMonth(),
-                hourPicker.getValue(),
-                minPicker.getValue(),
-                secPicker.getValue(),
+                hourPicker.getValue() != null ? hourPicker.getValue() : 0,
+                minPicker.getValue() != null ? minPicker.getValue() : 0,
+                secPicker.getValue() != null ? secPicker.getValue() : 0,
                 0,
                 zone);
     }
