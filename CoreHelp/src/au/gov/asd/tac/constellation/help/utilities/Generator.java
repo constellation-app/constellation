@@ -79,7 +79,7 @@ public class Generator implements Runnable {
             final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
             final List<File> tocXMLFiles = getXMLFiles();
             try {
-                TOCGenerator.convertXMLMappings(tocXMLFiles, root);
+                TOCGenerator.convertXMLMappings(tocXMLFiles, root, true);
             } catch (final IOException ex) {
                 LOGGER.log(Level.WARNING, String.format("There was an error creating the documentation file %s "
                         + "- Documentation may not be complete", baseDirectory), ex);
@@ -92,7 +92,7 @@ public class Generator implements Runnable {
         final TreeNode<TOCItem> rootOffline = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
         final List<File> tocXMLFiles = getXMLFiles();
         try {
-            TOCGenerator.convertXMLMappings(tocXMLFiles, rootOffline);
+            TOCGenerator.convertXMLMappings(tocXMLFiles, rootOffline, false);
         } catch (final IOException ex) {
             LOGGER.log(Level.WARNING, String.format("There was an error creating the documentation file %s "
                     + "- Documentation may not be complete.", getTOCDirectory()), ex);

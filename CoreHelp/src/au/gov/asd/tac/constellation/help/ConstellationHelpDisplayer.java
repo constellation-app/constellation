@@ -92,7 +92,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                 if (helpLink.contains("constellation-")) {
                     helpLink = helpLink.substring(helpLink.indexOf("modules") + 7);
                 }
-                url = OFFICIAL_CONSTELLATION_WEBSITE + helpLink.replace(".md", ".html");
+                url = OFFICIAL_CONSTELLATION_WEBSITE + SEP + helpLink.replace(".md", ".html");
             } else {
                 final File file = new File(Generator.getBaseDirectory() + SEP + helpLink);
                 final URL fileUrl = file.toURI().toURL();
