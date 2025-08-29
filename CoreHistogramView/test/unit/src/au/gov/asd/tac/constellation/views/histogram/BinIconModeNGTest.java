@@ -114,7 +114,7 @@ public class BinIconModeNGTest {
         when(mockKey.buildBufferedImage()).thenReturn(mockBufferedImage);
 
         final int height = 0;
-// 
+
         try (final MockedStatic<IconManager> iconManager = Mockito.mockStatic(IconManager.class); final MockedStatic<SwingFXUtils> swingFXUtils = Mockito.mockStatic(SwingFXUtils.class); final MockedConstruction<ImageView> mockImageView = Mockito.mockConstruction(ImageView.class)) {
             iconManager.when(() -> IconManager.getIcon(anyString())).thenReturn(mockKey);
             swingFXUtils.when(() -> SwingFXUtils.toFXImage(mockBufferedImage, null)).thenReturn(mockImage);
