@@ -24,8 +24,11 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedConstruction;
@@ -305,7 +308,10 @@ public class HistogramPaneNGTest {
         System.out.println("actionButtonMousePressed");
 
         final ObservableList mockItems = mock(ObservableList.class);
-        try (final MockedConstruction<ContextMenu> mockConstructor = Mockito.mockConstruction(ContextMenu.class, (mock, context) -> {
+        final ObjectProperty<Image> mockImageProperty = mock(ObjectProperty.class);
+        try (final MockedConstruction<ImageView> mockImageView = Mockito.mockConstruction(ImageView.class, (mock, context) -> {
+            when(mock.imageProperty()).thenReturn(mockImageProperty);
+        }); final MockedConstruction<ContextMenu> mockConstructor = Mockito.mockConstruction(ContextMenu.class, (mock, context) -> {
             when(mock.getItems()).thenReturn(mockItems);
         })) {
             // Set up instance
