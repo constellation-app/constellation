@@ -73,4 +73,4 @@ can look confusing.
 The clustering algorithms add an integer attribute "Cluster.ChineseWhispers" 
 to the nodes. This attribute has a unique per-cluster value to indicate
 which cluster a node belongs to, which other algorithms can later use 
-(e.g. [Arrange by Node Attribute](../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/node-attribute.md)).
+(e.g. [Arrange by Node Attribute](../ext/docs/CoreArrangementPlugins/node-attribute-arrangement.md)).

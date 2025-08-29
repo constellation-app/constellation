@@ -5,19 +5,19 @@
 
 <div class="skipNav">
 
-[Skip navigation links](SCollection.md#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/docs/javadoc/graph/SCollection.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../overview-summary.md)
--   [Package](package-summary.md)
+-   [Overview](../ext/docs/CoreScriptingView/docs/javadoc/overview-summary.md)
+-   [Package](../ext/docs/CoreScriptingView/docs/javadoc/graph/package-summary.md)
 -   Class
--   [Tree](package-tree.md)
--   [Deprecated](../deprecated-list.md)
--   [Index](../index-all.md)
--   [Help](../help-doc.md)
+-   [Tree](../ext/docs/CoreScriptingView/docs/javadoc/graph/package-tree.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -30,13 +30,13 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 <div class="subNav">
 
 -   [<span
-    class="typeNameLink">Prev Class</span>](SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+    class="typeNameLink">Prev Class</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 -   [<span
-    class="typeNameLink">Next Class</span>](SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+    class="typeNameLink">Next Class</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 
 <!-- -->
 
--   [All Classes](../allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -47,15 +47,15 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 -   Summary: 
 -   Nested | 
 -   Field | 
--   [Constructor](SCollection.md#constructor.summary) | 
--   [Method](SCollection.md#method.summary)
+-   [Constructor](../ext/docs/CoreScriptingView/docs/javadoc/graph/SCollection.md#constructor.summary) | 
+-   [Method](../ext/docs/CoreScriptingView/docs/javadoc/graph/SCollection.md#method.summary)
 
 <!-- -->
 
 -   Detail: 
 -   Field | 
--   [Constructor](SCollection.md#constructor.detail) | 
--   [Method](SCollection.md#method.detail)
+-   [Constructor](../ext/docs/CoreScriptingView/docs/javadoc/graph/SCollection.md#constructor.detail) | 
+-   [Method](../ext/docs/CoreScriptingView/docs/javadoc/graph/SCollection.md#method.detail)
 
 </div>
 
@@ -280,7 +280,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="returnLabel">Returns:</span>  
             a collection of elements as a
-            [`SCollection`](SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SCollection`](../ext/docs/CoreScriptingView/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
             <span class="throwsLabel">Throws:</span>  
             `javax.script.ScriptException`
@@ -300,11 +300,11 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="paramLabel">Parameters:</span>  
             `other` - the other collection as a
-            [`SCollection`](SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SCollection`](../ext/docs/CoreScriptingView/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
             <span class="returnLabel">Returns:</span>  
             the intersection of this collection and another as a
-            [`SCollection`](SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SCollection`](../ext/docs/CoreScriptingView/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span
         id="union-au.gov.asd.tac.constellation.views.scripting.graph.SCollection-"></span>
@@ -321,11 +321,11 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="paramLabel">Parameters:</span>  
             `other` - the other collection as a
-            [`SCollection`](SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SCollection`](../ext/docs/CoreScriptingView/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
             <span class="returnLabel">Returns:</span>  
             the union of this collection and another as a
-            [`SCollection`](SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SCollection`](../ext/docs/CoreScriptingView/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span id="empty--"></span>
 

@@ -4,19 +4,19 @@
 
 <div class="skipNav">
 
-[Skip navigation links](SAttributeIterator.md#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SAttributeIterator.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../../overview-summary.md)
--   [Package](package-summary.md)
+-   [Overview](../ext/docs/CoreScriptingView/docs/javadoc/overview-summary.md)
+-   [Package](../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/package-summary.md)
 -   Class
--   [Tree](package-tree.md)
--   [Deprecated](../../deprecated-list.md)
--   [Index](../../index-all.md)
--   [Help](../../help-doc.md)
+-   [Tree](../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/package-tree.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -30,11 +30,11 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 -   Prev Class
 -   [<span
-    class="typeNameLink">Next Class</span>](SEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")
+    class="typeNameLink">Next Class</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SEdgeIterator.md "class in au.gov.asd.tac.constellation.views.scripting.graph.iterators")
 
 <!-- -->
 
--   [All Classes](../../allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -45,15 +45,15 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 -   Summary: 
 -   Nested | 
 -   Field | 
--   [Constructor](SAttributeIterator.md#constructor.summary) | 
--   [Method](SAttributeIterator.md#method.summary)
+-   [Constructor](../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SAttributeIterator.md#constructor.summary) | 
+-   [Method](../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SAttributeIterator.md#method.summary)
 
 <!-- -->
 
 -   Detail: 
 -   Field | 
--   [Constructor](SAttributeIterator.md#constructor.detail) | 
--   [Method](SAttributeIterator.md#method.detail)
+-   [Constructor](../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SAttributeIterator.md#constructor.detail) | 
+-   [Method](../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SAttributeIterator.md#method.detail)
 
 </div>
 
@@ -82,7 +82,7 @@ au.gov.asd.tac.constellation.views.scripting.graph.iterators
 <div class="description">
 
 -   All Implemented Interfaces:  
-    java.util.Iterator\<[SAttribute](../SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")\>
+    java.util.Iterator\<[SAttribute](../ext/docs/CoreScriptingView/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")\>
 
     ------------------------------------------------------------------------
 
