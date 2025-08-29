@@ -32,9 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A BinCollection represents all the bins in a single histogram. All elements
- * in the graph will exist in exactly one bin unless they have been excluded
- * through a filter.
+ * A BinCollection represents all the bins in a single histogram. All elements in the graph will exist in exactly one
+ * bin unless they have been excluded through a filter.
  *
  * @author sirius
  */
@@ -59,12 +58,12 @@ public class BinCollection {
     public Bin[] getBins() {
         return bins;
     }
-    
+
     public Bin[] getSelectedBins() {
         final List<Bin> selectedBins = new ArrayList<>();
         int count = 0;
-        for(final Bin bin : getBins()){
-            if(bin.selectedCount > 0){
+        for (final Bin bin : getBins()) {
+            if (bin.selectedCount > 0) {
                 count++;
                 selectedBins.add(bin);
             }
