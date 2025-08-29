@@ -20,9 +20,18 @@ import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.log.ConstellationLogFormatter;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
+import javax.swing.Action;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+import org.openide.util.Utilities;
+import org.openide.util.actions.Presenter;
 import org.openide.windows.OnShowing;
 import org.openide.windows.WindowManager;
 
@@ -61,7 +70,19 @@ public class Startup implements Runnable {
         }
 
         ConstellationSecurityManager.startSecurityLater(null);
-
+        
+        final List<? extends Action> actions = Utilities.actionsForPath("Actions/Edit");
+        for (final Action action : actions) {
+            // only process for quicksearch and if fontsize is customised
+            if (action.getClass().getName().toLowerCase().contains("quicksearchaction") && UIManager.get("customFontSize") != null) {
+                final Component toolbarPresenter = ((Presenter.Toolbar) action).getToolbarPresenter();
+                for (final Component c : ((Container)toolbarPresenter).getComponents()) {
+                    processComponentTree(c);
+                }
+                break;
+            }
+        }
+        
         // application environment
         final String environment = System.getProperty(SYSTEM_ENVIRONMENT);
         final String name = environment != null
@@ -83,5 +104,28 @@ public class Startup implements Runnable {
         FontUtilities.initialiseApplicationFontPreferenceOnFirstUse();
 
         ProxyUtilities.setProxySelector(null);
+    }
+
+    /**
+     * Traverse the component tree to find the right source to set the size.
+     * @param source component to traverse.
+     */
+    public void processComponentTree(final Component source) {
+
+        if (source instanceof JScrollPane jsp) {
+            final Dimension origSize = jsp.getSize();
+            final Integer customFontSize = (Integer) UIManager.get("customFontSize");
+            final Dimension newDimension = new Dimension(origSize.width, 19 * customFontSize / 12);
+            
+            jsp.setMinimumSize(newDimension);
+            jsp.setPreferredSize(newDimension);
+            jsp.getViewport().setPreferredSize(newDimension);            
+        }
+        // traverse the component tree
+        if (source instanceof Container sc) {
+            for (final Component c : sc.getComponents()) {
+                processComponentTree(c);
+            }
+        }   
     }
 }
