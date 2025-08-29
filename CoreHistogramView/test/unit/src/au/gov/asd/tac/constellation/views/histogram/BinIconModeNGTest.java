@@ -17,13 +17,22 @@ package au.gov.asd.tac.constellation.views.histogram;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.javafx.JavaFxUtilities;
 import au.gov.asd.tac.constellation.views.histogram.bins.ObjectBin;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Rectangle;
+import static org.mockito.ArgumentMatchers.anyString;
+import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -98,15 +107,29 @@ public class BinIconModeNGTest {
         final ObjectBin mockBin = mock(ObjectBin.class);
         final ConstellationIcon mockKey = mock(ConstellationIcon.class);
         final String keyName = "name";
+        final BufferedImage mockBufferedImage = mock(BufferedImage.class);
+        final WritableImage mockImage = mock(WritableImage.class);
         when(mockBin.getKeyAsObject()).thenReturn(mockKey);
         when(mockKey.getName()).thenReturn(keyName);
+        when(mockKey.buildBufferedImage()).thenReturn(mockBufferedImage);
 
         final int height = 0;
+// 
+        try (final MockedStatic<IconManager> iconManager = Mockito.mockStatic(IconManager.class); final MockedStatic<SwingFXUtils> swingFXUtils = Mockito.mockStatic(SwingFXUtils.class); final MockedConstruction<ImageView> mockImageView = Mockito.mockConstruction(ImageView.class)) {
+            iconManager.when(() -> IconManager.getIcon(anyString())).thenReturn(mockKey);
+            swingFXUtils.when(() -> SwingFXUtils.toFXImage(mockBufferedImage, null)).thenReturn(mockImage);
 
-        final BinIconMode instance = BinIconMode.ICON;
-        final ImageView result = (ImageView) instance.createFXIcon(mockBin, height);
+            final BinIconMode instance = BinIconMode.ICON;
+            final ImageView result = (ImageView) instance.createFXIcon(mockBin, height);
 
-        assertNotNull(result);
+            assertNotNull(result);
+            assertEquals(1, mockImageView.constructed().size());
+
+            verify(mockKey).buildBufferedImage();
+
+            iconManager.verify(() -> IconManager.getIcon(anyString()));
+            swingFXUtils.verify(() -> SwingFXUtils.toFXImage(mockBufferedImage, null));
+        }
     }
 
     /**
