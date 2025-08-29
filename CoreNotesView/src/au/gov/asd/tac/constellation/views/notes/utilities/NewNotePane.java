@@ -135,8 +135,7 @@ public class NewNotePane {
 
         final ScrollPane previewTabScrollPane = new ScrollPane();
         previewTabScrollPane.setContent(previewTabPane);
-        previewTabScrollPane.setMaxWidth(WIDTH);
-        previewTabScrollPane.setMaxHeight(202);
+        previewTabScrollPane.setPrefWidth(WIDTH);
         previewTabScrollPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         final VBox editVBox = new VBox(5, titleField, contentField);
@@ -158,11 +157,13 @@ public class NewNotePane {
                 mdTree.setMarkdownEnabled(markdownSelected);
                 mdTree.parse();
                 previewTextFlow = mdTree.getRenderedText();
-                previewTextFlow.setMinWidth(495);
-                previewTextFlow.setPrefWidth(495);
-                previewTextFlow.setMaxWidth(495);
-
-                resizeTextFlows(previewTextFlow, 2.0);
+                previewTextFlow.setPrefWidth(WIDTH - 10);
+                previewTextFlow.setPrefHeight(HEIGHT);
+                previewTextFlow.autosize();
+                previewTabPane.setPrefSize(previewTextFlow.getWidth() - 10, previewTextFlow.getHeight());
+                previewTabScrollPane.setPrefViewportWidth(WIDTH);
+                previewTabScrollPane.setPrefViewportHeight(HEIGHT);
+                                
                 previewTabPane.getChildren().add(previewTextFlow);
             }
         });
@@ -217,15 +218,6 @@ public class NewNotePane {
 
     }
 
-    private void resizeTextFlows(final TextFlow textFlow, final double scale) {
-        for (int i = 0; i < textFlow.getChildren().size(); ++i) {
-            if (textFlow.getChildren().get(i) instanceof TextFlow textFlowChild) {
-                resizeTextFlows(textFlowChild, scale + 0.5);
-            }
-        }
-        textFlow.setMaxHeight(textFlow.getMaxHeight() / scale);
-        textFlow.setMinWidth(495);
-    }
 
     /**
      * Instantiate stage for the pop up and set event handler to close it when
