@@ -203,7 +203,7 @@ public class HelpServlet extends HttpServlet {
                         }
                     }
                 }
-            } else if (returnValue == null && HelpServlet.redirect) {
+            } else if (HelpServlet.redirect) {
                 HelpServlet.redirect = false;
             }
         } catch (final IOException ex) {
