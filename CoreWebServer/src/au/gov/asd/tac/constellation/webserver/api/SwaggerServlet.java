@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -161,18 +160,14 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         responses.setAll((ObjectNode) root.at(String.format(exampleResponsesPath, "defaultResponses")));                        
                     }
 
-                    // Add the required CONSTELLATION secret header parameter.
-                    final ObjectNode secretParam = params.addObject();
-                    secretParam.put("name", "X-CONSTELLATION-SECRET");
-                    secretParam.put("in", "header");
-                    secretParam.put(REQUIRED, true);
-                    secretParam.put(DESCRIPTION, "CONSTELLATION secret");
-                    final ObjectNode secretSchema = secretParam.putObject(SCHEMA);
-                    secretSchema.put("type", "string");
-                   
+                    // Add the required CONSTELLATION secret header.
+                    final ArrayNode security = httpMethod.putArray("security");
+                    final ObjectNode apiKeyAuth = security.addObject();
+                    apiKeyAuth.putArray("ConstellationSecret");
+
                 });
 
-                final OutputStream out = response.getOutputStream();
+                final OutputStream out = response.getOutputStream();                
                 mapper.writeValue(out, root);
             } else {
                 if (fileName.endsWith(FileExtensionConstants.JAVASCRIPT)) {
