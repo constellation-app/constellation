@@ -195,7 +195,7 @@ public class HistogramPaneNGTest {
         // Stub this method, so variable "isAdjusting" is not set to true
         Mockito.doNothing().when(spy).setHistogramState(any(), any());
 
-        return new Pair<HistogramTopComponent2, HistogramPane>(mockTopComponent, spy);
+        return new Pair<>(mockTopComponent, spy);
     }
 
     /**
