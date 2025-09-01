@@ -31,6 +31,7 @@ import java.awt.datatransfer.Clipboard;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -253,7 +254,7 @@ public class HistogramDisplay2NGTest {
 
         final BinSelectionMode binSelectionMode = BinSelectionMode.ADD_TO_SELECTION;
 
-        final ObservableList mockItems = mock(ObservableList.class);
+        final ObservableList<MenuItem> mockItems = mock(ObservableList.class);
 
         try (final MockedConstruction<ContextMenu> mockConstructor = Mockito.mockConstruction(ContextMenu.class, (mock, context) -> {
             when(mock.getItems()).thenReturn(mockItems);

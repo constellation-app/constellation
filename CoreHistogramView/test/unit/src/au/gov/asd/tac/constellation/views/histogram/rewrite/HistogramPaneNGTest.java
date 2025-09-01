@@ -20,16 +20,11 @@ import au.gov.asd.tac.constellation.views.histogram.BinCreator;
 import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
 import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
 import au.gov.asd.tac.constellation.views.histogram.HistogramState;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.ObjectProperty;
-import javafx.collections.ObservableList;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
@@ -46,7 +41,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 // THIS FILE IS CAUSING TEST FAILURES SOMEHOW
-
 /**
  *
  * @author Quasar985
@@ -185,7 +179,7 @@ public class HistogramPaneNGTest {
     public void testSetHistogramState() {
         System.out.println("setHistogramState");
         final HistogramState histogramState = new HistogramState();
-        final Map<String, BinCreator> attributes = mock(Map.class);
+        final Map<String, BinCreator> attributes = new HashMap<>();
         final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
 
         instance.setHistogramState(histogramState, attributes);
