@@ -1,74 +1,76 @@
-///*
-// * Copyright 2010-2025 Australian Signals Directorate
-// * 
-// * Licensed under the Apache License, Version 2.0 (the "License");
-// * you may not use this file except in compliance with the License.
-// * You may obtain a copy of the License at
-// * 
-// *     http://www.apache.org/licenses/LICENSE-2.0
-// * 
-// * Unless required by applicable law or agreed to in writing, software
-// * distributed under the License is distributed on an "AS IS" BASIS,
-// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// * See the License for the specific language governing permissions and
-// * limitations under the License.
-// */
-//package au.gov.asd.tac.constellation.views.histogram.rewrite;
-//
-//import au.gov.asd.tac.constellation.views.histogram.BinCollection;
-//import au.gov.asd.tac.constellation.views.histogram.BinCreator;
-//import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
-//import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
-//import au.gov.asd.tac.constellation.views.histogram.HistogramState;
-//import java.util.Map;
-//import java.util.concurrent.TimeoutException;
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
-//import javafx.beans.property.ObjectProperty;
-//import javafx.collections.ObservableList;
-//import javafx.scene.control.ContextMenu;
-//import javafx.scene.image.ImageView;
-//import javafx.scene.image.Image;
-//import javafx.scene.input.MouseEvent;
-//import static org.mockito.ArgumentMatchers.any;
-//import org.mockito.MockedConstruction;
-//import org.mockito.Mockito;
-//import static org.mockito.Mockito.atLeast;
-//import static org.mockito.Mockito.mock;
-//import static org.mockito.Mockito.spy;
-//import static org.mockito.Mockito.verify;
-//import static org.mockito.Mockito.when;
-//import javafx.util.Pair;
-//import org.testfx.api.FxToolkit;
-//import static org.testng.Assert.assertTrue;
-//import org.testng.annotations.AfterClass;
-//import org.testng.annotations.BeforeClass;
-//import org.testng.annotations.Test;
-//
-///**
-// *
-// * @author Quasar985
-// */
-//public class HistogramPaneNGTest {
-//
-//    private static final Logger LOGGER = Logger.getLogger(HistogramPaneNGTest.class.getName());
-//
-//    @BeforeClass
-//    public static void setUpClass() throws Exception {
-//        if (!FxToolkit.isFXApplicationThreadRunning()) {
-//            FxToolkit.registerPrimaryStage();
-//        }
-//    }
-//
-//    @AfterClass
-//    public static void tearDownClass() throws Exception {
-//        try {
-//            FxToolkit.cleanupStages();
-//        } catch (TimeoutException ex) {
-//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-//        }
-//    }
-//
+/*
+ * Copyright 2010-2025 Australian Signals Directorate
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.views.histogram.rewrite;
+
+import au.gov.asd.tac.constellation.views.histogram.BinCollection;
+import au.gov.asd.tac.constellation.views.histogram.BinCreator;
+import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
+import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
+import au.gov.asd.tac.constellation.views.histogram.HistogramState;
+import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedConstruction;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import javafx.util.Pair;
+import org.testfx.api.FxToolkit;
+import static org.testng.Assert.assertTrue;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+// THIS FILE IS CAUSING TEST FAILURES SOMEHOW
+
+/**
+ *
+ * @author Quasar985
+ */
+public class HistogramPaneNGTest {
+
+    private static final Logger LOGGER = Logger.getLogger(HistogramPaneNGTest.class.getName());
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
+    }
+
 //    /**
 //     * Test of updateDisplay method, of class HistogramPane.
 //     */
@@ -371,4 +373,4 @@
 //        instance.updateBinComparator();
 //        verify(mockTopComponent).setBinComparator(any());
 //    }
-//}
+}
