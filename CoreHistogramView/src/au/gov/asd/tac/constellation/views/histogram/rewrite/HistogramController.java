@@ -19,6 +19,8 @@ package au.gov.asd.tac.constellation.views.histogram.rewrite;
  *
  * @author Quasar985
  */
+
+// TODO remove this class altogether
 public class HistogramController {
 
     // Analytic view controller instance
