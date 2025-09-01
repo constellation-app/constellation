@@ -255,7 +255,6 @@ public class HistogramDisplay2NGTest {
 
         final BinSelectionMode binSelectionMode = BinSelectionMode.ADD_TO_SELECTION;
 
-//        final ObservableList<MenuItem> mockItems = mock(ObservableList.class);
         final ObservableList<MenuItem> mockItems = FXCollections.observableArrayList();
 
         try (final MockedConstruction<ContextMenu> mockConstructor = Mockito.mockConstruction(ContextMenu.class, (mock, context) -> {

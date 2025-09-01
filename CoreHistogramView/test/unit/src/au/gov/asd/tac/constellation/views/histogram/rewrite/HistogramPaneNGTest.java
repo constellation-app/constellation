@@ -26,8 +26,10 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -308,8 +310,8 @@ public class HistogramPaneNGTest {
     public void testActionButtonMousePressed() {
         System.out.println("actionButtonMousePressed");
 
-        final ObservableList mockItems = mock(ObservableList.class);
-        final ObjectProperty<Image> mockImageProperty = mock(ObjectProperty.class);
+        final ObservableList<MenuItem> mockItems = FXCollections.observableArrayList();
+        final ObjectProperty<Image> mockImageProperty = mock(ObjectProperty.class);// unchecked conversion
         try (final MockedConstruction<ImageView> mockImageView = Mockito.mockConstruction(ImageView.class, (mock, context) -> {
             when(mock.imageProperty()).thenReturn(mockImageProperty);
         }); final MockedConstruction<ContextMenu> mockConstructor = Mockito.mockConstruction(ContextMenu.class, (mock, context) -> {
