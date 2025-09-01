@@ -71,23 +71,23 @@ public class HistogramPaneNGTest {
         }
     }
 
-//    /**
-//     * Test of updateDisplay method, of class HistogramPane.
-//     */
-//    @Test
-//    public void testUpdateDisplay() {
-//        System.out.println("updateDisplay");
-//        try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
-//            final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
-//            instance.updateDisplay();
-//
-//            // Assert HistogramDisplay2 was made and function was called
-//            assertTrue(mockConstructor.constructed().size() == 1);
-//            final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
-//            verify(menu, atLeast(1)).updateDisplay();
-//        }
-//    }
-//
+    /**
+     * Test of updateDisplay method, of class HistogramPane.
+     */
+    @Test
+    public void testUpdateDisplay() {
+        System.out.println("updateDisplay");
+        try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
+            final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
+            instance.updateDisplay();
+
+            // Assert HistogramDisplay2 was made and function was called
+            assertTrue(mockConstructor.constructed().size() == 1);
+            final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
+            verify(menu, atLeast(1)).updateDisplay();
+        }
+    }
+
 //    /**
 //     * Test of decreaseBarHeight method, of class HistogramPane.
 //     */
