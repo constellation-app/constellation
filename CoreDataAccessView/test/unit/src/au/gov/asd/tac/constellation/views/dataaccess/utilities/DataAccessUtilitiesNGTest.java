@@ -68,13 +68,12 @@ public class DataAccessUtilitiesNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(DataAccessUtilitiesNGTest.class.getName());
 
-    private static MockedStatic<SwingUtilities> swingUtilitiesStaticMock;
-    private static MockedStatic<WindowManager> windowManagerStaticMock;
-
+    //private static MockedStatic<SwingUtilities> swingUtilitiesStaticMock;
+    //private static MockedStatic<WindowManager> windowManagerStaticMock;
     @BeforeClass
     public static void setUpClass() throws Exception {
-        swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class);
-        windowManagerStaticMock = Mockito.mockStatic(WindowManager.class);
+        //swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class);
+        //windowManagerStaticMock = Mockito.mockStatic(WindowManager.class);
 
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
@@ -83,8 +82,8 @@ public class DataAccessUtilitiesNGTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        swingUtilitiesStaticMock.close();
-        windowManagerStaticMock.close();
+        //swingUtilitiesStaticMock.close();
+        //windowManagerStaticMock.close();
 
         try {
             FxToolkit.cleanupStages();
@@ -95,103 +94,115 @@ public class DataAccessUtilitiesNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        swingUtilitiesStaticMock.reset();
-        windowManagerStaticMock.reset();
+        //swingUtilitiesStaticMock.reset();
+        // windowManagerStaticMock.reset();
     }
 
     @Test
     public void testGetDataAccessPaneCalledByEventDispatchThread() {
         System.out.println("testGetDataAccessPaneCalledByEventDispatchThread");
-        
+
         final WindowManager windowManager = mock(WindowManager.class);
         final DataAccessViewTopComponent topComponent = mock(DataAccessViewTopComponent.class);
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
 
-        swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
+        try (final MockedStatic<SwingUtilities> swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class); final MockedStatic<WindowManager> windowManagerStaticMock = Mockito.mockStatic(WindowManager.class)) {
+            swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
 
-        windowManagerStaticMock.when(WindowManager::getDefault).thenReturn(windowManager);
+            windowManagerStaticMock.when(WindowManager::getDefault).thenReturn(windowManager);
 
-        when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(topComponent);
-        when(topComponent.isOpened()).thenReturn(false);
-        when(topComponent.getDataAccessPane()).thenReturn(dataAccessPane);
+            when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(topComponent);
+            when(topComponent.isOpened()).thenReturn(false);
+            when(topComponent.getDataAccessPane()).thenReturn(dataAccessPane);
 
-        DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+            DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
 
-        verify(topComponent, times(1)).open();
-        verify(topComponent, times(1)).requestVisible();
+            verify(topComponent, times(1)).open();
+            verify(topComponent, times(1)).requestVisible();
 
-        assertSame(actual, dataAccessPane);
+            assertSame(actual, dataAccessPane);
+        }
     }
 
     @Test
     public void testGetDataAccessPaneCalledByEventDispatchThreadTopComponentNull() {
         System.out.println("testGetDataAccessPaneCalledByEventDispatchThreadTopComponentNull");
-        
+
         final WindowManager windowManager = mock(WindowManager.class);
 
-        swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
+        try (final MockedStatic<SwingUtilities> swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class); final MockedStatic<WindowManager> windowManagerStaticMock = Mockito.mockStatic(WindowManager.class)) {
+            swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
 
-        windowManagerStaticMock.when(WindowManager::getDefault).thenReturn(windowManager);
+            windowManagerStaticMock.when(WindowManager::getDefault).thenReturn(windowManager);
 
-        when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(null);
+            when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(null);
 
-        DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+            DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
 
-        assertNull(actual);
+            assertNull(actual);
+        }
     }
 
     @Test
     public void testGetDataAccessPaneNotCalledByEventDispatchThread() {
         System.out.println("testGetDataAccessPaneNotCalledByEventDispatchThread");
-        
+
         final WindowManager windowManager = mock(WindowManager.class);
         final DataAccessViewTopComponent topComponent = mock(DataAccessViewTopComponent.class);
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
 
-        swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
+        try (final MockedStatic<SwingUtilities> swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class); final MockedStatic<WindowManager> windowManagerStaticMock = Mockito.mockStatic(WindowManager.class)) {
 
-        swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
-                .thenAnswer(invocation -> {
-                    final Runnable r = invocation.getArgument(0);
-                    r.run();
-                    return null;
-                });
+            swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
 
-        windowManagerStaticMock.when(WindowManager::getDefault).thenReturn(windowManager);
+            swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
+                    .thenAnswer(invocation -> {
+                        final Runnable r = invocation.getArgument(0);
+                        r.run();
+                        return null;
+                    });
 
-        when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(topComponent);
-        when(topComponent.isOpened()).thenReturn(false);
-        when(topComponent.getDataAccessPane()).thenReturn(dataAccessPane);
+            windowManagerStaticMock.when(WindowManager::getDefault).thenReturn(windowManager);
 
-        DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+            when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(topComponent);
+            when(topComponent.isOpened()).thenReturn(false);
+            when(topComponent.getDataAccessPane()).thenReturn(dataAccessPane);
 
-        assertSame(actual, dataAccessPane);
+            DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+
+            assertSame(actual, dataAccessPane);
+        }
     }
 
     @Test
     public void testGetDataAccessPaneNotCalledByEventDispatchThreadError() {
         System.out.println("testGetDataAccessPaneNotCalledByEventDispatchThreadError");
-        
-        swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
-        swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
-                .thenThrow(new InvocationTargetException(new RuntimeException("Something Bad")));
 
-        final DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+        try (final MockedStatic<SwingUtilities> swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class)) {
 
-        assertNull(actual);
+            swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
+            swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
+                    .thenThrow(new InvocationTargetException(new RuntimeException("Something Bad")));
+
+            final DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+
+            assertNull(actual);
+        }
     }
 
     @Test
     public void testGetDataAccessPaneNotCalledByEventDispatchThreadInterruptError() {
         System.out.println("testGetDataAccessPaneNotCalledByEventDispatchThreadInterruptError");
-        
-        swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
-        swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
-                .thenThrow(new InterruptedException());
+        try (final MockedStatic<SwingUtilities> swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class)) {
 
-        DataAccessUtilities.getDataAccessPane();
+            swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
+            swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
+                    .thenThrow(new InterruptedException());
 
-        assertTrue(Thread.interrupted());
+            DataAccessUtilities.getDataAccessPane();
+
+            assertTrue(Thread.interrupted());
+        }
     }
 
     @Test
@@ -242,7 +253,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void loadDataAccessState() {
         System.out.println("loadDataAccessState");
-        
+
         // Create current data access view state and set some parameters
         // The code currenly only looks at the first tab so parameter2
         // value will be ignored
@@ -304,7 +315,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void loadDataAccessState_attribute_not_found() {
         System.out.println("loadDataAccessState_attribute_not_found");
-        
+
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
@@ -329,7 +340,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void loadDataAccessState_graph_is_null() {
         System.out.println("loadDataAccessState_graph_is_null");
-        
+
         DataAccessUtilities.loadDataAccessState(mock(DataAccessPane.class), null);
         // No exception....pass
     }
@@ -337,7 +348,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void loadDataAccessState_no_tabs() {
         System.out.println("loadDataAccessState_no_tabs");
-        
+
         // mock graph
         final Graph graph = mock(Graph.class);
 
@@ -355,7 +366,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void loadDataAccessState_null_state() {
         System.out.println("loadDataAccessState_null_state");
-        
+
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
@@ -386,7 +397,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void loadDataAccessState_empty_state() {
         System.out.println("loadDataAccessState_empty_state");
-        
+
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
