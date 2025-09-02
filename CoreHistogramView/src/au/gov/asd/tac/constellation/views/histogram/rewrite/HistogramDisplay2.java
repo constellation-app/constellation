@@ -424,6 +424,10 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private void recalculateVisibleIndexes(final double scrollValue) {
+        if (isHeadless()) {
+            return;
+        }
+        
         prevScrollValue = scrollValue;
 
         final int numItems = tableView.getItems().size();

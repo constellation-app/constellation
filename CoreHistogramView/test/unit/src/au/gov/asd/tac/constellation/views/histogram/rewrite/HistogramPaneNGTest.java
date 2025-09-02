@@ -208,6 +208,7 @@ public class HistogramPaneNGTest {
     }
 ///////// ALL ABOVE WORKS
 
+    // MAY NOT WORK
     /**
      * Test of clearFilter method, of class HistogramPane.
      */
@@ -225,6 +226,7 @@ public class HistogramPaneNGTest {
         verify(instance).updateDisplay();
     }
 
+    // MAY NOT WORK
     /**
      * Test of clearFilter method, of class HistogramPane.
      */
