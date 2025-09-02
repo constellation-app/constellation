@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import org.openide.util.NbPreferences;
 
@@ -39,24 +40,28 @@ public class ViewOptionsPanel extends JPanel {
             @Override
             public Class getColumnClass(final int column) {
                 return switch (column) {
-                    case 0 -> String.class; // View names.
-                    default -> Boolean.class; // Checkboxes.
+                    case 0 ->
+                        String.class; // View names.
+                    default ->
+                        Boolean.class; // Checkboxes.
                 };
             }
 
             @Override
             public boolean isCellEditable(final int row, final int column) {
                 return switch (column) {
-                    case 0 -> false;
-                    default -> true;
+                    case 0 ->
+                        false;
+                    default ->
+                        true;
                 };
             }
         };
 
         final Map<String, Boolean> options = getOptionsFromPrefs().isEmpty() ? defaultOptions : getOptionsFromPrefs();
 
-        for (final String view : options.keySet()) {
-            tableModel.addRow(new Object[]{view, options.get(view)});
+        for (final Map.Entry<String, Boolean> entry : options.entrySet()) {
+            tableModel.addRow(new Object[]{entry.getKey(), entry.getValue()});
         }
 
         initComponents();
@@ -81,11 +86,15 @@ public class ViewOptionsPanel extends JPanel {
     protected final Map<String, Boolean> getOptionsFromPrefs() {
         final Map<String, Boolean> optionsFromPrefs = new TreeMap<>();
 
-        for (final String view : defaultOptions.keySet()) {
-            optionsFromPrefs.put(view, prefs.getBoolean(view, defaultOptions.get(view)));
+        for (final Map.Entry<String, Boolean> entry : defaultOptions.entrySet()) {
+            optionsFromPrefs.put(entry.getKey(), prefs.getBoolean(entry.getKey(), entry.getValue()));
         }
 
         return Collections.unmodifiableMap(optionsFromPrefs);
+    }
+
+    private final JTable getJTable() {
+        return jTable;
     }
 
     /**
@@ -95,19 +104,19 @@ public class ViewOptionsPanel extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPane = new javax.swing.JScrollPane();
         jTable = new javax.swing.JTable();
 
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setLayout(new java.awt.BorderLayout());
 
-        jScrollPane1.setViewportView(jTable);
+        jScrollPane.setViewportView(jTable);
 
-        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        add(jScrollPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JTable jTable;
     // End of variables declaration//GEN-END:variables
 }

@@ -180,7 +180,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
      */
     protected final void setFloating(final String name, final int width, final int height, final Spawn spawn) {
         final Preferences prefs = NbPreferences.forModule(ViewPreferenceKeys.class);
-        final Boolean isFloating = prefs.getBoolean(name, ViewPreferenceKeys.getDefaultViewOptions().get(name));
+        final Boolean isFloating = prefs.getBoolean(name, ViewPreferenceKeys.getDefaultViewOptions().getOrDefault(name, false));
         WindowManager.getDefault().setTopComponentFloating(this, isFloating);
 
         if (isFloating) {
@@ -196,12 +196,12 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                     final int offsetY = 120; // Offsets floating component so it doesn't overlap with top toolbar icons.
 
                     final Dimension sidesSize = new Dimension(
-                            width == 0 ? Math.round(mainWidth * 0.3f) : width,
+                            width == 0 ? Math.round(mainWidth * 0.3F) : width,
                             height == 0 ? mainHeight - offsetY : height);
 
                     final Dimension bottomSize = new Dimension(
                             width == 0 ? mainWidth : width,
-                            height == 0 ? Math.round(mainHeight * 0.3f) : height);
+                            height == 0 ? Math.round(mainHeight * 0.3F) : height);
 
                     final Dimension size;
 
