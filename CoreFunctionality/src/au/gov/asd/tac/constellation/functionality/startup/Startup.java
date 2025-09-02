@@ -71,15 +71,17 @@ public class Startup implements Runnable {
 
         ConstellationSecurityManager.startSecurityLater(null);
         
-        final List<? extends Action> actions = Utilities.actionsForPath("Actions/Edit");
-        for (final Action action : actions) {
-            // only process for quicksearch and if fontsize is customised
-            if (action.getClass().getName().toLowerCase().contains("quicksearchaction") && UIManager.get("customFontSize") != null) {
-                final Component toolbarPresenter = ((Presenter.Toolbar) action).getToolbarPresenter();
-                for (final Component c : ((Container)toolbarPresenter).getComponents()) {
-                    processComponentTree(c);
+        // only process for quicksearch and if fontsize is customised                
+        if (UIManager.get("customFontSize") != null) {
+            final List<? extends Action> actions = Utilities.actionsForPath("Actions/Edit");
+            for (final Action action : actions) {
+                if (action.getClass().getName().toLowerCase().contains("quicksearchaction")) {
+                    final Component toolbarPresenter = ((Presenter.Toolbar) action).getToolbarPresenter();
+                    for (final Component c : ((Container)toolbarPresenter).getComponents()) {
+                        processComponentTree(c);
+                    }
+                    break;
                 }
-                break;
             }
         }
         
@@ -111,11 +113,10 @@ public class Startup implements Runnable {
      * @param source component to traverse.
      */
     public void processComponentTree(final Component source) {
-
         if (source instanceof JScrollPane jsp) {
             final Dimension origSize = jsp.getSize();
-            final Integer customFontSize = (Integer) UIManager.get("customFontSize");
-            final Dimension newDimension = new Dimension(origSize.width, 19 * customFontSize / 12);
+            final int customFontSize = (int) UIManager.get("customFontSize");
+            final Dimension newDimension = new Dimension(origSize.width + (customFontSize/2), 19 * customFontSize / 12);
             
             jsp.setMinimumSize(newDimension);
             jsp.setPreferredSize(newDimension);
