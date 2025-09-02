@@ -424,9 +424,9 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private void recalculateVisibleIndexes(final double scrollValue) {
-        if (isHeadless()) {
-            return;
-        }
+//        if (isHeadless()) {
+//            return;
+//        }
         
         prevScrollValue = scrollValue;
 
