@@ -206,7 +206,7 @@ public class HistogramPaneNGTest {
 
         return new Pair<>(mockTopComponent, spy);
     }
-
+///////// ALL ABOVE WORKS
 //    /**
 //     * Test of clearFilter method, of class HistogramPane.
 //     */
@@ -388,36 +388,36 @@ public class HistogramPaneNGTest {
 //            verify(instance).updateDisplay();
 //        }
 //    }
-//
-//    /**
-//     * Test of saveBinsToGraph method, of class HistogramPane.
-//     */
-//    @Test
-//    public void testSaveBinsToGraph() {
-//        System.out.println("saveBinsToGraph");
-//
-//        // Set up instance
-//        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-//        final HistogramTopComponent2 mockTopComponent = p.getKey();
-//        final HistogramPane instance = p.getValue();
-//
-//        instance.saveBinsToGraph();
-//        verify(mockTopComponent).saveBinsToGraph();
-//    }
-//
-//    /**
-//     * Test of updateBinComparator method, of class HistogramPane.
-//     */
-//    @Test
-//    public void testUpdateBinComparator() {
-//        System.out.println("updateBinComparator");
-//
-//        // Set up instance
-//        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-//        final HistogramTopComponent2 mockTopComponent = p.getKey();
-//        final HistogramPane instance = p.getValue();
-//
-//        instance.updateBinComparator();
-//        verify(mockTopComponent).setBinComparator(any());
-//    }
+
+    /**
+     * Test of saveBinsToGraph method, of class HistogramPane.
+     */
+    @Test
+    public void testSaveBinsToGraph() {
+        System.out.println("saveBinsToGraph");
+
+        // Set up instance
+        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+        final HistogramTopComponent2 mockTopComponent = p.getKey();
+        final HistogramPane instance = p.getValue();
+
+        instance.saveBinsToGraph();
+        verify(mockTopComponent).saveBinsToGraph();
+    }
+
+    /**
+     * Test of updateBinComparator method, of class HistogramPane.
+     */
+    @Test
+    public void testUpdateBinComparator() {
+        System.out.println("updateBinComparator");
+
+        // Set up instance
+        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+        final HistogramTopComponent2 mockTopComponent = p.getKey();
+        final HistogramPane instance = p.getValue();
+
+        instance.updateBinComparator();
+        verify(mockTopComponent).setBinComparator(any());
+    }
 }
