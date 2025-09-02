@@ -244,7 +244,7 @@ public class HistogramPaneNGTest {
         verify(instance).updateDisplay();
     }
 
-    // MAY NOT WORK
+    // SEEMS TO WORK
     /**
      * Test of selectionModeChoiceHandler method, of class HistogramPane.
      */
@@ -271,31 +271,31 @@ public class HistogramPaneNGTest {
         }
     }
 
-//    // MAY NOT WORK
-//    /**
-//     * Test of descendingButtonHandler method, of class HistogramPane.
-//     */
-//    @Test
-//    public void testDescendingButtonHandler() {
-//        System.out.println("descendingButtonHandler");
-//        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
-//
-//            // This is added so that the mocked static that we would otherwise be
-//            // trying to run in the fx thread is actually invoked properly
-//            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
-//                ((Runnable) iom.getArgument(0)).run();
-//                return null;
-//            });
-//
-//            // Set up instance
-//            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-//            final HistogramPane instance = p.getValue();
-//
-//            instance.descendingButtonHandler();
-//            verify(instance).updateDisplay();
-//        }
-//    }
-//
+    // MAY NOT WORK
+    /**
+     * Test of descendingButtonHandler method, of class HistogramPane.
+     */
+    @Test
+    public void testDescendingButtonHandler() {
+        System.out.println("descendingButtonHandler");
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+
+            // This is added so that the mocked static that we would otherwise be
+            // trying to run in the fx thread is actually invoked properly
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
+
+            // Set up instance
+            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+            final HistogramPane instance = p.getValue();
+
+            instance.descendingButtonHandler();
+            verify(instance).updateDisplay();
+        }
+    }
+
 //    /**
 //     * Test of sortChoiceHandler method, of class HistogramPane.
 //     */
@@ -393,7 +393,6 @@ public class HistogramPaneNGTest {
 //            verify(instance).updateDisplay();
 //        }
 //    }
-
     // BELOW WORKS
     /**
      * Test of saveBinsToGraph method, of class HistogramPane.
