@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,7 +34,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -41,6 +41,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import javafx.util.Pair;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedStatic;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -245,15 +247,24 @@ public class HistogramPaneNGTest {
     @Test
     public void testSelectionModeChoiceHandler() {
         System.out.println("selectionModeChoiceHandler");
+        
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // This is added so that the mocked static that we would otherwise be
+            // trying to run in the fx thread is actually invoked properly
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
 
-        // Set up instance
-        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-        final HistogramTopComponent2 mockTopComponent = p.getKey();
-        final HistogramPane instance = p.getValue();
+            // Set up instance
+            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+            final HistogramTopComponent2 mockTopComponent = p.getKey();
+            final HistogramPane instance = p.getValue();
 
-        instance.selectionModeChoiceHandler();
-        verify(mockTopComponent).setBinSelectionMode(any());
-        verify(instance).updateDisplay();
+            instance.selectionModeChoiceHandler();
+            verify(mockTopComponent).setBinSelectionMode(any());
+            verify(instance).updateDisplay();
+        }
     }
 
     /**
@@ -262,13 +273,22 @@ public class HistogramPaneNGTest {
     @Test
     public void testDescendingButtonHandler() {
         System.out.println("descendingButtonHandler");
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
 
-        // Set up instance
-        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-        final HistogramPane instance = p.getValue();
+            // This is added so that the mocked static that we would otherwise be
+            // trying to run in the fx thread is actually invoked properly
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
 
-        instance.descendingButtonHandler();
-        verify(instance).updateDisplay();
+            // Set up instance
+            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+            final HistogramPane instance = p.getValue();
+
+            instance.descendingButtonHandler();
+            verify(instance).updateDisplay();
+        }
     }
 
     /**
@@ -278,12 +298,20 @@ public class HistogramPaneNGTest {
     public void testSortChoiceHandler() {
         System.out.println("sortChoiceHandler");
 
-        // Set up instance
-        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-        final HistogramPane instance = p.getValue();
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // This is added so that the mocked static that we would otherwise be
+            // trying to run in the fx thread is actually invoked properly
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
+            // Set up instance
+            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+            final HistogramPane instance = p.getValue();
 
-        instance.sortChoiceHandler();
-        verify(instance).updateDisplay();
+            instance.sortChoiceHandler();
+            verify(instance).updateDisplay();
+        }
     }
 
     /**
@@ -293,14 +321,23 @@ public class HistogramPaneNGTest {
     public void testPropertyChoiceHandler() {
         System.out.println("propertyChoiceHandler");
 
-        // Set up instance
-        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-        final HistogramTopComponent2 mockTopComponent = p.getKey();
-        final HistogramPane instance = p.getValue();
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // This is added so that the mocked static that we would otherwise be
+            // trying to run in the fx thread is actually invoked properly
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
 
-        instance.propertyChoiceHandler();
-        verify(mockTopComponent).setAttribute(any());
-        verify(instance).updateDisplay();
+            // Set up instance
+            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+            final HistogramTopComponent2 mockTopComponent = p.getKey();
+            final HistogramPane instance = p.getValue();
+
+            instance.propertyChoiceHandler();
+            verify(mockTopComponent).setAttribute(any());
+            verify(instance).updateDisplay();
+        }
     }
 
     /**
@@ -333,14 +370,23 @@ public class HistogramPaneNGTest {
     public void testToggleStateChanged() {
         System.out.println("toggleStateChanged");
 
-        // Set up instance
-        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-        final HistogramTopComponent2 mockTopComponent = p.getKey();
-        final HistogramPane instance = p.getValue();
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // This is added so that the mocked static that we would otherwise be
+            // trying to run in the fx thread is actually invoked properly
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
 
-        instance.toggleStateChanged(null);
-        verify(mockTopComponent).setGraphElementType(any());
-        verify(instance).updateDisplay();
+            // Set up instance
+            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+            final HistogramTopComponent2 mockTopComponent = p.getKey();
+            final HistogramPane instance = p.getValue();
+
+            instance.toggleStateChanged(null);
+            verify(mockTopComponent).setGraphElementType(any());
+            verify(instance).updateDisplay();
+        }
     }
 
     /**

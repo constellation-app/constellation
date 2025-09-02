@@ -121,6 +121,7 @@ public class HistogramDisplay2 extends BorderPane {
     private static final String STYLE_SETTING = "-fx-background-color: %s;";
     private static final String HEADER_ROW_CSS_CLASS = "header-row";
     private static final String FONT_SIZE_CSS_PROPERTY = "-fx-font-size: ";
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
 
     private final TableView<HistogramBar> tableView = new TableView<>();
 
@@ -325,6 +326,10 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private synchronized void updateTable(final boolean updateBinCounts, final double width) {
+        if (isHeadless()) {
+            return;
+        }
+
         if (binCollection == null) {
             // No data, so just have text saying so
             this.setCenter(new Label(NO_DATA));
@@ -444,7 +449,15 @@ public class HistogramDisplay2 extends BorderPane {
         lastVisibleIndex = (int) Math.ceil(upper / heightPerRow) + VISIBLE_INDEX_EXTEND;
     }
 
+    private boolean isHeadless() {
+        return Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY));
+    }
+
     private void updateHeader(final double fontSize) {
+        if (isHeadless()) {
+            return;
+        }
+
         final Label headerValue = new Label(PROPERTY_VALUE);
         final Label headerCount = new Label(COUNT);
 

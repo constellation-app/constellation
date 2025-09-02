@@ -483,7 +483,7 @@ public class HistogramPane extends BorderPane {
     }
 
     public void updateDisplay() {
-        //display.updateDisplay();
+        display.updateDisplay();
     }
 
     public void decreaseBarHeight() {
