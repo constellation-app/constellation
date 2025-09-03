@@ -163,7 +163,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
     @Override
     protected String createStyle() {
-        //return "resources/histogram-view.css"; // TODO: Uncomment when histogram rewrite fully replaces old histogram
+        //return "resources/histogram-view.css"; // TODO: Uncomment when histogram rewrite fully replaces old histogram, and move histogram-view.css into resources folder
         return "histogram-view.css";// Remove this when histogram rewrite fully replaces old histogram
     }
 

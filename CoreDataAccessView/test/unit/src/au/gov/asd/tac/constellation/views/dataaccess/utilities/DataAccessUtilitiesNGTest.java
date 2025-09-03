@@ -56,7 +56,6 @@ import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -68,13 +67,8 @@ public class DataAccessUtilitiesNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(DataAccessUtilitiesNGTest.class.getName());
 
-    //private static MockedStatic<SwingUtilities> swingUtilitiesStaticMock;
-    //private static MockedStatic<WindowManager> windowManagerStaticMock;
     @BeforeClass
     public static void setUpClass() throws Exception {
-        //swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class);
-        //windowManagerStaticMock = Mockito.mockStatic(WindowManager.class);
-
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
@@ -82,20 +76,11 @@ public class DataAccessUtilitiesNGTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        //swingUtilitiesStaticMock.close();
-        //windowManagerStaticMock.close();
-
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        //swingUtilitiesStaticMock.reset();
-        // windowManagerStaticMock.reset();
     }
 
     @Test

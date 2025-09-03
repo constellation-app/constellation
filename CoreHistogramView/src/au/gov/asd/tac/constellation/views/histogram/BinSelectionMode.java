@@ -32,8 +32,10 @@ public enum BinSelectionMode {
         @Override
         public void mousePressed(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd) {
 
-            final int firstBar = Math.max(0, Math.min(dragStart, dragEnd));
-            final int lastBar = Math.min(bins.length - 1, Math.max(dragStart, dragEnd));
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            final int firstBar = Math.clamp(Math.min(dragStart, dragEnd), min, max); // Picks the smallest index
+            final int lastBar = Math.clamp(Math.max(dragStart, dragEnd), min, max); // Picks the largest index
 
             if (firstBar >= bins.length || lastBar < 0) {
                 return;
@@ -60,15 +62,17 @@ public enum BinSelectionMode {
 
         @Override
         public void mouseDragged(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int oldDragEnd, final int newDragEnd) {
-            int firstBar = Math.max(0, Math.min(dragStart, oldDragEnd));
-            int lastBar = Math.min(bins.length - 1, Math.max(dragStart, oldDragEnd));
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            int firstBar = Math.clamp(Math.min(dragStart, oldDragEnd), min, max); // Picks the smallest index
+            int lastBar = Math.clamp(Math.max(dragStart, oldDragEnd), min, max); // Picks the largest index
 
             for (int i = firstBar; i <= lastBar; i++) {
                 bins[i].selectedCount = bins[i].savedSelectedCount;
             }
 
-            firstBar = Math.max(0, Math.min(dragStart, newDragEnd));
-            lastBar = Math.min(bins.length - 1, Math.max(dragStart, newDragEnd));
+            firstBar = Math.clamp(Math.min(dragStart, newDragEnd), min, max); // Picks the smallest index
+            lastBar = Math.clamp(Math.max(dragStart, newDragEnd), min, max); // Picks the largest index
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
@@ -85,8 +89,10 @@ public enum BinSelectionMode {
 
         @Override
         public void mouseReleased(final boolean shiftDown, final boolean controlDown, Bin[] bins, final int dragStart, final int dragEnd, final HistogramTopComponent topComponent) {
-            final int firstBar = Math.max(0, Math.min(dragStart, dragEnd));
-            final int lastBar = Math.min(bins.length - 1, Math.max(dragStart, dragEnd));
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            final int firstBar = Math.clamp(Math.min(dragStart, dragEnd), min, max); // Picks the smallest index
+            final int lastBar = Math.clamp(Math.max(dragStart, dragEnd), min, max); // Picks the largest index
 
             if (firstBar >= bins.length || lastBar < 0) {
                 return;
@@ -104,8 +110,10 @@ public enum BinSelectionMode {
         // TODO: Remove this function when Histogram rewrite is fully merged
         @Override
         public void mouseReleased(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd, final HistogramTopComponent2 topComponent) {
-            final int firstBar = Math.max(0, Math.min(dragStart, dragEnd));
-            final int lastBar = Math.min(bins.length - 1, Math.max(dragStart, dragEnd));
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            final int firstBar = Math.clamp(Math.min(dragStart, dragEnd), min, max); // Picks the smallest index
+            final int lastBar = Math.clamp(Math.max(dragStart, dragEnd), min, max); // Picks the largest index
 
             if (firstBar >= bins.length || lastBar < 0) {
                 return;
@@ -168,15 +176,17 @@ public enum BinSelectionMode {
 
         @Override
         public void mouseDragged(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int oldDragEnd, final int newDragEnd) {
-            int firstBar = Math.max(0, Math.min(dragStart, oldDragEnd));
-            int lastBar = Math.min(bins.length - 1, Math.max(dragStart, oldDragEnd));
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            int firstBar = Math.clamp(Math.min(dragStart, oldDragEnd), min, max); // Picks the smallest index
+            int lastBar = Math.clamp(Math.max(dragStart, oldDragEnd), min, max); // Picks the largest index
 
             for (int i = firstBar; i <= lastBar; i++) {
                 bins[i].activated = bins[i].savedActivated;
             }
 
-            firstBar = Math.max(0, Math.min(dragStart, newDragEnd));
-            lastBar = Math.min(bins.length - 1, Math.max(dragStart, newDragEnd));
+            firstBar = Math.clamp(Math.min(dragStart, newDragEnd), min, max); // Picks the smallest index
+            lastBar = Math.clamp(Math.max(dragStart, newDragEnd), min, max); // Picks the largest index
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
@@ -222,8 +232,10 @@ public enum BinSelectionMode {
         @Override
         public void mousePressed(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd) {
 
-            final int firstBar = Math.max(0, Math.min(dragStart, dragEnd));
-            final int lastBar = Math.min(bins.length - 1, Math.max(dragStart, dragEnd));
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            final int firstBar = Math.clamp(Math.min(dragStart, dragEnd), min, max); // Picks the smallest index
+            final int lastBar = Math.clamp(Math.max(dragStart, dragEnd), min, max); // Picks the largest index
 
             if (firstBar >= bins.length || lastBar < 0) {
                 return;
@@ -250,15 +262,17 @@ public enum BinSelectionMode {
 
         @Override
         public void mouseDragged(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int oldDragEnd, final int newDragEnd) {
-            int firstBar = Math.max(0, Math.min(dragStart, oldDragEnd));
-            int lastBar = Math.min(bins.length - 1, Math.max(dragStart, oldDragEnd));
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            int firstBar = Math.clamp(Math.min(dragStart, oldDragEnd), min, max); // Picks the smallest index
+            int lastBar = Math.clamp(Math.max(dragStart, oldDragEnd), min, max); // Picks the largest index
 
             for (int i = firstBar; i <= lastBar; i++) {
                 bins[i].activated = bins[i].savedActivated;
             }
 
-            firstBar = Math.max(0, Math.min(dragStart, newDragEnd));
-            lastBar = Math.min(bins.length - 1, Math.max(dragStart, newDragEnd));
+            firstBar = Math.clamp(Math.min(dragStart, newDragEnd), min, max); // Picks the smallest index
+            lastBar = Math.clamp(Math.max(dragStart, newDragEnd), min, max); // Picks the largest index
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
