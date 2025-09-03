@@ -101,14 +101,14 @@ public class GeneratorNGTest {
 
                 try (final MockedStatic<TOCGenerator> tocgeneratorStaticMock = Mockito.mockStatic(TOCGenerator.class)) {
                     tocgeneratorStaticMock.when(() -> TOCGenerator.createTOCFile(Mockito.anyString())).thenReturn(true);
-                    tocgeneratorStaticMock.when(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
+                    tocgeneratorStaticMock.when(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenAnswer((Answer<Void>) invocation -> null);
                     final Generator generator = new Generator();
                     System.out.println("prop : " + System.getProperty("constellation.environment"));
                     generator.run();
 
                     // verify that the toc file was called to be created, and that the xml mappings were to be converted
                     tocgeneratorStaticMock.verify(() -> TOCGenerator.createTOCFile(Mockito.anyString()), times(1));
-                    tocgeneratorStaticMock.verify(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any()), times(1));
+                    tocgeneratorStaticMock.verify(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any(), Mockito.anyBoolean()), times(1));
                 }
             }
         } finally {

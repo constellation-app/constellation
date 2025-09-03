@@ -86,16 +86,16 @@ public class TOCGenerator {
      *
      * @param xmlFromFile File of XML mappings
      */
-    public static void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode<TOCItem> root) throws IOException {
+    public static void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode<TOCItem> root, final boolean online) throws IOException {
         try (final FileWriter writer = new FileWriter(toc)) {
-            convertXMLMappings(xmlsFromFile, writer, root);
+            convertXMLMappings(xmlsFromFile, writer, root, online);
         }
     }
 
     /**
      * Generate a table of contents from the XML mapping file
      */
-    protected static void convertXMLMappings(final List<File> xmlsFromFile, final FileWriter markdownOutput, final TreeNode<TOCItem> root) {
+    protected static void convertXMLMappings(final List<File> xmlsFromFile, final FileWriter markdownOutput, final TreeNode<TOCItem> root, final boolean online) {
         writeText(markdownOutput, String.format("<div class=\"%s\">", "container"));
         writeText(markdownOutput, Platform.getNewline());
         writeText(markdownOutput, String.format("<div id=\"%s\">", "accordion"));
@@ -113,7 +113,7 @@ public class TOCGenerator {
         });
 
         // Write tree structure to the output
-        TreeNode.writeTree(root, markdownOutput, 0);
+        TreeNode.writeTree(root, markdownOutput, 0, online);
         writeText(markdownOutput, Platform.getNewline());
         writeText(markdownOutput, "</div>\n</div>\n</div>");
     }
@@ -124,7 +124,12 @@ public class TOCGenerator {
      * @param title the @String title to include as the links title
      * @param url the url to link to
      */
-    public static String generateHTMLLink(final String title, final String url) {
+    public static String generateHTMLLink(final String title, final String url, final boolean online) {
+        if (online) {
+            final String link = String.format(HTML_LINK_FORMAT, url, title);
+            final int index = link.indexOf("ext");
+            return "<a href=\"../" + link.substring(index);
+        }
         return String.format(HTML_LINK_FORMAT, url, title);
     }
 

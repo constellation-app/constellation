@@ -843,6 +843,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             } else {
                 lowDirection = highDirection = UNDIRECTED;
                 sourceDirection = destinationDirection = UNDIRECTED;
+                sourceVertex = lowVertex;
+                destinationVertex = highVertex;
             }
         }
 
@@ -1069,7 +1071,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         // For the full story, see the comment inside setTransactionDestinationVertex().
         removeTransaction(transaction);
         addTransaction(newSourceVertex, oldDestinationVertex, directed);
-
+        
         graphEdit = savedGraphEdit;
         operationMode = savedOperationMode;
 
