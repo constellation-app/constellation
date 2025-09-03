@@ -370,7 +370,7 @@ public class HistogramPaneNGTest {
 //            verify(instance).updateDisplay();
 //        }
 //    }
-    // uncommented got fails
+    // SEEMS TO WORK
     /**
      * Test of toggleStateChanged method, of class HistogramPane.
      */

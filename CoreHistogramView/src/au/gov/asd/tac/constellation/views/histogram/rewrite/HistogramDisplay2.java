@@ -81,7 +81,7 @@ public class HistogramDisplay2 extends BorderPane {
     static final String NO_VALUE = "<No Value>";
     private static final String PROPERTY_VALUE = "Property Value";
     private static final String COUNT = "Count";
-    private static final String TOTAL_BINS_COUNT = "Selected / Total Bin Count: ";
+    private static final String TOTAL_BINS_COUNT = "Selected / Total Bin Count: %d/%d";
 
     // The color that shows where a bar would be if it was bigger.
     // This provides a guide to the user so they can click anywhere level with a bar,
@@ -143,6 +143,10 @@ public class HistogramDisplay2 extends BorderPane {
 
     private int prevNumBars = 0;
 
+    private float TABLE_WIDTH_TO_PROPERTY_WIDTH_MULT = 0.3f;
+    // Need to take 3 because otherwise the right of the bar is cut off
+    private int BAR_LENGTH_SUBTRACTION = 3;
+
     public HistogramDisplay2(final HistogramTopComponent2 topComponent) {
         this.topComponent = topComponent;
 
@@ -162,13 +166,13 @@ public class HistogramDisplay2 extends BorderPane {
         final TableColumn<HistogramBar, String> propertyCol = new TableColumn<>("Property");
         propertyCol.setCellValueFactory(new PropertyValueFactory<>("propertyName"));
         propertyCol.setResizable(false);
-        propertyCol.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));// TODO: fix these magic numbers
+        propertyCol.prefWidthProperty().bind(tableView.widthProperty().multiply(TABLE_WIDTH_TO_PROPERTY_WIDTH_MULT));
         propertyCol.setMinWidth(MINIMUM_TEXT_WIDTH);
         propertyCol.setMaxWidth(MAXIMUM_TEXT_WIDTH);
 
         final PseudoClass noValueClass = PseudoClass.getPseudoClass("noValue");
         propertyCol.setCellFactory(tableColumn -> {
-            final TableCell<HistogramBar, String> cell = new TableCell<>() {
+            return new TableCell<>() {
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
@@ -179,7 +183,6 @@ public class HistogramDisplay2 extends BorderPane {
                     this.pseudoClassStateChanged(noValueClass, NO_VALUE.equals(item));
                 }
             };
-            return cell;
         });
 
         iconCol.setCellValueFactory(new PropertyValueFactory("icon"));
@@ -195,9 +198,7 @@ public class HistogramDisplay2 extends BorderPane {
         tableView.widthProperty().addListener((obs, oldVal, newVal) -> barCol.setPrefWidth((double) newVal - propertyCol.getWidth() - iconCol.getWidth() - BAR_PADDING));
 
         // Update table whenever histogram is resized
-        barCol.widthProperty().addListener((obs, oldVal, newVal) -> {
-            updateTable(true, (double) newVal - 3); // Need to take 3 because otherwise the right of the bar is cut off
-        });
+        barCol.widthProperty().addListener((obs, oldVal, newVal) -> updateTable(true, (double) newVal - BAR_LENGTH_SUBTRACTION));
 
         tableView.getColumns().setAll(iconCol, propertyCol, barCol);
         tableView.getStyleClass().add("noheader");
@@ -336,9 +337,9 @@ public class HistogramDisplay2 extends BorderPane {
             return;
         }
 
-        // TODO check what should display in this case, probably empty bars idk
         final int maxCount = binCollection.getMaxElementCount();
         if (maxCount < 1) {
+            this.setCenter(new Label(NO_DATA));
             return;
         }
 
@@ -400,7 +401,6 @@ public class HistogramDisplay2 extends BorderPane {
         final Bin[] bins = binCollection.getBins();
         tableWidth = width;
 
-        // TODO check what should display in this case, probably empty bars idk
         final int maxCount = binCollection.getMaxElementCount();
         if (maxCount < 1) {
             return;
@@ -418,9 +418,6 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private void recalculateVisibleIndexes(final double scrollValue) {
-//        if (isHeadless()) {
-//            return;
-//        }
 
         prevScrollValue = scrollValue;
 
@@ -435,10 +432,10 @@ public class HistogramDisplay2 extends BorderPane {
             return;
         }
 
-        final float heightPerRow = (float) barHeight;
+        final float heightPerRow = barHeight;
 
         // get full height of tableView
-        final float fullHeight = (float) heightPerRow * numItems;
+        final float fullHeight = heightPerRow * numItems;
 
         final float lower = (fullHeight - tableHeight) * (float) scrollValue;
         final float upper = lower + tableHeight;
@@ -470,7 +467,7 @@ public class HistogramDisplay2 extends BorderPane {
             numTotalBins = binCollection.getBins() != null ? binCollection.getBins().length : 0;
         }
 
-        final Label headerTotalBins = new Label(TOTAL_BINS_COUNT + String.valueOf(numSelectedBins) + "/" + String.valueOf(numTotalBins));
+        final Label headerTotalBins = new Label(String.format(TOTAL_BINS_COUNT, numSelectedBins, numTotalBins));
 
         // Set styling
         headerValue.getStyleClass().add(HEADER_ROW_CSS_CLASS);
@@ -704,7 +701,7 @@ public class HistogramDisplay2 extends BorderPane {
         }
     }
 
-    public class HistogramBar {
+    private class HistogramBar {
 
         // Icon
         private ObjectProperty<Node> icon;
@@ -727,7 +724,7 @@ public class HistogramDisplay2 extends BorderPane {
         // PropertyName
         private StringProperty propertyName;
 
-        final public void setPropertyName(final String value) {
+        public final void setPropertyName(final String value) {
             propertyNameProperty().set(value);
         }
 
@@ -745,7 +742,7 @@ public class HistogramDisplay2 extends BorderPane {
         // Bar
         private ObjectProperty<StackPane> bar;
 
-        final public void setBar(final Object value) {
+        public final void setBar(final Object value) {
             barProperty().set(value);
         }
 
@@ -768,7 +765,7 @@ public class HistogramDisplay2 extends BorderPane {
             return selectedCount;
         }
 
-        final public void setSelectedCount(final int newValue) {
+        public final void setSelectedCount(final int newValue) {
             selectedCount = newValue;
         }
 
@@ -776,17 +773,12 @@ public class HistogramDisplay2 extends BorderPane {
             return totalCount;
         }
 
-        final public void setTotalCount(final int newValue) {
+        public final void setTotalCount(final int newValue) {
             totalCount = newValue;
         }
 
         public boolean isBarUpdateRequired(final int selectedCount, final int maxCount) {
             return getBar() == null || getSelectedCount() != selectedCount || getTotalCount() != maxCount;
-        }
-
-        // TODO see what uses this and remove
-        public HistogramBar(final Node icon, final String propertyName, final StackPane bar) {
-            this(icon, propertyName, bar, 0, 0);
         }
 
         public HistogramBar(final Node icon, final String propertName, final StackPane bar, final int selectedCount, final int totalCount) {
