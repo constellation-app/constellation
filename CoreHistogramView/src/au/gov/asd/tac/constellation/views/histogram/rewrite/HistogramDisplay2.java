@@ -107,7 +107,6 @@ public class HistogramDisplay2 extends BorderPane {
     private BinIconMode binIconMode = BinIconMode.NONE;
     private BinSelectionMode binSelectionMode = BinSelectionMode.ADD_TO_SELECTION;
     private int activeBin = -1;
-    private int prevDragEnd = -2; // Set to -2, so value is different to dragEnd
     private int dragStart = -1;
     private int dragEnd = -1;
     private boolean shiftDown;
@@ -229,7 +228,7 @@ public class HistogramDisplay2 extends BorderPane {
                 if (event.getGestureSource() != row) {
                     final int newDragEnd = row.getIndex();
                     binSelectionMode.mouseDragged(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, newDragEnd);
-                    setDragEnd(newDragEnd);
+                    dragEnd = newDragEnd;
 
                     // Only need to update bars
                     updateTableBars();
@@ -311,11 +310,6 @@ public class HistogramDisplay2 extends BorderPane {
 
     public BinSelectionMode getBinSelectionMode() {
         return binSelectionMode;
-    }
-
-    private void setDragEnd(final int newValue) {
-        prevDragEnd = dragEnd;
-        dragEnd = newValue;
     }
 
     public synchronized void updateDisplay() {
@@ -427,7 +421,7 @@ public class HistogramDisplay2 extends BorderPane {
 //        if (isHeadless()) {
 //            return;
 //        }
-        
+
         prevScrollValue = scrollValue;
 
         final int numItems = tableView.getItems().size();
@@ -673,7 +667,7 @@ public class HistogramDisplay2 extends BorderPane {
             final int bar = tableView.getSelectionModel().getSelectedIndex();
 
             dragStart = (shiftDown && activeBin >= 0) ? activeBin : bar;
-            setDragEnd(bar);
+            dragEnd = bar;
 
             binSelectionMode.mousePressed(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd);
 
