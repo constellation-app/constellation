@@ -347,56 +347,55 @@ public class HistogramPaneNGTest {
         }
     }
 
-    // TESTING, uncommented got fails
-    /**
-     * Test of actionButtonMousePressed method, of class HistogramPane.
-     */
-    @Test
-    public void testActionButtonMousePressed() {
-        System.out.println("actionButtonMousePressed");
-
-        final ObservableList<MenuItem> mockItems = FXCollections.observableArrayList();
-        final ObjectProperty<Image> mockImageProperty = mock(ObjectProperty.class);// unchecked conversion
-        try (final MockedConstruction<ImageView> mockImageView = Mockito.mockConstruction(ImageView.class, (mock, context) -> {
-            when(mock.imageProperty()).thenReturn(mockImageProperty);
-        }); final MockedConstruction<ContextMenu> mockConstructor = Mockito.mockConstruction(ContextMenu.class, (mock, context) -> {
-            when(mock.getItems()).thenReturn(mockItems);
-        })) {
-            // Set up instance
-            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-            final HistogramPane instance = p.getValue();
-
-            instance.actionButtonMousePressed(mock(MouseEvent.class));
-            verify(instance).updateDisplay();
-        }
-    }
-
-    // havent tested yet, uncommented got fails
+//    // FAILS, seemingly
 //    /**
-//     * Test of toggleStateChanged method, of class HistogramPane.
+//     * Test of actionButtonMousePressed method, of class HistogramPane.
 //     */
 //    @Test
-//    public void testToggleStateChanged() {
-//        System.out.println("toggleStateChanged");
+//    public void testActionButtonMousePressed() {
+//        System.out.println("actionButtonMousePressed");
 //
-//        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
-//            // This is added so that the mocked static that we would otherwise be
-//            // trying to run in the fx thread is actually invoked properly
-//            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
-//                ((Runnable) iom.getArgument(0)).run();
-//                return null;
-//            });
-//
+//        final ObservableList<MenuItem> mockItems = FXCollections.observableArrayList();
+//        final ObjectProperty<Image> mockImageProperty = mock(ObjectProperty.class);// unchecked conversion
+//        try (final MockedConstruction<ImageView> mockImageView = Mockito.mockConstruction(ImageView.class, (mock, context) -> {
+//            when(mock.imageProperty()).thenReturn(mockImageProperty);
+//        }); final MockedConstruction<ContextMenu> mockConstructor = Mockito.mockConstruction(ContextMenu.class, (mock, context) -> {
+//            when(mock.getItems()).thenReturn(mockItems);
+//        })) {
 //            // Set up instance
 //            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-//            final HistogramTopComponent2 mockTopComponent = p.getKey();
 //            final HistogramPane instance = p.getValue();
 //
-//            instance.toggleStateChanged(null);
-//            verify(mockTopComponent).setGraphElementType(any());
+//            instance.actionButtonMousePressed(mock(MouseEvent.class));
 //            verify(instance).updateDisplay();
 //        }
 //    }
+    // uncommented got fails
+    /**
+     * Test of toggleStateChanged method, of class HistogramPane.
+     */
+    @Test
+    public void testToggleStateChanged() {
+        System.out.println("toggleStateChanged");
+
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // This is added so that the mocked static that we would otherwise be
+            // trying to run in the fx thread is actually invoked properly
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
+
+            // Set up instance
+            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+            final HistogramTopComponent2 mockTopComponent = p.getKey();
+            final HistogramPane instance = p.getValue();
+
+            instance.toggleStateChanged(null);
+            verify(mockTopComponent).setGraphElementType(any());
+            verify(instance).updateDisplay();
+        }
+    }
 
     // BELOW WORKS
     /**
