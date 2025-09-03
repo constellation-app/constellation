@@ -371,6 +371,7 @@ public class HistogramPaneNGTest {
 //        }
 //    }
 //    // SEEMS TO WORK, hang on sometimes it fails
+    /// NEW INFO failing even with these two commmented out
 //    /**
 //     * Test of toggleStateChanged method, of class HistogramPane.
 //     */
