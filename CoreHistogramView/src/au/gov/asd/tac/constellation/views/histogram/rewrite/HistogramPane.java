@@ -386,9 +386,7 @@ public class HistogramPane extends BorderPane {
 
         if (histogramState != currentHistogramState) {
             if (histogramState == null) {
-                Platform.runLater(() -> {
-                    disableControls();
-                });
+                Platform.runLater(() -> disableControls());
             } else {
                 if (currentHistogramState == null) {
                     etToggles.values().stream().forEach(toggle -> toggle.setDisable(false));

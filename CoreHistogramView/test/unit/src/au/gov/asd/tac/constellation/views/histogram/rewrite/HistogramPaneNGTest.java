@@ -395,6 +395,7 @@ public class HistogramPaneNGTest {
             verify(instance).updateDisplay();
         }
     }
+
     // BELOW WORKS
     /**
      * Test of saveBinsToGraph method, of class HistogramPane.
