@@ -1019,6 +1019,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 if (Files.exists(filepath)) {
                     return;
                 }
+                // Added unlocking code here as Save action calls handleSave directly
+                if (gdo.getFileLock() != null && gdo.getFileChannel() != null) {
+                    gdo.unlockFile();
+                }
 
                 final GraphDataObject freshGdo = (GraphDataObject) gdo.createFromTemplate(gdo.getFolder(), tmpnam);
 
