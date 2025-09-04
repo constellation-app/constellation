@@ -67,19 +67,28 @@ public class LockingStoreGraph extends StoreGraph implements ReadableGraph, Writ
     }
 
     @Override
+    public void commit(final boolean isAnimation) throws DuplicateKeyException {
+        commit(null, null, isAnimation);
+    }
+    
+    @Override
     public void commit(final Object description) throws DuplicateKeyException {
         commit(description, null);
     }
 
     @Override
     public void commit(final Object description, final String commitName) {
-        lockingManager.commit(description, commitName);
+        commit(description, commitName, true);
+    }
+
+    public void commit(final Object description, final String commitName, final boolean isAnimation) {
+        lockingManager.commit(description, commitName, isAnimation);
 
         if (VERBOSE) {
             LOGGER.log(Level.INFO,"Write lock committed by {0}", Thread.currentThread());
         }
     }
-
+    
     @Override
     public WritableGraph flush(final boolean announce) {
         return (WritableGraph) lockingManager.flush(null, announce);

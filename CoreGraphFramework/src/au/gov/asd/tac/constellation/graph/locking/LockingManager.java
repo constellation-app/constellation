@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.undo.UndoGraphEdit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
@@ -56,6 +57,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
     private LockingEdit currentEdit = null;
     private LockingEdit initialEdit = null;
     private UndoManager undoManager;
+    private final List<Object> objectStack = new ArrayList();    
     public static final String UNDO = "Undo";
     public static final String REDO = "Redo";
 
@@ -154,13 +156,15 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         // Overridden in class DualGraph
     }
 
-    public void commit(final Object description, final String commitName) throws DuplicateKeyException {
+    public void commit(final Object description, final String commitName, final boolean isAnimation) throws DuplicateKeyException {
         if (currentEdit == null || !globalWriteLock.isHeldByCurrentThread()) {
+            objectStack.clear();            
             throw new IllegalMonitorStateException("commit: attempt to unlock write lock, not locked by current thread");
         }
         if (currentEdit.hasChanged(writeContext.target.getModificationCounter())) {
-            currentEdit.commit(description, commitName);
+            currentEdit.commit(description, commitName, isAnimation);
         } else {
+            objectStack.clear();            
             currentEdit.rollBack(currentEdit.parent == null);
         }
     }
@@ -380,14 +384,22 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
             return "Redo " + name;
         }
 
-        public void commit(final Object description, final String commitName) throws DuplicateKeyException {
+        public void commit(final Object description, final String commitName, final boolean isAnimation) throws DuplicateKeyException {
             try {
                 writeContext.target.validateKeys();
             } catch (final DuplicateKeyException ex) {
                 rollBack(parent == null);
                 throw ex;
-            }
+            }          
 
+            if (!isAnimation) {
+                for (Object objectStack1 : currentEdit.graphEdit.getObjectStack()) {
+                    if (Objects.nonNull(objectStack1)) {
+                        objectStack.add(objectStack1);
+                    }
+                }             
+            }
+            
             finished();
 
             if (commitName != null) {
@@ -409,7 +421,8 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                 }
 
                 writeContext = originalReadContext;
-
+                currentEdit.graphEdit.setObjectStack(objectStack.toArray());
+                
                 if (undoManager != null) {
                     SwingUtilities.invokeLater(() -> undoManager.undoableEditHappened(new UndoableEditEvent(LockingManager.this, LockingEdit.this)));
                 }

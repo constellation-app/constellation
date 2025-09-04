@@ -33,6 +33,8 @@ public interface WritableGraph extends GraphWriteMethods {
      * closed and should not be used again.
      */
     public void commit();
+    
+    public void commit(final boolean isAnimationFinished);
 
     /**
      * Causes the changes made on this writable graph to be committed so that

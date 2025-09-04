@@ -277,6 +277,7 @@ public class UndoGraphEditState {
         this.currentDouble = currentDouble;
     }
 
+    
     public void addInstruction(final short operation) {
         if (currentOperation == operation) {
             operationStack[operationCount - 1] = (short) (operation | (++extraOperationsCount << REPEAT_SHIFT));
@@ -457,7 +458,7 @@ public class UndoGraphEditState {
         currentObject = finalObject;
         currentFloat = finalFloat;
         currentLong = finalLong;
-        currentDouble = finalDouble;
+        currentDouble = finalDouble;        
 
         for (int operationIndex = operationCount - 1; operationIndex >= 0; operationIndex--) {
             final int operation = operationStack[operationIndex];
@@ -515,5 +516,13 @@ public class UndoGraphEditState {
                 classMap.put(objectClass, classMap.size());
             }
         }
+    }
+
+    public short getCurrentOperation() {
+        return currentOperation;
+    }
+
+    public void setOperationStack(short[] operationStack) {
+        this.operationStack = operationStack;
     }
 }

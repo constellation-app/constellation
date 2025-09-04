@@ -320,6 +320,16 @@ public class UndoGraphEdit implements GraphEdit {
         UndoGraphEditOperation.EXECUTE_GRAPH_OPERATION.addOperation(state, state.getCurrentAttribute(),
                 state.getCurrentId(), state.getCurrentInt(), state.getCurrentLong(), objectIndex);
     }
+    
+    @Override
+    public Object[] getObjectStack() {
+        return state.getObjectStack();
+    }
+    
+    @Override
+     public void setObjectStack(final Object[] objectStack) {
+        state.setObjectStack(objectStack);
+    }
 
     public void write(final DataOutputStream out) throws Exception {
         state.write(out);
