@@ -250,6 +250,8 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
                 lock.release();
                 if (fileChannel != null && fileChannel.isOpen()) {
                     fileChannel.close();
+                    setFileLock(null);
+                    setFileChannel(null);
                 }
             } catch (final IOException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
