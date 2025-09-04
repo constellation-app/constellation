@@ -143,9 +143,9 @@ public class HistogramDisplay2 extends BorderPane {
 
     private int prevNumBars = 0;
 
-    private float TABLE_WIDTH_TO_PROPERTY_WIDTH_MULT = 0.3f;
+    private static final float TABLE_WIDTH_TO_PROPERTY_WIDTH_MULT = 0.3F;
     // Need to take 3 because otherwise the right of the bar is cut off
-    private int BAR_LENGTH_SUBTRACTION = 3;
+    private static final int BAR_LENGTH_SUBTRACTION = 3;
 
     public HistogramDisplay2(final HistogramTopComponent2 topComponent) {
         this.topComponent = topComponent;
@@ -171,19 +171,19 @@ public class HistogramDisplay2 extends BorderPane {
         propertyCol.setMaxWidth(MAXIMUM_TEXT_WIDTH);
 
         final PseudoClass noValueClass = PseudoClass.getPseudoClass("noValue");
-        propertyCol.setCellFactory(tableColumn -> {
-            return new TableCell<>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
+        propertyCol.setCellFactory(tableColumn
+                -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
 
-                    // Requires this for text to appear, for some reason
-                    this.setText(item);
+                // Requires this for text to appear, for some reason
+                this.setText(item);
 
-                    this.pseudoClassStateChanged(noValueClass, NO_VALUE.equals(item));
-                }
-            };
-        });
+                this.pseudoClassStateChanged(noValueClass, NO_VALUE.equals(item));
+            }
+        }
+        );
 
         iconCol.setCellValueFactory(new PropertyValueFactory("icon"));
         iconCol.setResizable(false);
@@ -706,7 +706,7 @@ public class HistogramDisplay2 extends BorderPane {
         // Icon
         private ObjectProperty<Node> icon;
 
-        final public void setIcon(final Object value) {
+        public final void setIcon(final Object value) {
             iconProperty().set(value);
         }
 
