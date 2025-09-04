@@ -214,6 +214,46 @@ public interface GraphWriteMethods extends GraphReadMethods {
      */
     int addTransaction(final int transaction, final int sourceVertex, final int destinationVertex, final boolean directed);
 
+    
+     int addTransaction(final int sourceVertex, final int destinationVertex, final boolean directed, final boolean isFromComposite);
+     
+    /**
+     * Adds a new transaction to the graph.
+     * <p>
+     * The new transaction will be given a new id that is both currently unused
+     * and also less than the graph's transaction capacity. If the graph's
+     * transaction capacity is exhausted then the capacity will be increased so
+     * that the new transaction can be accommodated.
+     * <p>
+     * If this is the first transaction to be added between these two vertices
+     * then a new link will also be created to hold the transaction. If the
+     * transaction is the first in its link with this direction then a new edge
+     * will also be created to represent the transaction.
+     * <p>
+     * If the new transaction is a loop (source and destination vertices the
+     * same), then a directed transaction will have an uphill edge but not a
+     * downhill edge.
+     * <p>
+     * If the transaction is undirected, the source and destination vertices may
+     * be swapped to ensure that the source vertex id is not greater than the
+     * destination vertex id. This ensures that all undirected transactions are
+     * represented by the uphill edge.
+     * <p>
+     * If a primary key has been set on transaction in the graph, it is
+     * important that this new transaction be allocated unique primary key
+     * attribute values before the changes are committed to the graph or
+     * automatic transaction merging may occur.
+     *
+     * @param transaction the id to be given to the transaction
+     * @param sourceVertex the vertex from which the transaction originates.
+     * @param destinationVertex the vertex at which the transaction terminates.
+     * @param directed specifies whether or not the transaction is directed or
+     * undirected.
+     * @param isFromComposite
+     * @return the id of the new transaction.
+     */
+    int addTransaction(final int transaction, final int sourceVertex, final int destinationVertex, final boolean directed, final boolean isFromComposite);
+    
     /**
      * Removes the specified transaction from the graph. If this is the last
      * transaction represented by an edge then the edge will also be removed.

@@ -212,7 +212,7 @@ public class GraphRecordStoreUtilities {
 
     private static int addTransaction(final GraphWriteMethods graph, final int source, final int destination,
             final Map<String, String> values, final Map<String, Integer> transactionMap,
-            final boolean initializeWithSchema, boolean completeWithSchema) {
+            final boolean initializeWithSchema, boolean completeWithSchema, boolean isFromComposite) {
         final String type = values.get(TYPE_KEY);
         final String directedValue = values.get(DIRECTED_KEY);
         boolean directed = true;
@@ -237,7 +237,7 @@ public class GraphRecordStoreUtilities {
         }
 
         final String idValue = values.remove(ID);
-        final int transaction = getTransaction(graph, idValue, source, destination, directed, transactionMap, initializeWithSchema);
+        final int transaction = getTransaction(graph, idValue, source, destination, directed, transactionMap, initializeWithSchema, isFromComposite);
 
         if (values.remove(DELETE_KEY) != null) {
             graph.removeTransaction(transaction);
@@ -259,7 +259,7 @@ public class GraphRecordStoreUtilities {
 
     private static int getTransaction(final GraphWriteMethods graph, final String id, final int source,
             final int destination, final boolean directed, final Map<String, Integer> transactionMap,
-            final boolean initializeWithSchema) {
+            final boolean initializeWithSchema, final boolean isFromComposite) {
         if (StringUtils.isNotBlank(id)) {
             try {
                 final Integer transaction = Integer.valueOf(id);
@@ -269,7 +269,7 @@ public class GraphRecordStoreUtilities {
             } catch (final NumberFormatException ex) {
                 // it's a non-integer id being passed but that's ok, continue on
             }
-
+            // using earlier created transactions map to check if transaction has been created
             Integer transaction = transactionMap.get(id);
             if (transaction != null) {
                 if (graph.transactionExists(transaction)) {
@@ -279,11 +279,12 @@ public class GraphRecordStoreUtilities {
                 }
                 // if we hit here, we are likely trying to copy a transaction from another graph including its original id
                 // calling addTransaction ensures the graph has capacity to handle the id
+                // Set to directed, then restore it after addTransaction
                 transaction = graph.addTransaction(transaction, source, destination, directed);
             } else if (source == NO_ELEMENT || destination == NO_ELEMENT) {
                 return NO_ELEMENT;
             } else {
-                transaction = graph.addTransaction(source, destination, directed);
+                transaction = graph.addTransaction(source, destination, directed, isFromComposite);
                 transactionMap.put(id, transaction);
             }
 
@@ -372,7 +373,12 @@ public class GraphRecordStoreUtilities {
      */
     public static List<Integer> addRecordStoreToGraph(final GraphWriteMethods graph, final RecordStore recordStore,
             final boolean initializeWithSchema, final boolean completeWithSchema, final List<String> vertexIdAttributes) {
-        return addRecordStoreToGraph(graph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, null, null);
+        return addRecordStoreToGraph(graph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, null, null, false);
+    }
+    
+    public static List<Integer> addRecordStoreToGraph(final GraphWriteMethods graph, final RecordStore recordStore,
+            final boolean initializeWithSchema, final boolean completeWithSchema, final List<String> vertexIdAttributes, final boolean isFromComposite) {
+        return addRecordStoreToGraph(graph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, null, null, isFromComposite);
     }
 
     /**
@@ -391,11 +397,12 @@ public class GraphRecordStoreUtilities {
      * @param transactionMap A map which will be populated with the mappings from transaction id in the
      * {@link RecordStore} (or created transaction id if no id was provided in the {@link RecordStore}) to transaction
      * id on the graph.
+     * @param isFromComposite An indicator that this function was called when compositing is happening.
      * @return A {@link List} of {@link Integer} objects representing the vertex id's of the newly added vertices.
      */
     public static List<Integer> addRecordStoreToGraph(final GraphWriteMethods graph, final RecordStore recordStore,
             final boolean initializeWithSchema, final boolean completeWithSchema, final List<String> vertexIdAttributes,
-            Map<String, Integer> vertexMap, Map<String, Integer> transactionMap) {
+            Map<String, Integer> vertexMap, Map<String, Integer> transactionMap, final boolean isFromComposite) {
         final List<Integer> newVertices = new ArrayList<>();
         final Set<Integer> ghostVertices = new HashSet<>();
 
@@ -446,11 +453,11 @@ public class GraphRecordStoreUtilities {
 
             if (sourceValues.isEmpty() && destinationValues.isEmpty() && transactionValues.containsKey(ID)) {
                 // This will not add a new transaction to the graph (as source and destination are both -1), but if the transaction exists already it will be returned allowing it to be selected.
-                addTransaction(graph, NO_ELEMENT, NO_ELEMENT, transactionValues, transactionMap, initializeWithSchema, completeWithSchema);
+                addTransaction(graph, NO_ELEMENT, NO_ELEMENT, transactionValues, transactionMap, initializeWithSchema, completeWithSchema, isFromComposite);
             } else if (!sourceValues.isEmpty() && !destinationValues.isEmpty()) {
                 final int source = addVertex(graph, sourceValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
                 final int destination = addVertex(graph, destinationValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
-                addTransaction(graph, source, destination, transactionValues, transactionMap, initializeWithSchema, completeWithSchema);
+                addTransaction(graph, source, destination, transactionValues, transactionMap, initializeWithSchema, completeWithSchema, isFromComposite);
             } else if (!sourceValues.isEmpty()) {
                 addVertex(graph, sourceValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
             } else if (!destinationValues.isEmpty()) {

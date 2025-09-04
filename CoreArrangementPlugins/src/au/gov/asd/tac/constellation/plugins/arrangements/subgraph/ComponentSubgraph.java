@@ -809,4 +809,14 @@ public class ComponentSubgraph implements GraphWriteMethods {
     public Object getAttributeDefaultValue(final int attribute) {
         return proxy.getAttributeDefaultValue(attribute);
     }
+
+    @Override
+    public int addTransaction(int sourceVertex, int destinationVertex, boolean directed, boolean isFromComposite) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public int addTransaction(int transaction, int sourceVertex, int destinationVertex, boolean directed, boolean isFromComposite) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
