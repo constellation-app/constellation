@@ -486,7 +486,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
 
         if (currentHistogramState == null || binFormatter != currentHistogramState.getBinFormatter() || parameters != currentHistogramState.getBinFormatterParameters()) {
-            HistogramState newHistogramState = new HistogramState(currentHistogramState);
+            final HistogramState newHistogramState = new HistogramState(currentHistogramState);
             newHistogramState.setBinFormatter(binFormatter);
             newHistogramState.setBinFormatterParameters(parameters);
             PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
@@ -503,7 +503,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
 
         if (currentHistogramState == null || binSelectionMode != currentHistogramState.getBinSelectionMode()) {
-            HistogramState newHistogramState = new HistogramState(currentHistogramState);
+            final HistogramState newHistogramState = new HistogramState(currentHistogramState);
             newHistogramState.setBinSelectionMode(binSelectionMode);
             PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
         }
@@ -518,7 +518,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     public void filterOnSelection() {
         if (currentGraph != null) {
             final Plugin plugin = new HistogramFilterOnSelectionPlugin();
-            PluginParameters params = plugin.createParameters();
+            final PluginParameters params = plugin.createParameters();
             params.getParameters().get(HistogramFilterOnSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID).setObjectValue(new ElementTypeParameterValue(currentHistogramState.getElementType()));
             PluginExecution.withPlugin(plugin).withParameters(params).executeLater(currentGraph);
         }
@@ -527,7 +527,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     public void clearFilter() {
         if (currentGraph != null) {
             final Plugin plugin = new HistogramClearFilterPlugin();
-            PluginParameters params = plugin.createParameters();
+            final PluginParameters params = plugin.createParameters();
             params.getParameters().get(HistogramClearFilterPlugin.ELEMENT_TYPE_PARAMETER_ID).setObjectValue(new ElementTypeParameterValue(currentHistogramState.getElementType()));
             PluginExecution.withPlugin(plugin).withParameters(params).executeLater(currentGraph);
         }
