@@ -234,6 +234,16 @@ public class NormalisingGraphEdit implements GraphEdit {
         throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
+    @Override
+    public Object[] getObjectStack() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void setObjectStack(Object[] objectStack) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
     private class Element<E> {
 
         public final int id;
