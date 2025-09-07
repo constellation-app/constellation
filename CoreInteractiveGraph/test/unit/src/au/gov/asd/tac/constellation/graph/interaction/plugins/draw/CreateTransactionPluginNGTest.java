@@ -106,8 +106,8 @@ public class CreateTransactionPluginNGTest {
         assertEquals(graph.getTransactionCount(), 1);
         
         final int newTn = graph.getTransaction(0);
-        assertEquals(graph.getTransactionSourceVertex(newTn), vxId2);
-        assertEquals(graph.getTransactionDestinationVertex(newTn), vxId1);
+        assertEquals(graph.getTransactionSourceVertex(newTn), vxId1);
+        assertEquals(graph.getTransactionDestinationVertex(newTn), vxId2);
         assertEquals(graph.getTransactionDirection(newTn), Graph.UNDIRECTED);
         assertEquals(graph.getLongValue(layerMaskAttribute, newTn), 1L);
     }

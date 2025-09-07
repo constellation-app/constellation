@@ -15,8 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.StringEditorFactory.StringEditor;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
@@ -28,10 +33,13 @@ import org.testng.annotations.Test;
 
 /**
  *
+ * @author spica
  * @author antares
  */
 public class StringEditorFactoryNGTest {
     
+    private static final Logger LOGGER = Logger.getLogger(StringEditorFactoryNGTest.class.getName());
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         // Not currently required
@@ -44,12 +52,18 @@ public class StringEditorFactoryNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        // Not currently required
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        // Not currently required
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     /**
@@ -63,6 +77,17 @@ public class StringEditorFactoryNGTest {
         final AbstractEditor<String> result = instance.createEditor("Test", null, null, null, null);
         // could be different abstract editors for the string type but we want to make sure it's the right one
         assertTrue(result instanceof StringEditor);
+    }
+    
+    /**
+     * Test of getAttributeType method, of class StringEditorFactory.
+     */
+    @Test
+    public void testGetAttributeType() {
+        System.out.println("getAttributeType");
+
+        final StringEditorFactory instance = new StringEditorFactory();        
+        assertEquals(instance.getAttributeType(), StringAttributeDescription.ATTRIBUTE_NAME);
     }
     
     /**

@@ -17,13 +17,10 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.IndexRange;
-import javafx.scene.control.TextArea;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -47,7 +44,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
     public class StringEditor extends AbstractEditor<String> {
         
-        private TextArea textArea;
+        private SpellCheckingTextArea spellCheckingTextArea;
 
         protected StringEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<String> validator, final String defaultValue, final String initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
@@ -55,57 +52,23 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
         @Override
         public void updateControlsWithValue(final String value) {
-            if (value != null) {
-                textArea.setText(value);
+            if (value != null) {                
+                spellCheckingTextArea.setText(value);
             }
         }
 
         @Override
         protected String getValueFromControls() {
-            return textArea.getText().isBlank() ? null : textArea.getText();
+            return spellCheckingTextArea.getText().isBlank() ? null : spellCheckingTextArea.getText();
         }
 
         @Override
         protected Node createEditorControls() {
-            textArea = new TextArea();
-            textArea.setWrapText(true);
-            textArea.textProperty().addListener((o, n, v) -> update());
-            textArea.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-                if (e.getCode() == KeyCode.DELETE) {
-                    final IndexRange selection = textArea.getSelection();
-                    if (selection.getLength() == 0) {
-                        textArea.deleteNextChar();
-                    } else {
-                        textArea.deleteText(selection);
-                    }
-                    e.consume();
-                } else if (e.isShortcutDown() && e.isShiftDown() && (e.getCode() == KeyCode.RIGHT)) {
-                    textArea.selectNextWord();
-                    e.consume();
-                } else if (e.isShortcutDown() && e.isShiftDown() && (e.getCode() == KeyCode.LEFT)) {
-                    textArea.selectPreviousWord();
-                    e.consume();
-                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.RIGHT)) {
-                    textArea.nextWord();
-                    e.consume();
-                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.LEFT)) {
-                    textArea.previousWord();
-                    e.consume();
-                } else if (e.isShiftDown() && (e.getCode() == KeyCode.RIGHT)) {
-                    textArea.selectForward();
-                    e.consume();
-                } else if (e.isShiftDown() && (e.getCode() == KeyCode.LEFT)) {
-                    textArea.selectBackward();
-                    e.consume();
-                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.A)) {
-                    textArea.selectAll();
-                    e.consume();
-                } else if (e.getCode() == KeyCode.ESCAPE) {
-                    e.consume();
-                }
-            });
+            spellCheckingTextArea = new SpellCheckingTextArea(false);
+            spellCheckingTextArea.setWrapText(true);
+            spellCheckingTextArea.textProperty().addListener((o, n, v) -> update());
             
-            final VBox controls = new VBox(textArea);
+            final VBox controls = new VBox(spellCheckingTextArea);
             controls.setAlignment(Pos.CENTER);
             
             return controls;
