@@ -94,6 +94,30 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
         protected DateTimeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ZonedDateTime> validator, final ZonedDateTime defaultValue, final ZonedDateTime initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
+        
+        protected LocalDate getDateValue() {
+            return datePicker.getValue();
+        }
+        
+        protected Integer getHourValue() {
+            return hourSpinner.getValue();
+        }
+        
+        protected Integer getMinValue() {
+            return minSpinner.getValue();
+        }
+        
+        protected Integer getSecValue() {
+            return secSpinner.getValue();
+        }
+        
+        protected Integer getMilliValue() {
+            return milliSpinner.getValue();
+        }
+        
+        protected ZoneId getTZValue() {
+            return timeZoneComboBox.getValue();
+        }
 
         @Override
         public void updateControlsWithValue(final ZonedDateTime value) {

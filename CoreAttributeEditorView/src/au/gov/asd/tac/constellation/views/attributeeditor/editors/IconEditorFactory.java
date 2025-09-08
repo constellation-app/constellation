@@ -92,6 +92,10 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         protected IconEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationIcon> validator, final ConstellationIcon defaultValue, final ConstellationIcon initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
+        
+        protected String getListSelection() {
+            return listView.getSelectionModel().getSelectedItem();
+        }
 
         @Override
         public void updateControlsWithValue(final ConstellationIcon value) {

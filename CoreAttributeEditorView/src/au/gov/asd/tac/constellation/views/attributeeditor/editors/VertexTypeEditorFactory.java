@@ -69,11 +69,10 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
 
         @Override
         public void updateControlsWithValue(final SchemaVertexType value) {
-            final SchemaVertexType type = value;
-            if (typeList.getItems().contains(type)) {
-                typeList.getSelectionModel().select(type);
+            if (typeList.getItems().contains(value)) {
+                typeList.getSelectionModel().select(value);
             } else {
-                nameText.setText(type != null ? type.getName() : "");
+                nameText.setText(value != null ? value.getName() : "");
             }
         }
 

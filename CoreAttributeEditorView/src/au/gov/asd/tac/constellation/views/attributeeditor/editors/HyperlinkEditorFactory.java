@@ -51,6 +51,10 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
         protected HyperlinkEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<URI> validator, final URI defaultValue, final URI initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
+        
+        protected String getURIText() {
+            return textField.getText();
+        }
 
         @Override
         public void updateControlsWithValue(final URI value) {

@@ -65,6 +65,22 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
         protected TimeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<LocalTime> validator, final LocalTime defaultValue, final LocalTime initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
+        
+        protected Integer getHourValue() {
+            return hourSpinner.getValue();
+        }
+        
+        protected Integer getMinValue() {
+            return minSpinner.getValue();
+        }
+        
+        protected Integer getSecValue() {
+            return secSpinner.getValue();
+        }
+        
+        protected Integer getMilliValue() {
+            return milliSpinner.getValue();
+        }
 
         @Override
         public void updateControlsWithValue(final LocalTime value) {

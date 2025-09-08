@@ -71,6 +71,26 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         protected LocalDateTimeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<LocalDateTime> validator, final LocalDateTime defaultValue, final LocalDateTime initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
+        
+        protected LocalDate getDateValue() {
+            return datePicker.getValue();
+        }
+        
+        protected Integer getHourValue() {
+            return hourSpinner.getValue();
+        }
+        
+        protected Integer getMinValue() {
+            return minSpinner.getValue();
+        }
+        
+        protected Integer getSecValue() {
+            return secSpinner.getValue();
+        }
+        
+        protected Integer getMilliValue() {
+            return milliSpinner.getValue();
+        }
 
         @Override
         public void updateControlsWithValue(final LocalDateTime value) {
