@@ -150,28 +150,23 @@ public enum BinSelectionMode {
 
             final int firstBar = Math.min(dragStart, dragEnd);
             final int lastBar = Math.max(dragStart, dragEnd);
-            System.out.println("A firstBar: " + firstBar + " lastBar: " + lastBar);
 
             if (firstBar >= bins.length || lastBar < 0) {
                 return;
             }
-            System.out.println("B");
+
             if (!shiftDown && !controlDown) {
-                System.out.println("C");
                 for (final Bin bin : bins) {
                     bin.activated = false;
                 }
             }
-            System.out.println("D");
 
             if (controlDown) {
-                System.out.println("E");
                 for (int i = firstBar; i <= lastBar; i++) {
                     bins[i].savedActivated = bins[i].activated;
                     bins[i].activated = !bins[i].activated;
                 }
             } else {
-                System.out.println("F");
                 for (int i = firstBar; i <= lastBar; i++) {
                     bins[i].savedActivated = bins[i].activated;
                     bins[i].activated = true;

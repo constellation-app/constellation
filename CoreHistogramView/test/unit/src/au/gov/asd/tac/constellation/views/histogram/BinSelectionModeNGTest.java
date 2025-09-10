@@ -181,25 +181,55 @@ public class BinSelectionModeNGTest {
         final boolean[] shiftDownArray = {false, false, true};
         final boolean[] controlDownArray = {false, true, false};
 
-        final boolean[] expectedActivatefArray = {true, false, true};
+        final boolean[] expectedActivatedArray = {true, false, true};
 
         for (int i = 0; i < numTests; i++) {
             final Bin bin1 = new StringBin();
-            bin1.selectedCount = 1;
-            bin1.elementCount = elementCount;
             bin1.activated = false;
             bin1.savedActivated = false;
 
             final Bin bin2 = new StringBin();
-            bin2.selectedCount = 1;
-            bin2.elementCount = elementCount;
             bin2.activated = true;
             bin2.savedActivated = true;
 
             instance.mouseDragged(shiftDownArray[i], controlDownArray[i], new Bin[]{bin1, bin2}, dragStart, oldDragEnd, newDragEnd);
 
             assertEquals(bin1.activated, true);
-            assertEquals(bin2.activated, expectedActivatefArray[i]);
+            assertEquals(bin2.activated, expectedActivatedArray[i]);
+        }
+    }
+
+    /**
+     * Test of mousePressed method, of class BinSelectionMode.
+     */
+    @Test
+    public void testMousePressedAddToSelection() {
+        System.out.println("testMousePressedAddToSelection");
+
+        final int dragStart = 0;
+        final int dragEnd = 1;
+
+        final BinSelectionMode instance = BinSelectionMode.ADD_TO_SELECTION;
+
+        final int numTests = 3;
+        final boolean[] shiftDownArray = {false, false, true};
+        final boolean[] controlDownArray = {false, true, false};
+
+        final boolean[] expectedActivatedArray = {true, false, true};
+
+        for (int i = 0; i < numTests; i++) {
+            final Bin bin1 = new StringBin();
+            bin1.activated = false;
+            bin1.savedActivated = false;
+
+            final Bin bin2 = new StringBin();
+            bin2.activated = true;
+            bin2.savedActivated = true;
+
+            instance.mousePressed(shiftDownArray[i], controlDownArray[i], new Bin[]{bin1, bin2}, dragStart, dragEnd);
+
+            assertEquals(bin1.activated, true);
+            assertEquals(bin2.activated, expectedActivatedArray[i]);
         }
     }
 
