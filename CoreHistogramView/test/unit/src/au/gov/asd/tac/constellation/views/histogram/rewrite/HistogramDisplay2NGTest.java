@@ -22,13 +22,13 @@ import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
 import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
 import au.gov.asd.tac.constellation.views.histogram.bins.ObjectBin;
 import au.gov.asd.tac.constellation.views.histogram.bins.TransactionDirectionBin;
+import au.gov.asd.tac.constellation.views.histogram.rewrite.HistogramDisplay2.HistogramBar;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.awt.datatransfer.Clipboard;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -38,6 +38,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import org.mockito.MockedConstruction;
@@ -50,6 +51,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -391,5 +393,90 @@ public class HistogramDisplay2NGTest {
 
             verify(mockClipboard).setContents(any(), any());
         }
+    }
+
+    @Test
+    public void testGetIcon() {
+        System.out.println("HistogramBar getIcon");
+
+        final HistogramBar bar = new HistogramBar(null, "", null, 0, 0);
+        final Node mockIcon = mock(Node.class);
+
+        bar.setIcon(mockIcon);
+
+        assertEquals(bar.getIcon(), mockIcon);
+    }
+
+    @Test
+    public void testGetPropertyName() {
+        System.out.println("HistogramBar getPropertyName");
+
+        final HistogramBar bar = new HistogramBar(null, "", null, 0, 0);
+        final String mockProperty = "mockProperty";
+
+        bar.setPropertyName(mockProperty);
+
+        assertEquals(bar.getPropertyName(), mockProperty);
+    }
+
+    @Test
+    public void testGetBar() {
+        System.out.println("HistogramBar getBar");
+
+        final HistogramBar bar = new HistogramBar(null, "", null, 0, 0);
+        final Object mockBar = mock(Object.class);
+
+        bar.setBar(mockBar);
+
+        assertEquals(bar.getBar(), mockBar);
+    }
+
+    @Test
+    public void testGetSelectedCount() {
+        System.out.println("HistogramBar getSelectedCount");
+
+        final HistogramBar bar = new HistogramBar(null, "", null, 0, 0);
+        final int selectedCount = 101;
+
+        bar.setSelectedCount(selectedCount);
+
+        assertEquals(bar.getSelectedCount(), selectedCount);
+    }
+
+    @Test
+    public void testGetTotalCount() {
+        System.out.println("HistogramBar getTotalCount");
+
+        final HistogramBar bar = new HistogramBar(null, "", null, 0, 0);
+        final int totalCount = 101;
+
+        bar.setTotalCount(totalCount);
+
+        assertEquals(bar.getTotalCount(), totalCount);
+    }
+
+    @Test
+    public void testIsBarUpdateRequired() {
+        System.out.println("HistogramBar isBarUpdateRequired");
+
+        final Node mockIcon = mock(Node.class);
+        final String mockProperty = "mockProperty";
+        final StackPane mockBar = mock(StackPane.class);
+        final int selectedCount = 101;
+        final int totalCount = 202;
+
+        final HistogramBar bar = new HistogramBar(mockIcon, mockProperty, mockBar, selectedCount, totalCount);
+        
+        assertFalse(bar.isBarUpdateRequired(selectedCount, totalCount));
+        assertTrue(bar.isBarUpdateRequired(0, totalCount));
+        assertTrue(bar.isBarUpdateRequired(selectedCount, 0));
+        assertTrue(bar.isBarUpdateRequired(0, 0));
+        
+        bar.setBar(null);
+
+        assertTrue(bar.isBarUpdateRequired(selectedCount, totalCount));
+        assertTrue(bar.isBarUpdateRequired(0, totalCount));
+        assertTrue(bar.isBarUpdateRequired(selectedCount, 0));
+        assertTrue(bar.isBarUpdateRequired(0, 0));
     }
 }

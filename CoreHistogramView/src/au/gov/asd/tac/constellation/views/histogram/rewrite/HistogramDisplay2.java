@@ -701,7 +701,7 @@ public class HistogramDisplay2 extends BorderPane {
         }
     }
 
-    public class HistogramBar {
+    public static class HistogramBar {
 
         // Icon
         private ObjectProperty<Node> icon;
