@@ -29,8 +29,8 @@ import org.testng.annotations.Test;
  */
 public class BinSelectionModeNGTest {
 
-    private void printBin(final Bin bin) {
-        System.out.println(bin.selectedCount + " " + bin.savedSelectedCount + " " + bin.elementCount + " " + bin.activated);
+    private void printBin(final Bin bin, final String name) {
+        System.out.println(name + " " + bin.selectedCount + " " + bin.savedSelectedCount + " " + bin.elementCount + " " + bin.activated);
     }
 
     /**
@@ -147,7 +147,6 @@ public class BinSelectionModeNGTest {
         final boolean[] controlDownArray = {false, true, false};
 
         for (int i = 0; i < numTests; i++) {
-            System.out.println("i: " + i);
             final Bin bin1 = new StringBin();
             bin1.selectedCount = selectedCount;
             bin1.elementCount = elementCount;
@@ -155,77 +154,54 @@ public class BinSelectionModeNGTest {
             final Bin bin2 = new StringBin();
             bin2.selectedCount = selectedCount;
             bin2.elementCount = elementCount;
-            System.out.println("Before");
-            printBin(bin1);
-            printBin(bin2);
+
             instance.mousePressed(shiftDownArray[i], controlDownArray[i], new Bin[]{bin1, bin2}, dragStart, dragEnd);
-            System.out.println("After");
-            printBin(bin1);
-            printBin(bin2);
 
             assertEquals(bin1.activated, true);
             assertEquals(bin2.activated, false);
         }
     }
-//
-//    /**
-//     * Test of mouseDragged method, of class BinSelectionMode.
-//     */
-//    @Test
-//    public void testMouseDraggedWithinSelection() {
-//        System.out.println("testMouseDraggedWithinSelection");
-//
-//        final int elementCount = 4;
-//
-//        final int dragStart = 0;
-//        final int oldDragEnd = 1;
-//        final int newDragEnd = 1;
-//
-//        final BinSelectionMode instance = BinSelectionMode.WITHIN_SELECTION;
-//
-//        final int numTests = 3;
-//        final boolean[] shiftDownArray = {false, false, true};
-//        final boolean[] controlDownArray = {false, true, false};
-//
-//        final int expectedSavedSelectedCount = 0;
-//
-//        for (int i = 0; i < numTests; i++) {
-//            final Bin bin = new StringBin();
-//            bin.selectedCount = 1;
-//            bin.elementCount = elementCount;
-//
-//            instance.mouseDragged(shiftDownArray[i], controlDownArray[i], new Bin[]{bin}, dragStart, oldDragEnd, newDragEnd);
-//
-//            assertEquals(bin.selectedCount, elementCount);
-//            assertEquals(bin.savedSelectedCount, expectedSavedSelectedCount);
-//            assertEquals(bin.elementCount, elementCount);
-//        }
-//    }
-//
-//    /**
-//     * Test of mouseReleased method, of class BinSelectionMode.
-//     */
-//    @Test
-//    public void testMouseReleasedWithinSelection() {
-//        System.out.println("testMouseReleasedWithinSelection");
-//        final Bin[] bins = new Bin[1];
-//        final int dragStart = 0;
-//        final int dragEnd = 1;
-//        final HistogramTopComponent2 topComponent = mock(HistogramTopComponent2.class);
-//        final BinSelectionMode instance = BinSelectionMode.WITHIN_SELECTION;
-//
-//        final int firstBar = Math.max(0, Math.min(dragStart, dragEnd));
-//        final int lastBar = Math.min(bins.length - 1, Math.max(dragStart, dragEnd));
-//
-//        instance.mouseReleased(false, false, bins, dragStart, dragEnd, topComponent);
-//        verify(topComponent).selectOnlyBins(firstBar, lastBar);
-//
-//        instance.mouseReleased(false, true, bins, dragStart, dragEnd, topComponent);
-//        verify(topComponent).completeBins(firstBar, lastBar);
-//
-//        instance.mouseReleased(true, false, bins, dragStart, dragEnd, topComponent);
-//        verify(topComponent).selectBins(firstBar, lastBar, true);
-//    }
+
+    /**
+     * Test of mouseDragged method, of class BinSelectionMode.
+     */
+    @Test
+    public void testMouseDraggedWithinSelection() {
+        System.out.println("testMouseDraggedWithinSelection");
+
+        final int elementCount = 4;
+
+        final int dragStart = 0;
+        final int oldDragEnd = 1;
+        final int newDragEnd = 1;
+
+        final BinSelectionMode instance = BinSelectionMode.WITHIN_SELECTION;
+
+        final int numTests = 3;
+        final boolean[] shiftDownArray = {false, false, true};
+        final boolean[] controlDownArray = {false, true, false};
+
+        final boolean[] expectedActivatefArray = {true, false, true};
+
+        for (int i = 0; i < numTests; i++) {
+            final Bin bin1 = new StringBin();
+            bin1.selectedCount = 1;
+            bin1.elementCount = elementCount;
+            bin1.activated = false;
+            bin1.savedActivated = false;
+
+            final Bin bin2 = new StringBin();
+            bin2.selectedCount = 1;
+            bin2.elementCount = elementCount;
+            bin2.activated = true;
+            bin2.savedActivated = true;
+
+            instance.mouseDragged(shiftDownArray[i], controlDownArray[i], new Bin[]{bin1, bin2}, dragStart, oldDragEnd, newDragEnd);
+
+            assertEquals(bin1.activated, true);
+            assertEquals(bin2.activated, expectedActivatefArray[i]);
+        }
+    }
 
     /**
      * Test of toString method, of class BinSelectionMode.
