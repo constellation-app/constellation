@@ -374,7 +374,7 @@ public final class HistogramTopComponent extends AbstractTopComponent implements
 
         currentBinCollection = null;
         BinIconMode binIconMode = BinIconMode.NONE;
-        BinCreator binCreator = binCreators.get(currentHistogramState.getAttribute());
+        BinCreator binCreator = binCreators.get((currentHistogramState.getAttribute() != null) ? currentHistogramState.getAttribute() : "");
         binnedAttribute = Graph.NOT_FOUND;
         if (binCreator != null) {
             if (binCreator.isAttributeBased()) {
