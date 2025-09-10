@@ -165,8 +165,6 @@ public class BinSelectionModeNGTest {
     public void testMouseDraggedWithinSelection() {
         System.out.println("testMouseDraggedWithinSelection");
 
-        final int elementCount = 4;
-
         final int dragStart = 0;
         final int oldDragEnd = 1;
         final int newDragEnd = 1;

@@ -164,10 +164,6 @@ public class HistogramDisplay2NGTest {
         instance.updateBinCollection();
 
         instance.updateDisplay();
-
-//            verify(binCollection, atLeast(1)).getBins();
-//            verify(binCollection, atLeast(1)).getMaxElementCount();
-//            verify(binCollection, atLeast(1)).getSelectedBins();
     }
 
     /**
@@ -466,12 +462,12 @@ public class HistogramDisplay2NGTest {
         final int totalCount = 202;
 
         final HistogramBar bar = new HistogramBar(mockIcon, mockProperty, mockBar, selectedCount, totalCount);
-        
+
         assertFalse(bar.isBarUpdateRequired(selectedCount, totalCount));
         assertTrue(bar.isBarUpdateRequired(0, totalCount));
         assertTrue(bar.isBarUpdateRequired(selectedCount, 0));
         assertTrue(bar.isBarUpdateRequired(0, 0));
-        
+
         bar.setBar(null);
 
         assertTrue(bar.isBarUpdateRequired(selectedCount, totalCount));
