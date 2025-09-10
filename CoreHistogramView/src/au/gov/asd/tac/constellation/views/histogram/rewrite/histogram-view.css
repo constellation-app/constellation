@@ -20,7 +20,7 @@
     -fx-text-fill: #FFFF00;/*Yellow*/
 }
 
-.label:barBinCount {
+.label:bar-bin-count {
     -fx-padding: 0 1em 0 0;
 }
 
@@ -48,7 +48,7 @@
     -fx-background-color: null;
 }
 
-.table-cell:noValue{
+.table-cell:no-value{
     -fx-text-fill: #FFFF00; /*Yellow*/
 }
 

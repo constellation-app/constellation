@@ -170,7 +170,7 @@ public class HistogramDisplay2 extends BorderPane {
         propertyCol.setMinWidth(MINIMUM_TEXT_WIDTH);
         propertyCol.setMaxWidth(MAXIMUM_TEXT_WIDTH);
 
-        final PseudoClass noValueClass = PseudoClass.getPseudoClass("noValue");
+        final PseudoClass noValueClass = PseudoClass.getPseudoClass("no-value");
         propertyCol.setCellFactory(tableColumn
                 -> new TableCell<>() {
             @Override
@@ -573,7 +573,7 @@ public class HistogramDisplay2 extends BorderPane {
             final Label binCountlabel = new Label(binCount);
 
             binCountlabel.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
-            binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("barBinCount"), true); // Set styling
+            binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count"), true); // Set styling
             binCountlabel.setMinHeight(barHeight);
 
             rectBar.getChildren().add(binCountlabel);
