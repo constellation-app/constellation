@@ -77,7 +77,7 @@ public class HistogramPaneNGTest {
             // Assert HistogramDisplay2 was made and function was called
             assertTrue(mockConstructor.constructed().size() == 1);
             final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
-            verify(menu, atLeast(1)).updateDisplay();//TODO uncomment
+            verify(menu, atLeast(1)).updateDisplay();
         }
     }
 
