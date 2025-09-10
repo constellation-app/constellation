@@ -40,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -88,7 +89,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     // Labels used to mask UI in the event of having no active graph:
 
     private final JLabel lblNoGraph = new JLabel(Bundle.No_Active_Graph());
-    private final JPanel panelNoGraph = new JPanel();
+    private final JPanel panelNoGraph = new JPanel(); 
+    private final int fontsize = UIManager.getFont("controlFont") != null ? UIManager.getFont("controlFont").getSize() : 12;
     /**
      * Uses an overloaded MouseAdapter class to intercept mouse interactions on
      * the <code>lstNamedSelections</code>.
@@ -461,6 +463,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
 
         scrlContent.setAutoscrolls(true);
 
+        lstNamedSelections.setFixedCellHeight((int) Math.ceil(fontsize * 1.5));
         lstNamedSelections.setInheritsPopupMenu(true);
         scrlContent.setViewportView(lstNamedSelections);
 
