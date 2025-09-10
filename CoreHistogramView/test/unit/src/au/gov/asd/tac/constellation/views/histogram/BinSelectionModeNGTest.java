@@ -29,10 +29,6 @@ import org.testng.annotations.Test;
  */
 public class BinSelectionModeNGTest {
 
-    private void printBin(final Bin bin, final String name) {
-        System.out.println(name + " " + bin.selectedCount + " " + bin.savedSelectedCount + " " + bin.elementCount + " " + bin.activated);
-    }
-
     /**
      * Test of mousePressed method, of class BinSelectionMode.
      */
