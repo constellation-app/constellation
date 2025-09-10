@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RUNNER_IMAGE: "constellationapplication/netbeans-runner:21.0.2"
-      ADAPTORS_VERSION: "v3.2.0"
+      RELEASE_VERSION: "v3.2.0"
     container:
       image: docker://pandoc/latex:2.9
       options: --entrypoint=bash
@@ -38,8 +38,8 @@ jobs:
           path: ./workspace/constellation-applications
       - name: Update Version Number
         run: |
-               sed -i "s/(under development)/$ADAPTORS_VERSION/" ./workspace/constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/startup/Startup.java
-               sed -i "s/(under development)/$ADAPTORS_VERSION/" ./workspace/constellation/CoreWebServer/src/au/gov/asd/tac/constellation/webserver/api/swagger/constellation.json
+               sed -i "s/(under development)/$RELEASE_VERSION/" ./workspace/constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/startup/Startup.java
+               sed -i "s/(under development)/$RELEASE_VERSION/" ./workspace/constellation/CoreWebServer/src/au/gov/asd/tac/constellation/webserver/api/swagger/constellation.json
       - name: Add Execute Privilege to Scripts
         run: |
               chmod +x ./workspace/constellation-applications/build-zip.sh
