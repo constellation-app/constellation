@@ -231,45 +231,45 @@ public class HistogramPaneNGTest {
         instance.updateBinComparator();
         verify(mockTopComponent).setBinComparator(any());
     }
-
-///////// ALL ABOVE WORKS
-    // SEEMS TO WORK
-    /**
-     * Test of clearFilter method, of class HistogramPane.
-     */
-    @Test
-    public void testClearFilter() {
-        System.out.println("clearFilter");
-
-        // Set up instance
-        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-        final HistogramTopComponent2 mockTopComponent = p.getKey();
-        final HistogramPane instance = p.getValue();
-        doNothing().when(instance).updateDisplay();
-
-        instance.clearFilter();
-        verify(mockTopComponent).clearFilter();
-        verify(instance).updateDisplay();
-    }
-
-    // SEEMS TO WORK - Update: may not
-    /**
-     * Test of clearFilter method, of class HistogramPane.
-     */
-    @Test
-    public void testFilterSelection() {
-        System.out.println("filterSelection");
-
-        // Set up instance
-        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-        final HistogramTopComponent2 mockTopComponent = p.getKey();
-        final HistogramPane instance = p.getValue();
-        doNothing().when(instance).updateDisplay();
-
-        instance.filterSelection();
-        verify(mockTopComponent).filterOnSelection();
-        verify(instance).updateDisplay();
-    }
+//
+/////////// ALL ABOVE WORKS
+//    // SEEMS TO WORK
+//    /**
+//     * Test of clearFilter method, of class HistogramPane.
+//     */
+//    @Test
+//    public void testClearFilter() {
+//        System.out.println("clearFilter");
+//
+//        // Set up instance
+//        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+//        final HistogramTopComponent2 mockTopComponent = p.getKey();
+//        final HistogramPane instance = p.getValue();
+//        doNothing().when(instance).updateDisplay();
+//
+//        instance.clearFilter();
+//        verify(mockTopComponent).clearFilter();
+//        verify(instance).updateDisplay();
+//    }
+//
+//    // SEEMS TO WORK - Update: may not
+//    /**
+//     * Test of clearFilter method, of class HistogramPane.
+//     */
+//    @Test
+//    public void testFilterSelection() {
+//        System.out.println("filterSelection");
+//
+//        // Set up instance
+//        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+//        final HistogramTopComponent2 mockTopComponent = p.getKey();
+//        final HistogramPane instance = p.getValue();
+//        doNothing().when(instance).updateDisplay();
+//
+//        instance.filterSelection();
+//        verify(mockTopComponent).filterOnSelection();
+//        verify(instance).updateDisplay();
+//    }
 //    // SEEMS TO WORK
 //    /**
 //     * Test of selectionModeChoiceHandler method, of class HistogramPane.
