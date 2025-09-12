@@ -34,6 +34,7 @@ import static org.mockito.Mockito.when;
 import javafx.util.Pair;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doNothing;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -242,30 +243,31 @@ public class HistogramPaneNGTest {
         final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
         final HistogramTopComponent2 mockTopComponent = p.getKey();
         final HistogramPane instance = p.getValue();
+        doNothing().when(instance).updateDisplay();
 
         instance.clearFilter();
         verify(mockTopComponent).clearFilter();
         verify(instance).updateDisplay();
     }
 
-//    // SEEMS TO WORK - Update: may not
-//    /**
-//     * Test of clearFilter method, of class HistogramPane.
-//     */
-//    @Test
-//    public void testFilterSelection() {
-//        System.out.println("filterSelection");
-//
-//        // Set up instance
-//        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-//        final HistogramTopComponent2 mockTopComponent = p.getKey();
-//        final HistogramPane instance = p.getValue();
-//
-//        instance.filterSelection();
-//        verify(mockTopComponent).filterOnSelection();
-//        verify(instance).updateDisplay();
-//    }
+    // SEEMS TO WORK - Update: may not
+    /**
+     * Test of clearFilter method, of class HistogramPane.
+     */
+    @Test
+    public void testFilterSelection() {
+        System.out.println("filterSelection");
 
+        // Set up instance
+        final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+        final HistogramTopComponent2 mockTopComponent = p.getKey();
+        final HistogramPane instance = p.getValue();
+        doNothing().when(instance).updateDisplay();
+
+        instance.filterSelection();
+        verify(mockTopComponent).filterOnSelection();
+        verify(instance).updateDisplay();
+    }
 //    // SEEMS TO WORK
 //    /**
 //     * Test of selectionModeChoiceHandler method, of class HistogramPane.
