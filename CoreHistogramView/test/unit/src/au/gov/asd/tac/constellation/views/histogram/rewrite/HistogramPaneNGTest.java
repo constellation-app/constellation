@@ -37,6 +37,7 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -80,6 +81,7 @@ public class HistogramPaneNGTest {
             final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
             verify(menu, atLeast(1)).updateDisplay();
         }
+        fail();
     }
 
     /**
