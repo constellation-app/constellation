@@ -34,7 +34,6 @@ import static org.mockito.Mockito.when;
 import javafx.util.Pair;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.doNothing;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -271,7 +270,6 @@ public class HistogramPaneNGTest {
             final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
 
             instance.clearFilter();
-            verify(instance).updateDisplay();
 
             // Assert HistogramDisplay2 was made and function was called            
             assertTrue(mockConstructor.constructed().size() == 1);
@@ -311,7 +309,6 @@ public class HistogramPaneNGTest {
             final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
 
             instance.filterSelection();
-            verify(instance).updateDisplay();
 
             // Assert HistogramDisplay2 was made and function was called            
             assertTrue(mockConstructor.constructed().size() == 1);
