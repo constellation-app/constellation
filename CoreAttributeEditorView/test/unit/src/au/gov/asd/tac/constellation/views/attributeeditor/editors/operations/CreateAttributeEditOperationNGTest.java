@@ -69,24 +69,24 @@ public class CreateAttributeEditOperationNGTest {
     public void testPerformEdit() {
         System.out.println("performEdit");
         
-//        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
-//        final StoreGraph graph = new StoreGraph(schema);
-//        
-//        assertEquals(graph.getAttribute(GraphElementType.VERTEX, "NewIdentifier"), Graph.NOT_FOUND);
-//        
-//        final CreateAttributeEditOperation instance = new CreateAttributeEditOperation();
-//        final AttributePrototype newAttributeValues = new AttributePrototype("NewIdentifier", "new description", GraphElementType.VERTEX, "string", "test");
-//        final DualGraph dualGraph = new DualGraph(schema, graph);
-//        
-//        try (final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class)) {
-//            final GraphManager mockManager = mock(GraphManager.class);
-//            when(mockManager.getActiveGraph()).thenReturn(dualGraph);
-//            
-//            graphManagerMockedStatic.when(() -> GraphManager.getDefault()).thenReturn(mockManager);
-//            
-//            instance.performEdit(newAttributeValues);
-//        }
-//        
-//        assertNotEquals(graph.getAttribute(GraphElementType.VERTEX, "NewIdentifier"), Graph.NOT_FOUND);
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
+        final StoreGraph graph = new StoreGraph(schema);
+        
+        assertEquals(graph.getAttribute(GraphElementType.VERTEX, "NewIdentifier"), Graph.NOT_FOUND);
+        
+        final CreateAttributeEditOperation instance = new CreateAttributeEditOperation();
+        final AttributePrototype newAttributeValues = new AttributePrototype("NewIdentifier", "new description", GraphElementType.VERTEX, "string", "test");
+        final DualGraph dualGraph = new DualGraph(schema, graph);
+        
+        try (final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class)) {
+            final GraphManager mockManager = mock(GraphManager.class);
+            when(mockManager.getActiveGraph()).thenReturn(dualGraph);
+            
+            graphManagerMockedStatic.when(() -> GraphManager.getDefault()).thenReturn(mockManager);
+            
+            instance.performEdit(newAttributeValues);
+        }
+        
+        assertNotEquals(graph.getAttribute(GraphElementType.VERTEX, "NewIdentifier"), Graph.NOT_FOUND);
     }
 }
