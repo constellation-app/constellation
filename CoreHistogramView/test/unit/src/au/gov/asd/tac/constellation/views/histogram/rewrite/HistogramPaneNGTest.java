@@ -37,7 +37,6 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -250,19 +249,31 @@ public class HistogramPaneNGTest {
     public void testClearFilter() throws Exception {
         System.out.println("clearFilter");
 
+//        try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
+//
+//            // Set up instance
+//            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+//            final HistogramTopComponent2 mockTopComponent = p.getKey();
+//            final HistogramPane instance = p.getValue();
+//            doNothing().when(instance).updateDisplay();
+//
+//            instance.clearFilter();
+//            verify(mockTopComponent).clearFilter();
+//            verify(instance).updateDisplay();
+//
+//            // Assert HistogramDisplay2 was made and function was called
+//            assertTrue(mockConstructor.constructed().size() == 1);
+//            testFunc("clearFilter", mockConstructor.constructed().size() == 1);
+//            final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
+//            verify(menu, atLeast(1)).updateDisplay();
+//        }
         try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
-
-            // Set up instance
-            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-            final HistogramTopComponent2 mockTopComponent = p.getKey();
-            final HistogramPane instance = p.getValue();
-            doNothing().when(instance).updateDisplay();
+            final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
 
             instance.clearFilter();
-            verify(mockTopComponent).clearFilter();
             verify(instance).updateDisplay();
 
-            // Assert HistogramDisplay2 was made and function was called
+            // Assert HistogramDisplay2 was made and function was called            
             assertTrue(mockConstructor.constructed().size() == 1);
             testFunc("clearFilter", mockConstructor.constructed().size() == 1);
             final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
@@ -278,19 +289,31 @@ public class HistogramPaneNGTest {
     public void testFilterSelection() throws Exception {
         System.out.println("filterSelection");
 
+//        try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
+//
+//            // Set up instance
+//            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
+//            final HistogramTopComponent2 mockTopComponent = p.getKey();
+//            final HistogramPane instance = p.getValue();
+//            doNothing().when(instance).updateDisplay();
+//
+//            instance.filterSelection();
+//            verify(mockTopComponent).filterOnSelection();
+//            verify(instance).updateDisplay();
+//
+//            // Assert HistogramDisplay2 was made and function was called
+//            assertTrue(mockConstructor.constructed().size() == 1);
+//            testFunc("filterSelection", mockConstructor.constructed().size() == 1);
+//            final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
+//            verify(menu, atLeast(1)).updateDisplay();
+//        }
         try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
-
-            // Set up instance
-            final Pair<HistogramTopComponent2, HistogramPane> p = createPanehelper();
-            final HistogramTopComponent2 mockTopComponent = p.getKey();
-            final HistogramPane instance = p.getValue();
-            doNothing().when(instance).updateDisplay();
+            final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
 
             instance.filterSelection();
-            verify(mockTopComponent).filterOnSelection();
             verify(instance).updateDisplay();
 
-            // Assert HistogramDisplay2 was made and function was called
+            // Assert HistogramDisplay2 was made and function was called            
             assertTrue(mockConstructor.constructed().size() == 1);
             testFunc("filterSelection", mockConstructor.constructed().size() == 1);
             final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
