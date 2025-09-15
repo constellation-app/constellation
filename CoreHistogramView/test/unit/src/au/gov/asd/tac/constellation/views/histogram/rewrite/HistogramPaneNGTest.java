@@ -247,7 +247,7 @@ public class HistogramPaneNGTest {
      * Test of clearFilter method, of class HistogramPane.
      */
     @Test
-    public void testClearFilter() {
+    public void testClearFilter() throws Exception {
         System.out.println("clearFilter");
 
         try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
@@ -275,7 +275,7 @@ public class HistogramPaneNGTest {
      * Test of clearFilter method, of class HistogramPane.
      */
     @Test
-    public void testFilterSelection() {
+    public void testFilterSelection() throws Exception {
         System.out.println("filterSelection");
 
         try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
