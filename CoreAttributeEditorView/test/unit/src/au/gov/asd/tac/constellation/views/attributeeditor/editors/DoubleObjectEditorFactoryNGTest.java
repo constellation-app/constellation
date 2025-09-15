@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.DoubleObjectEditorFactory.DoubleObjectEditor;
@@ -72,7 +73,7 @@ public class DoubleObjectEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final DoubleObjectEditorFactory instance = new DoubleObjectEditorFactory();
-        final AbstractEditor<Double> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<Double> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the double type but we want to make sure it's the right one
         assertTrue(result instanceof DoubleObjectEditor);
     }
@@ -85,7 +86,7 @@ public class DoubleObjectEditorFactoryNGTest {
         System.out.println("canSet");
         
         final DoubleObjectEditorFactory instance = new DoubleObjectEditorFactory();
-        final DoubleObjectEditor editor = instance.new DoubleObjectEditor("Test", null, null, null, null);
+        final DoubleObjectEditor editor = instance.new DoubleObjectEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         assertTrue(editor.canSet(2D));
         assertTrue(editor.canSet(null));
@@ -99,7 +100,7 @@ public class DoubleObjectEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final DoubleObjectEditorFactory instance = new DoubleObjectEditorFactory();
-        final DoubleObjectEditor editor = instance.new DoubleObjectEditor("Test", null, null, null, null);
+        final DoubleObjectEditor editor = instance.new DoubleObjectEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();
@@ -122,7 +123,7 @@ public class DoubleObjectEditorFactoryNGTest {
         System.out.println("getValueFromControls");
         
         final DoubleObjectEditorFactory instance = new DoubleObjectEditorFactory();
-        final DoubleObjectEditor editor = instance.new DoubleObjectEditor("Test", null, null, null, null);
+        final DoubleObjectEditor editor = instance.new DoubleObjectEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

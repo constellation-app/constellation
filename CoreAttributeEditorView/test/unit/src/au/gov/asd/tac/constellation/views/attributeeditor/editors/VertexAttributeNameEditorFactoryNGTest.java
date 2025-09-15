@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
@@ -80,7 +81,7 @@ public class VertexAttributeNameEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final VertexAttributeNameEditorFactory instance = new VertexAttributeNameEditorFactory();
-        final AbstractEditor<String> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<String> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the string type but we want to make sure it's the right one
         assertTrue(result instanceof VertexAttributeNameEditor);
     }
@@ -94,7 +95,7 @@ public class VertexAttributeNameEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final VertexAttributeNameEditorFactory instance = new VertexAttributeNameEditorFactory();
-        final VertexAttributeNameEditor editor = instance.new VertexAttributeNameEditor("Test", null, null, null, null);
+        final VertexAttributeNameEditor editor = instance.new VertexAttributeNameEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         try (final MockedStatic<AttributeUtilities> attributeUtilitiesMockedStatic = Mockito.mockStatic(AttributeUtilities.class)) {
             final List<String> mockAttributes = Arrays.asList("attribute1", "attribute2", "attribute3", "attribute4");

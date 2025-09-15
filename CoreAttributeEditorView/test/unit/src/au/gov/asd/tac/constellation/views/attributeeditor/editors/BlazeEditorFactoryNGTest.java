@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
@@ -75,7 +76,7 @@ public class BlazeEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final BlazeEditorFactory instance = new BlazeEditorFactory();
-        final AbstractEditor<Blaze> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<Blaze> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the blaze type but we want to make sure it's the right one
         assertTrue(result instanceof BlazeEditor);
     }
@@ -88,7 +89,7 @@ public class BlazeEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final BlazeEditorFactory instance = new BlazeEditorFactory();
-        final BlazeEditor editor = instance.new BlazeEditor("Test", null, null, null, null);
+        final BlazeEditor editor = instance.new BlazeEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();
@@ -113,7 +114,7 @@ public class BlazeEditorFactoryNGTest {
         System.out.println("getValueFromControls");
         
         final BlazeEditorFactory instance = new BlazeEditorFactory();
-        final BlazeEditor editor = instance.new BlazeEditor("Test", null, null, null, null);
+        final BlazeEditor editor = instance.new BlazeEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.TimeZoneEditorFactory.TimeZoneEditor;
@@ -74,7 +75,7 @@ public class TimeZoneEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final TimeZoneEditorFactory instance = new TimeZoneEditorFactory();
-        final AbstractEditor<ZoneId> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<ZoneId> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the ZonedId type but we want to make sure it's the right one
         assertTrue(result instanceof TimeZoneEditor);
     }
@@ -87,7 +88,7 @@ public class TimeZoneEditorFactoryNGTest {
         System.out.println("canSet");
         
         final TimeZoneEditorFactory instance = new TimeZoneEditorFactory();
-        final TimeZoneEditor editor = instance.new TimeZoneEditor("Test", null, null, null, null);
+        final TimeZoneEditor editor = instance.new TimeZoneEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         assertTrue(editor.canSet(ZoneId.of("GMT+2")));
         assertFalse(editor.canSet(null));
@@ -101,7 +102,7 @@ public class TimeZoneEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final TimeZoneEditorFactory instance = new TimeZoneEditorFactory();
-        final TimeZoneEditor editor = instance.new TimeZoneEditor("Test", null, null, null, null);
+        final TimeZoneEditor editor = instance.new TimeZoneEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
                    
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

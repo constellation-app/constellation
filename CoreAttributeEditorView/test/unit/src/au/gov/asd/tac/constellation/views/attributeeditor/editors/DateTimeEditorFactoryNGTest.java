@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
@@ -80,7 +81,7 @@ public class DateTimeEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final DateTimeEditorFactory instance = new DateTimeEditorFactory();
-        final AbstractEditor<ZonedDateTime> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<ZonedDateTime> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the ZonedDateTime type but we want to make sure it's the right one
         assertTrue(result instanceof DateTimeEditor);
     }
@@ -93,7 +94,7 @@ public class DateTimeEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final DateTimeEditorFactory instance = new DateTimeEditorFactory();
-        final DateTimeEditor editor = instance.new DateTimeEditor("Test", null, null, null, null);
+        final DateTimeEditor editor = instance.new DateTimeEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         try (final MockedStatic<LocalDate> localDateMockedStatic = Mockito.mockStatic(LocalDate.class, Mockito.CALLS_REAL_METHODS);
                 final MockedStatic<LocalTime> localTimeMockedStatic = Mockito.mockStatic(LocalTime.class, Mockito.CALLS_REAL_METHODS)) {
@@ -132,7 +133,7 @@ public class DateTimeEditorFactoryNGTest {
         System.out.println("getValueFromControls");
         
         final DateTimeEditorFactory instance = new DateTimeEditorFactory();
-        final DateTimeEditor editor = instance.new DateTimeEditor("Test", null, null, null, null);
+        final DateTimeEditor editor = instance.new DateTimeEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
             
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

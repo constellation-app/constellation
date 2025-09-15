@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.DateEditorFactory.DateEditor;
@@ -75,7 +76,7 @@ public class DateEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final DateEditorFactory instance = new DateEditorFactory();
-        final AbstractEditor<LocalDate> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<LocalDate> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the LocalDate type but we want to make sure it's the right one
         assertTrue(result instanceof DateEditor);
     }
@@ -89,7 +90,7 @@ public class DateEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final DateEditorFactory instance = new DateEditorFactory();
-        final DateEditor editor = instance.new DateEditor("Test", null, null, null, null);
+        final DateEditor editor = instance.new DateEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         try (final MockedStatic<LocalDate> localDateMockedStatic = Mockito.mockStatic(LocalDate.class, Mockito.CALLS_REAL_METHODS)) {
             localDateMockedStatic.when(() -> LocalDate.now()).thenReturn(LocalDate.EPOCH);

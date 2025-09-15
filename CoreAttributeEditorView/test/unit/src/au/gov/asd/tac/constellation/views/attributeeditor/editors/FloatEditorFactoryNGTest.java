@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.FloatEditorFactory.FloatEditor;
@@ -73,7 +74,7 @@ public class FloatEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final FloatEditorFactory instance = new FloatEditorFactory();
-        final AbstractEditor<Float> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<Float> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the float type but we want to make sure it's the right one
         assertTrue(result instanceof FloatEditor);
     }
@@ -86,7 +87,7 @@ public class FloatEditorFactoryNGTest {
         System.out.println("canSet");
         
         final FloatEditorFactory instance = new FloatEditorFactory();
-        final FloatEditor editor = instance.new FloatEditor("Test", null, null, null, null);
+        final FloatEditor editor = instance.new FloatEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         assertTrue(editor.canSet(2F));
         assertFalse(editor.canSet(null));
@@ -100,7 +101,7 @@ public class FloatEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final FloatEditorFactory instance = new FloatEditorFactory();
-        final FloatEditor editor = instance.new FloatEditor("Test", null, null, null, null);
+        final FloatEditor editor = instance.new FloatEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();
@@ -123,7 +124,7 @@ public class FloatEditorFactoryNGTest {
         System.out.println("getValueFromControls");
         
         final FloatEditorFactory instance = new FloatEditorFactory();
-        final FloatEditor editor = instance.new FloatEditor("Test", null, null, null, null);
+        final FloatEditor editor = instance.new FloatEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

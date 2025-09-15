@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.StringEditorFactory.StringEditor;
 import java.util.concurrent.TimeoutException;
@@ -74,7 +75,7 @@ public class StringEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final StringEditorFactory instance = new StringEditorFactory();
-        final AbstractEditor<String> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<String> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the string type but we want to make sure it's the right one
         assertTrue(result instanceof StringEditor);
     }
@@ -98,7 +99,7 @@ public class StringEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final StringEditorFactory instance = new StringEditorFactory();
-        final StringEditor editor = instance.new StringEditor("Test", null, null, null, null);
+        final StringEditor editor = instance.new StringEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

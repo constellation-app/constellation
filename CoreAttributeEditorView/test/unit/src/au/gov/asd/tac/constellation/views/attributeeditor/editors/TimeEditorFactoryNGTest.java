@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.TimeEditorFactory.TimeEditor;
@@ -76,7 +77,7 @@ public class TimeEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final TimeEditorFactory instance = new TimeEditorFactory();
-        final AbstractEditor<LocalTime> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<LocalTime> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the LocalTime type but we want to make sure it's the right one
         assertTrue(result instanceof TimeEditor);
     }
@@ -89,7 +90,7 @@ public class TimeEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final TimeEditorFactory instance = new TimeEditorFactory();
-        final TimeEditor editor = instance.new TimeEditor("Test", null, null, null, null);
+        final TimeEditor editor = instance.new TimeEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         try (final MockedStatic<LocalTime> localTimeMockedStatic = Mockito.mockStatic(LocalTime.class, Mockito.CALLS_REAL_METHODS)) {
             localTimeMockedStatic.when(() -> LocalTime.now(ZoneOffset.UTC)).thenReturn(LocalTime.NOON);
@@ -122,7 +123,7 @@ public class TimeEditorFactoryNGTest {
         System.out.println("getValueFromControls");
         
         final TimeEditorFactory instance = new TimeEditorFactory();
-        final TimeEditor editor = instance.new TimeEditor("Test", null, null, null, null);
+        final TimeEditor editor = instance.new TimeEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
             
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

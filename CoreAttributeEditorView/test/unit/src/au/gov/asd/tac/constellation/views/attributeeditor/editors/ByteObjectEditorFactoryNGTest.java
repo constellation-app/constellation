@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.ByteObjectEditorFactory.ByteObjectEditor;
@@ -72,7 +73,7 @@ public class ByteObjectEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final ByteObjectEditorFactory instance = new ByteObjectEditorFactory();
-        final AbstractEditor<Byte> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<Byte> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the byte type but we want to make sure it's the right one
         assertTrue(result instanceof ByteObjectEditor);
     }
@@ -85,7 +86,7 @@ public class ByteObjectEditorFactoryNGTest {
         System.out.println("canSet");
         
         final ByteObjectEditorFactory instance = new ByteObjectEditorFactory();
-        final ByteObjectEditor editor = instance.new ByteObjectEditor("Test", null, null, null, null);
+        final ByteObjectEditor editor = instance.new ByteObjectEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         assertTrue(editor.canSet((byte) 2));
         assertTrue(editor.canSet(null));
@@ -99,7 +100,7 @@ public class ByteObjectEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final ByteObjectEditorFactory instance = new ByteObjectEditorFactory();
-        final ByteObjectEditor editor = instance.new ByteObjectEditor("Test", null, null, null, null);
+        final ByteObjectEditor editor = instance.new ByteObjectEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

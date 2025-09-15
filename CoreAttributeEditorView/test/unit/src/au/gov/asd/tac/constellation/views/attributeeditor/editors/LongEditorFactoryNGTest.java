@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.LongEditorFactory.LongEditor;
@@ -73,7 +74,7 @@ public class LongEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final LongEditorFactory instance = new LongEditorFactory();
-        final AbstractEditor<Long> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<Long> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the long type but we want to make sure it's the right one
         assertTrue(result instanceof LongEditor);
     }
@@ -86,7 +87,7 @@ public class LongEditorFactoryNGTest {
         System.out.println("canSet");
         
         final LongEditorFactory instance = new LongEditorFactory();
-        final LongEditor editor = instance.new LongEditor("Test", null, null, null, null);
+        final LongEditor editor = instance.new LongEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         assertTrue(editor.canSet(2L));
         assertFalse(editor.canSet(null));
@@ -100,7 +101,7 @@ public class LongEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final LongEditorFactory instance = new LongEditorFactory();
-        final LongEditor editor = instance.new LongEditor("Test", null, null, null, null);
+        final LongEditor editor = instance.new LongEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();
@@ -123,7 +124,7 @@ public class LongEditorFactoryNGTest {
         System.out.println("getValueFromControls");
         
         final LongEditorFactory instance = new LongEditorFactory();
-        final LongEditor editor = instance.new LongEditor("Test", null, null, null, null);
+        final LongEditor editor = instance.new LongEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.BooleanEditorFactory.BooleanEditor;
 import java.util.concurrent.TimeoutException;
@@ -71,7 +72,7 @@ public class BooleanEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final BooleanEditorFactory instance = new BooleanEditorFactory();
-        final AbstractEditor<Boolean> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<Boolean> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the boolean type but we want to make sure it's the right one
         assertTrue(result instanceof BooleanEditor);
     }
@@ -84,7 +85,7 @@ public class BooleanEditorFactoryNGTest {
         System.out.println("canSet");
         
         final BooleanEditorFactory instance = new BooleanEditorFactory();
-        final BooleanEditor editor = instance.new BooleanEditor("Test", null, null, null, null);
+        final BooleanEditor editor = instance.new BooleanEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         assertTrue(editor.canSet(true));
         assertTrue(editor.canSet(false));
@@ -99,7 +100,7 @@ public class BooleanEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final BooleanEditorFactory instance = new BooleanEditorFactory();
-        final BooleanEditor editor = instance.new BooleanEditor("Test", null, null, null, null);
+        final BooleanEditor editor = instance.new BooleanEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

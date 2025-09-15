@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
@@ -74,7 +75,7 @@ public class ColorEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final ColorEditorFactory instance = new ColorEditorFactory();
-        final AbstractEditor<ConstellationColor> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<ConstellationColor> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the ConstellationColor type but we want to make sure it's the right one
         assertTrue(result instanceof ColorEditor);
     }
@@ -87,7 +88,7 @@ public class ColorEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final ColorEditorFactory instance = new ColorEditorFactory();
-        final ColorEditor editor = instance.new ColorEditor("Test", null, null, null, null);
+        final ColorEditor editor = instance.new ColorEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();
@@ -112,7 +113,7 @@ public class ColorEditorFactoryNGTest {
         System.out.println("getValueFromControls");
         
         final ColorEditorFactory instance = new ColorEditorFactory();
-        final ColorEditor editor = instance.new ColorEditor("Test", null, null, null, null);
+        final ColorEditor editor = instance.new ColorEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

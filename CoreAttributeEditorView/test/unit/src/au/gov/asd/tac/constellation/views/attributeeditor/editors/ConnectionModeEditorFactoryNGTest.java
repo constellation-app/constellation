@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.ConnectionModeEditorFactory.ConnectionModeEditor;
@@ -74,7 +75,7 @@ public class ConnectionModeEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final ConnectionModeEditorFactory instance = new ConnectionModeEditorFactory();
-        final AbstractEditor<ConnectionMode> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<ConnectionMode> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the ConnectionMode type but we want to make sure it's the right one
         assertTrue(result instanceof ConnectionModeEditor);
     }
@@ -87,7 +88,7 @@ public class ConnectionModeEditorFactoryNGTest {
         System.out.println("canSet");
         
         final ConnectionModeEditorFactory instance = new ConnectionModeEditorFactory();
-        final ConnectionModeEditor editor = instance.new ConnectionModeEditor("Test", null, null, null, null);
+        final ConnectionModeEditor editor = instance.new ConnectionModeEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         assertTrue(editor.canSet(ConnectionMode.LINK));
         assertFalse(editor.canSet(null));
@@ -101,7 +102,7 @@ public class ConnectionModeEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final ConnectionModeEditorFactory instance = new ConnectionModeEditorFactory();
-        final ConnectionModeEditor editor = instance.new ConnectionModeEditor("Test", null, null, null, null);
+        final ConnectionModeEditor editor = instance.new ConnectionModeEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

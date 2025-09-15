@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.ShortEditorFactory.ShortEditor;
@@ -73,7 +74,7 @@ public class ShortEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final ShortEditorFactory instance = new ShortEditorFactory();
-        final AbstractEditor<Short> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<Short> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the short type but we want to make sure it's the right one
         assertTrue(result instanceof ShortEditor);
     }
@@ -86,7 +87,7 @@ public class ShortEditorFactoryNGTest {
         System.out.println("canSet");
         
         final ShortEditorFactory instance = new ShortEditorFactory();
-        final ShortEditor editor = instance.new ShortEditor("Test", null, null, null, null);
+        final ShortEditor editor = instance.new ShortEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         assertTrue(editor.canSet((short) 2));
         assertFalse(editor.canSet(null));
@@ -100,7 +101,7 @@ public class ShortEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final ShortEditorFactory instance = new ShortEditorFactory();
-        final ShortEditor editor = instance.new ShortEditor("Test", null, null, null, null);
+        final ShortEditor editor = instance.new ShortEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();
@@ -123,7 +124,7 @@ public class ShortEditorFactoryNGTest {
         System.out.println("getValueFromControls");
         
         final ShortEditorFactory instance = new ShortEditorFactory();
-        final ShortEditor editor = instance.new ShortEditor("Test", null, null, null, null);
+        final ShortEditor editor = instance.new ShortEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.HyperlinkEditorFactory.HyperlinkEditor;
@@ -73,7 +74,7 @@ public class HyperlinkEditorFactoryNGTest {
         System.out.println("createEditor");
         
         final HyperlinkEditorFactory instance = new HyperlinkEditorFactory();
-        final AbstractEditor<URI> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<URI> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the URI type but we want to make sure it's the right one
         assertTrue(result instanceof HyperlinkEditor);
     }
@@ -86,7 +87,7 @@ public class HyperlinkEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final HyperlinkEditorFactory instance = new HyperlinkEditorFactory();
-        final HyperlinkEditor editor = instance.new HyperlinkEditor("Test", null, null, null, null);
+        final HyperlinkEditor editor = instance.new HyperlinkEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();
@@ -109,7 +110,7 @@ public class HyperlinkEditorFactoryNGTest {
         System.out.println("getValueFromControls");
         
         final HyperlinkEditorFactory instance = new HyperlinkEditorFactory();
-        final HyperlinkEditor editor = instance.new HyperlinkEditor("Test", null, null, null, null);
+        final HyperlinkEditor editor = instance.new HyperlinkEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
             
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();

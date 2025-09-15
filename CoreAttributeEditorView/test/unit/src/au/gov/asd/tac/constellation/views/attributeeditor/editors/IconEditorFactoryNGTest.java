@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
@@ -83,7 +84,7 @@ public class IconEditorFactoryNGTest {
         System.out.println("testCreateEditor");
 
         final IconEditorFactory instance = new IconEditorFactory();
-        final AbstractEditor<ConstellationIcon> result = instance.createEditor("Test", null, null, null, null);
+        final AbstractEditor<ConstellationIcon> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the ConstellationIcon type but we want to make sure it's the right one
         assertTrue(result instanceof IconEditor);
     }
@@ -96,7 +97,7 @@ public class IconEditorFactoryNGTest {
         System.out.println("updateControlsWithValue");
         
         final IconEditorFactory instance = new IconEditorFactory();
-        final IconEditor editor = instance.new IconEditor("Test", null, null, null, null);
+        final IconEditor editor = instance.new IconEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();
@@ -117,7 +118,7 @@ public class IconEditorFactoryNGTest {
         System.out.println("getValueFromControls");
         
         final IconEditorFactory instance = new IconEditorFactory();
-        final IconEditor editor = instance.new IconEditor("Test", null, null, null, null);
+        final IconEditor editor = instance.new IconEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();
@@ -141,7 +142,7 @@ public class IconEditorFactoryNGTest {
         final String fileChooserDescription = "Image Files (*" + FileExtensionConstants.JPG + ";*" + FileExtensionConstants.GIF + ";*" + FileExtensionConstants.PNG + ")";
 
         final IconEditorFactory instance = new IconEditorFactory();
-        final IconEditor editor = instance.new IconEditor("Test", null, null, null, null);
+        final IconEditor editor = instance.new IconEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
 
         final JFileChooser fileChooser = editor.getIconEditorFileChooser().createFileChooser();
 
@@ -183,7 +184,7 @@ public class IconEditorFactoryNGTest {
         final String fileChooserTitle = "Add New Icon(s)";
 
         final IconEditorFactory instance = new IconEditorFactory();
-        final IconEditor editor = instance.new IconEditor("Test", null, null, null, null);
+        final IconEditor editor = instance.new IconEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
 
         final JFileChooser fileChooser = editor.getIconEditorFolderChooser().createFileChooser();
 
