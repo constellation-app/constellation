@@ -615,11 +615,13 @@ public class HistogramPane extends BorderPane {
         updateDisplay();
     }
 
+    // Handle when action button is pressed
     protected void actionButtonMousePressed(final MouseEvent evt) {
         actionsMenu.show(actionButton, evt.getScreenX(), evt.getScreenY());
         updateDisplay();
     }
 
+    // Handle when vertex, transaction, edge or link toggle buttons change state
     protected void toggleStateChanged(final GraphElementType state) {
         if (!isAdjusting) {
             topComponent.setGraphElementType(state);
