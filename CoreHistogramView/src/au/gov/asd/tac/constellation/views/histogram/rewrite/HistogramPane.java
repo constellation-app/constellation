@@ -59,6 +59,7 @@ import org.openide.DialogDescriptor;
 import org.openide.util.HelpCtx;
 
 /**
+ * Pane which holds the controls and display of the histogram
  *
  * @author Quasar985
  */
@@ -517,6 +518,7 @@ public class HistogramPane extends BorderPane {
         }
     }
 
+    // Handles changes in the category choice combo box
     protected void categoryChoiceHandler() {
         if (!isAdjusting) {
             final AttributeType newValue = (AttributeType) categoryChoice.getValue();
@@ -527,6 +529,7 @@ public class HistogramPane extends BorderPane {
         }
     }
 
+    // Handles changes in the select button
     protected void selectButtonHandler() {
         if (!isAdjusting) {
             currentHistogramState.getBinSelectionMode().select(topComponent);
@@ -534,6 +537,7 @@ public class HistogramPane extends BorderPane {
         }
     }
 
+    // Handles changes in the selection mode choice combo box
     protected void selectionModeChoiceHandler() {
         if (!isAdjusting) {
             topComponent.setBinSelectionMode((BinSelectionMode) selectionModeChoice.getValue());
@@ -541,6 +545,7 @@ public class HistogramPane extends BorderPane {
         }
     }
 
+    // Handles changes in the descending button
     protected void descendingButtonHandler() {
         if (!isAdjusting) {
             updateBinComparator();
@@ -548,6 +553,7 @@ public class HistogramPane extends BorderPane {
         }
     }
 
+    // Handles changes in the sort choice combo box
     protected void sortChoiceHandler() {
         if (!isAdjusting) {
             updateBinComparator();
@@ -555,6 +561,7 @@ public class HistogramPane extends BorderPane {
         }
     }
 
+    // Handles changes in the property choice combo box
     protected void propertyChoiceHandler() {
         if (!isAdjusting) {
             topComponent.setAttribute((String) propertyChoice.getValue());
@@ -562,6 +569,7 @@ public class HistogramPane extends BorderPane {
         }
     }
 
+    // Handles changes in the bin formatter combo box
     private void binFormatterComboHandler() {
         if (isAdjusting) {
             return;
