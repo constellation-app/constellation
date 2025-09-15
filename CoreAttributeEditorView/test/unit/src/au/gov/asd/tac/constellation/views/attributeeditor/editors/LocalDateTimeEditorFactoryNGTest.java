@@ -22,8 +22,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -37,6 +41,8 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class LocalDateTimeEditorFactoryNGTest {
+
+    private static final Logger LOGGER = Logger.getLogger(LocalDateTimeEditorFactoryNGTest.class.getName());
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -50,12 +56,18 @@ public class LocalDateTimeEditorFactoryNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        // Not currently required
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        // Not currently required
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     /**

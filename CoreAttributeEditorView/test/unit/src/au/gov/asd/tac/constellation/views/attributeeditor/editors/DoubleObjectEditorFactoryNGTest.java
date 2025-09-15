@@ -18,6 +18,10 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.DoubleObjectEditorFactory.DoubleObjectEditor;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -31,6 +35,8 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class DoubleObjectEditorFactoryNGTest {
+
+    private static final Logger LOGGER = Logger.getLogger(DoubleObjectEditorFactoryNGTest.class.getName());
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -44,12 +50,18 @@ public class DoubleObjectEditorFactoryNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        // Not currently required
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        // Not currently required
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     /**

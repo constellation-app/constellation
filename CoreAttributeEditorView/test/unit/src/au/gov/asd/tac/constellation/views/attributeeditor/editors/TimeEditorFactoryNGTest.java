@@ -20,8 +20,12 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditor
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.TimeEditorFactory.TimeEditor;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -35,6 +39,8 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class TimeEditorFactoryNGTest {
+
+    private static final Logger LOGGER = Logger.getLogger(TimeEditorFactoryNGTest.class.getName());
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -48,12 +54,18 @@ public class TimeEditorFactoryNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        // Not currently required
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        // Not currently required
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     /**

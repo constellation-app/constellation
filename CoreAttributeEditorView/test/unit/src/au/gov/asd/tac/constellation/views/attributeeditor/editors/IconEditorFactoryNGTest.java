@@ -23,9 +23,13 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.IconEditorFact
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
@@ -42,6 +46,8 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class IconEditorFactoryNGTest {
+
+    private static final Logger LOGGER = Logger.getLogger(IconEditorFactoryNGTest.class.getName());
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -55,12 +61,18 @@ public class IconEditorFactoryNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        // Not currently required
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        // Not currently required
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     /**
