@@ -30,7 +30,6 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import javafx.util.Pair;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
@@ -75,7 +74,7 @@ public class HistogramPaneNGTest {
     public void testUpdateDisplay() {
         System.out.println("updateDisplay");
         try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
-            final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
+            final HistogramPane instance = new HistogramPane(mock(HistogramTopComponent2.class));
             instance.updateDisplay();
 
             // Assert HistogramDisplay2 was made and function was called
@@ -93,7 +92,7 @@ public class HistogramPaneNGTest {
     public void testDecreaseBarHeight() {
         System.out.println("decreaseBarHeight");
         try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
-            final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
+            final HistogramPane instance = new HistogramPane(mock(HistogramTopComponent2.class));
             instance.decreaseBarHeight();
 
             // Assert HistogramDisplay2 was made and function was called
@@ -111,7 +110,7 @@ public class HistogramPaneNGTest {
     public void testIncreaseBarHeight() {
         System.out.println("increaseBarHeight");
         try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
-            final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
+            final HistogramPane instance = new HistogramPane(mock(HistogramTopComponent2.class));
             instance.increaseBarHeight();
 
             // Assert HistogramDisplay2 was made and function was called
@@ -132,7 +131,7 @@ public class HistogramPaneNGTest {
         final BinIconMode binIconMode = BinIconMode.ICON;
 
         try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
-            final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
+            final HistogramPane instance = new HistogramPane(mock(HistogramTopComponent2.class));
             instance.setBinCollection(binCollection, binIconMode);
 
             // Assert HistogramDisplay2 was made and function was called
@@ -152,7 +151,7 @@ public class HistogramPaneNGTest {
         final BinSelectionMode binSelectionMode = BinSelectionMode.FREE_SELECTION;
 
         try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
-            final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
+            final HistogramPane instance = new HistogramPane(mock(HistogramTopComponent2.class));
             instance.setBinSelectionMode(binSelectionMode);
 
             // Assert HistogramDisplay2 was made and function was called
@@ -170,7 +169,7 @@ public class HistogramPaneNGTest {
     public void testUpdateBinCollection() {
         System.out.println("updateBinCollection");
         try (final MockedConstruction<HistogramDisplay2> mockConstructor = Mockito.mockConstruction(HistogramDisplay2.class)) {
-            final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
+            final HistogramPane instance = new HistogramPane(mock(HistogramTopComponent2.class));
             instance.updateBinCollection();
 
             // Assert HistogramDisplay2 was made and function was called
@@ -189,18 +188,16 @@ public class HistogramPaneNGTest {
         System.out.println("setHistogramState");
         final HistogramState histogramState = new HistogramState();
         final Map<String, BinCreator> attributes = new HashMap<>();
-        final HistogramPane instance = new HistogramPane(HistogramController.getDefault());
+        final HistogramPane instance = new HistogramPane(mock(HistogramTopComponent2.class));
 
         instance.setHistogramState(histogramState, attributes);
     }
 
     private Pair<HistogramTopComponent2, HistogramPane> createPanehelper() {
         final HistogramTopComponent2 mockTopComponent = mock(HistogramTopComponent2.class);
-        final HistogramController controllerSpy = spy(HistogramController.getDefault());
-        when(controllerSpy.getParent()).thenReturn(mockTopComponent);
 
         // Set up instance
-        final HistogramPane spy = spy(new HistogramPane(controllerSpy));
+        final HistogramPane spy = spy(new HistogramPane(mockTopComponent));
         // Stub this method, so variable "isAdjusting" is not set to true
         Mockito.doNothing().when(spy).setHistogramState(any(), any());
 

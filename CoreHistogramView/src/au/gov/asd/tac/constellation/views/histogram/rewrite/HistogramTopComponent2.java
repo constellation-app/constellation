@@ -49,7 +49,6 @@ import au.gov.asd.tac.constellation.views.histogram.HistogramConcept;
 import au.gov.asd.tac.constellation.views.histogram.HistogramFilterOnSelectionPlugin;
 import au.gov.asd.tac.constellation.views.histogram.HistogramState;
 import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
-import java.util.BitSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.openide.awt.ActionID;
@@ -119,7 +118,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     private ElementSet currentFilter;
 
     private final HistogramPane histogramPane;
-    private final HistogramController histogramController;
 
     public HistogramTopComponent2() {
         super();
@@ -128,8 +126,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         setToolTipText(Bundle.HINT_HistogramTopComponent2());
         this.setMinimumSize(new java.awt.Dimension(MIN_WIDTH, MIN_HEIGHT));
 
-        histogramController = HistogramController.getDefault().init(this);
-        histogramPane = new HistogramPane(histogramController);
+        histogramPane = new HistogramPane(this);
 
         initComponents();
         super.initContent();

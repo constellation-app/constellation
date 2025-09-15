@@ -125,9 +125,8 @@ public class HistogramPane extends BorderPane {
     private static final int MIN_LABEL_WIDTH = 90;
     private static final int PREF_LABEL_WIDTH = 90;
 
-    public HistogramPane(final HistogramController histogramContoller) {
-
-        topComponent = histogramContoller.getParent();
+    public HistogramPane(final HistogramTopComponent2 histogramTopComponent) {
+        topComponent = histogramTopComponent;
 
         // DISPLAY
         display = new HistogramDisplay2(topComponent);
