@@ -124,7 +124,7 @@ public class ByteEditorFactoryNGTest {
         System.out.println("getValueFromControls");
         
         final ByteEditorFactory instance = new ByteEditorFactory();
-        final ByteEditor editor = instance.new ByteEditor("Test", null, null, null, null);
+        final ByteEditor editor = instance.new ByteEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         // need to run in order for editor controls to be instantiated
         editor.createEditorControls();
