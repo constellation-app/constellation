@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.DecoratorsEditorFactory.DecoratorsEditor;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -111,7 +111,11 @@ public class DecoratorsEditorFactoryNGTest {
         final DecoratorsEditor editor = instance.new DecoratorsEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         try (final MockedStatic<AttributeUtilities> attributeUtilitiesMockedStatic = Mockito.mockStatic(AttributeUtilities.class)) {
-            final List<String> mockAttributes = Arrays.asList("attribute1", "attribute2", "attribute3", "attribute4");
+            final List<String> mockAttributes = new ArrayList<>();
+            mockAttributes.add("attribute1");
+            mockAttributes.add("attribute2");
+            mockAttributes.add("attribute3");
+            mockAttributes.add("attribute4");
             attributeUtilitiesMockedStatic.when(() -> AttributeUtilities.getAttributeNames(GraphElementType.VERTEX)).thenReturn(mockAttributes);
             
             // need to run in order for editor controls to be instantiated
@@ -146,7 +150,11 @@ public class DecoratorsEditorFactoryNGTest {
         final DecoratorsEditor editor = instance.new DecoratorsEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         try (final MockedStatic<AttributeUtilities> attributeUtilitiesMockedStatic = Mockito.mockStatic(AttributeUtilities.class)) {
-            final List<String> mockAttributes = Arrays.asList("attribute1", "attribute2", "attribute3", "attribute4");
+            final List<String> mockAttributes = new ArrayList<>();
+            mockAttributes.add("attribute1");
+            mockAttributes.add("attribute2");
+            mockAttributes.add("attribute3");
+            mockAttributes.add("attribute4");
             attributeUtilitiesMockedStatic.when(() -> AttributeUtilities.getAttributeNames(GraphElementType.VERTEX)).thenReturn(mockAttributes);
             
             // need to run in order for editor controls to be instantiated

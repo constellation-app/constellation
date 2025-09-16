@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import javafx.scene.paint.Color;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -94,8 +95,8 @@ public class ColorEditorFactoryNGTest {
         editor.createEditorControls();
         
         // default values from instantiation
-        assertEquals(editor.getComboBoxColor(), ConstellationColor.WHITE);
-        assertEquals(editor.getPickerColor(), Color.WHITE);
+        assertNull(editor.getComboBoxColor());
+        assertNull(editor.getPickerColor());
         
         editor.updateControlsWithValue(ConstellationColor.CYAN);
         

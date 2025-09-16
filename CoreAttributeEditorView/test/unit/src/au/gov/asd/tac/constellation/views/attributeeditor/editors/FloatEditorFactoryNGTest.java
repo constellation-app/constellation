@@ -111,7 +111,7 @@ public class FloatEditorFactoryNGTest {
         
         editor.updateControlsWithValue(2F);
         
-        assertEquals(editor.getNumberText(), "2");
+        assertEquals(editor.getNumberText(), "2.0");
     }
     
     /**

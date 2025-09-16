@@ -111,7 +111,7 @@ public class DoubleEditorFactoryNGTest {
         
         editor.updateControlsWithValue(2D);
         
-        assertEquals(editor.getNumberText(), "2");
+        assertEquals(editor.getNumberText(), "2.0");
     }
     
     /**
