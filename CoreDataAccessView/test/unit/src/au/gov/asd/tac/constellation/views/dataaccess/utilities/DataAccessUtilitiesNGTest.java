@@ -55,7 +55,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -82,12 +81,6 @@ public class DataAccessUtilitiesNGTest {
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
-    }
-
-    @Test
-    public void testThatShouldFail() {
-        System.out.println("testThatShouldFail");
-        fail();
     }
 
     @Test
