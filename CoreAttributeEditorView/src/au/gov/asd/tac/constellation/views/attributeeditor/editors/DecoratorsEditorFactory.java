@@ -141,7 +141,7 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         }
 
         private String getDecoratorChoice(final ComboBox<String> comboBox) {
-            return comboBox.getSelectionModel().getSelectedItem().equals(NO_DECORATOR) ? null : comboBox.getSelectionModel().getSelectedItem();
+            return NO_DECORATOR.equals(comboBox.getSelectionModel().getSelectedItem()) ? null : comboBox.getSelectionModel().getSelectedItem();
         }
     }
 }
