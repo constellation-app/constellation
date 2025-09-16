@@ -96,7 +96,7 @@ public class ColorEditorFactoryNGTest {
         
         // default values from instantiation
         assertNull(editor.getComboBoxColor());
-        assertNull(editor.getPickerColor());
+        assertEquals(editor.getPickerColor(), Color.WHITE);
         
         editor.updateControlsWithValue(ConstellationColor.CYAN);
         

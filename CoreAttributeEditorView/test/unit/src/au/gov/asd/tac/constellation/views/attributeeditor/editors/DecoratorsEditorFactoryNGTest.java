@@ -32,6 +32,7 @@ import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -122,10 +123,10 @@ public class DecoratorsEditorFactoryNGTest {
             editor.createEditorControls();
 
             // default values from instantiation
-            assertEquals(editor.getNWValue(), "");
-            assertEquals(editor.getNEValue(), "");
-            assertEquals(editor.getSEValue(), "");
-            assertEquals(editor.getSWValue(), "");
+            assertNull(editor.getNWValue());
+            assertNull(editor.getNEValue());
+            assertNull(editor.getSEValue());
+            assertNull(editor.getSWValue());
 
             editor.updateControlsWithValue(new VertexDecorators("attribute1", "attribute2", "attribute3", "attribute4"));
 
