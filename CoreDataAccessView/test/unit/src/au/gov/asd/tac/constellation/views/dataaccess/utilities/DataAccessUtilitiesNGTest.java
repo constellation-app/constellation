@@ -55,7 +55,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -86,7 +85,6 @@ public class DataAccessUtilitiesNGTest {
 
     @Test
     public void testGetDataAccessPaneCalledByEventDispatchThread() {
-        fail();
         System.out.println("testGetDataAccessPaneCalledByEventDispatchThread");
 
         final WindowManager windowManager = mock(WindowManager.class);
