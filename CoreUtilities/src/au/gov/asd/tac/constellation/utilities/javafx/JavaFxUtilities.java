@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.javafx;
 import javafx.scene.paint.Color;
 
 /**
+ * Utility class related to JavaFx
  *
  * @author Quasar985
  */
