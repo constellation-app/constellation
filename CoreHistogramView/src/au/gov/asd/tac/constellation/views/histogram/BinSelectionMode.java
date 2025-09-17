@@ -88,7 +88,7 @@ public enum BinSelectionMode {
         }
 
         @Override
-        public void mouseReleased(final boolean shiftDown, final boolean controlDown, Bin[] bins, final int dragStart, final int dragEnd, final HistogramTopComponent topComponent) {
+        public void mouseReleased(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd, final HistogramTopComponent topComponent) {
             final int min = 0;
             final int max = Math.max(0, bins.length - 1);
             final int firstBar = Math.clamp(Math.min(dragStart, dragEnd), min, max); // Picks the smallest index

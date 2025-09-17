@@ -180,25 +180,25 @@ public class HistogramTopComponent2NGTest {
         verify(mockGraph, times(4)).getReadableGraph();
     }
 
-    /**
-     * Test of modifyBinHeight method, of class HistogramTopComponent2.
-     */
-    @Test
-    public void testModifyBinHeight() {
-        System.out.println("modifyBinHeight");
-        try (final MockedConstruction<HistogramPane> mockConstructor = Mockito.mockConstruction(HistogramPane.class)) {
-            final HistogramTopComponent2 instance = new HistogramTopComponent2();
-
-            assertEquals(1, mockConstructor.constructed().size());
-            final HistogramPane pane = mockConstructor.constructed().get(0);
-
-            instance.modifyBinHeight(-1);
-            verify(pane).decreaseBarHeight();
-
-            instance.modifyBinHeight(1);
-            verify(pane).increaseBarHeight();
-        }
-    }
+//    /**
+//     * Test of modifyBinHeight method, of class HistogramTopComponent2.
+//     */
+//    @Test
+//    public void testModifyBinHeight() {
+//        System.out.println("modifyBinHeight");
+//        try (final MockedConstruction<HistogramPane> mockConstructor = Mockito.mockConstruction(HistogramPane.class)) {
+//            final HistogramTopComponent2 instance = new HistogramTopComponent2();
+//
+//            assertEquals(1, mockConstructor.constructed().size());
+//            final HistogramPane pane = mockConstructor.constructed().get(0);
+//
+//            instance.modifyBinHeight(-1);
+//            verify(pane).decreaseBarHeight();
+//
+//            instance.modifyBinHeight(1);
+//            verify(pane).increaseBarHeight();
+//        }
+//    }
 
     /**
      * Test of reset method, of class HistogramTopComponent2.

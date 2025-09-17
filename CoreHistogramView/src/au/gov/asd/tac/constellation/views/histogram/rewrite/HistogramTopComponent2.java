@@ -311,14 +311,9 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
     }
 
-    public void modifyBinHeight(final int change) {
-        if (change < 0) {
-            histogramPane.decreaseBarHeight();
-        } else if (change > 0) {
-            histogramPane.increaseBarHeight();
-        }
-    }
-
+    /**
+     * 
+     */
     protected void reset() {
         if (currentGraph != null) {
             try (final ReadableGraph rg = currentGraph.getReadableGraph()) {

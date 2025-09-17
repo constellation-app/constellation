@@ -316,11 +316,11 @@ public class HistogramPane extends BorderPane {
         actionsMenu.getItems().add(saveBinsToClipboardMenuItem);
 
         final MenuItem decreaseHeightBarMenuItem = new MenuItem("Decrease Height of Each Bin");
-        decreaseHeightBarMenuItem.setOnAction(e -> topComponent.modifyBinHeight(-1));
+        decreaseHeightBarMenuItem.setOnAction(e -> decreaseBarHeight());
         actionsMenu.getItems().add(decreaseHeightBarMenuItem);
 
         final MenuItem increaseHeightBarMenuItem = new MenuItem("Increase Height of Each Bin");
-        increaseHeightBarMenuItem.setOnAction(e -> topComponent.modifyBinHeight(1));
+        increaseHeightBarMenuItem.setOnAction(e -> increaseBarHeight());
         actionsMenu.getItems().add(increaseHeightBarMenuItem);
         //// END Filter
 
@@ -484,11 +484,11 @@ public class HistogramPane extends BorderPane {
         display.updateDisplay();
     }
 
-    public void decreaseBarHeight() {
+    protected void decreaseBarHeight() {
         display.decreaseBarHeight();
     }
 
-    public void increaseBarHeight() {
+    protected void increaseBarHeight() {
         display.increaseBarHeight();
     }
 
