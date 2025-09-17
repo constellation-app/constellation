@@ -43,7 +43,7 @@ public enum BinIconMode {
      */
     NONE(0.0F) {
         @Override
-        public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
+        public void draw(final Graphics2D graphics, final Bin bin, final int left, final int top, final int height) {
         }
 
         @Override
