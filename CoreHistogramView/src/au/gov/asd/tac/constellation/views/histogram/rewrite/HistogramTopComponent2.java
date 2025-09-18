@@ -312,7 +312,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     }
 
     /**
-     * 
+     * Resets the top component
      */
     protected void reset() {
         if (currentGraph != null) {
@@ -324,6 +324,11 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
     }
 
+    /**
+     * Resets the top component, and the given graph
+     *
+     * @param graph the graph to reset
+     */
     protected void reset(final GraphReadMethods graph) {
         if (graph == null) {
             currentHistogramState = null;
@@ -394,6 +399,13 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         histogramPane.setBinCollection(currentBinCollection, binIconMode);
     }
 
+    /**
+     * Sets the histogram view options with the given parameters
+     *
+     * @param elementType The element type
+     * @param attributeType The attribute type
+     * @param attribute The Attribute
+     */
     public void setHistogramViewOptions(final GraphElementType elementType, final AttributeType attributeType, final String attribute) {
         if (currentGraph == null) {
             return;
@@ -413,6 +425,11 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
     }
 
+    /**
+     * Sets the element type for the histogram view
+     *
+     * @param elementType The element type
+     */
     public void setGraphElementType(final GraphElementType elementType) {
         if (currentGraph == null) {
             return;
@@ -431,6 +448,11 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
     }
 
+    /**
+     * Sets the attribute type for the histogram view
+     *
+     * @param attributeType The attribute type
+     */
     public void setAttributeType(final AttributeType attributeType) {
         // For now, comment out some of the code below, as histogram state is kind of globally shared with old histopgram top compenent and doesnt update correctly here
         // TODO: uncomment below code when histogram rewrite fully replaces original histogram
@@ -443,6 +465,11 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
     }
 
+    /**
+     * Sets the attribute for the histogram view
+     *
+     * @param attribute The attribute
+     */
     public void setAttribute(final String attribute) {
         if (currentGraph != null && (currentHistogramState == null || (attribute == null ? currentHistogramState.getAttribute() != null : !attribute.equals(currentHistogramState.getAttribute())))) {
             HistogramState newHistogramState = new HistogramState(currentHistogramState);
@@ -452,6 +479,11 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
     }
 
+    /**
+     * Sets the bin comparator for the histogram view
+     *
+     * @param binComparator The bin comparator
+     */
     public void setBinComparator(final BinComparator binComparator) {
         if (currentGraph == null) {
             return;
@@ -468,6 +500,12 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
     }
 
+    /**
+     * Sets the bin formatter for the histogram view
+     *
+     * @param binFormatter The bin formatter
+     * @param parameters The parameters
+     */
     public void setBinFormatter(final BinFormatter binFormatter, final PluginParameters parameters) {
         if (currentGraph == null) {
             return;
@@ -485,6 +523,11 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
     }
 
+    /**
+     * Sets the bin selection mode for the histogram view
+     *
+     * @param binSelectionMode The bin selection mode
+     */
     public void setBinSelectionMode(final BinSelectionMode binSelectionMode) {
         if (currentGraph == null) {
             return;
@@ -501,12 +544,21 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
     }
 
+    /**
+     * Runs the Select Only Bins plugin on the current graph, with the given bin indices
+     *
+     * @param firstBin The index of the first bin
+     * @param lastBin The index of the last bin
+     */
     public void selectOnlyBins(final int firstBin, final int lastBin) {
         if (currentGraph != null) {
             PluginExecution.withPlugin(new HistogramSelectOnlyBins(firstBin, lastBin)).executeLater(currentGraph);
         }
     }
 
+    /**
+     * Runs the Filter on Selection plugin, on the current graph
+     */
     public void filterOnSelection() {
         if (currentGraph != null) {
             final Plugin plugin = new HistogramFilterOnSelectionPlugin();
@@ -516,6 +568,9 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
     }
 
+    /**
+     * Runs the Clear Filter plugin, on the current graph
+     */
     public void clearFilter() {
         if (currentGraph != null) {
             final Plugin plugin = new HistogramClearFilterPlugin();
@@ -525,42 +580,77 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
     }
 
+    /**
+     * Runs the Select Bins plugin on the current graph, with the given bin indices
+     *
+     * @param firstBin The index of the first bin
+     * @param lastBin The index of the last bin
+     * @param select True to select bins, False to deselect
+     */
     public void selectBins(final int firstBin, final int lastBin, final boolean select) {
         if (currentGraph != null) {
             PluginExecution.withPlugin(new SelectBins(firstBin, lastBin, select)).executeLater(currentGraph);
         }
     }
 
+    /**
+     * Runs the Invert Bins plugin on the current graph, with the given bin indices
+     *
+     * @param firstBin The index of the first bin
+     * @param lastBin The index of the last bin
+     */
     public void invertBins(final int firstBin, final int lastBin) {
         if (currentGraph != null) {
             PluginExecution.withPlugin(new InvertBins(firstBin, lastBin)).executeLater(currentGraph);
         }
     }
 
+    /**
+     * Runs the Complete Bins plugin on the current graph, with the given bin indices
+     *
+     * @param firstBin The index of the first bin
+     * @param lastBin The index of the last bin
+     */
     public void completeBins(final int firstBin, final int lastBin) {
         if (currentGraph != null) {
             PluginExecution.withPlugin(new CompleteBins(firstBin, lastBin)).executeLater(currentGraph);
         }
     }
 
+    /**
+     * Runs the Filter Selection plugin on the current graph
+     *
+     */
     public void filterSelection() {
         if (currentGraph != null) {
             PluginExecution.withPlugin(new FilterSelection()).executeLater(currentGraph);
         }
     }
 
+    /**
+     * Runs the Save Bins to Graph plugin on the current graph
+     *
+     */
     public void saveBinsToGraph() {
         if (currentGraph != null && currentBinCollection != null) {
             PluginExecution.withPlugin(new SaveBinsToGraph()).executeLater(currentGraph);
         }
     }
 
+    /**
+     * Runs the Save Bins to Clipboard plugin on the current graph
+     *
+     */
     public void saveBinsToClipboard() {
         if (currentGraph != null && currentBinCollection != null) {
             PluginExecution.withPlugin(new SaveBinsToClipboard()).executeLater(currentGraph);
         }
     }
 
+    /**
+     * Runs the Expand Selection plugin on the current graph
+     *
+     */
     public void expandSelection() {
         if (currentGraph != null) {
             PluginExecution.withPlugin(new ExpandSelection()).executeLater(currentGraph);
