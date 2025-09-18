@@ -193,7 +193,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
     @Override
     protected void handleGraphChange(final GraphChangeEvent event) {
-        if (event == null) {
+        if (event == null || currentGraph == null) {
             return;
         }
 
@@ -203,10 +203,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
 
         latestGraphChangeID = evt.getId();
-
-        if (currentGraph == null) {
-            return;
-        }
 
         boolean binCollectionModified = false;
         try (final ReadableGraph rg = currentGraph.getReadableGraph()) {
@@ -378,13 +374,12 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
                 binnedAttribute = graph.getAttribute(elementType, currentHistogramState.getAttribute());
                 if (binnedAttribute != Graph.NOT_FOUND) {
-                    Attribute binnedAttributeRecord = new GraphAttribute(graph, binnedAttribute);
+                    final Attribute binnedAttributeRecord = new GraphAttribute(graph, binnedAttribute);
+
                     if ("icon".equals(binnedAttributeRecord.getAttributeType())) {
                         binIconMode = BinIconMode.ICON;
                     } else if ("color".equals(binnedAttributeRecord.getAttributeType())) {
                         binIconMode = BinIconMode.COLOR;
-                    } else {
-                        // Do nothing.
                     }
 
                     currentBinnedModificationCount = graph.getValueModificationCounter(binnedAttribute);
@@ -457,7 +452,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         // For now, comment out some of the code below, as histogram state is kind of globally shared with old histopgram top compenent and doesnt update correctly here
         // TODO: uncomment below code when histogram rewrite fully replaces original histogram
         if (currentGraph != null) {// && (currentHistogramState == null || attributeType != currentHistogramState.getAttributeType())) {
-            HistogramState newHistogramState = new HistogramState(currentHistogramState);
+            final HistogramState newHistogramState = new HistogramState(currentHistogramState);
             newHistogramState.setAttributeType(attributeType);
             newHistogramState.setAttribute("");
             newHistogramState.setBinFormatter(BinFormatter.DEFAULT_BIN_FORMATTER);
@@ -472,7 +467,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
      */
     public void setAttribute(final String attribute) {
         if (currentGraph != null && (currentHistogramState == null || (attribute == null ? currentHistogramState.getAttribute() != null : !attribute.equals(currentHistogramState.getAttribute())))) {
-            HistogramState newHistogramState = new HistogramState(currentHistogramState);
+            final HistogramState newHistogramState = new HistogramState(currentHistogramState);
             newHistogramState.setAttribute(attribute);
             newHistogramState.setBinFormatter(BinFormatter.DEFAULT_BIN_FORMATTER);
             PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
@@ -494,7 +489,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
 
         if (currentHistogramState == null || binComparator != currentHistogramState.getBinComparator()) {
-            HistogramState newHistogramState = new HistogramState(currentHistogramState);
+            final HistogramState newHistogramState = new HistogramState(currentHistogramState);
             newHistogramState.setBinComparator(binComparator);
             PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
         }

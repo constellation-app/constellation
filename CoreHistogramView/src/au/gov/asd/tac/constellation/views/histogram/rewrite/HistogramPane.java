@@ -582,7 +582,7 @@ public class HistogramPane extends BorderPane {
 
         final PluginParameters parameters;
         if (currentHistogramState != null && binFormatter.getClass() == currentHistogramState.getBinFormatter().getClass()) {
-            PluginParameters p = currentHistogramState.getBinFormatterParameters();
+            final PluginParameters p = currentHistogramState.getBinFormatterParameters();
             parameters = p == null ? null : p.copy();
             binFormatter.updateParameters(parameters);
         } else if (CURRENT_PARAMETER_IDS.containsKey(binFormatter)) {

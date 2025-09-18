@@ -17,12 +17,13 @@ package au.gov.asd.tac.constellation.views.histogram.rewrite;
 
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavaFxUtilities;
 import au.gov.asd.tac.constellation.views.histogram.Bin;
 import au.gov.asd.tac.constellation.views.histogram.BinCollection;
 import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
 import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
-import java.awt.Color;
+import javafx.scene.paint.Color;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -72,13 +73,11 @@ import javafx.scene.shape.Rectangle;
  */
 public class HistogramDisplay2 extends BorderPane {
 
-    public static final String BACKGROUND_COLOR_STRING = "#444444";
-    public static final Color BACKGROUND_COLOR = Color.decode(BACKGROUND_COLOR_STRING);
-    public static final Color BAR_COLOR = new Color(0.1176F, 0.5647F, 1.0F);
-    public static final Color SELECTED_COLOR = Color.RED.darker();
-    public static final Color ACTIVE_COLOR = Color.YELLOW;
+    private static final String BACKGROUND_COLOR_STRING = "#444444";
+//    private static final Color BACKGROUND_COLOR = Color.decode(BACKGROUND_COLOR_STRING);
+    private static final Color BACKGROUND_COLOR = Color.web(BACKGROUND_COLOR_STRING);
 
-    static final String NO_VALUE = "<No Value>";
+    private static final String NO_VALUE = "<No Value>";
     private static final String PROPERTY_VALUE = "Property Value";
     private static final String COUNT = "Count";
     private static final String TOTAL_BINS_COUNT = "Selected / Total Bin Count: %d/%d";
@@ -113,14 +112,13 @@ public class HistogramDisplay2 extends BorderPane {
     private boolean controlDown;
     private final ContextMenu copyMenu = new ContextMenu();
 
-    final VBox mainVBox = new VBox();
+    private final VBox mainVBox = new VBox();
 
     private static final float FONT_SCALE_FACTOR = 0.66F;
 
     private static final String STYLE_SETTING = "-fx-background-color: %s;";
     private static final String HEADER_ROW_CSS_CLASS = "header-row";
     private static final String FONT_SIZE_CSS_PROPERTY = "-fx-font-size: ";
-    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
 
     private final TableView<HistogramBar> tableView = new TableView<>();
 
@@ -136,8 +134,8 @@ public class HistogramDisplay2 extends BorderPane {
     private final TableColumn<HistogramBar, Node> iconCol = new TableColumn<>("Icon");
     private final TableColumn<HistogramBar, StackPane> barCol = new TableColumn<>("Bar");
 
-    final HBox headerRow = new HBox();
-    final HBox headerCountHBox = new HBox();
+    private final HBox headerRow = new HBox();
+    private final HBox headerCountHBox = new HBox();
 
     private double prevScrollValue = 0;
 
@@ -321,7 +319,7 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private synchronized void updateTable(final boolean updateBinCounts, final double width) {
-        if (isHeadless()) {
+        if (HeadlessUtilities.isHeadless()) {
             return;
         }
 
@@ -418,7 +416,6 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private void recalculateVisibleIndexes(final double scrollValue) {
-
         prevScrollValue = scrollValue;
 
         final int numItems = tableView.getItems().size();
@@ -444,12 +441,8 @@ public class HistogramDisplay2 extends BorderPane {
         lastVisibleIndex = (int) Math.ceil(upper / heightPerRow) + VISIBLE_INDEX_EXTEND;
     }
 
-    private boolean isHeadless() {
-        return Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY));
-    }
-
     private void updateHeader(final double fontSize) {
-        if (isHeadless()) {
+        if (HeadlessUtilities.isHeadless()) {
             return;
         }
 
@@ -524,7 +517,7 @@ public class HistogramDisplay2 extends BorderPane {
 
             rect.setArcHeight(arc);
             rect.setArcWidth(arc);
-            rect.setFill(JavaFxUtilities.awtColorToFXColor(barIndex == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR));
+            rect.setFill(barIndex == activeBin ? ACTIVE_AREA_COLOR : CLICK_AREA_COLOR);
 
             rectBar.getChildren().add(rect);
             StackPane.setAlignment(rect, Pos.CENTER_LEFT);

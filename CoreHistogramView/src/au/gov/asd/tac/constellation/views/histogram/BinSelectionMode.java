@@ -343,6 +343,8 @@ public enum BinSelectionMode {
         return label;
     }
 
+    
+    // TODO: see if i can refactor all these colors to be java fx colors instead of awt
     public Color getBarColor() {
         return barColor;
     }

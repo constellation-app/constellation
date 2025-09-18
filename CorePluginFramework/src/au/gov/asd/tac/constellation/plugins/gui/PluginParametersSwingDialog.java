@@ -168,7 +168,6 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     }
 
     private void setupPane(final Set<String> excludedParameters, final String disclaimer, final CountDownLatch latch) {
-
         // Create the panes
         final BorderPane root = new BorderPane();
         final ScrollPane scrollableContent = new ScrollPane();
@@ -184,7 +183,6 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
 
         // Conditionaly style the disclaimer pane.
         if (StringUtils.isNotBlank(disclaimer)) {
-
             // The text for the disclaimer
             final Label disclaimerText = new Label(disclaimer);
             final Font font = FontUtilities.getOutputFont();
@@ -345,8 +343,8 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
         if (StringUtils.isNotBlank(acceptanceText)) {
             return acceptanceText;
         }
-        for (final String keyWord : acceptanceButtonLabels){
-            if (Strings.CI.contains(title, keyWord)){
+        for (final String keyWord : acceptanceButtonLabels) {
+            if (Strings.CI.contains(title, keyWord)) {
                 return keyWord;
             }
         }

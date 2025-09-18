@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.views.histogram.rewrite.HistogramTopComponen
 import java.awt.Color;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**
