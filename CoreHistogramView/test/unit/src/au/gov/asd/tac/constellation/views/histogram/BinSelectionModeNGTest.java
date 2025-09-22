@@ -16,8 +16,9 @@
 package au.gov.asd.tac.constellation.views.histogram;
 
 import au.gov.asd.tac.constellation.views.histogram.bins.StringBin;
+import au.gov.asd.tac.constellation.views.histogram.rewrite.HistogramDisplay2;
 import au.gov.asd.tac.constellation.views.histogram.rewrite.HistogramTopComponent2;
-import java.awt.Color;
+import javafx.scene.paint.Color;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertEquals;
@@ -246,7 +247,7 @@ public class BinSelectionModeNGTest {
     public void testGetBarColor() {
         System.out.println("getBarColor");
         final BinSelectionMode instance = BinSelectionMode.FREE_SELECTION;
-        final Color expResult = HistogramDisplay.BAR_COLOR;
+        final Color expResult = HistogramDisplay2.getBarColor();
         final Color result = instance.getBarColor();
         assertEquals(result, expResult);
     }
@@ -258,7 +259,7 @@ public class BinSelectionModeNGTest {
     public void testGetActivatedBarColor() {
         System.out.println("getActivatedBarColor");
         final BinSelectionMode instance = BinSelectionMode.FREE_SELECTION;
-        final Color expResult = HistogramDisplay.BAR_COLOR;
+        final Color expResult = HistogramDisplay2.getBarColor();
         final Color result = instance.getActivatedBarColor();
         assertEquals(result, expResult);
     }
@@ -270,7 +271,7 @@ public class BinSelectionModeNGTest {
     public void testGetSelectedColor() {
         System.out.println("getSelectedColor");
         final BinSelectionMode instance = BinSelectionMode.FREE_SELECTION;
-        final Color expResult = HistogramDisplay.SELECTED_COLOR;
+        final Color expResult = HistogramDisplay2.getSelectedColor();
         final Color result = instance.getSelectedColor();
         assertEquals(result, expResult);
     }
@@ -282,7 +283,7 @@ public class BinSelectionModeNGTest {
     public void testGetActivatedSelectedColor() {
         System.out.println("getActivatedSelectedColor");
         final BinSelectionMode instance = BinSelectionMode.FREE_SELECTION;
-        final Color expResult = HistogramDisplay.SELECTED_COLOR;
+        final Color expResult = HistogramDisplay2.getSelectedColor();
         final Color result = instance.getActivatedSelectedColor();
         assertEquals(result, expResult);
     }

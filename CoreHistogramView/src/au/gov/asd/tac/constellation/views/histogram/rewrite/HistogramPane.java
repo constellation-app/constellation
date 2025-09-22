@@ -414,7 +414,8 @@ public class HistogramPane extends BorderPane {
                     // Clear all items
                     propertyChoice.setItems(FXCollections.observableArrayList());
 
-                    attributes.keySet().stream().forEach(attribute -> propertyChoice.getItems().add(attribute));
+                    //attributes.keySet().stream().forEach(attribute -> propertyChoice.getItems().add(attribute));
+                    propertyChoice.getItems().addAll(attributes.keySet());
                     propertyChoice.getSelectionModel().select(histogramState.getAttribute());
 
                     // Clear all items

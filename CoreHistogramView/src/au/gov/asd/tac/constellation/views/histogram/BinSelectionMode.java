@@ -15,8 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.histogram;
 
+import au.gov.asd.tac.constellation.views.histogram.rewrite.HistogramDisplay2;
 import au.gov.asd.tac.constellation.views.histogram.rewrite.HistogramTopComponent2;
-import java.awt.Color;
+import javafx.scene.paint.Color;
 
 /**
  * A BinSelectionMode represents the different ways the user can select bins in the histogram.
@@ -28,7 +29,7 @@ public enum BinSelectionMode {
     /**
      * The selection on the graph is immediately updated as the user clicks on bins in the histogram.
      */
-    FREE_SELECTION("Free Selection", HistogramDisplay.BAR_COLOR, HistogramDisplay.BAR_COLOR, HistogramDisplay.SELECTED_COLOR, HistogramDisplay.SELECTED_COLOR) {
+    FREE_SELECTION("Free Selection", HistogramDisplay2.getBarColor(), HistogramDisplay2.getBarColor(), HistogramDisplay2.getSelectedColor(), HistogramDisplay2.getSelectedColor()) {
         @Override
         public void mousePressed(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd) {
 
@@ -144,7 +145,7 @@ public enum BinSelectionMode {
      * until the user chooses to apply the selection. At this point the selection of the graph is represents only those
      * elements that are in the intersection of the current and new selections.
      */
-    WITHIN_SELECTION("Within Existing Selection", HistogramDisplay.BAR_COLOR, HistogramDisplay.BAR_COLOR, HistogramDisplay.SELECTED_COLOR, HistogramDisplay.ACTIVE_COLOR) {
+    WITHIN_SELECTION("Within Existing Selection", HistogramDisplay2.getBarColor(), HistogramDisplay2.getBarColor(), HistogramDisplay2.getSelectedColor(), HistogramDisplay2.getActiveColor()) {
         @Override
         public void mousePressed(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd) {
 
@@ -228,7 +229,7 @@ public enum BinSelectionMode {
      * until the user chooses to apply the selection. At this point the selection of the graph is represents only those
      * elements that are in the union of the current and new selections.
      */
-    ADD_TO_SELECTION("Add To Existing Selection", HistogramDisplay.BAR_COLOR, HistogramDisplay.ACTIVE_COLOR, HistogramDisplay.SELECTED_COLOR, HistogramDisplay.SELECTED_COLOR) {
+    ADD_TO_SELECTION("Add To Existing Selection", HistogramDisplay2.getBarColor(), HistogramDisplay2.getActiveColor(), HistogramDisplay2.getSelectedColor(), HistogramDisplay2.getSelectedColor()) {
         @Override
         public void mousePressed(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd) {
 
@@ -343,8 +344,6 @@ public enum BinSelectionMode {
         return label;
     }
 
-    
-    // TODO: see if i can refactor all these colors to be java fx colors instead of awt
     public Color getBarColor() {
         return barColor;
     }

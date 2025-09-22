@@ -37,4 +37,13 @@ public class JavaFxUtilities {
 
         return javafx.scene.paint.Color.rgb(r, g, b, opacity);
     }
+
+    public static java.awt.Color fxtColorToAwtColor(final Color fxColor) {
+        final int r = (int) Math.round(fxColor.getRed() * 255);
+        final int g = (int) Math.round(fxColor.getGreen() * 255);
+        final int b = (int) Math.round(fxColor.getBlue() * 255);
+        final int a = (int) Math.round(fxColor.getOpacity() * 255);
+
+        return new java.awt.Color(r, g, b, a);
+    }
 }

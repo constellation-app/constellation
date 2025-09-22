@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.histogram;
 
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavaFxUtilities;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -326,16 +327,16 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
                 final int barLeft = LEFT_MARGIN + iconPadding + textWidth + TEXT_TO_BAR_GAP;
                 int barTop = TOP_MARGIN + barOffset * (firstBar + 1); // (firstBar+1) to account for header
 
-                Color barColor = binSelectionMode.getBarColor();
+                Color barColor = JavaFxUtilities.fxtColorToAwtColor(binSelectionMode.getBarColor());
                 Color darkerBarColor = barColor.darker();
 
-                Color activatedBarColor = binSelectionMode.getActivatedBarColor();
+                Color activatedBarColor = JavaFxUtilities.fxtColorToAwtColor(binSelectionMode.getActivatedBarColor());
                 Color darkerActivatedBarColor = activatedBarColor.darker();
 
-                Color selectedColor = binSelectionMode.getSelectedColor();
+                Color selectedColor = JavaFxUtilities.fxtColorToAwtColor(binSelectionMode.getSelectedColor());
                 Color darkerSelectedColor = selectedColor.darker();
 
-                Color activatedSelectedColor = binSelectionMode.getActivatedSelectedColor();
+                Color activatedSelectedColor = JavaFxUtilities.fxtColorToAwtColor(binSelectionMode.getActivatedSelectedColor());
                 Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
 
                 // Draw the histogram headers

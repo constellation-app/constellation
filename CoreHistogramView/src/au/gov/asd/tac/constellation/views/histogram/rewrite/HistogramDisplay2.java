@@ -76,6 +76,9 @@ public class HistogramDisplay2 extends BorderPane {
     private static final String BACKGROUND_COLOR_STRING = "#444444";
 //    private static final Color BACKGROUND_COLOR = Color.decode(BACKGROUND_COLOR_STRING);
     private static final Color BACKGROUND_COLOR = Color.web(BACKGROUND_COLOR_STRING);
+    public static final Color BAR_COLOR = Color.rgb(30, 144, 255);
+    public static final Color SELECTED_COLOR = Color.RED.darker();
+    public static final Color ACTIVE_COLOR = Color.YELLOW;
 
     private static final String NO_VALUE = "<No Value>";
     private static final String PROPERTY_VALUE = "Property Value";
@@ -144,6 +147,22 @@ public class HistogramDisplay2 extends BorderPane {
     private static final float TABLE_WIDTH_TO_PROPERTY_WIDTH_MULT = 0.3F;
     // Need to take 3 because otherwise the right of the bar is cut off
     private static final int BAR_LENGTH_SUBTRACTION = 3;
+
+    public static Color getBackgroundColor() {
+        return BACKGROUND_COLOR;
+    }
+
+    public static Color getBarColor() {
+        return BAR_COLOR;
+    }
+
+    public static Color getSelectedColor() {
+        return SELECTED_COLOR;
+    }
+
+    public static Color getActiveColor() {
+        return ACTIVE_COLOR;
+    }
 
     public HistogramDisplay2(final HistogramTopComponent2 topComponent) {
         this.topComponent = topComponent;
@@ -493,17 +512,21 @@ public class HistogramDisplay2 extends BorderPane {
         final int arc = barHeight / 3;
 
         // Setup bar colours
-        final javafx.scene.paint.Color barColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getBarColor());
-        final javafx.scene.paint.Color darkerBarColor = barColor.darker();
+        //final javafx.scene.paint.Color barColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getBarColor());
+        final Color barColor = binSelectionMode.getBarColor();
+        final Color darkerBarColor = barColor.darker();
 
-        final javafx.scene.paint.Color activatedBarColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getActivatedBarColor());
-        final javafx.scene.paint.Color darkerActivatedBarColor = activatedBarColor.darker();
+//        final javafx.scene.paint.Color activatedBarColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getActivatedBarColor());
+        final Color activatedBarColor = binSelectionMode.getActivatedBarColor();
+        final Color darkerActivatedBarColor = activatedBarColor.darker();
 
-        final javafx.scene.paint.Color selectedColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getSelectedColor());
-        final javafx.scene.paint.Color darkerSelectedColor = selectedColor.darker();
+//        final javafx.scene.paint.Color selectedColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getSelectedColor());
+        final Color selectedColor = binSelectionMode.getSelectedColor();
+        final Color darkerSelectedColor = selectedColor.darker();
 
-        final javafx.scene.paint.Color activatedSelectedColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getActivatedSelectedColor());
-        final javafx.scene.paint.Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
+//        final javafx.scene.paint.Color activatedSelectedColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getActivatedSelectedColor());
+        final Color activatedSelectedColor = binSelectionMode.getActivatedSelectedColor();
+        final Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
 
         // Always draw something, even if there aren't enough pixels to draw the actual length.
         final int barLength = Math.max((int) (elementCount * lengthPerElement), MINIMUM_BAR_WIDTH);
