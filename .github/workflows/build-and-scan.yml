@@ -46,7 +46,9 @@ jobs:
         
     - name: Create Cache Folder
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      run: mkdir ~/.ivy2/cache
+      run: |
+        mkdir ~/.ivy2
+        mkdir ~/.ivy2/cache
 
       # Update the project dependencies and run tests
     - name: Run Tests
