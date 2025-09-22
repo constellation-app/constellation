@@ -40,6 +40,22 @@ jobs:
         with:
           repository: constellation-app/constellation-applications
           path: ./workspace/constellation-applications
+      # Cache the ivy dependencies.
+      - name: Restore Cache
+        id: cache-dependencies
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-dependencies
+        with:
+          path: ~/.ivy2/cache
+          key: ${{ runner.os }}-ivy-${{ hashFiles('constellation/CoreDependencies/src/ivy.xml') }}
+        
+      - name: Create Cache Folder
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: |
+          mkdir ~/.ivy2
+          mkdir ~/.ivy2/cache
+      
       - name: Add Execute Privilege to Scripts
         run: |
               chmod +x ./workspace/constellation-applications/build-zip.sh
