@@ -41,12 +41,12 @@ jobs:
       env:
         cache-name: cache-dependencies
       with:
-        path: ~/.ivy2
+        path: ~/.ivy2/cache
         key: ${{ runner.os }}-ivy-${{ hashFiles('constellation/CoreDependencies/src/ivy.xml') }}
         
     - name: Create Cache Folder
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      run: mkdir ~/.ivy2
+      run: mkdir ~/.ivy2/cache
 
       # Update the project dependencies and run tests
     - name: Run Tests
