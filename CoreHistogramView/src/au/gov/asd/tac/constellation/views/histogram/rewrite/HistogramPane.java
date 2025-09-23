@@ -190,6 +190,7 @@ public class HistogramPane extends BorderPane {
         final Pane elementBoxSpacer = new Pane();
         HBox.setHgrow(elementBoxSpacer, Priority.ALWAYS);
         graphElementHBox.getChildren().addAll(graphElementLabel, vertexToggle, transactionToggle, edgeToggle, linkToggle, elementBoxSpacer, helpButton);
+        graphElementHBox.setAlignment(javafx.geometry.Pos.CENTER);
 
         ////////////////////
         // Category
@@ -202,9 +203,11 @@ public class HistogramPane extends BorderPane {
         final Label categoryLabel = new Label("Category:");
         categoryLabel.setMinWidth(MIN_LABEL_WIDTH);
         categoryLabel.setPrefWidth(PREF_LABEL_WIDTH);
+
         final HBox categoryHBox = new HBox(4);
         HBox.setHgrow(categoryChoice, Priority.ALWAYS);
         categoryHBox.getChildren().addAll(categoryLabel, categoryChoice);
+        categoryHBox.setAlignment(javafx.geometry.Pos.CENTER);
 
         ////////////////////
         // Property and Format
@@ -223,8 +226,10 @@ public class HistogramPane extends BorderPane {
         final Label propertyLabel = new Label("Property:");
         propertyLabel.setMinWidth(MIN_LABEL_WIDTH);
         propertyLabel.setPrefWidth(PREF_LABEL_WIDTH);
+
         final HBox propertyHBox = new HBox(4);
         propertyHBox.getChildren().addAll(propertyLabel, propertyChoice, binFormatterCombo);
+        propertyHBox.setAlignment(javafx.geometry.Pos.CENTER);
 
         ////////////////////
         // Sort
@@ -259,6 +264,7 @@ public class HistogramPane extends BorderPane {
         descendingButton.setOnAction(e -> descendingButtonHandler());
 
         sortHBox.getChildren().addAll(sortLabel, sortChoice, descendingButton);
+        sortHBox.setAlignment(javafx.geometry.Pos.CENTER);
 
         ////////////////////
         // Selection Mode
@@ -280,6 +286,7 @@ public class HistogramPane extends BorderPane {
         selectButton.setOnAction(e -> selectButtonHandler());
 
         selectionModeHBox.getChildren().addAll(selectionModeLabel, selectionModeChoice, selectButton);
+        selectionModeHBox.setAlignment(javafx.geometry.Pos.CENTER);
 
         ////////////////////
         // Filter
@@ -295,10 +302,12 @@ public class HistogramPane extends BorderPane {
         final Label filterLabel = new Label("Filter:");
         filterLabel.setMinWidth(MIN_LABEL_WIDTH);
         filterLabel.setPrefWidth(PREF_LABEL_WIDTH);
+
         final HBox filterHBox = new HBox(4);
         final Pane filterSpacer = new Pane();
         HBox.setHgrow(filterSpacer, Priority.ALWAYS);
         filterHBox.getChildren().addAll(filterLabel, filterSelectionButton, clearFilterButton, filterSpacer, actionButton);
+        filterHBox.setAlignment(javafx.geometry.Pos.CENTER);
 
         actionsMenu = new ContextMenu();
 
@@ -320,7 +329,7 @@ public class HistogramPane extends BorderPane {
         //// END Filter
 
         // Add everything to this viewPane
-        viewPane = new VBox(4);
+        viewPane = new VBox(6);
         viewPane.prefWidthProperty().bind(this.widthProperty());
 
         display.prefWidthProperty().bind(viewPane.widthProperty());
