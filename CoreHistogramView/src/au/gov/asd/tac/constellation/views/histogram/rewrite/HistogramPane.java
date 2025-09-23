@@ -31,7 +31,6 @@ import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
 import static au.gov.asd.tac.constellation.views.histogram.HistogramControls.CURRENT_PARAMETER_IDS;
 import au.gov.asd.tac.constellation.views.histogram.HistogramState;
 import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.MenuItem;
 import java.util.EnumMap;
@@ -44,7 +43,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
@@ -126,19 +124,16 @@ public class HistogramPane extends BorderPane {
     private static final int MIN_LABEL_WIDTH = 90;
     private static final int PREF_LABEL_WIDTH = 90;
 
+    private static final int CONTROLS_PADDING = 5;
+
     public HistogramPane(final HistogramTopComponent2 histogramTopComponent) {
         topComponent = histogramTopComponent;
 
         // DISPLAY
         display = new HistogramDisplay2(topComponent);
-        final ScrollPane displayScroll = new ScrollPane();
-        displayScroll.setContent(display);
 
         // Binds the width of the display to the width of viewable content in the scroll pane
-        displayScroll.viewportBoundsProperty().addListener((obs, oldVal, newVal) -> display.setPrefWidth(newVal.getWidth()));
-
         display.setPadding(new Insets(0, DISPLAY_PADDING, 0, DISPLAY_PADDING)); // padding of 10 on left and right
-        displayScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
 
         ////////////////////
         // Help Button
@@ -328,10 +323,11 @@ public class HistogramPane extends BorderPane {
         viewPane = new VBox(4);
         viewPane.prefWidthProperty().bind(this.widthProperty());
 
-        displayScroll.prefWidthProperty().bind(viewPane.widthProperty());
+        display.prefWidthProperty().bind(viewPane.widthProperty());
+        VBox.setVgrow(display, Priority.ALWAYS);
 
-        viewPane.getChildren().addAll(
-                displayScroll,
+        final VBox controls = new VBox();
+        controls.getChildren().addAll(
                 graphElementHBox,
                 categoryHBox,
                 propertyHBox,
@@ -339,6 +335,13 @@ public class HistogramPane extends BorderPane {
                 selectionModeHBox,
                 filterHBox
         );
+
+        viewPane.getChildren().addAll(
+                display,
+                controls
+        );
+
+        controls.setPadding(new Insets(CONTROLS_PADDING, CONTROLS_PADDING, CONTROLS_PADDING, CONTROLS_PADDING));
 
         this.setCenter(viewPane);
 

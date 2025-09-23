@@ -330,6 +330,14 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     public synchronized void updateDisplay() {
+        if (Platform.isFxApplicationThread()) {
+            updateHeaderAndTable();
+        } else {
+            Platform.runLater(() -> updateHeaderAndTable());
+        }
+    }
+
+    private synchronized void updateHeaderAndTable() {
         recalculateVisibleIndexes(prevScrollValue);
 
         updateHeader(barHeight * FONT_SCALE_FACTOR);
@@ -459,7 +467,7 @@ public class HistogramDisplay2 extends BorderPane {
         lastVisibleIndex = (int) Math.ceil(upper / heightPerRow) + VISIBLE_INDEX_EXTEND;
     }
 
-    private void updateHeader(final double fontSize) {
+    private synchronized void updateHeader(final double fontSize) {
         if (HeadlessUtilities.isHeadless()) {
             return;
         }
