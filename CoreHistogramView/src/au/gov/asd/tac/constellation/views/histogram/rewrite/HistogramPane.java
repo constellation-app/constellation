@@ -329,13 +329,13 @@ public class HistogramPane extends BorderPane {
         //// END Filter
 
         // Add everything to this viewPane
-        viewPane = new VBox(6);
+        viewPane = new VBox();
         viewPane.prefWidthProperty().bind(this.widthProperty());
 
         display.prefWidthProperty().bind(viewPane.widthProperty());
         VBox.setVgrow(display, Priority.ALWAYS);
 
-        final VBox controls = new VBox();
+        final VBox controls = new VBox(CONTROLS_PADDING);
         controls.getChildren().addAll(
                 graphElementHBox,
                 categoryHBox,
