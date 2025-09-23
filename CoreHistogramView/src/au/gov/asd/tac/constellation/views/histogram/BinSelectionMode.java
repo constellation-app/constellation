@@ -51,12 +51,12 @@ public enum BinSelectionMode {
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
                     bins[i].setSavedSelectedCount(bins[i].getSelectedCount());
-                    bins[i].setSelectedCount(bins[i].getSelectedCount() == 0 ? bins[i].getSelectedCount() : 0);
+                    bins[i].setSelectedCount(bins[i].getSelectedCount() == 0 ? bins[i].getElementCount() : 0);
                 }
             } else {
                 for (int i = firstBar; i <= lastBar; i++) {
                     bins[i].setSavedSelectedCount(bins[i].getSelectedCount());
-                    bins[i].setSelectedCount(bins[i].getSelectedCount());
+                    bins[i].setSelectedCount(bins[i].getElementCount());
                 }
             }
         }
