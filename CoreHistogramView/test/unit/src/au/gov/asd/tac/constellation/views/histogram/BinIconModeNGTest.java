@@ -147,7 +147,7 @@ public class BinIconModeNGTest {
 
         final int height = 0;
         final int arc = height / 3;
-        final Rectangle expResult = new Rectangle(Double.valueOf(height), Double.valueOf(height), JavaFxUtilities.awtColorToFXColor(mockKey.getJavaColor()));
+        final Rectangle expResult = new Rectangle(Double.valueOf(height), Double.valueOf(height), mockKey.getJavaFXColor());
         expResult.setArcHeight(arc);
         expResult.setArcWidth(arc);
 

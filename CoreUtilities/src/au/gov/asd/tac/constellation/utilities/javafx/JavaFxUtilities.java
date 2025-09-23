@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.utilities.javafx;
 
 import javafx.scene.paint.Color;
 
+// TODO: This whole class can be deleted when the histogram rewrite fully replaces the old histogram
 /**
  * Utility class related to JavaFx
  *
@@ -26,16 +27,6 @@ public class JavaFxUtilities {
 
     // Empty private constructor for utility class
     private JavaFxUtilities() {
-    }
-
-    public static Color awtColorToFXColor(final java.awt.Color awtColor) {
-        final int r = awtColor.getRed();
-        final int g = awtColor.getGreen();
-        final int b = awtColor.getBlue();
-        final int a = awtColor.getAlpha();
-        final double opacity = a / 255.0;
-
-        return javafx.scene.paint.Color.rgb(r, g, b, opacity);
     }
 
     public static java.awt.Color fxtColorToAwtColor(final Color fxColor) {

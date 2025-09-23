@@ -44,6 +44,7 @@ public enum BinIconMode {
     NONE(0.0F) {
         @Override
         public void draw(final Graphics2D graphics, final Bin bin, final int left, final int top, final int height) {
+            // Left blank on purpose
         }
 
         @Override
@@ -57,7 +58,7 @@ public enum BinIconMode {
     ICON(1.5F) {
         @Override
         public void draw(final Graphics2D graphics, final Bin bin, final int left, final int top, final int height) {
-            if (bin instanceof ObjectBin objectBin) {
+            if (bin instanceof final ObjectBin objectBin) {
                 final Object key = objectBin.getKeyAsObject();
 
                 if (key != null) {
@@ -76,7 +77,7 @@ public enum BinIconMode {
 
         @Override
         public Node createFXIcon(final Bin bin, final int height) {
-            if (bin instanceof ObjectBin objectBin) {
+            if (bin instanceof final ObjectBin objectBin) {
                 final Object key = objectBin.getKeyAsObject();
 
                 if (key == null) {
@@ -110,7 +111,7 @@ public enum BinIconMode {
     COLOR(1.5F) {
         @Override
         public void draw(final Graphics2D graphics, final Bin bin, final int left, final int top, final int height) {
-            if (bin instanceof ObjectBin objectBin) {
+            if (bin instanceof final ObjectBin objectBin) {
                 final Object key = objectBin.getKeyAsObject();
                 final ConstellationColor colorValue = (ConstellationColor) key;
                 if (colorValue != null) {
@@ -122,7 +123,7 @@ public enum BinIconMode {
 
         @Override
         public Node createFXIcon(final Bin bin, final int height) {
-            if (bin instanceof ObjectBin objectBin) {
+            if (bin instanceof final ObjectBin objectBin) {
                 final Object key = objectBin.getKeyAsObject();
                 final ConstellationColor colorValue = (ConstellationColor) key;
 
@@ -132,7 +133,7 @@ public enum BinIconMode {
                 }
 
                 final int arc = height / 3;
-                final Rectangle rect = new Rectangle(Double.valueOf(height), Double.valueOf(height), JavaFxUtilities.awtColorToFXColor(colorValue.getJavaColor()));
+                final Rectangle rect = new Rectangle(Double.valueOf(height), Double.valueOf(height), colorValue.getJavaFXColor());
                 rect.setArcHeight(arc);
                 rect.setArcWidth(arc);
                 return rect;

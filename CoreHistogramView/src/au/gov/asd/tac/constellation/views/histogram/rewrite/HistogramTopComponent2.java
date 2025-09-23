@@ -206,7 +206,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
         boolean binCollectionModified = false;
         try (final ReadableGraph rg = currentGraph.getReadableGraph()) {
-
             final long oldGlobalModificationCount = currentGlobalModificationCount;
             currentGlobalModificationCount = rg.getGlobalModificationCounter();
 
