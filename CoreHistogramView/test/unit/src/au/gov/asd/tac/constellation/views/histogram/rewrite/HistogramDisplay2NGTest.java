@@ -204,8 +204,8 @@ public class HistogramDisplay2NGTest {
         // Mocks
         final BinCollection binCollection = mock(BinCollection.class);
         final Bin binSpy = spy(new TransactionDirectionBin());
-        binSpy.selectedCount = 1;
-        binSpy.elementCount = 1;
+        binSpy.setSelectedCount(1);
+        binSpy.setElementCount(1);
         final Bin[] bins = {binSpy};
         final BinIconMode binIconMode = BinIconMode.NONE;
         when(binCollection.getBins()).thenReturn(bins);

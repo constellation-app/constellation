@@ -357,8 +357,8 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
                 for (int bar = firstBar; bar <= lastBar; bar++) {
                     Bin bin = bins[bar];
 
-                    final int selectedCount = bin.selectedCount;
-                    final int elementCount = bin.elementCount;
+                    final int selectedCount = bin.getSelectedCount();
+                    final int elementCount = bin.getElementCount();
 
                     // Always draw something, even if there aren't enough pixels to draw the actual length.
                     final int barLength = Math.max((int) (elementCount * scaleFactor), MINIMUM_BAR_WIDTH);
@@ -378,7 +378,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
                     // Draw the unselected component of the bar
                     if (selectedLength < barLength) {
-                        Paint paint = bin.activated
+                        Paint paint = bin.getIsActivated()
                                 ? new GradientPaint(0, barTop, activatedBarColor, 0, (float) barTop + barHeight, darkerActivatedBarColor)
                                 : new GradientPaint(0, barTop, barColor, 0, (float) barTop + barHeight, darkerBarColor);
                         g2.setPaint(paint);
@@ -388,7 +388,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
                     // Draw the selected component of the bar
                     if (selectedLength > 0) {
-                        Paint paint = bin.activated
+                        Paint paint = bin.getIsActivated()
                                 ? new GradientPaint(0, barTop, activatedSelectedColor, 0, (float) barTop + barHeight, darkerActivatedSelectedColor)
                                 : new GradientPaint(0, barTop, selectedColor, 0, (float) barTop + barHeight, darkerSelectedColor);
                         g2.setPaint(paint);
@@ -426,9 +426,9 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
                         }
 
                         // Bin count text.
-                        String binCount = Integer.toString(bin.elementCount);
-                        if (bin.selectedCount > 0) {
-                            binCount = Integer.toString(bin.selectedCount) + "/" + binCount;
+                        String binCount = Integer.toString(bin.getElementCount());
+                        if (bin.getSelectedCount() > 0) {
+                            binCount = Integer.toString(bin.getSelectedCount()) + "/" + binCount;
                         }
                         final Rectangle2D bounds = fm.getStringBounds(binCount, g2);
                         g2.drawString(binCount, (int) (parentWidth - bounds.getWidth() - RIGHT_MARGIN - 2), y);
@@ -564,10 +564,10 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         final StringBuilder buf = new StringBuilder();
         for (final Bin bin : binCollection.getBins()) {
             // Check if the bar(s) on the Histogram are selected.
-            if (bin.selectedCount > 0) {
+            if (bin.getSelectedCount() > 0) {
                 final String label = bin.getLabel() != null ? bin.getLabel() : HistogramDisplay.NO_VALUE;
                 if (includeCounts) {
-                    buf.append(String.format("%s\t%d%n", label, bin.elementCount));
+                    buf.append(String.format("%s\t%d%n", label, bin.getElementCount()));
                 } else {
                     buf.append(String.format("%s%n", label));
                 }

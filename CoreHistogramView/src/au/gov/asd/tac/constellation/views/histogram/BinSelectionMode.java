@@ -44,19 +44,19 @@ public enum BinSelectionMode {
 
             if (!shiftDown && !controlDown) {
                 for (final Bin bin : bins) {
-                    bin.selectedCount = 0;
+                    bin.setSelectedCount(0);
                 }
             }
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedSelectedCount = bins[i].selectedCount;
-                    bins[i].selectedCount = bins[i].selectedCount == 0 ? bins[i].elementCount : 0;
+                    bins[i].setSavedSelectedCount(bins[i].getSelectedCount());
+                    bins[i].setSelectedCount(bins[i].getSelectedCount() == 0 ? bins[i].getSelectedCount() : 0);
                 }
             } else {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedSelectedCount = bins[i].selectedCount;
-                    bins[i].selectedCount = bins[i].elementCount;
+                    bins[i].setSavedSelectedCount(bins[i].getSelectedCount());
+                    bins[i].setSelectedCount(bins[i].getSelectedCount());
                 }
             }
         }
@@ -69,7 +69,7 @@ public enum BinSelectionMode {
             int lastBar = Math.clamp(Math.max(dragStart, oldDragEnd), min, max); // Picks the largest index
 
             for (int i = firstBar; i <= lastBar; i++) {
-                bins[i].selectedCount = bins[i].savedSelectedCount;
+                bins[i].setSelectedCount(bins[i].getSavedSelectedCount());
             }
 
             firstBar = Math.clamp(Math.min(dragStart, newDragEnd), min, max); // Picks the smallest index
@@ -77,13 +77,13 @@ public enum BinSelectionMode {
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedSelectedCount = bins[i].selectedCount;
-                    bins[i].selectedCount = bins[i].selectedCount == 0 ? bins[i].elementCount : 0;
+                    bins[i].setSavedSelectedCount(bins[i].getSelectedCount());
+                    bins[i].setSelectedCount(bins[i].getSelectedCount() == 0 ? bins[i].getElementCount() : 0);
                 }
             } else {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedSelectedCount = bins[i].selectedCount;
-                    bins[i].selectedCount = bins[i].elementCount;
+                    bins[i].setSavedSelectedCount(bins[i].getSelectedCount());
+                    bins[i].setSelectedCount(bins[i].getElementCount());
                 }
             }
         }
@@ -158,19 +158,19 @@ public enum BinSelectionMode {
 
             if (!shiftDown && !controlDown) {
                 for (final Bin bin : bins) {
-                    bin.activated = false;
+                    bin.setIsActivated(false);
                 }
             }
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = !bins[i].activated;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(!bins[i].getIsActivated());
                 }
             } else {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = true;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(true);
                 }
             }
         }
@@ -183,7 +183,7 @@ public enum BinSelectionMode {
             int lastBar = Math.clamp(Math.max(dragStart, oldDragEnd), min, max); // Picks the largest index
 
             for (int i = firstBar; i <= lastBar; i++) {
-                bins[i].activated = bins[i].savedActivated;
+                bins[i].setIsActivated(bins[i].getSavedActivated());
             }
 
             firstBar = Math.clamp(Math.min(dragStart, newDragEnd), min, max); // Picks the smallest index
@@ -191,13 +191,13 @@ public enum BinSelectionMode {
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = !bins[i].activated;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(!bins[i].getIsActivated());
                 }
             } else {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = true;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(true);
                 }
             }
         }
@@ -243,20 +243,20 @@ public enum BinSelectionMode {
             }
 
             if (!shiftDown && !controlDown) {
-                for (Bin bin : bins) {
-                    bin.activated = false;
+                for (final Bin bin : bins) {
+                    bin.setIsActivated(false);
                 }
             }
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = !bins[i].activated;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(!bins[i].getIsActivated());
                 }
             } else {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = true;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(true);
                 }
             }
         }
@@ -269,7 +269,7 @@ public enum BinSelectionMode {
             int lastBar = Math.clamp(Math.max(dragStart, oldDragEnd), min, max); // Picks the largest index
 
             for (int i = firstBar; i <= lastBar; i++) {
-                bins[i].activated = bins[i].savedActivated;
+                bins[i].setIsActivated(bins[i].getSavedActivated());
             }
 
             firstBar = Math.clamp(Math.min(dragStart, newDragEnd), min, max); // Picks the smallest index
@@ -277,13 +277,13 @@ public enum BinSelectionMode {
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = !bins[i].activated;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(!bins[i].getIsActivated());
                 }
             } else {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = true;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(true);
                 }
             }
         }

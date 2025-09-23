@@ -53,14 +53,14 @@ public class BinSelectionModeNGTest {
 
         for (int i = 0; i < numTests; i++) {
             final Bin bin = new StringBin();
-            bin.selectedCount = 1;
-            bin.elementCount = elementCount;
+            bin.setSelectedCount(1);
+            bin.setElementCount(elementCount);
 
             instance.mousePressed(shiftDownArray[i], controlDownArray[i], new Bin[]{bin}, dragStart, dragEnd);
 
-            assertEquals(bin.selectedCount, expectedSelectedCountArray[i]);
-            assertEquals(bin.savedSelectedCount, expectedSavedSelectedCountArray[i]);
-            assertEquals(bin.elementCount, elementCount);
+            assertEquals(bin.getSelectedCount(), expectedSelectedCountArray[i]);
+            assertEquals(bin.getSavedSelectedCount(), expectedSavedSelectedCountArray[i]);
+            assertEquals(bin.getElementCount(), elementCount);
         }
     }
 
@@ -87,14 +87,14 @@ public class BinSelectionModeNGTest {
 
         for (int i = 0; i < numTests; i++) {
             final Bin bin = new StringBin();
-            bin.selectedCount = 1;
-            bin.elementCount = elementCount;
+            bin.setSelectedCount(1);
+            bin.setElementCount(elementCount);
 
             instance.mouseDragged(shiftDownArray[i], controlDownArray[i], new Bin[]{bin}, dragStart, oldDragEnd, newDragEnd);
 
-            assertEquals(bin.selectedCount, elementCount);
-            assertEquals(bin.savedSelectedCount, expectedSavedSelectedCount);
-            assertEquals(bin.elementCount, elementCount);
+            assertEquals(bin.getSelectedCount(), elementCount);
+            assertEquals(bin.getSavedSelectedCount(), expectedSavedSelectedCount);
+            assertEquals(bin.getElementCount(), elementCount);
         }
     }
 
@@ -145,17 +145,17 @@ public class BinSelectionModeNGTest {
 
         for (int i = 0; i < numTests; i++) {
             final Bin bin1 = new StringBin();
-            bin1.selectedCount = selectedCount;
-            bin1.elementCount = elementCount;
+            bin1.setSelectedCount(selectedCount);
+            bin1.setElementCount(elementCount);
 
             final Bin bin2 = new StringBin();
-            bin2.selectedCount = selectedCount;
-            bin2.elementCount = elementCount;
+            bin2.setSelectedCount(selectedCount);
+            bin2.setElementCount(elementCount);
 
             instance.mousePressed(shiftDownArray[i], controlDownArray[i], new Bin[]{bin1, bin2}, dragStart, dragEnd);
 
-            assertEquals(bin1.activated, true);
-            assertEquals(bin2.activated, false);
+            assertEquals(bin1.getIsActivated(), true);
+            assertEquals(bin2.getIsActivated(), false);
         }
     }
 
@@ -180,17 +180,17 @@ public class BinSelectionModeNGTest {
 
         for (int i = 0; i < numTests; i++) {
             final Bin bin1 = new StringBin();
-            bin1.activated = false;
-            bin1.savedActivated = false;
+            bin1.setIsActivated(false);
+            bin1.setSavedActivated(false);
 
             final Bin bin2 = new StringBin();
-            bin2.activated = true;
-            bin2.savedActivated = true;
+            bin2.setIsActivated(true);
+            bin2.setSavedActivated(true);
 
             instance.mouseDragged(shiftDownArray[i], controlDownArray[i], new Bin[]{bin1, bin2}, dragStart, oldDragEnd, newDragEnd);
 
-            assertEquals(bin1.activated, true);
-            assertEquals(bin2.activated, expectedActivatedArray[i]);
+            assertEquals(bin1.getIsActivated(), true);
+            assertEquals(bin2.getIsActivated(), expectedActivatedArray[i]);
         }
     }
 
@@ -214,17 +214,17 @@ public class BinSelectionModeNGTest {
 
         for (int i = 0; i < numTests; i++) {
             final Bin bin1 = new StringBin();
-            bin1.activated = false;
-            bin1.savedActivated = false;
+            bin1.setIsActivated(false);
+            bin1.setSavedActivated(false);
 
             final Bin bin2 = new StringBin();
-            bin2.activated = true;
-            bin2.savedActivated = true;
+            bin2.setIsActivated(true);
+            bin2.setSavedActivated(true);
 
             instance.mousePressed(shiftDownArray[i], controlDownArray[i], new Bin[]{bin1, bin2}, dragStart, dragEnd);
 
-            assertEquals(bin1.activated, true);
-            assertEquals(bin2.activated, expectedActivatedArray[i]);
+            assertEquals(bin1.getIsActivated(), true);
+            assertEquals(bin2.getIsActivated(), expectedActivatedArray[i]);
         }
     }
 

@@ -393,7 +393,7 @@ public class HistogramDisplay2 extends BorderPane {
 
             // If rebuilding all row object put into list, else update row data
             if (rebuildRows) {
-                listOfHistogrambars.add(new HistogramBar(icon, propertyString, rectBar, bin.selectedCount, maxCount));
+                listOfHistogrambars.add(new HistogramBar(icon, propertyString, rectBar, bin.getSelectedCount(), maxCount));
             } else {
                 final HistogramBar histogramBar = tableView.getItems().get(i);
                 histogramBar.setIcon(icon);
@@ -505,8 +505,8 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private StackPane constructBar(final Bin bin, final int maxCount, final boolean updateBinCounts, final double width, final int barIndex, final double fontSize) {
-        final int selectedCount = bin.selectedCount;
-        final int elementCount = bin.elementCount;
+        final int selectedCount = bin.getSelectedCount();
+        final int elementCount = bin.getElementCount();
 
         final float lengthPerElement = (float) width / maxCount;
         final int arc = barHeight / 3;
@@ -552,7 +552,7 @@ public class HistogramDisplay2 extends BorderPane {
         // Draw the unselected component of the bar
         if (selectedLength < barLength) {
             //Setting the linear gradient 
-            final Stop[] stops = bin.activated
+            final Stop[] stops = bin.getIsActivated()
                     ? new Stop[]{new Stop(0, activatedBarColor), new Stop(1, darkerActivatedBarColor)}
                     : new Stop[]{new Stop(0, barColor), new Stop(1, darkerBarColor)};
 
@@ -569,7 +569,7 @@ public class HistogramDisplay2 extends BorderPane {
         // Draw the selected component of the bar
         if (selectedLength > 0) {
             //Setting the linear gradient 
-            final Stop[] stops = bin.activated
+            final Stop[] stops = bin.getIsActivated()
                     ? new Stop[]{new Stop(0, activatedSelectedColor), new Stop(1, darkerActivatedSelectedColor)}
                     : new Stop[]{new Stop(0, selectedColor), new Stop(1, darkerSelectedColor)};
 
@@ -585,7 +585,7 @@ public class HistogramDisplay2 extends BorderPane {
 
         // Draw bin count text
         if (updateBinCounts) {
-            final String binCount = (bin.selectedCount > 0) ? Integer.toString(bin.selectedCount) + "/" + Integer.toString(bin.elementCount) : Integer.toString(bin.elementCount);
+            final String binCount = (bin.getSelectedCount() > 0) ? Integer.toString(bin.getSelectedCount()) + "/" + Integer.toString(bin.getElementCount()) : Integer.toString(bin.getElementCount());
             final Label binCountlabel = new Label(binCount);
 
             binCountlabel.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
@@ -651,10 +651,10 @@ public class HistogramDisplay2 extends BorderPane {
         final StringBuilder buf = new StringBuilder();
         for (final Bin bin : binCollection.getBins()) {
             // Check if the bar(s) on the Histogram are selected.
-            if (bin.selectedCount > 0) {
+            if (bin.getSelectedCount() > 0) {
                 final String label = bin.getLabel() != null ? bin.getLabel() : HistogramDisplay2.NO_VALUE;
                 if (includeCounts) {
-                    buf.append(String.format("%s\t%d%n", label, bin.elementCount));
+                    buf.append(String.format("%s\t%d%n", label, bin.getElementCount()));
                 } else {
                     buf.append(String.format("%s%n", label));
                 }
