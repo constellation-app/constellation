@@ -63,10 +63,6 @@ public class HistogramPaneNGTest {
         }
     }
 
-    private void testFunc(final String funcName, final boolean testPassed) {
-        System.out.println("test in " + funcName + (testPassed ? " passed" : " failed!"));
-    }
-
     /**
      * Test of updateDisplay method, of class HistogramPane.
      */
@@ -79,7 +75,6 @@ public class HistogramPaneNGTest {
 
             // Assert HistogramDisplay2 was made and function was called
             assertTrue(mockConstructor.constructed().size() == 1);
-            testFunc("updateDisplay", mockConstructor.constructed().size() == 1);
             final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
             verify(menu, atLeast(1)).updateDisplay();
         }
@@ -97,7 +92,6 @@ public class HistogramPaneNGTest {
 
             // Assert HistogramDisplay2 was made and function was called
             assertTrue(mockConstructor.constructed().size() == 1);
-            testFunc("decreaseBarHeight", mockConstructor.constructed().size() == 1);
             final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
             verify(menu).decreaseBarHeight();
         }
@@ -115,7 +109,6 @@ public class HistogramPaneNGTest {
 
             // Assert HistogramDisplay2 was made and function was called
             assertTrue(mockConstructor.constructed().size() == 1);
-            testFunc("increaseBarHeight", mockConstructor.constructed().size() == 1);
             final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
             verify(menu).increaseBarHeight();
         }
@@ -136,7 +129,6 @@ public class HistogramPaneNGTest {
 
             // Assert HistogramDisplay2 was made and function was called
             assertTrue(mockConstructor.constructed().size() == 1);
-            testFunc("setBinCollection", mockConstructor.constructed().size() == 1);
             final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
             verify(menu).setBinCollection(binCollection, binIconMode);
         }
@@ -156,7 +148,6 @@ public class HistogramPaneNGTest {
 
             // Assert HistogramDisplay2 was made and function was called
             assertTrue(mockConstructor.constructed().size() == 1);
-            testFunc("setBinSelectionMode", mockConstructor.constructed().size() == 1);
             final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
             verify(menu).setBinSelectionMode(binSelectionMode);
         }
@@ -174,7 +165,6 @@ public class HistogramPaneNGTest {
 
             // Assert HistogramDisplay2 was made and function was called
             assertTrue(mockConstructor.constructed().size() == 1);
-            testFunc("updateBinCollection", mockConstructor.constructed().size() == 1);
             final HistogramDisplay2 menu = mockConstructor.constructed().getLast();
             verify(menu).updateBinCollection();
         }
