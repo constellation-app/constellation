@@ -27,7 +27,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
  */
 public abstract class Bin implements Comparable<Bin> {
 
-    // TODO: Remove public keyword of variables when histogram rewrite is completely merged, 
+    // TODO: Remove public keyword of functions when histogram rewrite is completely merged, 
     // and the rewritten display is in the same package as this class
     // The number of elements in this bin
     private int elementCount = 0;

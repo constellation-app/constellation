@@ -73,7 +73,6 @@ import javafx.scene.shape.Rectangle;
 public class HistogramDisplay2 extends BorderPane {
 
     private static final String BACKGROUND_COLOR_STRING = "#444444";
-//    private static final Color BACKGROUND_COLOR = Color.decode(BACKGROUND_COLOR_STRING);
     private static final Color BACKGROUND_COLOR = Color.web(BACKGROUND_COLOR_STRING);
     public static final Color BAR_COLOR = Color.rgb(30, 144, 255);
     public static final Color SELECTED_COLOR = Color.RED.darker();
@@ -519,19 +518,15 @@ public class HistogramDisplay2 extends BorderPane {
         final int arc = barHeight / 3;
 
         // Setup bar colours
-        //final javafx.scene.paint.Color barColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getBarColor());
         final Color barColor = binSelectionMode.getBarColor();
         final Color darkerBarColor = barColor.darker();
 
-//        final javafx.scene.paint.Color activatedBarColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getActivatedBarColor());
         final Color activatedBarColor = binSelectionMode.getActivatedBarColor();
         final Color darkerActivatedBarColor = activatedBarColor.darker();
 
-//        final javafx.scene.paint.Color selectedColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getSelectedColor());
         final Color selectedColor = binSelectionMode.getSelectedColor();
         final Color darkerSelectedColor = selectedColor.darker();
 
-//        final javafx.scene.paint.Color activatedSelectedColor = JavaFxUtilities.awtColorToFXColor(binSelectionMode.getActivatedSelectedColor());
         final Color activatedSelectedColor = binSelectionMode.getActivatedSelectedColor();
         final Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
 
