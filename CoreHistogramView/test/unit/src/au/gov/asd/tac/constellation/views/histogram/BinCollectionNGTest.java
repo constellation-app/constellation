@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.histogram;
 
+import java.util.Arrays;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -61,7 +62,8 @@ public class BinCollectionNGTest {
         final Bin bin0 = mock(Bin.class);
         final Bin bin1 = mock(Bin.class);
         final Bin bin2 = mock(Bin.class);
-        bin0.setSelectedCount(5);
+
+        when(bin0.getSelectedCount()).thenReturn(5);
 
         final Bin[] bins = new Bin[3];
         bins[0] = bin0;
@@ -78,7 +80,7 @@ public class BinCollectionNGTest {
         // Check that one bin was selected, and that was returned.
         assertEquals(expResult[0], result[0]);
 
-        bin0.setSelectedCount(0);
+        when(bin0.getSelectedCount()).thenReturn(0);
 
         final Bin[] bins2 = new Bin[3];
         bins2[0] = bin0;
