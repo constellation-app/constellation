@@ -19,8 +19,12 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupp
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
 import org.testfx.util.WaitForAsyncUtils;
@@ -42,21 +46,43 @@ public class InfoWindowSupportNGTest {
     private static final Logger LOGGER = Logger.getLogger(InfoWindowSupportNGTest.class.getName());
 
     @Test(expectedExceptions = UnsupportedOperationException.class, expectedExceptionsMessageRegExp = "Not supported yet.")
-    public void infoWindowSupportTest_refreshWindow()  {
-        infoWindowMock.refreshWindow();
+    public void infoWindowSupportTest_refreshWindow() {
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // Makes runLater run immediately
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
+
+            infoWindowMock.refreshWindow();
+        }
     }
 
     @Test
-    public void infoWindowSupportTest_setWindow()  {
-        StackPane contentMock = mock(StackPane.class);
-        infoWindowMock.setWindowContents(contentMock);
-        assertTrue(infoWindowMock.testCount == 1);
+    public void infoWindowSupportTest_setWindow() {
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // Makes runLater run immediately
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
+            StackPane contentMock = mock(StackPane.class);
+            infoWindowMock.setWindowContents(contentMock);
+            assertTrue(infoWindowMock.testCount == 1);
+        }
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class, expectedExceptionsMessageRegExp = "Not supported yet.")
     public void infoWindowSupportTest_changed() {
-        // changed method calls refreshWindow()
-        infoWindowMock.changed(mock());
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // Makes runLater run immediately
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
+            // changed method calls refreshWindow()
+            infoWindowMock.changed(mock());
+        }
     }
 
     @BeforeClass
@@ -80,7 +106,7 @@ public class InfoWindowSupportNGTest {
     public void setUpMethod() throws Exception {
         constellationInputMock = mock(ConstellationInput.class);
         infoWindowMock = new InfoWindowTest(constellationInputMock);
-        
+
     }
 
     @AfterMethod
@@ -90,13 +116,13 @@ public class InfoWindowSupportNGTest {
     }
 
     private class InfoWindowTest extends InfoWindow {
+
         protected int testCount = 0;
-        
+
         public InfoWindowTest(final ConstellationInput parent) {
             super(parent);
         }
 
-       
         @Override
         public void setWindowContents(final Node content) {
             testCount++;
