@@ -24,10 +24,10 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.AttributeValueTr
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.views.attributeeditor.AttributeEditorDialog;
 import au.gov.asd.tac.constellation.views.attributeeditor.AttributePrototype;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -40,30 +40,29 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 /**
+ * Editor Factory for creating a custom attribute
  *
  * @author twilight_sparkle
  */
 public class AttributeEditorFactory extends AbstractEditorFactory<AttributePrototype> {
 
     @Override
-    public AbstractEditor<AttributePrototype> createEditor(final EditOperation editOperation, final DefaultGetter<AttributePrototype> defaultGetter, final ValueValidator<AttributePrototype> validator, final String editedItemName, final AttributePrototype initialValue) {
-        return new AttributeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<AttributePrototype> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<AttributePrototype> validator, final AttributePrototype defaultValue, final AttributePrototype initialValue) {
+        return new AttributeEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     public class AttributeEditor extends AbstractEditor<AttributePrototype> {
-
-        private static final int CONTROLPANE_SPACING = 10;
-
+        
         private GraphElementType elementType;
         private ComboBox<String> typeCombo;
         private TextField nameText;
         private Button clearDefaultButton;
-        TextField descText;
-        private Object defaultValue;
+        private TextField descText;
+        private Object defaultVal;
         private boolean isTypeModifiable;
 
-        protected AttributeEditor(final EditOperation editOperation, final DefaultGetter<AttributePrototype> defaultGetter, final ValueValidator<AttributePrototype> validator, final String editedItemName, final AttributePrototype initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected AttributeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<AttributePrototype> validator, final AttributePrototype defaultValue, final AttributePrototype initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         public void setGraphElementType(final GraphElementType elementType) {
@@ -87,8 +86,8 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             nameText.setText(value.getAttributeName());
             descText.setText(value.getAttributeDescription());
             typeCombo.getSelectionModel().select(value.getDataType());
-            defaultValue = value.getDefaultValue();
-            clearDefaultButton.setDisable(defaultValue == null);
+            defaultVal = value.getDefaultValue();
+            clearDefaultButton.setDisable(defaultVal == null);
         }
 
         @Override
@@ -96,38 +95,18 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             if (nameText.getText().isEmpty()) {
                 throw new ControlsInvalidException("Attribute name can't be empty.");
             }
-            return new AttributePrototype(nameText.getText(), descText.getText(), elementType, typeCombo.getSelectionModel().getSelectedItem(), defaultValue);
+            return new AttributePrototype(nameText.getText(), descText.getText(), elementType, typeCombo.getSelectionModel().getSelectedItem(), defaultVal);
         }
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setHgap(5);
-            controls.setVgap(CONTROLPANE_SPACING);
-
-            final Button setDefaultButton = new Button("Set Default");
             final Label nameLabel = new Label("Attribute Name:");
-            final Label typeLabel = new Label("Attribute Type:");
-            final Label descLabel = new Label("Attribute Description:");
-            final Label defaultLabel = new Label("Default Value:");
-
             nameText = new TextField();
             nameText.textProperty().addListener((o, n, v) -> update());
-            typeCombo = new ComboBox<>();
-            typeCombo.setDisable(!isTypeModifiable);
-            typeCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
-            descText = new TextField();
-            descText.textProperty().addListener((o, n, v) -> update());
-            setDefaultButton.setOnAction(getSelectDefaultHandler());
-            clearDefaultButton = new Button("Clear Default");
-            clearDefaultButton.setOnAction(e -> {
-                defaultValue = null;
-                clearDefaultButton.setDisable(true);
-                update();
-            });
-
+            
+            final Label typeLabel = new Label("Attribute Type:");
             // Populate the type combo with all of the possible graph types.
-            final ArrayList<String> attributeTypes = new ArrayList<>();
+            final List<String> attributeTypes = new ArrayList<>();
             AttributeRegistry.getDefault().getAttributes().entrySet().stream().forEach(entry -> {
                 final Class<? extends AttributeDescription> attrTypeDescr = entry.getValue();
                 final boolean isObject = ObjectAttributeDescription.class.isAssignableFrom(attrTypeDescr);
@@ -137,18 +116,34 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
                 }
             });
             Collections.sort(attributeTypes);
-            typeCombo.setItems(FXCollections.observableList(attributeTypes));
+            typeCombo = new ComboBox<>(FXCollections.observableList(attributeTypes));
+            typeCombo.setDisable(!isTypeModifiable);
+            typeCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
+            
+            final Label descLabel = new Label("Attribute Description:");
+            descText = new TextField();
+            descText.textProperty().addListener((o, n, v) -> update());
+            
+            final Label defaultLabel = new Label("Default Value:");
+            final Button setDefaultButton = new Button("Set Default");
+            setDefaultButton.setOnAction(getSelectDefaultHandler());
+            clearDefaultButton = new Button("Clear Default");
+            clearDefaultButton.setOnAction(e -> {
+                defaultVal = null;
+                clearDefaultButton.setDisable(true);
+                update();
+            });
+            
+            final HBox defaultBox = new HBox(CONTROLS_DEFAULT_HORIZONTAL_SPACING, 
+                    setDefaultButton, clearDefaultButton);
+            
+            final GridPane controls = new GridPane(CONTROLS_DEFAULT_HORIZONTAL_SPACING, CONTROLS_DEFAULT_VERTICAL_SPACING);
 
             controls.addRow(0, nameLabel, nameText);
             controls.addRow(1, typeLabel, typeCombo);
             controls.addRow(2, descLabel, descText);
-            controls.addRow(3, defaultLabel, new HBox(5, setDefaultButton, clearDefaultButton));
+            controls.addRow(3, defaultLabel, defaultBox);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
         }
 
         @SuppressWarnings("unchecked")
@@ -159,15 +154,15 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
                 final String editType = editorFactory.getAttributeType();
                 final AttributeValueTranslator fromTranslator = interaction.fromEditTranslator(editType);
                 final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
-                final ValueValidator<T> validator = interaction.fromEditValidator(editType);
+                final ValueValidator<T> valueValidator = interaction.fromEditValidator(editType);
 
                 final EditOperation restoreDefaultEditOperation = value -> {
-                    defaultValue = fromTranslator.translate(value);
-                    clearDefaultButton.setDisable(defaultValue == null);
+                    defaultVal = fromTranslator.translate(value);
+                    clearDefaultButton.setDisable(defaultVal == null);
                     update();
                 };
 
-                final AbstractEditor<T> editor = editorFactory.createEditor(restoreDefaultEditOperation, validator, "the default", (T) toTranslator.translate(defaultValue));
+                final AbstractEditor<T> editor = editorFactory.createEditor( "Default Value", restoreDefaultEditOperation, valueValidator, (T) toTranslator.translate(defaultVal));
                 final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
                 dialog.showDialog();
             };

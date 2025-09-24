@@ -34,18 +34,21 @@ jobs:
         if [[ ${{ contains(github.event.pull_request.labels.*.name, 'verbose-logging') }} = 'true' ]]; then echo 'VERBOSITY=-v -verbose' >> $GITHUB_OUTPUT && echo 'Verbose Logging Enabled'; else echo 'Verbose Logging Disabled'; fi
       id: verbosity
 
-    - name: Create Cache Folder
-      run: mkdir -p ${HOME}/.ivy2/cache
-
-      # Cache the ivy dependencies to the home directory.
-    - name: Initialise Cache
+      # Cache the ivy dependencies.
+    - name: Restore Cache
       id: cache-dependencies
       uses: actions/cache@v4
       env:
         cache-name: cache-dependencies
       with:
-        path: ${HOME}/.ivy2/cache
-        key: ${{ runner.os }}-dependencies-${{ env.cache-name }}-${{ hashFiles('CoreDependencies/src/ivy.xml') }}
+        path: ~/.ivy2/cache
+        key: ${{ runner.os }}-ivy-${{ hashFiles('constellation/CoreDependencies/src/ivy.xml') }}
+        
+    - name: Create Cache Folder
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      run: |
+        mkdir ~/.ivy2
+        mkdir ~/.ivy2/cache
 
       # Update the project dependencies and run tests
     - name: Run Tests
