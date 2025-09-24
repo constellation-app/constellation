@@ -18,9 +18,7 @@ package au.gov.asd.tac.constellation.views.histogram;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
-import au.gov.asd.tac.constellation.utilities.javafx.JavaFxUtilities;
 import au.gov.asd.tac.constellation.views.histogram.bins.ObjectBin;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
@@ -140,14 +138,13 @@ public class BinIconModeNGTest {
         System.out.println("createFXIconColor");
 
         // Set up mocks
+        final ConstellationColor key = ConstellationColor.RED;
         final ObjectBin mockBin = mock(ObjectBin.class);
-        final ConstellationColor mockKey = mock(ConstellationColor.class);
-        when(mockBin.getKeyAsObject()).thenReturn(mockKey);
-        when(mockKey.getJavaColor()).thenReturn(Color.RED);
+        when(mockBin.getKeyAsObject()).thenReturn(key);
 
         final int height = 0;
         final int arc = height / 3;
-        final Rectangle expResult = new Rectangle(Double.valueOf(height), Double.valueOf(height), mockKey.getJavaFXColor());
+        final Rectangle expResult = new Rectangle(Double.valueOf(height), Double.valueOf(height), key.getJavaFXColor());
         expResult.setArcHeight(arc);
         expResult.setArcWidth(arc);
 
@@ -159,6 +156,7 @@ public class BinIconModeNGTest {
 
         assertEquals(result.getHeight(), expResult.getHeight());
         assertEquals(result.getWidth(), expResult.getWidth());
+
         // Check color matches
         assertEquals(result.getFill().toString(), expResult.getFill().toString());
     }
