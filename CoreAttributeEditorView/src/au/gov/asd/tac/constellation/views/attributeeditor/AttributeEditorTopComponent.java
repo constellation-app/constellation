@@ -40,10 +40,10 @@ import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
 
 /**
- * This is the top component for Constellation's 'attribute editor' view. The
+ * This is the top component for CONSTELLATION's 'attribute editor' view. The
  * attribute editor is a simple user interface which allows users to view and
  * edit the values for any of the graph's attributes. Like many other
- * Constellation views, its display corresponds to the current selection on the
+ * CONSTELLATION views, its display corresponds to the current selection on the
  * active graph. The attribute editor also facilitates the adding/removing and
  * editing of attributes (as opposed to their values).
  * <br>
@@ -66,7 +66,7 @@ import org.openide.windows.TopComponent;
  * </ul>
  * Note that whilst the structure is to remain as above, the details of the last
  * two components are to be significantly changed in the future. This will
- * entail disentanglement of the GUI, the graph editing, and the representation
+ * entail disentaglement of the GUI, the graph editing, and the representation
  * of attributes.
  *
  * @see AttributeEditorPanel
@@ -123,6 +123,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
         setToolTipText(Bundle.HINT_AttributeEditorTopComponent());
 
         refreshRunnable = () -> {
+
             final List<Object> devNull = new ArrayList<>();
 
             while (!queue.isEmpty()) {
@@ -132,6 +133,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
             if (reader != null) {
                 attributePanel.updateEditorPanel(reader.refreshAttributes());
             }
+
         };
 
 
@@ -252,8 +254,8 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
     @Override
     public UndoRedo getUndoRedo() {
-        final GraphNode graphNode = GraphNode.getGraphNode(activeGraph);
-        return graphNode == null ? null : graphNode.getUndoRedoManager();
+        GraphNode graphNode = GraphNode.getGraphNode(activeGraph);
+        return (graphNode == null) ? null : graphNode.getUndoRedoManager();
     }
 
     @Override

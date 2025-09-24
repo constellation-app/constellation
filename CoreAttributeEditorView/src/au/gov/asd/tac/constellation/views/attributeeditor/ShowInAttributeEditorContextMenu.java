@@ -59,9 +59,9 @@ public class ShowInAttributeEditorContextMenu implements ContextMenuProvider {
     public List<String> getItems(final GraphReadMethods graph, final GraphElementType elementType, final int elementId) {
         if (elementType == GraphElementType.VERTEX || elementType == GraphElementType.TRANSACTION) {
             return Arrays.asList(TEXT);
+        } else {
+            return Collections.emptyList();
         }
-        
-        return Collections.emptyList();
     }
 
     @Override
@@ -89,7 +89,8 @@ public class ShowInAttributeEditorContextMenu implements ContextMenuProvider {
         public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
             // Unselect vertices that need unselecting.
             final int vxSelectedId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            for (int position = 0; position < wg.getVertexCount(); position++) {
+            final int vxCount = wg.getVertexCount();
+            for (int position = 0; position < vxCount; position++) {
                 final int vxId = wg.getVertex(position);
 
                 if (wg.getBooleanValue(vxSelectedId, vxId)) {
@@ -99,7 +100,8 @@ public class ShowInAttributeEditorContextMenu implements ContextMenuProvider {
 
             // Unselect transactions that need unselecting.
             final int txSelectedId = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-            for (int position = 0; position < wg.getTransactionCount(); position++) {
+            final int txCount = wg.getTransactionCount();
+            for (int position = 0; position < txCount; position++) {
                 final int txId = wg.getTransaction(position);
 
                 if (wg.getBooleanValue(txSelectedId, txId)) {

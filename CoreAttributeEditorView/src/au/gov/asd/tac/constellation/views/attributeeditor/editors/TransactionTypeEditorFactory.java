@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
+import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,11 +37,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Editor Factory for attributes of type transaction_type
  *
  * @author twilight_sparkle
  */
@@ -48,8 +49,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<SchemaTransactionType> {
 
     @Override
-    public AbstractEditor<SchemaTransactionType> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<SchemaTransactionType> validator, final SchemaTransactionType defaultValue, final SchemaTransactionType initialValue) {
-        return new TransactionTypeEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
+    public AbstractEditor<SchemaTransactionType> createEditor(final EditOperation editOperation, final DefaultGetter<SchemaTransactionType> defaultGetter, final ValueValidator<SchemaTransactionType> validator, final String editedItemName, final SchemaTransactionType initialValue) {
+        return new TransactionTypeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -63,16 +64,17 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
         private TextField nameText;
         private boolean selectionIsActive = false;
 
-        protected TransactionTypeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<SchemaTransactionType> validator, final SchemaTransactionType defaultValue, final SchemaTransactionType initialValue) {
-            super(editedItemName, editOperation, validator, defaultValue, initialValue);
+        protected TransactionTypeEditor(final EditOperation editOperation, final DefaultGetter<SchemaTransactionType> defaultGetter, final ValueValidator<SchemaTransactionType> validator, final String editedItemName, final SchemaTransactionType initialValue) {
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
         }
 
         @Override
         public void updateControlsWithValue(final SchemaTransactionType value) {
-            if (typeList.getItems().contains(value)) {
-                typeList.getSelectionModel().select(value);
+            final SchemaTransactionType type = value;
+            if (typeList.getItems().contains(type)) {
+                typeList.getSelectionModel().select(type);
             } else {
-                nameText.setText(value != null ? value.getName() : "");
+                nameText.setText(type != null ? type.getName() : "");
             }
         }
 
@@ -85,16 +87,21 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
 
         @Override
         protected Node createEditorControls() {
-            final Label nameLabel = new Label("Type Name:");
-            final VBox nameBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, nameLabel, nameText);
-            nameText = new TextField();
-            nameText.textProperty().addListener(ev -> {
-                if (!selectionIsActive) {
-                    typeList.getSelectionModel().select(null);
+            final GridPane controls = new GridPane();
+            controls.setAlignment(Pos.CENTER);
+            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
+
+            typeList = new ListView<>();
+            typeList.setCellFactory(p -> new ListCell<SchemaTransactionType>() {
+                @Override
+                protected void updateItem(final SchemaTransactionType item, final boolean empty) {
+                    super.updateItem(item, empty);
+                    if (!empty && item != null) {
+                        setText(item.getName());
+                    }
                 }
-                update();
             });
-            
+
             // get all types supported by the current schema
             final List<SchemaTransactionType> types = new ArrayList<>();
             final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
@@ -108,19 +115,21 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
                 types.add(SchemaTransactionTypeUtilities.getDefaultType());
             }
 
+            final Label nameLabel = new Label("Type Name:");
+            nameText = new TextField();
+            final VBox nameBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
+            nameBox.getChildren().addAll(nameLabel, nameText);
+
+            nameText.textProperty().addListener(ev -> {
+                if (!selectionIsActive) {
+                    typeList.getSelectionModel().select(null);
+                }
+                update();
+            });
+
             final Label listLabel = new Label("Schema Types:");
             Collections.sort(types);
-            typeList = new ListView<>();
             typeList.getItems().addAll(types);
-            typeList.setCellFactory(p -> new ListCell<>() {
-                @Override
-                protected void updateItem(final SchemaTransactionType item, final boolean empty) {
-                    super.updateItem(item, empty);
-                    if (!empty && item != null) {
-                        setText(item.getName());
-                    }
-                }
-            });
 
             typeList.getSelectionModel().selectedItemProperty().addListener(ev -> {
                 selectionIsActive = true;
@@ -130,12 +139,16 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
                 }
                 selectionIsActive = false;
             });
-            
-            final VBox controls = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, 
-                    nameBox, listLabel, typeList);
-            controls.setAlignment(Pos.CENTER);
-            
+
+            controls.addRow(0, nameBox);
+            controls.addRow(1, listLabel);
+            controls.addRow(2, typeList);
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
         }
     }
 }

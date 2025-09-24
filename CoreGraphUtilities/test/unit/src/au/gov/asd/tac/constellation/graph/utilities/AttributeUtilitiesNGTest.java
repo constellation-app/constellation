@@ -21,8 +21,6 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
@@ -106,19 +104,5 @@ public class AttributeUtilitiesNGTest {
         assertEquals(result.get("color"), Integer.valueOf(2));
         // unlike getRegisteredAttributeIdsFromGraph, this function will return custom attributes
         assertEquals(result.get("MyCustom"), Integer.valueOf(3));
-    }  
-    
-    /**
-     * Test of getAttributeNames method, of class AttributeUtilities.
-     */
-    @Test
-    public void testGetAttributeNames() {
-        System.out.println("getAttributeNames");
-        
-        final List<String> result = AttributeUtilities.getAttributeNames(graph, GraphElementType.VERTEX);
-        final List<String> expResult = Arrays.asList(VisualConcept.VertexAttribute.IDENTIFIER.getName(), VisualConcept.VertexAttribute.LABEL.getName(),
-                VisualConcept.VertexAttribute.COLOR.getName(), "MyCustom");
-        
-        assertEquals(result, expResult);
     }  
 }

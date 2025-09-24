@@ -18,10 +18,16 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors.operations;
 /**
  *
  * @author twilight_sparkle
+ * @param <V>
  */
 @FunctionalInterface
-public interface EditOperation {
+public interface DefaultGetter<V> {
 
-    public void performEdit(final Object value);
+    public static <T> DefaultGetter<T> getDefaultUnsupported() {
+        return () -> {
+            throw new UnsupportedOperationException();
+        };
+    }
 
+    public V getDefaultValue();
 }

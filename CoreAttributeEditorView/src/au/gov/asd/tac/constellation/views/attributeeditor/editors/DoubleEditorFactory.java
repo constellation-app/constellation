@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.DoubleAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
+import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -25,7 +26,6 @@ import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Editor Factory for attributes of type double
  *
  * @author cygnus_x-1
  */
@@ -33,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class DoubleEditorFactory extends AttributeValueEditorFactory<Double> {
 
     @Override
-    public AbstractEditor<Double> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Double> validator, final Double defaultValue, final Double initialValue) {
-        return new DoubleEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
+    public AbstractEditor<Double> createEditor(final EditOperation editOperation, final DefaultGetter<Double> defaultGetter, final ValueValidator<Double> validator, final String editedItemName, final Double initialValue) {
+        return new DoubleEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -46,12 +46,8 @@ public class DoubleEditorFactory extends AttributeValueEditorFactory<Double> {
 
         private TextField numberField;
 
-        protected DoubleEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Double> validator, final Double defaultValue, final Double initialValue) {
-            super(editedItemName, editOperation, validator, defaultValue, initialValue);
-        }
-        
-        protected String getNumberText() {
-            return numberField.getText();
+        protected DoubleEditor(final EditOperation editOperation, final DefaultGetter<Double> defaultGetter, final ValueValidator<Double> validator, final String editedItemName, final Double initialValue) {
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
         }
 
         @Override
@@ -68,7 +64,7 @@ public class DoubleEditorFactory extends AttributeValueEditorFactory<Double> {
         @Override
         protected Double getValueFromControls() throws ControlsInvalidException {
             try {
-                return Double.valueOf(numberField.getText());
+                return Double.parseDouble(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a double.");
             }
@@ -76,13 +72,19 @@ public class DoubleEditorFactory extends AttributeValueEditorFactory<Double> {
 
         @Override
         protected Node createEditorControls() {
+            final VBox controls = new VBox();
+            controls.setAlignment(Pos.CENTER);
+
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-            
-            final VBox controls = new VBox(numberField);
-            controls.setAlignment(Pos.CENTER);
-            
+
+            controls.getChildren().add(numberField);
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
         }
     }
 }

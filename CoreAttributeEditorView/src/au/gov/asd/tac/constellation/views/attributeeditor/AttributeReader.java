@@ -71,7 +71,7 @@ public class AttributeReader {
     private final Map<GraphElementType, Integer> elementAttributeCounts = new HashMap<>();
 
     // type appended with attribute name as key.
-    private final Map<String, Object[]> elementAttributeValues = new HashMap<>();
+    private final HashMap<String, Object[]> elementAttributeValues = new HashMap<>();
 
     private static final List<GraphElementType> ACCEPTED_ELEMENT_TYPES = Arrays.asList(GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION);
 
@@ -100,7 +100,13 @@ public class AttributeReader {
      * changed.
      * @return The state of all the selected attributes.
      */
-    public AttributeState refreshAttributes(final boolean preferenceChanged) {       
+    public AttributeState refreshAttributes(final boolean preferenceChanged) {
+        AttributeState result = null;
+        final ArrayList<GraphElementType> activeElementTypes = new ArrayList<>();
+        boolean selectionModified = false;
+        boolean attributeModified = false;
+        boolean valueModified = false;
+        
         // hidden attribute preferences
         final Map<GraphElementType, Boolean> showHiddenPrefs = new HashMap<>();
         showHiddenPrefs.put(GraphElementType.GRAPH, prefs.getBoolean(AttributePreferenceKey.GRAPH_SHOW_HIDDEN, false));
@@ -109,12 +115,9 @@ public class AttributeReader {
 
         final List<String> hiddenAttrs = StringUtilities.splitLabelsWithEscapeCharacters(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, ""), AttributePreferenceKey.SPLIT_CHAR_SET);
         final Set<String> hiddenAttrsSet = new HashSet<>(hiddenAttrs);
-        
-        final List<GraphElementType> activeElementTypes = new ArrayList<>();
-        boolean selectionModified;
-        boolean attributeModified;
-        boolean valueModified;
-        try (final ReadableGraph rg = graph.getReadableGraph()) {
+
+        final ReadableGraph rg = graph.getReadableGraph();
+        try {
             selectionModified = updateSelectedElements(rg);
             updateElementTypes(activeElementTypes);
 
@@ -126,12 +129,17 @@ public class AttributeReader {
             }
             final List<GraphElementType> toPopulate = new ArrayList<>(activeElementTypes);
             toPopulate.add(GraphElementType.GRAPH);
-            valueModified = populateValues(toPopulate, selectionModified, attributeModified, preferenceChanged, rg);
+            valueModified = populateValues(toPopulate, selectionModified, attributeModified, preferenceChanged, rg
+            );
+
+        } finally {
+            rg.release();
         }
-        
-        return selectionModified || attributeModified || valueModified || preferenceChanged 
-                ? new AttributeState(ACCEPTED_ELEMENT_TYPES, selectionModified ? activeElementTypes : Collections.emptyList(), elementAttributeData, elementAttributeValues, elementAttributeCounts) 
-                : null;
+        if (selectionModified || attributeModified || valueModified || preferenceChanged) {
+            result = new AttributeState(ACCEPTED_ELEMENT_TYPES, selectionModified ? activeElementTypes : Collections.emptyList(), elementAttributeData, elementAttributeValues, elementAttributeCounts);
+        }
+
+        return result;
 
     }
 
@@ -203,7 +211,7 @@ public class AttributeReader {
         return (nodeSelectionChanged || transactionSelectionChanged);
     }
 
-    private void updateElementTypes(final List<GraphElementType> activeElementTypes) {
+    private void updateElementTypes(final ArrayList<GraphElementType> activeElementTypes) {
         activeElementTypes.clear();
         if (selectedNodes.isEmpty() && selectedTransactions.isEmpty()) {
             activeElementTypes.add(GraphElementType.GRAPH);
@@ -219,10 +227,12 @@ public class AttributeReader {
     private void updateElementAttributeNames(final ReadableGraph rg, final List<GraphElementType> elementTypes, final Set<String> hiddenAttrsSet, final Map<GraphElementType, Boolean> showHiddenPrefs) {
         elementAttributeData.clear();
         for (final GraphElementType elementType : elementTypes) {
+
             final int attributeCount = rg.getAttributeCount(elementType);
-            final List<AttributeData> attributeNames = new ArrayList<>();
+            final ArrayList<AttributeData> attributeNames = new ArrayList<>();
             final boolean showHidden = showHiddenPrefs.get(elementType);
             for (int i = 0; i < attributeCount; i++) {
+
                 final Attribute attr = new GraphAttribute(rg, rg.getAttribute(elementType, i));
                 // do check only if not showing all
 
@@ -249,12 +259,16 @@ public class AttributeReader {
         }
         for (final GraphElementType type : ACCEPTED_ELEMENT_TYPES) { // for graphElement Type (graph,vertex,transaction)
             final List<AttributeData> attributes = ListUtils.emptyIfNull(elementAttributeData.get(type));
-            final IntArray selectedElement = switch (type) {
-                case VERTEX -> selectedNodes;
-                case TRANSACTION -> selectedTransactions;
-                default -> null;
-            };
+            final IntArray selectedElement;
+            if (type.equals(GraphElementType.VERTEX)) {
+                selectedElement = selectedNodes;
+            } else if (type.equals(GraphElementType.TRANSACTION)) {
+                selectedElement = selectedTransactions;
+            } else {
+                selectedElement = null;
+            }
             for (final AttributeData data : attributes) { // for attribute(name, type etc)
+
                 if (!elementTypes.contains(type)) {
                     final String attributeValuesKey = type.getLabel() + data.getAttributeName();
                     elementAttributeValues.put(attributeValuesKey, null);
@@ -291,60 +305,67 @@ public class AttributeReader {
     }
 
     public Object[] loadMoreDataFor(final AttributeData attribute) {
+        final int AttributeID = attribute.getAttributeId();
         final Set<Object> values = new HashSet<>();
-        final IntArray selectedElements = switch (attribute.getElementType()) {
-            case VERTEX -> selectedNodes;
-            case TRANSACTION -> selectedTransactions;
-            default -> null;
-        };
-        try (final ReadableGraph rg = graph.getReadableGraph()) {
-            final int attributeID = attribute.getAttributeId();
-            for (final int selectedElement : selectedElements) {
-                values.add(rg.getObjectValue(attributeID, selectedElement));
+        final IntArray selectedElement;
+        if (attribute.getElementType().equals(GraphElementType.VERTEX)) {
+            selectedElement = selectedNodes;
+        } else if (attribute.getElementType().equals(GraphElementType.TRANSACTION)) {
+            selectedElement = selectedTransactions;
+        } else {
+            selectedElement = null;
+        }
+        final ReadableGraph rg = graph.getReadableGraph();
+        try {
+            if (selectedElement != null) {
+                int elementSize = selectedElement.size();
+                for (int i = 0; i < elementSize; i++) {
+                    values.add(rg.getObjectValue(AttributeID, selectedElement.get(i)));
+                }
             }
+        } finally {
+            rg.release();
         }
         return sortHashMap(values);
     }
 
     private Object[] sortHashMap(final Set<Object> values) {
-        if (values.isEmpty()) {
-            return new Object[0];
-        }
-        
         // If the values are Comparable, compare them.
         // This allows numbers to be sorted correctly, for example.
-        final Object o = values.iterator().next();
-        if (o instanceof Comparable) {
-            final Comparable<Object>[] valuesArray = new Comparable[values.size()];
-            values.toArray(valuesArray);
-            Arrays.sort(valuesArray, (a, b) -> {
-                if (a == null) {
-                    if (b == null) {
-                        return 0;
+        if (!values.isEmpty()) {
+            final Object o = values.iterator().next();
+            if (o instanceof Comparable) {
+                final Comparable<Object>[] valuesArray = new Comparable[values.size()];
+                values.toArray(valuesArray);
+                Arrays.sort(valuesArray, (a, b) -> {
+                    if (a == null) {
+                        if (b == null) {
+                            return 0;
+                        }
+                        return -1;
+                    } else {
+                        if (b == null) {
+                            return 1;
+                        }
+                        return a.compareTo(b);
                     }
-                    return -1;
-                } else {
-                    if (b == null) {
-                        return 1;
-                    }
-                    return a.compareTo(b);
-                }
-            });
+                });
 
-            return valuesArray;
-        } else {
-            final Object[] valuesArray = values.toArray();
-
-            Arrays.sort(valuesArray, (o1, o2) -> {
-                if (o1 == null || o1.toString() == null) {
-                    return 1;
-                }
-                if (o2 == null || o2.toString() == null) {
-                    return -1;
-                }
-                return o1.toString().compareToIgnoreCase(o2.toString());
-            });
-            return valuesArray;
+                return valuesArray;
+            }
         }
+
+        final Object[] valuesArray = values.toArray();
+
+        Arrays.sort(valuesArray, (final Object o1, final Object o2) -> {
+            if ((o1 == null) || (o1.toString() == null)) {
+                return 1;
+            }
+            if ((o2 == null) || (o2.toString() == null)) {
+                return -1;
+            }
+            return o1.toString().compareToIgnoreCase(o2.toString());
+        });
+        return valuesArray;
     }
 }

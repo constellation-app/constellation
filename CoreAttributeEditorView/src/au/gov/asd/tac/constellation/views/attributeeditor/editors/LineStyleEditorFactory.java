@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.LineStyleAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
+import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,12 +28,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Editor Factory for attributes of type line_style
  *
  * @author twilight_sparkle
  */
@@ -40,8 +40,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyle> {
 
     @Override
-    public AbstractEditor<LineStyle> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<LineStyle> validator, final LineStyle defaultValue, final LineStyle initialValue) {
-        return new LineStyleEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
+    public AbstractEditor<LineStyle> createEditor(final EditOperation editOperation, final DefaultGetter<LineStyle> defaultGetter, final ValueValidator<LineStyle> validator, final String editedItemName, final LineStyle initialValue) {
+        return new LineStyleEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -53,8 +53,8 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
 
         private ComboBox<LineStyle> lineStyleComboBox;
 
-        protected LineStyleEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<LineStyle> validator, final LineStyle defaultValue, final LineStyle initialValue) {
-            super(editedItemName, editOperation, validator, defaultValue, initialValue);
+        protected LineStyleEditor(final EditOperation editOperation, final DefaultGetter<LineStyle> defaultGetter, final ValueValidator<LineStyle> validator, final String editedItemName, final LineStyle initialValue) {
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
         }
 
         @Override
@@ -75,15 +75,16 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
 
         @Override
         protected Node createEditorControls() {
+            final GridPane controls = new GridPane();
+            controls.setAlignment(Pos.CENTER);
+            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
+
             final Label lineStyleLabel = new Label("Line Style:");
             final ObservableList<LineStyle> lineStyles = FXCollections.observableArrayList(LineStyle.values());
             lineStyleComboBox = new ComboBox<>(lineStyles);
-            lineStyleComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
-            lineStyleLabel.setLabelFor(lineStyleComboBox);
-            
-            final Callback<ListView<LineStyle>, ListCell<LineStyle>> cellFactory = p -> new ListCell<>() {
+            final Callback<ListView<LineStyle>, ListCell<LineStyle>> cellFactory = (final ListView<LineStyle> p) -> new ListCell<LineStyle>() {
                 @Override
-                protected void updateItem(final LineStyle item, final boolean empty) {
+                protected void updateItem(final LineStyle item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
                         setText(item.name());
@@ -92,12 +93,16 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
             };
             lineStyleComboBox.setCellFactory(cellFactory);
             lineStyleComboBox.setButtonCell(cellFactory.call(null));
-            
-            final HBox controls = new HBox(CONTROLS_DEFAULT_HORIZONTAL_SPACING, 
-                    lineStyleLabel, lineStyleComboBox);
-            controls.setAlignment(Pos.CENTER);
-            
+            lineStyleLabel.setLabelFor(lineStyleComboBox);
+            lineStyleComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
+
+            controls.addRow(0, lineStyleLabel, lineStyleComboBox);
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
         }
     }
 }

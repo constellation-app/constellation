@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ConnectionModeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
+import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,7 +33,6 @@ import javafx.util.Callback;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Editor Factory for attributes of type connection_mode
  *
  * @author twilight_sparkle
  */
@@ -40,8 +40,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<ConnectionMode> {
 
     @Override
-    public AbstractEditor<ConnectionMode> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConnectionMode> validator, final ConnectionMode defaultValue, final ConnectionMode initialValue) {
-        return new ConnectionModeEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
+    public AbstractEditor<ConnectionMode> createEditor(final EditOperation editOperation, final DefaultGetter<ConnectionMode> defaultGetter, final ValueValidator<ConnectionMode> validator, final String editedItemName, final ConnectionMode initialValue) {
+        return new ConnectionModeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -53,8 +53,8 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
 
         private ComboBox<ConnectionMode> connectionModeComboBox;
 
-        protected ConnectionModeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConnectionMode> validator, final ConnectionMode defaultValue, final ConnectionMode initialValue) {
-            super(editedItemName, editOperation, validator, defaultValue, initialValue);
+        protected ConnectionModeEditor(final EditOperation editOperation, final DefaultGetter<ConnectionMode> defaultGetter, final ValueValidator<ConnectionMode> validator, final String editedItemName, final ConnectionMode initialValue) {
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
         }
 
         @Override
@@ -75,15 +75,16 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
 
         @Override
         protected Node createEditorControls() {
+            final GridPane controls = new GridPane();
+            controls.setAlignment(Pos.CENTER);
+            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
+
             final Label connectionModeLabel = new Label("Connection Mode:");
             final ObservableList<ConnectionMode> connectionModes = FXCollections.observableArrayList(ConnectionMode.values());
             connectionModeComboBox = new ComboBox<>(connectionModes);
-            connectionModeLabel.setLabelFor(connectionModeComboBox);
-            connectionModeComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
-            
-            final Callback<ListView<ConnectionMode>, ListCell<ConnectionMode>> cellFactory = p -> new ListCell<>() {
+            final Callback<ListView<ConnectionMode>, ListCell<ConnectionMode>> cellFactory = (final ListView<ConnectionMode> p) -> new ListCell<ConnectionMode>() {
                 @Override
-                protected void updateItem(final ConnectionMode item, final boolean empty) {
+                protected void updateItem(final ConnectionMode item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
                         setText(item.name());
@@ -92,13 +93,16 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
             };
             connectionModeComboBox.setCellFactory(cellFactory);
             connectionModeComboBox.setButtonCell(cellFactory.call(null));
-            
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
+            connectionModeLabel.setLabelFor(connectionModeComboBox);
+            connectionModeComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
 
             controls.addRow(0, connectionModeLabel, connectionModeComboBox);
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
         }
     }
 }

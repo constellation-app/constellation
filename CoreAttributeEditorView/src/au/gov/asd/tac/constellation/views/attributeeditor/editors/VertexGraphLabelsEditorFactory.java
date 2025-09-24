@@ -16,14 +16,16 @@
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.VertexGraphLabelsAttributeDescription;
-import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.attributeeditor.AttributeEditorDialog;
+import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +50,6 @@ import javafx.scene.shape.Rectangle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Editor Factory for attributes of type graph_labels_nodes
  *
  * @author twilight_sparkle
  */
@@ -56,8 +57,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<GraphLabels> {
 
     @Override
-    public AbstractEditor<GraphLabels> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<GraphLabels> validator, final GraphLabels defaultValue, final GraphLabels initialValue) {
-        return new GraphLabelsEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
+    public AbstractEditor<GraphLabels> createEditor(final EditOperation editOperation, final DefaultGetter<GraphLabels> defaultGetter, final ValueValidator<GraphLabels> validator, final String editedItemName, final GraphLabels initialValue) {
+        return new GraphLabelsEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -68,12 +69,13 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
     public class GraphLabelsEditor extends AbstractEditor<GraphLabels> {
 
         private final List<LabelEntry> labels = new ArrayList<>();
+        private final VBox labelPaneContent = new VBox(5);
         private final VBox labelEntries = new VBox(5);
         private final Button addButton = new Button("", new ImageView(UserInterfaceIconProvider.ADD.buildImage(16)));
         private final List<String> attributeNames = new ArrayList<>();
 
-        protected GraphLabelsEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<GraphLabels> validator, final GraphLabels defaultValue, final GraphLabels initialValue) {
-            super(editedItemName, editOperation, validator, defaultValue, initialValue);
+        protected GraphLabelsEditor(final EditOperation editOperation, final DefaultGetter<GraphLabels> defaultGetter, final ValueValidator<GraphLabels> validator, final String editedItemName, final GraphLabels initialValue) {
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
         }
 
         @Override
@@ -100,22 +102,38 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
         @Override
         protected Node createEditorControls() {
             // get all vertex attributes currently in the graph
-            attributeNames.addAll(AttributeUtilities.getAttributeNames(GraphElementType.TRANSACTION));
+            final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
+            try {
+                for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
+                    attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.VERTEX, i)));
+                }
+            } finally {
+                rg.release();
+            }
             attributeNames.sort(String::compareTo);
 
-            final Label attrLabel = createLabel("Attribute", 150);
-            final Label colorLabel = createLabel("Color", 40);
-            final Label sizeLabel = createLabel("Size", 50);
-            final Label positionLabel = createLabel("Position", 115);
-            final HBox labelTitles = new HBox(attrLabel, colorLabel, sizeLabel, positionLabel);
-            
-            final VBox labelPaneContent = new VBox(5, labelTitles, labelEntries);
+            HBox labelTitles = new HBox();
+            final Label attrLabel = new Label("Attribute");
+            attrLabel.setAlignment(Pos.CENTER);
+            attrLabel.setPrefWidth(150);
+            final Label colorLabel = new Label("Color");
+            colorLabel.setPrefWidth(40);
+            colorLabel.setAlignment(Pos.CENTER);
+            final Label sizeLabel = new Label("Size");
+            sizeLabel.setPrefWidth(50);
+            sizeLabel.setAlignment(Pos.CENTER);
+            final Label positionLabel = new Label("Position");
+            positionLabel.setPrefWidth(115);
+            positionLabel.setAlignment(Pos.CENTER);
+            labelTitles.getChildren().addAll(attrLabel, colorLabel, sizeLabel, positionLabel);
             labelPaneContent.setPadding(new Insets(5));
+            labelPaneContent.getChildren().addAll(labelTitles, labelEntries);
 
-            final ScrollPane labelsScrollPane = new ScrollPane(labelPaneContent);
+            final ScrollPane labelsScrollPane = new ScrollPane();
             labelsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             labelsScrollPane.setPrefHeight(200);
             labelsScrollPane.setPrefWidth(400);
+            labelsScrollPane.setContent(labelPaneContent);
 
             addButton.setOnAction(e -> {
                 new LabelEntry(labels, labelEntries, attributeNames.isEmpty() ? "" : attributeNames.get(0), ConstellationColor.WHITE, 1);
@@ -123,23 +141,21 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
                 update();
             });
             final Label addButtonLabel = new Label("Add Label");
-            final FlowPane addPane = new FlowPane(addButtonLabel, addButton);
+            final FlowPane addPane = new FlowPane();
             addPane.setHgap(10);
             addPane.setAlignment(Pos.CENTER_RIGHT);
+            addPane.getChildren().addAll(addButtonLabel, addButton);
 
-            final VBox controls = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, 
-                    labelsScrollPane, addPane);
+            final VBox controls = new VBox(10);
             controls.setPrefWidth(400);
+            controls.getChildren().addAll(labelsScrollPane, addPane);
 
             return controls;
         }
-        
-        private Label createLabel(final String labelText, final double prefWidth) {
-            final Label label = new Label(labelText);
-            label.setAlignment(Pos.CENTER);
-            label.setPrefWidth(prefWidth);
-            
-            return label;
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
         }
 
         private class LabelEntry {
@@ -153,6 +169,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
             private final Pane visualHost;
 
             public LabelEntry(final List<LabelEntry> host, final Pane visualHost, final String attributeName, final ConstellationColor color, final float size) {
+
                 attrCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
                 attrCombo.setPrefWidth(150);
                 attrCombo.getSelectionModel().select(attributeName);
@@ -234,7 +251,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
 
             private EventHandler<? super MouseEvent> getChooseColorEventHandler() {
                 return e -> {
-                    final ColorEditorFactory editorFactory = new ColorEditorFactory();
+                    final AttributeValueEditorFactory<ConstellationColor> editorFactory = new ColorEditorFactory();
 
                     final EditOperation setColorEditOperation = value -> {
                         color = value == null ? ConstellationColor.WHITE.getJavaFXColor() : ((ConstellationColor) value).getJavaFXColor();
@@ -242,7 +259,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
                         update();
                     };
 
-                    final AbstractEditor<ConstellationColor> editor = editorFactory.createEditor("Label Color", setColorEditOperation, ConstellationColor.fromFXColor(color));
+                    final AbstractEditor<ConstellationColor> editor = editorFactory.createEditor(setColorEditOperation, ValueValidator.getAlwaysSucceedValidator(), "label color", ConstellationColor.fromFXColor(color));
                     final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
                     dialog.showDialog();
                 };

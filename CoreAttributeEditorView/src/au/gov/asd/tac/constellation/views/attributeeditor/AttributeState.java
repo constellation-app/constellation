@@ -30,9 +30,11 @@ import java.util.Map;
  * @author twinkle2_little
  */
 public class AttributeState {
-    
+    // graph, nodes, trasaction etc.
+
     private final List<GraphElementType> graphElements;
     private final List<GraphElementType> activeGraphElements;
+    // key: element type, value : list of attributedata
     private final Map<GraphElementType, List<AttributeData>> attributeNames;
     // key: element type+attribute name value: list of values
     private final Map<String, Object[]> attributeValues;
@@ -50,7 +52,7 @@ public class AttributeState {
      * @return the graphElements
      */
     public List<GraphElementType> getGraphElements() {
-        return Collections.unmodifiableList(graphElements);
+        return graphElements;
     }
 
     /**
@@ -65,14 +67,14 @@ public class AttributeState {
      * @return the graphElements that are 'active' in this state
      */
     public List<GraphElementType> getActiveGraphElements() {
-        return Collections.unmodifiableList(activeGraphElements);
+        return activeGraphElements;
     }
 
     /**
      * @return the attributeNames
      */
     public Map<GraphElementType, List<AttributeData>> getAttributeNames() {
-        return Collections.unmodifiableMap(attributeNames);
+        return attributeNames;
     }
 
     /**

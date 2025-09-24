@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DrawFlagsAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
+import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -25,7 +26,6 @@ import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Editor Factory for attributes of type draw_flags
  *
  * @author twilight_sparkle
  */
@@ -33,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlags> {
 
     @Override
-    public AbstractEditor<DrawFlags> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<DrawFlags> validator, final DrawFlags defaultValue, final DrawFlags initialValue) {
-        return new DrawFlagsEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
+    public AbstractEditor<DrawFlags> createEditor(final EditOperation editOperation, final DefaultGetter<DrawFlags> defaultGetter, final ValueValidator<DrawFlags> validator, final String editedItemName, final DrawFlags initialValue) {
+        return new DrawFlagsEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -50,8 +50,8 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
         private CheckBox drawConnectionLabelsCheckBox;
         private CheckBox drawBlazesCheckBox;
 
-        protected DrawFlagsEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<DrawFlags> validator, final DrawFlags defaultValue, final DrawFlags initialValue) {
-            super(editedItemName, editOperation, validator, defaultValue, initialValue);
+        protected DrawFlagsEditor(final EditOperation editOperation, final DefaultGetter<DrawFlags> defaultGetter, final ValueValidator<DrawFlags> validator, final String editedItemName, final DrawFlags initialValue) {
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
         }
 
         @Override
@@ -83,6 +83,9 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
 
         @Override
         protected Node createEditorControls() {
+            final VBox controls = new VBox();
+            controls.setFillWidth(true);
+
             drawNodesCheckBox = new CheckBox("Nodes");
             drawNodesCheckBox.selectedProperty().addListener((v, o, n) -> update());
 
@@ -97,12 +100,15 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
 
             drawBlazesCheckBox = new CheckBox("Blazes");
             drawBlazesCheckBox.selectedProperty().addListener((v, o, n) -> update());
-            
-            final VBox controls = new VBox(drawNodesCheckBox, drawConnectionsCheckBox, drawNodeLabelsCheckBox, 
-                    drawConnectionLabelsCheckBox, drawBlazesCheckBox);
-            controls.setFillWidth(true);
-            
+
+            controls.getChildren().addAll(drawNodesCheckBox, drawConnectionsCheckBox, drawNodeLabelsCheckBox, drawConnectionLabelsCheckBox, drawBlazesCheckBox);
+
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
         }
     }
 }

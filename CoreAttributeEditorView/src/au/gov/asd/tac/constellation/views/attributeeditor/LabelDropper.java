@@ -127,10 +127,12 @@ public class LabelDropper implements GraphDropper {
 
         @Override
         public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            final GraphElementType et;
+            final String labelAttribute;
             final int ix = data.indexOf(':');
             if (ix != -1) {
-                final GraphElementType et = GraphElementType.getValue(data.substring(0, ix));
-                final String labelAttribute = data.substring(ix + 1);
+                et = GraphElementType.getValue(data.substring(0, ix));
+                labelAttribute = data.substring(ix + 1);
 
                 final int attrId = wg.getAttribute(et, labelAttribute);
                 final int labelsId = et == GraphElementType.VERTEX ? VisualConcept.GraphAttribute.TOP_LABELS.get(wg) : VisualConcept.GraphAttribute.TRANSACTION_LABELS.get(wg);

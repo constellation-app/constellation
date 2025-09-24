@@ -17,17 +17,17 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
+import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.GridPane;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Editor Factory for attributes of type hyperlink
  *
  * @author twilight_sparkle
  */
@@ -35,8 +35,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
     @Override
-    public AbstractEditor<URI> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<URI> validator, final URI defaultValue, final URI initialValue) {
-        return new HyperlinkEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
+    public AbstractEditor<URI> createEditor(final EditOperation editOperation, final DefaultGetter<URI> defaultGetter, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
+        return new HyperlinkEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
     }
 
     @Override
@@ -48,12 +48,8 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
         private TextField textField;
 
-        protected HyperlinkEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<URI> validator, final URI defaultValue, final URI initialValue) {
-            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
-        }
-        
-        protected String getURIText() {
-            return textField.getText();
+        protected HyperlinkEditor(final EditOperation editOperation, final DefaultGetter<URI> defaultGetter, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
+            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
         }
 
         @Override
@@ -74,13 +70,18 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
         @Override
         protected Node createEditorControls() {
+            final GridPane controls = new GridPane();
+            controls.setAlignment(Pos.CENTER);
+            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
             textField = new TextField();
             textField.textProperty().addListener((o, n, v) -> update());
-            
-            final VBox controls = new VBox(textField);
-            controls.setAlignment(Pos.CENTER);
-            
+            controls.addRow(0, textField);
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return true;
         }
     }
 }
