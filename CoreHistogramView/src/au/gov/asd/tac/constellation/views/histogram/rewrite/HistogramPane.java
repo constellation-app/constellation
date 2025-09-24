@@ -134,6 +134,7 @@ public class HistogramPane extends BorderPane {
 
         // Binds the width of the display to the width of viewable content in the scroll pane
         display.setPadding(new Insets(0, DISPLAY_PADDING, 0, DISPLAY_PADDING)); // padding of 10 on left and right
+        VBox.setVgrow(display, Priority.ALWAYS);
 
         ////////////////////
         // Help Button
@@ -331,9 +332,7 @@ public class HistogramPane extends BorderPane {
         // Add everything to this viewPane
         viewPane = new VBox();
         viewPane.prefWidthProperty().bind(this.widthProperty());
-
         display.prefWidthProperty().bind(viewPane.widthProperty());
-        VBox.setVgrow(display, Priority.ALWAYS);
 
         final VBox controls = new VBox(CONTROLS_PADDING);
         controls.getChildren().addAll(
@@ -491,6 +490,11 @@ public class HistogramPane extends BorderPane {
 
         // Run later to avoid endless loop of updating because clear lists cause updates
         Platform.runLater(() -> isAdjusting = false);
+    }
+
+    // Used mainly for testing
+    protected HistogramDisplay2 getDisplay() {
+        return display;
     }
 
     public void updateDisplay() {
