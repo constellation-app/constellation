@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.PluginSequenceEditOperation;
 import javafx.beans.property.BooleanProperty;
@@ -37,19 +36,19 @@ import javafx.scene.control.Label;
  */
 public abstract class AbstractEditorFactory<V> {
 
-    public AbstractEditor<V> createEditor(final EditOperation editOperation, final ValueValidator<V> validator, final String editedItemName, final V initialValue) {
-        return createEditor(editOperation, DefaultGetter.getDefaultUnsupported(), validator, editedItemName, initialValue);
+    public AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<V> validator, final V initialValue) {
+        return createEditor(editedItemName, editOperation, validator, null, initialValue);
     }
 
-    public AbstractEditor<V> createEditor(final EditOperation editOperation, final String editedItemName, final V initialValue) {
-        return createEditor(editOperation, DefaultGetter.getDefaultUnsupported(), ValueValidator.getAlwaysSucceedValidator(), editedItemName, initialValue);
+    public AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final V initialValue) {
+        return createEditor(editedItemName, editOperation, ValueValidator.getAlwaysSucceedValidator(), null, initialValue);
     }
 
-    public AbstractEditor<V> createEditor(final EditOperation editOperation, final DefaultGetter<V> defaultGetter, final String editedItemName, final V initialValue) {
-        return createEditor(editOperation, defaultGetter, ValueValidator.getAlwaysSucceedValidator(), editedItemName, initialValue);
+    public AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final V defaultValue, final V initialValue) {
+        return createEditor(editedItemName, editOperation, ValueValidator.getAlwaysSucceedValidator(), defaultValue, initialValue);
     }
 
-    public abstract AbstractEditor<V> createEditor(final EditOperation editOperation, final DefaultGetter<V> defaultGetter, final ValueValidator<V> validator, final String editedItemName, final V initialValue);
+    public abstract AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<V> validator, final V defaultValue, final V initialValue);
 
     public abstract static class AbstractEditor<V> {
 
@@ -57,84 +56,39 @@ public abstract class AbstractEditorFactory<V> {
         protected static final int CONTROLS_DEFAULT_HORIZONTAL_SPACING = 5;
         protected static final int CONTROLS_DEFAULT_VERTICAL_SPACING = 10;
 
+        protected final String editedItemName;
         protected final EditOperation editOperation;
-        protected final DefaultGetter<V> defaultGetter;
         protected final ValueValidator<V> validator;
+        protected final V defaultValue;
         protected final BooleanProperty disableEditProperty;
         protected final StringProperty errorMessageProperty;
-        protected final String editedItemName;
         protected V currentValue;
         protected V savedValue;
+        private final boolean noValueAllowed;
         protected Node editorHeading = null;
         protected Node editorControls = null;
 
         protected boolean updateInProgress = false;
 
-        protected AbstractEditor(final EditOperation editOperation, final DefaultGetter<V> defaultGetter, final ValueValidator<V> validator, final String editedItemName, final V initialValue) {
+        protected AbstractEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<V> validator, final V defaultValue, final V initialValue) {
+            this(editedItemName, editOperation, validator, defaultValue, initialValue, false);
+        }
+        
+        protected AbstractEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<V> validator, final V defaultValue, final V initialValue, final boolean noValueAllowed) {
+            this.editedItemName = editedItemName;
             this.editOperation = editOperation;
-            this.defaultGetter = defaultGetter;
             this.validator = validator;
+            this.defaultValue = defaultValue;
             this.disableEditProperty = new SimpleBooleanProperty();
             this.errorMessageProperty = new SimpleStringProperty();
-            this.editedItemName = editedItemName;
             setCurrentValue(initialValue);
+            this.noValueAllowed = noValueAllowed;
         }
 
         protected final V getCurrentValue() {
             return currentValue;
         }
-
-        public final void storeValue() {
-            if (currentValue != null) {
-                savedValue = currentValue;
-            }
-        }
-
-        public final void restoreValue() {
-            setCurrentValue(savedValue);
-            update();
-        }
-
-        public final ReadOnlyBooleanProperty getEditDisabledProperty() {
-            return disableEditProperty;
-        }
-
-        public final ReadOnlyStringProperty getErrorMessageProperty() {
-            return errorMessageProperty;
-        }
-
-        /**
-         * Should be called when anything in the gui changes (and on the javafx
-         * thread).
-         */
-        protected final void update() {
-            if (!updateInProgress) {
-                updateInProgress = true;
-                try {
-                    currentValue = getValueFromControls();
-                    final String error = validateCurrentValue();
-                    errorMessageProperty.set(error);
-                    disableEditProperty.set(error != null);
-                } catch (final ControlsInvalidException ex) {
-                    disableEditProperty.set(true);
-                    errorMessageProperty.set(ex.getReason());
-                }
-
-                updateInProgress = false;
-            }
-        }
-
-        /**
-         * Prevents values being explicitly set which are not valid for this
-         * type and can't be reflected in the controls.
-         *
-         * @param value the candidate value to be set.
-         * @return true only if the candidate value is valid for this type.
-         */
-        protected boolean canSet(final V value) {
-            return true;
-        }
-
+        
         public final void setCurrentValue(final V value) {
             if (canSet(value)) {
                 this.currentValue = value;
@@ -148,13 +102,88 @@ public abstract class AbstractEditorFactory<V> {
                 disableEditProperty.set(error != null);
             }
         }
-
-        public final void setDefaultValue() {
-            setCurrentValue(defaultGetter.getDefaultValue());
+        
+        /**
+         * Whether or not the currentValue of type V is suitable to be used to
+         * performEdit()
+         *
+         * @return true if the current value is valid.
+         */
+        public final String validateCurrentValue() {
+            return validator.validateValue(currentValue);
+        }
+        
+        /**
+         * Prevents values being explicitly set which are not valid for this
+         * type and can't be reflected in the controls.
+         *
+         * @param value the candidate value to be set.
+         * @return true only if the candidate value is valid for this type.
+         */
+        protected boolean canSet(final V value) {
+            return true;
         }
 
+        /**
+         * Store the current value for the purpose of recovering later.
+         * Useful when setting a value to no value
+         */
+        public final void storeValue() {
+            if (currentValue != null) {
+                savedValue = currentValue;
+            }
+        }
+
+        /**
+         * Restore the current value to the previously stored value.
+         */
+        public final void restoreValue() {
+            setCurrentValue(savedValue);
+            update();
+        }
+        
+        /**
+         * Set current value to the default value.
+         */
+        public final void setToDefaultValue() {
+            setCurrentValue(defaultValue);
+        }
+
+        /**
+         * Check if the default value for this editor is null
+         * 
+         * @return true if the default value is null 
+         */
         public final boolean isDefaultValueNull() {
-            return defaultGetter.getDefaultValue() == null;
+            return defaultValue == null;
+        }
+
+        public final ReadOnlyBooleanProperty getEditDisabledProperty() {
+            return disableEditProperty;
+        }
+
+        public final ReadOnlyStringProperty getErrorMessageProperty() {
+            return errorMessageProperty;
+        }
+
+        /**
+         * Should be called when anything in the gui changes (and on the javafx thread).
+         */
+        protected final void update() {
+            if (!updateInProgress) {
+                updateInProgress = true;
+                try {
+                    currentValue = getValueFromControls();
+                    final String error = validateCurrentValue();
+                    errorMessageProperty.set(error);
+                    disableEditProperty.set(error != null);
+                } catch (final ControlsInvalidException ex) {
+                    disableEditProperty.set(true);
+                    errorMessageProperty.set(ex.getLocalizedMessage());
+                }
+
+                updateInProgress = false;
+            }
         }
 
         public final Node getEditorControls() {
@@ -187,23 +216,13 @@ public abstract class AbstractEditorFactory<V> {
 
         public final void performEdit() {
             if (!disableEditProperty.get()) {
-                if (editOperation instanceof PluginSequenceEditOperation) {
-                    ((PluginSequenceEditOperation) editOperation).setPreEdit(preEdit());
-                    ((PluginSequenceEditOperation) editOperation).setPostEdit(postEdit());
+                if (editOperation instanceof PluginSequenceEditOperation psEditOperation) {
+                    psEditOperation.setPreEdit(preEdit());
+                    psEditOperation.setPostEdit(postEdit());
                 }
 
                 editOperation.performEdit(getCurrentValue());
             }
-        }
-
-        /**
-         * Whether or not the currentValue of type V is suitable to be used to
-         * performEdit()
-         *
-         * @return true if the current value is valid.
-         */
-        public final String validateCurrentValue() {
-            return validator.validateValue(currentValue);
         }
 
         /**
@@ -235,7 +254,9 @@ public abstract class AbstractEditorFactory<V> {
 
         protected abstract Node createEditorControls();
 
-        public abstract boolean noValueCheckBoxAvailable();
+        public boolean isNoValueAllowed() {
+            return noValueAllowed;
+        }
     }
 
     /**
@@ -245,14 +266,8 @@ public abstract class AbstractEditorFactory<V> {
      */
     protected static class ControlsInvalidException extends Exception {
 
-        private final String reason;
-
         public ControlsInvalidException(final String reason) {
-            this.reason = reason;
-        }
-
-        public String getReason() {
-            return reason;
+            super(reason);
         }
     }
 }

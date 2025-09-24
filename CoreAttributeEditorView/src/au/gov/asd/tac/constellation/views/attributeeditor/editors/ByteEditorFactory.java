@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.ByteAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -26,6 +25,7 @@ import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type byte
  *
  * @author cygnus_x-1
  */
@@ -33,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ByteEditorFactory extends AttributeValueEditorFactory<Byte> {
 
     @Override
-    public AbstractEditor<Byte> createEditor(final EditOperation editOperation, final DefaultGetter<Byte> defaultGetter, final ValueValidator<Byte> validator, final String editedItemName, final Byte initialValue) {
-        return new ByteEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Byte> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Byte> validator, final Byte defaultValue, final Byte initialValue) {
+        return new ByteEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -46,8 +46,12 @@ public class ByteEditorFactory extends AttributeValueEditorFactory<Byte> {
 
         private TextField numberField;
 
-        protected ByteEditor(final EditOperation editOperation, final DefaultGetter<Byte> defaultGetter, final ValueValidator<Byte> validator, final String editedItemName, final Byte initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected ByteEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Byte> validator, final Byte defaultValue, final Byte initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
+        }
+        
+        protected String getNumberText() {
+            return numberField.getText();
         }
 
         @Override
@@ -64,7 +68,7 @@ public class ByteEditorFactory extends AttributeValueEditorFactory<Byte> {
         @Override
         protected Byte getValueFromControls() throws ControlsInvalidException {
             try {
-                return Byte.parseByte(numberField.getText());
+                return Byte.valueOf(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a byte.");
             }
@@ -72,19 +76,13 @@ public class ByteEditorFactory extends AttributeValueEditorFactory<Byte> {
 
         @Override
         protected Node createEditorControls() {
-            final VBox controls = new VBox();
-            controls.setAlignment(Pos.CENTER);
-
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-
-            controls.getChildren().add(numberField);
+            
+            final VBox controls = new VBox(numberField);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
         }
     }
 }
