@@ -18,10 +18,8 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.TimeZoneAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.TimeZone;
 import javafx.collections.FXCollections;
@@ -36,6 +34,7 @@ import javafx.util.Callback;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type time_zone
  *
  * @author twilight_sparkle
  */
@@ -43,8 +42,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
 
     @Override
-    public AbstractEditor<ZoneId> createEditor(final EditOperation editOperation, final DefaultGetter<ZoneId> defaultGetter, final ValueValidator<ZoneId> validator, final String editedItemName, final ZoneId initialValue) {
-        return new TimeZoneEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<ZoneId> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ZoneId> validator, final ZoneId defaultValue, final ZoneId initialValue) {
+        return new TimeZoneEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -61,8 +60,8 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
             return offsetCompare != 0 ? offsetCompare : t1.getId().compareTo(t2.getId());
         };
 
-        protected TimeZoneEditor(final EditOperation editOperation, final DefaultGetter<ZoneId> defaultGetter, final ValueValidator<ZoneId> validator, final String editedItemName, final ZoneId initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected TimeZoneEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ZoneId> validator, final ZoneId defaultValue, final ZoneId initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override
@@ -83,17 +82,15 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
 
         @Override
         protected Node createEditorControls() {
-            final VBox controls = new VBox();
-            controls.setSpacing(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            controls.setAlignment(Pos.CENTER);
-
             final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
             ZoneId.getAvailableZoneIds().forEach(id -> timeZones.add(ZoneId.of(id)));
-            timeZoneComboBox = new ComboBox<>();
-            timeZoneComboBox.setItems(timeZones.sorted(zoneIdComparator));
-            final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<ZoneId>() {
+            timeZoneComboBox = new ComboBox<>(timeZones.sorted(zoneIdComparator));
+            timeZoneComboBox.getSelectionModel().select(TimeZoneUtilities.UTC);
+            timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
+            
+            final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = p -> new ListCell<>() {
                 @Override
-                protected void updateItem(final ZoneId item, boolean empty) {
+                protected void updateItem(final ZoneId item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
                         setText(TimeZoneUtilities.getTimeZoneAsString(item));
@@ -102,16 +99,11 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
             };
             timeZoneComboBox.setCellFactory(cellFactory);
             timeZoneComboBox.setButtonCell(cellFactory.call(null));
-            timeZoneComboBox.getSelectionModel().select(TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
-            timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
-
-            controls.getChildren().addAll(timeZoneComboBox);
+            
+            final VBox controls = new VBox(timeZoneComboBox);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
         }
     }
 }

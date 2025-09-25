@@ -18,17 +18,14 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type string
  *
  * @author twilight_sparkle
  */
@@ -36,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
     @Override
-    public AbstractEditor<String> createEditor(final EditOperation editOperation, final DefaultGetter<String> defaultGetter, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
-        return new StringEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<String> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<String> validator, final String defaultValue, final String initialValue) {
+        return new StringEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -46,12 +43,11 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
     }
 
     public class StringEditor extends AbstractEditor<String> {
-
-        private static final int CONTROLS_SPACING = 10;        
+        
         private SpellCheckingTextArea spellCheckingTextArea;
 
-        protected StringEditor(final EditOperation editOperation, final DefaultGetter<String> defaultGetter, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected StringEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<String> validator, final String defaultValue, final String initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
 
         @Override
@@ -68,28 +64,14 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_SPACING);
-
-            final ColumnConstraints cc = new ColumnConstraints();
-            cc.setHgrow(Priority.ALWAYS);
-            controls.getColumnConstraints().add(cc);
-            final RowConstraints rc = new RowConstraints();
-            rc.setVgrow(Priority.ALWAYS);
-            controls.getRowConstraints().add(rc);            
-            
             spellCheckingTextArea = new SpellCheckingTextArea(false);
             spellCheckingTextArea.setWrapText(true);
-            spellCheckingTextArea.textProperty().addListener((o, n, v) -> update());            
-
-            controls.addRow(0, spellCheckingTextArea);
+            spellCheckingTextArea.textProperty().addListener((o, n, v) -> update());
+            
+            final VBox controls = new VBox(spellCheckingTextArea);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

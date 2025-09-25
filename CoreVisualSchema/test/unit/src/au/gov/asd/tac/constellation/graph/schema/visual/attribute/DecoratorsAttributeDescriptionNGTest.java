@@ -68,9 +68,6 @@ public class DecoratorsAttributeDescriptionNGTest {
 
         final VertexDecorators validResult = instance.convertFromString("\"decorator1\";\"decorator2\";\"decorator3\";\"decorator4\";");
         final VertexDecorators expResult = new VertexDecorators("decorator1", "decorator2", "decorator3", "decorator4");
-        assertEquals(validResult.getNorthEastDecoratorAttribute(), expResult.getNorthEastDecoratorAttribute());
-        assertEquals(validResult.getNorthWestDecoratorAttribute(), expResult.getNorthWestDecoratorAttribute());
-        assertEquals(validResult.getSouthEastDecoratorAttribute(), expResult.getSouthEastDecoratorAttribute());
-        assertEquals(validResult.getSouthWestDecoratorAttribute(), expResult.getSouthWestDecoratorAttribute());
+        assertEquals(validResult, expResult);
     }
 }
