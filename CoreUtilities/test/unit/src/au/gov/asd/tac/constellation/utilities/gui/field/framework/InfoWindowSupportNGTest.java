@@ -104,8 +104,15 @@ public class InfoWindowSupportNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        constellationInputMock = mock(ConstellationInput.class);
-        infoWindowMock = new InfoWindowTest(constellationInputMock);
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // Makes runLater run immediately
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
+            constellationInputMock = mock(ConstellationInput.class);
+            infoWindowMock = new InfoWindowTest(constellationInputMock);
+        }
 
     }
 
