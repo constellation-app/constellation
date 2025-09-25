@@ -26,9 +26,11 @@ import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
 import org.testfx.util.WaitForAsyncUtils;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -45,19 +47,6 @@ public class InfoWindowSupportNGTest {
     private InfoWindowTest infoWindowMock;
     private static final Logger LOGGER = Logger.getLogger(InfoWindowSupportNGTest.class.getName());
 
-    @Test(expectedExceptions = UnsupportedOperationException.class, expectedExceptionsMessageRegExp = "Not supported yet.")
-    public void infoWindowSupportTest_refreshWindow() {
-        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
-            // Makes runLater run immediately
-            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
-                ((Runnable) iom.getArgument(0)).run();
-                return null;
-            });
-
-            infoWindowMock.refreshWindow();
-        }
-    }
-
     @Test
     public void infoWindowSupportTest_setWindow() {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
@@ -68,11 +57,12 @@ public class InfoWindowSupportNGTest {
             });
             StackPane contentMock = mock(StackPane.class);
             infoWindowMock.setWindowContents(contentMock);
-            assertTrue(infoWindowMock.testCount == 1);
+            assertEquals(infoWindowMock.testCount, 1);
         }
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class, expectedExceptionsMessageRegExp = "Not supported yet.")
+    //@Test(expectedExceptions = UnsupportedOperationException.class, expectedExceptionsMessageRegExp = "Not supported yet.")
+    @Test
     public void infoWindowSupportTest_changed() {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
             // Makes runLater run immediately
@@ -80,8 +70,10 @@ public class InfoWindowSupportNGTest {
                 ((Runnable) iom.getArgument(0)).run();
                 return null;
             });
-            // changed method calls refreshWindow()
+
             infoWindowMock.changed(mock());
+
+            verify(infoWindowMock).refreshWindow();
         }
     }
 
@@ -111,9 +103,8 @@ public class InfoWindowSupportNGTest {
                 return null;
             });
             constellationInputMock = mock(ConstellationInput.class);
-            infoWindowMock = new InfoWindowTest(constellationInputMock);
+            infoWindowMock = spy(new InfoWindowTest(constellationInputMock));
         }
-
     }
 
     @AfterMethod
@@ -137,7 +128,7 @@ public class InfoWindowSupportNGTest {
 
         @Override
         protected void refreshWindow() {
-            throw new UnsupportedOperationException("Not supported yet.");
+            //Do Nothing
         }
     }
 }
