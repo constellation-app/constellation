@@ -4,19 +4,19 @@
 
 <div class="skipNav">
 
-[Skip navigation links](package-tree.md#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/docs/javadoc/graph/package-tree.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../overview-summary.md)
--   [Package](package-summary.md)
+-   [Overview](../ext/docs/CoreScriptingView/docs/javadoc/overview-summary.md)
+-   [Package](../ext/docs/CoreScriptingView/docs/javadoc/graph/package-summary.md)
 -   Class
 -   Tree
--   [Deprecated](../deprecated-list.md)
--   [Index](../index-all.md)
--   [Help](../help-doc.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -29,11 +29,11 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 <div class="subNav">
 
 -   Prev
--   [Next](iterators/package-tree.md)
+-   [Next](../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/package-tree.md)
 
 <!-- -->
 
--   [All Classes](../allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -49,7 +49,7 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <span class="packageHierarchyLabel">Package Hierarchies:</span>
 
--   [All Packages](../overview-tree.md)
+-   [All Packages](../ext/docs/CoreScriptingView/docs/javadoc/overview-tree.md)
 
 </div>
 
@@ -59,22 +59,22 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 -   java.lang.Object
     -   au.gov.asd.tac.constellation.views.scripting.graph.[<span
-        class="typeNameLink">SAttribute</span>](SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+        class="typeNameLink">SAttribute</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
     -   au.gov.asd.tac.constellation.views.scripting.graph.[<span
-        class="typeNameLink">SCollection</span>](SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+        class="typeNameLink">SCollection</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
     -   au.gov.asd.tac.constellation.views.scripting.graph.[<span
-        class="typeNameLink">SEdge</span>](SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+        class="typeNameLink">SEdge</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
     -   au.gov.asd.tac.constellation.views.scripting.graph.[<span
-        class="typeNameLink">SGraph</span>](SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+        class="typeNameLink">SGraph</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
     -   au.gov.asd.tac.constellation.views.scripting.graph.[<span
-        class="typeNameLink">SLink</span>](SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+        class="typeNameLink">SLink</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
     -   au.gov.asd.tac.constellation.views.scripting.graph.[<span
-        class="typeNameLink">SReadableGraph</span>](SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+        class="typeNameLink">SReadableGraph</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
         -   au.gov.asd.tac.constellation.views.scripting.graph.[<span
-            class="typeNameLink">SWritableGraph</span>](SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+            class="typeNameLink">SWritableGraph</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
     -   au.gov.asd.tac.constellation.views.scripting.graph.[<span
-        class="typeNameLink">STransaction</span>](STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+        class="typeNameLink">STransaction</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
     -   au.gov.asd.tac.constellation.views.scripting.graph.[<span
-        class="typeNameLink">SVertex</span>](SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+        class="typeNameLink">SVertex</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 
 </div>
