@@ -766,11 +766,6 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
      * @param enabled
      */
     public void flashErrorIcon(final boolean enabled) {
-        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-            System.out.println(ste);
-        }
-        System.out.println("flashErrorIcon");
-        System.out.println("enabled: " + enabled);
         if (!enabled) {
             iconFlashing = false;
             if (waitForGracePeriod) {
@@ -788,12 +783,11 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             alertTimer = null;
             return;
         }
-        System.out.println("sessionErrorsBox.getChildren().isEmpty(): " + sessionErrorsBox.getChildren().isEmpty());
+
         if (sessionErrorsBox.getChildren().isEmpty()) {
-            System.out.println("returning, thing is empty");
             return;
         }
-        System.out.println("iconFlashing: " + iconFlashing);
+
         if (!iconFlashing) {
             iconFlashing = true;
             flashActivatedDate = previousRetrievalDate == null ? new Date() : new Date(previousRetrievalDate.getTime());
@@ -823,7 +817,6 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 alertTimer.schedule(updateAlerts, 250, 750);
             }
         }
-        System.out.println("!!! iconFlashing: " + iconFlashing);
     }
 
     private void updateFlashingIcons(final List<String> errorReportLevels, final List<String> errorPopupLevels) {
