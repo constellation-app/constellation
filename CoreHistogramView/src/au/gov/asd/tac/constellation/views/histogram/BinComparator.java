@@ -99,9 +99,9 @@ public enum BinComparator implements Comparator<Bin> {
     TOTAL_COUNT("Total Count", true, false) {
         @Override
         public int compare(Bin o1, Bin o2) {
-            if (o1.elementCount > o2.elementCount) {
+            if (o1.getElementCount() > o2.getElementCount()) {
                 return 1;
-            } else if (o1.elementCount < o2.elementCount) {
+            } else if (o1.getElementCount() < o2.getElementCount()) {
                 return -1;
             } else {
                 return 0;
@@ -119,9 +119,9 @@ public enum BinComparator implements Comparator<Bin> {
     REVERSE_TOTAL_COUNT("Total Count (descending)", false, false) {
         @Override
         public int compare(Bin o1, Bin o2) {
-            if (o1.elementCount > o2.elementCount) {
+            if (o1.getElementCount() > o2.getElementCount()) {
                 return -1;
-            } else if (o1.elementCount < o2.elementCount) {
+            } else if (o1.getElementCount() < o2.getElementCount()) {
                 return 1;
             } else {
                 return 0;
@@ -139,9 +139,9 @@ public enum BinComparator implements Comparator<Bin> {
     SELECTED_COUNT("Selected Count", true, true) {
         @Override
         public int compare(Bin o1, Bin o2) {
-            if (o1.selectedCount > o2.selectedCount) {
+            if (o1.getSelectedCount() > o2.getSelectedCount()) {
                 return 1;
-            } else if (o1.selectedCount < o2.selectedCount) {
+            } else if (o1.getSelectedCount() < o2.getSelectedCount()) {
                 return -1;
             } else {
                 return 0;
@@ -160,9 +160,9 @@ public enum BinComparator implements Comparator<Bin> {
     REVERSE_SELECTED_COUNT("Selected Count (descending)", false, true) {
         @Override
         public int compare(Bin o1, Bin o2) {
-            if (o1.selectedCount > o2.selectedCount) {
+            if (o1.getSelectedCount() > o2.getSelectedCount()) {
                 return -1;
-            } else if (o1.selectedCount < o2.selectedCount) {
+            } else if (o1.getSelectedCount() < o2.getSelectedCount()) {
                 return 1;
             } else {
                 return 0;
@@ -180,8 +180,8 @@ public enum BinComparator implements Comparator<Bin> {
     SELECTED_PROPORTION("Selected Proportion", true, true) {
         @Override
         public int compare(Bin o1, Bin o2) {
-            final int o1Score = o1.selectedCount * o2.elementCount;
-            final int o2Score = o2.selectedCount * o1.elementCount;
+            final int o1Score = o1.getSelectedCount() * o2.getElementCount();
+            final int o2Score = o2.getSelectedCount() * o1.getElementCount();
             if (o1Score > o2Score) {
                 return 1;
             } else if (o1Score < o2Score) {
@@ -203,8 +203,8 @@ public enum BinComparator implements Comparator<Bin> {
     REVERSE_SELECTED_PROPORTION("Selected Proportion (descending)", false, true) {
         @Override
         public int compare(Bin o1, Bin o2) {
-            final int o1Score = o1.selectedCount * o2.elementCount;
-            final int o2Score = o2.selectedCount * o1.elementCount;
+            final int o1Score = o1.getSelectedCount() * o2.getElementCount();
+            final int o2Score = o2.getSelectedCount() * o1.getElementCount();
             if (o1Score > o2Score) {
                 return -1;
             } else if (o1Score < o2Score) {

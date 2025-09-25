@@ -102,13 +102,12 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void testGetDataAccessPaneCalledByEventDispatchThread() {
         System.out.println("testGetDataAccessPaneCalledByEventDispatchThread");
-        
+
         final WindowManager windowManager = mock(WindowManager.class);
         final DataAccessViewTopComponent topComponent = mock(DataAccessViewTopComponent.class);
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
 
         swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
-
         windowManagerStaticMock.when(WindowManager::getDefault).thenReturn(windowManager);
 
         when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(topComponent);
@@ -121,12 +120,13 @@ public class DataAccessUtilitiesNGTest {
         verify(topComponent, times(1)).requestVisible();
 
         assertSame(actual, dataAccessPane);
+
     }
 
     @Test
     public void testGetDataAccessPaneCalledByEventDispatchThreadTopComponentNull() {
         System.out.println("testGetDataAccessPaneCalledByEventDispatchThreadTopComponentNull");
-        
+
         final WindowManager windowManager = mock(WindowManager.class);
 
         swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
@@ -143,7 +143,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void testGetDataAccessPaneNotCalledByEventDispatchThread() {
         System.out.println("testGetDataAccessPaneNotCalledByEventDispatchThread");
-        
+
         final WindowManager windowManager = mock(WindowManager.class);
         final DataAccessViewTopComponent topComponent = mock(DataAccessViewTopComponent.class);
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
@@ -171,7 +171,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void testGetDataAccessPaneNotCalledByEventDispatchThreadError() {
         System.out.println("testGetDataAccessPaneNotCalledByEventDispatchThreadError");
-        
+
         swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
         swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
                 .thenThrow(new InvocationTargetException(new RuntimeException("Something Bad")));
@@ -184,7 +184,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void testGetDataAccessPaneNotCalledByEventDispatchThreadInterruptError() {
         System.out.println("testGetDataAccessPaneNotCalledByEventDispatchThreadInterruptError");
-        
+
         swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
         swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
                 .thenThrow(new InterruptedException());
@@ -242,7 +242,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void loadDataAccessState() {
         System.out.println("loadDataAccessState");
-        
+
         // Create current data access view state and set some parameters
         // The code currenly only looks at the first tab so parameter2
         // value will be ignored
@@ -304,7 +304,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void loadDataAccessState_attribute_not_found() {
         System.out.println("loadDataAccessState_attribute_not_found");
-        
+
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
@@ -329,7 +329,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void loadDataAccessState_graph_is_null() {
         System.out.println("loadDataAccessState_graph_is_null");
-        
+
         DataAccessUtilities.loadDataAccessState(mock(DataAccessPane.class), null);
         // No exception....pass
     }
@@ -337,7 +337,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void loadDataAccessState_no_tabs() {
         System.out.println("loadDataAccessState_no_tabs");
-        
+
         // mock graph
         final Graph graph = mock(Graph.class);
 
@@ -355,7 +355,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void loadDataAccessState_null_state() {
         System.out.println("loadDataAccessState_null_state");
-        
+
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
@@ -386,7 +386,7 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void loadDataAccessState_empty_state() {
         System.out.println("loadDataAccessState_empty_state");
-        
+
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
