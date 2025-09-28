@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -33,7 +34,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import javax.swing.SwingUtilities;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -42,7 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author antares
  */
 @ServiceProvider(service = Plugin.class)
-@NbBundle.Messages("CloseGraphPlugin=Close Graph")
+@Messages("CloseGraphPlugin=Close Graph")
 @PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.LOW_LEVEL})
 public class CloseGraphPlugin extends SimplePlugin {
 
@@ -54,30 +55,28 @@ public class CloseGraphPlugin extends SimplePlugin {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<StringParameterValue> graphIdParameter = StringParameterType.build(GRAPH_PARAMETER_ID);
-        graphIdParameter.setName("graphId");
-        graphIdParameter.setDescription("The Id of the graph");
+        graphIdParameter.setName("Graph ID");
+        graphIdParameter.setDescription("The ID of the graph");
         parameters.addParameter(graphIdParameter);
 
         final PluginParameter<BooleanParameterValue> forcedParameter = BooleanParameterType.build(FORCED_PARAMETER_ID);
-        forcedParameter.setName("forced");
+        forcedParameter.setName("Forced");
         forcedParameter.setDescription("Whether the graph will be force closed or not");
-        forcedParameter.setBooleanValue(false);
         parameters.addParameter(forcedParameter);
 
         return parameters;
     }
 
     @Override
-    protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+    protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final Graph g = graphs.getAllGraphs().get(parameters.getStringValue(GRAPH_PARAMETER_ID));
         final GraphNode gn = GraphNode.getGraphNode(g);
         final boolean forced = parameters.getBooleanValue(FORCED_PARAMETER_ID);
-
+        AnimationUtilities.interruptAllAnimations(g.getId());
         if (forced) {
             SwingUtilities.invokeLater(((VisualGraphTopComponent) gn.getTopComponent())::forceClose);
         } else {
             SwingUtilities.invokeLater(gn.getTopComponent()::close);
         }
     }
-
 }

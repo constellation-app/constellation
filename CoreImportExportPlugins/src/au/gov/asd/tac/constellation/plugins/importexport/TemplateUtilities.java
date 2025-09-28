@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,16 +63,18 @@ public class TemplateUtilities {
      * This method is used to retrieve the essential fields from a template. If
      * any is missing, a warning is displayed and NoSuchElementException is
      * thrown.
+     * @param jsonNode
+     * @param fieldName
+     * @return 
      */
     public static JsonNode getRequiredFieldFromTemplate(final JsonNode jsonNode, final String fieldName) {
         if (jsonNode.has(fieldName)) {
             return jsonNode.get(fieldName);
         } else {
             //To handle npe when json parsor accessing missing required fields in the template
-            final String message = String.format("Missing field '%s' in the template. Add the missing field"
-                    + " manually or use a new template.", fieldName);
+            final String message = String.format("Missing field '%s' in the template. Add the missing field manually or use a new template.", fieldName);
             NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Template Error", message, Alert.AlertType.ERROR);
-            throw new NoSuchElementException(message);
+            throw new NoSuchElementException(NotifyDisplayer.BLOCK_POPUP_FLAG + message);
         }
     }
 
@@ -89,7 +91,7 @@ public class TemplateUtilities {
         final boolean showAllSchemaAttributes = source.get(SHOW_ALL_SCHEMA_ATTRIBUTES) != null
                 && source.get(SHOW_ALL_SCHEMA_ATTRIBUTES).booleanValue();
 
-        ((ImportController) importController).getImportPane().setTemplateOptions(showAllSchemaAttributes);
+        importController.getImportPane().setTemplateOptions(showAllSchemaAttributes);
 
         final ArrayNode definitionsArray = (ArrayNode) root.withArray(DEFINITIONS);
         for (final JsonNode definitionNode : definitionsArray) {
@@ -103,10 +105,13 @@ public class TemplateUtilities {
             definitions.add(impdef);
 
             if (!missingUserAttributes.isEmpty()) {
-                final String message = String.format("The template `%s` is outdated or corrupted. In the tab `Run %d` following attributes are considered user added "
-                        + "for the destination `%s` with %s, as specified in the template. Hence they require `attribute_type` property. \n\n %s \n\n Consider using a new "
-                        + "template or add the missing attributes manually.", templName, tabCount, schemaFactory.getLabel(),
-                        (showAllSchemaAttributes ? "`showAllSchemaAttributes` enabled" : "`showAllSchemaAttributes` disabled"), Arrays.toString(missingUserAttributes.toArray()));
+                final String message = """
+                                       The template `%s` is outdated or corrupted. In the tab `Run %d` following attributes are considered user added for the destination `%s` with `showAllSchemaAttributes` %s, as specified in the template. Hence they require `attribute_type` property.
+                                       
+                                       %s
+                                       
+                                       Consider using a new template or add the missing attributes manually."""
+                        .formatted(templName, tabCount, schemaFactory.getLabel(), showAllSchemaAttributes ? "enabled" : "disabled", Arrays.toString(missingUserAttributes.toArray()));
 
                 NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Template Error", message, Alert.AlertType.WARNING);
             }
@@ -132,7 +137,7 @@ public class TemplateUtilities {
         return filter;
     }
 
-    private static List<String> populateImportDefinitions(final ImportController importController, final JsonNode definitionNode, final ImportDefinition impdef) {
+    private static List<String> populateImportDefinitions(final ImportController<?> importController, final JsonNode definitionNode, final ImportDefinition impdef) {
         final List<String> missingUserAttributes = new ArrayList<>();
         final JsonNode attributesNode = getRequiredFieldFromTemplate(definitionNode, ATTRIBUTES);
 
@@ -158,7 +163,7 @@ public class TemplateUtilities {
         return missingUserAttributes;
     }
 
-    private static ImportAttributeDefinition getImportAttributeDefinition(final ImportController importController, final AttributeType attrType, final JsonNode column, final String label) {
+    private static ImportAttributeDefinition getImportAttributeDefinition(final ImportController<?> importController, final AttributeType attrType, final JsonNode column, final String label) {
         final String columnLabel = getRequiredFieldFromTemplate(column, COLUMN_LABEL).textValue();
         final Attribute attribute = importController.getAttribute(attrType.getElementType(), label);
 

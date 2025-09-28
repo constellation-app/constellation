@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class OctTree extends AbstractTree {
      * @param parent
      * @param box
      */
-    protected OctTree(OctTree parent, final BoundingBox3D box) {
+    protected OctTree(final OctTree parent, final BoundingBox3D box) {
         super(parent, box);
         // Inherit parent values for graph based variables.
         zId = parent.zId;
@@ -111,19 +111,13 @@ public class OctTree extends AbstractTree {
                     index = TOP_L_F;
                 } else if (backHalf) {
                     index = TOP_L_B;
-                } else {
-                    // Do nothing
                 }
             } else if (rightHalf) {
                 if (frontHalf) {
                     index = TOP_R_F;
                 } else if (backHalf) {
                     index = TOP_R_B;
-                } else {
-                    // Do nothing
                 }
-            } else {
-                // Do nothing
             }
         } else if (bottomHalf) {
             if (leftHalf) {
@@ -139,8 +133,6 @@ public class OctTree extends AbstractTree {
                     index = BOT_R_B;
                 }
             }
-        } else {
-            // Do nothing
         }
 
         return index;

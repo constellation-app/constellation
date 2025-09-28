@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
 import java.util.List;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import org.fxmisc.richtext.InlineCssTextArea;
@@ -31,7 +30,7 @@ import org.fxmisc.richtext.event.MouseOverTextEvent;
  *
  * @author aldebaran30701
  */
-public class TooltipMouseEnteredTextAreaHandler implements EventHandler {
+public class TooltipMouseEnteredTextAreaHandler implements EventHandler<MouseOverTextEvent> {
     
     private final InlineCssTextArea textArea;
     private final TooltipPane tooltipPane;
@@ -44,19 +43,16 @@ public class TooltipMouseEnteredTextAreaHandler implements EventHandler {
     }
     
     @Override
-    public void handle(final Event event) {
-        if(event instanceof MouseOverTextEvent){
-            final MouseOverTextEvent mote = (MouseOverTextEvent)event;
-            if (tooltipPane.isEnabled()) {
-                characterIndex[0] = mote.getCharacterIndex();
-                final List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getTooltips(textArea.getText(), characterIndex[0]);
-                textArea.requestFocus();
-                TooltipUtilities.selectActiveArea(textArea, definitions);
-                if (!definitions.isEmpty()) {
-                    tooltipNode[0] = createTooltipNode(definitions);
-                    final Point2D location = mote.getScreenPosition();
-                    tooltipPane.showTooltip(tooltipNode[0], location.getX(), location.getY());
-                }
+    public void handle(final MouseOverTextEvent event) {
+        if(tooltipPane.isEnabled()){
+            characterIndex[0] = event.getCharacterIndex();
+            final List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getTooltips(textArea.getText(), characterIndex[0]);
+            textArea.requestFocus();
+            TooltipUtilities.selectActiveArea(textArea, definitions);
+            if (!definitions.isEmpty()) {
+                tooltipNode[0] = createTooltipNode(definitions);
+                final Point2D location = event.getScreenPosition();
+                tooltipPane.showTooltip(tooltipNode[0], location.getX(), location.getY());
             }
         }
     }

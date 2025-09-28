@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,8 @@ public class SetGraphValues extends RestService {
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
     private static final String ATTRIBUTES_PARAMETER_ID = "attributes";
 
-    private static final String COLUMNS = "columns";
+    private static final String COLUMNS = "columns";    
+    private static final String EXAMPLE_RESPONSES_PATH = "setGraphAttributesExample";
 
     @Override
     public String getName() {
@@ -89,7 +90,7 @@ public class SetGraphValues extends RestService {
         final PluginParameter<StringParameterValue> dataParam = StringParameterType.build(ATTRIBUTES_PARAMETER_ID);
         dataParam.setName("Graph attributes (body)");
         dataParam.setDescription("A JSON representation of the graph attributes, in the form {\"columns\": [\"attribute1\",\"attribute2\",\"attribute3\"], \"data\": [[val1, val2, val3]]. This is the same as the output of pandas.DataFrame.to_json(orient='split', date_format='iso').");
-        dataParam.setRequestBodyExampleJson("#/components/examples/setGraphAttributesExample");
+        dataParam.setRequestBodyExampleJson("#/components/examples/setGraphAttributesExample/request");        
         dataParam.setRequired(true);
         parameters.addParameter(dataParam);
 
@@ -97,9 +98,8 @@ public class SetGraphValues extends RestService {
     }
 
     @Override
-    public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
-
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         if (graph == null) {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
@@ -140,7 +140,6 @@ public class SetGraphValues extends RestService {
 
     private static void setGraphAttributes(final Graph graph, final ArrayNode columns, final ArrayNode row) {
         final Plugin p = new SetGraphAttributesFromRestApiPlugin(columns, row);
-
         final PluginExecution pe = PluginExecution.withPlugin(p);
 
         try {
@@ -181,5 +180,10 @@ public class SetGraphValues extends RestService {
                 graph.setStringValue(attributeId, 0, attributeValue);
             }
         }
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

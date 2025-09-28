@@ -1,0 +1,33 @@
+#recent-button {
+    -fx-background-color: #FFFFFF; 
+    -fx-background-radius: 10px;
+    -fx-text-fill: black;
+}
+
+.label {
+    -fx-text-fill: #FFFFFF;
+}
+
+#label {
+    -fx-text-fill: #111111;
+}
+
+#title {
+    -fx-text-fill: #111111;
+}
+
+#smallInfoText {
+    -fx-text-fill: #FFFFFF;
+}
+
+#infoText {
+    -fx-text-fill: #111111;
+}
+
+#left-pane {
+    -fx-background-color: #d6d4d4;
+}
+
+#left-button {
+    -fx-effect: dropshadow(gaussian, #c7c5c5, 5, 0.2, 0, 0);
+}

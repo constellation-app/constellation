@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 600)
 @NbBundle.Messages("UtilitiesHelpProvider=Utilities Help Provider")
 public class UtilitiesHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreUtilities" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,14 +40,11 @@ public class UtilitiesHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String utilitiesModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreUtilities" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "utilities" + sep + "docs" + sep;
 
-        map.put("au.gov.asd.tac.constellation.utilities.icons", utilitiesModulePath + "icons.md");
-        map.put("au.gov.asd.tac.constellation.utilities.decorators", utilitiesModulePath + "decorators.md");
-        map.put("au.gov.asd.tac.constellation.utilities.jupyter", utilitiesModulePath + "about-jupyter-notebook-server.md");
-        map.put("au.gov.asd.tac.constellation.utilities.rest", utilitiesModulePath + "about-rest-server.md");
+        map.put("au.gov.asd.tac.constellation.utilities.icons", MODULE_PATH + "icons.md");
+        map.put("au.gov.asd.tac.constellation.utilities.decorators", MODULE_PATH + "decorators.md");
+        map.put("au.gov.asd.tac.constellation.utilities.jupyter", MODULE_PATH + "about-jupyter-notebook-server.md");
+        map.put("au.gov.asd.tac.constellation.utilities.rest", MODULE_PATH + "about-rest-server.md");
         return map;
     }
 
@@ -59,10 +55,6 @@ public class UtilitiesHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String utilitiesPath;
-        utilitiesPath = CODEBASE_NAME + sep + "CoreUtilities" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "utilities" + sep + "docs" + sep + "utilities-toc.xml";
-        return utilitiesPath;
+        return MODULE_PATH + "utilities-toc.xml";
     }
 }

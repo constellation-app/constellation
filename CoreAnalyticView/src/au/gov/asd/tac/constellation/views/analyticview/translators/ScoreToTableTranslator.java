@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,15 +48,11 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
         final TableVisualisation<ElementScore> tableVisualisation = new TableVisualisation<>(this);
         final Set<String> scoreNames = result.getUniqueScoreNames();
         tableVisualisation.addColumn(IDENTIFIER_COLUMN_NAME, (100 / (scoreNames.size() + 2)) * 2);
-        scoreNames.forEach(scoreName -> {
-            tableVisualisation.addColumn(scoreName, (100 / (scoreNames.size() + 2)));
-        });
+        scoreNames.forEach(scoreName -> tableVisualisation.addColumn(scoreName, (100 / (scoreNames.size() + 2))));
         tableVisualisation.populateTable(result.isIgnoreNullResults()
                 ? result.get().stream().filter(elementMultiScore -> !elementMultiScore.isNull()).collect(Collectors.toList()) : result.get());
         result.addResultListener(tableVisualisation);
-        tableVisualisation.setSelectionModelListener(change -> {
-            result.setSelectionOnGraph(tableVisualisation.getSelectedItems());
-        });
+        tableVisualisation.setSelectionModelListener(change -> result.setSelectionOnGraph(tableVisualisation.getSelectedItems()));
         return tableVisualisation;
     }
 

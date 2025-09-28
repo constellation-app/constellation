@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.controlsfx.control.table.TableFilter;
 
 /**
@@ -48,8 +48,7 @@ public class UpdateDataTask implements Runnable {
      * @param table the table being updated
      * @param rows the new rows to update the table with
      */
-    public UpdateDataTask(final Table table,
-            final List<ObservableList<String>> rows) {
+    public UpdateDataTask(final Table table, final List<ObservableList<String>> rows) {
         this.table = table;
         this.rows = rows;
 
@@ -87,11 +86,10 @@ public class UpdateDataTask implements Runnable {
         table.getTableView().setItems(FXCollections.observableArrayList(getActiveTableReference().getSortedRowList()));
 
         // add user defined filter to the table
-        final TableFilter<ObservableList<String>> filter
-                = TableFilter.forTableView(table.getTableView()).lazy(true).apply();
+        final TableFilter<ObservableList<String>> filter = TableFilter.forTableView(table.getTableView()).lazy(true).apply();
         filter.setSearchStrategy((filterTerm, cellText) -> {
             try {
-                return StringUtils.startsWithIgnoreCase(cellText, filterTerm);
+                return Strings.CI.startsWith(cellText, filterTerm);
             } catch (final Exception ex) {
                 return false;
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -32,9 +33,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
-import org.geotools.data.FeatureWriter;
-import org.geotools.data.Transaction;
+import java.util.regex.Pattern;
+import org.geotools.api.data.FeatureWriter;
+import org.geotools.api.data.Transaction;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.operation.MathTransform;
+import org.geotools.api.referencing.operation.TransformException;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 import org.geotools.feature.DefaultFeatureCollection;
@@ -60,11 +68,6 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
 import org.openide.util.Utilities;
 
 /**
@@ -81,6 +84,10 @@ public class Shape {
     private static final String CENTROID_LATITUDE_ATTRIBUTE = "centreLat";
     private static final String CENTROID_LONGITUDE_ATTRIBUTE = "centreLon";
     private static final String RADIUS_ATTRIBUTE = "radius";
+    
+    private static final Pattern SOURCE_PATTERN = Pattern.compile("source");
+    private static final Pattern DESTINATION_PATTERN = Pattern.compile("destination");
+    private static final Pattern TRANSACTION_PATTERN = Pattern.compile("transaction");
 
     private static final List<Class<?>> GEOPACKAGE_ATTRIBUTE_TYPES = new ArrayList<>();
 
@@ -183,8 +190,7 @@ public class Shape {
      * @return true if the geojson is considered valid, false otherwise.
      */
     public static boolean isValidGeoJson(final String geoJson) {
-        return geoJson.contains("\"type\":\"FeatureCollection\"")
-                && geoJson.contains("\"features\":[");
+        return geoJson.contains("\"type\":\"FeatureCollection\"") && geoJson.contains("\"features\":[");
     }
 
     /**
@@ -223,22 +229,16 @@ public class Shape {
         final GeometryBuilder geometryBuilder = new GeometryBuilder();
         final Geometry geometry;
         switch (type) {
-            case POINT:
-                geometry = geometryBuilder.point(centroidLongitude, centroidLatitude);
-                break;
-            case LINE:
-                geometry = geometryBuilder.lineString(coordinates.stream()
+            case POINT -> geometry = geometryBuilder.point(centroidLongitude, centroidLatitude);
+            case LINE -> geometry = geometryBuilder.lineString(coordinates.stream()
                         .flatMap(Tuple::stream)
-                        .mapToDouble(coordinate -> (Double) coordinate)
+                        .mapToDouble(Double.class::cast)
                         .toArray());
-                break;
-            case POLYGON:
-                geometry = geometryBuilder.polygon(coordinates.stream()
+            case POLYGON -> geometry = geometryBuilder.polygon(coordinates.stream()
                         .flatMap(Tuple::stream)
-                        .mapToDouble(coordinate -> (Double) coordinate)
+                        .mapToDouble(Double.class::cast)
                         .toArray());
-                break;
-            case BOX:
+            case BOX -> {
                 final List<Tuple<Double, Double>> boxCoordinates = new ArrayList<>();
                 boxCoordinates.add(Tuple.create(minLongitude, minLatitude));
                 boxCoordinates.add(Tuple.create(minLongitude, maxLatitude));
@@ -246,11 +246,10 @@ public class Shape {
                 boxCoordinates.add(Tuple.create(maxLongitude, minLatitude));
                 geometry = geometryBuilder.polygon(boxCoordinates.stream()
                         .flatMap(Tuple::stream)
-                        .mapToDouble(coordinate -> (Double) coordinate)
+                        .mapToDouble(Double.class::cast)
                         .toArray());
-                break;
-            default:
-                throw new IllegalArgumentException(String.format("The specified shape type, %s, is not currently supported.", type));
+            }
+            default -> throw new IllegalArgumentException(String.format("The specified shape type, %s, is not currently supported.", type));
         }
 
         // initialise json
@@ -294,11 +293,10 @@ public class Shape {
      * @throws IOException there was a problem writing the generated geojson
      */
     public static String generateShapeCollection(final String uuid, final Map<String, String> shapes, final Map<String, Map<String, Object>> attributes) throws IOException {
-
         // modify schema to handle any additional attributes
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         if (attributes != null) {
-            for (final Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
+            for (final Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
                 if (shapes.keySet().contains(entry.getKey()) && entry.getValue() != null) {
                     entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
@@ -321,7 +319,7 @@ public class Shape {
 
         // extract all features from shapes
         final List<SimpleFeature> features = new ArrayList<>();
-        for (final Map.Entry<String, String> entry : shapes.entrySet()) {
+        for (final Entry<String, String> entry : shapes.entrySet()) {
             final String shape = entry.getValue();
             final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
             try {
@@ -368,11 +366,10 @@ public class Shape {
      * @throws IOException there was a problem writing the generated kml
      */
     public static String generateKml(final String uuid, final Map<String, String> shapes, final Map<String, Map<String, Object>> attributes) throws IOException {
-
         // modify schema to handle any additional attributes
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         if (attributes != null) {
-            for (final Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
+            for (final Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
                 if (shapes.keySet().contains(entry.getKey()) && entry.getValue() != null) {
                     entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
@@ -395,15 +392,14 @@ public class Shape {
 
         // extract all features from shapes
         final List<SimpleFeature> features = new ArrayList<>();
-        for (final Map.Entry<String, String> entry : shapes.entrySet()) {
+        for (final Entry<String, String> entry : shapes.entrySet()) {
             final String shape = entry.getValue();
             final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
             try {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
-                    if (attributes != null 
-                            && attributes.containsKey(entry.getKey()) 
+                    if (attributes != null && attributes.containsKey(entry.getKey()) 
                             && attributes.get(entry.getKey()) != null) {
                         attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                             if (attributeValue != null) {
@@ -445,13 +441,12 @@ public class Shape {
      * @throws IOException there was a problem writing the generated geopackage
      */
     public static void generateGeoPackage(final String uuid, final Map<String, String> shapes, final Map<String, Map<String, Object>> attributes, final File output, final SpatialReference spatialReference) throws IOException {
-
         // modify schema to handle any additional attributes, including
         // conversion to string if they are of a type unsupported by shapefiles
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         final Map<String, List<String>> attributesOfValidType = new HashMap<>();
         if (attributes != null) {
-            for (final Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
+            for (final Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
                 if (shapes.keySet().contains(entry.getKey()) && entry.getValue() != null) {
                     entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
@@ -492,15 +487,14 @@ public class Shape {
 
         // extract all features from shapes
         final List<SimpleFeature> features = new ArrayList<>();
-        for (final Map.Entry<String, String> entry : shapes.entrySet()) {
+        for (final Entry<String, String> entry : shapes.entrySet()) {
             final String shape = entry.getValue();
             final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
             try {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
-                    if (attributes != null 
-                            && attributes.containsKey(entry.getKey()) 
+                    if (attributes != null && attributes.containsKey(entry.getKey()) 
                             && attributes.get(entry.getKey()) != null) {
                         attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                             final String compatibleAttributeName = generateSqliteCompatibleHeader(attributeName);
@@ -511,8 +505,6 @@ public class Shape {
                             } else if (schemaAttributes.containsKey(compatibleAttributeName)) {
                                 feature.setAttribute(compatibleAttributeName, attributeValue == null
                                         ? null : attributeValue.toString());
-                            } else {
-                                // Do nothing
                             }
                         });
                     }
@@ -535,8 +527,12 @@ public class Shape {
         featureEntry.setBounds(ReferencedEnvelope.EVERYTHING);
         featureEntry.setSrid(spatialReference.getSrid());
 
+        // Remove geopackage file if exists as it stores existing tables/indexes
+        if (output.isFile()) {
+            Files.delete(output.toPath());
+        }
         // write feature collection to geopackage
-        try (GeoPackage geoPackage = new GeoPackage(output)) {
+        try (final GeoPackage geoPackage = new GeoPackage(output)) {
             geoPackage.add(featureEntry, featureCollection);
             geoPackage.createSpatialIndex(featureEntry);
         }
@@ -556,13 +552,12 @@ public class Shape {
      * @throws IOException there was a problem writing the generated shapefile
      */
     public static void generateShapefile(final String uuid, final GeometryType type, final Map<String, String> shapes, final Map<String, Map<String, Object>> attributes, final File output, final SpatialReference spatialReference) throws IOException {
-
         // modify schema to handle any additional attributes, including
         // conversion to string if they are of a type unsupported by shapefiles
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         final Map<String, List<String>> attributesOfValidType = new HashMap<>();
         if (attributes != null) {
-            for (final Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
+            for (final Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
                 if (shapes.keySet().contains(entry.getKey()) && entry.getValue() != null) {
                     entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
@@ -618,7 +613,7 @@ public class Shape {
 
         // copy features of the desired type from geojson to shapefile
         try (final FeatureWriter<SimpleFeatureType, SimpleFeature> writer = datastore.getFeatureWriterAppend(datastore.getTypeNames()[0], Transaction.AUTO_COMMIT)) {
-            for (final Map.Entry<String, String> entry : shapes.entrySet()) {
+            for (final Entry<String, String> entry : shapes.entrySet()) {
                 final String shape = entry.getValue();
                 final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
                 try {
@@ -646,12 +641,11 @@ public class Shape {
                                 writableFeature.setAttribute(name, feature.getAttribute(name));
                             }
 
-                            if (feature.getUserData().size() > 0) {
+                            if (!feature.getUserData().isEmpty()) {
                                 writableFeature.getUserData().putAll(feature.getUserData());
                             }
 
-                            if (attributes != null 
-                                    && attributes.containsKey(entry.getKey()) 
+                            if (attributes != null && attributes.containsKey(entry.getKey()) 
                                     && attributes.get(entry.getKey()) != null) {
                                 attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                                     final String compatibleAttributeName = generateShapefileCompatibleHeader(attributeName);
@@ -662,8 +656,6 @@ public class Shape {
                                         writableFeature.setAttribute(compatibleAttributeName, attributeValue);
                                     } else if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null) {
                                         writableFeature.setAttribute(compatibleAttributeName, attributeValue.toString());
-                                    } else {
-                                        // Do nothing
                                     }
                                 });
                             }
@@ -725,13 +717,13 @@ public class Shape {
 
         // shorten element prefixes
         if (compatibleHeader.startsWith("source")) {
-            compatibleHeader = compatibleHeader.replaceFirst("source", "s");
+            compatibleHeader = SOURCE_PATTERN.matcher(compatibleHeader).replaceFirst("s");
         }
         if (compatibleHeader.startsWith("destination")) {
-            compatibleHeader = compatibleHeader.replaceFirst("destination", "d");
+            compatibleHeader = DESTINATION_PATTERN.matcher(compatibleHeader).replaceFirst("d");
         }
         if (compatibleHeader.startsWith("transaction")) {
-            compatibleHeader = compatibleHeader.replaceFirst("transaction", "t");
+            compatibleHeader = TRANSACTION_PATTERN.matcher(compatibleHeader).replaceFirst("t");
         }
 
         // ensure header is no more than 10 characters

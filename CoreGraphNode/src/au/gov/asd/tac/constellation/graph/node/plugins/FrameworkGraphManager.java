@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,8 +58,8 @@ public final class FrameworkGraphManager extends GraphManager implements LookupL
     @Override
     public final Graph getActiveGraph() {
         final Node[] graphNodes = TopComponent.getRegistry().getActivatedNodes();
-        if (graphNodes != null && graphNodes.length == 1 && graphNodes[0] instanceof GraphNode) {
-            return ((GraphNode) graphNodes[0]).getGraph();
+        if (graphNodes != null && graphNodes.length == 1 && graphNodes[0] instanceof GraphNode graphNode) {
+            return graphNode.getGraph();
         } else {
             return null;
         }

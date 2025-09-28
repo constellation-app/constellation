@@ -1,0 +1,25 @@
+/*
+        Helios by HTML5 UP
+        html5up.net | @ajlkn
+        Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+*/
+
+/* Carousel */
+
+.carousel {
+    overflow-x: auto;
+}
+
+/* Header */
+
+body.homepage.is-preload #header:after {
+    opacity: 0;
+}
+
+.btn.btn-link.btn-block.text-left.collapsed:hover {
+   background: #b8b8b8;
+}
+
+.btn.btn-link.btn-block.text-left:hover {
+   background: #b8b8b8;
+}

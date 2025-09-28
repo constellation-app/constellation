@@ -18,3 +18,9 @@
     -fx-background-color: linear-gradient(to bottom, black, derive(blue, 50%));
 
 }
+
+.styled-text-area .content
+{
+    -fx-background-color: linear-gradient(to bottom, black, derive(blue, 50%)) !important;
+  
+}

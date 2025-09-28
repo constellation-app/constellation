@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -238,8 +238,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     SingleChoiceParameterType.setOptions(unitParam, new ArrayList<>(BIN_CALENDAR_UNITS.keySet()));
                     SingleChoiceParameterType.setChoice(unitParam, UNIT_PARAMETER_ID_BIN_DEFAULT);
                     parameters.getParameters().get(AMOUNT_PARAMETER_ID).setEnabled(false);
-                } else {
-                    // Do nothing
                 }
             }
         });
@@ -312,7 +310,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     @Override
     public void read(final GraphReadMethods rg, final PluginInteraction interaction, final PluginParameters parameters) throws PluginException, InterruptedException {
-
         // We have the dtAttr from the original wg: we should have been passed the label, but never mind.
         // We need to get the label from the original, so we can get the dtAttr for the copy.
         final String dtAttrOrig = parameters.getParameters().get(DATETIME_ATTRIBUTE_PARAMETER_ID).getStringValue();
@@ -388,7 +385,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final boolean drawTxGuides = parameters.getParameters().get(DRAW_TX_GUIDES_PARAMETER_ID).getBooleanValue();
 
             // Modify the copied graph to show our layers.
-            int z = 0;
+            float z = 0;
             final float step = getWidth(wgcopy) / values.size();
             for (final Entry<Integer, List<Float>> entry : remappedLayers.entrySet()) {
                 for (final Entry<Float, List<Integer>> currentLayer : transactionLayers.entrySet()) {
@@ -502,8 +499,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final long date = wgcopy.getLongValue(dtAttr, txId);
 
             if (d1t <= date && date < d2t) {
-                final long layerId = (date - d1t) / intervalLength;
-                final float layer = (float) layerId;
+                final float layer = (float) (date - d1t) / intervalLength;
 
                 if (!transactionLayers.containsKey(layer)) {
                     transactionLayers.put(layer, new ArrayList<>());
@@ -609,19 +605,15 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             //Create new layer
             final List<Float> runningLayers = new ArrayList<>();
             final int currentBinAmount = j + binAmount;
-            try {
-                for (; j < currentBinAmount && j < values.size(); j++) {
-                    //Add value to layer
-                    runningLayers.add(values.get(j));
-                }
-                if (!runningLayers.isEmpty()) {
-                    remappedLayers.put(i, runningLayers);
-                }
-                if (currentBinAmount > maxUnit && maxUnit % remappedLayers.values().size() == 0) {
-                    break;
-                }
-            } catch (final Exception e) {
-                LOGGER.log(Level.SEVERE, "ERROR: {0}", e.getMessage());
+            for (; j < currentBinAmount && j < values.size(); j++) {
+                //Add value to layer
+                runningLayers.add(values.get(j));
+            }
+            if (!runningLayers.isEmpty()) {
+                remappedLayers.put(i, runningLayers);
+            }
+            if (currentBinAmount > maxUnit && maxUnit % remappedLayers.values().size() == 0) {
+                break;
             }
         }
 
@@ -676,22 +668,23 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     private void copyAttributes(final GraphWriteMethods graph, final int fromId, final int toId, final GraphElementType type) {
         switch (type) {
-            case TRANSACTION:
+            case TRANSACTION -> {
                 for (int i = 0; i < graph.getAttributeCount(GraphElementType.TRANSACTION); i++) {
                     final int attr = graph.getAttribute(GraphElementType.TRANSACTION, i);
                     final Object value = graph.getObjectValue(attr, fromId);
                     graph.setObjectValue(attr, toId, value);
                 }   
-                break;
-            case VERTEX:
+            }
+            case VERTEX -> {
                 for (int i = 0; i < graph.getAttributeCount(GraphElementType.VERTEX); i++) {
                     final int attr = graph.getAttribute(GraphElementType.VERTEX, i);
                     final Object value = graph.getObjectValue(attr, fromId);
                     graph.setObjectValue(attr, toId, value);
                 }   
-                break;
-            default:
-                break;
+            }
+            default -> {
+                // Do nothing 
+            }
         }
     }
 
@@ -764,7 +757,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      *
      *
      */
-    private void transactionsAsLayers(final GraphWriteMethods graph, final int txId, final int z, final float step) {
+    private void transactionsAsLayers(final GraphWriteMethods graph, final int txId, final float z, final float step) {
         final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
         final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
         final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,14 +33,9 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Edit", id = "au.gov.asd.tac.constellation.functionality.display.MenuSetDrawDirectedTransactionsAction")
 @ActionRegistration(displayName = "#CTL_MenuSetDrawDirectedTransactionsAction", lazy = false)
 @ActionReference(path = "Menu/Edit", position = 900)
-@Messages({
-    "CTL_MenuSetDrawDirectedTransactionsAction=Draw Directed Transactions"
-})
+@Messages("CTL_MenuSetDrawDirectedTransactionsAction=Draw Directed Transactions")
 public class MenuSetDrawDirectedTransactionsAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuSetDrawDirectedTransactionsAction() {
         super();
         this.initCheckBox(Bundle.CTL_MenuSetDrawDirectedTransactionsAction(), true);

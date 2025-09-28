@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,16 +37,15 @@ import org.testng.annotations.Test;
 public class LevenshteinDistancePluginNGTest {
 
     private StoreGraph graph;
-
-    public LevenshteinDistancePluginNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -56,6 +55,7 @@ public class LevenshteinDistancePluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -126,6 +126,35 @@ public class LevenshteinDistancePluginNGTest {
      * @throws java.lang.Exception
      */
     @Test
+    public void testLevenshteinDistanceMaxDistanceZero() throws Exception {
+
+        final int vertexLabelAttributeId = VisualConcept.VertexAttribute.LABEL.ensure(graph);
+
+        graph.getSchema().newGraph(graph);
+        final int srcId = graph.addVertex();
+        graph.setStringValue(vertexLabelAttributeId, srcId, "Test");
+
+        final int dstId = graph.addVertex();
+        graph.setStringValue(vertexLabelAttributeId, dstId, "Test");
+
+        final LevenshteinDistancePlugin instance = new LevenshteinDistancePlugin();
+        PluginExecution.withPlugin(instance)
+                .withParameter(LevenshteinDistancePlugin.ATTRIBUTE_PARAMETER_ID, graph.getAttributeName(vertexLabelAttributeId))
+                .withParameter(LevenshteinDistancePlugin.MAXIMUM_DISTANCE_PARAMETER_ID, 0)
+                .withParameter(LevenshteinDistancePlugin.CASE_INSENSITIVE_PARAMETER_ID, false)
+                .withParameter(LevenshteinDistancePlugin.SELECTED_ONLY_PARAMETER_ID, false)
+                .executeNow(graph);
+
+        // Assert there is a similarity link between the nodes with distance = 1
+        assertEquals(graph.getTransactionCount(), 1);
+    }
+
+    /**
+     * Test of class LevenshteinDistancePlugin.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
     public void testLevenshteinDistanceCaseInsensitive() throws Exception {
 
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
@@ -151,5 +180,4 @@ public class LevenshteinDistancePluginNGTest {
         assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getTransaction(0)), AnalyticConcept.TransactionType.SIMILARITY.getName());
         assertEquals(graph.getIntValue(transactionLDAttributeId, graph.getTransaction(0)), 1);
     }
-
 }

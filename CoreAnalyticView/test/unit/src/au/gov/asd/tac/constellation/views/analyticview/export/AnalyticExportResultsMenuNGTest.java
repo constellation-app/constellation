@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,14 +78,11 @@ public class AnalyticExportResultsMenuNGTest {
     private static final String GRAPH_ID = "graphId";
 
     private AnalyticExportResultsMenu exportMenu;
-    private TableView table;
+    private TableView<?> table;
     private AnalyticViewTopComponent topComponent;
     private final Graph graph = mock(Graph.class);
     private final GraphManager graphManager = spy(GraphManager.class);
-
-    public AnalyticExportResultsMenuNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -112,6 +109,7 @@ public class AnalyticExportResultsMenuNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test

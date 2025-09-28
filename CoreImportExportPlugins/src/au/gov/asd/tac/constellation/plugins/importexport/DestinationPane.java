@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public class DestinationPane extends GridPane {
 
     private final ImportController importController;
 
-    public DestinationPane(final ImportController importController) {
+    public DestinationPane(final ImportController<?> importController) {
         this.importController = importController;
 
         setMaxWidth(Double.MAX_VALUE);

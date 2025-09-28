@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,12 +44,10 @@ public class QualityControlState {
     /**
      * A List of QualityControlEvent instances.
      * <p>
-     * Each element of the list corresponds to a selected node in the current
-     * graph.
+     * Each element of the list corresponds to a selected node in the current graph.
      *
      * @return A List of QualityControlEvent instances.
      */
-    @SuppressWarnings("ReturnOfCollectionOrArrayField")
     public List<QualityControlEvent> getQualityControlEvents() {
         return qualityControlEvents;
     }
@@ -59,17 +57,16 @@ public class QualityControlState {
      *
      * @return The current quality control rules.
      */
-    @SuppressWarnings("ReturnOfCollectionOrArrayField")
     public List<QualityControlRule> getRegisteredRules() {
         return registeredRules;
     }
 
     /**
-     * The highest quality control score (ie. the score of the lowest quality
-     * node) in the current list of quality control events.
+     * The highest quality control score (ie. the score of the lowest quality node) in the current list of quality
+     * control events.
      *
-     * @return The highest quality control score in the current list of quality
-     * control events, or null if there are no quality control events.
+     * @return The highest quality control score in the current list of quality control events, or null if there are no
+     * quality control events.
      */
     public QualityControlEvent getHighestScoringEvent() {
         return qualityControlEvents.isEmpty() ? null : qualityControlEvents.get(0);

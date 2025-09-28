@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,7 +101,9 @@ public class ScriptAttributeTranslator extends AttributeTranslator {
                 savedLanguage = null;
                 savedScript = null;
                 parameters.getParameters().get(SCRIPT_PARAMETER_ID).setStringValue(DEFAULT_SCRIPT);
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                final Throwable scrEx = new ScriptException(NotifyDisplayer.BLOCK_POPUP_FLAG + ex.getLocalizedMessage());
+                scrEx.setStackTrace(ex.getStackTrace());
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), scrEx);
                 NotifyDisplayer.display(ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
                 return value;
             }

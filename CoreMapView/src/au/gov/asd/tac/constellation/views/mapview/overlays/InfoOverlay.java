@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,10 +96,11 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
         float yOffset = y + MARGIN;
 
         // draw zoom info
-        final String zoom = String.valueOf(map.getZoomLevel());
+        final int maxZoomLevel = ((MapProvider) map.mapDisplay.getMapProvider()).zoomLevels();
+        final String zoom = String.valueOf((map.getZoomLevel() < maxZoomLevel) ? map.getZoomLevel() : maxZoomLevel);
+
         drawLabeledValue("Zoom", zoom, x + 60, yOffset, VALUE_BOX_SHORT_WIDTH);
-        drawStepBar(map.getZoomLevel(), x + 95, yOffset + 5,
-                ((MapProvider) map.mapDisplay.getMapProvider()).zoomLevels());
+        drawStepBar(map.getZoomLevel(), x + 95, yOffset + 5, maxZoomLevel);
 
         // draw separator
         yOffset += VALUE_BOX_HEIGHT + PADDING * 2;
@@ -288,21 +289,18 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
             scopedListenersList.forEach(scopedListeners -> {
                 if (scopedListeners.isInScope(mapEvent)) {
                     scopedListeners.listeners.forEach(listener -> {
-                        if (listener instanceof UnfoldingMap) {
-                            final UnfoldingMap listeningMap = (UnfoldingMap) listener;
-                            if (map.getId().equals(listeningMap.getId())) {
-                                if (mapEvent.getSubType().equals(PanMapEvent.PAN_BY)) {
-                                    panByListened = 1;
-                                }
-                                if (mapEvent.getSubType().equals(PanMapEvent.PAN_TO)) {
-                                    panToListened = 1;
-                                }
-                                if (mapEvent.getSubType().equals(ZoomMapEvent.ZOOM_BY_LEVEL)) {
-                                    zoomByListened = 1;
-                                }
-                                if (mapEvent.getSubType().equals(ZoomMapEvent.ZOOM_TO_LEVEL)) {
-                                    zoomToListened = 1;
-                                }
+                        if (listener instanceof UnfoldingMap listeningMap && map.getId().equals(listeningMap.getId())) {
+                            if (mapEvent.getSubType().equals(PanMapEvent.PAN_BY)) {
+                                panByListened = 1;
+                            }
+                            if (mapEvent.getSubType().equals(PanMapEvent.PAN_TO)) {
+                                panToListened = 1;
+                            }
+                            if (mapEvent.getSubType().equals(ZoomMapEvent.ZOOM_BY_LEVEL)) {
+                                zoomByListened = 1;
+                            }
+                            if (mapEvent.getSubType().equals(ZoomMapEvent.ZOOM_TO_LEVEL)) {
+                                zoomToListened = 1;
                             }
                         }
                     });

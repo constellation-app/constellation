@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.json.JsonUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
@@ -69,6 +70,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
@@ -78,11 +80,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
@@ -100,12 +105,14 @@ import org.openide.util.NbPreferences;
     "MSG_NoEntries=There are no rules for this identifier."
 })
 public final class QualityControlViewPane extends BorderPane {
-    
+
     private static final Logger LOGGER = Logger.getLogger(QualityControlViewPane.class.getName());
 
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private static Map<QualityControlRule, QualityCategory> rulePriorities = null;
+    private static Map<QualityControlRule, Boolean> ruleEnabledStatuses = null;
     private static final List<ToggleGroup> toggleGroups = new ArrayList<>();
+    private static final Map<QualityControlRule, Button> ruleEnableButtons = new HashMap<>();
     private static final JsonFactory FACTORY = new MappingJsonFactory();
 
     private final TableColumn<QualityControlEvent, QualityControlEvent> identifierColumn;
@@ -115,10 +122,33 @@ public final class QualityControlViewPane extends BorderPane {
     private final TableView<QualityControlEvent> qualityTable;
     private final FlowPane optionsPane;
 
+    private static final String DISABLE = "Disable";
+    private static final String ENABLE = "Enable";
+
+    private static final String BLACK_TEXT_COLOR = "-fx-text-fill: black;";
+    private static final String ENABLE_TEXT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : BLACK_TEXT_COLOR;
+
+    // Colours to applyed to row background when row is seleted. Mixes with row's quality colour, as quality colour is slightly transparent
+    private static final String SELECTED_COLOR = JavafxStyleManager.isDarkTheme() ? "#E8E8E8" : "#808080";
+    private static final String SELECTED_UNFOCUSED_COLOR = JavafxStyleManager.isDarkTheme() ? "#808080" : "#BEBEBE";
+
+    private ArrayList<TableRow<QualityControlEvent>> selectedRowList = new ArrayList<>();
+
+    /*firstClick is a workaround for currently a existing bug within ControlsFX object, which causes two clicks 
+    to be registered upon the user's first click within the view pane when calling value.getClickCount()*/
+    private static boolean firstClick = true;
+
     public QualityControlViewPane() {
         readSerializedRulePriorities();
+        readSerializedRuleEnabledStatuses();
 
         qualityTable = new TableView<>();
+        qualityTable.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            firstClick = true;
+            // Update row's highlighting
+            setRowHighlight(newValue);
+        });
+
         identifierColumn = new TableColumn<>("Identifier");
         identifierColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.25));
         identifierColumn.setComparator((qce1, qce2) -> {
@@ -156,9 +186,34 @@ public final class QualityControlViewPane extends BorderPane {
         qualityTable.setPlaceholder(wrappedLabel(Bundle.MSG_SelectSomething()));
         setCenter(qualityTable);
 
+        qualityTable.setRowFactory(tv -> {
+            TableRow<QualityControlEvent> row = new TableRow<>();
+            // Track each row's focus
+            row.selectedProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal) {
+                    // If list doesnt already contain this row, add
+                    if (!selectedRowList.contains(row)) {
+                        selectedRowList.add(row);
+                    }
+                    // Update highlighting
+                    setRowHighlight(qualityTable.isFocused());
+                } else {
+                    // Not selected
+                    // Remove from list if it's in there
+                    if (selectedRowList.contains(row)) {
+                        selectedRowList.remove(row);
+                    }
+                    // Remove highlight styling
+                    row.setStyle("");
+                }
+            });
+            return row;
+        });
+
         optionsPane = new FlowPane();
         optionsPane.setId("qualitycontrolview-flow-pane");
         optionsPane.setAlignment(Pos.CENTER);
+        optionsPane.setHgap(6);
         final Button deleteButton = new Button("Delete From Graph");
         deleteButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
@@ -194,12 +249,12 @@ public final class QualityControlViewPane extends BorderPane {
         priorityButton.setOnAction(event -> showPriorityDialog());
 
         // create help button
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
         helpButton.setTooltip(new Tooltip("Display help for Quality Control View"));
         helpButton.setOnAction(event -> new HelpCtx(QualityControlViewTopComponent.class.getName()).display());
         // Get rid of the ugly button look so the icon stands alone.
-        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent; -fx-effect:null; ");
 
         optionsPane.getChildren().addAll(deleteButton, selectButton, removeButton, zoomButton, priorityButton, helpButton);
 
@@ -209,13 +264,18 @@ public final class QualityControlViewPane extends BorderPane {
         this.setPadding(new Insets(5));
     }
 
+    private void setRowHighlight(final boolean isFocused) {
+        for (final TableRow<QualityControlEvent> selectedRow : selectedRowList) {
+            selectedRow.setStyle(isFocused ? "-fx-background-color: " + SELECTED_COLOR + ";" : "-fx-background-color: " + SELECTED_UNFOCUSED_COLOR + ";");
+        }
+    }
+
     public TableView<QualityControlEvent> getQualityTable() {
         return qualityTable;
     }
 
     /**
-     * Refresh the data inside QualityControlView with data from the current
-     * graph.
+     * Refresh the data inside QualityControlView with data from the current graph.
      *
      * @param state The new state to display in the view.
      */
@@ -259,11 +319,12 @@ public final class QualityControlViewPane extends BorderPane {
                 };
 
                 cell.setOnMouseClicked(value -> {
-                    if (value.getClickCount() == 2) {
+                    if (value.getClickCount() >= 2 && !firstClick) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
+                    firstClick = false;
                 });
 
                 return cell;
@@ -282,11 +343,12 @@ public final class QualityControlViewPane extends BorderPane {
                 };
 
                 cell.setOnMouseClicked(value -> {
-                    if (value.getClickCount() == 2) {
+                    if (value.getClickCount() >= 2 && !firstClick) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
+                    firstClick = false;
                 });
 
                 return cell;
@@ -306,11 +368,12 @@ public final class QualityControlViewPane extends BorderPane {
                 };
 
                 cell.setOnMouseClicked(value -> {
-                    if (value.getClickCount() == 2) {
+                    if (value.getClickCount() >= 2 && !firstClick) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
+                    firstClick = false;
                 });
 
                 return cell;
@@ -329,11 +392,12 @@ public final class QualityControlViewPane extends BorderPane {
                 };
 
                 cell.setOnMouseClicked(value -> {
-                    if (value.getClickCount() == 2) {
+                    if (value.getClickCount() >= 2 && !firstClick) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
+                    firstClick = false;
                 });
 
                 return cell;
@@ -372,29 +436,26 @@ public final class QualityControlViewPane extends BorderPane {
     public static String qualityStyle(final QualityCategory category, final float alpha) {
         final int intensity;
         final String style;
+
         switch (category) {
-            case MINOR:
-                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(90,150,255,%f);", alpha);
-                break;
-            case MEDIUM:
-                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,215,0,%f);", alpha);
-                break;
-            case MAJOR:
+            case MINOR ->
+                style = String.format("%s -fx-background-color: rgba(90,150,255,%f);", ENABLE_TEXT_COLOR, alpha);
+            case MEDIUM ->
+                style = String.format("%s -fx-background-color: rgba(255,215,0,%f);", BLACK_TEXT_COLOR, alpha);
+            case MAJOR -> {
                 intensity = 255 - (255 * QualityControlEvent.MAJOR_VALUE) / 100;
-                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(255,%d,0,%f);", intensity, alpha);
-                break;
-            case SEVERE:
+                style = String.format("%s -fx-background-color: rgba(255,%d,0,%f);", BLACK_TEXT_COLOR, intensity, alpha);
+            }
+            case SEVERE -> {
                 intensity = 255 - (255 * QualityControlEvent.SEVERE_VALUE) / 100;
-                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,%d,%d,%f);", intensity, intensity, alpha);
-                break;
-            case CRITICAL:
+                style = String.format("%s -fx-background-color: rgba(255,%d,%d,%f);", ENABLE_TEXT_COLOR, intensity, intensity, alpha);
+            }
+            case CRITICAL -> {
                 intensity = 255 - (255 * QualityControlEvent.CRITICAL_VALUE) / 100;
-                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(150,%d,%d,%f);", intensity, intensity, alpha);
-                break;
-            default:
-                // DEFAULT case
-                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(0,200,0,%f);", alpha);
-                break;
+                style = String.format("-fx-text-fill: rgb(255,255,0); -fx-background-color: rgba(150,%d,%d,%f);", intensity, intensity, alpha);
+            }
+            default -> // DEFAULT case
+                style = String.format("%s -fx-background-color: rgba(0,200,0,%f);", ENABLE_TEXT_COLOR, alpha);
         }
         return style;
     }
@@ -402,11 +463,10 @@ public final class QualityControlViewPane extends BorderPane {
     /**
      * Shows a dialog to allow the user to select priorities of each rule.
      */
-    private static void showPriorityDialog() {
+    private void showPriorityDialog() {
         final ScrollPane rulesScrollPane = new ScrollPane();
-        rulesScrollPane.setPrefHeight(240);
-        rulesScrollPane.setPrefWidth(700);
-        rulesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        rulesScrollPane.setPrefWidth(SystemUtils.IS_OS_LINUX ? 820 : 700);
+        rulesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         rulesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         final GridPane buttonGrid = new GridPane();
@@ -450,54 +510,80 @@ public final class QualityControlViewPane extends BorderPane {
             final RadioButton severeButton = new RadioButton();
             final RadioButton criticalButton = new RadioButton();
             final String resetText = rule.getCategory(0) == getPriorities().get(rule) ? "Reset" : "Reset to " + rule.getCategory(0).name();
-            
+
             final Button resetButton = new Button(resetText);
             resetButton.setOnAction(event -> {
                 switch (rule.getCategory(0)) {
-                    case MINOR:
+                    case MINOR ->
                         minorButton.setSelected(true);
-                        break;
-                    case MEDIUM:
+                    case MEDIUM ->
                         mediumButton.setSelected(true);
-                        break;
-                    case MAJOR:
+                    case MAJOR ->
                         majorButton.setSelected(true);
-                        break;
-                    case SEVERE:
+                    case SEVERE ->
                         severeButton.setSelected(true);
-                        break;
-                    case CRITICAL:
+                    case CRITICAL ->
                         criticalButton.setSelected(true);
-                        break;
-                    default:
-                        break;
+                    default -> {
+                        // do nothing
+                    }
                 }
                 resetButton.setText("Reset");
+            });
+
+            final Button enableDisableButton = new Button(Boolean.TRUE.equals(getEnablementStatuses().get(rule)) ? DISABLE : ENABLE);
+            enableDisableButton.setOnAction(event -> {
+                if (DISABLE.equals(enableDisableButton.getText())) {
+                    enableDisableButton.setText(ENABLE);
+                    ruleName.setStyle("-fx-text-fill: #808080; ");
+                    minorButton.setDisable(true);
+                    mediumButton.setDisable(true);
+                    majorButton.setDisable(true);
+                    severeButton.setDisable(true);
+                    criticalButton.setDisable(true);
+                    resetButton.setDisable(true);
+                } else {
+                    enableDisableButton.setText(DISABLE);
+                    ruleName.setStyle(ENABLE_TEXT_COLOR);
+                    minorButton.setDisable(false);
+                    mediumButton.setDisable(false);
+                    majorButton.setDisable(false);
+                    severeButton.setDisable(false);
+                    criticalButton.setDisable(false);
+                    resetButton.setDisable(false);
+                }
             });
 
             getPriorities().putIfAbsent(rule, rule.getCategory(0));
             // setting the selection based on the current priority
             switch (getPriorities().get(rule)) {
-                case MINOR:
+                case MINOR ->
                     minorButton.setSelected(true);
-                    break;
-                case MEDIUM:
+                case MEDIUM ->
                     mediumButton.setSelected(true);
-                    break;
-                case MAJOR:
+                case MAJOR ->
                     majorButton.setSelected(true);
-                    break;
-                case SEVERE:
+                case SEVERE ->
                     severeButton.setSelected(true);
-                    break;
-                case CRITICAL:
+                case CRITICAL ->
                     criticalButton.setSelected(true);
-                    break;
-                default:
-                    break;
+                default -> {
+                    // do nothing
+                }
+            }
+
+            if (Boolean.FALSE.equals(getEnablementStatuses().get(rule))) {
+                ruleName.setTextFill(Color.GREY);
+                minorButton.setDisable(true);
+                mediumButton.setDisable(true);
+                majorButton.setDisable(true);
+                severeButton.setDisable(true);
+                criticalButton.setDisable(true);
+                resetButton.setDisable(true);
             }
 
             toggleGroups.add(ruleGroup);
+            ruleEnableButtons.put(rule, enableDisableButton);
 
             GridPane.setHalignment(ruleName, HPos.LEFT);
             GridPane.setHalignment(minorButton, HPos.CENTER);
@@ -506,6 +592,7 @@ public final class QualityControlViewPane extends BorderPane {
             GridPane.setHalignment(severeButton, HPos.CENTER);
             GridPane.setHalignment(criticalButton, HPos.CENTER);
             GridPane.setHalignment(resetButton, HPos.CENTER);
+            GridPane.setHalignment(enableDisableButton, HPos.CENTER);
 
             ruleName.setPadding(new Insets(0, 0, 5, 5));
             minorButton.setPadding(new Insets(0, 10, 5, 10));
@@ -514,6 +601,7 @@ public final class QualityControlViewPane extends BorderPane {
             severeButton.setPadding(new Insets(0, 10, 5, 10));
             criticalButton.setPadding(new Insets(0, 10, 5, 10));
             resetButton.setPadding(new Insets(5, 10, 5, 10));
+            enableDisableButton.setPadding(new Insets(5, 10, 5, 10));
 
             minorButton.setUserData(QualityCategory.MINOR);
             mediumButton.setUserData(QualityCategory.MEDIUM);
@@ -536,6 +624,7 @@ public final class QualityControlViewPane extends BorderPane {
             buttonGrid.add(severeButton, 4, rowCount);
             buttonGrid.add(criticalButton, 5, rowCount);
             buttonGrid.add(resetButton, 6, rowCount);
+            buttonGrid.add(enableDisableButton, 7, rowCount);
 
             rowCount++;
         }
@@ -543,28 +632,49 @@ public final class QualityControlViewPane extends BorderPane {
         rulesScrollPane.setContent(buttonGrid);
 
         final Alert alert = new Alert(Alert.AlertType.INFORMATION, "Select Rule Priorities", ButtonType.OK, ButtonType.CANCEL);
+        alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+
+        if (JavafxStyleManager.isDarkTheme()) {
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("resources/rule-pane-dark.css").toExternalForm());
+
+        } else {
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("resources/rule-pane-light.css").toExternalForm());
+        }
+
         alert.setTitle("Select Rule Priorities");
         alert.setHeaderText("Customise the priority of rules");
         alert.getDialogPane().setContent(rulesScrollPane);
-        alert.setResizable(true);
+        alert.setResizable(false);
+
+        final List<Screen> screens = Screen.getScreensForRectangle(this.getScene().getWindow().getX(), this.getScene().getWindow().getY(),
+                this.getScene().getWindow().widthProperty().get(), this.getScene().getWindow().heightProperty().get());
+
+        alert.setX((screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - (rulesScrollPane.getPrefWidth() / 2));
+        alert.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - (rulesScrollPane.getPrefHeight() / 2));
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             for (final ToggleGroup tg : toggleGroups) {
                 getPriorities().put((QualityControlRule) tg.getUserData(), (QualityCategory) tg.getSelectedToggle().getUserData());
             }
+            for (final Entry<QualityControlRule, Button> entry : ruleEnableButtons.entrySet()) {
+                final boolean enabled = DISABLE.equals(entry.getValue().getText());
+                getEnablementStatuses().put(entry.getKey(), enabled);
+                entry.getKey().setEnabled(enabled);
+            }
             QualityControlAutoVetter.getInstance().updateQualityEvents();
             writeSerializedRulePriorities();
+            writeSerializedRuleEnabledStatuses();
         }
     }
 
     /**
-     * Display a dialog containing all Rule objects registered with the Quality
-     * Control View and which matched for a given QualityControlEvent.
+     * Display a dialog containing all Rule objects registered with the Quality Control View and which matched for a
+     * given QualityControlEvent.
      *
      * @param owner
      * @param qcevent
      */
-    private static void showRuleDialog(final TableCell<QualityControlEvent, QualityControlEvent> qcevent) {
+    private void showRuleDialog(final TableCell<QualityControlEvent, QualityControlEvent> qcevent) {
         if (qcevent.getItem() != null) {
             final int vxId = qcevent.getItem().getVertex();
             final String identifier = qcevent.getItem().getIdentifier();
@@ -588,14 +698,14 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Display a dialog containing all Rule objects registered with the Quality
-     * Control View and which matched for a given identifier.
+     * Display a dialog containing all Rule objects registered with the Quality Control View and which matched for a
+     * given identifier.
      *
      * @param owner The owner Node
      * @param identifier The identifier of the graph node being displayed.
      * @param rules The list of rules measured against this graph node.
      */
-    private static void showRuleDialog(final String identifier, final List<Pair<QualityCategory, String>> rules) {
+    private void showRuleDialog(final String identifier, final List<Pair<QualityCategory, String>> rules) {
         final ScrollPane sp = new ScrollPane();
         sp.setPrefHeight(512);
         sp.setPrefWidth(512);
@@ -629,9 +739,15 @@ public final class QualityControlViewPane extends BorderPane {
         sp.setContent(vbox);
 
         final Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         alert.setHeaderText(String.format(Bundle.MSG_QualtyControlRules(), identifier));
         alert.getDialogPane().setContent(sp);
         alert.setResizable(true);
+        final List<Screen> screens = Screen.getScreensForRectangle(this.getScene().getWindow().getX(), this.getScene().getWindow().getY(),
+                this.getScene().getWindow().widthProperty().get(), this.getScene().getWindow().heightProperty().get());
+
+        alert.setX((screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - (sp.getPrefWidth() / 2));
+        alert.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - (sp.getPrefHeight() / 2));
         alert.show();
     }
 
@@ -664,6 +780,21 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
+     * Writes the rule enabled statuses to the preferences object.
+     */
+    private static void writeSerializedRuleEnabledStatuses() {
+        final String mapAsString = JsonUtilities.getMapAsString(FACTORY, getEnablementStatuses());
+        if (!mapAsString.isEmpty()) {
+            PREFERENCES.put(ApplicationPreferenceKeys.RULE_ENABLED_STATUSES, mapAsString);
+            try {
+                PREFERENCES.flush();
+            } catch (final BackingStoreException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
+        }
+    }
+
+    /**
      * Reads the preferences object to load the rulePriorities.
      */
     public static void readSerializedRulePriorities() {
@@ -675,10 +806,23 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
+     * Reads the preferences object to load the rule enabled statuses.
+     */
+    public static void readSerializedRuleEnabledStatuses() {
+        getEnablementStatuses().clear();
+        final Map<String, String> enableStringMap = JsonUtilities.getStringAsMap(FACTORY, PREFERENCES.get(ApplicationPreferenceKeys.RULE_ENABLED_STATUSES, ""));
+        for (final Entry<String, String> entry : enableStringMap.entrySet()) {
+            final QualityControlRule rule = QualityControlEvent.getRuleByString(entry.getKey());
+            final boolean enabled = Boolean.parseBoolean(entry.getValue());
+            getEnablementStatuses().put(rule, enabled);
+            rule.setEnabled(enabled);
+        }
+    }
+
+    /**
      * Lazily instantiates the rulePriorities Map and loads it via the lookup
      *
-     * @return a Map<QualityControlRule, QualityCategory> of rules mapped to
-     * categories
+     * @return a Map<QualityControlRule, QualityCategory> of rules mapped to categories
      */
     public static Map<QualityControlRule, QualityCategory> getPriorities() {
         if (MapUtils.isEmpty(rulePriorities)) {
@@ -688,6 +832,16 @@ public final class QualityControlViewPane extends BorderPane {
             }
         }
         return rulePriorities;
+    }
+
+    public static Map<QualityControlRule, Boolean> getEnablementStatuses() {
+        if (MapUtils.isEmpty(ruleEnabledStatuses)) {
+            ruleEnabledStatuses = new HashMap<>();
+            for (final QualityControlRule rule : Lookup.getDefault().lookupAll(QualityControlRule.class)) {
+                ruleEnabledStatuses.put(rule, rule.isEnabled());
+            }
+        }
+        return ruleEnabledStatuses;
     }
 
     /**
@@ -723,8 +877,7 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Selects on the graph only nodes which have a corresponding selected
-     * QualityControlEvent.
+     * Selects on the graph only nodes which have a corresponding selected QualityControlEvent.
      */
     @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     protected static class SelectQualityControlEvents extends SimpleEditPlugin {
@@ -770,8 +923,7 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Selects on the graph only nodes which do not have a corresponding
-     * selected QualityControlEvent.
+     * Selects on the graph only nodes which do not have a corresponding selected QualityControlEvent.
      */
     @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     protected static class DeselectQualityControlEvents extends SimpleEditPlugin {
@@ -810,8 +962,7 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Zoom the camera of the Graph to the extents of nodes corresponding to any
-     * selected QualityControlEvent.
+     * Zoom the camera of the Graph to the extents of nodes corresponding to any selected QualityControlEvent.
      */
     @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
     private static class ZoomToQualityControlEvents extends SimpleEditPlugin {

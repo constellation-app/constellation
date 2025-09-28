@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.List;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -49,32 +50,32 @@ public class CSVImportFileParserNGTest {
 
     private static InputSource inputSourceMock;
     private static PluginParameters pluginParametersMock;
-    private static CSVParser CSVParserMock;
+    private static CSVParser csvParserMock;
     private static Iterator<CSVRecord> iteratorMock;
-    private static CSVRecord CSVRecordMock;
-
-    public CSVImportFileParserNGTest() {
-    }
-
+    private static CSVRecord csvRecordMock;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
         inputSourceMock = mock(InputSource.class);
         pluginParametersMock = mock(PluginParameters.class);
-        CSVParserMock = mock(CSVParser.class);
+        csvParserMock = mock(CSVParser.class);
         iteratorMock = mock(Iterator.class);
-        CSVRecordMock = mock(CSVRecord.class);
+        csvRecordMock = mock(CSVRecord.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -90,8 +91,8 @@ public class CSVImportFileParserNGTest {
         doCallRealMethod().when(instance).parse(any(InputSource.class), any(PluginParameters.class));
 
         // When the CSV file is empty.
-        doReturn(CSVParserMock).when(instance).getCSVParser(inputSourceMock);
-        doReturn(iteratorMock).when(CSVParserMock).iterator();
+        doReturn(csvParserMock).when(instance).getCSVParser(inputSourceMock);
+        doReturn(iteratorMock).when(csvParserMock).iterator();
 
         final List<String[]> expResult1 = new ArrayList<>();
         final List<String[]> result1 = instance.parse(inputSourceMock, pluginParametersMock);
@@ -100,9 +101,9 @@ public class CSVImportFileParserNGTest {
 
         // When there are CSV records to be parsed in the file.
         doReturn(true, true, false).when(iteratorMock).hasNext();
-        doReturn(CSVRecordMock, CSVRecordMock).when(iteratorMock).next();
-        doReturn(1).when(CSVRecordMock).size();
-        doReturn("test").when(CSVRecordMock).get(0);
+        doReturn(csvRecordMock, csvRecordMock).when(iteratorMock).next();
+        doReturn(1).when(csvRecordMock).size();
+        doReturn("test").when(csvRecordMock).get(0);
 
         final String[] line = new String[1];
         line[0] = "test";
@@ -114,7 +115,7 @@ public class CSVImportFileParserNGTest {
         final List<String[]> expResult2 = list;
         final List<String[]> result2 = instance.parse(inputSourceMock, pluginParametersMock);
 
-        assertEquals(result2, expResult2);
+        assertThat(result2).usingRecursiveComparison().isEqualTo(expResult2);
     }
 
     /**
@@ -130,8 +131,8 @@ public class CSVImportFileParserNGTest {
         doCallRealMethod().when(instance).preview(any(InputSource.class), any(PluginParameters.class), anyInt());
 
         // When the CSV file is empty.
-        doReturn(CSVParserMock).when(instance).getCSVParser(inputSourceMock);
-        doReturn(iteratorMock).when(CSVParserMock).iterator();
+        doReturn(csvParserMock).when(instance).getCSVParser(inputSourceMock);
+        doReturn(iteratorMock).when(csvParserMock).iterator();
 
         // The limit value is irrelevant in this case.
         final SecureRandom rand = new SecureRandom();
@@ -144,9 +145,9 @@ public class CSVImportFileParserNGTest {
 
         // When there are 2 CSV records to be parsed in the file and the limit is 0.
         doReturn(true, true, false).when(iteratorMock).hasNext();
-        doReturn(CSVRecordMock, CSVRecordMock).when(iteratorMock).next();
-        doReturn(1).when(CSVRecordMock).size();
-        doReturn("test").when(CSVRecordMock).get(0);
+        doReturn(csvRecordMock, csvRecordMock).when(iteratorMock).next();
+        doReturn(1).when(csvRecordMock).size();
+        doReturn("test").when(csvRecordMock).get(0);
 
         final String[] line = new String[1];
         line[0] = "test";
@@ -158,11 +159,11 @@ public class CSVImportFileParserNGTest {
         final List<String[]> expResult2 = explist;
         final List<String[]> result2 = instance.preview(inputSourceMock, pluginParametersMock, 0);
 
-        assertEquals(result2, expResult2);
+        assertThat(result2).usingRecursiveComparison().isEqualTo(expResult2);
 
         // When there are 4 CSV records to be parsed in the file and the limit is 2
         doReturn(true, true, true, true, false).when(iteratorMock).hasNext();
-        doReturn(CSVRecordMock, CSVRecordMock, CSVRecordMock, CSVRecordMock).when(iteratorMock).next();
+        doReturn(csvRecordMock, csvRecordMock, csvRecordMock, csvRecordMock).when(iteratorMock).next();
 
         explist.add(line);
 
@@ -170,7 +171,7 @@ public class CSVImportFileParserNGTest {
         final List<String[]> expResult3 = explist;
         final List<String[]> result3 = instance.preview(inputSourceMock, pluginParametersMock, 2);
 
-        assertEquals(result3, expResult3);
+        assertThat(result3).usingRecursiveComparison().isEqualTo(expResult3);
     }
 
     /**

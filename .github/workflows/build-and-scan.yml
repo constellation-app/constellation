@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      RUNNER_IMAGE: constellationapplication/netbeans-runner:12.0.4
+      RUNNER_IMAGE: "constellationapplication/netbeans-runner:21.0.2"
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       DESTINATION_BRANCH: "${{ github.base_ref }}"
@@ -28,7 +28,7 @@ jobs:
     steps:
     # Checkout this commit
     - name: Checkout Branch
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: constellation-app/constellation
         path: constellation
@@ -38,20 +38,21 @@ jobs:
     - name: Set Verbosity
       id: verbosity
       run: |
-        if [[ ${{ contains(github.event.pull_request.labels.*.name, 'verbose-logging') }} = 'true' ]]; then echo '::set-output name=VERBOSITY::-v -verbose' && echo 'Verbose Logging Enabled'; else echo '::set-output name=VERBOSITY::-v " "' && echo 'Verbose Logging Disabled'; fi
+        if [[ ${{ contains(github.event.pull_request.labels.*.name, 'verbose-logging') }} = 'true' ]]; then echo 'VERBOSITY=-v -verbose' >> $GITHUB_OUTPUT && echo 'Verbose Logging Enabled'; else echo 'Verbose Logging Disabled'; fi
 
-    # Cache the ivy dependencies
-    - name: Restore Ivy Cache
+      # Cache the ivy dependencies.
+    - name: Restore Cache
       id: cache-dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
-        path: ~/.ivy2
+        path: ~/.ivy2/cache
         key: ${{ runner.os }}-ivy-${{ hashFiles('constellation/CoreDependencies/src/ivy.xml') }}
-
-    - name: Create Ivy Cache
+        
+    - name: Create Cache Folder
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         mkdir ~/.ivy2
+        mkdir ~/.ivy2/cache
 
     - name: Add Execute Privilege to Scripts
       run: |

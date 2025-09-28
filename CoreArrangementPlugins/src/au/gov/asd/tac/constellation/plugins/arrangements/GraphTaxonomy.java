@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,13 +98,13 @@ public final class GraphTaxonomy {
     }
 
     public GraphTaxonomy(final GraphWriteMethods wg, final Map<Integer, Set<Integer>> taxa, final Map<Integer, Integer> nodeToTaxa) {
-        this(wg, taxa, null, Graph.NOT_FOUND, Graph.NOT_FOUND);
+        this(wg, taxa, nodeToTaxa, Graph.NOT_FOUND, Graph.NOT_FOUND);
     }
 
     public GraphTaxonomy(final GraphWriteMethods wg, final Map<Integer, Set<Integer>> taxa, final Map<Integer, Integer> nodeToTaxa, final int singletonKey, final int doubletKey) {
         this.wg = wg;
-        this.taxa = taxa;
-        this.nodeToTaxa = nodeToTaxa;
+        this.taxa = new HashMap<>(taxa);
+        this.nodeToTaxa = nodeToTaxa == null ? null : new HashMap<>(nodeToTaxa);
         arrangeRectangularly = new HashSet<>();
         this.singletonKey = singletonKey;
         this.doubletKey = doubletKey;
@@ -119,7 +119,7 @@ public final class GraphTaxonomy {
     }
 
     public Map<Integer, Integer> getNodeToTaxa() {
-        return nodeToTaxa;
+        return Collections.unmodifiableMap(nodeToTaxa);
     }
 
     public int getSingletonKey() {
@@ -161,7 +161,7 @@ public final class GraphTaxonomy {
      *
      * @param keys the keys of the taxa to be arranged in a grid.
      */
-    public void setArrangeRectangularly(final Set<Integer> keys) {
+    public void setArrangeRectangularly(final Iterable<Integer> keys) {
         arrangeRectangularly.clear();
         for (final Integer k : keys) {
             arrangeRectangularly.add(k);
@@ -303,7 +303,6 @@ public final class GraphTaxonomy {
         }
 
         // Add the transactions.
-        //        final long t0 = System.currentTimeMillis();
         // We search through all of the taxa to find sources,
         // but only look in the remaining taxa for destinations,
         // otherwise we end up with two transactions between each vertex.

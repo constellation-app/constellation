@@ -34,37 +34,13 @@
     -fx-vbar-policy: never;
 }
 
-.scroll-pane {
-    -fx-background-color: transparent;
-}
-
 .scroll-pane .content {
     -fx-background-color: transparent;
-}
-
-#time-label {
-    -fx-text-fill: #cccccc;
-}
-
-#translation-label {
-    -fx-font-style: italic;
-}
-
-#transparent-background {
-    -fx-background-color: transparent;
-}
-
-#text-fill-white {
-    -fx-text-fill: white;
 }
 
 #show-tool-tip {
     -fx-text-fill: white;
     -fx-padding: 2;
-}
-
-.list-cell {
-    -fx-background-color: transparent;
 }
 
 .selectable-label {

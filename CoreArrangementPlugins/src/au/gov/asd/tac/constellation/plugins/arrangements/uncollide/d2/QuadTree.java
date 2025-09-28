@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -129,17 +129,13 @@ public class QuadTree {
                 index = TOP_L;
             } else if (bottomQuadrant) {
                 index = BOT_L;
-            } else {
-                // Do nothing
             }
-        } // Object can completely fit within the right quadrants.
-        else if (orb.getX() - orb.r > midx) {
+        } else if (orb.getX() - orb.r > midx) {
+            // Object can completely fit within the right quadrants.
             if (topQuadrant) {
                 index = TOP_R;
             } else if (bottomQuadrant) {
                 index = BOT_R;
-            } else {
-                // Do nothing
             }
         } else {
             // Do nothing

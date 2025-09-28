@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -86,9 +87,8 @@ public abstract class ImportController<D> {
 
     // preference to show or hide all graph schema attributes
     private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
-    
-    private static final Object LOCK = new Object();
 
+    private static final Object LOCK = new Object();
 
     protected ImportController() {
         showAllSchemaAttributes = false;
@@ -117,6 +117,7 @@ public abstract class ImportController<D> {
     public void displayAlert(final String header, final String message, final AlertType alertType) {
         final Alert dialog;
         dialog = new Alert(alertType, "", ButtonType.OK);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         dialog.setTitle("Delimited Importer");
         dialog.setHeaderText(header);
         dialog.setContentText(message);
@@ -198,7 +199,7 @@ public abstract class ImportController<D> {
         try {
             synchronized (LOCK) {
                 updateAutoAddedAttributes(GraphElementType.VERTEX, autoAddedVertexAttributes, rg, showSchemaAttributes);
-                updateAutoAddedAttributes(GraphElementType.TRANSACTION, autoAddedTransactionAttributes, rg, showSchemaAttributes);               
+                updateAutoAddedAttributes(GraphElementType.TRANSACTION, autoAddedTransactionAttributes, rg, showSchemaAttributes);
             }
         } finally {
             rg.release();
@@ -217,12 +218,13 @@ public abstract class ImportController<D> {
      */
     public boolean hasAttribute(final GraphElementType elementType, final String label) {
         switch (elementType) {
-            case VERTEX:
+            case VERTEX -> {
                 return autoAddedVertexAttributes.containsKey(label);
-            case TRANSACTION:
+            }   
+            case TRANSACTION -> {
                 return autoAddedTransactionAttributes.containsKey(label);
-            default:
-                throw new IllegalArgumentException("Element type must be VERTEX or TRANSACTION");
+            }
+            default -> throw new IllegalArgumentException("Element type must be VERTEX or TRANSACTION");
         }
     }
 
@@ -310,9 +312,9 @@ public abstract class ImportController<D> {
         if (configurationPane != null) {
 
             synchronized (LOCK) {
-                displayedVertexAttributes = createDisplayedAttributes(autoAddedVertexAttributes, 
+                displayedVertexAttributes = createDisplayedAttributes(autoAddedVertexAttributes,
                         manuallyAddedVertexAttributes);
-                displayedTransactionAttributes = createDisplayedAttributes(autoAddedTransactionAttributes, 
+                displayedTransactionAttributes = createDisplayedAttributes(autoAddedTransactionAttributes,
                         manuallyAddedTransactionAttributes);
             }
 
@@ -384,7 +386,9 @@ public abstract class ImportController<D> {
      * A List&lt;ImportDefinition&gt; where each list element corresponds to a
      * RunPane tab.
      *
-     * @param isFilesIncludeHeadersEnabled
+     * @param isFilesIncludeHeadersEnabled When true will skip the first row and
+     * when false will include the first row
+     *
      * @return A List&lt;ImportDefinition&gt; where each list element
      * corresponds to a RunPane tab.
      */
@@ -443,12 +447,6 @@ public abstract class ImportController<D> {
         return currentData;
     }
 
-    public Attribute showNewAttributeDialog(final GraphElementType elementType) {
-        final NewAttributeDialog dialog = new NewAttributeDialog(importPane.getParentWindow(), elementType);
-        dialog.showAndWait();
-        return dialog.getAttribute();
-    }
-
     public Set<Integer> getKeys() {
         return Collections.unmodifiableSet(keys);
     }
@@ -464,6 +462,5 @@ public abstract class ImportController<D> {
     public void setSkipInvalidRows(final boolean skipInvalidRows) {
         this.skipInvalidRows = skipInvalidRows;
     }
-    
-    
+
 }

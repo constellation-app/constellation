@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,9 +45,9 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("AddModeWelcomePlugin=Add Mode Welcome Plugin")
 public class AddModeWelcomePlugin implements WelcomePluginInterface {
 
-    public static final String NEW_GRAPH = "resources/welcome_add_graph.png";
-    final ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
-    final Button newButton = new Button();
+    private static final String NEW_GRAPH = "resources/welcome_add_graph.png";
+    private final ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
+    private final Button newButton = new Button();
 
     /**
      * Get a unique reference that is used to identify the plugin
@@ -76,16 +76,6 @@ public class AddModeWelcomePlugin implements WelcomePluginInterface {
         final String graphName = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).getLabel().trim().toLowerCase();
         GraphOpener.getDefault().openGraph(dualGraph, graphName);
 
-    }
-
-    /**
-     * Determines whether this analytic appear on the Welcome Page
-     *
-     * @return true is this analytic should be visible, false otherwise.
-     */
-    @Override
-    public boolean isVisible() {
-        return true;
     }
 
     /**

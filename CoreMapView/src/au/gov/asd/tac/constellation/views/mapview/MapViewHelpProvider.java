@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.mapview;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 1400)
 @NbBundle.Messages("MapViewHelpProvider=Map View Help Provider")
 public class MapViewHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreMapView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file
@@ -42,18 +41,15 @@ public class MapViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String mapModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "mapview" + sep + "docs" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.mapview.MapViewTopComponent", mapModulePath + "map-view.md");
-        map.put("au.gov.asd.tac.constellation.views.mapview.layers.DayNightLayer", mapModulePath + "mapview-layers-day-night.md");
-        map.put("au.gov.asd.tac.constellation.views.mapview.layers.AbstractHeatmapLayer", mapModulePath + "mapview-layers-heatmap.md");
-        map.put("au.gov.asd.tac.constellation.views.mapview.layers.AbstractPathsLayer", mapModulePath + "mapview-layers-paths.md");
-        map.put("au.gov.asd.tac.constellation.views.mapview.layers.ThiessenPolygonsLayer", mapModulePath + "mapview-layers-thiessen-polygons.md");
-        map.put("au.gov.asd.tac.constellation.views.mapview.overlays.InfoOverlay", mapModulePath + "mapview-overlays-info.md");
-        map.put("au.gov.asd.tac.constellation.views.mapview.overlays.ToolsOverlay", mapModulePath + "mapview-overlays-tools.md");
-        map.put("au.gov.asd.tac.constellation.views.mapview.overlays.OverviewOverlay", mapModulePath + "mapview-overlays-overview.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.MapViewTopComponent", MODULE_PATH + "map-view.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.layers.DayNightLayer", MODULE_PATH + "mapview-layers-day-night.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.layers.AbstractHeatmapLayer", MODULE_PATH + "mapview-layers-heatmap.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.layers.AbstractPathsLayer", MODULE_PATH + "mapview-layers-paths.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.layers.ThiessenPolygonsLayer", MODULE_PATH + "mapview-layers-thiessen-polygons.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.overlays.InfoOverlay", MODULE_PATH + "mapview-overlays-info.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.overlays.ToolsOverlay", MODULE_PATH + "mapview-overlays-tools.md");
+        map.put("au.gov.asd.tac.constellation.views.mapview.overlays.OverviewOverlay", MODULE_PATH + "mapview-overlays-overview.md");
         return map;
     }
 
@@ -64,8 +60,6 @@ public class MapViewHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        return CODEBASE_NAME + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "mapview" + sep + "docs" + sep + "mapview-toc.xml";
+        return MODULE_PATH + "mapview-toc.xml";
     }
 }

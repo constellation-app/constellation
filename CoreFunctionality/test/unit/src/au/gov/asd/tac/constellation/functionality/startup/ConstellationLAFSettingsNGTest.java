@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@ package au.gov.asd.tac.constellation.functionality.startup;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.LookAndFeel;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -39,15 +39,13 @@ import org.testng.annotations.Test;
 public class ConstellationLAFSettingsNGTest {
     
     private static final Logger LOGGER = Logger.getLogger(ConstellationLAFSettingsNGTest.class.getName());
-    final static PseudoLookAndFeel pseudoLAF = new PseudoLookAndFeel();
-    final static PseudoUIDefaults pseudoUIdefaults = new PseudoUIDefaults();
-    final static PseudoViewTabDisplayerUI pseudoViewDisplayerUI = new PseudoViewTabDisplayerUI();
-    final static PseudoTabDisplayerUI pseudoTabDisplayerUI = new PseudoTabDisplayerUI();
-    final static Class<?> pseudoViewDisplayerUIclass = pseudoViewDisplayerUI.getClass();
-    final static Class<?> pseudoTabDisplayerUIclass = pseudoTabDisplayerUI.getClass();
+    static final PseudoLookAndFeel pseudoLAF = new PseudoLookAndFeel();
+    static final PseudoUIDefaults pseudoUIdefaults = new PseudoUIDefaults();
+    static final Class<?> pseudoViewDisplayerUIclass = PseudoViewTabDisplayerUI.class;
+    static final Class<?> pseudoTabDisplayerUIclass = PseudoTabDisplayerUI.class;
 
     @Test
-    public void runSetWindowsXPTabColors() {
+    public void runSetWindowsXPTabColors() throws UnsupportedLookAndFeelException {
         try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);
@@ -64,15 +62,11 @@ public class ConstellationLAFSettingsNGTest {
             final Color expectedSelectionIndicator = new Color(180, 220, 255);                                                                
             Assert.assertTrue(selectionIndicator != null && selectionIndicator.equals(expectedSelectionIndicator));                                                              
             LOGGER.info("Windows XP LAF Test: PASSED");
-
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
-            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
     
     @Test
-    public void runSetWindows8TabColors() {
+    public void runSetWindows8TabColors() throws UnsupportedLookAndFeelException {
         try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);            
@@ -85,17 +79,14 @@ public class ConstellationLAFSettingsNGTest {
             UIManager.getDefaults().put("org.netbeans.swing.tabcontrol.plaf.Windows8VectorViewTabDisplayerUI", pseudoViewDisplayerUIclass);
             ConstellationLAFSettings.applyTabColorSettings();
             final Color selectedBackgroundFiller = (Color) UIManager.getDefaults().get("tab_sel_fill");
-            final Color expectedBackgroundFiller = new Color(160, 205, 255);                                                                
+            final Color expectedBackgroundFiller = new Color(155, 200, 255);
             Assert.assertTrue(selectedBackgroundFiller != null && selectedBackgroundFiller.equals(expectedBackgroundFiller));                                                              
             LOGGER.info("Windows 8+ LAF Test: PASSED");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
-            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
     
     @Test
-    public void runSetNimbusTabColors() {
+    public void runSetNimbusTabColors() throws UnsupportedLookAndFeelException {
         try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);            
@@ -109,14 +100,11 @@ public class ConstellationLAFSettingsNGTest {
             final String nimbusPainterName = UIManager.getLookAndFeelDefaults().get("TabbedPane:TabbedPaneTab[Enabled].backgroundPainter").getClass().getName();
             Assert.assertTrue(nimbusPainterName != null && nimbusPainterName.contains("NimbusCustomGradientTabPainter"));
             LOGGER.info("Nimbus LAF Test: PASSED");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
-            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
-        @Test
-    public void runSetDarkNimbusTabColors() {
+    @Test
+    public void runSetDarkNimbusTabColors() throws UnsupportedLookAndFeelException {
         try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);            
@@ -131,14 +119,11 @@ public class ConstellationLAFSettingsNGTest {
             final String darkNimbusPainterName = UIManager.getLookAndFeelDefaults().get("TabbedPane:TabbedPaneTab[Enabled].backgroundPainter").getClass().getName();
             Assert.assertTrue(darkNimbusPainterName != null && darkNimbusPainterName.contains("NimbusCustomGradientTabPainter"));
             LOGGER.info("Dark Nimbus LAF Test: PASSED");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
-            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
     @Test
-    public void runSetMetalTabColors() {
+    public void runSetMetalTabColors() throws UnsupportedLookAndFeelException {
         try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);            
@@ -154,14 +139,11 @@ public class ConstellationLAFSettingsNGTest {
             final Color expectedHighlight = new Color(130, 170, 255);
             Assert.assertTrue(highlight != null && highlight.equals(expectedHighlight));
             LOGGER.info("Metal LAF Test: PASSED");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
-            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
     
     @Test
-    public void runSetDarkMetalTabColors() {
+    public void runSetDarkMetalTabColors() throws UnsupportedLookAndFeelException {
         try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);            
@@ -177,14 +159,11 @@ public class ConstellationLAFSettingsNGTest {
             final Color expectedDarkHighlight = new Color(45, 95, 180);
             Assert.assertTrue(darkHighlight != null && darkHighlight.equals(expectedDarkHighlight));
             LOGGER.info("Dark Metal LAF Test: PASSED");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
-            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
     
     @Test
-    public void runSetFlatLafLightTabColors() {
+    public void runSetFlatLafLightTabColors() throws UnsupportedLookAndFeelException {
         try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);            
@@ -197,17 +176,14 @@ public class ConstellationLAFSettingsNGTest {
             UIManager.getDefaults().put("org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI", pseudoTabDisplayerUIclass);
             ConstellationLAFSettings.applyTabColorSettings();
             final Color inactiveUnderlineColor = (Color) UIManager.getDefaults().get("ViewTab.inactiveUnderlineColor");
-            final Color expectedInactiveUnderlineColor = new Color(95, 130, 185);
+            final Color expectedInactiveUnderlineColor = new Color(88, 138, 190);
             Assert.assertTrue(inactiveUnderlineColor != null && inactiveUnderlineColor.equals(expectedInactiveUnderlineColor));
             LOGGER.info("FlatLafLight LAF Test: PASSED");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
-            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
     @Test
-    public void runSetFlatLafDarkTabColors() {
+    public void runSetFlatLafDarkTabColors() throws UnsupportedLookAndFeelException {
         try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);            
@@ -220,17 +196,14 @@ public class ConstellationLAFSettingsNGTest {
             UIManager.getDefaults().put("org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI", pseudoTabDisplayerUIclass);
             ConstellationLAFSettings.applyTabColorSettings();
             final Color inactiveDarkUnderlineColor = (Color) UIManager.getDefaults().get("ViewTab.inactiveUnderlineColor");
-            final Color expectedInactiveDarkUnderlineColor = new Color(20, 100, 175);
+            final Color expectedInactiveDarkUnderlineColor = new Color(20, 95, 140);
             Assert.assertTrue(inactiveDarkUnderlineColor != null && inactiveDarkUnderlineColor.equals(expectedInactiveDarkUnderlineColor));
             LOGGER.info("FlatLafDark LAF Test: PASSED");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
-            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
     @Test
-    public void runErroredWindowsSetTabColors() {
+    public void runErroredWindowsSetTabColors() throws UnsupportedLookAndFeelException {
         try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);            
@@ -249,14 +222,11 @@ public class ConstellationLAFSettingsNGTest {
             final Color selectionIndicatorSetting = (Color) UIManager.getDefaults().get("TabbedPane.selectionIndicator");
             Assert.assertTrue(selectionIndicatorSetting != null && selectionIndicatorSetting.equals(Color.BLACK));                        
             LOGGER.info("ERROR TESTS on Windows: PASSED");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
-            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
     @Test
-    public void runErroredMetalSetTabColors() {
+    public void runErroredMetalSetTabColors() throws UnsupportedLookAndFeelException {
         try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);            
@@ -274,14 +244,11 @@ public class ConstellationLAFSettingsNGTest {
             final Color selectedBackgroundSetting = (Color) UIManager.getDefaults().get("TabRenderer.selectedBackground");
             Assert.assertTrue(selectedBackgroundSetting != null && selectedBackgroundSetting.equals(Color.BLACK));
             LOGGER.info("ERROR TESTS on Metal: PASSED");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
-            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
     @Test
-    public void runErroredFlatLafSetTabColors() {
+    public void runErroredFlatLafSetTabColors() throws UnsupportedLookAndFeelException {
         try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);            
@@ -299,14 +266,11 @@ public class ConstellationLAFSettingsNGTest {
             final Color inactiveUnderlineColorSetting = (Color) UIManager.getDefaults().get("ViewTab.inactiveUnderlineColor");
             Assert.assertTrue(inactiveUnderlineColorSetting != null && inactiveUnderlineColorSetting.equals(Color.BLACK));
             LOGGER.info("ERROR TESTS on FlatLafLight: PASSED");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
-            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
 
     @Test
-    public void runClassCoverageTestingTabColors() {
+    public void runClassCoverageTestingTabColors() throws UnsupportedLookAndFeelException {
         try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);            
@@ -319,12 +283,12 @@ public class ConstellationLAFSettingsNGTest {
             ConstellationLAFSettings.ouputUIDefaultValues(null, "Tabbed");
             ConstellationLAFSettings.ouputUIDefaultValues("Tabbed", null);
             
-            new ConstellationLAFSettings.NimbusCustomGradientTabPainter();
-            new ConstellationLAFSettings.NimbusCustomGradientTabPainter(null);
-            new ConstellationLAFSettings.NimbusCustomGradientTabPainter(Color.ORANGE);
-            new ConstellationLAFSettings.NimbusCustomGradientTabPainter(null, null);
-            new ConstellationLAFSettings.NimbusCustomGradientTabPainter(null, Color.ORANGE);
-            new ConstellationLAFSettings.NimbusCustomGradientTabPainter(Color.ORANGE, null);            
+            new ConstellationLAFSettings.NimbusCustomGradientTabPainter<>();
+            new ConstellationLAFSettings.NimbusCustomGradientTabPainter<>(null);
+            new ConstellationLAFSettings.NimbusCustomGradientTabPainter<>(Color.ORANGE);
+            new ConstellationLAFSettings.NimbusCustomGradientTabPainter<>(null, null);
+            new ConstellationLAFSettings.NimbusCustomGradientTabPainter<>(null, Color.ORANGE);
+            new ConstellationLAFSettings.NimbusCustomGradientTabPainter<>(Color.ORANGE, null);            
                                     
             pseudoLAF.setName("Windows 95");
             UIManager.getDefaults().put("org.netbeans.swing.tabcontrol.plaf.Windows8VectorViewTabDisplayerUI", null);
@@ -345,9 +309,6 @@ public class ConstellationLAFSettingsNGTest {
             Assert.assertTrue(selectedBackgroundSetting != null && selectedBackgroundSetting.equals(Color.BLACK));
 
             LOGGER.info("CLASS COVERAGE TESTS COMPLETE");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "\n******* ERROR RUNNING TEST *******\n", e);
-            Assert.fail("\n******* ERROR RUNNING TEST *******\n" + e);
         }
     }
    
@@ -416,8 +377,6 @@ public class ConstellationLAFSettingsNGTest {
         
         public void put(String key, Object value) {
             settings.put(key, value);
-        }
-        
-    }
-    
+        }       
+    }    
 }

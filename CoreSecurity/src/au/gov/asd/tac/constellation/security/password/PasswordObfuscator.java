@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -30,28 +29,24 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
  * This class allows creation of obfuscated passwords and keys.
  * <p>
- * To obfuscate a password, run this class as an application and enter the
- * password at the prompt (it will be echoed to the screen). You can now pass in
- * your obfuscated password as a string enclosed inside
+ * To obfuscate a password, run this class as an application and enter the password at the prompt (it will be echoed to
+ * the screen). You can now pass in your obfuscated password as a string enclosed inside
  * <code>new ObfuscatedPassword(...)</code>
  * <p>
- * To generate a new key, run this class as an application and enter "-" at the
- * prompt. A key will be generated. Copy the Java array which is printed out
- * into the definition of <code>raw</code>.
+ * To generate a new key, run this class as an application and enter "-" at the prompt. A key will be generated. Copy
+ * the Java array which is printed out into the definition of <code>raw</code>.
  * <p>
  * This class cannot be combined with <code>ObfuscatedPassword</code>.
  * <p>
- * Note that storing obfuscated passwords in source code or configuration files
- * is strongly discouraged. This is NOT a good security practice and might make
- * sense if working locally and as a temporary measure. Once again, strongly
- * discourage using password obfuscation in a production environment. USE AT
- * YOUR OWN RISK!
+ * Note that storing obfuscated passwords in source code or configuration files is strongly discouraged. This is NOT a
+ * good security practice and might make sense if working locally and as a temporary measure. Once again, strongly
+ * discourage using password obfuscation in a production environment. USE AT YOUR OWN RISK!
  *
  * @author ruby_crucis
  * @author arcturus
@@ -71,7 +66,7 @@ public class PasswordObfuscator {
      * @return The obfuscated password.
      */
     public static ObfuscatedPassword obfuscate(final String password) {
-        final IvParameterSpec iv = new IvParameterSpec(PasswordUtilities.getIV());
+        final GCMParameterSpec iv = new GCMParameterSpec(PasswordUtilities.T_LEN, PasswordUtilities.getIV());
         final SecretKey key = new SecretKeySpec(PasswordUtilities.getKey(), PasswordUtilities.ALG);
         try {
             final Cipher cipher = Cipher.getInstance(PasswordUtilities.ALG_SPEC);
@@ -89,32 +84,24 @@ public class PasswordObfuscator {
     }
 
     /**
-     * Either obfuscate a password or (if "-" is entered for the password),
-     * create a new key.
+     * Either obfuscate a password or (if "-" is entered for the password), create a new key.
      * <p>
-     * To run the main method navigate to constellation\Security\build\classes
-     * on the command prompt and run the following command:
+     * To run the main method navigate to constellation\Security\build\classes on the command prompt and run the
+     * following command:
      * <pre>
      * java -cp {path/to/org-openide-util-lookup.jar};. au.gov.asd.tac.constellation.security.password.PasswordObfuscator
      * </pre>
      * <p>
-     * Should you decide to create a new key, note that all existing obfuscated
-     * passwords will need to be re-obfuscated using the new key. You need to
-     * de-obfuscate the passwords using the old key first (via
-     * <code>PasswordDeobfuscator</code>) and re-obfuscate the password with the
-     * new key.
+     * Should you decide to create a new key, note that all existing obfuscated passwords will need to be re-obfuscated
+     * using the new key. You need to de-obfuscate the passwords using the old key first (via
+     * <code>PasswordDeobfuscator</code>) and re-obfuscate the password with the new key.
      *
      * @param args
      * @throws NoSuchAlgorithmException
-     * @throws NoSuchPaddingException
-     * @throws InvalidKeyException
-     * @throws IllegalBlockSizeException
-     * @throws BadPaddingException
      * @throws IOException
-     * @throws InvalidKeySpecException
      */
     @SuppressWarnings("unused")
-    public static void main(final String[] args) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, IOException, IllegalBlockSizeException {
+    public static void main(final String[] args) throws NoSuchAlgorithmException, IOException {
         final BufferedReader input = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8.name()));
         LOGGER.log(Level.INFO, "Enter the string to encrypt (enter \"-\" to genernate a key): ");
         final String password = input.readLine();
@@ -135,7 +122,7 @@ public class PasswordObfuscator {
                 }
             } else { // Encrypt a password
                 final ObfuscatedPassword obfuscatedPassword = obfuscate(password);
-                LOGGER.log(Level.INFO, "The obfuscated password is: {0}", obfuscatedPassword.toString());
+                LOGGER.log(Level.INFO, "The obfuscated password is: {0}", obfuscatedPassword);
             }
         }
     }

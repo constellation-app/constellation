@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,6 +142,14 @@ public class MapViewTileRenderer extends PApplet {
 
         currentProvider = provider;
         map.mapDisplay.setMapProvider(provider);
+
+        // Adjust zoom level to fit the new provider
+        if (map.getZoomLevel() > provider.zoomLevels()) {
+            map.zoomToLevel(provider.zoomLevels());
+        }
+
+        map.setZoomRange(1, provider.zoomLevels());
+
     }
 
     public void zoomToLocation(final Location location) {
@@ -470,13 +478,13 @@ public class MapViewTileRenderer extends PApplet {
                 && mouseY < overlay.getY() + overlay.getHeight());
 
         switch (event.getButton()) {
-            case PConstants.CENTER:
+            case PConstants.CENTER -> {
                 // zoom to box
                 boxZoomEnabled = true;
                 boxDeltaX = event.getX();
                 boxDeltaY = event.getY();
-                break;
-            case PConstants.RIGHT:
+            }
+            case PConstants.RIGHT -> {
                 // select markers
                 boxSelectionEnabled = false;
 
@@ -491,16 +499,17 @@ public class MapViewTileRenderer extends PApplet {
                     dispatcher.fireMapEvent(panMapEvent);
                     dispatcher.unregister(map, PanMapEvent.TYPE_PAN, map.getId());
                 }
-                break;
-            case PConstants.LEFT:
+            }
+            case PConstants.LEFT -> {
                 if (!isInteractionWithOverlay && !isOverlayActive) {
                     boxSelectionEnabled = true;
                     boxDeltaX = event.getX();
                     boxDeltaY = event.getY();
                 }
-                break;
-            default:
-                break;
+            }
+            default -> {
+                // do nothing
+            }
         }
 
         layers.forEach(layer -> layer.mouseDragged(event));

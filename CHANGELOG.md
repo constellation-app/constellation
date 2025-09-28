@@ -1,4 +1,130 @@
-# Constellation Changes	
+# Constellation Changes
+
+## Changes in September 2025
+-   Removed `DefaultGetter` and `PrimaryKeyDefaultGetter` due to limited implementations. Uses now instead will use default value directly. e.g. Constructors and `createEditor()` now pass the default value instead of the `DefaultGetter`
+-   Renamed `AbstractEditor.setDefaultValue()` to `AbstractEditor.setToDefaultValue()` to clarify function's intention.
+-   Updated `AbstractEditorFactory.AbstractEditor` to include a constructor with a boolean parameter for whether "No value" is allowed.
+    The existing constructor now passes to this new constructor, passing false for the new parameter.
+-   Updated `AbstractEditorFactory.AbstractEditor.noValueCheckBoxAvailable()` to no longer be abstract and simply return the boolean value set from the new constructor.
+    It is also renamed to `AbstractEditorFactory.AbstractEditor.isNoValueAllowed()`. Existing editors overriding this function should now instead pass this value into the constructor.
+-   Updated the order of parameters for `AbstractEditorFactory.AbstractEditor` constructors and `AbstractEditorFactory.createEditor()` functions, in an attempt to make them more intuitive.
+
+## Changes in June 2025
+-   Removed `Auth` and `AuthPanel` classes as they were unused.
+-   Removed `DragElementsPlugin` and `LineDragger` classes which were unused.
+-   Removed `PasteTextPlugin` which was unused and didn't otherwise work.
+-   Updated help page system so that help pages can now be located within module folder of ext/docs to reduce use of redundant folders.
+-   Updated `Generator.getOnlineTOCDirectory()` to no longer pass a parameter. It now just calculates relative to the base directory.
+
+## Changes in May 2025
+-   Removed `AttributeUtilities.getDateTimeAttributes()` and `AttributeUtilities.getTypesUsedByGraph()` which were unused.
+-   Removed all the classes in `au.gov.asd.tac.constellation.graph.utilities.wrapper` which were all unused.
+-   Removed all the classes in `au.gov.asd.tac.constellation.graph.utilities.widgets` other than `AttributeSelectionPanel`, which were unused.
+-   Removed `PlaceholderDominanceCalculator` since there was no place it would be used over `AnalyticDominanceCalculator`.
+-   Removed `PlaceholderUtilities` and `StoreGraphRecordStore` which were unused.
+-   Removed `PlanesPanel` which was unused.
+-   Renamed `SubgraphUtilities.getSubgraph()` to `SubgraphUtilities.getTransactionTypeSubgraph()` to reflect its functionality.
+
+## Changes in April 2025
+-   Added multichoice type ahead parameter with infrastructure for future input implementations
+-   Multichoice input fields replaced with new multichoice type ahead parameter
+
+## Changes in March 2025
+-   Moved creation of `toc.md` for offline help to the netbeans-defined user directory.
+
+## Changes in January 2025
+-   Removed classes `VideoCreator` and `VideoFrame` from Core Utilities as they are unused.
+
+## Changes in December 2024
+-   Refactored animation framework to update graph attributes and hold write locks for minimal durations to enable graph interction.
+-   Created Color Warp Animation.
+-   Enhanced Fly through and Direction Indicators Animation.
+-   Created Graph Connection Motion Attribute as a META graph element type.
+-   Created Animation setting to disable animations for low power machines.
+-   Created SetColorValuesOperation to save space on the undo/redo stack.
+-   Modified access of `VertexTypeIOProvider.writeTypeObject()` from public to private, reflecting current use and mirroring related classes and functions.
+-   Removed `CompositeStatus.getCompositeStatus()` which was unused.
+
+## Changes in November 2024
+-   Removed `CreateVertexTypePlugin` and `CreateTransactionTypePlugin` which were unused.
+-   Removed `AnalyticSchemaPluginRegistry` as there were no more plugins after above ones were removed.
+-   Removed `ImageConcept` which was unused.
+-   Removed `ColorblindUtilities.colorNodes()` which was unused. This behaviour is replicated in `VisualSchemaFactory.VisualSchema` with `applyColorblindVertex()` and `applyColorblindTransaction()`.
+-   Removed `ColorblindUtilities.setColorRef()` which only had one use. This behaviour is now directly added to where the function was previously used.
+-   Renamed `ColorblindUtilities.calcColorBrightness()` to `ColorblindUtilities.calculateColorBrightness()` for readability.
+-   Refactored MenuBaseAction to disable graph dependant menu items when primary graph is ambiguous.
+
+## Changes in October 2024
+-   Added ability to pass parameters and selected items on graph to PluginReporter to display via `DefaultPluginInteraction`.
+-   Added the ability to set of Table View default columns by implementing `TableDefaultColumns` and using lookup.
+-   Moved `BrowseContextMenu` from `au.gov.asd.tac.constellation.graph.visual.contextmenu` to `au.gov.asd.tac.constellation.functionality.browser` to group it with other browser functionality.
+-   Removed several functions from `VisualGraphUtilities` passing attribute ids as parameters in favour of using existing complimentary functions using default attributes.
+-   Removed `BBoxd` as it was unused.
+-   Removed `BBoxf.getGraphBoundingBoxMix()` as it was unused.
+-   Renamed `getSelectedElements()` in `VisualGraphUtilities` to `getSelectedVertices` to better reflect what the function does.
+-   Updated Table View to now default to primary key columns for Show Default Columns and new graphs.
+
+## Changes in September 2024
+-   Removed `AddBlazePlugin` in favour of applying defaults to `AddCustomBlazePlugin` (which was already being used by `AddBlazeAction`).
+-   Removed `BlazeUtilities.getHTMLColor()` as this is already available through existing functionality `ConstellationColor.fromJavaColor().getHtmlColor()`.
+-   Renamed `DeSelectBlazesAction` and `DeSelectBlazesPlugin` to `DeselectBlazesAction` and `DeselectBlazesPlugin`.
+-   Updated `BlazeUtilities.colorDialog` to return just a ConstellationColor.
+-   Updated both `SavePreset` functions in `BlazeUtilities` to accept a `ConstellationColor` instead of a `java.awt.Color` based on use.
+
+## Changes in July 2024
+-   Moved hashmod package from Core Graph Utilities to Core Import Export Plugins as a more appropriate module.
+-   Moved `NoGraphPane` from Layers View to the View Framework so that other views can use it.
+-   Updated `NoGraphPane` to take two parameters needed for the abstraction.
+
+## Changes in May 2024
+-   Removed `FloatArray.clone()` and replaced with a constructor that takes a `FloatArray` object. 
+-   Removed `IntArray.clone()` in favour of constructor that takes a `IntArray` object. 
+-   Removed `NamedSelection.clone()` and replaced with a constructor that takes a `NamedSelection` object. 
+-   Updated the method GetNodeLocation() to getNodeLocation() in class InteractiveGLVisualProcessor.
+
+## Changes in April 2024
+-   Removed `graph` parameter from `PermanentMergeTableModel.initialise` as it was unused.
+
+## Changes in March 2024
+-   Removed `dateTimeAttr` parameter from `ClusteringManager.InitDimOrHidePlugin` as it was unused.
+-   Removed `datetimeAtrr` parameter from `TimelinePanel.initExclusionState` as it was unused.
+-   Renamed `exclusionState()`, `setIsShowingSelectedOnly()`, and `setIsShowingNodeLabels()` in `TimelineState` 
+    to `getExclusionState()`, `setShowingSelectedOnly()`, and `setShowingNodeLabels()` to follow naming convention.
+-   Updated `TimeExtents` to be a record instead of a class.
+-   Updated `VideoFrame` to be a record.
+
+## Changes in February 2024
+-   Updated the `constellationapplication/netbeans-runner` docker image
+    to `21` to include updates to Netbeans, Azul JDK, and other tools used as part of image.
+
+## Changes in December 2023
+-   Updated GraphML error messaging for invalid nodes and edges. Transaction Identifiers added as UUIDs if none are found.
+
+## Changes in July 2023
+-   Replaced FindView to express the new interface build in JavaFX and removed the old Swing implementation
+
+## Changes in June 2023
+-   Changed LookupPluginsTask to implement Supplier<Map<String, Pair<Integer, List<DataAccessPlugin>>>>.
+-   Updated return type of `LookupPluginsTask.get()` from Map<String, List<DataAccessPlugin>> to Map<String, Pair<Integer, List<DataAccessPlugin>>>.
+-   Updated `plugins` parameter type in `QueryPhasePane.QueryPhasePane()` from Map<String, List<DataAccessPlugin>> to Map<String, Pair<Integer, List<DataAccessPlugin>>>.
+-   Updated `PLUGIN_LOAD` member variable type in `DataAccessPaneState` from Map<String, List<DataAccessPlugin>> to Map<String, Pair<Integer, List<DataAccessPlugin>>>.
+-   Updated return type of `DataAccessPaneState.getPlugins()` from Map<String, List<DataAccessPlugin>> to Map<String, Pair<Integer, List<DataAccessPlugin>>>.
+
+## Changes in April 2023
+-   Added global thread pool class called ConstellationGlobalThreadPool has been created and can be called to generate a new thread.
+-   Removed code that created new thread pool every time a new thread was needed.
+## Changes in February 2023	
+
+-   Removed unused class `NestedIncircleDrawing` from Core Arrangement Plugins.
+-   Removed several unused methods from `PQTree` in Core Arrangement Plugins.
+-   Updated `comprisingIds` parameter type in `CompositeUtilities.makeComposite()` from List to Collection.
+-   Updated `results` parameter type in `AnalyticResult.setSelectionOnGraph()` from List to Iterable.
+-   Updated `results` parameter type in `AnalyticResult.addAll()` from List to Iterable.
+-   Updated `keys` parameter type in `GraphTaxonomy.setArrangeRectangularly()` from Set to Iterable.
+-   Updated `childNums` parameter type in `PQTree.addLeaves()` from List to Iterable.
+-   Updated `includedVertices` and `excludedLinks` parameters type in `GraphSpectrumEmbedder.matrixFromGraph()` from Set to Collection.
+-   Updated `circles` parameter type in `BoundingCircle.enclosingCircle()` from List to Iterable.
+-   Updated `verticesToConsider` parameter type in `TaxFromNeighbours.getTaxonomy()` from Set to Iterable.
 
 ## Changes in October 2022
 

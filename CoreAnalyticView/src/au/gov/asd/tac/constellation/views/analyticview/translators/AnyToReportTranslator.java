@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,6 @@ public class AnyToReportTranslator extends InternalVisualisationTranslator<Analy
         final ReportVisualisation report = new ReportVisualisation();
         @SuppressWarnings("unchecked") // return type of getPlugins will be List<AnalyticPlugin<?>>
         final List<AnalyticPlugin<?>> questionPlugins = (List<AnalyticPlugin<?>>) question.getPlugins();
-        @SuppressWarnings("unchecked") // return type of getExceptions will always be List<Exception>
         final List<Exception> questionExceptions = question.getExceptions();
         report.populateReport(
                 questionPlugins,
@@ -55,7 +54,6 @@ public class AnyToReportTranslator extends InternalVisualisationTranslator<Analy
                 questionExceptions);
 
         if (result.hasMetadata()) {
-            @SuppressWarnings("unchecked") //the return type for getMetadata is actually Map<String, String>
             final Map<String, String> metadata = result.getMetadata();
             metadata.forEach(report::extendReport);
         }

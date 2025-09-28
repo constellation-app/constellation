@@ -1,9 +1,0 @@
-/* ToolBar */
-.tool-bar {
-    -fx-base: black;
-}
-
-/* Button */
-.toggle-button:selected {
-    -fx-base: #333333;
-}

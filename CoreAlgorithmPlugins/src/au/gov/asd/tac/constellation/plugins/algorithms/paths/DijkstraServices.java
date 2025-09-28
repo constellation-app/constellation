@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -102,7 +103,7 @@ public class DijkstraServices {
      */
     public DijkstraServices(final GraphWriteMethods graph, final List<Integer> verticesToPath, final boolean followDirection) {
         this.graph = graph;
-        this.selectedVertices = verticesToPath;
+        this.selectedVertices = new ArrayList<>(verticesToPath);
         this.followDirection = followDirection;
     }
 
@@ -193,7 +194,7 @@ public class DijkstraServices {
         //Loop over the map and for each vertex get the paths that it is connected to
         final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
 
-        for (final Map.Entry<Integer, List<ArrayList<Integer>>> vertex : paths.entrySet()) {
+        for (final Entry<Integer, List<ArrayList<Integer>>> vertex : paths.entrySet()) {
             //For each path, get the first vertex and establish which link it corresponds to
             for (final ArrayList<Integer> path : vertex.getValue()) {
                 for (int i = 0; i < path.size(); i++) {
@@ -324,17 +325,17 @@ public class DijkstraServices {
         public void run() {
             try {
                 switch (type) {
-                    case "Distance":
+                    case "Distance" -> {
                         Thread.currentThread().setName("Find.FindServices.Thread.Distance." + threadID);
                         queryDistance();
-                        break;
-                    case "Path":
+                    }
+                    case "Path" -> {
                         Thread.currentThread().setName("Find.FindServices.Thread.Path." + threadID);
                         queryPath();
-                        break;
-                    //Not Handled
-                    default:
-                        break;
+                    }
+                    default -> {
+                        // Do nothing 
+                    }
                 }
             } catch (final InterruptedException ex) {
                 LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
@@ -416,9 +417,8 @@ public class DijkstraServices {
                                             continue;
                                         } else if (n == vertex) {
                                             break;
-                                        } else {
-                                            // Do nothing
                                         }
+                                        
                                         final double pathCost = curr.getPriority() + getWeight(curr.getValue(), n, weights);
                                         final FibonacciHeap.Entry<Integer> neigh = entries.get(n);
                                         if (pathCost < neigh.getPriority()) {
@@ -434,8 +434,6 @@ public class DijkstraServices {
                                             }
                                         } else if (pathCost == neigh.getPriority()) {
                                             incMapSet(parent.lookupMap, n, curr.getValue());
-                                        } else {
-                                            // Do nothing
                                         }
                                     }
                                 }
@@ -476,13 +474,10 @@ public class DijkstraServices {
                 if (!followDirection || (followDirection && pivottedVertex == selectedVertices.get(0))) {
                     //Set each selected vertex as a target
                     for (final int vertex : parent.collection.get(pivottedVertex).keySet()) {
-                        //Check to make sure this vertex is selected, otherwise skip it
-                        if (!parent.selectedVertices.contains(vertex) || pivottedVertex == vertex) {
-                            continue;
-                        }
-
-                        //Check if we have found the path before
-                        if ((parent.visited.containsKey(pivottedVertex) && parent.visited.get(pivottedVertex).contains(vertex)) || (parent.visited.containsKey(vertex) && parent.visited.get(vertex).contains(pivottedVertex))) {
+                        //Check to make sure this vertex is selected and we haven't found the path before, otherwise skip it
+                        if (!parent.selectedVertices.contains(vertex) || pivottedVertex == vertex
+                                || (parent.visited.containsKey(pivottedVertex) && parent.visited.get(pivottedVertex).contains(vertex)) 
+                                || (parent.visited.containsKey(vertex) && parent.visited.get(vertex).contains(pivottedVertex))) {
                             continue;
                         }
 
@@ -568,9 +563,8 @@ public class DijkstraServices {
                         shortestPaths.add(new ArrayList<>(path));
                         path.remove(path.indexOf(previous));
                     }
-                    count++;
-                } //If we are at 0 and not at the target we have reached a dead end
-                else if (count == 0) {
+                } else if (count == 0) {
+                    //If we are at 0 and not at the target we have reached a dead end
                     //Not the shortest path
                 } else {
                     //Make sure the originating vertex has an entry in our map so we can transverse it

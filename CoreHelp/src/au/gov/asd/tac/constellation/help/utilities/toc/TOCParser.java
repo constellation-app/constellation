@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.help.utilities.toc;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,6 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -45,15 +47,17 @@ public class TOCParser {
      * @param xmlFromFile the file to read
      * @param root the root node to place items into
      */
-    public static void parse(final File xmlFromFile, final TreeNode root) throws SAXException, IOException, ParserConfigurationException {
+    public static void parse(final File xmlFromFile, final TreeNode<TOCItem> root) throws SAXException, IOException, ParserConfigurationException {
         if (xmlFromFile == null || StringUtils.isEmpty(xmlFromFile.getPath())) {
             return;
         }
 
         final String targetAttribute = "target";
-        TreeNode currentParent = root;
+        TreeNode<TOCItem> currentParent = root;
         final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        // Ignore DTD validation to avoid unknown host exception when parsing XML
+        dBuilder.setEntityResolver((final String publicId, final String systemId) -> new InputSource(new StringReader("")));
         final Document doc = dBuilder.parse(xmlFromFile);
         doc.getDocumentElement().normalize();
 
@@ -64,10 +68,11 @@ public class TOCParser {
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 final Element eElement = (Element) nNode;
                 final TOCItem currentTocItem = new TOCItem(eElement.getAttribute("text"), eElement.getAttribute(targetAttribute));
-                final TreeNode current = new TreeNode(currentTocItem);
+                final TreeNode<TOCItem> current = new TreeNode<>(currentTocItem);
                 // when has children, then set parent
                 if (nNode.hasChildNodes()) {
-                    final TreeNode duplicate = TreeNode.search(currentTocItem, root);
+                    @SuppressWarnings("unchecked") // duplicate will always be of type TreeNode<TOCItem>
+                    final TreeNode<TOCItem> duplicate = (TreeNode<TOCItem>) TreeNode.search(currentTocItem, root);
 
                     if (duplicate != null) {
                         //set the current parent to duplicate
@@ -78,7 +83,8 @@ public class TOCParser {
                         final Element parentElement = (Element) eElement.getParentNode();
                         final TOCItem parentTocItem = new TOCItem(parentElement.getAttribute("text"), parentElement.getAttribute(targetAttribute));
 
-                        final TreeNode parentDuplicate = TreeNode.search(parentTocItem, root);
+                        @SuppressWarnings("unchecked") // parentDuplicate will always be of type TreeNode<TOCItem>
+                        final TreeNode<TOCItem> parentDuplicate = (TreeNode<TOCItem>) TreeNode.search(parentTocItem, root);
 
                         if (StringUtils.isEmpty(parentTocItem.getText()) && StringUtils.isEmpty(parentTocItem.getTarget())) {
                             // this is the root node, add to root.
@@ -95,7 +101,8 @@ public class TOCParser {
                 } else {
                     final Element parentElement = (Element) eElement.getParentNode();
                     final TOCItem parentTocItem = new TOCItem(parentElement.getAttribute("text"), parentElement.getAttribute(targetAttribute));
-                    final TreeNode parentDuplicate = TreeNode.search(parentTocItem, root);
+                    @SuppressWarnings("unchecked") // parentDuplicate will always be of type TreeNode<TOCItem>
+                    final TreeNode<TOCItem> parentDuplicate = (TreeNode<TOCItem>) TreeNode.search(parentTocItem, root);
                     if (parentDuplicate != null) {
                         currentParent.addChild(current);
                     }

@@ -8,45 +8,47 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      VERSION: "v2.8.0"
-      RUNNER_IMAGE: constellationapplication/netbeans-runner:12.0.4
+      RELEASE_VERSION: "v3.2.0"
+      RUNNER_IMAGE: constellationapplication/netbeans-runner:21.0.2
 
     steps:
       - name: Checkout Constellation repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: constellation-app/constellation
           path: constellation
 
       - name: Checkout Constellation Adaptors repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: constellation-app/constellation-adaptors
           path: constellation-adaptors
 
       - name: Checkout Constellation Applications repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: constellation-app/constellation-applications
           path: constellation-applications
 
       - name: Update Version Number
         run: |
-          sed -i "s/(under development)/$VERSION/" constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/startup/Startup.java
-
-      # Cache the ivy dependencies
-      - name: Restore Ivy Cache
+          sed -i "s/(under development)/$RELEASE_VERSION/" constellation/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/startup/Startup.java
+          sed -i "s/(under development)/$RELEASE_VERSION/" constellation/CoreWebServer/src/au/gov/asd/tac/constellation/webserver/api/swagger/constellation.json
+          
+      # Cache the ivy dependencies.
+      - name: Restore Cache
         id: cache-dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: ~/.ivy2
+          path: ~/.ivy2/cache
           key: ${{ runner.os }}-ivy-${{ hashFiles('constellation/CoreDependencies/src/ivy.xml') }}
-
-      - name: Create Ivy Cache
+        
+      - name: Create Cache Folder
         if: steps.cache-dependencies.outputs.cache-hit != 'true'
         run: |
           mkdir ~/.ivy2
-
+          mkdir ~/.ivy2/cache
+      
       - name: Add Execute Privilege to Scripts
         run: |
           chmod +x constellation-applications/build-zip.sh
@@ -64,21 +66,21 @@ jobs:
             ./build-zip.sh -a constellation -m "constellation constellation-adaptors"
 
       - name: Upload Linux Build
-        uses: actions/upload-artifact@v2.3.0
+        uses: actions/upload-artifact@v4
         with:
           name: Linux Release Build
           path: constellation-applications/constellation/dist/constellation-linux**
           retention-days: 2
 
       - name: Upload MacOS Build
-        uses: actions/upload-artifact@v2.3.0
+        uses: actions/upload-artifact@v4
         with:
           name: MacOSX Release Build
           path: constellation-applications/constellation/dist/constellation-macosx**
           retention-days: 2
 
       - name: Upload Windows Build
-        uses: actions/upload-artifact@v2.3.0
+        uses: actions/upload-artifact@v4
         with:
           name: Windows Release Build
           path: constellation-applications/constellation/dist/constellation-win**.zip

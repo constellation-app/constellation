@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.scatterplot;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 2000)
 @NbBundle.Messages("ScatterPlotHelpProvider=Scatter Plot Help Provider")
 public class ScatterPlotHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreScatterPlotView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,11 +40,8 @@ public class ScatterPlotHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String scatterModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreScatterPlotView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "scatterplot" + sep + "docs" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.scatterplot", scatterModulePath + "scatter-plot-view.md");
+        map.put("au.gov.asd.tac.constellation.views.scatterplot.ScatterPlotTopComponent", MODULE_PATH + "scatter-plot-view.md");
         return map;
     }
 
@@ -56,10 +52,6 @@ public class ScatterPlotHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String scatterPath;
-        scatterPath = CODEBASE_NAME + sep + "CoreScatterPlotView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "scatterplot" + sep + "docs" + sep + "scatterplot-toc.xml";
-        return scatterPath;
+        return MODULE_PATH + "scatterplot-toc.xml";
     }
 }

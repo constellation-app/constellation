@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.spectral;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -30,7 +31,6 @@ import org.apache.commons.math3.linear.MatrixUtils;
 public class GraphSpectrumEmbedder {
 
     public static Map<Integer, double[]> spectralEmbedding(final GraphReadMethods rg, final Set<Integer> includedVertices) {
-
         final Map<Integer, double[]> vertexPositions = new HashMap<>();
 
         // Don't position anything if there are fewer than 3 vertices to embedd - this embedding shouldn't be used in these cases.
@@ -74,7 +74,7 @@ public class GraphSpectrumEmbedder {
 
         private GraphMatrix(final double[][] laplacianMatrix, final Map<Integer, Integer> matrixPositionToID) {
             this.laplacianMatrix = laplacianMatrix;
-            this.matrixPositionToID = matrixPositionToID;
+            this.matrixPositionToID = new HashMap<>(matrixPositionToID);
             this.dimension = laplacianMatrix.length;
         }
 
@@ -86,8 +86,7 @@ public class GraphSpectrumEmbedder {
             return matrixFromGraph(rg, includedVertices, excludedLinks, MatrixType.LAPLACIAN_MATRIX);
         }
 
-        public static GraphMatrix matrixFromGraph(final GraphReadMethods rg, final Set<Integer> includedVertices, final Set<Integer> excludedLinks, final MatrixType type) {
-
+        public static GraphMatrix matrixFromGraph(final GraphReadMethods rg, final Collection<Integer> includedVertices, final Collection<Integer> excludedLinks, final MatrixType type) {
             final int numVertices = includedVertices.size();
             final double[][] matrixEntries = new double[numVertices][];
             for (int i = 0; i < numVertices; i++) {
@@ -119,8 +118,6 @@ public class GraphSpectrumEmbedder {
                         continue;
                     } else if (idToMatrixPosition.get(neighbourID) == i) {
                         continue;
-                    } else {
-                        // Do nothing
                     }
                     neighbourCount++;
                     if (type != null) {

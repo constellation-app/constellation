@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -43,6 +43,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ExportToCsvFilePluginNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(ExportToCsvFilePluginNGTest.class.getName());
 
     @BeforeClass
@@ -72,20 +73,15 @@ public class ExportToCsvFilePluginNGTest {
             tmpFile = File.createTempFile("constellationTest", ".csv");
             final String csv = "COLUMN_1,COLUMN_2\nrow1Column1,row1Column2\nrow2Column1,row2Column2\n";
 
-            tableViewUtilsMockedStatic.when(() -> TableViewUtilities.getTableData(table, pagination, true, true))
-                    .thenReturn(csv);
+            tableViewUtilsMockedStatic.when(() -> TableViewUtilities.getTableData(table, pagination, true, true)).thenReturn(csv);
 
-            final ExportToCsvFilePlugin plugin
-                    = new ExportToCsvFilePlugin(tmpFile, table,
-                            pagination, true);
+            final ExportToCsvFilePlugin plugin = new ExportToCsvFilePlugin(tmpFile, table, pagination, true);
             plugin.execute(null, pluginInteraction, null);
 
-            final String outputtedFile = new String(IOUtils.toByteArray(
-                    new FileInputStream(tmpFile)), StandardCharsets.UTF_8);
+            final String outputtedFile = new String(IOUtils.toByteArray(new FileInputStream(tmpFile)), StandardCharsets.UTF_8);
 
             assertEquals(csv, outputtedFile);
             assertEquals(plugin.getName(), "Table View: Export to Delimited File");
-
         } finally {
             if (tmpFile != null) {
                 tmpFile.delete();

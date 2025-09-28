@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,16 +79,15 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
 
     @Override
     public boolean isValid() {
-        final HelpOptionsPanel helpOptionsPanel = getPanel();
-        return helpOptionsPanel.getOfflineHelpPort() > 0;
+        return getPanel().getOfflineHelpPort() > 0;
     }
 
     @Override
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
         final HelpOptionsPanel helpOptionsPanel = getPanel();
-        return !(helpOptionsPanel.isOnlineHelpSelected() == prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP)
-                && helpOptionsPanel.getOfflineHelpPort() == prefs.getInt(HelpPreferenceKeys.OFFLINE_HELP_PORT, HelpPreferenceKeys.OFFLINE_HELP_PORT_DEFAULT));
+        return helpOptionsPanel.isOnlineHelpSelected() != prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP)
+                || helpOptionsPanel.getOfflineHelpPort() != prefs.getInt(HelpPreferenceKeys.OFFLINE_HELP_PORT, HelpPreferenceKeys.OFFLINE_HELP_PORT_DEFAULT);
     }
 
     @Override
@@ -98,7 +97,7 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
 
     protected HelpOptionsPanel getPanel() {
         if (panel == null) {
-            panel = new HelpOptionsPanel(this);
+            panel = new HelpOptionsPanel();
         }
         return panel;
     }

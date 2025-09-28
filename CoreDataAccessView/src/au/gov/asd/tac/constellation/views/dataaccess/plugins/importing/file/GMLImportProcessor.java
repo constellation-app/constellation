@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin.RETRIEVE_TRANSACTIONS_PARAMETER_ID;
 import java.io.BufferedReader;
@@ -37,6 +38,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.NotifyDescriptor;
 import static org.openide.NotifyDescriptor.DEFAULT_OPTION;
 import org.openide.util.lookup.ServiceProvider;
@@ -64,7 +66,7 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
 
     @Override
     public ExtensionFilter getExtensionFilter() {
-        return new ExtensionFilter("GML files", "*.gml");
+        return new ExtensionFilter("GML files", FileExtensionConstants.GML);
     }
 
     @Override
@@ -135,15 +137,9 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
                         final String key = line.split(" ")[0].trim();
                         final String value = line.split(" ")[1].trim().replace("\"", "");
                         switch (key) {
-                            case "source":
-                                edgeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, value);
-                                break;
-                            case "target":
-                                edgeRecords.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, value);
-                                break;
-                            default:
-                                edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + key, value);
-                                break;
+                            case "source" -> edgeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, value);
+                            case "target" -> edgeRecords.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, value);
+                            default -> edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + key, value);
                         }
                     } catch (final ArrayIndexOutOfBoundsException ex) {
                         // Do nothing
@@ -159,13 +155,19 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
                         nodeIdToType.get(edgeRecords.get(i, GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER)));
             }
         } catch (final FileNotFoundException ex) {
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "File " + filename + " not found", "Import GML File", DEFAULT_OPTION, 
+            final String errorMsg = StringUtils.isEmpty(filename) ? "File not specified" : "File not found: " + filename;
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import GML File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-            LOGGER.log(Level.SEVERE, ex, () -> "File " + filename + " not found");
+            final Throwable fnfEx = new FileNotFoundException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
+            fnfEx.setStackTrace(ex.getStackTrace());
+            LOGGER.log(Level.SEVERE, errorMsg, fnfEx);
         } catch (final IOException ex) {
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import GML File", DEFAULT_OPTION, 
+            final String errorMsg = StringUtils.isEmpty(filename) ? "File not specified " : "Error reading file: " + filename;
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import GML File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-            LOGGER.log(Level.SEVERE, ex, () -> "Error reading file: " + filename);
+            final Throwable ioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
+            ioEx.setStackTrace(ex.getStackTrace());
+            LOGGER.log(Level.SEVERE, errorMsg, ioEx);
         }
 
         output.add(nodeRecords);

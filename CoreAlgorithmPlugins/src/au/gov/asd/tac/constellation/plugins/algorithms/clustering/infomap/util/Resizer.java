@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2041 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,12 @@ import java.util.List;
 public class Resizer {
 
     public static <T> void resize(final List<T> al, final int size, final T value) {
-        if (al instanceof ArrayList) {
+        if (al instanceof ArrayList arrayList) {
             while (al.size() > size) {
                 al.remove(size);
             }
 
-            ((ArrayList)al).ensureCapacity(size);
+            arrayList.ensureCapacity(size);
             while (al.size() < size) {
                 al.add(value);
             }

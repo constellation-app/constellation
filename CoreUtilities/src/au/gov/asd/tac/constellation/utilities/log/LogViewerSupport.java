@@ -53,8 +53,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -92,7 +90,6 @@ public class LogViewerSupport implements Runnable {
      * @param ioName name of the output window tab to use
      */
     public LogViewerSupport(final File fileName, final String ioName) {
-
         this.fileName = fileName;
         this.ioName = ioName;
     }
@@ -107,8 +104,7 @@ public class LogViewerSupport implements Runnable {
         // displaying everything
         try {
             while ((line = ins.readLine()) != null) {
-                final String time = "[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")) + "] ";
-                ring.add(time + line);
+                ring.add(line);
             } // end of while ((line = ins.readLine()) != null)
         } catch (final IOException ex) {
             LOGGER.log(Level.INFO, null, ex);
@@ -134,8 +130,7 @@ public class LogViewerSupport implements Runnable {
 
                 while ((line = ins.readLine()) != null) {
                     if ((line = ring.add(line)) != null) {
-                        final String time = "[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")) + "] ";
-                        io.getOut().println(time + line);
+                        io.getOut().println(line);
                         lines++;
                     } // end of if ((line = ring.add(line)) != null)
                 }
@@ -191,7 +186,7 @@ public class LogViewerSupport implements Runnable {
             anchor = new LinkedList<>();
         }
 
-        public String add(String line) {
+        public String add(final String line) {
             if (StringUtils.isBlank(line)) { // NOI18N
                 return null;
             } // end of if (line == null || line.equals(""))
@@ -207,13 +202,13 @@ public class LogViewerSupport implements Runnable {
             return line;
         }
 
-        public void setMaxCount(int newMax) {
+        public void setMaxCount(final int newMax) {
             maxCount = newMax;
         }
 
         public int output() {
             int i = 0;
-            for (String s : anchor) {
+            for (final String s : anchor) {
                 io.getOut().println(s);
                 i++;
             }

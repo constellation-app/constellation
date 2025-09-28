@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.help;
 
 import au.gov.asd.tac.constellation.help.utilities.Generator;
+import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -27,9 +28,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.SystemUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -81,7 +85,7 @@ public class HelpServlet extends HttpServlet {
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         try {
-            final String requestPath = request.getRequestURI();
+            final String requestPath = request.getRequestURI().replace("%20", " ");
             final String referer = request.getHeader("referer");
 
             LOGGER.log(Level.INFO, "GET {0}", requestPath);
@@ -112,7 +116,8 @@ public class HelpServlet extends HttpServlet {
      */
     private void tryResponseRedirect(final URL fileUrl, final HttpServletResponse response) {
         try {
-            response.sendRedirect("/" + fileUrl.toString());
+            // Note: base dir may have spaces, so replace
+            response.sendRedirect("/" + fileUrl.toString().replace("%20", " "));
         } catch (final IOException ex) {
             LOGGER.log(Level.WARNING, ex, () -> "Failed to send redirect while navigating to {0}" + fileUrl.toString());
         }
@@ -143,28 +148,57 @@ public class HelpServlet extends HttpServlet {
      */
     protected static URL redirectPath(final String requestPath, final String referer) {
         try {
-            if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css") || requestPath.contains(".js")
-                    || requestPath.contains(".ico"))) {
-                final String repeatedText = "src/au/gov/asd";
-                final int firstIndex = requestPath.indexOf(repeatedText);
-                if (firstIndex != -1) {
-                    final int secondIndex = requestPath.indexOf(repeatedText, firstIndex + repeatedText.length());
-                    if (secondIndex != -1) {
-                        // If the request path is duplicated then change it to be the last half
-                        final File file = new File(Generator.getBaseDirectory());
-                        final URL fileUrl = file.toURI().toURL();
-                        String requestfrontHalfRemoved = requestPath.replace(fileUrl.toString(), ""); // remove first bit
-                        String refererfrontHalfRemoved = referer.replace(fileUrl.toString(), ""); // remove first bit
-                        refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove filename.md
-                        refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove up one level
-                        refererfrontHalfRemoved = refererfrontHalfRemoved.replace("http://localhost:" + HelpWebServer.getPort(), "");
-                        requestfrontHalfRemoved = requestfrontHalfRemoved.replaceFirst(refererfrontHalfRemoved, "");
+            if (referer != null && !referer.contains("toc.md") && !requestPath.contains(".css") && !requestPath.contains(".js")
+                    && !requestPath.contains(".ico")) {
+                if (requestPath.contains(".png")) {
+                    // get image referred by page itself
+                    final String extText = "/ext/";
+                    final int firstIndex = requestPath.indexOf(extText);
+                    if (firstIndex != -1) {
+                        final int secondIndex = requestPath.indexOf(extText, firstIndex + extText.length());
+                        if (secondIndex != -1) {
+                            // cut-off the duplicate section in the request path
+                            final String duplicateSubstring = requestPath.substring(firstIndex, secondIndex);
+                            final String fileString = new StringBuilder("/file:").append(SystemUtils.IS_OS_WINDOWS ? "/" : "").toString();
+                            final String newPath = requestPath.replaceFirst(duplicateSubstring, "").replace(fileString, "");
+                            final File imageFile = new File(newPath);
+                            final URL imageUrl = imageFile.toURI().toURL();
+                            HelpServlet.redirect = true;
+                            return imageUrl;
+                        }
+                    }
+                } else if (requestPath.contains(".md")) {
+                    // find correct help page
+                    final String extText = "/ext/";
+                    final int index = requestPath.lastIndexOf(extText);
+                    if (index != -1) {
+                        final String pathSubstring = requestPath.substring(index + extText.length()).replace("/", File.separator);
+                        final Collection<String> helpAddresses = HelpMapper.getMappings().values();
 
-                        final String redirectURL = Generator.getBaseDirectory() + requestfrontHalfRemoved;
-                        final File file2 = new File(redirectURL);
-                        final URL fileUrl2 = file2.toURI().toURL();
-                        HelpServlet.redirect = true;
-                        return fileUrl2;
+                        for (final String helpAddress : helpAddresses) {
+                            // if helpAddress contains the substring, this should be the correct path
+                            // due to the way help page paths are constructed, the assumption is the collection's values are also unique
+                            if (helpAddress.contains(pathSubstring)) {
+                                String filePath = Generator.getBaseDirectory() + File.separator + helpAddress;
+                                // if helpAddress contains any backwards directory changes then these should be normalised first
+                                // before comparing with already-normalised requestPath
+                                if (helpAddress.contains("..")) {
+                                    filePath = Paths.get(filePath).normalize().toString();                                  
+                                }
+                                
+                                final File pageFile = new File(filePath);
+                                final URL fileUrl = pageFile.toURI().toURL();
+                                // if these match then no redirect is required as the resulting file path is the same
+                                // check substring(1) as request path has leading /
+                                // Note: base dir may have spaces, so replace and check
+                                if (fileUrl.toString().replace("%20", " ").equals(requestPath.substring(1))) {
+                                    return null;
+                                }
+                                
+                                HelpServlet.redirect = true;
+                                return fileUrl;
+                            }
+                        }
                     }
                 }
             } else if (HelpServlet.redirect) {
@@ -183,14 +217,9 @@ public class HelpServlet extends HttpServlet {
      * @return the stripped path without /file:/home or drive letter within it.
      */
     protected static String stripLeadingPath(final String fullPath) {
-        String modifiedPath = fullPath;
-        final String replace1 = "\\/file:\\/[a-zA-Z]:";
-        final String replace2 = "/file:";
-        final String replace3 = "file:";
-        modifiedPath = modifiedPath.replaceAll(replace1, "");
-        modifiedPath = modifiedPath.replace(replace2, "");
-        modifiedPath = modifiedPath.replace(replace3, "");
-
-        return modifiedPath;
+        return fullPath
+                .replaceAll("\\/file:\\/[a-zA-Z]:", "")
+                .replace("/file:", "")
+                .replace("file:", "");
     }
 }

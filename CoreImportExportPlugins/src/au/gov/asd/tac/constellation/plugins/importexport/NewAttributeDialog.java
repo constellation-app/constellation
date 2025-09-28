@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,22 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport;
 
-import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.functionality.dialog.ConstellationDialog;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.Window;
 
 /**
  * The NewAttributeDialog provides a dialog box allowing the user to create a
@@ -43,7 +40,7 @@ import javafx.stage.Window;
  *
  * @author sirius
  */
-public class NewAttributeDialog extends Stage {
+public class NewAttributeDialog extends ConstellationDialog {
 
     private static final int GRIDPANE_GAP = 5;
     private static final Insets GRIDPANE_PADDING = new Insets(10);
@@ -53,27 +50,14 @@ public class NewAttributeDialog extends Stage {
     private static final int DESC_PREFHEIGHT = 100;
     private static final Insets BUTTONPANE_PADDING = new Insets(5);
 
-    private final GraphElementType elementType;
     private final ComboBox<String> typeBox;
     private final TextField labelText;
-    private final TextArea descriptionText;
+    private final SpellCheckingTextArea descriptionText;
 
-    private Attribute attribute;
+    private final Button okButton;
 
-    public NewAttributeDialog(final Window owner, final GraphElementType elementType) {
-
-        this.elementType = elementType;
-
-        initStyle(StageStyle.UTILITY);
-        initModality(Modality.APPLICATION_MODAL);
-        initOwner(owner);
-
-        setTitle("New Attribute");
-
+    public NewAttributeDialog() {
         final BorderPane root = new BorderPane();
-        root.setStyle("-fx-background-color: #DDDDDD;");
-        final Scene scene = new Scene(root);
-        setScene(scene);
 
         final GridPane fieldPane = new GridPane();
         fieldPane.setHgap(GRIDPANE_GAP);
@@ -106,7 +90,7 @@ public class NewAttributeDialog extends Stage {
         GridPane.setConstraints(descriptionLabel, 0, 2);
         fieldPane.getChildren().add(descriptionLabel);
 
-        descriptionText = new TextArea();
+        descriptionText = new SpellCheckingTextArea(true);
         descriptionText.setPromptText("Attribute Description");
         descriptionText.setPrefSize(DESC_PREFWIDTH, DESC_PREFHEIGHT);
         GridPane.setConstraints(descriptionText, 1, 2);
@@ -118,20 +102,55 @@ public class NewAttributeDialog extends Stage {
         buttonPane.setHgap(GRIDPANE_GAP);
         root.setBottom(buttonPane);
 
-        final Button okButton = new Button("OK");
-        okButton.setOnAction((ActionEvent event) -> {
-            attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(),
-                    labelText.getText(), descriptionText.getText());
-            NewAttributeDialog.this.hide();
-        });
+        okButton = new Button("OK");
         buttonPane.getChildren().add(okButton);
 
         final Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction((ActionEvent event) -> NewAttributeDialog.this.hide());
+        cancelButton.setOnAction((ActionEvent event) -> hideDialog());
         buttonPane.getChildren().add(cancelButton);
+
+        final Scene scene = new Scene(root);
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+        fxPanel.setScene(scene);
     }
 
-    public Attribute getAttribute() {
-        return attribute;
+    /**
+     * Implement the {@code setOnAction} that happens when OK is pressed. This
+     * should create the new attribute and use the get methods in this class to
+     * retrieve the values set in the attribute dialog.
+     *
+     * @param event The {@code setOnAction} that will run when the OK button is
+     * pressed.
+     */
+    public void setOkButtonAction(final EventHandler<ActionEvent> event) {
+        okButton.setOnAction(event);
     }
+    
+    /**
+     * Get the attribute type
+     *
+     * @return The attribute type
+     */
+    public String getType() {
+        return typeBox.getSelectionModel().getSelectedItem();
+    }
+
+    /**
+     * The attribute label
+     *
+     * @return The attribute label
+     */
+    public String getLabel() {
+        return labelText.getText();
+    }
+
+    /**
+     * The attribute description
+     *
+     * @return The attribute description
+     */
+    public String getDescription() {
+        return descriptionText.getText();
+    }
+
 }

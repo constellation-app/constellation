@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,12 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.BlazeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -39,13 +37,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
 import javafx.util.Callback;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Blaze Editor Factory
+ * Editor Factory for attributes of type blaze
  *
  * @author twilight_sparkle
  */
@@ -53,8 +49,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
     @Override
-    public AbstractEditor<Blaze> createEditor(final EditOperation editOperation, final DefaultGetter<Blaze> defaultGetter, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
-        return new BlazeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Blaze> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Blaze> validator, final Blaze defaultValue, final Blaze initialValue) {
+        return new BlazeEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -64,17 +60,23 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
     public class BlazeEditor extends AbstractEditor<Blaze> {
 
-        private CheckBox noValueCheckBox;
         private TextField angleTextField;
         private ColorPicker picker;
 
-        protected BlazeEditor(final EditOperation editOperation, final DefaultGetter<Blaze> defaultGetter, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected BlazeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Blaze> validator, final Blaze defaultValue, final Blaze initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
 
+        protected String getAngleText() {
+            return angleTextField.getText();
+        }
+
+        protected Color getPickerColor() {
+            return picker.getValue();
+        }
+        
         @Override
         public void updateControlsWithValue(final Blaze value) {
-            noValueCheckBox.setSelected(value == null);
             if (value != null) {
                 angleTextField.setText(String.valueOf(value.getAngle()));
                 picker.setValue(value.getColor().getJavaFXColor());
@@ -83,15 +85,13 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         @Override
         protected Blaze getValueFromControls() throws ControlsInvalidException {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
-
             try {
                 final int angle = Integer.parseInt(angleTextField.getText());
+
                 if (angle >= 360) {
-                    throw new ControlsInvalidException("Blaze angle must be in range [0, 360)");
+                    throw new ControlsInvalidException("Blaze angle must be between 0 and 360");
                 }
+
                 return new Blaze(angle, ConstellationColor.fromFXColor(picker.getValue()));
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Blaze angle must be a number.");
@@ -100,48 +100,42 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
-
+            // create the angle controls
             final Label angleLabel = new Label("Angle:");
-            final HBox angleHBox = new HBox();
             angleTextField = new TextField();
             angleTextField.textProperty().addListener((v, o, n) -> update());
-            final Button northButton = new Button("N");
-            northButton.setOnAction(e -> angleTextField.setText("0"));
-            final Button northEastButton = new Button("NE");
-            northEastButton.setOnAction(e -> angleTextField.setText("45"));
-            final Button eastButton = new Button("E");
-            eastButton.setOnAction(e -> angleTextField.setText("90"));
-            final Button southEastButton = new Button("SE");
-            southEastButton.setOnAction(e -> angleTextField.setText("135"));
-            final Button southButton = new Button("S");
-            southButton.setOnAction(e -> angleTextField.setText("180"));
-            final Button southWestButton = new Button("SW");
-            southWestButton.setOnAction(e -> angleTextField.setText("225"));
-            final Button westButton = new Button("W");
-            westButton.setOnAction(e -> angleTextField.setText("270"));
-            final Button northWestButton = new Button("NW");
-            northWestButton.setOnAction(e -> angleTextField.setText("315"));
-            angleHBox.getChildren().addAll(northButton, northEastButton, eastButton, southEastButton, southButton, southWestButton, westButton, northWestButton);
+            
+            final Button northButton = createAngleButton("N", "0");
+            final Button northEastButton = createAngleButton("NE", "45");
+            final Button eastButton = createAngleButton("E", "90");
+            final Button southEastButton = createAngleButton("SE", "135");
+            final Button southButton = createAngleButton("S", "180");
+            final Button southWestButton = createAngleButton("SW", "225");
+            final Button westButton = createAngleButton("W", "270");
+            final Button northWestButton = createAngleButton("NW", "315");
+            
+            final HBox angleHBox = new HBox(northButton, northEastButton, eastButton, southEastButton, 
+                    southButton, southWestButton, westButton, northWestButton);
             angleLabel.setLabelFor(angleHBox);
 
+            // create the color controls
             final Label colorLabel = new Label("Color");
-            colorLabel.setFont(Font.font(Font.getDefault().getFamily(), FontPosture.ITALIC, 14));
             final Separator separator = new Separator();
             final VBox colorSeparator = new VBox(colorLabel, separator);
 
             final Label namedLabel = new Label("Named:");
-            final ObservableList<ConstellationColor> namedColors = FXCollections.observableArrayList();
-            for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
-                namedColors.add(c);
-            }
+            final ObservableList<ConstellationColor> namedColors = FXCollections.observableArrayList(ConstellationColor.NAMED_COLOR_LIST);
             final ComboBox<ConstellationColor> colorCombo = new ComboBox<>(namedColors);
-            final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
+            namedLabel.setLabelFor(colorCombo);
+            colorCombo.valueProperty().addListener((o, oldValue, newValue) -> {
+                if (newValue != null && !newValue.equals(oldValue)) {
+                    picker.setValue(newValue.getJavaFXColor());
+                }
+            });
+            
+            final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = p -> new ListCell<>() {
                 @Override
-                protected void updateItem(final ConstellationColor item, boolean empty) {
+                protected void updateItem(final ConstellationColor item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
                         final Rectangle r = new Rectangle(12, 12, item.getJavaFXColor());
@@ -153,13 +147,6 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             };
             colorCombo.setCellFactory(cellFactory);
             colorCombo.setButtonCell(cellFactory.call(null));
-            namedLabel.setLabelFor(colorCombo);
-
-            colorCombo.valueProperty().addListener((o, oldValue, newValue) -> {
-                if (newValue != null && !newValue.equals(oldValue)) {
-                    picker.setValue(newValue.getJavaFXColor());
-                }
-            });
 
             final Label pickerLabel = new Label("Pallete:");
             picker = new ColorPicker();
@@ -180,26 +167,32 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
                         colorCombo.setValue(null);
                     }
                 }
-                update();
-            });
 
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                angleHBox.getChildren().forEach(button -> button.setDisable(noValueCheckBox.isSelected()));
-                angleTextField.setDisable(noValueCheckBox.isSelected());
-                colorCombo.setDisable(noValueCheckBox.isSelected());
-                picker.setDisable(noValueCheckBox.isSelected());
                 update();
             });
+            
+            final GridPane controls = new GridPane(CONTROLS_DEFAULT_HORIZONTAL_SPACING, CONTROLS_DEFAULT_VERTICAL_SPACING);
+            controls.setAlignment(Pos.CENTER);
 
             controls.addRow(0, angleLabel, angleTextField);
             controls.add(angleHBox, 0, 1, 2, 1);
             controls.add(colorSeparator, 0, 2, 2, 1);
             controls.addRow(3, namedLabel, colorCombo);
             controls.addRow(4, pickerLabel, picker);
-            controls.addRow(5, noValueCheckBox);
             return controls;
+        }
+        
+        /**
+         * Creates a button for altering the angle text field
+         * 
+         * @param buttonLabel the label of the button
+         * @param angle the angle which will be applied to the text field when clicked
+         * @return the newly created button
+         */
+        private Button createAngleButton(final String buttonLabel, final String angle) {
+            final Button button = new Button(buttonLabel);
+            button.setOnAction(e -> angleTextField.setText(angle));
+            return button;
         }
     }
 }

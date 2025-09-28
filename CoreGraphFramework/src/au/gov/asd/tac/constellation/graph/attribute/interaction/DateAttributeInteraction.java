@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.attribute.interaction;
 import au.gov.asd.tac.constellation.graph.attribute.DateAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.LocalDate;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -45,5 +46,15 @@ public class DateAttributeInteraction extends AbstractAttributeInteraction<Local
     @Override
     protected Class<LocalDate> getValueType() {
         return LocalDate.class;
+    }
+
+    @Override
+    public AttributeValueTranslator toEditTranslator(final String dataType) {
+        // the native type for a date attribute is long rather than LocalDate (the type wanted for editing) 
+        // so we need to perform that conversion
+        if (Strings.CS.equals(dataType, DateAttributeDescription.ATTRIBUTE_NAME)) {
+            return v -> v instanceof Long l ? LocalDate.ofEpochDay(l) : v;
+        }
+        return super.toEditTranslator(dataType);
     }
 }

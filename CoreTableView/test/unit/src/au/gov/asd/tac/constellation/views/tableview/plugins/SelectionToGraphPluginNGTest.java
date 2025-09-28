@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -41,6 +41,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class SelectionToGraphPluginNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(SelectionToGraphPluginNGTest.class.getName());
 
     @BeforeClass
@@ -77,8 +78,7 @@ public class SelectionToGraphPluginNGTest {
         when(table.getSelectionModel()).thenReturn(selectionModel);
         when(selectionModel.getSelectedItems()).thenReturn(FXCollections.observableList(List.of(row1)));
 
-        final SelectionToGraphPlugin selectionToGraph
-                = new SelectionToGraphPlugin(table, index, GraphElementType.VERTEX);
+        final SelectionToGraphPlugin selectionToGraph = new SelectionToGraphPlugin(table, index, GraphElementType.VERTEX);
 
         selectionToGraph.edit(graph, null, null);
 

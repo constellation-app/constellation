@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,19 +35,21 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
     }
 
     @Override
-    @SuppressWarnings("unchecked") //Casts are manually checked
     protected Double convertFromObject(final Object object) {
         try {
             return super.convertFromObject(object);
         } catch (final IllegalArgumentException ex) {
-            if (object instanceof Number) {
-                return ((Number) object).doubleValue();
-            } else if (object instanceof Boolean) {
-                return ((Boolean) object) ? 1.0 : 0.0;
-            } else if (object instanceof Character) {
-                return (double) object;
-            } else {
-                throw ex;
+            switch (object) {
+                case Number number -> {
+                    return number.doubleValue();
+                }
+                case Boolean bool -> {
+                    return Boolean.TRUE.equals(bool) ? 1.0 : 0.0;
+                }
+                case Character character -> {
+                    return (double) character;
+                }
+                default -> throw ex;
             }
         }
     }
@@ -57,7 +59,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
         if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
-            return Double.parseDouble(string);
+            return Double.valueOf(string);
         }
     }
 

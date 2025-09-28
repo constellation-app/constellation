@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -154,11 +154,9 @@ public class Octree {
                 } else {
                     index = backQuadrant ? BOT_L_B : -1;
                 }
-            } else {
-                // Do nothing
             }
-        } // Object can completely fit within the right quadrants.
-        else if (orb.getX() - orb.r > midx) {
+        } else if (orb.getX() - orb.r > midx) {
+            // Object can completely fit within the right quadrants.
             if (topQuadrant) {
                 if (frontQuadrant) {
                     index = TOP_R_F;
@@ -171,8 +169,6 @@ public class Octree {
                 } else {
                     index = backQuadrant ? BOT_R_B : -1;
                 }
-            } else {
-                // Do nothing
             }
         } else {
             return index;

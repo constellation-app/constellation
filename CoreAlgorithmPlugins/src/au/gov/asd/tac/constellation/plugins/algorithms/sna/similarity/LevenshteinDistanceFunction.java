@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +48,6 @@ public class LevenshteinDistanceFunction implements DistanceFunction<String> {
             return m <= k ? m : k + 1;
         } else if (m == 0) {
             return n <= k ? n : k + 1;
-        } else {
-            // Do nothing
         }
 
         if (n > m) {

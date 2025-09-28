@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,13 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,10 +64,8 @@ import org.openide.windows.TopComponent;
 /**
  * A GraphOpener that opens a graph into a VisualTopComponent.
  * <p>
- * Note that if you don't have support for OpenGL then comment out the
- * ServiceProvider annotation which will mean that
- * {@link au.gov.asd.tac.constellation.graph.node.gui.SimpleGraphTopComponent}
- * is used instead.
+ * Note that if you don't have support for OpenGL then comment out the ServiceProvider annotation which will mean that
+ * {@link au.gov.asd.tac.constellation.graph.node.gui.SimpleGraphTopComponent} is used instead.
  *
  * @author algol
  */
@@ -77,11 +80,15 @@ public final class VisualGraphOpener extends GraphOpener {
 
     private static final Logger LOGGER = Logger.getLogger(VisualGraphOpener.class.getName());
 
+    private static final String UNABLE_TO_REMOVE_SECONDARY_BACKUP_MESSAGE = "Unable to remove old secondary backup file: {0}";
+
+    private static final List<Path> openingGraphs = new ArrayList<>();
+
     /**
      * Open a graph file into a VisualTopComponent.
      * <p>
-     * A check is done to see if the file to be opened is already open. If it
-     * is, that TopComponent is made active, rather than opening the file again.
+     * A check is done to see if the file to be opened is already open. If it is, that TopComponent is made active,
+     * rather than opening the file again.
      *
      * @param gdo The GraphDataObject to read from.
      */
@@ -99,10 +106,16 @@ public final class VisualGraphOpener extends GraphOpener {
             }
         }
 
+        final File f = FileUtil.toFile(gdo.getPrimaryFile());
+
+        // If graph is currently being opened, but isn't open yet
+        if (openingGraphs.contains(Paths.get(f.getAbsolutePath()))) {
+            return;
+        }
+
         // The file isn't already open.
         // Check to see if there is a more recent autosave for this file.
         // If there is, ask the user if they want to open it.
-        final File f = FileUtil.toFile(gdo.getPrimaryFile());
         final Properties props = AutosaveUtilities.getAutosave(f);
         if (props != null) {
             final String dtprop = props.getProperty(AutosaveUtilities.DT);
@@ -121,7 +134,21 @@ public final class VisualGraphOpener extends GraphOpener {
                         // Backup the current actual file and replace it with the autosave file.
                         final File autosaved = new File(AutosaveUtilities.getAutosaveDir(), props.getProperty(AutosaveUtilities.ID) + FileExtensionConstants.STAR);
                         try {
-                            AutosaveUtilities.copyFile(autosaved, f);
+                            // make temp copy of any backup file that exists to try if we find both autosave and main file are corrupt
+                            final File toBak = new File(f.getPath() + FileExtensionConstants.BACKUP);
+                            if (toBak.exists()) {
+                                // Make a backup of our backup which is about to be overwrtten by the Autodsave call
+                                final File toBakBak = new File(toBak.getPath() + FileExtensionConstants.BACKUP);
+                                final boolean toRenamed = toBak.renameTo(toBakBak);
+                                if (!toRenamed) {
+                                    LOGGER.log(Level.WARNING, "Unable to backup file: {0}", toBak);
+                                } else {
+                                    AutosaveUtilities.copyFile(autosaved, f);
+                                }
+                            } else {
+                                AutosaveUtilities.copyFile(autosaved, f);
+                            }
+
                         } catch (final IOException ex) {
                             LOGGER.log(Level.WARNING, "Copying autosaved file", ex);
                         }
@@ -131,6 +158,9 @@ public final class VisualGraphOpener extends GraphOpener {
                 }
             }
         }
+
+        // Add to list of graphs currently being opened
+        openingGraphs.add(Paths.get(f.getAbsolutePath()));
 
         // The file isn't already open, so open it.
         new GraphFileOpener(gdo, null, null).execute();
@@ -152,6 +182,15 @@ public final class VisualGraphOpener extends GraphOpener {
     public void openGraph(final Graph graph, final String name, final boolean numbered) {
         final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject(name, numbered);
         new GraphFileOpener(gdo, graph, null).execute();
+    }
+
+    /**
+     * Returns a copy of the list containing paths of graphs currently being opened
+     *
+     * @return ArrayList of paths
+     */
+    public static List<Path> getOpeningGraphs() {
+        return new ArrayList<>(openingGraphs);
     }
 
     /**
@@ -180,6 +219,9 @@ public final class VisualGraphOpener extends GraphOpener {
         @Override
         protected Void doInBackground() throws Exception {
             final File graphFile = FileUtil.toFile(gdo.getPrimaryFile());
+            final File backupFile = new File(graphFile.toString().concat(FileExtensionConstants.BACKUP));
+            final File backupBackupFile = new File(backupFile.toString().concat(FileExtensionConstants.BACKUP));
+
             if (graph == null) {
                 HandleIoProgress ioProgressHandler = new HandleIoProgress(String.format("Reading %s...", graphFile.getName()));
                 try {
@@ -187,6 +229,16 @@ public final class VisualGraphOpener extends GraphOpener {
                     LOGGER.log(Level.INFO, "Attempting to open {0}", graphFile);
                     graph = new GraphJsonReader().readGraphZip(graphFile, ioProgressHandler);
                     time = System.currentTimeMillis() - t0;
+
+                    // Everything worked, there was no need for any bakbak file
+                    if (backupBackupFile.exists()) {
+                        try {
+                            Files.delete(Path.of(backupBackupFile.getPath()));
+                        } catch (final IOException ex) {
+                            LOGGER.log(Level.WARNING, UNABLE_TO_REMOVE_SECONDARY_BACKUP_MESSAGE, backupBackupFile);
+                        }
+                    }
+
                 } catch (final GraphParseException | IOException | RuntimeException ex) {
                     gex = ex;
                 }
@@ -195,8 +247,7 @@ public final class VisualGraphOpener extends GraphOpener {
                     if (gex != null) {
                         // An exception was thrown trying to read specified star file. The most likely reason for this is
                         // a corrupt star file. Check to see if there was a 'backup' star file generated before the star file
-                        // was writtien - if so, attmept to load this.
-                        final File backupFile = new File(graphFile.toString().concat(FileExtensionConstants.BACKUP));
+                        // was written - if so, attempt to load this.
 
                         // Clear previous progress message and reset to indicate we are trying to use backup.
                         ioProgressHandler.finish();
@@ -216,15 +267,57 @@ public final class VisualGraphOpener extends GraphOpener {
                             // is always going to be a valid file somewhere as only the copy or the delete can fail in a given run.
                             LOGGER.log(Level.INFO, "Successfully opened backup file: {0}, replacing star file", backupFile);
                             FileUtils.copyFile(new File(backupFile.toString()), new File(graphFile.toString()));
+                            // Everything worked, there was no need for any bakbak file
+                            if (backupBackupFile.exists()) {
+                                try {
+                                    Files.delete(Path.of(backupBackupFile.getPath()));
+                                } catch (final IOException ex) {
+                                    LOGGER.log(Level.WARNING, UNABLE_TO_REMOVE_SECONDARY_BACKUP_MESSAGE, backupBackupFile);
+                                }
+                            }
                         }
                     }
                 } catch (final GraphParseException | IOException | RuntimeException ex) {
-                    LOGGER.log(Level.WARNING, "Unable to open requested file ({0}) or any associated backup", graphFile);
+
+                    if (!backupBackupFile.exists()) {
+                        LOGGER.log(Level.WARNING, "Unable to open requested file ({0}) or associated backup", graphFile);
+                    }
                     gex = ex;
                     // Clear previous progress message and reset to indicate we are trying to use backup.
                     ioProgressHandler.finish();
                 }
 
+                // Handle the rare case where user elected to open an autosave, however this autosave is corrupt.
+                // Code then tried to open the original file, which is also found to be corrupt. The way autsave manages this
+                // is to copy the original file to .bak and the autosave to the original file. As we can also have a .bak
+                // we are copying this off to .bak.bak and only teying it if both the autosave and original file failed.
+                if (gex != null && backupBackupFile.exists()) {
+                    try {
+                        final long t0 = System.currentTimeMillis();
+                        ioProgressHandler = new HandleIoProgress(String.format("Unable to read backup %s, reading secondary backup %s...",
+                                backupFile.getName(), backupBackupFile.getName()));
+                        graph = new GraphJsonReader().readGraphZip(backupBackupFile, ioProgressHandler);
+                        time = System.currentTimeMillis() - t0;
+                        gex = null;
+
+                        LOGGER.log(Level.INFO, "Successfully opened secondary backup file: {0}, replacing star file", backupBackupFile);
+                        FileUtils.copyFile(new File(backupBackupFile.toString()), new File(graphFile.toString()));
+
+                        try {
+                            Files.delete(Path.of(backupFile.getPath()));
+                        } catch (final IOException ex) {
+                            LOGGER.log(Level.WARNING, "Unable to remove old backup file: {0}", backupFile);
+                        }
+                        try {
+                            Files.delete(Path.of(backupBackupFile.getPath()));
+                        } catch (final IOException ex) {
+                            LOGGER.log(Level.WARNING, UNABLE_TO_REMOVE_SECONDARY_BACKUP_MESSAGE, backupBackupFile);
+                        }
+                    } catch (final GraphParseException | IOException | RuntimeException ex) {
+                        LOGGER.log(Level.WARNING, "Unable to open requested file ({0}) or associated backups", graphFile);
+                        ioProgressHandler.finish();
+                    }
+                }
                 PluginExecution.withPlugin(new OpenGraphFile(graphFile)).executeLater(null);
             }
 
@@ -267,6 +360,13 @@ public final class VisualGraphOpener extends GraphOpener {
             } else {
                 // Do nothing
             }
+
+            // Graph has finished opening, so remove from list
+            if (gdo.getPrimaryFile().getPath() != null) {
+                openingGraphs.remove(Paths.get(gdo.getPrimaryFile().getPath()));
+            }
+            // lock the file after opening
+            gdo.lockFile();
         }
     }
 

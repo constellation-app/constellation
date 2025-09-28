@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ public class GetGraphValues extends RestService {
 
     private static final String NAME = "get_graph_values";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
+    private static final String EXAMPLE_RESPONSES_PATH = "getGraphValuesExample";
 
     @Override
     public String getName() {
@@ -66,14 +67,14 @@ public class GetGraphValues extends RestService {
 
         final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphIdParam.setName("Graph id");
-        graphIdParam.setDescription("The id of the graph to get the values of. (Default is the active graph)");
+        graphIdParam.setDescription("The id of the graph to get the values of. (Default is the active graph)");        
         parameters.addParameter(graphIdParam);
 
         return parameters;
     }
 
     @Override
-    public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
 
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
@@ -102,5 +103,10 @@ public class GetGraphValues extends RestService {
         }
 
         mapper.writeValue(out, root);
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

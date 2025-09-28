@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -83,10 +82,9 @@ public final class RunPane extends BorderPane implements KeyListener {
     private static final Insets ATTIRUBTEPANE_PADDING = new Insets(5);
     private static final int ATTRIBUTE_GAP = 5;
     private static final int TABLECOLUMN_PREFWIDTH = 50;
-    private static final String FILTER_STYLE = "-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;";
-    private static final String FILTER_STYLE_ALERT = "-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:grey;";
+    private static final String FILTER_STYLE_ALERT = "-fx-background-color: red; -fx-text-fill: black;";
 
-    private final ImportController importController;
+    private final ImportController<?> importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
     private final AttributeList sourceVertexAttributeList;
     private final AttributeList destinationVertexAttributeList;
@@ -112,7 +110,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     // mechanism of blindly multiplying by 12.1 is not the ideal case because
     // it means longer headings get extra padding than they need and smaller
     // headings get just enough.
-    private final static double COLUMN_WIDTH_MULTIPLIER = 12.1;
+    private static final double COLUMN_WIDTH_MULTIPLIER = 12.1;
 
     private ObservableList<TableRow> currentRows = FXCollections.observableArrayList();
     private String[] currentColumnLabels = new String[0];
@@ -147,11 +145,21 @@ public final class RunPane extends BorderPane implements KeyListener {
             labelPane.setLeft(heading);
 
             final Button button = new Button("", new ImageView(ADD_IMAGE));
-            button.setOnAction((ActionEvent event) -> {
-                Attribute attribute = importController.showNewAttributeDialog(attributeList.getAttributeType().getElementType());
-                if (attribute != null) {
+            button.setOnAction(event -> {
+                final NewAttributeDialog dialog = new NewAttributeDialog();
+                dialog.setOkButtonAction(event2 -> {
+                    dialog.hideDialog();
+                    Attribute attribute = new NewAttribute(
+                            attributeList.getAttributeType().getElementType(),
+                            dialog.getType(),
+                            dialog.getLabel(),
+                            dialog.getDescription()
+                    );
+
                     importController.createManualAttribute(attribute);
-                }
+                });
+
+                dialog.showDialog("New Attribute");
             });
             button.setTooltip(new Tooltip("Add a new " + attributeList.getAttributeType().getElementType() + " attribute"));
             labelPane.setRight(button);
@@ -160,7 +168,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         }
     }
 
-    public RunPane(final ImportController importController, final String displayText, final String paneName) {
+    public RunPane(final ImportController<?> importController, final String displayText, final String paneName) {
         this.importController = importController;
         this.paneName = paneName;
 
@@ -179,7 +187,6 @@ public final class RunPane extends BorderPane implements KeyListener {
         filterField = new TextField();
         filterField.setFocusTraversable(false);
         filterField.setMinHeight(USE_PREF_SIZE);
-        filterField.setStyle(FILTER_STYLE);
         filterField.textProperty().addListener((observable, oldValue, newValue) -> setFilterStyle(newValue));
 
         filterField.setPromptText("Currently unavailable. The filter will be ready to use shortly");
@@ -253,7 +260,6 @@ public final class RunPane extends BorderPane implements KeyListener {
         attributeFilterTextField.setFocusTraversable(false);
         attributeFilterTextField.setMinHeight(USE_PREF_SIZE);
         attributeFilterTextField.setPromptText("Start typing to search attributes");
-        attributeFilterTextField.setStyle(FILTER_STYLE);
         attributeFilterTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             importController.setAttributeFilter(attributeFilterTextField.getText());
             importController.setDestination(null);
@@ -300,7 +306,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     }
 
     private void setFilterStyle(final String value) {
-        filterField.setStyle(setFilter(value) ? FILTER_STYLE : FILTER_STYLE_ALERT);
+        filterField.setStyle(setFilter(value) ? "" : FILTER_STYLE_ALERT);
     }
 
     /**
@@ -394,12 +400,9 @@ public final class RunPane extends BorderPane implements KeyListener {
         double offset = 0;
         final Set<Node> nodes = sampleDataView.lookupAll(".scroll-bar");
         for (final Node node : nodes) {
-            if (node instanceof ScrollBar) {
-                final ScrollBar scrollBar = (ScrollBar) node;
-                if (scrollBar.getOrientation() == Orientation.HORIZONTAL) {
-                    offset = scrollBar.getValue();
-                    break;
-                }
+            if (node instanceof ScrollBar scrollBar && scrollBar.getOrientation() == Orientation.HORIZONTAL) {
+                offset = scrollBar.getValue();
+                break;
             }
         }
         return offset;

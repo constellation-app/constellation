@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * This class produces a menu action for the 'record video' action available on
+ * This class produces a menu action for the 'set draw transactions' action available on
  * the graph toolbar.
  *
  * @author altair
@@ -35,14 +35,9 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.display.MenuDrawTransactionsAction")
 @ActionRegistration(displayName = "#CTL_MenuDrawTransactionsAction", lazy = false)
 @ActionReference(path = "Menu/Display/Connection Types", position = 100)
-@Messages({
-    "CTL_MenuDrawTransactionsAction=Transactions"
-})
+@Messages("CTL_MenuDrawTransactionsAction=Transactions")
 public class MenuDrawTransactionsAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuDrawTransactionsAction() {
         super();
         this.initRadioButton(Bundle.CTL_MenuDrawTransactionsAction(), "ConnectionMode", false);
@@ -58,7 +53,7 @@ public class MenuDrawTransactionsAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         final Graph graph = getContext().getGraph();
-        boolean flag = VisualGraphUtilities.getConnectionMode(graph) == ConnectionMode.TRANSACTION;
+        final boolean flag = VisualGraphUtilities.getConnectionMode(graph) == ConnectionMode.TRANSACTION;
         menuButton.setSelected(flag);
     }
 }

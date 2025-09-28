@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,11 +36,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type vertex_type
  *
  * @author twilight_sparkle
  */
@@ -49,8 +48,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaVertexType> {
 
     @Override
-    public AbstractEditor<SchemaVertexType> createEditor(final EditOperation editOperation, final DefaultGetter<SchemaVertexType> defaultGetter, final ValueValidator<SchemaVertexType> validator, final String editedItemName, final SchemaVertexType initialValue) {
-        return new VertexTypeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<SchemaVertexType> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<SchemaVertexType> validator, final SchemaVertexType defaultValue, final SchemaVertexType initialValue) {
+        return new VertexTypeEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -64,44 +63,38 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
         private TextField nameText;
         private boolean selectionIsActive = false;
 
-        protected VertexTypeEditor(final EditOperation editOperation, final DefaultGetter<SchemaVertexType> defaultGetter, final ValueValidator<SchemaVertexType> validator, final String editedItemName, final SchemaVertexType initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected VertexTypeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<SchemaVertexType> validator, final SchemaVertexType defaultValue, final SchemaVertexType initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override
         public void updateControlsWithValue(final SchemaVertexType value) {
-            final SchemaVertexType type = value;
-            if (typeList.getItems().contains(type)) {
-                typeList.getSelectionModel().select(type);
+            if (typeList.getItems().contains(value)) {
+                typeList.getSelectionModel().select(value);
             } else {
-                nameText.setText(type != null ? type.getName() : "");
+                nameText.setText(value != null ? value.getName() : "");
             }
         }
 
         @Override
         protected SchemaVertexType getValueFromControls() {
-            return typeList.getSelectionModel().getSelectedItem() != null 
+            return typeList.getSelectionModel().getSelectedItem() != null
                     ? typeList.getSelectionModel().getSelectedItem()
                     : SchemaVertexTypeUtilities.getTypeOrBuildNew(nameText.getText());
         }
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
-            typeList = new ListView<>();
-            typeList.setCellFactory(p -> new ListCell<SchemaVertexType>() {
-                @Override
-                protected void updateItem(final SchemaVertexType item, final boolean empty) {
-                    super.updateItem(item, empty);
-                    if (!empty && item != null) {
-                        setText(item.getName());
-                    }
+            final Label nameLabel = new Label("Type Name:");
+            final VBox nameBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, nameLabel, nameText);
+            nameText = new TextField();
+            nameText.textProperty().addListener(ev -> {
+                if (!selectionIsActive) {
+                    typeList.getSelectionModel().select(null);
                 }
+                update();
             });
-
+            
             // get all types supported by the current schema
             final List<SchemaVertexType> types = new ArrayList<>();
             final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
@@ -114,22 +107,20 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
                 types.addAll(SchemaVertexTypeUtilities.getTypes(concepts));
                 types.add(SchemaVertexTypeUtilities.getDefaultType());
             }
-
-            final Label nameLabel = new Label("Type Name:");
-            nameText = new TextField();
-            final VBox nameBox = new VBox(10);
-            nameBox.getChildren().addAll(nameLabel, nameText);
-
-            nameText.textProperty().addListener(ev -> {
-                if (!selectionIsActive) {
-                    typeList.getSelectionModel().select(null);
-                }
-                update();
-            });
-
+            
             final Label listLabel = new Label("Schema Types:");
             Collections.sort(types);
+            typeList = new ListView<>();
             typeList.getItems().addAll(types);
+            typeList.setCellFactory(p -> new ListCell<>() {
+                @Override
+                protected void updateItem(final SchemaVertexType item, final boolean empty) {
+                    super.updateItem(item, empty);
+                    if (!empty && item != null) {
+                        setText(item.getName());
+                    }
+                }
+            });
 
             typeList.getSelectionModel().selectedItemProperty().addListener(ev -> {
                 selectionIsActive = true;
@@ -139,10 +130,11 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
                 }
                 selectionIsActive = false;
             });
-
-            controls.addRow(0, nameBox);
-            controls.addRow(1, listLabel);
-            controls.addRow(2, typeList);
+            
+            final VBox controls = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, 
+                    nameBox, listLabel, typeList);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
         }
     }

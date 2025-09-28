@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -26,6 +25,7 @@ import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type long
  *
  * @author cygnus_x-1
  */
@@ -33,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class LongEditorFactory extends AttributeValueEditorFactory<Long> {
 
     @Override
-    public AbstractEditor<Long> createEditor(EditOperation editOperation, DefaultGetter<Long> defaultGetter, ValueValidator<Long> validator, String editedItemName, Long initialValue) {
-        return new LongEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Long> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Long> validator, final Long defaultValue, final Long initialValue) {
+        return new LongEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -46,8 +46,12 @@ public class LongEditorFactory extends AttributeValueEditorFactory<Long> {
 
         private TextField numberField;
 
-        protected LongEditor(final EditOperation editOperation, final DefaultGetter<Long> defaultGetter, final ValueValidator<Long> validator, final String editedItemName, final Long initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected LongEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Long> validator, final Long defaultValue, final Long initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
+        }
+        
+        protected String getNumberText() {
+            return numberField.getText();
         }
 
         @Override
@@ -64,7 +68,7 @@ public class LongEditorFactory extends AttributeValueEditorFactory<Long> {
         @Override
         protected Long getValueFromControls() throws AbstractEditorFactory.ControlsInvalidException {
             try {
-                return Long.parseLong(numberField.getText());
+                return Long.valueOf(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a long.");
             }
@@ -72,13 +76,12 @@ public class LongEditorFactory extends AttributeValueEditorFactory<Long> {
 
         @Override
         protected Node createEditorControls() {
-            final VBox controls = new VBox();
-            controls.setAlignment(Pos.CENTER);
-
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-
-            controls.getChildren().add(numberField);
+            
+            final VBox controls = new VBox(numberField);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
         }
     }

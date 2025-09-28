@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
 
         final int vertexCount = graph.getVertexCount();
         for (int position = 0; position < vertexCount; position++) {
-           final int vertex = graph.getVertex(position);
+            final int vertex = graph.getVertex(position);
 
             if (cycles[vertex] == 0) {
                 final int parent = parents[vertex];

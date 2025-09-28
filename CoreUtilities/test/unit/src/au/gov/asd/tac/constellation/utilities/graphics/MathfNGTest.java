@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import static org.testng.Assert.assertFalse;
  * @author groombridge34a
  */
 public class MathfNGTest {
-    
+
     private static final float F1 = 1.23F;
     private static final float F2 = 3.21F;
     private static final float F3 = 4.56F;
@@ -75,9 +75,7 @@ public class MathfNGTest {
      */
     @Test
     public void testDistanceSquared() {
-        assertEquals(Mathf.distanceSquared(
-                new Vector3f(F1, F2, F3), new Vector3f(F4, F5, F6)), 
-                78.2946F);
+        assertEquals(Mathf.distanceSquared(new Vector3f(F1, F2, F3), new Vector3f(F4, F5, F6)), 78.2946F);
     }
     
     /**
@@ -85,9 +83,7 @@ public class MathfNGTest {
      */
     @Test
     public void testDistance() {
-        assertEquals(Mathf.distance(
-                new Vector3f(F1, F2, F3), new Vector3f(F4, F5, F6)), 
-                8.848424F);
+        assertEquals(Mathf.distance(new Vector3f(F1, F2, F3), new Vector3f(F4, F5, F6)), 8.848424F);
     }
     
     /**
@@ -95,21 +91,41 @@ public class MathfNGTest {
      */
     @Test
     public void testDistanceToPlane() {
-        assertEquals(Mathf.distanceToPlane(
-                new Vector3f(F1, F2, F3), new Vector4f(F4, F5, F6, F7)), 
-                80.2883F);
+        Vector3f point = new Vector3f(F1, F2, F3);
+        Vector4f plane = new Vector4f(F4, F5, F6, F7);
+        float distance = Mathf.distanceToPlane(point, plane);
+        float expectedResult = 5.6429143F;
+        assertEquals(distance, expectedResult);
     }
     
-    /**
-     * Can get the plane equation from three points.
-     */
     @Test
-    public void testPlaneEquation() {
-        final Vector4f planeEq = new Vector4f();
-        Mathf.planeEquation(planeEq, new Vector3f(F1, F2, F3), 
-                new Vector3f(F4, F5, F6), new Vector3f(F7, F8, F9));
-        assertEquals(planeEq.a, new float[] {0.7757828F, -0.20191793F, 
-            -0.59782124F, 2.4200084F});
+    public void testPlaneIntersectionPoint() {
+        // Initialise a plane that sits verticaly y and horisintaly x at z = 1
+        final Vector4f plane = new Vector4f();
+        final Vector3f planePoint1 = new Vector3f(0,0,1);
+        final Vector3f planePoint2 = new Vector3f(0,1,1);
+        final Vector3f planePoint3 = new Vector3f(1,0,1);
+        Mathf.planeEquation(plane, planePoint1, planePoint2, planePoint3);
+        
+        // Initialise a line that does not pass through the plane at
+        final Vector3f invalidLineIntitialPoint = new Vector3f(3,2,-2);
+        final Vector3f invalidLineFinalPoint = new Vector3f(2,2,-2);
+        
+        // Test for invalid point
+        final Vector3f invalidIntersectionPoint = Mathf.planeIntersectionPoint(invalidLineIntitialPoint, invalidLineFinalPoint, plane);
+        assertEquals(invalidIntersectionPoint.getX(), Float.NEGATIVE_INFINITY);
+        assertEquals(invalidIntersectionPoint.getY(), Float.NaN);
+        assertEquals(invalidIntersectionPoint.getZ(), Float.NaN);
+        
+        // Initialise a line that does passes thorugh at point (3, 2, 1)
+        final Vector3f validLineIntitialPoint = new Vector3f(3,2,-2);
+        final Vector3f validLineFinalPoint = new Vector3f(3,2,2);
+        
+        // Test for valid point
+        final Vector3f validIntersectionPoint = Mathf.planeIntersectionPoint(validLineIntitialPoint, validLineFinalPoint, plane);
+        assertEquals(validIntersectionPoint.getX(), 3.0F);
+        assertEquals(validIntersectionPoint.getY(), 2.0F);
+        assertEquals(validIntersectionPoint.getZ(), 1.0F);
     }
     
     /**
@@ -206,8 +222,7 @@ public class MathfNGTest {
     @Test
     public void testMakePlanarShadowMatrix() {
         final float[] proj = new float[16];
-        Mathf.makePlanarShadowMatrix(proj, 
-                new float[] {F10, F3, F9, F4}, new float[] {F8, F5, F7});
+        Mathf.makePlanarShadowMatrix(proj, new float[] {F10, F3, F9, F4}, new float[] {F8, F5, F7});
         assertEquals(proj, new float[] {
             -43.1027F, 79.7679F, 19.310099F, 0F,
             37.756798F, -90.83509F, 8.7095995F, 0F,

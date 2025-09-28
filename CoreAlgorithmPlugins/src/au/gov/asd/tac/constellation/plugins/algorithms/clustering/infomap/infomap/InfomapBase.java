@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -159,7 +159,7 @@ public abstract class InfomapBase {
                 double maxCodelength = 0;
                 LOGGER.log(Level.INFO, "Codelengths for %d trials: [{0}", config.getNumTrials());
                 for (final double mdl : codelengths) {
-                    LOGGER.log(Level.INFO, "NINE_FORMAT1", mdl);
+                    LOGGER.log(Level.INFO, NINE_FORMAT1, mdl);
                     averageCodelength += mdl;
                     minCodelength = Math.min(minCodelength, mdl);
                     maxCodelength = Math.max(maxCodelength, mdl);
@@ -167,15 +167,15 @@ public abstract class InfomapBase {
 
                 averageCodelength /= config.getNumTrials();
                 
-                final String formattedString = String.format("[min, average, max] codelength: [%.9f, %.9f, %.9f]\n\n",
+                final String formattedString = String.format("[min, average, max] codelength: [%.9f, %.9f, %.9f]%n%n",
                         minCodelength, averageCodelength, maxCodelength);
                 LOGGER.log(Level.INFO, formattedString);
             }
 
             if (bestIntermediateStatistics != null) {
-                LOGGER.log(Level.INFO, "Best intermediate solution: {0}", bestIntermediateStatistics.toString());
+                LOGGER.log(Level.INFO, "Best intermediate solution: {0}", bestIntermediateStatistics);
             }
-            LOGGER.log(Level.INFO, "Best end solution: {0}", bestSolutionStatistics.toString());
+            LOGGER.log(Level.INFO, "Best end solution: {0}", bestSolutionStatistics);
         }
     }
 
@@ -254,7 +254,7 @@ public abstract class InfomapBase {
                 LOGGER.log(Level.INFO, formattedString);
             } else {
                 
-                final String log = String.format("done! Codelength: %f + %f (+ %f left to improve) -> limit: %.10f bits.\n",
+                final String log = String.format("done! Codelength: %f + %f (+ %f left to improve) -> limit: %.10f bits.%n",
                         partitionQueue.getIndexCodelength(), partitionQueue.getLeafCodelength(), leftToImprove, limitCodelength);
                 LOGGER.log(Level.INFO, log);
             }
@@ -297,8 +297,6 @@ public abstract class InfomapBase {
             return hierarchicalCodelength;
         } else if (tryIndexing) {
             tryIndexingIteratively();
-        } else {
-            // Do nothing
         }
 
         queueTopModules(partitionQueue);
@@ -365,8 +363,6 @@ public abstract class InfomapBase {
                     LOGGER.log(Level.INFO, "two-level index codebook not improved over one-level.");
                 }
                 break;
-            } else {
-                // Do nothing
             }
 
             minHierarchicalCodelength += superInfomap.codelength - indexCodelength;
@@ -494,7 +490,6 @@ public abstract class InfomapBase {
             consolidateModules(false);
 
             hierarchicalCodelength = workingHierarchicalCodelength;
-            oldIndexLength = indexCodelength;
 
             // Store the individual codelengths on each module.
             for (final NodeBase module : getRoot().getChildren()) {
@@ -564,7 +559,7 @@ public abstract class InfomapBase {
             if (config.getVerbosity() == 0) {
                 LOGGER.log(Level.INFO, "Clearing {0} of codelength", codelength);
             } else {
-                final String formattedString = String.format("done! Two-level codelength %f + %f = %f in %d modules.\n",
+                final String formattedString = String.format("done! Two-level codelength %f + %f = %f in %d modules.%n",
                         indexCodelength, moduleCodelength, codelength, getNumTopModules());
                 LOGGER.log(Level.INFO, formattedString);
             }
@@ -607,7 +602,7 @@ public abstract class InfomapBase {
             final InfomapBase subInfomap = getNewInfomapInstance(config, rg);
             subInfomap.subLevel = subLevel + 1;
 
-            subInfomap.initSubNetwork(module, false);
+            subInfomap.initSubNetwork(module);
 
             subInfomap.partitionAndQueueNextLevel(subQueue, tryIndexing);
 
@@ -990,7 +985,7 @@ public abstract class InfomapBase {
             // To not happen to get back the same network with the same seed.
             subInfomap.reseed(NodeBase.uid());
             subInfomap.subLevel = subLevel + 1;
-            subInfomap.initSubNetwork(module, false);
+            subInfomap.initSubNetwork(module);
             subInfomap.partition(recursiveCount, fast);
 
             if (DEBUG) {
@@ -1008,7 +1003,7 @@ public abstract class InfomapBase {
         }
     }
 
-    private void initSubNetwork(final NodeBase parent, final boolean recalculateFlow) {
+    private void initSubNetwork(final NodeBase parent) {
         if (DEBUG) {
             final String log = String.format("%s.initSubNetwork()%n", getClass().getSimpleName());
             LOGGER.log(Level.INFO, log);
@@ -1100,16 +1095,17 @@ public abstract class InfomapBase {
         }
     }
 
-    private void printNetworkData(String filename, final boolean sort) throws FileNotFoundException {
+    private void printNetworkData(final String filename, final boolean sort) throws FileNotFoundException {
         if (config.isNoFileOutput()) {
             return;
         }
 
-        if (filename.isEmpty()) {
+        String newFilename = filename;
+        if (newFilename.isEmpty()) {
             final File f = new File(config.getNetworkFile());
             final String name = f.getName();
             final int p = name.lastIndexOf('.');
-            filename = p > 0 ? name.substring(0, p) : name;
+            newFilename = p > 0 ? name.substring(0, p) : name;
         }
 
         if (sort) {
@@ -1120,14 +1116,14 @@ public abstract class InfomapBase {
         }
         // Print .tree.
         if (config.isPrintTree()) {
-            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.TREE);
+            final File outName = new File(config.getOutDirectory(), newFilename + FileExtensionConstants.TREE);
             if (config.getVerbosity() == 0) {
                 LOGGER.log(Level.INFO, "Writing .tree file.");
             } else {
                 LOGGER.log(Level.INFO, "Print hierarchical cluster data to {0}... ", outName);
             }
 
-            try (PrintWriter out = new PrintWriter(outName)) {
+            try (final PrintWriter out = new PrintWriter(outName)) {
                 out.printf("# Codelength %f bits. Network size: %d nodes and %d links.\n",
                         hierarchicalCodelength, getNumLeafNodes(), treeData.getNumLeafEdges());
 
@@ -1139,14 +1135,14 @@ public abstract class InfomapBase {
 
         // Print .clu.
         if (config.isPrintClu()) {
-            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.CLUSTER);
+            final File outName = new File(config.getOutDirectory(), newFilename + FileExtensionConstants.CLUSTER);
             if (config.getVerbosity() == 0) {
                 LOGGER.log(Level.INFO, "Writing .clu file..");
             } else {
                 LOGGER.log(Level.INFO, "Print cluster data to {0}... ", outName);
             }
 
-            try (PrintWriter out = new PrintWriter(outName)) {
+            try (final PrintWriter out = new PrintWriter(outName)) {
                 printClusterVector(out);
             }
 
@@ -1156,12 +1152,12 @@ public abstract class InfomapBase {
         }
 
         if (config.isPrintNodeRanks()) {
-            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.RANK);
+            final File outName = new File(config.getOutDirectory(), newFilename + FileExtensionConstants.RANK);
             if (config.getVerbosity() > 0) {
                 LOGGER.log(Level.INFO, "Print node ranks to {0}... ", outName);
             }
 
-            try (PrintWriter out = new PrintWriter(outName)) {
+            try (final PrintWriter out = new PrintWriter(outName)) {
                 printNodeRanks(out);
             }
 
@@ -1171,14 +1167,14 @@ public abstract class InfomapBase {
         }
 
         if (config.isPrintFlowNetwork()) {
-            final File outName = new File(config.getOutDirectory(), filename + FileExtensionConstants.FLOW);
+            final File outName = new File(config.getOutDirectory(), newFilename + FileExtensionConstants.FLOW);
             if (config.getVerbosity() == 0) {
                 LOGGER.log(Level.INFO, "Writing .flow file {0}", outName);
             } else {
                 LOGGER.log(Level.INFO, "Print flow network to {0}... ", outName);
             }
 
-            try (PrintWriter out = new PrintWriter(outName)) {
+            try (final PrintWriter out = new PrintWriter(outName)) {
                 printFlowNetwork(out);
             }
 
@@ -1306,7 +1302,7 @@ public abstract class InfomapBase {
         for (int i = 0; i < numLevels - 1; ++i) {
             buf.append(String.format(NINE_FORMAT1, codelengths[i]));
         }
-        buf.append(String.format(NINE_FORMAT2, codelengths[numLevels - 1]));
+        buf.append(String.format(NINE_FORMAT2, codelengths[codelengths.length - 1]));
 
         double sumCodelengths = 0.0;
         for (int i = 0; i < numLevels; ++i) {
@@ -1345,13 +1341,11 @@ public abstract class InfomapBase {
                 } else {
                     aggregatePerLevelCodelength(module, indexLengths, leafLengths, level + 1);
                 }
-            } else {
-                // Do nothing
             }
         }
     }
 
-    private void reseed(long seed) {
+    private void reseed(final long seed) {
         rand.seed(seed);
     }
 

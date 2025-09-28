@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,7 +93,6 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
         final boolean includeConnectionsIn = parameters.getBooleanValue(INCLUDE_CONNECTIONS_IN_PARAMETER_ID);
         final boolean includeConnectionsOut = parameters.getBooleanValue(INCLUDE_CONNECTIONS_OUT_PARAMETER_ID);
         final boolean treatUndirectedBidirectional = parameters.getBooleanValue(TREAT_UNDIRECTED_BIDIRECTIONAL);
@@ -113,7 +112,7 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final float eccentricity = eccentricities[vertexPosition];
             final BitSet subgraph = subgraphs[vertexPosition];
-            if (subgraph.cardinality() <= 1) {
+            if (subgraph == null || subgraph.cardinality() <= 1) {
                 if (!ignoreSingletons) {
                     numComponents += 1;
                 }
@@ -136,9 +135,10 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
             final int vertexId = graph.getVertex(vertexPosition);
             final float eccentricity = eccentricities[vertexPosition];
             final BitSet subgraph = subgraphs[vertexPosition];
-            graph.setFloatValue(cSizeAttribute, vertexId, subgraph.cardinality());
+            final int cardinality = subgraph != null ? subgraph.cardinality() : 0;
+            graph.setFloatValue(cSizeAttribute, vertexId, cardinality);
             // singleton or singleton with a loop
-            if (subgraph.cardinality() <= 1) {
+            if (cardinality <= 1) {
                 if (normalise && ignoreSingletons) {
                     graph.setFloatValue(ccAttribute, vertexId, numComponents);
                 } else if (normalise && !ignoreSingletons) {
@@ -146,8 +146,8 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
                 } else {
                     graph.setFloatValue(ccAttribute, vertexId, 0);
                 }
-            } // subgraph just two connected nodes
-            else if (subgraph.cardinality() == 2) {
+            } else if (cardinality == 2) {
+                // subgraph just two connected nodes
                 if (normalise && ignoreSingletons) {
                     graph.setFloatValue(ccAttribute, vertexId, numComponents - 1);
                 } else if (normalise && !ignoreSingletons) {
@@ -155,15 +155,15 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
                 } else {
                     graph.setFloatValue(ccAttribute, vertexId, 0);
                 }
-            } // if on outskirts of subnetwork, deleting won't lower the number of components
-            else if (eccentricity == maxEccentricityConnectedComponents.get(subgraph) || graph.getVertexNeighbourCount(vertexId) == 1) {
+            } else if (eccentricity == maxEccentricityConnectedComponents.get(subgraph) || graph.getVertexNeighbourCount(vertexId) == 1) {
+                // if on outskirts of subnetwork, deleting won't lower the number of components
                 if (normalise) {
                     graph.setFloatValue(ccAttribute, vertexId, numComponents);
                 } else {
                     graph.setFloatValue(ccAttribute, vertexId, 0);
                 }
-            } // if not on outskirts, will need to calculate how many subgraphs get created if removed
-            else {
+            } else {
+                // if not on outskirts, will need to calculate how many subgraphs get created if removed
                 final BitSet temp = new BitSet(vertexCount);
                 temp.or(subgraph);
                 temp.set(vertexPosition, false);

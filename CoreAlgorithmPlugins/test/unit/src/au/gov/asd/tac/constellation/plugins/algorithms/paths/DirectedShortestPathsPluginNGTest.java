@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,25 +48,17 @@ public class DirectedShortestPathsPluginNGTest {
     private int vxId4;
     private int vxId5;
     
-    private int tId1;
-    private int tId2;
-    private int tId3;
-    private int tId4;
-    private int tId5;
-    private int tId6;
-    
     private int vertexLabelAttribute;
     private int vertexSelectedAttribute;
     
-    public DirectedShortestPathsPluginNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -80,12 +72,12 @@ public class DirectedShortestPathsPluginNGTest {
         vxId4 = graph.addVertex();
         vxId5 = graph.addVertex();
         
-        tId1 = graph.addTransaction(vxId1, vxId2, false);
-        tId2 = graph.addTransaction(vxId1, vxId3, true);
-        tId3 = graph.addTransaction(vxId1, vxId4, true);
-        tId4 = graph.addTransaction(vxId4, vxId2, true);
-        tId5 = graph.addTransaction(vxId2, vxId5, true);
-        tId6 = graph.addTransaction(vxId3, vxId5, true);
+        graph.addTransaction(vxId1, vxId2, false);
+        graph.addTransaction(vxId1, vxId3, true);
+        graph.addTransaction(vxId1, vxId4, true);
+        graph.addTransaction(vxId4, vxId2, true);
+        graph.addTransaction(vxId2, vxId5, true);
+        graph.addTransaction(vxId3, vxId5, true);
         
         vertexLabelAttribute = VisualConcept.VertexAttribute.LABEL.ensure(graph);
         vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
@@ -105,6 +97,7 @@ public class DirectedShortestPathsPluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -131,6 +124,7 @@ public class DirectedShortestPathsPluginNGTest {
         final DirectedShortestPathsPlugin instance = new DirectedShortestPathsPlugin();
         
         final PluginParameters params = instance.createParameters();
+        @SuppressWarnings("unchecked") // SOURCE_NODE_PARAMETER will always be a SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> sourceNode = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(SOURCE_NODE_PARAMETER_ID);
         
         assertTrue(SingleChoiceParameterType.getOptions(sourceNode).isEmpty());
@@ -149,7 +143,8 @@ public class DirectedShortestPathsPluginNGTest {
         final DirectedShortestPathsPlugin instance = new DirectedShortestPathsPlugin();
         
         final PluginParameters params = instance.createParameters();
-        final PluginParameter<SingleChoiceParameterValue> sourceNode = (PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue>) params.getParameters().get(SOURCE_NODE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // SOURCE_NODE_PARAMETER will always be a SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> sourceNode = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(SOURCE_NODE_PARAMETER_ID);
         
         assertTrue(SingleChoiceParameterType.getOptions(sourceNode).isEmpty());
         

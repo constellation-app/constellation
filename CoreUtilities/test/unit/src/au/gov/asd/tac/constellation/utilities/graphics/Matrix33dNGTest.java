@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class Matrix33dNGTest {
     @Test
     public void testConstructor() {
         final Matrix33d m = new Matrix33d();
-        double a[] = m.getA();
+        double[] a = m.getA();
         for (int i = 0; i < a.length; i++) {
             assertEquals(a[i], 0D);
         }
@@ -66,8 +66,8 @@ public class Matrix33dNGTest {
      */
     @Test
     public void testGetA() {
-        final double expected[] = {D1, D2, D3, D4, D5, D6, D7, D8, D9};
-        final double a[] = getMatrix().getA();
+        final double[] expected = {D1, D2, D3, D4, D5, D6, D7, D8, D9};
+        final double[] a = getMatrix().getA();
         for (int i = 0; i < a.length; i++) {
             assertEquals(a[i], expected[i]);
         }
@@ -78,7 +78,7 @@ public class Matrix33dNGTest {
      */
     @Test
     public void testSetA() {
-        final double expected[] = getMatrix().getA();
+        final double[] expected = getMatrix().getA();
         final Matrix33d m = new Matrix33d();
         m.setA(Arrays.copyOf(expected, expected.length));
         for (int i = 0; i < expected.length; i++) {
@@ -91,7 +91,7 @@ public class Matrix33dNGTest {
      */
     @Test
     public void testIdentity() {
-        final double junk[] = new double[Matrix33d.LENGTH];
+        final double[] junk = new double[Matrix33d.LENGTH];
         for (int i = 0; i < Matrix33d.LENGTH; i++) {
             junk[i] = 1089.1451D;
         }
@@ -99,7 +99,7 @@ public class Matrix33dNGTest {
         m.setA(junk);
 
         m.identity();
-        final double a[] = m.getA();
+        final double[] a = m.getA();
         for (int i = 0; i < a.length; i++) {
             if (i == 0 || i == 4 || i == 8) {
                 assertEquals(a[i], 1D);

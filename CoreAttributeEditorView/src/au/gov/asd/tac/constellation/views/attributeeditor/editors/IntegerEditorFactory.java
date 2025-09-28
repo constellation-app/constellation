@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -26,6 +25,7 @@ import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type integer
  *
  * @author twilight_sparkle
  */
@@ -33,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class IntegerEditorFactory extends AttributeValueEditorFactory<Integer> {
 
     @Override
-    public AbstractEditor<Integer> createEditor(final EditOperation editOperation, final DefaultGetter<Integer> defaultGetter, final ValueValidator<Integer> validator, final String editedItemName, final Integer initialValue) {
-        return new IntegerEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Integer> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Integer> validator, final Integer defaultValue, final Integer initialValue) {
+        return new IntegerEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -46,8 +46,12 @@ public class IntegerEditorFactory extends AttributeValueEditorFactory<Integer> {
 
         private TextField numberField;
 
-        protected IntegerEditor(final EditOperation editOperation, final DefaultGetter<Integer> defaultGetter, final ValueValidator<Integer> validator, final String editedItemName, final Integer initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected IntegerEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Integer> validator, final Integer defaultValue, final Integer initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
+        }
+        
+        protected String getNumberText() {
+            return numberField.getText();
         }
 
         @Override
@@ -64,7 +68,7 @@ public class IntegerEditorFactory extends AttributeValueEditorFactory<Integer> {
         @Override
         protected Integer getValueFromControls() throws ControlsInvalidException {
             try {
-                return Integer.parseInt(numberField.getText());
+                return Integer.valueOf(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not an integer.");
             }
@@ -72,13 +76,12 @@ public class IntegerEditorFactory extends AttributeValueEditorFactory<Integer> {
 
         @Override
         protected Node createEditorControls() {
-            final VBox controls = new VBox();
-            controls.setAlignment(Pos.CENTER);
-
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-
-            controls.getChildren().add(numberField);
+            
+            final VBox controls = new VBox(numberField);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
         }
     }

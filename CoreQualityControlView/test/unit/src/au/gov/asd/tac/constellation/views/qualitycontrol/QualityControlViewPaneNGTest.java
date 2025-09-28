@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.json.JsonUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewPane.DeleteQualityControlEvents;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewPane.DeselectQualityControlEvents;
@@ -33,16 +34,26 @@ import au.gov.asd.tac.constellation.views.qualitycontrol.rules.IdentifierInconsi
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.MissingTypeRule;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.UnknownTypeRule;
+import com.fasterxml.jackson.core.JsonFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import org.mockito.MockedStatic;
+import static org.mockito.Mockito.mockStatic;
 import org.openide.util.Lookup;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -54,6 +65,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class QualityControlViewPaneNGTest {
+
     private static final Logger LOGGER = Logger.getLogger(QualityControlViewPaneNGTest.class.getName());
 
     private int vertexIdentifierAttribute;
@@ -128,6 +140,7 @@ public class QualityControlViewPaneNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -143,9 +156,13 @@ public class QualityControlViewPaneNGTest {
 
         instance.refreshQualityControlView(null);
 
-        //not ideal but needed in order to allow the code running in JFX thread to complete
-        Thread.sleep(100);
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            // this is inserted here means this will happens after the previous function call has finished processing in the JFX
+            latch.countDown();
+        });
 
+        latch.await();
         final int noOfItems = instance.getQualityTable().getItems().size();
         assertEquals(noOfItems, 0);
     }
@@ -164,9 +181,13 @@ public class QualityControlViewPaneNGTest {
 
         instance.refreshQualityControlView(state);
 
-        //not ideal but needed in order to allow the code running in JFX thread to complete
-        Thread.sleep(100);
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            // this is inserted here means this will happens after the previous function call has finished processing in the JFX
+            latch.countDown();
+        });
 
+        latch.await();
         final int noOfItems = instance.getQualityTable().getItems().size();
         assertEquals(noOfItems, 0);
     }
@@ -185,9 +206,13 @@ public class QualityControlViewPaneNGTest {
 
         instance.refreshQualityControlView(state);
 
-        //not ideal but needed in order to allow the code running in JFX thread to complete
-        Thread.sleep(100);
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            // this is inserted here means this will happens after the previous function call has finished processing in the JFX
+            latch.countDown();
+        });
 
+        latch.await();
         final int noOfItems = instance.getQualityTable().getItems().size();
         assertEquals(noOfItems, 2);
     }
@@ -199,18 +224,60 @@ public class QualityControlViewPaneNGTest {
     public void testQualityStyle() {
         System.out.println("qualityStyle");
 
+        final float expectedAlpha = 0.75F;
+
         final String okStyle = QualityControlViewPane.qualityStyle(QualityCategory.OK);
-        assertEquals(okStyle, String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(0,200,0,%f);", 0.75f));
+        assertEquals(okStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(0,200,0,%f);", expectedAlpha));
         final String minorStyle = QualityControlViewPane.qualityStyle(QualityCategory.MINOR);
-        assertEquals(minorStyle, String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(90,150,255,%f);", 0.75f));
+        assertEquals(minorStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(90,150,255,%f);", expectedAlpha));
         final String mediumStyle = QualityControlViewPane.qualityStyle(QualityCategory.MEDIUM);
-        assertEquals(mediumStyle, String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,215,0,%f);", 0.75f));
+        assertEquals(mediumStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(255,215,0,%f);", expectedAlpha));
         final String majorStyle = QualityControlViewPane.qualityStyle(QualityCategory.MAJOR);
-        assertEquals(majorStyle, String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(255,%d,0,%f);", 102, 0.75f));
+        assertEquals(majorStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(255,102,0,%f);", expectedAlpha));
         final String severeStyle = QualityControlViewPane.qualityStyle(QualityCategory.SEVERE);
-        assertEquals(severeStyle, String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,%d,%d,%f);", 26, 26, 0.75f));
+        assertEquals(severeStyle, String.format("-fx-text-fill: black; -fx-background-color: rgba(255,%d,%d,%f);", 26, 26, expectedAlpha));
         final String criticalStyle = QualityControlViewPane.qualityStyle(QualityCategory.CRITICAL);
-        assertEquals(criticalStyle, String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(150,%d,%d,%f);", 13, 13, 0.75f));
+        assertEquals(criticalStyle, String.format("-fx-text-fill: rgb(255,255,0); -fx-background-color: rgba(150,%d,%d,%f);", 13, 13, expectedAlpha));
+    }
+
+    /**
+     * Test of readSerializedRuleEnabledStatuses method, of class QualityControlViewPane.
+     */
+    @Test
+    public void testReadSerializedRuleEnabledStatuses() {
+        System.out.println("readSerializedRuleEnabledStatuses");
+
+        try (
+                final MockedStatic<JsonUtilities> jsonUtilitiesMockedStatic = mockStatic(JsonUtilities.class); final MockedStatic<QualityControlViewPane> qualityControlViewPaneMockedStatic = mockStatic(QualityControlViewPane.class)) {
+            final Map<String, String> jsonMap = new HashMap<>();
+            jsonMap.put("Missing type", "false");
+            jsonMap.put("Unknown type", "true");
+
+            jsonUtilitiesMockedStatic.when(() -> JsonUtilities.getStringAsMap(any(JsonFactory.class), anyString()))
+                    .thenReturn(jsonMap);
+
+            final MissingTypeRule mRule = new MissingTypeRule();
+            final UnknownTypeRule uRule = new UnknownTypeRule();
+
+            final Map<QualityControlRule, Boolean> enabledMap = new HashMap<>();
+
+            qualityControlViewPaneMockedStatic.when(() -> QualityControlViewPane.getEnablementStatuses())
+                    .thenReturn(enabledMap);
+            qualityControlViewPaneMockedStatic.when(() -> QualityControlViewPane.readSerializedRuleEnabledStatuses())
+                    .thenCallRealMethod();
+
+            QualityControlViewPane.readSerializedRuleEnabledStatuses();
+
+            // clearing results so that we can successfully grab the rules
+            // other tests requiring results should be executing the rules anyway
+            for (final QualityControlRule rule : enabledMap.keySet()) {
+                rule.clearResults();
+            }
+
+            assertFalse(enabledMap.get(mRule));
+            assertTrue(enabledMap.get(uRule));
+        }
+
     }
 
     /**
@@ -234,6 +301,30 @@ public class QualityControlViewPaneNGTest {
         assertEquals(result.get(iiRule), QualityCategory.MEDIUM);
         assertEquals(result.get(mRule), QualityCategory.SEVERE);
         assertEquals(result.get(uRule), QualityCategory.MINOR);
+    }
+
+    /**
+     * Test of getPriorities method, of class QualityControlViewPane.
+     */
+    @Test
+    public void testGetEnablementStatuses() {
+        System.out.println("getEnablementStatuses");
+
+        final Map<QualityControlRule, Boolean> result = QualityControlViewPane.getEnablementStatuses();
+        assertEquals(result.size(), rules.size());
+
+        for (final QualityControlRule rule : result.keySet()) {
+            rule.clearResults();
+        }
+
+        final IdentifierInconsistentWithTypeRule iiRule = new IdentifierInconsistentWithTypeRule();
+        final MissingTypeRule mRule = new MissingTypeRule();
+        final UnknownTypeRule uRule = new UnknownTypeRule();
+
+        // all rules should be enabled by default
+        assertTrue(result.get(iiRule));
+        assertTrue(result.get(mRule));
+        assertTrue(result.get(uRule));
     }
 
     /**

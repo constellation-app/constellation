@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.algorithms;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 2500)
 @NbBundle.Messages("AlgorithmPluginsHelpProvider=Algorithm Plugins Help Provider")
 public class AlgorithmPluginsHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreAlgorithmPlugins" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,13 +40,12 @@ public class AlgorithmPluginsHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String algorithmModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "plugins" + sep + "algorithms" + sep + "docs" + sep;
 
-        map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispers", algorithmModulePath + "chinese-whispers.md");
-        map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss", algorithmModulePath + "k-truss.md");
-        map.put("au.gov.asd.tac.constellation.plugins.algorithms.paths.ShortestPathsPlugin", algorithmModulePath + "shortest-paths.md");
+        map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispers", MODULE_PATH + "chinese-whispers.md");
+        map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss", MODULE_PATH + "k-truss.md");
+        map.put("au.gov.asd.tac.constellation.plugins.algorithms.paths.ShortestPathsPlugin", MODULE_PATH + "shortest-paths.md");
+        map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.Hierarchical", MODULE_PATH + "hierarchical-clustering.md");
+        map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.InfoMap", MODULE_PATH + "info-map-clustering.md");
         return map;
     }
 
@@ -58,11 +56,6 @@ public class AlgorithmPluginsHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String algorithmPath;
-        algorithmPath = CODEBASE_NAME + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "plugins" + sep + "algorithms" + sep + "docs" + sep + "algorithms-toc.xml";
-
-        return algorithmPath;
+        return MODULE_PATH + "algorithms-toc.xml";
     }
 }

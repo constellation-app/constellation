@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,14 +47,24 @@ import org.openide.windows.OnShowing;
 public final class AutosaveStartup implements Runnable {
 
     private static final String AUTOSAVE_THREAD_NAME = "Autosave Startup";
+    private static final String GRAPH_LOAD_ERROR = "Error Loading Graph";
     private static final Logger LOGGER = Logger.getLogger(AutosaveStartup.class.getName());
     /**
      * The number of milliseconds after which we purge old autosaves.
      */
     private static final long PURGE_PERIOD_MS = 28 * 24 * 60 * 60 * 1000L;
 
+    /**
+     * This is the system property that is set to true in order to make the AWT
+     * thread run in headless mode for tests, etc.
+     */
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
+
     @Override
     public void run() {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            return;
+        }
         synchronized (String.class) {
             // Look for existing autosaved in-memory graphs.
             final File[] saveFiles = AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE);
@@ -63,7 +73,7 @@ public final class AutosaveStartup implements Runnable {
             for (final File f : saveFiles) {
                 try {
                     final Properties props = new Properties();
-                    try (InputStream in = new FileInputStream(f)) {
+                    try (final InputStream in = new FileInputStream(f)) {
                         props.load(in);
                     }
 
@@ -90,8 +100,11 @@ public final class AutosaveStartup implements Runnable {
                                             GraphOpener.getDefault().openGraph(g, name, false);
 
                                             AutosaveUtilities.deleteAutosave(f);
-                                        } catch (GraphParseException | IOException ex) {
-                                            LOGGER.log(Level.WARNING, "Error loading graph", ex);
+                                        } catch (final GraphParseException | IOException ex) {
+                                            final String errorMessage = NotifyDisplayer.BLOCK_POPUP_FLAG + GRAPH_LOAD_ERROR;
+                                            final Throwable gpioEx = ex instanceof IOException ? new IOException(errorMessage) : new GraphParseException(errorMessage);
+                                            gpioEx.setStackTrace(ex.getStackTrace());
+                                            LOGGER.log(Level.WARNING, GRAPH_LOAD_ERROR, gpioEx);
                                             NotifyDisplayer.display("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
                                         }
                                     }
@@ -103,14 +116,12 @@ public final class AutosaveStartup implements Runnable {
                         } else if (now - f.lastModified() > PURGE_PERIOD_MS) {
                             // This autosave is old enough to be purged; the user won't remember the details of the graph.
                             AutosaveUtilities.deleteAutosave(f);
-                        } else {
-                            // Do nothing
                         }
                     } else {
                         // Some information about this autosave is missing so get rid of it.
                         AutosaveUtilities.deleteAutosave(f);
                     }
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }

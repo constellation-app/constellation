@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.LongObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type long_or_null
  *
  * @author messier
  */
@@ -34,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class LongObjectEditorFactory extends AttributeValueEditorFactory<Long> {
 
     @Override
-    public AbstractEditor<Long> createEditor(final EditOperation editOperation, final DefaultGetter<Long> defaultGetter, final ValueValidator<Long> validator, final String editedItemName, final Long initialValue) {
-        return new LongObjectEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Long> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Long> validator, final Long defaultValue, final Long initialValue) {
+        return new LongObjectEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -46,15 +45,17 @@ public class LongObjectEditorFactory extends AttributeValueEditorFactory<Long> {
     public class LongObjectEditor extends AbstractEditor<Long> {
 
         private TextField numberField;
-        private CheckBox noValueCheckBox;
 
-        protected LongObjectEditor(final EditOperation editOperation, final DefaultGetter<Long> defaultGetter, final ValueValidator<Long> validator, final String editedItemName, final Long initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected LongObjectEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Long> validator, final Long defaultValue, final Long initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
+        }
+        
+        protected String getNumberText() {
+            return numberField.getText();
         }
 
         @Override
         public void updateControlsWithValue(final Long value) {
-            noValueCheckBox.setSelected(value == null);
             if (value != null) {
                 numberField.setText(String.valueOf(value));
             }
@@ -62,11 +63,8 @@ public class LongObjectEditorFactory extends AttributeValueEditorFactory<Long> {
 
         @Override
         protected Long getValueFromControls() throws ControlsInvalidException {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
             try {
-                return Long.parseLong(numberField.getText());
+                return Long.valueOf(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a long.");
             }
@@ -74,22 +72,12 @@ public class LongObjectEditorFactory extends AttributeValueEditorFactory<Long> {
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                numberField.setDisable(noValueCheckBox.isSelected());
-                update();
-            });
-
-            controls.addRow(0, numberField);
-            controls.addRow(1, noValueCheckBox);
+            
+            final VBox controls = new VBox(numberField);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
         }
     }

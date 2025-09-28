@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.Comp
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.CompositeStatus;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -46,13 +46,13 @@ public class CompositeNodeStateAttributeInteraction extends AbstractAttributeInt
         }
         final CompositeNodeState state = (CompositeNodeState) value;
         final CompositeStatus status = state.getStatus();
-        if (status.equals(CompositeStatus.NOT_A_COMPOSITE)) {
-            return "";
-        } else if (status.equals(CompositeStatus.IS_A_COMPOSITE)) {
-            return String.format("%s comprising %d nodes.", status.compositeName, state.getNumberOfNodes());
-        } else {
-            return String.format("%s with %d other node%s.", status.compositeName, state.getNumberOfNodes() - 1, state.getNumberOfNodes() == 1 ? "" : "s");
-        }
+        return switch (status) {
+            case NOT_A_COMPOSITE -> "";
+            case IS_A_COMPOSITE ->
+                String.format("%s comprising %d nodes.", status.getCompositeName(), state.getNumberOfNodes());
+            default ->
+                String.format("%s with %d other node%s.", status.getCompositeName(), state.getNumberOfNodes() - 1, state.getNumberOfNodes() == 1 ? "" : "s");
+        };
     }
 
     @Override
@@ -67,7 +67,7 @@ public class CompositeNodeStateAttributeInteraction extends AbstractAttributeInt
 
     @Override
     public AttributeValueTranslator toEditTranslator(final String dataType) {
-        if (StringUtils.equals(dataType, StringAttributeDescription.ATTRIBUTE_NAME)) {
+        if (Strings.CS.equals(dataType, StringAttributeDescription.ATTRIBUTE_NAME)) {
             return v -> v == null ? v : getDisplayText(v);
         }
         return super.toEditTranslator(dataType);

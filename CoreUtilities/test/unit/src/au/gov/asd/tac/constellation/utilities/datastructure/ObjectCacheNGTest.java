@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,21 +41,20 @@ public class ObjectCacheNGTest {
     private static final String VALUE3 = "value3";
 
     private ObjectCache<String, String> objectCache;
-
-    public ObjectCacheNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        objectCache = new ObjectCache();
+        objectCache = new ObjectCache<>();
         objectCache.add(KEY1, VALUE1);
         objectCache.add(KEY1, VALUE2);
         objectCache.add(KEY2, VALUE3);
@@ -63,6 +62,7 @@ public class ObjectCacheNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test

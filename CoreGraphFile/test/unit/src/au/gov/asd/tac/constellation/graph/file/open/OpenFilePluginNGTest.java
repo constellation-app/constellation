@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,14 +25,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
+import static org.fxmisc.wellbehaved.event.InputMap.when;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import org.openide.filesystems.FileChooserBuilder;
+import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -49,16 +53,15 @@ public class OpenFilePluginNGTest {
 
     private static MockedStatic<FileChooser> fileChooserStaticMock;
     private static MockedStatic<OpenFile> openFileStaticMock;
-
-    public OpenFilePluginNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -121,39 +124,49 @@ public class OpenFilePluginNGTest {
                 + FileExtensionConstants.STAR + ", "
                 + FileExtensionConstants.NEBULA + ")";
 
-        final OpenFilePlugin instance = new OpenFilePlugin();
-        final JFileChooser fileChooser = instance.getOpenFileChooser().createFileChooser();
+        // set up by ensuring Preferences for this test do not exist
+        final Preferences prefsMock1 = mock(Preferences.class);
+        final Preferences prefsMock2 = mock(Preferences.class);
+                
+        try (final MockedStatic<NbPreferences> prefsMockedStatic = mockStatic(NbPreferences.class)) {
+            // set up mocks
+            prefsMockedStatic.when(() -> NbPreferences.forModule(Mockito.any())).thenReturn(prefsMock1);
+            prefsMockedStatic.when(() -> NbPreferences.root()).thenReturn(prefsMock2);
+        
+            final OpenFilePlugin instance = new OpenFilePlugin();
+            final JFileChooser fileChooser = instance.getOpenFileChooser().createFileChooser();
 
-        // Ensure file chooser is constructed correctly.
-        assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
-        assertEquals(fileChooser.getChoosableFileFilters().length, 1);
-        assertEquals(fileChooser.getChoosableFileFilters()[0].getDescription(), fileChooserDescription);
+            // Ensure file chooser is constructed correctly.
+            assertEquals(fileChooser.getDialogTitle(), fileChooserTitle);
+            assertEquals(fileChooser.getChoosableFileFilters().length, 1);
+            assertEquals(fileChooser.getChoosableFileFilters()[0].getDescription(), fileChooserDescription);
 
-        // If file is invalid and does not end with correct extension.
-        final File file1 = File.createTempFile("fileInvalid", ".invalid");
-        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file1), false);
+            // If file is invalid and does not end with correct extension.
+            final File file1 = File.createTempFile("fileInvalid", ".invalid");
+            assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file1), false);
 
-        // If files do not exist.
-        final File file2 = new File("/invalidPath/fileStar" + FileExtensionConstants.STAR);
-        final File file3 = new File("/invalidPath/fileNebula" + FileExtensionConstants.NEBULA);
-        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file2), false);
-        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file3), false);
+            // If files do not exist.
+            final File file2 = new File("/invalidPath/fileStar" + FileExtensionConstants.STAR);
+            final File file3 = new File("/invalidPath/fileNebula" + FileExtensionConstants.NEBULA);
+            assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file2), false);
+            assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file3), false);
 
-        // If files exist, are valid and end with correct extensions.
-        final File file4 = File.createTempFile("fileStar", FileExtensionConstants.STAR);
-        final File file5 = File.createTempFile("fileNebula", FileExtensionConstants.NEBULA);
-        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file4), true);
-        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file5), true);
+            // If files exist, are valid and end with correct extensions.
+            final File file4 = File.createTempFile("fileStar", FileExtensionConstants.STAR);
+            final File file5 = File.createTempFile("fileNebula", FileExtensionConstants.NEBULA);
+            assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file4), true);
+            assertEquals(fileChooser.getChoosableFileFilters()[0].accept(file5), true);
 
-        // If file is a directory.
-        final File fileMock = mock(File.class);
-        doReturn("directory").when(fileMock).getName();
-        doReturn(false).when(fileMock).isFile();
-        doReturn(true).when(fileMock).isDirectory();
-        assertEquals(fileChooser.getChoosableFileFilters()[0].accept(fileMock), true);
+            // If file is a directory.
+            final File fileMock = mock(File.class);
+            doReturn("directory").when(fileMock).getName();
+            doReturn(false).when(fileMock).isFile();
+            doReturn(true).when(fileMock).isDirectory();
+            assertEquals(fileChooser.getChoosableFileFilters()[0].accept(fileMock), true);
 
-        Files.deleteIfExists(file1.toPath());
-        Files.deleteIfExists(file4.toPath());
-        Files.deleteIfExists(file5.toPath());
+            Files.deleteIfExists(file1.toPath());
+            Files.deleteIfExists(file4.toPath());
+            Files.deleteIfExists(file5.toPath());
+        }
     }
 }

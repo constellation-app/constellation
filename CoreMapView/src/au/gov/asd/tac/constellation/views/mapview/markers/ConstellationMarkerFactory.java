@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,10 @@ import de.fhpotsdam.unfolding.geo.Location;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A factory for creating markers for use in the Map View.
@@ -38,7 +40,7 @@ import java.util.List;
 public class ConstellationMarkerFactory {
 
     private final ObjectCache<FeatureKey, ConstellationAbstractMarker> featureCache;
-    private final HashMap<ConstellationFeatureType, Class<? extends ConstellationAbstractMarker>> featureTypeMap;
+    private final Map<ConstellationFeatureType, Class<? extends ConstellationAbstractMarker>> featureTypeMap;
 
     private int defaultColor = MarkerUtilities.DEFAULT_COLOR;
     private int defaultCustomColor = MarkerUtilities.DEFAULT_CUSTOM_COLOR;
@@ -50,7 +52,7 @@ public class ConstellationMarkerFactory {
     public ConstellationMarkerFactory() {
         super();
         this.featureCache = new ObjectCache<>();
-        this.featureTypeMap = new HashMap<>();
+        this.featureTypeMap = new EnumMap<>(ConstellationFeatureType.class);
         featureTypeMap.put(ConstellationFeatureType.POINT, ConstellationPointMarker.class);
         featureTypeMap.put(ConstellationFeatureType.LINE, ConstellationLineMarker.class);
         featureTypeMap.put(ConstellationFeatureType.POLYGON, ConstellationPolygonMarker.class);
@@ -146,23 +148,14 @@ public class ConstellationMarkerFactory {
             marker = featureCache.getRandom(key);
         } else {
             switch (feature.getType()) {
-                case POINT:
-                    marker = createPointMarker((ConstellationPointFeature) feature);
-                    break;
-                case LINE:
-                    marker = createLineMarker((ConstellationShapeFeature) feature);
-                    break;
-                case POLYGON:
-                    marker = createPolygonMarker((ConstellationShapeFeature) feature);
-                    break;
-                case MULTI:
-                    marker = createMultiMarker((ConstellationMultiFeature) feature);
-                    break;
-                case CLUSTER:
-                    marker = createClusterMarker((ConstellationMultiFeature) feature);
-                    break;
-                default:
+                case POINT -> marker = createPointMarker((ConstellationPointFeature) feature);
+                case LINE -> marker = createLineMarker((ConstellationShapeFeature) feature);
+                case POLYGON -> marker = createPolygonMarker((ConstellationShapeFeature) feature);
+                case MULTI -> marker = createMultiMarker((ConstellationMultiFeature) feature);
+                case CLUSTER -> marker = createClusterMarker((ConstellationMultiFeature) feature);
+                default -> {
                     return null;
+                }
             }
             featureCache.add(key, marker);
         }
@@ -195,10 +188,10 @@ public class ConstellationMarkerFactory {
         ConstellationAbstractMarker marker;
         try {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class, HashMap.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
+            marker = markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
         } catch (final NoSuchMethodException ex) {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations());
+            marker = markerConstructor.newInstance(feature.getLocations());
             marker.setProperties(feature.getProperties());
         }
         marker.setColor(defaultColor);
@@ -215,10 +208,10 @@ public class ConstellationMarkerFactory {
         ConstellationAbstractMarker marker;
         try {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class, HashMap.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
+            marker = markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
         } catch (NoSuchMethodException ex) {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations());
+            marker = markerConstructor.newInstance(feature.getLocations());
             marker.setProperties(feature.getProperties());
         }
         marker.setColor(defaultColor);

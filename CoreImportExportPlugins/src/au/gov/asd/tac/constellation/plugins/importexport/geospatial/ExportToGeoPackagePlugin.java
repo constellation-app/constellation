@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,21 @@ package au.gov.asd.tac.constellation.plugins.importexport.geospatial;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import static au.gov.asd.tac.constellation.plugins.importexport.geospatial.AbstractGeoExportPlugin.OUTPUT_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.plugins.importexport.geospatial.AbstractGeoExportPlugin.SPATIAL_REFERENCE_PARAMETER_ID;
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -42,16 +47,45 @@ import org.openide.util.lookup.ServiceProvider;
 public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
 
     @Override
+    public PluginParameters createParameters() {
+
+        final PluginParameters parametersCreated = super.createParameters();
+
+        // Add "listener" on output parameter to check file overwrite
+        parametersCreated.addController(OUTPUT_PARAMETER_ID, (master, params, change) -> {
+            final String output = params.get(master.getId()).getStringValue();
+            final File file = new File(output);
+            final FileParameterType.FileParameterValue fileParamValue = (FileParameterType.FileParameterValue) params.get(master.getId()).getParameterValue();
+            // do a doesFileExist check if value changed, path is valid and filechooser dialog not previously opened
+            if (change == ParameterChange.VALUE && super.isValidPath(file) && !fileParamValue.isFileChooserSelected()) {
+                if (doesFileExist(new File(output))) {
+                    final String msg = String.format("The file %s already exists. Do you want to replace the existing file?", file.getName());
+                    final NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, "Overwrite file", NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE);
+                    if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.NO_OPTION) {
+                        params.get(master.getId()).setError(String.format("The file %s already exists.", file.getName()));                        
+                    }
+                }
+            } else if (change == ParameterChange.ERROR) {
+                params.get(master.getId()).getParameterValue().setStringValue(output);
+            }
+            // reset the FileChooserSelected flag after processing
+            fileParamValue.setFileChooserSelected(false);
+        });
+        return parametersCreated;
+    }
+
+    @Override
     protected ExtensionFilter getExportType() {
-        return new FileChooser.ExtensionFilter("GeoPackage", "*.gpkg");
+        return new ExtensionFilter("GeoPackage", FileExtensionConstants.GEO_PACKAGE);
     }
 
     @Override
     protected void exportGeo(final PluginParameters parameters, final String uuid, final Map<String, String> shapes, final Map<String, Map<String, Object>> attributes, final File output) throws IOException {
         final ParameterValue spatialReferencePV = parameters.getSingleChoice(SPATIAL_REFERENCE_PARAMETER_ID);
-        assert (spatialReferencePV instanceof SpatialReferenceParameterValue);
-        final Shape.SpatialReference spatialReference = ((SpatialReferenceParameterValue) spatialReferencePV).getSpatialReference();
-        Shape.generateGeoPackage(uuid, shapes, attributes, output, spatialReference);
+        if (spatialReferencePV instanceof SpatialReferenceParameterValue spatialReferenceParameterValue) {
+            final Shape.SpatialReference spatialReference = spatialReferenceParameterValue.getSpatialReference();
+            Shape.generateGeoPackage(uuid, shapes, attributes, output, spatialReference);
+        }
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,21 +54,25 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     private int[] data = new int[0];
     private int defaultValue = DEFAULT_VALUE;
-
-    @SuppressWarnings("unchecked") // Casts are manually checked
+    
     private int convertFromObject(final Object object) throws IllegalArgumentException {
-        if (object == null) {
-            return (int) getDefault();
-        } else if (object instanceof Number) {
-            return ((Number) object).intValue();
-        } else if (object instanceof Boolean) {
-            return ((Boolean) object) ? 1 : 0;
-        } else if (object instanceof Character) {
-            return (int) ((Character) object);
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else {
-            throw new IllegalArgumentException(String.format(
+        switch (object) {
+            case Number number -> {
+                return number.intValue();
+            }       
+            case Boolean bool -> {
+                return Boolean.TRUE.equals(bool) ? 1 : 0;
+            }       
+            case Character character -> {
+                return character;
+            }       
+            case String string -> {
+                return convertFromString(string);
+            }
+            case null -> {
+                return (int) getDefault();
+            }
+            default -> throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to integer", object.getClass()));
         }
     }
@@ -81,7 +85,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
                 return Integer.parseInt(string);
             } catch (final NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(
-                        "Error converting String '%s' to short", string), ex);
+                        "Error converting String '%s' to integer", string), ex);
             }
         }
     }
@@ -132,7 +136,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = (int) value;
+        data[id] = value;
     }
 
     @Override
@@ -142,7 +146,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = (int) value;
+        data[id] = value;
     }
 
     @Override
@@ -157,7 +161,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public long getLong(final int id) {
-        return (long) data[id];
+        return data[id];
     }
 
     @Override
@@ -167,7 +171,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public float getFloat(final int id) {
-        return (float) data[id];
+        return data[id];
     }
 
     @Override
@@ -177,7 +181,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public double getDouble(final int id) {
-        return (double) data[id];
+        return data[id];
     }
 
     @Override
@@ -202,7 +206,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = (int) value;
+        data[id] = value;
     }
 
     @Override
@@ -286,12 +290,12 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (IntReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new IntVariable() {
             @Override
             public int readInt() {
@@ -299,7 +303,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
             }
 
             @Override
-            public void writeInt(int value) {
+            public void writeInt(final int value) {
                 graph.setIntValue(attribute, indexReadable.readInt(), value);
             }
         };

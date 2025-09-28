@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 200)
 @NbBundle.Messages("GraphFrameworkHelpProvider=Graph Framework Help Provider")
 public class GraphFrameworkHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreGraphFramework" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -40,18 +39,16 @@ public class GraphFrameworkHelpProvider extends HelpPageProvider {
      */
     @Override
     public Map<String, String> getHelpMap() {
-        final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String graphFrameworkModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreGraphFramework" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "docs" + sep;
+        final Map<String, String> map = new HashMap<>();      
 
-        map.put("au.gov.asd.tac.constellation.graph.about", graphFrameworkModulePath + "graph-model.md");
-        map.put("au.gov.asd.tac.constellation.graph.attributes", graphFrameworkModulePath + "attributes.md");
-        map.put("au.gov.asd.tac.constellation.graph.types", graphFrameworkModulePath + "types.md");
-        map.put("au.gov.asd.tac.constellation.graph.expressions", graphFrameworkModulePath + "expressions-framework.md");
-        map.put("au.gov.asd.tac.constellation.graph.io.fileformat", graphFrameworkModulePath + "constellation-file-format.md");
-        map.put("au.gov.asd.tac.constellation.graph.io.pythonreader", graphFrameworkModulePath + "example-file-reader-python.md");
-        map.put("au.gov.asd.tac.constellation.graph.io.pythonwriter", graphFrameworkModulePath + "example-file-writer-python.md");
+        map.put("au.gov.asd.tac.constellation.graph.about", MODULE_PATH + "graph-model.md");
+        map.put("au.gov.asd.tac.constellation.graph.attributes", MODULE_PATH + "attributes.md");
+        map.put("au.gov.asd.tac.constellation.graph.types", MODULE_PATH + "types.md");
+        map.put("au.gov.asd.tac.constellation.graph.schema.Schema", MODULE_PATH + "schemas.md");
+        map.put("au.gov.asd.tac.constellation.graph.expressions", MODULE_PATH + "expressions-framework.md");
+        map.put("au.gov.asd.tac.constellation.graph.io.fileformat", MODULE_PATH + "constellation-file-format.md");
+        map.put("au.gov.asd.tac.constellation.graph.io.pythonreader", MODULE_PATH + "example-file-reader-python.md");
+        map.put("au.gov.asd.tac.constellation.graph.io.pythonwriter", MODULE_PATH + "example-file-writer-python.md");
         return map;
     }
 
@@ -62,10 +59,6 @@ public class GraphFrameworkHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String graphFrameworkPath;
-        graphFrameworkPath = CODEBASE_NAME + sep + "CoreGraphFramework" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "docs" + sep + "graph-toc.xml";
-        return graphFrameworkPath;
+        return MODULE_PATH + "graph-toc.xml";
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.schemaview;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 2100)
 @NbBundle.Messages("SchemaViewHelpProvider=Schema View Help Provider")
 public class SchemaViewHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreSchemaView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -40,12 +39,13 @@ public class SchemaViewHelpProvider extends HelpPageProvider {
      */
     @Override
     public Map<String, String> getHelpMap() {
-        final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String schemaModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "schemaview" + sep + "docs" + sep;
+        final Map<String, String> map = new HashMap<>();       
 
-        map.put("au.gov.asd.tac.constellation.views.schemaview.SchemaViewTopComponent", schemaModulePath + "schema-view.md");
+        map.put("au.gov.asd.tac.constellation.views.schemaview.SchemaViewTopComponent", MODULE_PATH + "schema-view.md");
+        map.put("au.gov.asd.tac.constellation.views.schemaview.providers.AttributeNodeProvider", MODULE_PATH + "schema-view-attributes.md");
+        map.put("au.gov.asd.tac.constellation.views.schemaview.providers.VertexTypeNodeProvider", MODULE_PATH + "schema-view-node-types.md");
+        map.put("au.gov.asd.tac.constellation.views.schemaview.providers.TransactionTypeNodeProvider", MODULE_PATH + "schema-view-transaction-types.md");
+        map.put("au.gov.asd.tac.constellation.views.schemaview.providers.PluginsNodeProvider", MODULE_PATH + "schema-view-plugins.md");
         return map;
     }
 
@@ -56,10 +56,6 @@ public class SchemaViewHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String schemaViewPath;
-        schemaViewPath = CODEBASE_NAME + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "schemaview" + sep + "docs" + sep + "schemaview-toc.xml";
-        return schemaViewPath;
+        return MODULE_PATH + "schemaview-toc.xml";
     }
 }

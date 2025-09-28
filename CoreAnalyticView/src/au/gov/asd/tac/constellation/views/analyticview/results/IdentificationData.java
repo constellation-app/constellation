@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,10 +92,7 @@ public class IdentificationData {
         if (!Objects.equals(this.identifier, other.identifier)) {
             return false;
         }
-        if (this.elementType != other.elementType) {
-            return false;
-        }
-        return true;
+        return this.elementType == other.elementType;
     }
 
 }

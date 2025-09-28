@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -26,6 +25,7 @@ import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type boolean
  *
  * @author twilight_sparkle
  */
@@ -33,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
     @Override
-    public AbstractEditor<Boolean> createEditor(final EditOperation editOperation, final DefaultGetter<Boolean> defaultGetter, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
-        return new BooleanEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Boolean> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Boolean> validator, final Boolean defaultValue, final Boolean initialValue) {
+        return new BooleanEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
         private CheckBox checkBox;
 
-        protected BooleanEditor(final EditOperation editOperation, final DefaultGetter<Boolean> defaultGetter, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected BooleanEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Boolean> validator, final Boolean defaultValue, final Boolean initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override
@@ -58,7 +58,8 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
         @Override
         public void updateControlsWithValue(final Boolean value) {
-            checkBox.setSelected(value);
+            // A null boolean is treated as false
+            checkBox.setSelected(value != null && value);
         }
 
         @Override
@@ -68,16 +69,14 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
         @Override
         protected Node createEditorControls() {
-            final VBox controls = new VBox();
-            controls.setAlignment(Pos.CENTER);
-            controls.setFillWidth(true);
-
             checkBox = new CheckBox("True");
             checkBox.setAlignment(Pos.CENTER);
             checkBox.selectedProperty().addListener((v, o, n) -> update());
-
-            controls.getChildren().add(checkBox);
-
+            
+            final VBox controls = new VBox(checkBox);
+            controls.setAlignment(Pos.CENTER);
+            controls.setFillWidth(true);
+            
             return controls;
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -428,6 +428,19 @@ public class TemporalFormatting {
      */
     public static ZonedDateTime zonedDateTimeFromLong(final long value) {
         return ZonedDateTime.ofInstant(Instant.ofEpochSecond(value), TimeZoneUtilities.UTC);
+    }
+
+     /**
+     * Retrieve a ZonedDatetime object in UTC, corresponding to the instant
+     * represented by the given long.
+     * This is required for translating EXCEL date times correctly 
+     *
+     * @param value A long representing an instant in time; the number of
+     * milliseconds since epoch.
+     * @return A ZonedDateTime object in UTC, corresponding to the given long.
+     */
+    public static ZonedDateTime zonedDateTimeFromLongMilli(final long value) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(value), TimeZoneUtilities.UTC);
     }
 
     /**

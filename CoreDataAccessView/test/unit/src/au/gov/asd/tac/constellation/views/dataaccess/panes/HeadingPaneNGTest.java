@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.util.Arrays;
@@ -44,6 +45,7 @@ import org.testng.annotations.Test;
  * @author Auriga2
  */
 public class HeadingPaneNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(HeadingPaneNGTest.class.getName());
 
     private static MockedStatic<DataAccessPreferenceUtilities> dataAccessPreferenceUtilitiesMockedStatic;
@@ -53,10 +55,7 @@ public class HeadingPaneNGTest {
     private final String headingText = "Heading Text";
     private List<DataAccessPlugin> pluginsList;
     private final Set<String> globalParamLabels = new HashSet<>(Arrays.asList("ParamLabel_1", "ParamLabel_2"));
-
-    public HeadingPaneNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         dataAccessPreferenceUtilitiesMockedStatic = Mockito.mockStatic(DataAccessPreferenceUtilities.class);
@@ -113,10 +112,10 @@ public class HeadingPaneNGTest {
     public void testValidityChanged_disabled() {
         System.out.println("testValidityChanged_disabled");
 
-        String headingText = "Heading Text 2";
-        dataAccessPreferenceUtilitiesMockedStatic.when(() -> DataAccessPreferenceUtilities.isExpanded(headingText, true)).thenReturn(false);
+        String headingText2 = "Heading Text 2";
+        dataAccessPreferenceUtilitiesMockedStatic.when(() -> DataAccessPreferenceUtilities.isExpanded(headingText2, true)).thenReturn(false);
 
-        final HeadingPane instance = new HeadingPane(headingText, pluginsList, top, globalParamLabels);
+        final HeadingPane instance = new HeadingPane(headingText2, pluginsList, top, globalParamLabels);
         instance.validityChanged(false);
         assertFalse(instance.isExpanded());
     }
@@ -128,6 +127,7 @@ public class HeadingPaneNGTest {
     @Test
     public void testHierarchicalUpdate_paneIsNotQueryEnabled() {
         System.out.println("testHierarchicalUpdate_paneIsNotQueryEnabled");
+        
         headingPane.hierarchicalUpdate();
         verify(top, times(1)).hierarchicalUpdate();
         assertEquals(headingPane.getBoxes().getChildren().size(), 3);
@@ -140,6 +140,7 @@ public class HeadingPaneNGTest {
     @Test
     public void testHierarchicalUpdate_paneIsNotQueryEnabled_withlisteners() {
         System.out.println("testHierarchicalUpdate_paneIsNotQueryEnabled_withlisteners");
+        
         final TestListener listener = new TestListener();
         
         final HeadingPane listenedHeadingPane = new HeadingPane(headingText, pluginsList, listener, globalParamLabels);
@@ -167,7 +168,7 @@ public class HeadingPaneNGTest {
         }
 
         @Override
-        public void validityChanged(boolean valid) {
+        public void validityChanged(final boolean valid) {
             didValidityUpdate = true;
         }
 
@@ -176,8 +177,11 @@ public class HeadingPaneNGTest {
             didHierarchicalUpdate = true;
         }
 
+        @Override
+        public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied) {
+            //Not used by heading pane class
+        }
     }
-
     /**
      * TODO: Test of hierarchicalUpdate method, of class HeadingPane, when pane is
      * QueryEnabled. Tricky because HeadingPane is creating a List of new

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,12 @@ package au.gov.asd.tac.constellation.views.notes.state;
 
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
+import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import javafx.geometry.Insets;
+import javafx.scene.text.TextFlow;
 
 /**
  * Holds the information for a note in the Notes View.
@@ -27,20 +31,42 @@ import java.util.List;
  */
 public class NotesViewEntry implements PluginReportListener {
 
+    private int id = -99;
+
     private final String dateTime;
     private String noteTitle;
     private String noteContent;
-    private final Boolean userCreated;
+
+    private String nodeColour = "#a26fc0";
+    private final boolean userCreated;
     private Boolean graphAttribute;
     private List<Integer> nodesSelected;
     private List<Integer> transactionsSelected;
     private List<String> tags = new ArrayList<>();
     private boolean editMode;
+    private boolean isShowing = true;
 
-    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute) {
+    private boolean inMarkdown = false;
+    private TextFlow contentTextFlow;
+
+    private boolean isUndone = false;
+
+    private String tempContent;
+    private String tempTitle;
+
+
+    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour, final boolean inMarkdown) {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
+        contentTextFlow = new TextFlow();
+      
+        tempContent = "";
+        tempTitle = "";
+
+        if (nodeColour != null) {
+            this.nodeColour = nodeColour;
+        }
         this.userCreated = userCreated;
         this.graphAttribute = graphAttribute;
         this.editMode = false;
@@ -48,6 +74,16 @@ public class NotesViewEntry implements PluginReportListener {
             this.nodesSelected = new ArrayList<>();
             this.transactionsSelected = new ArrayList<>();
         }
+        this.inMarkdown = inMarkdown;
+    }
+
+    public TextFlow getContentTextFlow() {
+        return contentTextFlow;
+    }
+
+    public void setContentTextFlow(final TextFlow renderedTextFlow) {
+        contentTextFlow.setPadding(new Insets(0, 0, 0, 0));
+        contentTextFlow = renderedTextFlow;
     }
 
     public String getDateTime() {
@@ -62,7 +98,7 @@ public class NotesViewEntry implements PluginReportListener {
         return noteContent;
     }
 
-    public Boolean isUserCreated() {
+    public boolean isUserCreated() {
         return userCreated;
     }
 
@@ -70,7 +106,7 @@ public class NotesViewEntry implements PluginReportListener {
         return graphAttribute;
     }
 
-    public void setGraphAttribute(final Boolean graphAttribute) {
+    public void setGraphAttribute(final boolean graphAttribute) {
         this.graphAttribute = graphAttribute;
     }
 
@@ -99,7 +135,15 @@ public class NotesViewEntry implements PluginReportListener {
     }
 
     public List<String> getTags() {
-        return tags;
+        return Collections.unmodifiableList(tags);
+    }
+
+    public String getNodeColour() {
+        return nodeColour;
+    }
+
+    public void setNodeColour(final String nodeColour) {
+        this.nodeColour = nodeColour;
     }
 
     public void setTags(final List<String> tags) {
@@ -110,13 +154,74 @@ public class NotesViewEntry implements PluginReportListener {
         return editMode;
     }
 
-    public void setEditMode(boolean editMode) {
+    public void setEditMode(final boolean editMode) {
         this.editMode = editMode;
+    }
+
+
+    public void setShowing(final boolean showing) {
+        isShowing = showing;
+    }
+
+    public boolean getShowing() {
+        return isShowing;
+    }
+
+    public int getID() {
+        return id;
+    }
+
+    public void setID(final int id) {
+        this.id = id;
+
+    }
+
+    public void refreshTextFlow() {
+        contentTextFlow.getChildren().clear();
+
+        final MarkdownTree md = new MarkdownTree(noteTitle + "\n\n" + noteContent);
+        md.parse();
+        contentTextFlow = md.getRenderedText();
+        contentTextFlow.autosize();
+    }
+
+    public String getTempContent() {
+        return tempContent;
+
+    }
+
+    public void setTempContent(final String tempContent) {
+        this.tempContent = tempContent;
+    }
+
+    public void setTempTitle(final String tempTitle) {
+        this.tempTitle = tempTitle;
+    }
+
+
+    public String getTempTitle() {
+        return tempTitle;
+    }
+
+    public void setInMarkdown(final boolean inMarkdown) {
+        this.inMarkdown = inMarkdown;
+    }
+
+    public boolean isInMarkdown() {
+        return inMarkdown;
+    }
+  
+    public boolean getUndone() {
+        return isUndone;
+    }
+
+    public void setUndone(final boolean isUndone) {
+        this.isUndone = isUndone;
     }
 
     @Override
     public void pluginReportChanged(final PluginReport pluginReport) {
-        this.noteContent = pluginReport.getMessage();
+        this.noteContent = pluginReport.getLastMessage();
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -44,6 +44,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableComparatorListenerNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(TableComparatorListenerNGTest.class.getName());
 
     private TableComparatorListener tableComparatorListener;
@@ -78,6 +79,7 @@ public class TableComparatorListenerNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -117,5 +119,4 @@ public class TableComparatorListenerNGTest {
 
         verify(activeTableReference).updatePagination(maxRowsPerPage, tablePane);
     }
-
 }

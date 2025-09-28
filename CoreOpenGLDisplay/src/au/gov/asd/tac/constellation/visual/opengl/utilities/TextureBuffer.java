@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL3;
 import java.nio.Buffer;
@@ -24,13 +25,13 @@ import java.nio.Buffer;
  * Encapsulates texture buffers of various types.
  *
  * @author sirius
- * @param <BufferType>
+ * @param <B>
  */
-public abstract class TextureBuffer<BufferType extends Buffer> {
+public abstract class TextureBuffer<B extends Buffer> {
 
     private final int[] bufferName;
     private final int[] textureName;
-    protected final BufferType buffer;
+    protected final B buffer;
 
     /**
      * Allocate a texture buffer.
@@ -38,7 +39,7 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
      * @param gl the current OpenGL context.
      * @param buffer A Buffer to be wrapped in a texture.
      */
-    protected TextureBuffer(final GL3 gl, final BufferType buffer) {
+    protected TextureBuffer(final GL3 gl, final B buffer) {
         final int nItems = buffer.limit();
 
         // Generate a buffer object name.
@@ -79,7 +80,7 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
      */
     protected abstract int internalFormat();
 
-    public BufferType getBuffer() {
+    public B getBuffer() {
         return buffer;
     }
 
@@ -91,9 +92,9 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
         return textureName[0];
     }
 
-    public abstract BufferType connectBuffer(final GL3 gl);
+    public abstract B connectBuffer(final GL3 gl);
 
-    public void disconnectBuffer(final GL3 gl) {
+    public void disconnectBuffer(final GL gl) {
         gl.glBindBuffer(GL2ES3.GL_TEXTURE_BUFFER, bufferName[0]);
         gl.glUnmapBuffer(GL2ES3.GL_TEXTURE_BUFFER);
     }
@@ -106,13 +107,13 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
      * update range from.
      * @param size The size (number of [type] values) of the range to update.
      */
-    public void update(final GL3 gl, final int offset, final int size) {
+    public void update(final GL gl, final int offset, final int size) {
         buffer.position(sizeOfType() * offset);
         gl.glBindBuffer(GL2ES3.GL_TEXTURE_BUFFER, bufferName[0]);
         gl.glBufferSubData(GL2ES3.GL_TEXTURE_BUFFER, (long) sizeOfType() * offset, (long) sizeOfType() * size, buffer);
     }
 
-    public void uniform(final GL3 gl, final int uniform, final int textureUnit) {
+    public void uniform(final GL2ES2 gl, final int uniform, final int textureUnit) {
         // Bind the uniform to the texture unit.
         gl.glUniform1i(uniform, textureUnit);
 
@@ -123,7 +124,7 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
         gl.glBindTexture(GL2ES3.GL_TEXTURE_BUFFER, textureName[0]);
     }
 
-    public void dispose(final GL3 gl) {
+    public void dispose(final GL gl) {
         gl.glDeleteTextures(1, textureName, 0);
         gl.glDeleteBuffers(1, bufferName, 0);
     }

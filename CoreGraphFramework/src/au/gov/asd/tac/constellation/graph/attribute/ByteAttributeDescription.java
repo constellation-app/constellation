@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,19 +54,22 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     private byte[] data = new byte[0];
     private byte defaultValue = DEFAULT_VALUE;
-
-    @SuppressWarnings("unchecked") // Casts are manually checked
+    
     private byte convertFromObject(final Object object) throws IllegalArgumentException {
-        if (object == null) {
-            return (byte) getDefault();
-        } else if (object instanceof Number) {
-            return ((Number) object).byteValue();
-        } else if (object instanceof Boolean) {
-            return ((Boolean) object) ? (byte) 1 : (byte) 0;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else {
-            throw new IllegalArgumentException(String.format(
+        switch (object) {
+            case Number number -> {
+                return number.byteValue();
+            }       
+            case Boolean bool -> {
+                return Boolean.TRUE.equals(bool) ? (byte) 1 : (byte) 0;
+            }       
+            case String string -> {
+                return convertFromString(string);
+            }
+            case null -> {
+                return (byte) getDefault();
+            }
+            default -> throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to byte", object.getClass()));
         }
     }
@@ -79,7 +82,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
                 return Byte.parseByte(string);
             } catch (final NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(
-                        "Error converting String '%s' to short", string), ex);
+                        "Error converting String '%s' to byte", string), ex);
             }
         }
     }
@@ -135,7 +138,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public short getShort(final int id) {
-        return (short) data[id];
+        return data[id];
     }
 
     @Override
@@ -145,7 +148,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public int getInt(final int id) {
-        return (int) data[id];
+        return data[id];
     }
 
     @Override
@@ -155,7 +158,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public long getLong(final int id) {
-        return (long) data[id];
+        return data[id];
     }
 
     @Override
@@ -165,7 +168,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public float getFloat(final int id) {
-        return (float) data[id];
+        return data[id];
     }
 
     @Override
@@ -175,7 +178,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public double getDouble(final int id) {
-        return (double) data[id];
+        return data[id];
     }
 
     @Override
@@ -254,7 +257,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public int hashCode(final int id) {
-        return (int) data[id];
+        return data[id];
     }
 
     @Override
@@ -284,12 +287,12 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (ByteReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new ByteVariable() {
             @Override
             public byte readByte() {
@@ -297,7 +300,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
             }
 
             @Override
-            public void writeByte(byte value) {
+            public void writeByte(final byte value) {
                 graph.setByteValue(attribute, indexReadable.readInt(), value);
             }
         };

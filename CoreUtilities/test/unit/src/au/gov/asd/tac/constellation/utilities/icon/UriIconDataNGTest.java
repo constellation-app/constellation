@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,16 +50,15 @@ public class UriIconDataNGTest {
     private static URL urlMock;
     private static FileNotFoundException fileNotFoundExceptionMock;
     private static InputStream inputStreamMock;
-
-    public UriIconDataNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -95,7 +94,7 @@ public class UriIconDataNGTest {
 
         uriStaticMock.when(() -> URI.create(Mockito.any(String.class))).thenCallRealMethod();
 
-        final UriIconData instance = new UriIconData("someURIString");
+        new UriIconData("someURIString");
     }
 
     /**
@@ -113,7 +112,7 @@ public class UriIconDataNGTest {
         // If the URI is not absolute and does not have a scheme component.
         when(uriMock.isAbsolute()).thenReturn(false);
 
-        final UriIconData instance = new UriIconData("someURIString");
+        new UriIconData("someURIString");
     }
 
     /**
@@ -129,12 +128,12 @@ public class UriIconDataNGTest {
         // If the URI is not absolute and does not have a scheme component.
         when(uriMock.isAbsolute()).thenReturn(false);
 
-        final UriIconData instance = new UriIconData(uriMock);
+        new UriIconData(uriMock);
     }
 
     /**
-     * Test of createInputStream method, of class UriIconData, when the String
-     * constructor is invoked.
+     * Test of createRasterInputStream method, of class UriIconData, when the String
+ constructor is invoked.
      *
      * @throws java.lang.Exception
      */
@@ -156,7 +155,7 @@ public class UriIconDataNGTest {
         httpsUtilitiesStaticMock.when(() -> HttpsUtilities.getInputStream(httpsURLConnectionMock)).thenReturn(inputStreamMock);
 
         final InputStream expResult = inputStreamMock;
-        final InputStream result = instance.createInputStream();
+        final InputStream result = instance.createRasterInputStream();
 
         httpsUtilitiesStaticMock.verify(() -> HttpsUtilities.getInputStream(Mockito.any(HttpsURLConnection.class)), times(1));
 
@@ -164,8 +163,8 @@ public class UriIconDataNGTest {
     }
 
     /**
-     * Test of createInputStream method, of class UriIconData, when the URI
-     * constructor is invoked.
+     * Test of createRasterInputStream method, of class UriIconData, when the URI
+ constructor is invoked.
      *
      * @throws java.lang.Exception
      */
@@ -185,7 +184,7 @@ public class UriIconDataNGTest {
         httpsUtilitiesStaticMock.when(() -> HttpsUtilities.getInputStream(httpsURLConnectionMock)).thenReturn(inputStreamMock);
 
         final InputStream expResult = inputStreamMock;
-        final InputStream result = instance.createInputStream();
+        final InputStream result = instance.createRasterInputStream();
 
         httpsUtilitiesStaticMock.verify(() -> HttpsUtilities.getInputStream(Mockito.any(HttpsURLConnection.class)), times(1));
 
@@ -193,8 +192,8 @@ public class UriIconDataNGTest {
     }
 
     /**
-     * Test of createInputStream method, of class UriIconData, when the URI
-     * scheme does not equal HTTPS.
+     * Test of createRasterInputStream method, of class UriIconData, when the URI
+ scheme does not equal HTTPS.
      *
      * @throws java.lang.Exception
      */
@@ -211,7 +210,7 @@ public class UriIconDataNGTest {
         when(urlMock.openStream()).thenReturn(inputStreamMock);
 
         final InputStream expResult = inputStreamMock;
-        final InputStream result = instance.createInputStream();
+        final InputStream result = instance.createRasterInputStream();
 
         verify(urlMock, times(1)).openStream();
 
@@ -219,8 +218,8 @@ public class UriIconDataNGTest {
     }
 
     /**
-     * Test of createInputStream method, of class UriIconData, when the
-     * HttpURLConnection throws FileNotFoundException.
+     * Test of createRasterInputStream method, of class UriIconData, when the
+ HttpURLConnection throws FileNotFoundException.
      *
      * @throws java.lang.Exception
      */
@@ -238,8 +237,30 @@ public class UriIconDataNGTest {
         when(httpsConnectionMock.get()).thenThrow(fileNotFoundExceptionMock);
 
         final InputStream expResult = null;
-        final InputStream result = instance.createInputStream();
+        final InputStream result = instance.createRasterInputStream();
 
         assertEquals(result, expResult);
+    }
+    
+    /**
+     * Test of createVectorInputStream method, of class UriIconData, when the String
+ constructor is invoked.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void testCreateVectorInputStream() throws UnsupportedOperationException, Exception {
+        System.out.println("testCreateVectorInputStream");
+        
+        when(uriMock.isAbsolute()).thenReturn(true);
+        when(uriMock.getScheme()).thenReturn("HTTPS");
+        when(uriMock.toURL()).thenReturn(urlMock);
+
+        final UriIconData instance = new UriIconData(uriMock);
+
+        httpsConnectionStaticMock.when(() -> HttpsConnection.withUrl(Mockito.any(String.class))).thenReturn(httpsConnectionMock);
+        when(httpsConnectionMock.get()).thenThrow(fileNotFoundExceptionMock);
+        
+        instance.createVectorInputStream();
     }
 }

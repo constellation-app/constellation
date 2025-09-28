@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,10 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCor
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.experimental.TestParametersPlugin.GraphElementTypeParameterValue;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -121,16 +125,19 @@ public class TestParametersPluginNGTest {
     /**
      * Test of query method, of class TestParametersPlugin. Tests throwing of
      * debug pluginException
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test(expectedExceptions = PluginException.class)
-    public void testQueryException1() throws Exception {
+    public void testQueryException1() throws InterruptedException, PluginException {
         System.out.println("throw pluginexception1");
 
         final TestParametersPlugin instance = new TestParametersPlugin();
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -149,16 +156,19 @@ public class TestParametersPluginNGTest {
     /**
      * Test of query method, of class TestParametersPlugin. Tests throwing of
      * info pluginException
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test(expectedExceptions = PluginException.class)
-    public void testQueryException2() throws Exception {
+    public void testQueryException2() throws InterruptedException, PluginException {
         System.out.println("throw pluginexception2");
 
         final TestParametersPlugin instance = new TestParametersPlugin();
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -177,16 +187,19 @@ public class TestParametersPluginNGTest {
     /**
      * Test of query method, of class TestParametersPlugin. Tests throwing of
      * warning pluginException
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test(expectedExceptions = PluginException.class)
-    public void testQueryException3() throws Exception {
+    public void testQueryException3() throws InterruptedException, PluginException {
         System.out.println("throw pluginexception3");
 
         final TestParametersPlugin instance = new TestParametersPlugin();
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -205,16 +218,19 @@ public class TestParametersPluginNGTest {
     /**
      * Test of query method, of class TestParametersPlugin. Tests throwing of
      * error pluginException
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test(expectedExceptions = PluginException.class)
-    public void testQueryException4() throws Exception {
+    public void testQueryException4() throws InterruptedException, PluginException {
         System.out.println("throw pluginexception4");
 
         final TestParametersPlugin instance = new TestParametersPlugin();
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -233,16 +249,19 @@ public class TestParametersPluginNGTest {
     /**
      * Test of query method, of class TestParametersPlugin. Tests throwing of
      * fatal pluginException
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test(expectedExceptions = PluginException.class)
-    public void testQueryException5() throws Exception {
+    public void testQueryException5() throws InterruptedException, PluginException {
         System.out.println("throw pluginexception5");
 
         final TestParametersPlugin instance = new TestParametersPlugin();
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -261,16 +280,19 @@ public class TestParametersPluginNGTest {
     /**
      * Test of query method, of class TestParametersPlugin. Tests not throwing
      * of pluginException
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testQueryException6() throws Exception {
+    public void testQueryException6() throws InterruptedException, PluginException {
         System.out.println("throw pluginexception6");
 
         final TestParametersPlugin instance = new TestParametersPlugin();
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -284,16 +306,19 @@ public class TestParametersPluginNGTest {
     /**
      * Test of query method, of class TestParametersPlugin. Tests querying
      * results from graph
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testQueryResults() throws Exception {
+    public void testQueryResults() throws InterruptedException, PluginException {
         System.out.println("Test Query Results");
 
         final TestParametersPlugin instance = new TestParametersPlugin();
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -324,16 +349,19 @@ public class TestParametersPluginNGTest {
     /**
      * Test of query method, of class TestParametersPlugin. Tests not throwing
      * runtime exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testQueryCrash1() throws Exception {
+    public void testQueryCrash1() throws InterruptedException, PluginException {
         System.out.println("test query crash1");
 
         final TestParametersPlugin instance = new TestParametersPlugin();
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -347,9 +375,11 @@ public class TestParametersPluginNGTest {
     /**
      * Test of query method, of class TestParametersPlugin. Tests throwing
      * runtime exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test(expectedExceptions = RuntimeException.class)
-    public void testQueryCrash2() throws Exception {
+    public void testQueryCrash2() throws InterruptedException, PluginException {
         System.out.println("test query crash2");
 
         final TestParametersPlugin instance = new TestParametersPlugin();
@@ -372,7 +402,7 @@ public class TestParametersPluginNGTest {
      * runtime exception
      */
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testCreateParametersGraphElementType1() throws Exception {
+    public void testCreateParametersGraphElementType1() {
         System.out.println("test CreateParameters graph element type1");
 
         final TestParametersPlugin instance = new TestParametersPlugin();
@@ -391,7 +421,7 @@ public class TestParametersPluginNGTest {
      * runtime exception
      */
     @Test
-    public void testCreateParametersGraphElementType2() throws Exception {
+    public void testCreateParametersGraphElementType2() {
         System.out.println("test CreateParameters graph element type2");
 
         final TestParametersPlugin instance = new TestParametersPlugin();
@@ -415,7 +445,7 @@ public class TestParametersPluginNGTest {
      * runtime exception
      */
     @Test
-    public void testGraphElementType1() throws Exception {
+    public void testGraphElementType1() {
         System.out.println("test graph element type1");
 
         final TestParametersPlugin instance = new TestParametersPlugin();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,8 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         outputParameter.setRequired(true);
         FileParameterType.setKind(outputParameter, FileParameterType.FileParameterKind.SAVE);
         FileParameterType.setFileFilters(outputParameter, getExportType());
-        parameters.addParameter(outputParameter);
+        FileParameterType.setWarnOverwrite(outputParameter, true);
+        parameters.addParameter(outputParameter);      
 
         if (includeSpatialReference()) {
             final PluginParameter<SingleChoiceParameterValue> spatialReferenceParameter = SingleChoiceParameterType.build(SPATIAL_REFERENCE_PARAMETER_ID, SpatialReferenceParameterValue.class);
@@ -138,13 +139,11 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         elementTypes.add(new ElementTypeParameterValue(GraphElementType.TRANSACTION));
         elementTypes.add(new ElementTypeParameterValue(GraphElementType.VERTEX));
         SingleChoiceParameterType.setOptionsData(elementTypeParameter, elementTypes);
-        SingleChoiceParameterType.setChoiceData(elementTypeParameter, new ElementTypeParameterValue(GraphElementType.VERTEX));
         parameters.addParameter(elementTypeParameter);
 
         final PluginParameter<MultiChoiceParameterValue> attributesParameter = MultiChoiceParameterType.build(ATTRIBUTES_PARAMETER_ID, GraphAttributeParameterValue.class);
         attributesParameter.setName("Attributes");
         attributesParameter.setDescription("The list of attribute names to include in the export");
-        attributesParameter.setEnabled(false);
         parameters.addParameter(attributesParameter);
 
         final PluginParameter<BooleanParameterValue> selectedOnlyParameter = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);
@@ -162,27 +161,28 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                     final ReadableGraph readableGraph = activeGraph.getReadableGraph();
                     try {
                         final ParameterValue pv = params.get(master.getId()).getSingleChoice();
-                        assert (pv instanceof ElementTypeParameterValue);
-                        final GraphElementType elementType = ((ElementTypeParameterValue) pv).getGraphElementType();
-                        switch (elementType) {
-                            case TRANSACTION:
-                                final int transactionAttributeCount = readableGraph.getAttributeCount(GraphElementType.TRANSACTION);
-                                for (int attributePosition = 0; attributePosition < transactionAttributeCount; attributePosition++) {
-                                    final int attributeId = readableGraph.getAttribute(GraphElementType.TRANSACTION, attributePosition);
-                                    final GraphAttribute graphAttribute = new GraphAttribute(readableGraph, attributeId);
-                                    attributeOptions.add(new GraphAttributeParameterValue(graphAttribute));
-                                }
-                            // fall through
-                            case VERTEX:
-                                final int vertexAttributeCount = readableGraph.getAttributeCount(GraphElementType.VERTEX);
-                                for (int attributePosition = 0; attributePosition < vertexAttributeCount; attributePosition++) {
-                                    final int attributeId = readableGraph.getAttribute(GraphElementType.VERTEX, attributePosition);
-                                    final GraphAttribute graphAttribute = new GraphAttribute(readableGraph, attributeId);
-                                    attributeOptions.add(new GraphAttributeParameterValue(graphAttribute));
-                                }
-                                break;
-                            default:
-                                return;
+                        if (pv instanceof ElementTypeParameterValue elementTypeParameterValue) {
+                            final GraphElementType elementType = elementTypeParameterValue.getGraphElementType();
+                            switch (elementType) {
+                                case TRANSACTION:
+                                    final int transactionAttributeCount = readableGraph.getAttributeCount(GraphElementType.TRANSACTION);
+                                    for (int attributePosition = 0; attributePosition < transactionAttributeCount; attributePosition++) {
+                                        final int attributeId = readableGraph.getAttribute(GraphElementType.TRANSACTION, attributePosition);
+                                        final GraphAttribute graphAttribute = new GraphAttribute(readableGraph, attributeId);
+                                        attributeOptions.add(new GraphAttributeParameterValue(graphAttribute));
+                                    }
+                                // fall through
+                                case VERTEX:
+                                    final int vertexAttributeCount = readableGraph.getAttributeCount(GraphElementType.VERTEX);
+                                    for (int attributePosition = 0; attributePosition < vertexAttributeCount; attributePosition++) {
+                                        final int attributeId = readableGraph.getAttribute(GraphElementType.VERTEX, attributePosition);
+                                        final GraphAttribute graphAttribute = new GraphAttribute(readableGraph, attributeId);
+                                        attributeOptions.add(new GraphAttributeParameterValue(graphAttribute));
+                                    }
+                                    break;
+                                default:
+                                    return;
+                            }
                         }
                     } finally {
                         readableGraph.release();
@@ -206,6 +206,8 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                 }
             }
         });
+        // setting the element type parameter here rather than earlier so that the controller gets triggered
+        SingleChoiceParameterType.setChoiceData(elementTypeParameter, new ElementTypeParameterValue(GraphElementType.VERTEX));
 
         return parameters;
     }
@@ -242,7 +244,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         final Map<String, Map<String, Object>> attributes = new HashMap<>();
 
         switch (elementType) {
-            case VERTEX:
+            case VERTEX -> {
                 final int vertexCount = graph.getVertexCount();
                 for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                     final int vertexId = graph.getVertex(vertexPosition);
@@ -283,8 +285,8 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                         attributes.put(vertexIdentifier, attributeMap);
                     }
                 }
-                break;
-            case TRANSACTION:
+            }
+            case TRANSACTION -> {
                 final int transactionCount = graph.getTransactionCount();
                 for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                     final int transactionId = graph.getTransaction(transactionPosition);
@@ -456,16 +458,15 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                         attributes.put(destinationVertexIdentifier, attributeMap);
                     }
                 }
-                break;
-            default:
-                throw new PluginException(PluginNotificationLevel.ERROR, "Invalid element type");
+            }
+            default -> throw new PluginException(PluginNotificationLevel.ERROR, "Invalid element type");
         }
 
-        try {            
+        try {
             //Check for valid path
             if (isValidPath(output)) {
-                exportGeo(parameters, GraphNode.getGraphNode(graph.getId()).getDisplayName(), shapes, attributes, output);  
-            }            
+                exportGeo(parameters, GraphNode.getGraphNode(graph.getId()).getDisplayName(), shapes, attributes, output);
+            }
         } catch (final IOException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex);
         }
@@ -477,18 +478,26 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                 ConstellationLoggerHelper.SUCCESS
         );
     }
-    
-    private boolean isValidPath(File output) {
-        if(StringUtils.isEmpty(output.getPath())) {
+
+    protected boolean isValidPath(final File output) {
+        if (StringUtils.isEmpty(output.getPath())) {
             NotifyDisplayer.display("Invalid output file provided, cannot be empty", NotifyDescriptor.ERROR_MESSAGE);
             return false;
         }
-        if(output.isDirectory() || (!output.isDirectory() 
+        if (output.isDirectory() || (!output.isDirectory()
                 && output.getParentFile() != null && output.getParentFile().exists())) {
             return true;
         } else {
             NotifyDisplayer.display("Invalid file path", NotifyDescriptor.ERROR_MESSAGE);
             return false;
-        }        
+        }
     }
-} 
+
+    protected boolean doesFileExist(final File output) {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))) {
+            return false;
+        }
+        // if file exists
+        return output.isFile();
+    }    
+}

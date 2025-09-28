@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,8 +39,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 
 /**
- * The OverviewPanel is a JavaFX component used to visualise the full extent of
- * temporal data on the given graph.
+ * The OverviewPanel is a JavaFX component used to visualise the full extent of temporal data on the given graph.
  * <p>
  * The overview chart is composed of three major visual elements:
  * <ol>
@@ -56,9 +55,6 @@ import javafx.scene.shape.Rectangle;
 public class OverviewPanel extends Pane {
     // Private Globals:
 
-    private static final double VERTICAL = 270.0;
-    private static final String LIGHT_THEME = "resources/Style-Overview-Light.css";
-    private static final String DARK_THEME = "resources/Style-Overview-Dark.css";
     // OverviewPanel components:
     private final AreaChart<Number, Number> histogram;
     private NumberAxis xAxis;
@@ -100,7 +96,6 @@ public class OverviewPanel extends Pane {
         innerPane.prefWidthProperty().bind(this.widthProperty());
         innerPane.prefHeightProperty().bind(this.heightProperty());
 
-        this.getStylesheets().add(OverviewPanel.class.getResource(DARK_THEME).toExternalForm());
         this.getChildren().add(innerPane);
         this.setOnScroll(coordinator::zoomFromOverview);
 
@@ -109,8 +104,7 @@ public class OverviewPanel extends Pane {
     /**
      * Sets the coordinating <code>TimelineTopComponent</code> for this panel.
      *
-     * @param parent The <code>TimelineTopComponent</code> that is to be used to
-     * coordinate the timeline and histogram.
+     * @param parent The <code>TimelineTopComponent</code> that is to be used to coordinate the timeline and histogram.
      *
      * @see TimelineTopComponent
      */
@@ -120,13 +114,11 @@ public class OverviewPanel extends Pane {
 
     // <editor-fold defaultstate="collapsed" desc="POV Extent">
     /**
-     * Given a time extent, updates the POV dimensions to represent the extent
-     * of time observed on the histogram component.
+     * Given a time extent, updates the POV dimensions to represent the extent of time observed on the histogram
+     * component.
      *
-     * @param lowerBound The lower time bound that needs to be represented on
-     * the POV component.
-     * @param upperBound The upper time extent that needs to be represented on
-     * the POV component.
+     * @param lowerBound The lower time bound that needs to be represented on the POV component.
+     * @param upperBound The upper time extent that needs to be represented on the POV component.
      */
     public void setExtentPOV(double lowerBound, double upperBound) {
         if (lowerBound < lowestTimeExtent) {
@@ -163,12 +155,10 @@ public class OverviewPanel extends Pane {
 
     // <editor-fold defaultstate="collapsed" desc="Populate Data">
     /**
-     * Reads the temporal data from the given graph and creates a histogram view
-     * of the data.
+     * Reads the temporal data from the given graph and creates a histogram view of the data.
      *
      * @param graph The graph to get the temporal data from.
-     * @param datetimeAttribute The label of the attribute to retrieve temporal
-     * data from.
+     * @param datetimeAttribute The label of the attribute to retrieve temporal data from.
      * @param lowestTimeExtent The lowestTimeExtent observed temporal value.
      * @param highestTimeExtent The highestTimeExtent observed temporal value.
      * @param zoneId the time zone id.
@@ -180,7 +170,7 @@ public class OverviewPanel extends Pane {
             final boolean selectedOnly) {
         final int transactionCount = graph.getTransactionCount();
         final int datetimeAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, datetimeAttribute);
-        final int selectedTransAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
+        final int selectedTransAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(graph);
 
         range = highestTimeExtent - lowestTimeExtent;
         this.lowestTimeExtent = lowestTimeExtent;
@@ -260,8 +250,6 @@ public class OverviewPanel extends Pane {
                         histogram.getData().add(new XYChart.Series<>());
                     } else if (histogram.getData().size() > 1) {
                         histogram.getData().remove(1);
-                    } else {
-                        // Do nothing
                     }
                     histogram.getData().add(selectedSeries);
                 }
@@ -269,8 +257,7 @@ public class OverviewPanel extends Pane {
             xAxis.setLowerBound(0);
             xAxis.setUpperBound(intervals);
 
-            setExtentPOV(coordinator.getTimelineLowerTimeExtent(),
-                    coordinator.getTimelineUpperTimeExtent());
+            setExtentPOV(coordinator.getTimelineLowerTimeExtent(), coordinator.getTimelineUpperTimeExtent());
         }
     }
     // </editor-fold>
@@ -307,9 +294,8 @@ public class OverviewPanel extends Pane {
     /**
      * Helper method that creates and styles a POV object.
      *
-     * The POV object is a styled rectangle that is used to indicate the
-     * currently observed time range (aka time extent) on the timeline. It can
-     * also be used to quickly interact with the time extent.
+     * The POV object is a styled rectangle that is used to indicate the currently observed time range (aka time extent)
+     * on the timeline. It can also be used to quickly interact with the time extent.
      *
      * @return A formatted POV object.
      */
@@ -350,11 +336,19 @@ public class OverviewPanel extends Pane {
     }
 
     /**
+     * Method to return histogram's data
+     */
+    protected ObservableList<XYChart.Series<Number, Number>> getHistogramData() {
+        return histogram.getData();
+    }
+
+    /**
      * Helper method that clears all data off the histogram component.
      */
     public void clearHistogram() {
         if (histogram.getData() != null) {
             histogram.getData().clear();
+            histogram.setData(null);
         }
     }
 
@@ -364,24 +358,28 @@ public class OverviewPanel extends Pane {
      * @param isPartialClear only remove the selected dataset.
      */
     public void clearHistogram(final boolean isPartialClear) {
-        if (histogram.getData() != null) {
-            if (isPartialClear) {
-                // Remove only the 'selected' dataset which is at the 1st index location:
-                if (histogram.getData().size() > 1) {
-                    for (int i = 1; i < histogram.getData().size(); i++) {
-                        histogram.getData().remove(i);
-                    }
-                }
-            } else {
-                histogram.getData().clear();
-            }
+        if (histogram.getData() == null) {
+            return;
         }
+        
+        if (isPartialClear) {
+            // Remove only the 'selected' dataset which is at the 1st index location:
+            if (histogram.getData().size() > 1) {
+                for (int i = 1; i < histogram.getData().size(); i++) {
+                    histogram.getData().remove(i);
+                }
+            }
+        } else {
+            histogram.getData().clear();
+            histogram.setData(null);
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="POV Listeners">
     /**
-     * Private class that implements mouse controls for the POV component in
-     * order to capture events like clicks and drags and drops.
+     * Private class that implements mouse controls for the POV component in order to capture events like clicks and
+     * drags and drops.
      */
     private class POVMouseEventHandler implements EventHandler<MouseEvent> {
 
@@ -407,31 +405,26 @@ public class OverviewPanel extends Pane {
                 handleResizing(t);
             } else if (t.getEventType() == MouseEvent.MOUSE_PRESSED) {
                 origin = t.getX(); // Set the origin on all mouse presses.
-
                 handleResizing(t);
             } else if (t.getEventType() == MouseEvent.MOUSE_RELEASED) {
-                handleRelease(t);
+                handleRelease();
             } else if (t.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                 handleDragging(t);
-            } else {
-                // Do nothing
             }
         }
 
         /**
-         * Helper method that is used to determine if resizing operations need
-         * to be handled.
+         * Helper method that is used to determine if resizing operations need to be handled.
          *
-         * This method changes the cursor to inform the user that resizing can
-         * occur.
+         * This method changes the cursor to inform the user that resizing can occur.
          *
          * @param t The triggered mouse event.
          *
          * @see MouseEvent
          */
         private void handleResizing(final MouseEvent t) {
-            // Determine if the cursor is currently hovering over the left border:
-            if ((rect.getX() - BUFFER) <= t.getX() && t.getX() <= (rect.getX() + BUFFER)) {
+            // Determine if the cursor is currently hovering over a border
+            if ((rect.getX() - BUFFER) <= t.getX() && t.getX() <= (rect.getX() + BUFFER)) { // left border
                 rect.setCursor(Cursor.W_RESIZE);
 
                 // Switch on resizing left flags if is a primary mouse:
@@ -439,9 +432,8 @@ public class OverviewPanel extends Pane {
                     isResizingLeft = true;
                     isResizingRight = false;
                 }
-            } // Determine if the cursor is currently hovering over the right border:
-            else if ((rect.getX() + rect.getWidth() - BUFFER) <= t.getX()
-                    && t.getX() <= (rect.getX() + rect.getWidth() + BUFFER)) {
+            } else if ((rect.getX() + rect.getWidth() - BUFFER) <= t.getX()
+                    && t.getX() <= (rect.getX() + rect.getWidth() + BUFFER)) { // right border
                 rect.setCursor(Cursor.E_RESIZE);
 
                 // Switch on resizing right flags if is a primary mouse click:
@@ -449,8 +441,7 @@ public class OverviewPanel extends Pane {
                     isResizingLeft = false;
                     isResizingRight = true;
                 }
-            } // Not hovering over a border:
-            else {
+            } else { // Not hovering over a border
                 rect.setCursor(Cursor.NONE);
             }
         }
@@ -458,11 +449,9 @@ public class OverviewPanel extends Pane {
         /**
          * Helper method called when releasing mouse press events occur.
          *
-         * @param t The triggered mouse event.
-         *
          * @see MouseEvent
          */
-        private void handleRelease(final MouseEvent t) {
+        private void handleRelease() {
             // Switch off resizing flags:
             isResizingLeft = isResizingRight = false;
         }
@@ -485,11 +474,10 @@ public class OverviewPanel extends Pane {
         }
 
         /**
-         * Method that performs calculations for resize operations on the POV
-         * object, and updates the coordinator with new time extents.
+         * Method that performs calculations for resize operations on the POV object, and updates the coordinator with
+         * new time extents.
          *
-         * Note: These updates are what causes the timeline's time extent to be
-         * changed to match the POV's extent.
+         * Note: These updates are what causes the timeline's time extent to be changed to match the POV's extent.
          *
          * @param t The triggered mouse event.
          *
@@ -499,8 +487,8 @@ public class OverviewPanel extends Pane {
             // Determine any change in the mouse position:
             final double delta = origin - t.getX();
 
-            // Determine if the cursor is currently hovering over the left border:
-            if (isResizingLeft) {
+            // Determine if the cursor is currently hovering over a border:
+            if (isResizingLeft) { // left border
                 final double width = rect.getWidth() + delta;
                 final double x = rect.getX() - delta;
 
@@ -519,13 +507,11 @@ public class OverviewPanel extends Pane {
                     // Update the origin as we have had some movement:
                     origin = t.getX();
                 }
-            } // Determine if the cursor is currently hovering over the right border:
-            else if (isResizingRight) {
+            } else if (isResizingRight) { // right border
                 final double width = rect.getWidth() - delta;
 
                 // Only resize if the new width is not too small, and it won't go off the right hand boundary:
-                if (width >= 2.0 * BUFFER
-                        && ((rect.getX() + width) < histogram.getWidth())) {
+                if (width >= 2.0 * BUFFER && ((rect.getX() + width) < histogram.getWidth())) {
                     rect.setWidth(width);
 
                     // Update the timeline's extents:
@@ -538,17 +524,14 @@ public class OverviewPanel extends Pane {
                     // Update the origin as we have had some movement:
                     origin = t.getX();
                 }
-            } else {
-                // Do nothing
             }
         }
 
         /**
-         * Method that performs calculations for drag operations on the POV
-         * object, and updates the coordinator with new time extents.
+         * Method that performs calculations for drag operations on the POV object, and updates the coordinator with new
+         * time extents.
          *
-         * Note: These updates are what causes the timeline's time extent to be
-         * changed to match the POV's extent.
+         * Note: These updates are what causes the timeline's time extent to be changed to match the POV's extent.
          *
          * @param t The triggered mouse event.
          *
@@ -560,8 +543,7 @@ public class OverviewPanel extends Pane {
             final double newX = rect.getX() - delta;
 
             // Only perform drag if it is within the bounds of the histogram:
-            if (0.0 <= newX && (newX + rect.getWidth())
-                    < histogram.getWidth()) {
+            if (newX >= 0.0 && (newX + rect.getWidth()) < histogram.getWidth()) {
                 rect.setX(newX);
 
                 // Update the timeline's extents:

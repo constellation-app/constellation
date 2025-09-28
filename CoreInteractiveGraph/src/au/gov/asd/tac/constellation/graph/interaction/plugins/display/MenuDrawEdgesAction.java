@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * This class produces a menu action for the 'record video' action available on
+ * This class produces a menu action for the 'set draw edges' action available on
  * the graph toolbar.
  *
  * @author altair
@@ -35,14 +35,9 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.display.MenuDrawEdgesAction")
 @ActionRegistration(displayName = "#CTL_MenuDrawEdgesAction", lazy = false)
 @ActionReference(path = "Menu/Display/Connection Types", position = 200)
-@Messages({
-    "CTL_MenuDrawEdgesAction=Edges"
-})
+@Messages("CTL_MenuDrawEdgesAction=Edges")
 public class MenuDrawEdgesAction extends MenuBaseAction {
-
-    /**
-     * constructor
-     */
+    
     public MenuDrawEdgesAction() {
         super();
         this.initRadioButton(Bundle.CTL_MenuDrawEdgesAction(), "ConnectionMode", true);
@@ -58,7 +53,7 @@ public class MenuDrawEdgesAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         final Graph graph = getContext().getGraph();
-        boolean flag = VisualGraphUtilities.getConnectionMode(graph) == ConnectionMode.EDGE;
+        final boolean flag = VisualGraphUtilities.getConnectionMode(graph) == ConnectionMode.EDGE;
         menuButton.setSelected(flag);
     }
 }

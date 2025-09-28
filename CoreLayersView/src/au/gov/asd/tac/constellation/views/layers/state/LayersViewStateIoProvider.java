@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -45,6 +45,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
+    
+    private static final String INDEX_ARRAY_NAME = "index";
 
     @Override
     public String getName() {
@@ -64,7 +66,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                 } else {
                     final BitMaskQuery query = new BitMaskQuery(
                             new Query(GraphElementType.VERTEX,
-                                    StringUtils.equals("null", vertexLayersArray.get(i).get(2).asText()) ? ""
+                                    Strings.CS.equals("null", vertexLayersArray.get(i).get(2).asText()) ? ""
                                     : vertexLayersArray.get(i).get(2).asText()),
                             vertexLayersArray.get(i).get(0).asInt(),
                             vertexLayersArray.get(i).get(3).asText()
@@ -83,7 +85,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                 } else {
                     final BitMaskQuery query = new BitMaskQuery(
                             new Query(GraphElementType.TRANSACTION,
-                                    StringUtils.equals("null", transactionLayersArray.get(i).get(2).asText()) ? ""
+                                    Strings.CS.equals("null", transactionLayersArray.get(i).get(2).asText()) ? ""
                                     : transactionLayersArray.get(i).get(2).asText()),
                             transactionLayersArray.get(i).get(0).asInt(),
                             transactionLayersArray.get(i).get(3).asText()
@@ -135,7 +137,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     if (layer == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray("index", layer.getIndex());
+                        jsonGenerator.writeStartArray(INDEX_ARRAY_NAME, layer.getIndex());
                         jsonGenerator.writeNumber(layer.getIndex());
                         jsonGenerator.writeBoolean(layer.isVisible());
                         jsonGenerator.writeString(layer.getQueryString());
@@ -151,7 +153,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     if (layer == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray("index", layer.getIndex());
+                        jsonGenerator.writeStartArray(INDEX_ARRAY_NAME, layer.getIndex());
                         jsonGenerator.writeNumber(layer.getIndex());
                         jsonGenerator.writeBoolean(layer.isVisible());
                         jsonGenerator.writeString(layer.getQueryString());
@@ -167,7 +169,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     if (attr == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray("index", count++);
+                        jsonGenerator.writeStartArray(INDEX_ARRAY_NAME, count++);
                         jsonGenerator.writeString(attr.getElementType().toString());
                         jsonGenerator.writeString(attr.getName());
                         jsonGenerator.writeEndArray();

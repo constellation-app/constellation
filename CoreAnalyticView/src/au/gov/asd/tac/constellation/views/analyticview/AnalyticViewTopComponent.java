@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,19 @@ package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
-import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -75,15 +67,21 @@ import org.openide.windows.TopComponent;
     "HINT_AnalyticViewTopComponent=Analytic View"
 })
 public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticViewPane> {
-
+    
+    private static final String ANALYTIC_VIEW_GRAPH_CHANGED_THREAD_NAME = "Analytic View Graph Changed Updater";
     private final AnalyticViewPane analyticViewPane;
-    private final AnalyticController analyticController;
+    private final AnalyticViewController analyticController;
     private boolean suppressed = false;
     private String currentGraphId = StringUtils.EMPTY;
+    private LinkedBlockingQueue<Object> queue = new LinkedBlockingQueue<>();
+    private Thread refreshThread;
+    private final Runnable refreshRunnable;
+    private long latestGraphChangeID = 0;
+    private Graph activeGraph;
 
     public AnalyticViewTopComponent() {
         super();
-        this.analyticController = new AnalyticController();
+        this.analyticController = AnalyticViewController.getDefault().init(this);
         this.analyticViewPane = new AnalyticViewPane(analyticController);
         initComponents();
         setName(Bundle.CTL_AnalyticViewTopComponent());
@@ -93,12 +91,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         // analytic view specific listeners
         addStructureChangeHandler(graph -> {
             if (needsUpdate() && !suppressed) {
-                analyticViewPane.getConfigurationPane().saveState();
-            }
-        });
-        addAttributeValueChangeHandler(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE, graph -> {
-            if (needsUpdate() && !suppressed) {
-                analyticViewPane.getConfigurationPane().saveState();
+                analyticController.writeState();
             }
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
@@ -111,7 +104,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                 analyticController.selectOnInternalVisualisations(GraphElementType.TRANSACTION, graph);
             }
         });
-        addIgnoredEvent(AnalyticController.SELECT_ON_GRAPH_PLUGIN_NAME);
+        addIgnoredEvent(AnalyticViewController.SELECT_ON_GRAPH_PLUGIN_NAME);
 
         // plugin specific listeners
         final Map<SchemaAttribute, List<AnalyticPlugin<?>>> prerequisiteAttributes = new HashMap<>();
@@ -134,12 +127,20 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                 analyticViewPane.getConfigurationPane().updateSelectablePluginsParameters();
             }
         }));
+        
+        refreshRunnable = () -> {
+            final List<Object> devNull = new ArrayList<>();
+            while (!queue.isEmpty()) {
+                queue.drainTo(devNull);
+            }
+
+            // update analytic view pane
+            analyticController.readState();
+        };
     }
 
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -165,149 +166,95 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
     @Override
     protected String createStyle() {
-        return null;
+        return JavafxStyleManager.isDarkTheme()
+                ? "resources/analytic-view-dark.css"
+                : "resources/analytic-view-light.css";
     }
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        if (!needsUpdate()) {
-            return;
-        }
-        if (graph != null) {
+        if (needsUpdate() && graph != null) {
             currentGraphId = graph.getId();
-        }
-        if (analyticViewPane != null) {
-            analyticViewPane.setIsRunnable(graph != null);
-            analyticViewPane.reset();
-        }
-        suppressed = true;
-        manualUpdate();
-        suppressed = false;
-        if (analyticViewPane != null) {
-            analyticViewPane.getConfigurationPane().updateState(false);
+            activeGraph = graph;
+
+            if (analyticViewPane != null) {
+                analyticViewPane.reset();
+                analyticViewPane.setIsRunnable(true);
+                analyticController.readState();
+                if (GraphManager.getDefault().getActiveGraph() == null) {
+                    analyticViewPane.reset();
+                }
+            }
         }
     }
 
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        if (needsUpdate()) {
-            if (graph != null) {
-                currentGraphId = graph.getId();
+        if (graph != null) {
+            currentGraphId = graph.getId();
+        }
+        if (analyticViewPane != null) {
+            analyticViewPane.reset();
+            analyticController.readState();
+            activeGraph = GraphManager.getDefault().getActiveGraph();
+            if (activeGraph == null) {
+                analyticViewPane.reset();
             }
-            analyticViewPane.getConfigurationPane().updateState(false);
         }
     }
 
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        if (needsUpdate()) {
-            final Graph current = GraphManager.getDefault().getActiveGraph();
-            if (current != null) {
-                currentGraphId = current.getId();
-            }
-            analyticViewPane.getConfigurationPane().updateState(false);
+        activeGraph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null) {
+            currentGraphId = activeGraph.getId();
+        }
+        analyticController.readState();
+
+        if (activeGraph == null) {
+            analyticViewPane.reset();
         }
     }
 
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        final Graph current = GraphManager.getDefault().getActiveGraph();
-        if (current != null && !current.getId().equals(currentGraphId)) {
+        activeGraph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null && !activeGraph.getId().equals(currentGraphId)) {
             analyticViewPane.reset();
         }
-        analyticViewPane.getConfigurationPane().updateState(false);
+        analyticController.readState();
+        handleNewGraph(activeGraph);
     }
-
-    public class AnalyticController {
-
-        protected static final String SELECT_ON_GRAPH_PLUGIN_NAME = "Analytic View: Update Selection on Graph";
-
-        public void selectOnGraph(final GraphElementType elementType, final List<Integer> elementIds) {
-            PluginExecution.withPlugin(new SelectOnGraphPlugin(elementType, elementIds)).executeLater(getCurrentGraph());
+    
+    @Override
+    protected void handleGraphChange(final GraphChangeEvent event) {
+        if (event == null) { // can be null at this point in time
+            return;
         }
-
-        public void selectOnInternalVisualisations(final GraphElementType elementType, final Graph graph) {
-            final AnalyticResult<?> result = analyticViewPane.getResultsPane().getResult();
-
-            if (graph != null && result != null) {
-                final List<Integer> selected = new ArrayList<>();
-                final ReadableGraph readableGraph = graph.getReadableGraph();
-                try {
-                    switch (elementType) {
-                        case VERTEX:
-                            final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
-                            final int vertexCount = readableGraph.getVertexCount();
-                            for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                                final int vertexId = readableGraph.getVertex(vertexPosition);
-                                final boolean vertexSelected = readableGraph.getBooleanValue(vertexSelectedAttribute, vertexId);
-                                if (vertexSelected) {
-                                    selected.add(vertexId);
-                                }
-                            }
-                            break;
-                        case TRANSACTION:
-                            final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                            final int transactionCount = readableGraph.getTransactionCount();
-                            for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                                final int transactionId = readableGraph.getTransaction(transactionPosition);
-                                final boolean transactionSelected = readableGraph.getBooleanValue(transactionSelectedAttribute, transactionId);
-                                if (transactionSelected) {
-                                    selected.add(transactionId);
-                                }
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                } finally {
-                    readableGraph.release();
+        final GraphChangeEvent newEvent = event.getLatest();
+        // Don't trigger the refresh when the graph event is the hide slider being updated
+        final String hideElementsDescription = "Analytic View: Hide Elements";
+        if (newEvent == null || newEvent.getDescription() == hideElementsDescription) { // latest event may be null - defensive check
+            return;
+        }
+        if (newEvent.getId() > latestGraphChangeID) {
+            latestGraphChangeID = newEvent.getId();
+            if (activeGraph != null) {
+                queue.add(newEvent);
+                if (refreshThread == null || !refreshThread.isAlive()) {
+                    refreshThread = new Thread(refreshRunnable);
+                    refreshThread.setName(ANALYTIC_VIEW_GRAPH_CHANGED_THREAD_NAME);
+                    refreshThread.start();
                 }
-
-                result.setSelectionOnVisualisation(elementType, selected);
             }
         }
     }
 
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
-    public static class SelectOnGraphPlugin extends SimpleEditPlugin {
-
-        final GraphElementType elementType;
-        final List<Integer> elementIds;
-
-        public SelectOnGraphPlugin(final GraphElementType elementType, final List<Integer> elementIds) {
-            this.elementType = elementType;
-            this.elementIds = elementIds;
-        }
-
-        @Override
-        public String getName() {
-            return AnalyticViewTopComponent.AnalyticController.SELECT_ON_GRAPH_PLUGIN_NAME;
-        }
-
-        @Override
-        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            switch (elementType) {
-                case VERTEX:
-                    final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-                    final int vertexCount = graph.getVertexCount();
-                    for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                        final int vertexId = graph.getVertex(vertexPosition);
-                        graph.setBooleanValue(vertexSelectedAttribute, vertexId, elementIds.contains(vertexId));
-                    }
-                    break;
-                case TRANSACTION:
-                    final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-                    final int transactionCount = graph.getTransactionCount();
-                    for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                        final int transactionId = graph.getTransaction(transactionPosition);
-                        graph.setBooleanValue(transactionSelectedAttribute, transactionId, elementIds.contains(transactionId));
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
+    @Override
+    protected void handleComponentClosed() {
+        super.handleComponentClosed();
+        analyticViewPane.reset();
     }
 }

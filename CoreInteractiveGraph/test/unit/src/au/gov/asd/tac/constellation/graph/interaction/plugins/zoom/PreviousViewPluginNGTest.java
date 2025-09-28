@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,12 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -35,25 +36,27 @@ import org.testng.annotations.Test;
  */
 public class PreviousViewPluginNGTest {
     
-    private int vertexIdentifierAttribute, cameraAttribute;
-    private int vxId1, vxId2;
+    private int vertexIdentifierAttribute;
+    private int cameraAttribute;
+    
+    private int vxId1;
+    private int vxId2;
+    
     private StoreGraph graph;
     
-    public PreviousViewPluginNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        // create an analytic graph
-        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
         graph = new StoreGraph(schema);
 
         // add attributes
@@ -67,25 +70,26 @@ public class PreviousViewPluginNGTest {
         // set the identifier of the vertices 
         graph.setStringValue(vertexIdentifierAttribute, vxId1, "VERTEX_1");
         graph.setStringValue(vertexIdentifierAttribute, vxId2, "VERTEX_2");
-        
-
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Test of edit method, of class PreviousViewPlugin.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testEdit() throws Exception {
+    public void testEdit() throws InterruptedException, PluginException {
         System.out.println("edit");
         
         // Create some vecs to add to the original camera
-        final Vector3f lookAtCentre = new Vector3f(10,10,10);
-        final Vector3f lookAtEye = new Vector3f(5,10,5);
-        final Vector3f lookAtUp = new Vector3f(2,2,2);
+        final Vector3f lookAtCentre = new Vector3f(10, 10, 10);
+        final Vector3f lookAtEye = new Vector3f(5, 10, 5);
+        final Vector3f lookAtUp = new Vector3f(2, 2, 2);
         
         // Start with a default camera
         final Camera originalCamera = new Camera();

@@ -93,9 +93,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
 
     boolean canDrop(final DataFlavor[] flavors) {
         for (int i = 0; flavors != null && i < flavors.length; i++) {
-            if (DataFlavor.javaFileListFlavor.equals(flavors[i])
-                    || getUriListDataFlavor().equals(flavors[i])) {
-
+            if (DataFlavor.javaFileListFlavor.equals(flavors[i]) || getUriListDataFlavor().equals(flavors[i])) {
                 return true;
             }
         }
@@ -109,7 +107,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
             return false;
         }
         final List<File> fileList = getFileList(t);
-        if ((fileList == null) || fileList.isEmpty()) {
+        if (fileList == null || fileList.isEmpty()) {
             return false;
         }
 
@@ -119,8 +117,8 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
         //then another way how to infrom winsys must be used.
         Component c = e.getDropTargetContext().getComponent();
         while (c != null) {
-            if (c instanceof TopComponent) {
-                ((TopComponent) c).requestActive();
+            if (c instanceof TopComponent tc) {
+                tc.requestActive();
                 break;
             }
             c = c.getParent();
@@ -133,7 +131,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
             boolean hasSomeSuccess = false;
             List<String> fileErrs = null;
             for (final File file : fileList) {
-                String fileErr = openFile(file);
+                final String fileErr = openFile(file);
                 if (fileErr == null) {
                     hasSomeSuccess = true;
                 } else {
@@ -143,29 +141,23 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
                     fileErrs.add(fileErr);
                 }
             }
-            if (fileErrs != null) {         //some file could not be opened
-                final String mainMsgKey;
-                if (hasSomeSuccess) {
-                    mainMsgKey = "MSG_could_not_open_some_files";       //NOI18N
-                } else {
-                    mainMsgKey = "MSG_could_not_open_any_file";         //NOI18N
-                }
+            if (fileErrs != null) { //some file could not be opened
+                final String mainMsgKey = hasSomeSuccess ? "MSG_could_not_open_some_files" 
+                        : "MSG_could_not_open_any_file"; //NOI18N
                 final String mainMsg = NbBundle.getMessage(OpenFile.class, mainMsgKey);
                 final JComponent msgPanel = new JPanel();
                 msgPanel.setLayout(new BoxLayout(msgPanel, BoxLayout.PAGE_AXIS));
                 msgPanel.add(new JLabel(mainMsg));
                 msgPanel.add(Box.createVerticalStrut(12));
-                for (String fileErr : fileErrs) {
+                for (final String fileErr : fileErrs) {
                     msgPanel.add(new JLabel(fileErr));
                 }
                 errMsg = msgPanel;
             }
         }
         if (errMsg != null) {
-            DialogDisplayer.getDefault().notify(
-                    new NotifyDescriptor.Message(
-                            errMsg,
-                            NotifyDescriptor.WARNING_MESSAGE));
+            DialogDisplayer.getDefault()
+                    .notify(new NotifyDescriptor.Message(errMsg, NotifyDescriptor.WARNING_MESSAGE));
             return false;
         }
         return true;
@@ -182,8 +174,6 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
                 //linux
                 final String uriList = (String) t.getTransferData(getUriListDataFlavor());
                 return textURIListToFileList(uriList);
-            } else {
-                // Do nothing
             }
         } catch (final UnsupportedFlavorException ex) {
             ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, ex);

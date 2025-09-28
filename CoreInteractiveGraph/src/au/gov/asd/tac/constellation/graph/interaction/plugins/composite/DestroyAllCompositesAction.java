@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
@@ -32,10 +31,8 @@ import org.openide.util.NbBundle.Messages;
  */
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.functionality.composite.DestroyAllCompositesAction")
 @ActionRegistration(displayName = "#CTL_DestroyAllCompositesAction",
-        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/composite/destroyCompositeNodes.png")
-@ActionReferences({
-    @ActionReference(path = "Menu/Tools", position = 1000)
-})
+        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/composite/resources/destroyCompositeNodes.png")
+@ActionReference(path = "Menu/Tools", position = 1000)
 @Messages("CTL_DestroyAllCompositesAction=Destroy All Composites")
 public class DestroyAllCompositesAction extends SimplePluginAction {
 

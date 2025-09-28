@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,19 @@ import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.log.ConstellationLogFormatter;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
+import javax.swing.Action;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+import org.openide.util.Utilities;
+import org.openide.util.actions.Presenter;
 import org.openide.windows.OnShowing;
 import org.openide.windows.WindowManager;
 
@@ -44,10 +56,35 @@ public class Startup implements Runnable {
      */
     private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
 
+    private static final Logger LOGGER = Logger.getLogger(Startup.class.getName());
+
     @Override
     public void run() {
-        ConstellationSecurityManager.startSecurityLater(null);
 
+        // Setup the logging format
+        if (LOGGER.getUseParentHandlers()) {
+            final Handler[] parentHandlers = LOGGER.getParent().getHandlers();
+            for (final Handler handler : parentHandlers) {
+                handler.setFormatter(new ConstellationLogFormatter());
+            }
+        }
+
+        ConstellationSecurityManager.startSecurityLater(null);
+        
+        // only process for quicksearch and if fontsize is customised                
+        if (UIManager.get("customFontSize") != null) {
+            final List<? extends Action> actions = Utilities.actionsForPath("Actions/Edit");
+            for (final Action action : actions) {
+                if (action.getClass().getName().toLowerCase().contains("quicksearchaction")) {
+                    final Component toolbarPresenter = ((Presenter.Toolbar) action).getToolbarPresenter();
+                    for (final Component c : ((Container)toolbarPresenter).getComponents()) {
+                        processComponentTree(c);
+                    }
+                    break;
+                }
+            }
+        }
+        
         // application environment
         final String environment = System.getProperty(SYSTEM_ENVIRONMENT);
         final String name = environment != null
@@ -71,4 +108,25 @@ public class Startup implements Runnable {
         ProxyUtilities.setProxySelector(null);
     }
 
+    /**
+     * Traverse the component tree to find the right source to set the size.
+     * @param source component to traverse.
+     */
+    public void processComponentTree(final Component source) {
+        if (source instanceof JScrollPane jsp) {
+            final Dimension origSize = jsp.getSize();
+            final int customFontSize = (int) UIManager.get("customFontSize");
+            final Dimension newDimension = new Dimension(origSize.width + (customFontSize/2), 19 * customFontSize / 12);
+            
+            jsp.setMinimumSize(newDimension);
+            jsp.setPreferredSize(newDimension);
+            jsp.getViewport().setPreferredSize(newDimension);            
+        }
+        // traverse the component tree
+        if (source instanceof Container sc) {
+            for (final Component c : sc.getComponents()) {
+                processComponentTree(c);
+            }
+        }   
+    }
 }

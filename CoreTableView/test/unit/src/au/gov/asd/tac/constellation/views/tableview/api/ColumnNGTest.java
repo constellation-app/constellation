@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import static org.testng.AssertJUnit.assertNull;
-import static org.testng.AssertJUnit.assertSame;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertSame;
 import org.testng.annotations.Test;
 
 /**
@@ -55,10 +55,8 @@ public class ColumnNGTest {
 
     @Test
     public void equality() {
-        final TableColumn<ObservableList<String>, String> black
-                = new TableColumn<>("BLACK");
-        final TableColumn<ObservableList<String>, String> red
-                = new TableColumn<>("RED");
+        final TableColumn<ObservableList<String>, String> black = new TableColumn<>("BLACK");
+        final TableColumn<ObservableList<String>, String> red = new TableColumn<>("RED");
 
         EqualsVerifier.forClass(Column.class)
                 .suppress(Warning.NONFINAL_FIELDS)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.util.Pair;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.NbPreferences;
 
 /**
@@ -101,7 +101,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
             }
 
             // Third and last step: do we have a default proxy?
-            if (defaultProxy != ConstellationHttpProxy.NO_PROXY) {
+            if (!ConstellationHttpProxy.NO_PROXY.equals(defaultProxy)) {
                 LOGGER.log(Level.FINE, "host {0} will use the default proxy {1}", new Object[]{host, defaultProxy});
                 return makeProxy(defaultProxy);
             }
@@ -121,8 +121,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
      * @return a {@link Proxy} object representing the proxy.
      */
     private List<Proxy> makeProxy(final Pair<String, Integer> proxy) {
-        final Proxy proxyObject = new Proxy(Proxy.Type.HTTP,
-                new InetSocketAddress(proxy.getKey(), proxy.getValue()));
+        final Proxy proxyObject = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxy.getKey(), proxy.getValue()));
         LOGGER.log(Level.FINER, "Proxy {0}", proxyObject);
         return Collections.singletonList(proxyObject);
     }
@@ -147,7 +146,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
      */
     private static boolean isLocalHost(final String host, final List<String> localHosts) {
         final String hostLowerCase = host.toLowerCase();
-        if (StringUtils.equalsAnyIgnoreCase(hostLowerCase, (CharSequence[]) new String[]{"localhost", "127.0.0.1"})) {
+        if (Strings.CS.equalsAny(hostLowerCase, "localhost", "127.0.0.1")) {
             return true;
         }
 
@@ -170,34 +169,23 @@ public class ConstellationHttpProxySelector extends ProxySelector {
      * false otherwise.
      */
     private static boolean isValidHost(final String host, final String compareHost) {
-        if (compareHost.startsWith(".")) {
-            if (host.endsWith(compareHost)) {
-                return true;
-            }
-        } else if (compareHost.equals(host)) {
-            return true;
-        } else {
-            // Do nothing
-        }
-
-        return false;
+        return (compareHost.startsWith(".") && host.endsWith(compareHost)) || compareHost.equals(host);
     }
 
     @Override
     public void connectFailed(final URI uri, final SocketAddress socket, final IOException ex) {
-        LOGGER.log(Level.SEVERE, "Connect failed for uri {0}, socket {1} "
-                + "with message {2})", new Object[]{uri, socket, ex.getMessage()});
+        LOGGER.log(Level.SEVERE, "Connect failed for uri {0}, socket {1} with message {2})", 
+                new Object[]{uri, socket, ex.getMessage()});
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(bypassProxyHosts.toString());
-        sb.append(ProxyUtilities.SEMICOLON);
-        sb.append(additionalProxies.toString());
-        sb.append(ProxyUtilities.SEMICOLON);
-        sb.append(defaultProxy.toString());
-
-        return sb.toString();
+        return new StringBuilder()
+                .append(bypassProxyHosts.toString())
+                .append(";")
+                .append(additionalProxies.toString())
+                .append(";")
+                .append(defaultProxy.toString())
+                .toString();
     }
 }

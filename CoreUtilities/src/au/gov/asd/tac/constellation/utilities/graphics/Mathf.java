@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,16 +102,71 @@ public final class Mathf {
 
     /**
      * Calculates the signed distance of a point to a plane (normalized).
+     * Equation : (Ax + By + Cz + D) / √(A^2 + b^2 + C^2)
+     * @param point a vector representing a point (x, y, z).
+     * @param plane a vector representing a normalized plane (A, B, C, D).
      *
-     * @param point a vector representing a point.
+     * @return the shortest distance between the given point and the given plane.
+     */
+    public static float distanceToPlane(final Vector3f point, final Vector4f plane) {
+        final float topHalf = point.a[0] * plane.a[0] + point.a[1] * plane.a[1] + point.a[2] * plane.a[2] + plane.a[3];
+        final double bottomHalf = Math.sqrt(Math.pow(plane.a[0], 2) + Math.pow(plane.a[1], 2) + Math.pow(plane.a[2], 2));
+        return (float) (topHalf / bottomHalf);
+    }
+    
+    /**
+     * Calculates the point at which a line between two points intersects a plane.
+     *
+     * @param initialEndPoint a vector representing a point.
+     * @param finalEndPoint a vector representing a point.
      * @param plane a vector representing a plane.
      *
      * @return the distance between the given point and the given plane.
      */
-    public static float distanceToPlane(final Vector3f point, final Vector4f plane) {
-        return point.a[0] * plane.a[0] + point.a[1] * plane.a[1] + point.a[2] * plane.a[2] + plane.a[3];
+    public static Vector3f planeIntersectionPoint(final Vector3f initialEndPoint, final Vector3f finalEndPoint, final Vector4f plane) {       
+        //Represents the distance from the initial point to the intersectionpoint
+        final float t;
+        
+        //calculate the eqation of the line 
+        final Vector3f pointOfIntrest = new Vector3f(initialEndPoint);
+        final Vector3f directionVector = new Vector3f();
+        
+        Vector3f.subtract(directionVector, finalEndPoint, initialEndPoint);
+        
+        final Vector3f planeNormal = plane.toVector3f();
+        final Vector3f planeNormalNeg = plane.toVector3f();
+        planeNormalNeg.scale(-1);
+        
+        final Vector3f planePoint = new Vector3f();
+        Mathf.getPointOnPlane(planePoint, plane);
+        
+        t = (Vector3f.dotProduct(planeNormalNeg, initialEndPoint) + Vector3f.dotProduct(planeNormal, planePoint))/Vector3f.dotProduct(planeNormal, directionVector);
+        directionVector.scale(t);
+        pointOfIntrest.add(directionVector);
+        return pointOfIntrest;
     }
 
+    /**
+     * Calculates a point guaranteed to be on a provided plane.
+     * @param planePoint
+     * @param plane 
+     */
+    public static void getPointOnPlane(final Vector3f planePoint, final Vector4f plane){
+        //The plane does not have a constant Z value and therefore coresses all points on the X-Y Axis. 
+        final float origin = 0F;
+        final float planePointX = origin;
+        final float planePointY;
+        final float planePointZ;
+        if (plane.getZ() != 0){
+            planePointY = origin;
+            planePointZ = -((plane.getX()/plane.getZ())*planePointX) - ((plane.getY()/plane.getZ())*planePointY) - (plane.getW()/plane.getZ());  
+        } else {
+            planePointZ = origin;
+            planePointY = -((plane.getX()/plane.getY())*planePointX) - ((plane.getZ()/plane.getY())*planePointZ) - (plane.getW()/plane.getY());
+        }
+        
+        planePoint.set(planePointX, planePointY, planePointZ);
+    }
     /**
      * Get plane equation from three points.
      *
@@ -176,6 +231,8 @@ public final class Mathf {
      * This function does a three dimensional Catmull-Rom "spline" interpolation
      * between p1 and p2.
      * <p>
+     * A Catmull-Rom spline uses four control points (p0, p1, p2, p3) to generate a
+     * C1 continuous spline that passes through all of the points. 
      * Pass four points, and a floating point number between 0.0 and 1.0. The
      * curve is interpolated between the middle two points.
      *
@@ -231,9 +288,9 @@ public final class Mathf {
      * @param vTangent a vector that will hold the calculated tangent.
      * @param vTriangle vectors that describe a triangle.
      * @param vTexCoords the texture coordinates.
-     * @param N the normal vector.
+     * @param n the normal vector.
      */
-    public static void calculateTangentBasis(final Vector3f vTangent, final Vector3f[] vTriangle, final Vector2f[] vTexCoords, final Vector3f N) {
+    public static void calculateTangentBasis(final Vector3f vTangent, final Vector3f[] vTriangle, final Vector2f[] vTexCoords, final Vector3f n) {
         final Vector3f dv2v1 = Vector3f.subtract(vTriangle[1], vTriangle[0]);
         final Vector3f dv3v1 = Vector3f.subtract(vTriangle[2], vTriangle[0]);
 
@@ -242,33 +299,29 @@ public final class Mathf {
         final float dc3c1t = vTexCoords[2].a[0] - vTexCoords[0].a[0];
         final float dc3c1b = vTexCoords[2].a[1] - vTexCoords[0].a[1];
 
-        float M = (dc2c1t * dc3c1b) - (dc3c1t * dc2c1b);
-        M = 1.0F / M;
+        float m = (dc2c1t * dc3c1b) - (dc3c1t * dc2c1b);
+        m = 1.0F / m;
 
         dv2v1.scale(dc3c1b);
         dv3v1.scale(dc2c1b);
 
         Vector3f.subtract(vTangent, dv2v1, dv3v1);
-        vTangent.scale(M);  // This potentially changes the direction of the vector
+        vTangent.scale(m);  // This potentially changes the direction of the vector
         vTangent.normalize();
 
-        Vector3f B = new Vector3f();
-        B.crossProduct(N, vTangent);
-        vTangent.crossProduct(B, N);
+        final Vector3f b = new Vector3f();
+        b.crossProduct(n, vTangent);
+        vTangent.crossProduct(b, n);
         vTangent.normalize();
     }
 
     public static float smoothStep(final float edge1, final float edge2, final float x) {
-        float t;
-        t = (x - edge1) / (edge2 - edge1);
+        float t = (x - edge1) / (edge2 - edge1);
         if (t > 1.0F) {
             t = 1.0F;
-        }
-
-        if (t < 0.0) {
+        } else if (t < 0.0) {
             t = 0.0F;
         }
-
         return t * t * (3.0F - 2.0F * t);
     }
 

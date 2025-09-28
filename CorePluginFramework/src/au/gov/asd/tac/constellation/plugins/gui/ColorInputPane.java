@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,25 +102,21 @@ public class ColorInputPane extends Pane {
 
         parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
                 switch (change) {
-                    case VALUE:
+                    case VALUE -> {
                         // Don't change the value if it isn't necessary.
                         final ConstellationColor param = pluginParameter.getColorValue();
                         if (!param.equals(field.getValue())) {
                             field.setValue(param.getJavaFXColor());
                         }
-                        break;
-                    case ENABLED:
-                        field.setDisable(!pluginParameter.isEnabled());
-                        break;
-                    case VISIBLE:
+                    }
+                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
+                    case VISIBLE -> {
                         field.setManaged(parameter.isVisible());
                         field.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
-                        break;
-                    default:
-                        LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-                        break;
+                    }
+                    default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
             }));
 
@@ -132,8 +128,8 @@ public class ColorInputPane extends Pane {
         for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
             namedColors.add(c);
         }
-        final ComboBox<ConstellationColor> namedCombo = new ComboBox<>(namedColors);
-        namedCombo.setValue(ConstellationColor.WHITE);
+        final ComboBox<ConstellationColor> namedComboBox = new ComboBox<>(namedColors);
+        namedComboBox.setValue(ConstellationColor.WHITE);
         final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
             @Override
             protected void updateItem(final ConstellationColor item, boolean empty) {
@@ -146,9 +142,9 @@ public class ColorInputPane extends Pane {
                 }
             }
         };
-        namedCombo.setCellFactory(cellFactory);
-        namedCombo.setButtonCell(cellFactory.call(null));
+        namedComboBox.setCellFactory(cellFactory);
+        namedComboBox.setButtonCell(cellFactory.call(null));
 
-        return namedCombo;
+        return namedComboBox;
     }
 }

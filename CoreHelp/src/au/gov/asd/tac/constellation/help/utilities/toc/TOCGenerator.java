@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,10 +40,9 @@ public class TOCGenerator {
 
     private static File toc;
     private static final Logger LOGGER = Logger.getLogger(TOCGenerator.class.getName());
-    private static final String MARKDOWN_LINK_FORMAT = "[%s](%s)";
     private static final String HTML_LINK_FORMAT = "<a href=\"%s\">%s</a><br/>";
     private static final String BLANK_STRING = " ";
-    private static final String EXCEPTION_MESSAGE = "Failed to write to file";
+    private static final String WRITE_FAIL_MESSAGE = "Failed to write to file";
 
     private TOCGenerator() {
         // Intentionally left blank
@@ -56,7 +55,6 @@ public class TOCGenerator {
      * @return
      */
     public static boolean createTOCFile(final String filePath) {
-        boolean success = true;
         if (filePath == null) {
             throw new IllegalArgumentException("Null file path used for creation of Table of Contents file");
         }
@@ -66,18 +64,17 @@ public class TOCGenerator {
                 LOGGER.log(Level.FINE, "Previous Table of Contents file was replaced at: {0}", filePath);
             }
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, "Path to Table of Contents file was invalid.", ex);
+            LOGGER.log(Level.SEVERE, "Path to Table of Contents file was invalid: %s".formatted(filePath), ex);
         }
 
         // initialise file with path
         toc = new File(filePath);
-        LOGGER.log(Level.WARNING, "file path is: {0}", toc.getAbsolutePath());
+        boolean success;
         try {
             success = toc.createNewFile();
             LOGGER.log(Level.FINE, "Table of Contents file was created at: {0}", filePath);
-
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, "Unable to create table of contents file", ex);
+            LOGGER.log(Level.SEVERE, "Unable to create table of contents file. FilePath: %s".formatted(filePath), ex);
             success = false;
         }
         return success;
@@ -89,17 +86,16 @@ public class TOCGenerator {
      *
      * @param xmlFromFile File of XML mappings
      */
-    public static void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode root) throws IOException {
-        final FileWriter writer;
-        writer = new FileWriter(toc);
-        convertXMLMappings(xmlsFromFile, writer, root);
-        writer.close();
+    public static void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode<TOCItem> root, final boolean online) throws IOException {
+        try (final FileWriter writer = new FileWriter(toc)) {
+            convertXMLMappings(xmlsFromFile, writer, root, online);
+        }
     }
 
     /**
      * Generate a table of contents from the XML mapping file
      */
-    public static void convertXMLMappings(final List<File> xmlsFromFile, final FileWriter markdownOutput, final TreeNode root) {
+    protected static void convertXMLMappings(final List<File> xmlsFromFile, final FileWriter markdownOutput, final TreeNode<TOCItem> root, final boolean online) {
         writeText(markdownOutput, String.format("<div class=\"%s\">", "container"));
         writeText(markdownOutput, Platform.getNewline());
         writeText(markdownOutput, String.format("<div id=\"%s\">", "accordion"));
@@ -117,19 +113,9 @@ public class TOCGenerator {
         });
 
         // Write tree structure to the output
-        TreeNode.writeTree(root, markdownOutput, 0);
+        TreeNode.writeTree(root, markdownOutput, 0, online);
         writeText(markdownOutput, Platform.getNewline());
         writeText(markdownOutput, "</div>\n</div>\n</div>");
-    }
-
-    /**
-     * Generate a markdown style link from a title and a url
-     *
-     * @param title the @String title to include as the links title
-     * @param url the url to link to
-     */
-    public static String generateLink(final String title, final String url) {
-        return String.format(MARKDOWN_LINK_FORMAT, title, url);
     }
 
     /**
@@ -138,7 +124,12 @@ public class TOCGenerator {
      * @param title the @String title to include as the links title
      * @param url the url to link to
      */
-    public static String generateHTMLLink(final String title, final String url) {
+    public static String generateHTMLLink(final String title, final String url, final boolean online) {
+        if (online) {
+            final String link = String.format(HTML_LINK_FORMAT, url, title);
+            final int index = link.indexOf("ext");
+            return "<a href=\"../" + link.substring(index);
+        }
         return String.format(HTML_LINK_FORMAT, url, title);
     }
 
@@ -155,12 +146,12 @@ public class TOCGenerator {
         final int spacesPerIndent = 2;
         try {
             final String indent = StringUtils.repeat(BLANK_STRING, indentLevel * spacesPerIndent);
-            final StringBuilder sb = new StringBuilder();
-            sb.append(indent);
-            sb.append(item);
+            final StringBuilder sb = new StringBuilder()
+                    .append(indent)
+                    .append(item);
             writer.write(sb.toString());
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, EXCEPTION_MESSAGE, ex);
+            LOGGER.log(Level.SEVERE, WRITE_FAIL_MESSAGE, ex);
         }
     }
 
@@ -173,26 +164,27 @@ public class TOCGenerator {
      */
     public static void writeAccordionItem(final Writer writer, final String item, final String dataTarget) {
         try {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("<div class=\"card\">");
-            sb.append("<div class=\"card-header\">");
-            sb.append("<h2 class=\"mb-0\">");
+            final StringBuilder sb = new StringBuilder()
+                    .append("<div class=\"card\">")
+                    .append("<div class=\"card-header\">")
+                    .append("<h2 class=\"mb-0\">");
+            
             if (item.equals(Generator.ROOT_NODE_NAME)) {
                 sb.append(item);
             } else {
-                sb.append("<button href=\"#\" role=\"button\" class=\"btn btn-link btn-block text-left collapsed\" data-toggle=\"collapse\" data-target=\"#");
-                sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""));
-                sb.append("\" aria-expanded=\"false\" aria-controls=\"");
-                sb.append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""));
-                sb.append("\">");
-                sb.append(item);
-                sb.append("</button>");
+                sb.append("<button href=\"#\" role=\"button\" class=\"btn btn-link btn-block text-left collapsed\" data-toggle=\"collapse\" data-target=\"#")
+                        .append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""))
+                        .append("\" aria-expanded=\"false\" aria-controls=\"")
+                        .append(dataTarget.replace(StringUtils.SPACE, StringUtils.EMPTY).replace("/", ""))
+                        .append("\">")
+                        .append(item)
+                        .append("</button>");
             }
-            sb.append("</h2>");
-            sb.append("</div>");
+            
+            sb.append("</h2>").append("</div>");
             writer.write(sb.toString());
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, EXCEPTION_MESSAGE, ex);
+            LOGGER.log(Level.SEVERE, WRITE_FAIL_MESSAGE, ex);
         }
     }
 
@@ -206,8 +198,7 @@ public class TOCGenerator {
         try {
             writer.write(item);
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, EXCEPTION_MESSAGE, ex);
+            LOGGER.log(Level.SEVERE, WRITE_FAIL_MESSAGE, ex);
         }
     }
-
 }

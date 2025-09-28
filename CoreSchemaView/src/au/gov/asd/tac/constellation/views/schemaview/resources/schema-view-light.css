@@ -1,0 +1,7 @@
+.tab-pane {
+    -fx-background-color: white;
+}
+
+.table-row-cell:selected .table-cell .label {
+    -fx-text-fill: white;
+}

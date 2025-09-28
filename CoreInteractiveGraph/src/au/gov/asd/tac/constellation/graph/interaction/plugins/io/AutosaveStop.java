@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.modules.OnStop;
-import org.openide.util.NbBundle.Messages;
 
 /**
  * Clean up autosaves for unclosed VisualTopComponents.
@@ -36,10 +36,6 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @OnStop
-@Messages({
-    "# {0} - autosave id",
-    "MSG_CleanedUp=Cleaned up autosave {0}"
-})
 public final class AutosaveStop implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(AutosaveStop.class.getName());
@@ -50,7 +46,7 @@ public final class AutosaveStop implements Runnable {
         for (final Map.Entry<String, Graph> entry : graphs.entrySet()) {
             final Graph graph = entry.getValue();
             AutosaveUtilities.deleteAutosave(graph.getId());
-            LOGGER.info(Bundle.MSG_CleanedUp(graph.getId()));
+            LOGGER.log(Level.INFO, "Cleaned up autosave {0}", graph.getId());
         }
 
         AutosaveUtilities.cleanup();

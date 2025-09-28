@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,14 @@
  */
 package au.gov.asd.tac.constellation.utilities.icon;
 
+import au.gov.asd.tac.constellation.utilities.svg.SVGData;
+import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
+import au.gov.asd.tac.constellation.utilities.svg.SVGTypeConstants;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Random;
 import javax.imageio.ImageIO;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -47,9 +49,10 @@ public class IconDataNGTest {
 
     private static MockedStatic<IconData> iconDataStaticMock;
     private static MockedStatic<ImageIO> imageIOStaticMock;
+    private static MockedStatic<SVGObject> svgObjectStaticMock;
     private static InputStream inputStreamMock;
     private static BufferedImage bufferedImageMock;
-    private static IOException IOExceptionMock;
+    private static IOException ioExceptionMock;
 
     private final IconData instanceWithData;
 
@@ -60,25 +63,29 @@ public class IconDataNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
         iconDataStaticMock = Mockito.mockStatic(IconData.class);
         imageIOStaticMock = Mockito.mockStatic(ImageIO.class);
+        svgObjectStaticMock = Mockito.mockStatic(SVGObject.class);
         inputStreamMock = Mockito.mock(InputStream.class);
         bufferedImageMock = Mockito.mock(BufferedImage.class);
-        IOExceptionMock = Mockito.mock(IOException.class);
+        ioExceptionMock = Mockito.mock(IOException.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
         iconDataStaticMock.close();
         imageIOStaticMock.close();
+        svgObjectStaticMock.close();
     }
 
     /**
@@ -163,7 +170,7 @@ public class IconDataNGTest {
 
         assertEquals(result, expResult);
     }
-
+    
     /**
      * Test of getData method, of class IconData, when data not null.
      */
@@ -183,7 +190,7 @@ public class IconDataNGTest {
 
         assertEquals(result, expResult);
     }
-
+    
     /**
      * Test of createData method, of class IconData.
      *
@@ -244,7 +251,7 @@ public class IconDataNGTest {
 
     /**
      * Test of createData method, of class IconData, when the output returned
-     * from createInputStream() is null.
+ from createRasterInputStream() is null.
      *
      * @throws java.io.IOException
      */
@@ -253,7 +260,7 @@ public class IconDataNGTest {
         System.out.println("testCreateData_inputStreamIsNull");
 
         final IconData instance = spy(new IconDataImpl());
-        when(instance.createInputStream()).thenReturn(null);
+        when(instance.createRasterInputStream()).thenReturn(null);
 
         final int size = 0;
         final Color color = null;
@@ -269,7 +276,7 @@ public class IconDataNGTest {
 
     /**
      * Test of createData method, of class IconData, when the output returned
-     * from createInputStream() throws IOException.
+ from createRasterInputStream() throws IOException.
      *
      * @throws java.io.IOException
      */
@@ -278,13 +285,182 @@ public class IconDataNGTest {
         System.out.println("testCreateData_inputStreamThrowsException");
 
         final IconData instance = spy(new IconDataImpl());
-        when(instance.createInputStream()).thenThrow(IOExceptionMock);
+        when(instance.createRasterInputStream()).thenThrow(ioExceptionMock);
 
         final int size = 0;
         final Color color = null;
 
         final byte[] expResult = new byte[0];
         final byte[] result = instance.createData(size, color);
+
+        imageIOStaticMock.verifyNoInteractions();
+        iconDataStaticMock.verifyNoInteractions();
+
+        assertEquals(result, expResult);
+    }
+       
+    /**
+     * Test of getSVGData method, of class IconData, when size default and
+     * color is null.
+     */
+    @Test
+    public void testGetSVGData() {
+        System.out.println("testGetSVGData");
+       
+        final IconData instance = spy(new IconDataImpl());
+        
+        // Mock a return for an SVGObject
+        SVGObject svgObject = new SVGObject(new SVGData(SVGTypeConstants.SVG, null, null));
+        svgObjectStaticMock.when(() -> SVGObject.loadFromInputStream(inputStreamMock))
+                .thenReturn(svgObject);
+        
+        //Verify createSVGData works for custom attributes.
+        final int size = 1;
+        final Color color = new Color(1, 1, 1);
+        instance.getSVGData(size, color);
+        verify(instance, times(1)).createSVGData(Mockito.eq(size), Mockito.eq(color));
+
+        // Get a defualt instance
+        int defaultSize = ConstellationIcon.DEFAULT_ICON_SIZE;
+        final SVGData newResult = instance.getSVGData();
+        verify(instance, times(1)).createSVGData(Mockito.eq(defaultSize), Mockito.eq(null));
+
+        // Change the SVGObject generated by the instance
+        SVGObject svgObject2 = new SVGObject(new SVGData(SVGTypeConstants.SVG, null, null));
+        svgObjectStaticMock.when(() -> SVGObject.loadFromInputStream(inputStreamMock))
+                .thenReturn(svgObject2);
+        
+        // Ensure the instance lazy loads the old SVGObject when requesting an object of the same attributes.
+        final SVGData sameResult = instance.getSVGData();
+        
+        assertEquals(sameResult, newResult);
+    }
+    
+    /**
+     * Test of getSVGData method, of class IconData, when size is default and color
+     * not null.
+     */
+    @Test
+    public void testGetSVGData_sizeIsDefault() {
+        System.out.println("testGetSVGData_sizeIsDefault");
+
+        final IconData instance = spy(new IconDataImpl());
+
+        final int size = ConstellationIcon.DEFAULT_ICON_SIZE;
+        final Color color = new Color(1, 1, 1);
+
+        final SVGData expResult = null;
+        final SVGData result = instance.getSVGData(size, color);
+
+        verify(instance, times(1)).createSVGData(Mockito.eq(size), Mockito.eq(color));
+
+        assertEquals(result, expResult);
+    }
+    
+    /**
+     * Test of getSVGData method, of class IconData, when size not default and
+     * color is null.
+     */
+    @Test
+    public void testGetSVGData_colorIsNull() {
+        System.out.println("testGetSVGData_colorIsNull");
+
+        final IconData instance = spy(new IconDataImpl());
+
+        final int size = 1;
+        final Color color = null;
+
+        final SVGData expResult = null;
+        final SVGData result = instance.getSVGData(size, color);
+
+        verify(instance, times(1)).createSVGData(Mockito.eq(size), Mockito.eq(color));
+
+        assertEquals(result, expResult);
+    }
+    
+    /**
+     * Test of getSVGData method, of class IconData, when data is null.
+     */
+    @Test
+    public void testGetSVGData_dataIsNull() {
+        System.out.println("testGetSVGData_dataIsNull");
+
+        final IconData instance = spy(new IconDataImpl());
+
+        final int size = ConstellationIcon.DEFAULT_ICON_SIZE;
+        final Color color = null;
+
+        final SVGData expResult = null;
+        final SVGData result = instance.getSVGData(size, color);
+
+        verify(instance, times(1)).createSVGData(Mockito.eq(size), Mockito.eq(color));
+
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of getSVGData method, of class IconData, when data not null.
+     */
+    @Test
+    public void testGetSVGData_dataNotNull() {
+        System.out.println("testGetSVGData_dataNotNull");
+
+        final IconData instance = spy(instanceWithData);
+
+        final int size = ConstellationIcon.DEFAULT_ICON_SIZE;
+        final Color color = null;
+
+        final SVGData expResult = null;
+        final SVGData result = null;
+
+        verify(instance, times(0)).createSVGData(Mockito.eq(size), Mockito.eq(color));
+
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of createData method, of class IconData, when the output returned
+ from createRasterInputStream() is null.
+     *
+     * @throws java.io.IOException
+     */
+    @Test
+    public void testCreateSVGData_inputStreamIsNull() throws IOException {
+        System.out.println("testCreateSVGData_inputStreamIsNull");
+
+        final IconData instance = spy(new IconDataImpl());
+        when(instance.createVectorInputStream()).thenReturn(null);
+
+        final int size = 0;
+        final Color color = null;
+
+        final SVGData expResult = null;
+        final SVGData result = instance.createSVGData(size, color);
+
+        imageIOStaticMock.verifyNoInteractions();
+        iconDataStaticMock.verifyNoInteractions();
+
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of createData method, of class IconData, when the output returned
+ from createRasterInputStream() throws IOException.
+     *
+     * @throws java.io.IOException
+     */
+    @Test
+    public void testCreateSVGData_inputStreamThrowsException() throws IOException {
+        System.out.println("testCreateSVGData_inputStreamThrowsException");
+
+        final IconData instance = spy(new IconDataImpl());
+        when(instance.createVectorInputStream()).thenThrow(ioExceptionMock);
+
+        final int size = 0;
+        final Color color = null;
+
+        final SVGData expResult = null;
+        final SVGData result = instance.createSVGData(size, color);
 
         imageIOStaticMock.verifyNoInteractions();
         iconDataStaticMock.verifyNoInteractions();
@@ -516,8 +692,7 @@ public class IconDataNGTest {
         assertEquals(result1, expResult1);
 
         // When data is anything but null.
-        final Random random = new Random();
-        final int bytes = random.nextInt(50) + 1;
+        final int bytes = 25;
 
         doReturn(new byte[bytes]).when(instance).createData(ConstellationIcon.DEFAULT_ICON_SIZE, null);
         instance.getData();
@@ -532,7 +707,12 @@ public class IconDataNGTest {
     private class IconDataImpl extends IconData {
 
         @Override
-        protected InputStream createInputStream() throws IOException {
+        protected InputStream createRasterInputStream() throws IOException {
+            return inputStreamMock;
+        }
+
+        @Override
+        protected InputStream createVectorInputStream() throws IOException {
             return inputStreamMock;
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.select;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.operations.SetBooleanValuesOperation;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
@@ -58,7 +59,6 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
         final float mix = camera.getMix();
         final float inverseMix = 1.0F - mix;
         final Vector3f centre = new Vector3f(camera.lookAtCentre);
@@ -79,6 +79,8 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
         final int txSelectedAttr = VisualConcept.TransactionAttribute.SELECTED.get(graph);
         final int vxVisibilityAttr = VisualConcept.VertexAttribute.VISIBILITY.get(graph);
         final int txVisibilityAttr = VisualConcept.TransactionAttribute.VISIBILITY.get(graph);
+        final int vxLayerVisibilityAttr = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(graph);
+        final int txLayerVisibilityAttr = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(graph);
 
         final SetBooleanValuesOperation selectVerticesOperation = new SetBooleanValuesOperation(graph, GraphElementType.VERTEX, vxSelectedAttr);
         final SetBooleanValuesOperation selectTransactionsOperation = new SetBooleanValuesOperation(graph, GraphElementType.TRANSACTION, txSelectedAttr);
@@ -114,8 +116,6 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
             yAttr = y2Attr;
             zAttr = z2Attr;
             requiresMix = false;
-        } else {
-            // Do nothing
         }
 
         final BitSet vxIncluded = new BitSet();
@@ -123,12 +123,13 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
         final int vxCount = graph.getVertexCount();
 
         // Select the correct vertices.
-        for (int position = 0; position != vxCount; position++) {
+        for (int position = 0; position != graph.getVertexCount(); position++) {
             final int vxId = graph.getVertex(position);
 
             if (requiresVertexVisibility) {
                 final float visibility = graph.getFloatValue(vxVisibilityAttr, vxId);
-                if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                final float layerVisibility = vxLayerVisibilityAttr != Graph.NOT_FOUND ? graph.getFloatValue(vxLayerVisibilityAttr, vxId) : 1.0F;
+                if (layerVisibility == 0.0F || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                     continue;
                 }
             }
@@ -146,12 +147,11 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
             }
 
             // Convert world coordinates to camera coordinates.
-            final Vector3f sceneLocation = convertWorldToScene(x, y, z, centre, rotationMatrix, cameraDistance);
+            final Vector3f sceneLocation = InteractiveSelectionUtilities.convertWorldToScene(x, y, z, centre, rotationMatrix, cameraDistance);
             final int rAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(graph);
             final float r = graph.getFloatValue(rAttr, vxId);
 
             if (sceneLocation.getZ() < 0) {
-
                 final float leftMostPoint = (sceneLocation.getX() - r) / -sceneLocation.getZ();
                 final float rightMostPoint = (sceneLocation.getX() + r) / -sceneLocation.getZ();
                 final float bottomMostPoint = (sceneLocation.getY() - r) / -sceneLocation.getZ();
@@ -189,7 +189,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                 float yLo = yAttr != Graph.NOT_FOUND ? graph.getFloatValue(yAttr, vxLo) : VisualGraphDefaults.getDefaultY(vxLo);
                 float zLo = zAttr != Graph.NOT_FOUND ? graph.getFloatValue(zAttr, vxLo) : VisualGraphDefaults.getDefaultZ(vxLo);
 
-                // Get the main location of the lo vertex.
+                // Get the main location of the hi vertex.
                 float xHi = xAttr != Graph.NOT_FOUND ? graph.getFloatValue(xAttr, vxHi) : VisualGraphDefaults.getDefaultX(vxHi);
                 float yHi = yAttr != Graph.NOT_FOUND ? graph.getFloatValue(yAttr, vxHi) : VisualGraphDefaults.getDefaultY(vxHi);
                 float zHi = zAttr != Graph.NOT_FOUND ? graph.getFloatValue(zAttr, vxHi) : VisualGraphDefaults.getDefaultZ(vxHi);
@@ -254,10 +254,8 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         verticalOffsetHi = hi.getY();
                     }
 
-                    final boolean intersects = lineSegmentIntersectsRectangle(
-                            horizontalOffsetLo, verticalOffsetLo,
-                            horizontalOffsetHi, verticalOffsetHi,
-                            left, bottom, right, top);
+                    final boolean intersects = InteractiveSelectionUtilities.lineSegmentIntersectsRectangle(horizontalOffsetLo, verticalOffsetLo,
+                            horizontalOffsetHi, verticalOffsetHi, left, bottom, right, top);
 
                     if (intersects) {
                         final int linkTxCount = graph.getLinkTransactionCount(linkId);
@@ -274,7 +272,6 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
 
         if (txIncluded.isEmpty()) {
             if (isAdd) {
-
                 if (vxSelectedAttr != Graph.NOT_FOUND) {
                     for (int vxId = vxIncluded.nextSetBit(0); vxId >= 0; vxId = vxIncluded.nextSetBit(vxId + 1)) {
                         if (!graph.getBooleanValue(vxSelectedAttr, vxId)) {
@@ -288,8 +285,9 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         final int txId = graph.getTransaction(position);
                         if (vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId)) && !graph.getBooleanValue(txSelectedAttr, txId)) {
                             if (requiresTransactionVisibility) {
-                                float visibility = graph.getFloatValue(txVisibilityAttr, txId);
-                                if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                                final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
+                                final float layerVisibility = txLayerVisibilityAttr != Graph.NOT_FOUND ? graph.getFloatValue(txLayerVisibilityAttr, txId) : 1.0F;
+                                if (layerVisibility == 0.0F || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                     continue;
                                 }
                             }
@@ -297,9 +295,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         }
                     }
                 }
-
             } else if (isToggle) {
-
                 if (vxSelectedAttr != Graph.NOT_FOUND) {
                     for (int vertex = vxIncluded.nextSetBit(0); vertex >= 0; vertex = vxIncluded.nextSetBit(vertex + 1)) {
                         selectVerticesOperation.setValue(vertex, !graph.getBooleanValue(vxSelectedAttr, vertex));
@@ -311,8 +307,9 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         final int txId = graph.getTransaction(position);
                         if (vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId))) {
                             if (requiresTransactionVisibility) {
-                                float visibility = graph.getFloatValue(txVisibilityAttr, txId);
-                                if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                                final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
+                                final float layerVisibility = txLayerVisibilityAttr != Graph.NOT_FOUND ? graph.getFloatValue(txLayerVisibilityAttr, txId) : 1.0F;
+                                if (layerVisibility == 0.0F || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                     continue;
                                 }
                             }
@@ -320,9 +317,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         }
                     }
                 }
-
             } else {
-
                 if (vxSelectedAttr != Graph.NOT_FOUND) {
                     for (int position = 0; position < vxCount; position++) {
                         final int vxId = graph.getVertex(position);
@@ -338,8 +333,9 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         final int txId = graph.getTransaction(position);
                         boolean included = vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId));
                         if (requiresTransactionVisibility) {
-                            float visibility = graph.getFloatValue(txVisibilityAttr, txId);
-                            if (visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                            final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
+                            final float layerVisibility = txLayerVisibilityAttr != Graph.NOT_FOUND ? graph.getFloatValue(txLayerVisibilityAttr, txId) : 1.0F;
+                            if (layerVisibility == 0.0F || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                 included = false;
                             }
                         }
@@ -395,81 +391,5 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
 
         graph.executeGraphOperation(selectVerticesOperation);
         graph.executeGraphOperation(selectTransactionsOperation);
-    }
-
-    /**
-     * Does the given line segment intersect the given axis-aligned rectangle?
-     * <p>
-     * We assume that the ends of the line segment are outside of the rectangle.
-     *
-     *
-     * @param x1 x-coordinate of first end of line segment
-     * @param y1 y-coordinate of first end line segment
-     * @param x2 x-coordinate of second end of line segment
-     * @param y2 y-coordinate of second end of line segment
-     * @param minX min x-coordinate of rectangle
-     * @param minY min y-coordinate of rectangle
-     * @param maxX max x-coordinate of rectangle
-     * @param maxY max y-coordinate of rectangle
-     * @return
-     */
-    private static boolean lineSegmentIntersectsRectangle(
-            final float x1, final float y1,
-            final float x2, final float y2,
-            final float minX, final float minY, final float maxX, final float maxY) {
-        // Completely outside.
-        if ((x1 <= minX && x2 <= minX) || (y1 <= minY && y2 <= minY) || (x1 >= maxX && x2 >= maxX) || (y1 >= maxY && y2 >= maxY)) {
-            return false;
-        }
-
-//        // Either end completely inside.
-//        // Not required if it is assumed that endpoints are outside the rectangle.
-//        //        if((x1 > minX && x1 < maxX && y1 > minY && y1 < maxY) || (x2 > minX && x2 < maxX && y2 > minY && y2 < maxY))
-//        {
-//            return true;
-//        }
-        // Vertical line.
-        // We know now that the end-points are outside the rectangle, so we only have to worry
-        // that the line is between the sides.
-        if (x1 == x2) {
-            return minX <= x1 && x1 <= maxX;
-        }
-
-        // Slope of line segment.
-        final float m = (y2 - y1) / (x2 - x1);
-
-        float y = m * (minX - x1) + y1;
-        if (y > minY && y < maxY) {
-            return true;
-        }
-
-        y = m * (maxX - x1) + y1;
-        if (y > minY && y < maxY) {
-            return true;
-        }
-
-        float x = (minY - y1) / m + x1;
-        if (x > minX && x < maxX) {
-            return true;
-        }
-
-        x = (maxY - y1) / m + x1;
-
-        return x > minX && x < maxX;
-    }
-
-    /*
-     * Takes the x,y,z coordinate of a point in the world and translates it into
-     * the equivilant coordinate in the current scene.
-     */
-    private Vector3f convertWorldToScene(final float x, final float y, final float z, final Vector3f centre, final Matrix33f rotationMatrix, final float cameraDistance) {
-        // Convert world coordinates to camera coordinates.
-        final Vector3f worldLocation = new Vector3f();
-        final Vector3f sceneLocation = new Vector3f();
-        worldLocation.set(x, y, z);
-        worldLocation.subtract(centre);
-        sceneLocation.rotate(worldLocation, rotationMatrix);
-        sceneLocation.setZ(sceneLocation.getZ() - cameraDistance);
-        return sceneLocation;
     }
 }

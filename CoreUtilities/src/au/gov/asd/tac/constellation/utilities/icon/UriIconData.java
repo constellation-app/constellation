@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * An IconData implementation allowing an icon to be built using a {@link URI}.
@@ -50,11 +51,10 @@ public class UriIconData extends IconData {
     }
 
     @Override
-    protected InputStream createInputStream() throws IOException {
+    protected InputStream createRasterInputStream() throws IOException {
         InputStream stream;
-
         try {
-            if (StringUtils.equalsIgnoreCase(uri.getScheme(), "HTTPS")) {
+            if (Strings.CI.equals(uri.getScheme(), "HTTPS")) {
                 final HttpsURLConnection connection = HttpsConnection.withUrl(uri.toURL().toString()).get();
                 stream = HttpsUtilities.getInputStream(connection);
             } else {
@@ -66,5 +66,10 @@ public class UriIconData extends IconData {
         }
 
         return stream;
+    }
+
+    @Override
+    protected InputStream createVectorInputStream() throws IOException {
+        throw new UnsupportedOperationException("URI data can not be converted to vector input stream.");
     }
 }

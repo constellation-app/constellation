@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
 import com.jogamp.common.os.Platform;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -54,7 +55,7 @@ public class TreeNode<T> {
     }
 
     public List<TreeNode<T>> getChildren() {
-        return children;
+        return Collections.unmodifiableList(children);
     }
 
     public T getData() {
@@ -96,12 +97,12 @@ public class TreeNode<T> {
      * @param writer the writer to use to write the details of node
      * @param indent the level of indentation to use when writing
      */
-    public static <T> void writeTree(final TreeNode<T> node, final FileWriter writer, final int indent) {
+    public static <T> void writeTree(final TreeNode<T> node, final FileWriter writer, final int indent, final boolean online) {
         if (cachedHelpMappings == null) {
             cachedHelpMappings = HelpMapper.getMappings();
         }
 
-        write(node, writer, indent);
+        write(node, writer, indent, online);
     }
 
     /**
@@ -112,7 +113,7 @@ public class TreeNode<T> {
      * @param writer the writer to use to write the details of node
      * @param indent the level of indentation to use when writing
      */
-    private static <T> void write(final TreeNode<T> node, final FileWriter writer, final int indent) {
+    private static <T> void write(final TreeNode<T> node, final FileWriter writer, final int indent, final boolean online) {
         final TOCItem item = (TOCItem) (node.getData());
 
         if (StringUtils.isBlank(item.getTarget())) {
@@ -123,14 +124,14 @@ public class TreeNode<T> {
             if (StringUtils.isBlank(helpLink)) {
                 TOCGenerator.writeItem(writer, item.getText(), indent);
             } else {
-                TOCGenerator.writeItem(writer, TOCGenerator.generateHTMLLink(item.getText(), helpLink), indent);
+                TOCGenerator.writeItem(writer, TOCGenerator.generateHTMLLink(item.getText(), helpLink, online), indent);
             }
         }
 
         TOCGenerator.writeText(writer, Platform.getNewline());
         if (node.getChildren().isEmpty()) {
             // Base level nodes with no children get written with no indent
-            node.getChildren().forEach(each -> write(each, writer, indent));
+            node.getChildren().forEach(each -> write(each, writer, indent, online));
         } else {
             // Nodes with children get written with an extra level of indent
             // Write start of div which will hold children of current TOC Item
@@ -140,13 +141,13 @@ public class TreeNode<T> {
                 TOCGenerator.writeText(writer, div);
 
                 // Recurse and call same method to write children
-                node.getChildren().forEach(each -> write(each, writer, indent + 1));
+                node.getChildren().forEach(each -> write(each, writer, indent + 1, online));
 
                 // Close div which holds children of current TOC Item
                 TOCGenerator.writeText(writer, "</a> </div> </div> </div>");
             } else {
                 // Recurse and call same method to write children
-                node.getChildren().forEach(each -> write(each, writer, indent + 1));
+                node.getChildren().forEach(each -> write(each, writer, indent + 1, online));
             }
 
         }
@@ -160,16 +161,16 @@ public class TreeNode<T> {
      * @param searchNode the node to look within
      * @return the node within searchNode that matches nodeToFind
      */
-    public static TreeNode search(final TOCItem findItem, final TreeNode searchNode) {
+    public static TreeNode<?> search(final TOCItem findItem, final TreeNode<?> searchNode) {
         if (searchNode != null) {
-            final TOCItem searchTOC = (TOCItem) (searchNode.getData());
+            final TOCItem searchTOC = (TOCItem) searchNode.getData();
             if (searchTOC != null && searchTOC.equals(findItem)) {
                 return searchNode;
             } else {
-                TreeNode foundNode = null;
-                for (final Object child : searchNode.getChildren()) {
+                TreeNode<?> foundNode = null;
+                for (final TreeNode<?> child : searchNode.getChildren()) {
                     if (foundNode == null) {
-                        foundNode = search(findItem, (TreeNode) child);
+                        foundNode = search(findItem, child);
                     }
                 }
                 return foundNode;
@@ -188,14 +189,12 @@ public class TreeNode<T> {
      */
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof TreeNode && ((((TreeNode) (obj)).getData() == null && data == null)
-                || ((TreeNode) (obj)).getData() != null && (((TreeNode) (obj)).getData().equals(data)));
+        return obj instanceof TreeNode treeNode && ((treeNode.getData() == null && data == null)
+                || treeNode.getData() != null && treeNode.getData().equals(data));
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + Objects.hashCode(this.data);
-        return hash;
+        return 37 * 7 + Objects.hashCode(this.data);
     }
 }

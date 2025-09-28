@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TabContextMenuNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(TabContextMenuNGTest.class.getName());
     
     private DataAccessTabPane dataAccessTabPane;
@@ -59,13 +60,15 @@ public class TabContextMenuNGTest {
     
     private TabContextMenu tabContextMenu;
 
-    @BeforeClass
+    @BeforeClass   
     public void setUpClass() throws Exception {
+     
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
     }
-
+    
+// Causing issues with headless tests 
     @AfterClass
     public void tearDownClass() throws Exception {
         try {
@@ -86,6 +89,7 @@ public class TabContextMenuNGTest {
     @Test
     public void init() {
         tabContextMenu.init();
+
         
         // Deactivate All Plugins
         
@@ -197,14 +201,13 @@ public class TabContextMenuNGTest {
                         
                         // The code constructs a plugin finder and then calls find. Need to inject
                         // a mock into that construction
-                        final MockedConstruction<PluginFinder> mockedPluginFinders =
-                                Mockito.mockConstruction(PluginFinder.class);
-                        
-                        action.run();
-                        
-                        // Verify the plugin finder was created and used as expected
-                        assertEquals(mockedPluginFinders.constructed().size(), 1);
-                        verify(mockedPluginFinders.constructed().get(0)).find(queryPhasePane);
+                        try (final MockedConstruction<PluginFinder> mockedPluginFinders = Mockito.mockConstruction(PluginFinder.class)) {
+                            action.run();
+
+                            // Verify the plugin finder was created and used as expected
+                            assertEquals(mockedPluginFinders.constructed().size(), 1);
+                            verify(mockedPluginFinders.constructed().get(0)).find(queryPhasePane);
+                        }
                         
                         return null;
                     });

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TitledPane;
@@ -43,8 +43,8 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
     private final List<DataSourceTitledPane> dataSources = new ArrayList<>();
     private final PluginParametersPaneListener top;
 
-    private static final Color LIGHT_GREEN = Color.web("#5E9656");
-    private static final Color DARK_GREEN = Color.web("#1A4D1A");
+    private static final Color LIGHT_GREEN = Color.web("#6bd65c");
+    private static final Color DARK_GREEN = Color.web("#5E9656");
     private static final Color GREY = Color.web("#e6e6e6").deriveColor(1, 1, 1, 0.3);
     
     // Smaller makes it obvious that they are not center aligned
@@ -91,9 +91,8 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
             sources.getChildren().add(dataSourcePane);
         }
 
-        expandedProperty().addListener(
-                (final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue)
-                        -> DataAccessPreferenceUtilities.setExpanded(headingText, newValue));
+        expandedProperty().addListener((observable, oldValue, newValue) 
+                -> DataAccessPreferenceUtilities.setExpanded(headingText, newValue));
     }
 
     public List<DataSourceTitledPane> getDataSources() {
@@ -166,5 +165,10 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
 
     protected FlowPane getBoxes() {
         return boxes;
+    }
+
+    @Override
+    public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied) {
+        // Must be overriden to implement PluginParametersPaneListener
     }
 }

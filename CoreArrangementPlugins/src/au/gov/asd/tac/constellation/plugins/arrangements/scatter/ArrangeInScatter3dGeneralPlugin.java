@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
         final ReadableGraph rg = graph.getReadableGraph();
         Map<String, Integer> vertexAttributes = null;
         try {
-            vertexAttributes = AttributeUtilities.getVertexAttributes(rg, 0);
+            vertexAttributes = AttributeUtilities.getVertexAttributes(rg);
         } finally {
             rg.release();
         }
@@ -132,14 +132,17 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
         if (vertexAttributes != null) {
             final List<String> keys = new ArrayList<>(vertexAttributes.keySet());
 
+            @SuppressWarnings("unchecked") // SCATTER_3D_X_ATTRIBUTE will always be of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> xAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_X_ATTRIBUTE);
             SingleChoiceParameterType.setOptions(xAttribute, keys);
             SingleChoiceParameterType.setChoice(xAttribute, keys.get(0));
 
+            @SuppressWarnings("unchecked") // SCATTER_3D_Y_ATTRIBUTE will always be of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> yAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Y_ATTRIBUTE);
             SingleChoiceParameterType.setOptions(yAttribute, keys);
             SingleChoiceParameterType.setChoice(yAttribute, keys.size() > 1 ? keys.get(1) : keys.get(0));
             
+            @SuppressWarnings("unchecked") // SCATTER_3D_Z_ATTRIBUTE will always be of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> zAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Z_ATTRIBUTE);
             SingleChoiceParameterType.setOptions(zAttribute, keys);
             SingleChoiceParameterType.setChoice(zAttribute, keys.size() > 2 ? keys.get(2) : keys.get(0));
@@ -159,7 +162,7 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
         final String yDimensionName = pp.get(SCATTER_3D_Y_ATTRIBUTE).getStringValue();
         final String zDimensionName = pp.get(SCATTER_3D_Z_ATTRIBUTE).getStringValue();
 
-        if (StringUtils.isAnyBlank(new String[]{xDimensionName, yDimensionName, zDimensionName})) {
+        if (StringUtils.isAnyBlank(xDimensionName, yDimensionName, zDimensionName)) {
             interaction.notify(PluginNotificationLevel.FATAL, "You must supply all 3 attribute names for Scatter 3D");
             return;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
@@ -76,7 +77,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
     private static final String DESCRIPTION = "description";
     private static final String SCHEMA = "schema";
     private static final String REQUIRED = "required";
-    private static final String OBJECT = "object";
+    private static final String RESPONSES = "responses";
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
@@ -134,6 +135,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                             final ObjectNode mime = content.putObject(RestServiceUtilities.APPLICATION_JSON);
                             final ObjectNode schema = mime.putObject(SCHEMA);
                             schema.put("$ref", pp.getRequestBodyExampleJson());
+                            
                         } else {
                             final ObjectNode param = params.addObject();
                             param.put("name", pp.getId());
@@ -142,40 +144,30 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                             param.put(DESCRIPTION, pp.getDescription());
                             final ObjectNode schema = param.putObject(SCHEMA);
                             schema.put("type", pp.getType().getId());
-                        }
+                        }                       
+                        
                     });
-
-                    // Add the required CONSTELLATION secret header parameter.
-                    final ObjectNode secretParam = params.addObject();
-                    secretParam.put("name", "X-CONSTELLATION-SECRET");
-                    secretParam.put("in", "header");
-                    secretParam.put(REQUIRED, true);
-                    secretParam.put(DESCRIPTION, "CONSTELLATION secret");
-                    final ObjectNode secretSchema = secretParam.putObject(SCHEMA);
-                    secretSchema.put("type", "string");
-
-                    final ObjectNode responses = httpMethod.putObject("responses");
-                    final ObjectNode success = responses.putObject("200");
-                    success.put(DESCRIPTION, rs.getDescription());
-
-                    if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
-                        final ObjectNode content = success.putObject("content");
-                        final ObjectNode mime = content.putObject(rs.getMimeType());
-                        final ObjectNode schema = mime.putObject(SCHEMA);
-                        // Make a wild guess about the response.
-                        if (serviceKey.name.toLowerCase(Locale.ENGLISH).startsWith("list")) {
-                            schema.put("type", "array");
-                            final ObjectNode items = schema.putObject("items");
-                            items.put("type", OBJECT);
-                        } else {
-                            schema.put("type", OBJECT);
-                        }
-                    } else {
-                        // Do nothing
+                    
+                    //get example responses
+                    final String exampleResponsesPath = "/components/examples/%s/"+RESPONSES;
+                    if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON) && Objects.nonNull(rs.getExampleResponsesPath())) {
+                        final ObjectNode responses = httpMethod.putObject(RESPONSES);
+                        responses.setAll((ObjectNode) root.at(String.format(exampleResponsesPath, rs.getExampleResponsesPath())));
                     }
+                    //populate default responses
+                    if (Objects.isNull(httpMethod.get(RESPONSES))) {
+                        final ObjectNode responses = httpMethod.putObject(RESPONSES);
+                        responses.setAll((ObjectNode) root.at(String.format(exampleResponsesPath, "defaultResponses")));                        
+                    }
+
+                    // Add the required CONSTELLATION secret header.
+                    final ArrayNode security = httpMethod.putArray("security");
+                    final ObjectNode apiKeyAuth = security.addObject();
+                    apiKeyAuth.putArray("ConstellationSecret");
+
                 });
 
-                final OutputStream out = response.getOutputStream();
+                final OutputStream out = response.getOutputStream();                
                 mapper.writeValue(out, root);
             } else {
                 if (fileName.endsWith(FileExtensionConstants.JAVASCRIPT)) {

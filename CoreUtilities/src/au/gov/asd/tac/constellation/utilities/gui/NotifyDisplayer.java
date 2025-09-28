@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.EventQueue;
+import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -39,6 +41,9 @@ import org.openide.awt.NotificationDisplayer;
 public class NotifyDisplayer {
 
     private static final Logger LOGGER = Logger.getLogger(NotifyDisplayer.class.getName());
+    
+    public static final String BLOCK_POPUP_FLAG = "!^ ";
+    private static final String DIALOG_DARK_THEME = "/au/gov/asd/tac/constellation/utilities/javafx/dialog-dark.css";
 
     /**
      * Utility display method to show a dialog to the user.
@@ -83,7 +88,7 @@ public class NotifyDisplayer {
      *
      * @param descriptor the descriptor to display in a dialog
      */
-    public static void display(final NotifyDescriptor descriptor) {
+    public static void display(final NotifyDescriptor descriptor) {  
         if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
             // If this was called from one of the UI threads we don't want to
             // display the dialog and block beacasue some OS's (macos) will go into deadlock
@@ -120,12 +125,12 @@ public class NotifyDisplayer {
                 EventQueue.invokeAndWait(showDialogRunner);
 
                 return CompletableFuture.completedFuture(showDialogRunner.getSelection());
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 LOGGER.log(Level.WARNING, "Thread displaying the notify dialog was interrupted.", ex);
                 Thread.currentThread().interrupt();
 
                 return CompletableFuture.completedFuture(null);
-            } catch (InvocationTargetException ex) {
+            } catch (final InvocationTargetException ex) {
                 // An error happened when showing the dialog. Send it up the stack.
                 throw new RuntimeException("Error occured during user dialog notification" + ex.getCause());
             }
@@ -143,17 +148,43 @@ public class NotifyDisplayer {
      * @param message the message to display within the alert
      * @param alertType the alert icon to add to the alert
      */
-    public static void displayAlert(final String title,
-            final String header,
-            final String message,
+    public static void displayAlert(final String title, final String header, final String message, 
             final Alert.AlertType alertType) {
+        NotifyDisplayer.displayAlert(title, header, message, alertType, null);
+        
+    }
+     /**
+     * Utility display method to show an Alert to the user.
+     * Alert.AlertType.ERROR will be used for errors Alert.AlertType.INFORMATION
+     * will be used for information Alert.AlertType.WARNING will be used for
+     * warnings This utility method differs from displayAlert as it uses a
+     * TextArea to display a large amount of text.
+     *
+     * @param title the title of the alert
+     * @param header the header message for the alert
+     * @param message the message to display within the alert
+     * @param alertType the alert icon to add to the alert
+     * @param point the point at which to set the dialog
+     */
+    public static void displayAlert(final String title, final String header, final String message,
+        final Alert.AlertType alertType, final Point point) {
+
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+
+        if (JavafxStyleManager.isDarkTheme()) {
+            dialog.getDialogPane().getStylesheets().add(JavafxStyleManager.class.getResource(DIALOG_DARK_THEME).toExternalForm());
+        }
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
         dialog.setResizable(true);
 
         final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        if (point != null) {
+            stage.setX(point.getX() - dialog.getDialogPane().getWidth()/2);
+            stage.setY(point.getY() - dialog.getDialogPane().getHeight()/2);
+        } 
         stage.setAlwaysOnTop(true);
 
         dialog.showAndWait();
@@ -171,11 +202,31 @@ public class NotifyDisplayer {
      * @param message the message to display within the alert
      * @param alertType the alert icon to add to the alert
      */
-    public static void displayLargeAlert(final String title,
-            final String header,
-            final String message,
+    public static void displayLargeAlert(final String title, final String header, final String message,
             final Alert.AlertType alertType) {
+        NotifyDisplayer.displayLargeAlert(title, header, message, alertType, null);
+    }
+    
+    /**
+     * Utility display method to show an Alert to the user.
+     * Alert.AlertType.ERROR will be used for errors Alert.AlertType.INFORMATION
+     * will be used for information Alert.AlertType.WARNING will be used for
+     * warnings This utility method differs from displayAlert as it uses a
+     * TextArea to display a large amount of text.
+     *
+     * @param title the title of the alert
+     * @param header the header message for the alert
+     * @param message the message to display within the alert
+     * @param alertType the alert icon to add to the alert
+     * @param point the point at which to set the dialog
+     */
+    public static void displayLargeAlert(final String title, final String header, final String message,
+            final Alert.AlertType alertType, final Point point) {
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+        if (JavafxStyleManager.isDarkTheme()) {
+            dialog.getDialogPane().getStylesheets().add(JavafxStyleManager.class.getResource(DIALOG_DARK_THEME).toExternalForm());
+        }
         dialog.setTitle(title);
         dialog.setHeaderText(header);
 
@@ -188,6 +239,10 @@ public class NotifyDisplayer {
         dialog.setResizable(true);
 
         final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        if (point != null) {
+            stage.setX(point.getX() - dialog.getDialogPane().getWidth()/2);
+            stage.setY(point.getY() - dialog.getDialogPane().getHeight()/2);
+        }
         stage.setAlwaysOnTop(true);
 
         dialog.showAndWait();
@@ -205,10 +260,9 @@ public class NotifyDisplayer {
      *
      * @return the user confirmation type
      */
-    public static Optional<ButtonType> displayConfirmationAlert(final String title,
-            final String header,
-            final String message) {
+    public static Optional<ButtonType> displayConfirmationAlert(final String title, final String header, final String message) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
@@ -219,5 +273,4 @@ public class NotifyDisplayer {
 
         return dialog.showAndWait();
     }
-    
 }

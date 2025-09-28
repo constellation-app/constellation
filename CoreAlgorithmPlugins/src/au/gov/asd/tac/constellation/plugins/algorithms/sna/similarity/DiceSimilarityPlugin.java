@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -165,7 +165,7 @@ public class DiceSimilarityPlugin extends SimpleEditPlugin {
                     final int vertexOneId = graph.getVertex(vertexOnePosition);
                     final int vertexTwoId = graph.getVertex(vertexTwoPosition);
 
-                    final float diceSimilarity = halfSumDegree == 0 ? 0F : (float) intersection.cardinality() / halfSumDegree;
+                    final float diceSimilarity = halfSumDegree == 0 ? 0F : intersection.cardinality() / halfSumDegree;
                     SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, diceSimilarity);
                 }
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,24 +33,25 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class BooleanParameterTypeNGTest {
-
-    public BooleanParameterTypeNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -61,7 +62,7 @@ public class BooleanParameterTypeNGTest {
         System.out.println("build_string");
         String id = "booleanParameter";
 
-        PluginParameter result = BooleanParameterType.build(id);
+        PluginParameter<BooleanParameterValue> result = BooleanParameterType.build(id);
         BooleanParameterValue expectedValue = new BooleanParameterValue();
 
         assertEquals(result.getId(), id);
@@ -78,7 +79,7 @@ public class BooleanParameterTypeNGTest {
         String id = "booleanParameter";
         BooleanParameterValue parameterValue = new BooleanParameterValue();
 
-        PluginParameter result = BooleanParameterType.build(id, parameterValue);
+        PluginParameter<BooleanParameterValue> result = BooleanParameterType.build(id, parameterValue);
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof BooleanParameterType);
@@ -88,31 +89,33 @@ public class BooleanParameterTypeNGTest {
     // Start of testing BooleanParameterValue
     @Test
     public void testConstruction() {
+        System.out.println("construction");
         BooleanParameterValue result = new BooleanParameterValue();
         assertNotNull(result);
-        assertFalse(result.get());
+        assertFalse(result.getValue());
     }
 
     @Test
     public void testGetSet() {
+        System.out.println("getSet");
         BooleanParameterValue instance = new BooleanParameterValue();
 
-        boolean expected = instance.get();
-        assertEquals(instance.get(), expected);
+        boolean expected = instance.getValue();
+        assertEquals(instance.getValue(), expected);
 
         expected = true;
         instance.set(expected);
-        assertEquals(instance.get(), expected);
+        assertEquals(instance.getValue(), expected);
 
         // Return true when value is different
         expected = false;
         assertTrue(instance.set(expected));
-        assertEquals(instance.get(), expected);
+        assertEquals(instance.getValue(), expected);
 
         // Return false when value is set the same
         expected = false;
         assertFalse(instance.set(expected));
-        assertEquals(instance.get(), expected);
+        assertEquals(instance.getValue(), expected);
     }
 
     /**
@@ -122,6 +125,7 @@ public class BooleanParameterTypeNGTest {
      */
     @Test
     public void testValidateString() {
+        System.out.println("validateString");
         BooleanParameterValue instance = new BooleanParameterValue();
         assertNull(instance.validateString("standard string"));
 
@@ -133,6 +137,7 @@ public class BooleanParameterTypeNGTest {
 
     @Test
     public void testSetStringValue() {
+        System.out.println("setStringValue");
         BooleanParameterValue instance = new BooleanParameterValue();
 
         // test empty string
@@ -171,6 +176,7 @@ public class BooleanParameterTypeNGTest {
 
     @Test
     public void testGetSetObjectValue() {
+        System.out.println("getSetObjectValue");
         BooleanParameterValue instance = new BooleanParameterValue();
 
         // get current value as object and verify that it is correct.
@@ -212,29 +218,66 @@ public class BooleanParameterTypeNGTest {
      */
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testSetObjectValueException() {
+        System.out.println("setObjectValueException");
 
         // Ensure initial setup is correct
         BooleanParameterValue instance = new BooleanParameterValue();
         instance.set(true);
-        assertTrue(instance.get());
+        assertTrue(instance.getValue());
 
         assertFalse(instance.setObjectValue(1));
     }
 
+    /**
+     * Test of createCopy method, of class BooleanParameterValue.
+     */
     @Test
     public void testCreateCopy() {
+        System.out.println("createCopy");
         // Ensure initial setup is correct
         BooleanParameterValue instance = new BooleanParameterValue();
         instance.set(true);
-        assertTrue(instance.get());
+        assertTrue(instance.getValue());
 
         // Copy and verify correct value in copy
         BooleanParameterValue instanceCopy = instance.createCopy();
-        assertTrue(instanceCopy.get());
+        assertTrue(instanceCopy.getValue());
 
         // Ensure deep copy and not shallow
         assertTrue(instance.set(false));
-        assertTrue(instanceCopy.get());
+        assertTrue(instanceCopy.getValue());
     }
-
+    
+    /**
+     * Test of equals method, of class BooleanParameterValue.
+     */
+    @Test
+    public void testEquals() {
+        System.out.println("equals");
+        
+        final BooleanParameterValue bool = new BooleanParameterValue();
+        final BooleanParameterValue comp1 = new BooleanParameterValue(true);
+        final BooleanParameterValue comp2 = new BooleanParameterValue(false);
+        
+        assertFalse(bool.equals(null));
+        assertFalse(bool.equals(false));
+        assertFalse(bool.equals(comp1));
+        assertTrue(bool.equals(comp2));
+    }
+    
+    /**
+     * Test of toString method, of class BooleanParameterValue.
+     */
+    @Test
+    public void testToString() {
+        System.out.println("toString");
+        
+        final BooleanParameterValue bool1 = new BooleanParameterValue();
+        final BooleanParameterValue bool2 = new BooleanParameterValue(true);
+        final BooleanParameterValue bool3 = new BooleanParameterValue(false);
+        
+        assertEquals(bool1.toString(), "false");
+        assertEquals(bool2.toString(), "true");
+        assertEquals(bool3.toString(), "false");
+    }
 }

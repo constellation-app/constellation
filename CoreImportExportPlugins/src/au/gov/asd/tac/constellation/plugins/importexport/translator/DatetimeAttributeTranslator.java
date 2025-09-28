@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,12 +66,15 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
     private static final Map<String, String> DATETIME_FORMATS = new LinkedHashMap<>();
 
     static {
-        DATETIME_FORMATS.put("MM/dd/yyyy HH:mm:ss", "MM/dd/yyyy HH:mm:ss");
-        DATETIME_FORMATS.put("dd/MM/yyyy HH:mm:ss", "dd/MM/yyyy HH:mm:ss");
-        DATETIME_FORMATS.put("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss");
-        DATETIME_FORMATS.put("yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm:ss'Z'");
-        DATETIME_FORMATS.put("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        DATETIME_FORMATS.put("yyyyMMdd HHmmss'Z'", "yyyyMMdd HHmmss'Z'");
+        DATETIME_FORMATS.put("MM/d/yyyy H:mm", "MM/d/yyyy H:mm");
+        DATETIME_FORMATS.put("MM/d/yyyy H:mm:ss", "MM/d/yyyy H:mm:ss");
+        DATETIME_FORMATS.put("d/MM/yyyy H:mm", "d/MM/yyyy H:mm");
+        DATETIME_FORMATS.put("d/MM/yyyy H:mm:ss", "d/MM/yyyy H:mm:ss");
+        DATETIME_FORMATS.put("yyyy-MM-d H:mm", "yyyy-MM-d H:mm");
+        DATETIME_FORMATS.put("yyyy-MM-d H:mm:ss", "yyyy-MM-d H:mm:ss");
+        DATETIME_FORMATS.put("yyyy-MM-d'T'H:mm:ss'Z'", "yyyy-MM-d'T'H:mm:ss'Z'");
+        DATETIME_FORMATS.put("yyyy-MM-d'T'H:mm:ss.SSS'Z'", "yyyy-MM-d'T'H:mm:ss.SSS'Z'");
+        DATETIME_FORMATS.put("yyyyMMdd Hmmss'Z'", "yyyyMMdd Hmmss'Z'");
         DATETIME_FORMATS.put("yyyyMMddHHmmss", "yyyyMMddHHmmss");
         DATETIME_FORMATS.put(EPOCH, null);
         DATETIME_FORMATS.put(EXCEL, null);
@@ -158,19 +161,23 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
             String format = parameters.getParameters().get(FORMAT_PARAMETER_ID).getStringValue();
             final ZonedDateTime zonedDateTime;
             switch (format) {
-                case EPOCH:
-                    zonedDateTime = TemporalFormatting.zonedDateTimeFromLong(Long.parseLong(value));
+                case EPOCH -> {
+                    // using Double.valueOf(value).longValue() rather than Long.parseLong(value)
+                    // allows Epoch times in scietific notation to be parsed through successfully
+                    zonedDateTime = TemporalFormatting.zonedDateTimeFromLong(Double.valueOf(value).longValue());
                     return translateFromZonedDateTime(zonedDateTime, parameters);
-                case EXCEL:
+                }
+                case EXCEL -> {
                     // "GMT" is used here to avoid it using the user's local time zone.
                     // If the user has selected a time zone, it is applied seperately in `translateFromZonedDateTime`
-                    zonedDateTime = TemporalFormatting.zonedDateTimeFromLong(DateUtil.getJavaDate(Double.parseDouble(value), TimeZone.getTimeZone("GMT")).getTime());
+                    zonedDateTime = TemporalFormatting.zonedDateTimeFromLongMilli(DateUtil.getJavaDate(Double.parseDouble(value), TimeZone.getTimeZone("GMT")).getTime());
                     return translateFromZonedDateTime(zonedDateTime, parameters);
-                case CUSTOM: {
+                }
+                case CUSTOM -> {
                     format = parameters.getParameters().get(CUSTOM_PARAMETER_ID).getStringValue();
                     return translateFromTemporalAccessorDateTime(value, format, parameters);
                 }
-                default: {
+                default -> {
                     format = DATETIME_FORMATS.get(format);
                     return translateFromTemporalAccessorDateTime(value, format, parameters);
                 }
@@ -181,8 +188,10 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
     }
 
     private String translateFromZonedDateTime(final ZonedDateTime zonedDateTime, final PluginParameters parameters) {
-        final PluginParameter timeZoneParam = parameters.getParameters().get(TIMEZONE_PARAMETER_ID);
-        final PluginParameter convertedTimeZoneParam = parameters.getParameters().get(CONVERTED_TIMEZONE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // TIMEZONE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> timeZoneParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TIMEZONE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // CONVERTED_TIMEZONE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> convertedTimeZoneParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(CONVERTED_TIMEZONE_PARAMETER_ID);
 
         final String timeZoneString = timeZoneParam.getStringValue();
         if (timeZoneParam.isEnabled() && StringUtils.isNotBlank(timeZoneString)) {
@@ -194,8 +203,10 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
     }
 
     private String translateFromTemporalAccessorDateTime(final String value, final String format, final PluginParameters parameters){
-        final PluginParameter timeZoneParam = parameters.getParameters().get(TIMEZONE_PARAMETER_ID);
-        final PluginParameter convertedTimeZoneParam = parameters.getParameters().get(CONVERTED_TIMEZONE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // TIMEZONE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> timeZoneParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TIMEZONE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // CONVERTED_TIMEZONE_PARAMETER will always be of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> convertedTimeZoneParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(CONVERTED_TIMEZONE_PARAMETER_ID);
 
         final DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
         final String timeZoneString = timeZoneParam.getStringValue();

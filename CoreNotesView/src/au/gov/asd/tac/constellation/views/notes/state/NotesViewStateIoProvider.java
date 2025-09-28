@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,12 +68,25 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 notesArray.get(i).get(1).asText(),
                                 notesArray.get(i).get(2).asText(),
                                 notesArray.get(i).get(3).asBoolean(),
-                                notesArray.get(i).get(4).asBoolean()
+                                notesArray.get(i).get(4).asBoolean(),
+                                "#a26fc0",
+                                false
                         ));
 
-                        if (notesArray.get(i).get(3).asBoolean() == true && notesArray.get(i).get(4).asBoolean() == false) {
-                            // Add the selected nodes
+                        if (notesArray.get(i).get(7) != null) {
+                            noteViewEntries.get(i).setNodeColour(notesArray.get(i).get(7).asText());
+                        }
+
+                        if (notesArray.get(i).get(8) != null) {
+                            noteViewEntries.get(i).setInMarkdown(notesArray.get(i).get(8).asBoolean());
+                        }
+
+                        if (notesArray.get(i).get(3).asBoolean() && !notesArray.get(i).get(4).asBoolean()) {
+
                             final JsonNode nodesArrayNode = notesArray.get(i).get(5);
+                            final JsonNode transactionsArrayNode = notesArray.get(i).get(6);
+
+                            // Add the selected nodes
                             if (nodesArrayNode != null) {
                                 final List<Integer> selectedNodes = new ArrayList<>();
                                 for (int j = 0; j < nodesArrayNode.size(); j++) {
@@ -83,7 +96,6 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                             }
 
                             // Add the selected transactions
-                            final JsonNode transactionsArrayNode = notesArray.get(i).get(6);
                             if (transactionsArrayNode != null) {
                                 List<Integer> selectedTransactions = new ArrayList<>();
                                 for (int j = 0; j < transactionsArrayNode.size(); j++) {
@@ -91,9 +103,20 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 }
                                 noteViewEntries.get(i).setTransactionsSelected(selectedTransactions);
                             }
-                        } else if (notesArray.get(i).get(3).asBoolean() == false) {
+
+                        } else if (notesArray.get(i).get(3).asBoolean() && notesArray.get(i).get(4).asBoolean()) {
+
+                            if (notesArray.get(i).get(5) != null) {
+                                noteViewEntries.get(i).setNodeColour(notesArray.get(i).get(5).asText());
+                            }
+
+                            if (notesArray.get(i).get(6) != null) {
+                                noteViewEntries.get(i).setInMarkdown(notesArray.get(i).get(6).asBoolean());
+                            }
+
+                        } else if (!notesArray.get(i).get(3).asBoolean()) {
                             // Create auto notes with the tags they have assigned to them
-                            final JsonNode tagsArrayNode = notesArray.get(i).get(5);
+                            final JsonNode tagsArrayNode = notesArray.get(i).get(6);
                             if (tagsArrayNode != null) {
                                 final List<String> tagsArray = new ArrayList<>();
                                 for (int j = 0; j < tagsArrayNode.size(); j++) {
@@ -112,7 +135,9 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 notesArray.get(i).get(1).asText(),
                                 notesArray.get(i).get(2).asText(),
                                 notesArray.get(i).get(3).asBoolean(),
-                                true
+                                true,
+                                notesArray.get(i).get(7).asText(),
+                                notesArray.get(i).get(8).asBoolean()
                         ));
                     }
                 }
@@ -163,6 +188,10 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                     if (note == null) {
                         jsonGenerator.writeNull();
                     } else {
+                        if (note.getUndone()) {
+                            continue;
+                        }
+
                         jsonGenerator.writeStartArray();
                         jsonGenerator.writeString(note.getDateTime());
                         jsonGenerator.writeString(note.getNoteTitle());
@@ -170,7 +199,8 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                         jsonGenerator.writeBoolean(note.isUserCreated());
                         jsonGenerator.writeBoolean(note.isGraphAttribute());
 
-                        if (!note.isGraphAttribute() && note.isUserCreated()) {
+                        if (!Boolean.TRUE.equals(note.isGraphAttribute()) && note.isUserCreated()) {
+
                             if (note.getNodesSelected() != null) {
                                 // Add nodes that are selected to the note
                                 final int nodesLength = note.getNodesSelected().size();
@@ -194,7 +224,17 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 }
                                 jsonGenerator.writeArray(transactionsArray, 0, transactionsLength);
                             }
+
+                            jsonGenerator.writeString(note.getNodeColour());
+
+                        } else if (Boolean.TRUE.equals(note.isGraphAttribute()) && note.isUserCreated()) {
+                            jsonGenerator.writeString(note.getNodeColour());
                         }
+
+                        if (note.isUserCreated()) {
+                            jsonGenerator.writeBoolean(note.isInMarkdown());
+                        }
+
                         if (!note.isUserCreated()) {
                             final int tagsLength = note.getTags().size();
                             final String[] tagsArray = new String[tagsLength];
@@ -205,6 +245,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
 
                             jsonGenerator.writeArray(tagsArray, 0, tagsLength);
                         }
+
                         jsonGenerator.writeEndArray();
                     }
                 }

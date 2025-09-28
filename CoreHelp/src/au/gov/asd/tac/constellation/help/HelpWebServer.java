@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.http.HttpURI;
+import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
@@ -40,22 +42,14 @@ public class HelpWebServer {
 
     private static final Logger LOGGER = Logger.getLogger(HelpWebServer.class.getName());
 
-    private static boolean running = false;
     private static int port = 0;
+    private static boolean running = false;
     private static final String WEB_SERVER_THREAD_NAME = "Help Web Server";
 
     private HelpWebServer() {
         // Intentionally left blank 
     }
-
-    public static boolean isRunning() {
-        return running;
-    }
-
-    public static int getPort() {
-        return port;
-    }
-
+    
     public static synchronized int start() {
         if (!running) {
             try {
@@ -78,16 +72,15 @@ public class HelpWebServer {
                         }
                     }
                 });
-
+                
                 // Make our own handler so we can log requests with the CONSTELLATION logs.
                 final RequestLog requestLog = (request, response) -> {
-                    final String log = String.format("Request at %s from %s %s, status %d", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), request.getRemoteAddr(), request.getRequestURI(), response.getStatus());
-                    LOGGER.info(log);
+                    final HttpURI requestURI = HttpURI.build(request.getHttpURI()).query(null);
+                    LOGGER.log(Level.INFO, "Request at {0} from {1} {2}, status {3}", new Object[]{LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), Request.getRemoteAddr(request), requestURI.asString(), response.getStatus()});
                 };
                 server.setRequestLog(requestLog);
-
-                final String loggingMessage = String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback.toString(), port);
-                LOGGER.log(Level.INFO, loggingMessage);
+                
+                LOGGER.log(Level.INFO, "Starting Jetty version {0} on {1}:{2}...", new Object[]{Server.getVersion(), loopback, port});
                 server.start();
 
                 // Wait for the server to stop (if it ever does).

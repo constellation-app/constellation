@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Side;
@@ -54,12 +53,12 @@ public class ConfigurationPane extends AnchorPane {
 
     private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
 
-    protected final ImportController importController;
+    protected final ImportController<?> importController;
     protected final TabPane tabPane;
     private final String helpText;
 
 
-    public ConfigurationPane(final ImportController importController, final String helpText) {
+    public ConfigurationPane(final ImportController<?> importController, final String helpText) {
         this.importController = importController;
         this.helpText = helpText;
 
@@ -124,7 +123,7 @@ public class ConfigurationPane extends AnchorPane {
 
         // Create the run pane - store the name of the associated configuration pane tab
         final RunPane runPane = new RunPane(importController, helpText, label.getText());
-        
+
         tab.setContent(runPane);
 
         return tab;
@@ -137,12 +136,11 @@ public class ConfigurationPane extends AnchorPane {
                 label.setText(field.getText());
                 tab.setGraphic(label);
             });
-            field.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                    Boolean newValue) -> {
+            field.focusedProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue) {
                     label.setText(field.getText());
                     tab.setGraphic(label);
-                    
+
                     // Ensure runPane is updated to store the updated name (corresponding to the configuration pane tab
                     // name) which is used when generating summary details to user.
                     final RunPane runPane = (RunPane) tab.getContent();
@@ -209,11 +207,13 @@ public class ConfigurationPane extends AnchorPane {
      * A List&lt;ImportDefinition&gt; where each list element corresponds to a
      * RunPane tab.
      *
+     * @param isFilesIncludeHeadersEnabled When true will skip the first row and
+     * when false will include the first row
      * @return A List&lt;ImportDefinition&gt; where each list element
      * corresponds to a RunPane tab.
      */
     public List<ImportDefinition> createDefinitions(final boolean isFilesIncludeHeadersEnabled) {
-        List<ImportDefinition> definitions = new ArrayList<>(tabPane.getTabs().size());
+        final List<ImportDefinition> definitions = new ArrayList<>(tabPane.getTabs().size());
 
         for (Tab tab : tabPane.getTabs()) {
             RunPane runPane = (RunPane) tab.getContent();
@@ -261,7 +261,7 @@ public class ConfigurationPane extends AnchorPane {
         // (This tends to involve Platform.runLater() so let them be queued.)
         tabPane.getTabs().clear();
 
-        definitions.forEach(_item -> importController.createNewRun());
+        definitions.forEach(item -> importController.createNewRun());
 
         // ...then configure each RunPane.
         // (This will queue waiting for the RunPane creations.)
@@ -277,7 +277,9 @@ public class ConfigurationPane extends AnchorPane {
     }
 
     public void clearFilters() {
-        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> runPane.clearFilters());
+        tabPane.getTabs().stream()
+                .map(tab -> (RunPane) tab.getContent())
+                .forEachOrdered(runPane -> runPane.clearFilters());
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.opengis.referencing.FactoryException;
+import org.geotools.api.referencing.FactoryException;
 
 /**
  * Spatial Reference Parameter Value
@@ -72,8 +72,7 @@ public class SpatialReferenceParameterValue extends ParameterValue {
 
     @Override
     public boolean setObjectValue(final Object o) {
-        if (o instanceof Shape.SpatialReference) {
-            final Shape.SpatialReference reference = (Shape.SpatialReference) o;
+        if (o instanceof Shape.SpatialReference reference) {
             final boolean equal = Objects.equals(reference, spatialReference);
             if (!equal) {
                 spatialReference = reference;

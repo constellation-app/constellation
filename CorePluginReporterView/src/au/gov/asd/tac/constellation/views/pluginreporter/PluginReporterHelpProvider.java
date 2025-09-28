@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.pluginreporter;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 1800)
 @NbBundle.Messages("PluginReporterHelpProvider=Plugin Reporter Help Provider")
 public class PluginReporterHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CorePluginReporterView" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,11 +40,8 @@ public class PluginReporterHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String pluginModulePath = ".." + sep + CODEBASE_NAME + sep + "CorePluginReporterView" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "pluginreporter" + sep + "docs" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.pluginreporter.panes", pluginModulePath + "plugin-reporter-view.md");
+        map.put("au.gov.asd.tac.constellation.views.pluginreporter.panes", MODULE_PATH + "plugin-reporter-view.md");
         return map;
     }
 
@@ -56,10 +52,6 @@ public class PluginReporterHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String pluginReporterPath;
-        pluginReporterPath = CODEBASE_NAME + sep + "CorePluginReporterView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "views" + sep + "pluginreporter" + sep + "docs" + sep + "pluginreporter-toc.xml";
-        return pluginReporterPath;
+        return MODULE_PATH + "pluginreporter-toc.xml";
     }
 }

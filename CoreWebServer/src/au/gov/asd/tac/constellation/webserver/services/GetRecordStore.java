@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,6 +62,7 @@ public class GetRecordStore extends RestService {
     private static final String VX_PARAMETER_ID = "vx";
     private static final String TX_PARAMETER_ID = "tx";
     private static final String ATTRS_PARAMETER_ID = "attrs";
+    private static final String EXAMPLE_RESPONSES_PATH = "getRecordsStoreExample";
 
     @Override
     public String getName() {
@@ -223,6 +224,11 @@ public class GetRecordStore extends RestService {
 
         ioph.finish();
     }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
+    }
 
     /**
      * Convert a "key<type>" to "key|type" to make things slightly easier for
@@ -237,4 +243,5 @@ public class GetRecordStore extends RestService {
 
         return attrWithType.substring(0, ix) + SeparatorConstants.PIPE + attrWithType.substring(ix + 1, attrWithType.length() - 1);
     }
+    
 }

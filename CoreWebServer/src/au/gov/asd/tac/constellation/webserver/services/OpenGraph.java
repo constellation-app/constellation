@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.apache.commons.lang3.StringUtils;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -50,8 +53,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = RestService.class)
 public class OpenGraph extends RestService {
 
+    private static final Logger LOGGER = Logger.getLogger(OpenGraph.class.getName());
+
     private static final String NAME = "open_graph";
     private static final String FILE_PARAMETER_ID = "filename";
+    private static final String EXAMPLE_RESPONSES_PATH = "openGraphExample";
 
     @Override
     public String getName() {
@@ -80,7 +86,7 @@ public class OpenGraph extends RestService {
         final PluginParameter<StringParameterValue> fileParam = StringParameterType.build(FILE_PARAMETER_ID);
         fileParam.setName("File path");
         fileParam.setDescription("The fully qualified path of a .star file.");
-        fileParam.setRequired(true);
+        fileParam.setRequired(true);        
         parameters.addParameter(fileParam);
 
         return parameters;
@@ -89,12 +95,10 @@ public class OpenGraph extends RestService {
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String filePath = parameters.getStringValue(FILE_PARAMETER_ID);
-
         final String existingId = RestServiceUtilities.activeGraphId();
-
         final File fnam = new File(filePath).getAbsoluteFile();
         String name = fnam.getName();
-        if (StringUtils.endsWithIgnoreCase(name, GraphDataObject.FILE_EXTENSION)) {
+        if (Strings.CI.endsWith(name, GraphDataObject.FILE_EXTENSION)) {
             name = name.substring(0, name.length() - GraphDataObject.FILE_EXTENSION.length());
         }
 
@@ -102,7 +106,7 @@ public class OpenGraph extends RestService {
             final Graph g = new GraphJsonReader().readGraphZip(fnam, new HandleIoProgress(String.format("Loading graph %s...", fnam)));
             GraphOpener.getDefault().openGraph(g, name, false);
 
-            final String newId = RestServiceUtilities.waitForGraphChange(existingId);
+            final String newId = RestServiceUtilities.waitForGraphChange(existingId).get();
             final Graph graph = GraphNode.getGraphNode(newId).getGraph();
 
             final ObjectMapper mapper = new ObjectMapper();
@@ -113,6 +117,16 @@ public class OpenGraph extends RestService {
             mapper.writeValue(out, root);
         } catch (final GraphParseException | FileNotFoundException ex) {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, ex.getMessage());
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            LOGGER.log(Level.SEVERE, "This thread has been interrupted", ex);
+        } catch (final ExecutionException ex) {
+            throw new RestServiceException(ex);
         }
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

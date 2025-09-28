@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -39,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author arcturus
  */
 @ServiceProvider(service = Plugin.class)
-@NbBundle.Messages("SetConnectionModePlugin=Set Connection Mode")
+@Messages("SetConnectionModePlugin=Set Connection Mode")
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
 public class SetConnectionModePlugin extends SimpleEditPlugin {
 
@@ -59,11 +59,10 @@ public class SetConnectionModePlugin extends SimpleEditPlugin {
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        final ConnectionMode mode = (ConnectionMode) parameters.getObjectValue(CONNECTION_MODE_PARAMETER_ID);
-
         final int connectionModeAttrId = VisualConcept.GraphAttribute.CONNECTION_MODE.get(graph);
         if (connectionModeAttrId != Graph.NOT_FOUND) {
-            graph.setObjectValue(VisualConcept.GraphAttribute.CONNECTION_MODE.get(graph), 0, mode);
+            final ConnectionMode mode = (ConnectionMode) parameters.getObjectValue(CONNECTION_MODE_PARAMETER_ID);
+            graph.setObjectValue(connectionModeAttrId, 0, mode);
         }
     }
 }

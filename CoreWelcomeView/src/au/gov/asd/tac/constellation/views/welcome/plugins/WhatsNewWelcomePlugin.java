@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,20 +22,18 @@ import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.views.whatsnew.WhatsNewTopComponent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 /**
- * The plugin for the Welcome Page that leads to the Whats New in Constellation
- * resources
+ * The plugin for the Welcome Page that leads to the Whats New in Constellation resources
  *
  * @author Delphinus8821
  */
@@ -43,9 +41,9 @@ import org.openide.windows.WindowManager;
 @NbBundle.Messages("WhatsNewWelcomePlugin=Whats New Welcome Plugin")
 public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
 
-    public static final String WHATS_NEW = "resources/welcome_new.png";
-    final ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
-    final Button whatsNewBtn = new Button();
+    private static final String WHATS_NEW = "resources/welcome_new.png";
+    private final ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
+    private final Button whatsNewBtn = new Button();
 
     /**
      * Get a unique reference that is used to identify the plugin
@@ -58,8 +56,7 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     }
 
     /**
-     * This method describes what action should be taken when the link is
-     * clicked on the Welcome Page
+     * This method describes what action should be taken when the link is clicked on the Welcome Page
      *
      */
     @Override
@@ -77,16 +74,6 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     }
 
     /**
-     * Determines whether this analytic appear on the Welcome Page
-     *
-     * @return true is this analytic should be visible, false otherwise.
-     */
-    @Override
-    public boolean isVisible() {
-        return true;
-    }
-
-    /**
      * Creates the button object to represent this plugin
      *
      * @return the button object
@@ -95,17 +82,17 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     public Button getButton() {
         newView.setFitHeight(25);
         newView.setFitWidth(25);
-        final Text title = new Text("What's New?");
-        title.setFill(Color.WHITE);
-        final Text subtitle = new Text("Features in the latest version");
-        subtitle.setId("smallInfoText");
-        subtitle.setFill(Color.WHITE);
+        final Label title = new Label("What's New?");
+        title.setId("label");
+        final Label subtitle = new Label("Features in the latest version");
+        subtitle.setId("infoText");
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(newView, layoutVBox);
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
         whatsNewBtn.setGraphic(layoutHBox);
+        whatsNewBtn.setId("left-button");
         return whatsNewBtn;
     }
 }

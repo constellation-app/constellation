@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,21 +55,25 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     private long[] data = new long[0];
     private long defaultValue = DEFAULT_VALUE;
-
-    @SuppressWarnings("unchecked") // Casts are manually checked
+    
     private long convertFromObject(final Object object) throws IllegalArgumentException {
-        if (object == null) {
-            return (long) getDefault();
-        } else if (object instanceof Number) {
-            return ((Number) object).longValue();
-        } else if (object instanceof Boolean) {
-            return ((Boolean) object) ? 1L : 0L;
-        } else if (object instanceof Character) {
-            return (long) ((Character) object);
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else {
-            throw new IllegalArgumentException(String.format(
+        switch (object) {
+            case Number number -> {
+                return number.longValue();
+            }       
+            case Boolean bool -> {
+                return Boolean.TRUE.equals(bool) ? 1L : 0L;
+            }       
+            case Character character -> {
+                return character;
+            }       
+            case String string -> {
+                return convertFromString(string);
+            }
+            case null -> {
+                return (long) getDefault();
+            }
+            default -> throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to long", object.getClass()));
         }
     }
@@ -82,7 +86,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
                 return Long.parseLong(string);
             } catch (final NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(
-                        "Error converting String '%s' to short", string), ex);
+                        "Error converting String '%s' to long", string), ex);
             }
         }
     }
@@ -126,20 +130,6 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
         }
     }
 
-    private static long setObject(final Object value) {
-        if (value instanceof Number) {
-            return ((Number) value).longValue();
-        } else if (value instanceof String) {
-            return Long.parseLong((String) value);
-        } else if (value instanceof Boolean) {
-            return ((Boolean) value) ? 1L : 0L;
-        } else if (value instanceof Character) {
-            return (char) value;
-        } else {
-            return DEFAULT_VALUE;
-        }
-    }
-
     @Override
     public byte getByte(final int id) {
         return (byte) data[id];
@@ -147,7 +137,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = (long) value;
+        data[id] = value;
     }
 
     @Override
@@ -157,7 +147,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = (long) value;
+        data[id] = value;
     }
 
     @Override
@@ -167,7 +157,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public void setInt(final int id, final int value) {
-        data[id] = (long) value;
+        data[id] = value;
     }
 
     @Override
@@ -182,7 +172,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public float getFloat(final int id) {
-        return (float) data[id];
+        return data[id];
     }
 
     @Override
@@ -192,7 +182,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public double getDouble(final int id) {
-        return (double) data[id];
+        return data[id];
     }
 
     @Override
@@ -217,7 +207,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = (long) value;
+        data[id] = value;
     }
 
     @Override
@@ -301,12 +291,12 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (LongReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new LongVariable() {
             @Override
             public long readLong() {
@@ -314,7 +304,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
             }
 
             @Override
-            public void writeLong(long value) {
+            public void writeLong(final long value) {
                 graph.setLongValue(attribute, indexReadable.readInt(), value);
             }
         };

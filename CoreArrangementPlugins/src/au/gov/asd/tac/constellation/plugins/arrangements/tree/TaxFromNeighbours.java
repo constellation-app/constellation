@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class TaxFromNeighbours {
      *
      * @return the graph taxonomy.
      */
-    public static GraphTaxonomy getTaxonomy(final GraphWriteMethods graph, final Set<Integer> verticesToConsider) {
+    public static GraphTaxonomy getTaxonomy(final GraphWriteMethods graph, final Iterable<Integer> verticesToConsider) {
         // We'll use a Map<Set, Set<Integer>>, where a Set key represents a set of neighbour vertexIds defined by
         // the bits that are set.
         final Map<Set<Integer>, Set<Integer>> commonNeighbours = new HashMap<>();

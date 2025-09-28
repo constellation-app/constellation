@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,12 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Various helper functions for REST services.
@@ -80,9 +79,9 @@ public class RestServiceUtilities {
      *
      * @return A List&lt;Float&gt;, List&lt;Integer&gt;, or List&lt;String&gt;.
      */
-    public static List<?> toList(final ArrayNode array) {
+    public static List<? extends Object> toList(final JsonNode array) {
         final int size = array.size();
-        List<?> list;
+        List<? extends Object> list;
         if (size == 0) {
             list = new ArrayList<>(size);
         } else if (array.get(0).getClass() == IntNode.class) {
@@ -123,8 +122,8 @@ public class RestServiceUtilities {
      * @param json An OnjectNode.
      * @param parameters The parameters to be assigned values.
      */
-    public static void parametersFromJson(final ObjectNode json, final PluginParameters parameters) {
-        json.fields().forEachRemaining(entry -> {
+    public static void parametersFromJson(final JsonNode json, final PluginParameters parameters) {
+        json.properties().iterator().forEachRemaining(entry -> {
             final String parameterName = entry.getKey();
             if (parameters.hasParameter(parameterName)) {
                 // Set the parameter with error checking.
@@ -134,7 +133,7 @@ public class RestServiceUtilities {
                 if (node.isArray()) {
                     // If the parameter is a JSON array, convert it to a Java List.
                     //
-                    param.setObjectValue(toList((ArrayNode) node));
+                    param.setObjectValue(toList(node));
                 } else {
                     // Convert the parameter to a String, and let PluginParameter deal with the type conversion.
                     //
@@ -170,36 +169,22 @@ public class RestServiceUtilities {
      *
      * @return The new graph id.
      */
-    public static String waitForGraphChange(final String existingId) {
-        // Now we wait for the new graph to become active.
-        //
-        int waits = 0;
-        while (true) {
-            // Wait a bit to give the new graph time to become active.
-            //
-            try {
-                Thread.sleep(1000);
-            } catch (final InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                throw new RestServiceException(ex);
-            }
+    public static CompletableFuture<String> waitForGraphChange(final String existingId) {
 
-            final Graph newGraph = GraphManager.getDefault().getActiveGraph();
-            final String newId = newGraph != null ? newGraph.getId() : null;
-            if ((existingId == null && newId != null) || (existingId != null && newId != null && !existingId.equals(newId))) {
-                // - there was no existing graph, and the new graph is active, or
-                // - there was an existing graph, and the active graph is not the existing graph.
-                // - we assume the user hasn't interfered by manually switching to another graph at the same time.
-                //
-                return newId;
+        return CompletableFuture.supplyAsync(() -> {
+            while (true) {
+                final Graph newGraph = GraphManager.getDefault().getActiveGraph();
+                if (newGraph != null) {
+                    final String newId = newGraph.getId();
+                    if (existingId == null || !existingId.equals(newId)) {
+                        // - there was no existing graph, and the new graph is active, or
+                        // - there was an existing graph, and the active graph is not the existing graph.
+                        // - we assume the user hasn't interfered by manually switching to another graph at the same time.
+                        //
+                        return newId;
+                    }
+                }
             }
-
-            // We only have so much patience.
-            //
-            if (++waits > 10) {
-                throw new RestServiceException("The new graph has taken too long to become active");
-            }
-        }
-
+        });
     }
 }

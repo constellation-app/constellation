@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,6 +109,14 @@ public class BitMaskQuery {
         }
     }
 
+    public long combineBitmap(final long original) {
+        if (result != null && result.readBoolean()) {
+            return original | (long) Math.pow(2.0, bitIndex); // Set the appropriate bit in the result
+        } else {
+            return original; // No change for inactive query
+        }        
+    }
+    
     protected void setIndex(final int i) {
         this.bitIndex = i;
         this.mask = 0xFFFFFFFFFFFFFFFFL ^ (1L << i + 1);

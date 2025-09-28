@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,11 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction;
 
-import au.gov.asd.tac.constellation.graph.interaction.plugins.DragElementsPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToClipboardPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CutToClipboardPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.PasteFromClipboardPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.PasteGraphPlugin;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.PasteTextPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.composite.ContractAllCompositesPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.composite.CreateCompositeFromSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.composite.CreateCompositesFromDominantNodesPlugin;
@@ -47,6 +45,8 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.PreviousViewP
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ResetViewPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.RotateCameraPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.SetCameraVisibilityRange;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomInPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomOutPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomToSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomToVerticesPlugin;
 
@@ -71,12 +71,10 @@ public class InteractiveGraphPluginRegistry {
     public static final String CUT = CutToClipboardPlugin.class.getName();
     public static final String DELETE_SELECTION = DeleteSelectionPlugin.class.getName();
     public static final String DESTROY_ALL_COMPOSITES = DestroyAllCompositesPlugin.class.getName();
-    public static final String DRAG_ELEMENTS = DragElementsPlugin.class.getName();
     public static final String EXPAND_ALL_COMPOSITES = ExpandAllCompositesPlugin.class.getName();
     public static final String FREEFORM_SELECTION = FreeformSelectionPlugin.class.getName();
     public static final String PASTE = PasteFromClipboardPlugin.class.getName();
     public static final String PASTE_GRAPH = PasteGraphPlugin.class.getName();
-    public static final String PASTE_TEXT = PasteTextPlugin.class.getName();
     public static final String POINT_SELECTION = PointSelectionPlugin.class.getName();
     public static final String PREVIOUS_VIEW = PreviousViewPlugin.class.getName();
     public static final String RESET_VIEW = ResetViewPlugin.class.getName();
@@ -90,6 +88,8 @@ public class InteractiveGraphPluginRegistry {
     public static final String TOGGLE_DRAW_FLAG = ToggleDrawFlagPlugin.class.getName();
     public static final String TOGGLE_DRAW_DIRECTED = ToggleDrawDirectedPlugin.class.getName();
     public static final String TOGGLE_SELECTION_MODE = ToggleSelectionModePlugin.class.getName();
+    public static final String ZOOM_IN = ZoomInPlugin.class.getName();
+    public static final String ZOOM_OUT = ZoomOutPlugin.class.getName();
     public static final String ZOOM_TO_SELECTION = ZoomToSelectionPlugin.class.getName();
     public static final String ZOOM_TO_VERTICES = ZoomToVerticesPlugin.class.getName();
 }

@@ -1,0 +1,39 @@
+#{English Sentence Terminators}
+.
+?
+!
+|
+
+#{ASCII Newlines} 
+\n
+\r
+
+#:{Phrase Delimiters}
+{English Sentence Terminators}
+{ASCII Newlines}
+
+#{English Word Separators}
+*
+;
+:
+,
+_
+-
+/
+\
+~
+
+#{English Enclosing Punctuation}
+(
+)
+<
+>
+[
+]
+{
+}
+"
+
+#:{Word Delimiters}
+{English Word Separators}
+{English Enclosing Punctuation}

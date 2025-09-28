@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ package au.gov.asd.tac.constellation.help;
 import au.gov.asd.tac.constellation.help.preferences.HelpPreferenceKeys;
 import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
-import com.github.rjeschke.txtmark.Processor;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,15 +30,21 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
@@ -54,186 +60,41 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     private static final Logger LOGGER = Logger.getLogger(ConstellationHelpDisplayer.class.getName());
 
     private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/help";
+    
     private static final String NEWLINE = "\n";
-
-    public static void copy(final String filePath, final OutputStream out) throws IOException {
-        final String sep = File.separator;
-        final InputStream pageInput = getInputStream(filePath);
-        final InputStream tocInput = getInputStream(Generator.getBaseDirectory() + sep + Generator.getTOCDirectory());
-
-        if (pageInput == null || tocInput == null) {
-            // files could not be found, don't progress.
-            return;
-        }
-
-        // avoid parsing utility files or images into html
-        if (filePath.contains(".css") || filePath.contains(".js") || filePath.contains(".png") || filePath.contains(".jpg")) {
-            out.write(pageInput.readAllBytes());
-            return;
-        }
-
-        out.write(generateHTMLOutput(sep, tocInput, pageInput).getBytes());
-    }
-
-    protected static InputStream getInputStream(final String filePath) throws FileNotFoundException {
-        final Path path = Paths.get(filePath);
-        return new FileInputStream(path.toString());
-    }
-
-    protected static String getFileURLString(final String fileSeparator, final String baseDirectory, final String relativePath) throws MalformedURLException {
-        final File file = new File(baseDirectory + fileSeparator + relativePath);
-        final URL url = file.toURI().toURL();
-        return url.toString();
-    }
-
-    /**
-     * Generate a String which represents the table of contents, the currently
-     * displayed page, and the necessary html tags for formatting.
-     *
-     * @param separator
-     * @param tocInput
-     * @param pageInput
-     * @return
-     * @throws IOException
-     */
-    protected static String generateHTMLOutput(final String separator, final InputStream tocInput, final InputStream pageInput) throws IOException {
-        final StringBuilder html = new StringBuilder();
-
-        // HTML elements
-        final String startRowDiv = "<div class='row'>";
-        final String endDiv = "</div>";
-        final String startColDiv = "<div class='col-4 col-sm-3'>";
-        final String startInnerColDiv = "<div class='col-8 col-sm-9'>";
-        final String stylesheetLink = "<link href=\"\\%s\" rel='stylesheet'></link>";
-        final String javascriptText = "<script type=\"text/javascript\" src=\"\\%s\" ></script>";
-
-        final String css = String.format(stylesheetLink, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/css/app.css"));
-        final String noScript = String.format(stylesheetLink, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/css/noscript.css"));
-        final String cssBootstrap = String.format(stylesheetLink, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/css/bootstrap.css"));
-        final String jquery = String.format("<script src=\"\\%s\" ></script>", getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/jquery.min.js"));
-        final String dropotron = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/jquery.dropotron.min.js"));
-        final String scrolly = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/jquery.scrolly.min.js"));
-        final String scrollex = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/jquery.scrollex.min.js"));
-        final String browser = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/browser.min.js"));
-        final String breakpoints = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/breakpoints.min.js"));
-        final String appJS = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/app.js"));
-        final String boostrapjs = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/js/bootstrap.js"));
-        final String cookiejs = String.format("<script src=\"\\%s\" ></script>", getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/js/js.cookie.min.js"));
-
-        final String scriptTag = "<script>" + NEWLINE
-                + " // when a group is shown, save it as active" + NEWLINE
-                + " $(\".collapse\").on('shown.bs.collapse', function(e) {" + NEWLINE
-                + "     e.stopPropagation(); " + NEWLINE
-                + "     var active = $(this).attr('id');" + NEWLINE
-                + "     Cookies.set(active, \"true\");" + NEWLINE
-                + "     $(\"#\" + active).addClass('show');" + NEWLINE
-                + " });" + NEWLINE
-                + " // when a group is hidden, save it as inactive" + NEWLINE
-                + " $(\".collapse\").on('hidden.bs.collapse', function(e) {" + NEWLINE
-                + "     e.stopPropagation(); " + NEWLINE
-                + "     var active = $(this).attr('id');" + NEWLINE
-                + "     Cookies.set(active, \"false\");" + NEWLINE
-                + "     $(\"#\" + active).removeClass('show');" + NEWLINE
-                + "     $(\"#\" + active).collapse(\"hide\");" + NEWLINE
-                + " });" + NEWLINE
-                + " " + NEWLINE
-                + " $(document).ready(function() {" + NEWLINE
-                + "      var allCookies = Cookies.get();" + NEWLINE
-                + "      for (var cookie in allCookies) { " + NEWLINE
-                + "          if (cookie != null) {" + NEWLINE
-                + "              //remove default collapse settings" + NEWLINE
-                + "              $(\"#\" + cookie).removeClass('show');" + NEWLINE
-                + "              //show the group if the value is true " + NEWLINE
-                + "              var cookieValue = Cookies.get(cookie);" + NEWLINE
-                + "              if (cookieValue == (\"true\")) {" + NEWLINE
-                + "                 $(\"#\" + cookie).collapse(\"show\");" + NEWLINE
-                + "              } else {" + NEWLINE
-                + "                 $(\"#\" + cookie).collapse(\"hide\");" + NEWLINE
-                + "                 $(\"#\" + cookie + \" .collapse\").removeClass('show');" + NEWLINE
-                + "              }" + NEWLINE
-                + "          }" + NEWLINE
-                + "      }" + NEWLINE
-                + " });" + NEWLINE
-                + NEWLINE
-                + "</script>";
-
-        // Add items to StringBuilder
-        html.append(css);
-        html.append(NEWLINE);
-        html.append(noScript);
-        html.append(NEWLINE);
-        html.append(cssBootstrap);
-        html.append(NEWLINE);
-        html.append(jquery);
-        html.append(NEWLINE);
-        html.append(cookiejs);
-        html.append(NEWLINE);
-        html.append(dropotron);
-        html.append(NEWLINE);
-        html.append(scrolly);
-        html.append(NEWLINE);
-        html.append(scrollex);
-        html.append(NEWLINE);
-        html.append(browser);
-        html.append(NEWLINE);
-        html.append(breakpoints);
-        html.append(NEWLINE);
-        html.append(appJS);
-        html.append(NEWLINE);
-        html.append(boostrapjs);
-        html.append(NEWLINE);
-        html.append(startRowDiv);
-        html.append(NEWLINE);
-        html.append(startColDiv);
-        html.append(NEWLINE);
-        html.append(Processor.process(tocInput));
-        html.append(NEWLINE);
-        html.append(endDiv);
-        html.append(NEWLINE);
-        html.append(startInnerColDiv);
-        html.append(NEWLINE);
-        html.append(Processor.process(pageInput));
-        html.append(NEWLINE);
-        html.append(endDiv);
-        html.append(NEWLINE);
-        html.append(endDiv);
-        html.append(NEWLINE);
-        html.append(endDiv);
-        html.append(NEWLINE);
-        html.append(scriptTag);
-
-        return html.toString();
-    }
-
+    private static final Pattern SPLIT_REGEX = Pattern.compile("</a>");
+    private static final String SEP = File.separator;
+    
+    // Run in a different thread, not the JavaFX thread
+    private static final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
+    
     /**
      * Display the help page for the following HelpCtx
      *
-     * @param helpCtx
-     * @return
+     * @param helpCtx the help id to load
+     * @return whether or not a help page was successfully loaded
      */
     @Override
     public boolean display(final HelpCtx helpCtx) {
-        final String sep = File.separator;
-
         final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
         final boolean isOnline = prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP);
 
         final String helpId = helpCtx.getHelpID();
-        LOGGER.log(Level.INFO, "display help for: {0}", helpId);
-
-        final String helpDefaultPath = sep + "constellation" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "functionality" + sep + "docs" + sep + "about-constellation.md";
+        final String helpDefaultPath = "ext" + SEP + "docs" + SEP + "CoreFunctionality" + SEP + "about-constellation.md";
 
         final String helpAddress = HelpMapper.getHelpAddress(helpId);
         // use the requested help file, or the About Constellation page if one is not given
-        final String helpLink = StringUtils.isNotEmpty(helpAddress) ? helpAddress.substring(2) : helpDefaultPath;
+        String helpLink = StringUtils.isNotEmpty(helpAddress) ? helpAddress : helpDefaultPath;
 
         try {
             final String url;
             if (isOnline) {
-                url = OFFICIAL_CONSTELLATION_WEBSITE + helpLink.replace(".md", ".html");
+                if (helpLink.contains("constellation-")) {
+                    helpLink = helpLink.substring(helpLink.indexOf("modules") + 7);
+                }
+                url = OFFICIAL_CONSTELLATION_WEBSITE + SEP + helpLink.replace(".md", ".html");
             } else {
-                final File file = new File(Generator.getBaseDirectory() + sep + helpLink);
+                final File file = new File(Generator.getBaseDirectory() + SEP + helpLink);
                 final URL fileUrl = file.toURI().toURL();
                 final int currentPort = HelpWebServer.start();
                 url = String.format("http://localhost:%d/%s", currentPort, fileUrl);
@@ -250,22 +111,20 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                     + "Browsing was not supported. Tried to navigate to: {0}", uri);
 
         } catch (final MalformedURLException | URISyntaxException ex) {
-            LOGGER.log(Level.WARNING, ex, () -> "Help Documentation URL/URI was invalid - Tried to display help for: " + helpId);
+            LOGGER.log(Level.SEVERE, ex, () -> "Help Documentation URL/URI was invalid - Tried to display help for: " + helpId);
         }
         return false;
     }
-
+    
     /**
      * Browse to the supplied URI using the desktops browser.
      *
      * @param uri the URI to navigate to
      * @return true if successful, false otherwise
      */
-    public static Future<?> browse(final URI uri) {
+    protected static Future<?> browse(final URI uri) {
         LOGGER.log(Level.INFO, "Loading help uri {0}", uri);
 
-        // Run in a different thread, not the JavaFX thread
-        final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
         return pluginExecutor.submit(() -> {
             Thread.currentThread().setName("Browse Help");
             try {
@@ -274,5 +133,186 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                 LOGGER.log(Level.SEVERE, String.format("Failed to load the help URI %s", uri), ex);
             }
         });
+    }
+
+    public static void copy(final String filePath, final OutputStream out) throws IOException {
+        final InputStream pageInput = getInputStream(filePath);
+        final InputStream tocInput = getInputStream(Generator.getTOCDirectory());
+
+        // avoid parsing utility files or images into html
+        if (filePath.contains(".css") || filePath.contains(".js") || filePath.contains(".png") || filePath.contains(".jpg")) {
+            out.write(pageInput.readAllBytes());
+            return;
+        }
+
+        out.write(generateHTMLOutput(tocInput, pageInput).getBytes());
+    }
+
+    protected static InputStream getInputStream(final String filePath) throws FileNotFoundException {
+        return new FileInputStream(Paths.get(filePath).toString());
+    }
+    
+    protected static String getFileURLString(final String relativePath) throws MalformedURLException {
+        return new File(Generator.getBaseDirectory() + SEP + relativePath)
+                .toURI().toURL().toString();
+    }
+
+    /**
+     * Generate a String which represents the table of contents, the currently displayed page, and the necessary html
+     * tags for formatting.
+     *
+     * @param tocInput the streamed toc file
+     * @param pageInput the streamed help page path
+     * @return a html output of the give page
+     * @throws IOException
+     */
+    protected static String generateHTMLOutput(final InputStream tocInput, final InputStream pageInput) throws IOException {
+        final StringBuilder html = new StringBuilder();
+        
+        final InputStream htmlTemplate = getInputStream(Generator.getBaseDirectory() + SEP + "ext" + SEP + "bootstrap" + SEP + "assets" + SEP + "HelpTemplate.html");
+        final String templateHtml =  new String(htmlTemplate.readAllBytes(), StandardCharsets.UTF_8);
+        html.append(templateHtml);
+        
+        // Create the css and js links and scripts
+        final String stylesheetLink = "<link href=\"\\%s\" rel='stylesheet'></link>";
+        final String javascriptText = "<script type=\"text/javascript\" src=\"\\%s\" ></script>";
+        
+        final String css = String.format(stylesheetLink, getFileURLString("ext/bootstrap/assets/css/app.css"));
+        final String noScript = String.format(stylesheetLink, getFileURLString("ext/bootstrap/assets/css/noscript.css"));
+        final String cssBootstrap = String.format(stylesheetLink, getFileURLString("ext/bootstrap/css/bootstrap.css"));
+        final String searchcss = String.format(stylesheetLink, getFileURLString("ext/bootstrap/assets/css/search.css"));
+        final String jquery = String.format("<script src=\"\\%s\" ></script>", getFileURLString("ext/bootstrap/assets/js/jquery.min.js"));
+        final String dropotron = String.format(javascriptText, getFileURLString("ext/bootstrap/assets/js/jquery.dropotron.min.js"));
+        final String scrolly = String.format(javascriptText, getFileURLString("ext/bootstrap/assets/js/jquery.scrolly.min.js"));
+        final String scrollex = String.format(javascriptText, getFileURLString("ext/bootstrap/assets/js/jquery.scrollex.min.js"));
+        final String browser = String.format(javascriptText, getFileURLString("ext/bootstrap/assets/js/browser.min.js"));
+        final String breakpoints = String.format(javascriptText, getFileURLString("ext/bootstrap/assets/js/breakpoints.min.js"));
+        final String appJS = String.format(javascriptText, getFileURLString("ext/bootstrap/assets/js/app.js"));
+        final String bootstrapjs = String.format(javascriptText, getFileURLString("ext/bootstrap/js/bootstrap.js"));
+        final String cookiejs = String.format("<script src=\"\\%s\" ></script>", getFileURLString("ext/bootstrap/js/js.cookie.min.js"));
+        final String searchjs = String.format(javascriptText, getFileURLString("ext/bootstrap/js/index.min.js"));
+        
+        final StringBuilder scripts = new StringBuilder();      
+        scripts.append(css).append(NEWLINE);
+        scripts.append(noScript).append(NEWLINE);
+        scripts.append(cssBootstrap).append(NEWLINE);
+        scripts.append(searchcss).append(NEWLINE);
+        scripts.append(jquery).append(NEWLINE);
+        scripts.append(dropotron).append(NEWLINE);
+        scripts.append(scrolly).append(NEWLINE);
+        scripts.append(scrollex).append(NEWLINE);
+        scripts.append(browser).append(NEWLINE);
+        scripts.append(breakpoints).append(NEWLINE);
+        scripts.append(appJS).append(NEWLINE);
+        scripts.append(bootstrapjs).append(NEWLINE);
+        scripts.append(cookiejs).append(NEWLINE);
+        scripts.append(searchjs).append(NEWLINE);
+        
+        // Add in the links and scripts to the top of the file
+        final int scriptIndex = html.indexOf("SCRIPTS");
+        html.replace(scriptIndex, scriptIndex + 7, scripts.toString());
+        
+        
+        // Add in the TOC
+        final String tocString =  new String(tocInput.readAllBytes(), StandardCharsets.UTF_8);
+        final Parser parser = Parser.builder().build();
+        final HtmlRenderer renderer = HtmlRenderer.builder().build();
+        final Node tocDocument = parser.parse(tocString);
+        final String tocHtml = renderer.render(tocDocument);
+        final int tocIndex = html.indexOf("TABLE_OF_CONTENTS");
+        html.replace(tocIndex, tocIndex + 17, tocHtml);
+        
+        // Add in the help page 
+        final String rawInput = new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
+        final Node pageDocument = parser.parse(rawInput);
+        final String pageHtml = renderer.render(pageDocument);
+        final int pageIndex = html.indexOf("MAIN_PAGE");
+        html.replace(pageIndex, pageIndex + 9, pageHtml);
+        
+        // Add in the list of documents to search 
+        final List<String> documents = createSearchDocument(tocHtml);
+        final StringBuilder documentString = new StringBuilder();
+        documentString.append(documents.getFirst());
+        for (int i = 1; i < documents.size(); i++) {
+            documentString.append(",");
+            documentString.append(documents.get(i));
+        }
+        final int documentsIndex = html.indexOf("HELP_PAGES");
+        html.replace(documentsIndex, documentsIndex + 10, documentString.toString());
+
+        return html.toString();
+    }
+    
+    /**
+     * Creates json file of documents to search. Each entry has an id, title, category and link.
+     * 
+     * @param toc the toc file to base off
+     * @return a list of json-formatted page entries
+     */
+    private static List<String> createSearchDocument(final String toc) {
+        final List<String> documents = new ArrayList<>();
+
+        final String[] elements = SPLIT_REGEX.split(toc);
+        int index = 0;
+        String category = "";
+        
+        for (final String element : elements) {
+            if (element.contains("data-target")) {
+                final int dataIndex = element.indexOf("data-target");
+                final String categoryString = element.substring(dataIndex);
+                final int beginningIndex = categoryString.indexOf(">");
+                final int endIndex = categoryString.indexOf("<");
+                category = categoryString.substring(beginningIndex + 1, endIndex);
+            }
+            if (element.contains("a href")) {
+                final int hrefIndex = element.indexOf("a href");
+                final String linkString = element.substring(hrefIndex + 7);
+                final int quoteIndex = linkString.indexOf("\"");
+                final int endIndex = linkString.indexOf(">");
+                // replaceAll to replace stops the search from working as the links require double \
+                final String link = linkString.substring(quoteIndex + 1, endIndex - 1).replaceAll("\\\\", "\\\\\\\\");
+                final String pageName = linkString.substring(endIndex + 1);
+                
+                final String page = String.format("""
+                                    {
+                                        "id": %s,
+                                        "title": "%s",
+                                        "category": "%s",
+                                        "link": "%s"
+                                    }
+                                    """, index, pageName, category, link);
+                documents.add(page);
+                index++;
+                
+            }
+        }
+        
+        // To update the online help search file change the boolean to true
+        // Must also run adaptors when updating online help so those results aren't removed from the search file
+        // Reset back to false after updating the search file 
+        final boolean updateOnlineHelp = false;
+        
+        if (updateOnlineHelp) {
+            // Create a json file for the online help search
+            final String path = Generator.getOnlineHelpTOCDirectory() + "search.json";
+            try (final FileWriter search = new FileWriter(path)) {
+                final List<String> documentsHtml = documents;
+                final StringBuilder documentString = new StringBuilder();
+                documentString.append("[");
+                final String firstEntry = documentsHtml.getFirst().replace(".md\"", ".html\"");
+                documentString.append(firstEntry);
+                for (int i = 1; i < documentsHtml.size(); i++) {
+                    documentString.append(",");
+                    final String newEntry = documentsHtml.get(i).replace(".md\"", ".html\"");
+                    documentString.append(newEntry);
+                }
+                documentString.append("]");
+                search.write(documentString.toString());
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
+        }
+
+        return documents;
     }
 }

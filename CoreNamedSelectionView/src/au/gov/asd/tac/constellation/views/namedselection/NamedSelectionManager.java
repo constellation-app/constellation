@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -795,7 +795,6 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
      *
      * @return The state that was saved to the graph.
      */
-    @SuppressWarnings("unchecked")
     private NamedSelectionState saveStateToGraph() {
         final Graph graph = graphNode.getGraph();
         final NamedSelectionState newState;
@@ -836,7 +835,6 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
      * @see NamedSelectionState
      * @see NamedSelectionStatePlugin
      */
-    @SuppressWarnings("unchecked")
     private void readStateFromGraph(final GraphReadMethods graph) {
         // Ensure that the state gets set correctly under all circumstances.
         this.state = null;
@@ -844,8 +842,8 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final int attrID = graph.getAttribute(GraphElementType.META, NamedSelectionState.ATTRIBUTE_NAME);
         if (attrID != Graph.NOT_FOUND) {
             final Object possibleState = graph.getObjectValue(attrID, 0);
-            if (possibleState instanceof NamedSelectionState) {
-                this.state = (NamedSelectionState) possibleState;
+            if (possibleState instanceof NamedSelectionState namedSelectionState) {
+                this.state = namedSelectionState;
             }
         }
 

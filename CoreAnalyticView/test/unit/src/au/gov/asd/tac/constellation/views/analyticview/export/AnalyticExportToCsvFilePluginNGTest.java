@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.export;
 
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
+import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticExportUtilities;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -30,7 +32,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -45,10 +47,7 @@ import org.testng.annotations.Test;
 public class AnalyticExportToCsvFilePluginNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticExportToCsvFilePluginNGTest.class.getName());
-
-    public AnalyticExportToCsvFilePluginNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -67,18 +66,24 @@ public class AnalyticExportToCsvFilePluginNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Test of execute method, of class AnalyticExportToCsvFilePlugin.
+     * @throws java.io.IOException
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExecute() throws Exception {
-        final TableView<ScoreResult.ElementScore> table = mock(TableView.class);
+    public void testExecute() throws IOException, InterruptedException, PluginException {
+        @SuppressWarnings("unchecked") // this mock will be of type ElementScore for its use
+        final TableView<ElementScore> table = mock(TableView.class);
         final PluginInteraction pluginInteraction = mock(PluginInteraction.class);
 
         File tmpFile = null;

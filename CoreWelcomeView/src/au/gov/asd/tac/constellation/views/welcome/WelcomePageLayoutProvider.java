@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.welcome;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public abstract class WelcomePageLayoutProvider {
      * @return ArrayList of plugins
      */
     public List<WelcomePluginInterface> getTopPlugins() {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -39,6 +40,6 @@ public abstract class WelcomePageLayoutProvider {
      * @return ArrayList of plugins
      */
     public List<WelcomePluginInterface> getSidePlugins() {
-        return null;
+        return Collections.emptyList();
     }
 }

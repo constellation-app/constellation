@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +30,9 @@ import java.util.Map;
  * @author twinkle2_little
  */
 public class AttributeState {
-    // graph, nodes, trasaction etc.
-
+    
     private final List<GraphElementType> graphElements;
     private final List<GraphElementType> activeGraphElements;
-    // key: element type, value : list of attributedata
     private final Map<GraphElementType, List<AttributeData>> attributeNames;
     // key: element type+attribute name value: list of values
     private final Map<String, Object[]> attributeValues;
@@ -51,7 +50,7 @@ public class AttributeState {
      * @return the graphElements
      */
     public List<GraphElementType> getGraphElements() {
-        return graphElements;
+        return Collections.unmodifiableList(graphElements);
     }
 
     /**
@@ -66,27 +65,27 @@ public class AttributeState {
      * @return the graphElements that are 'active' in this state
      */
     public List<GraphElementType> getActiveGraphElements() {
-        return activeGraphElements;
+        return Collections.unmodifiableList(activeGraphElements);
     }
 
     /**
      * @return the attributeNames
      */
     public Map<GraphElementType, List<AttributeData>> getAttributeNames() {
-        return attributeNames;
+        return Collections.unmodifiableMap(attributeNames);
     }
 
     /**
      * @return the attributeValues
      */
     public Map<String, Object[]> getAttributeValues() {
-        return attributeValues;
+        return Collections.unmodifiableMap(attributeValues);
     }
 
     /**
      * @return the attributeCounts
      */
     public Map<GraphElementType, Integer> getAttributeCounts() {
-        return attributeCounts;
+        return Collections.unmodifiableMap(attributeCounts);
     }
 }

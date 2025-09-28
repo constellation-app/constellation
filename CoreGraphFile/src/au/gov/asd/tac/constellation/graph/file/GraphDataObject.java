@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,11 @@ package au.gov.asd.tac.constellation.graph.file;
 import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import java.awt.Color;
+import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.awt.ActionID;
@@ -108,7 +112,7 @@ import org.openide.util.NbBundle.Messages;
     )
 })
 public final class GraphDataObject extends MultiDataObject implements OpenCookie {
-    
+
     private static final Logger LOGGER = Logger.getLogger(GraphDataObject.class.getName());
 
     /**
@@ -122,6 +126,10 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
      * If this graph is part of a graph, assign a color to it.
      */
     private Color graphColor;
+
+    /* for file lock control */
+    private FileLock fileLock;
+    private FileChannel fileChannel;
 
     /**
      * Create a MultiFileObject.
@@ -183,8 +191,9 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
         }
 
         String s = FileUtil.getFileDisplayName(getPrimaryFile());
-        if (gdo != null) {
-            s = String.format("%s - %s", gdo.getName(), s);
+        final NebulaDataObject nebulaDataObject = getNebulaDataObject();
+        if (nebulaDataObject != null) {
+            s = String.format("%s - %s", nebulaDataObject.getName(), s);
         }
 
         return s;
@@ -204,5 +213,77 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
 
     public void setNebulaColor(final Color graphColor) {
         this.graphColor = graphColor;
+    }
+
+    /**
+     * Lock the primary file stored in this GraphDataObject so that it cannot
+     * be manipulated external to this app.
+     */
+    public void lockFile() {
+        // Get a file lock
+        final File graphFile = FileUtil.toFile(getPrimaryFile());
+        if (graphFile != null) {
+            try {
+                final RandomAccessFile randomaccessfile = new RandomAccessFile(graphFile.getAbsoluteFile(), "rw");
+                final FileChannel channel = randomaccessfile.getChannel();
+                final FileLock lock = channel.tryLock(0, Long.MAX_VALUE, false);
+                if (lock != null) {
+                    setFileLock(lock);
+                    setFileChannel(channel);
+                } else {
+                    LOGGER.log(Level.SEVERE, "Lock on file {0} cannot be obtained", graphFile.getAbsoluteFile());
+                }
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
+        }
+    }
+
+    /**
+     * Release the lock on the primary file currently stored in this GraphDataObject.
+     */
+    public void unlockFile() {
+        final FileLock lock = getFileLock();
+
+        if (lock != null) {
+            try {
+                lock.release();
+                if (fileChannel != null && fileChannel.isOpen()) {
+                    fileChannel.close();
+                    setFileLock(null);
+                    setFileChannel(null);
+                }
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
+        }
+    }
+
+    /**
+     * @return the channel
+     */
+    public FileChannel getFileChannel() {
+        return fileChannel;
+    }
+
+    /**
+     * @param fileChannel the channel to set
+     */
+    public void setFileChannel(final FileChannel fileChannel) {
+        this.fileChannel = fileChannel;
+    }
+
+    /**
+     * @return the fileLock
+     */
+    public FileLock getFileLock() {
+        return fileLock;
+    }
+
+    /**
+     * @param channelLock the fileLock to set
+     */
+    public void setFileLock(final FileLock channelLock) {
+        this.fileLock = channelLock;
     }
 }

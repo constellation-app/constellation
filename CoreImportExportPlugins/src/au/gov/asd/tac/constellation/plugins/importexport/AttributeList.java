@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,12 +50,12 @@ public class AttributeList extends VBox {
     private static final Insets VBOX_PADDING = new Insets(2);
 
     private final RunPane runPane;
-    protected final ImportController importController;
+    protected final ImportController<?> importController;
     private final AttributeType attributeType;
     private final Map<String, AttributeNode> attributeNodes;
     private Set<Integer> keys;
 
-    public AttributeList(final ImportController importController, final RunPane runPane, final AttributeType attributeType) {
+    public AttributeList(final ImportController<?> importController, final RunPane runPane, final AttributeType attributeType) {
         this.runPane = runPane;
 
         this.importController = importController;
@@ -122,6 +122,7 @@ public class AttributeList extends VBox {
                 return;
             }
         }
+
         children.add(attributeNode);
     }
 

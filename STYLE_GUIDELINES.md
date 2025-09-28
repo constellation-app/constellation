@@ -1,20 +1,18 @@
 ## Coding Style Guidelines
 
-When the constellation project grows and has more contributors, it’s no
+When the Constellation project grows and has more contributors, it’s no
 longer possible to just tell contributors to “follow the code formatting
 in the code.” Ostensibly, that never worked anyway.
 
 Here is an attempt to describe how the source code should be formatted.
-It’s a collection of good practises, but will get better over time as it
+It’s a collection of good practices, but will get better over time as it
 gets more organised.
 
-***Note that this style guide is for reference purposes. If you apply
-NetBean’s default formatting layout then you comply with all coding
-style guidelines.***
+***Note that this style guide is for reference purposes***
 
 ## Indentation
 
-Always spaces, two of them. Never tabs.
+Always spaces, four of them. Never tabs.
 
 ## Spacing
 
@@ -23,11 +21,11 @@ Always spaces, two of them. Never tabs.
 
 <!-- -->
 
-        if (condition) {
-          // yes like this
-        } else {
-          // something besides
-        }
+    if (condition) {
+        // yes like this
+    } else {
+        // something besides
+    }
 
 -   No single line `if` blocks
 
@@ -39,9 +37,9 @@ Always spaces, two of them. Never tabs.
 instead use
 
     if (this) {
-      // something
+        // something
     } else {
-      // condition condition condition
+        // condition condition condition
     }
 
 -   No spaces inside parens.
@@ -67,14 +65,14 @@ not
 <!-- -->
 
     if (emptyBlock) {
-      // a useful comment here about why this case is skipped
+        // a useful comment here about why this case is skipped
     }
 
 -   Use spaces before/after commas:
 
--   `someFunction(apple,bear,cat); //bad`
+-   `someFunction(apple,bear,cat); // bad`
 
--   `someFunction(apple, bear, cat);  // correct`
+-   `someFunction(apple, bear, cat); // correct`
 
 -   Use spaces before/after use of +
 
@@ -99,31 +97,41 @@ not
 Always use braces:
 
     for (int i = 0; i < 10; i++) {
-      println(i);
+        println(i);
     }
 
 never this:
 
     for (int i = 0; i < 10; i++)
-      println(i);
+        println(i);
 
 Not using braces is too prone to causing subtle errors when merging code
 from multiple people.
 
-The rare exception is the occasional ‘continue’ statement at the top of
-a for-loop, or sometimes a single line `if (somethingOrOther) return;`
-if it just doesn’t make sense to have a lot of extras.
+Starting brace goes on same line, end brace goes on its own.
 
-Starting brace goes on same line, end brace goes on its own. An else
-statement should look like `} else {`
+<!-- -->
+
+    if (this) {
+        // something
+    }
+
+never this:
+
+    if (this) 
+    {
+        // something
+    }
+
+An else statement should look like `} else {`
 
 ## Blank lines
 
-Use two blank lines between function blocks.
+Use one blank line between function blocks.
 
 One blank line after the package declaration.
 
-Two blank lines between the imports and the class definition.
+One blank line between the imports and the class definition.
 
 No blank line after the function definition or before the closing brace.
 
@@ -143,25 +151,16 @@ No blank line after the function definition or before the closing brace.
     probably use is a short function that returns a result immediately,
     i.e. `return (something == null) ? 0 : Integer.parseInt(something)`
 
--   Place || && etc on the end, not the start, of the line. This keeps
-    variables lined up with one another. (This is different from Oracle
-    style)
+-   Place || && etc at the start, not the end, of the line.
 
--   `static` goes first (before `public` et al) (This is different from
-    Oracle style)
-
-## Functions
-
-When adding parameters to a function, add to the end. Don’t change
-order, even if it feels more intuitive for that variation. Only increase
-the number, don’t have alternate forms with the same basic number of
-arguments.
+-   Access modifiers (e.g. `public`) go first before any other modifiers 
+    inline with Oracle style.
 
 ## Comments
 
 -   Always one space after the `//` in single line comments
 
--   Two spaces before `//` at the end of a line (that has code as well)
+-   One space before `//` at the end of a line (that has code as well)
 
 -   Try to use `//` comments inside functions, to make it easier to
     remove a whole block via `/* */`
@@ -174,11 +173,13 @@ arguments.
 
 ## New lines
 
--   Keep code under 80 columns. Break up statements if you must.
+-   Keep code under 80 columns where readability isn't sacrificed doing so. 
+    Break up statements if you must.
 
     -   There are some exceptions (the `PreferencesFrame` class, for
         instance) where breaking things up is even uglier, so the 80
-        column limit is occasionally ignored.
+        column limit is occasionally ignored. In these instances, try as best
+        as you can to limit the code to 120 columns.
 
 -   Avoid the chaining madness that has afflicted Java programming of
     late, where dots are placed at the end (or even beginning) of
@@ -202,12 +203,12 @@ Please don’t stack up declarations and definitions:
 Because someday, we’re gonna remove STATUS\_INFO and that’ll make it
 tougher to see the change. Just write them out like the following way:
 
-    static final int STATUS_EMPTY = 100;
-    static final int STATUS_COMPILER_ERR = 200;
+    private static final int STATUS_EMPTY = 100;
+    private static final int STATUS_COMPILER_ERR = 200;
     ...etc
 
-If importing many items inside a single package, consider using \*
-instead of listing out a dozen individual classes.
+Avoid importing using \* where possible. In most cases, you don't need to 
+import the entire package.
 
 Please do not expand the imports in source that you’re editing.
 

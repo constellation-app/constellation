@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.file;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -30,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = HelpPageProvider.class, position = 300)
 @NbBundle.Messages("GraphFileHelpProvider=Graph File Help Provider")
 public class GraphFileHelpProvider extends HelpPageProvider {
-
-    private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreGraphFile" + SEP;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,15 +40,12 @@ public class GraphFileHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String graphFileModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "file" + sep + "docs" + sep;
 
-        map.put("au.gov.asd.tac.constellation.graph.file.autosave", graphFileModulePath + "autosave.md");
-        map.put("au.gov.asd.tac.constellation.graph.file.openGraph", graphFileModulePath + "open-graph.md");
-        map.put("au.gov.asd.tac.constellation.graph.file.newGraph", graphFileModulePath + "new-graph.md");
-        map.put("au.gov.asd.tac.constellation.graph.file.saveGraph", graphFileModulePath + "save-graph.md");
-        map.put("au.gov.asd.tac.constellation.graph.file.nebula", graphFileModulePath + "nebula.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.autosave", MODULE_PATH + "autosave.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.openGraph", MODULE_PATH + "open-graph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.newGraph", MODULE_PATH + "new-graph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.saveGraph", MODULE_PATH + "save-graph.md");
+        map.put("au.gov.asd.tac.constellation.graph.file.nebula", MODULE_PATH + "nebula.md");
         return map;
     }
 
@@ -60,10 +56,6 @@ public class GraphFileHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String graphFilePath;
-        graphFilePath = CODEBASE_NAME + sep + "CoreGraphFile" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "graph" + sep + "file" + sep + "docs" + sep + "file-toc.xml";
-        return graphFilePath;
+        return MODULE_PATH + "file-toc.xml";
     }
 }

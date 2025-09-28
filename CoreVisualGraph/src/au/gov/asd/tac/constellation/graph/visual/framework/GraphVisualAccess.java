@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,19 +47,16 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * The standard implementation of {@link VisualAccess} for a single
- * CONSTELLATION {@link Graph}.
+ * The standard implementation of {@link VisualAccess} for a single CONSTELLATION {@link Graph}.
  * <p>
- * This matches attributes found in {@link VisualConcept} to their obvious
- * counterparts in the visual access interface. IDs are stored for these
- * attributes for efficiency purposes, and mod counts are stored to determine if
- * a property has changed when {@link #updateInternally updateInteranlly()} is
- * called. When {@link #getIndigenousChanges getIndigenousChanges()} is called,
- * the mod counts are updated and a list of visual changes corresponding to
- * those attributes with altered mod counts is returned.
+ * This matches attributes found in {@link VisualConcept} to their obvious counterparts in the visual access interface.
+ * IDs are stored for these attributes for efficiency purposes, and mod counts are stored to determine if a property has
+ * changed when {@link #updateInternally updateInteranlly()} is called. When
+ * {@link #getIndigenousChanges getIndigenousChanges()} is called, the mod counts are updated and a list of visual
+ * changes corresponding to those attributes with altered mod counts is returned.
  * <p>
- * The handling of certain properties like label text, are a little more tricky,
- * but the aforementioned basic principles still apply in theory.
+ * The handling of certain properties like label text, are a little more tricky, but the aforementioned basic principles
+ * still apply in theory.
  *
  * @author twilight_sparkle
  * @author antares
@@ -75,6 +72,7 @@ public final class GraphVisualAccess implements VisualAccess {
     private int graphBottomLabels = Graph.NOT_FOUND;
     private int graphConnectionLabels = Graph.NOT_FOUND;
     private int graphConnectionOpacity = Graph.NOT_FOUND;
+    private int graphConnectionMotion = Graph.NOT_FOUND;
     private int graphConnectionMode = Graph.NOT_FOUND;
     private int graphDrawFlags = Graph.NOT_FOUND;
     private int graphCamera = Graph.NOT_FOUND;
@@ -107,6 +105,8 @@ public final class GraphVisualAccess implements VisualAccess {
     private int transactionDimmed = Graph.NOT_FOUND;
     private int transactionLineStyle = Graph.NOT_FOUND;
     private int transactionWidth = Graph.NOT_FOUND;
+    private int defaultVertexColorAttribute = Graph.NOT_FOUND;
+    private int defaultTransactionColorAttribute = Graph.NOT_FOUND;
 
     private int nwDecorator = Graph.NOT_FOUND;
     private int neDecorator = Graph.NOT_FOUND;
@@ -457,6 +457,12 @@ public final class GraphVisualAccess implements VisualAccess {
                 if (!Objects.equals(count, modCounts.put(VisualConcept.GraphAttribute.CONNECTION_OPACITY, count))) {
                     changes.add(new VisualChangeBuilder(VisualProperty.CONNECTIONS_OPACITY).forItems(1).build());
                 }
+                
+                count = graphConnectionMotion == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(graphConnectionMotion);
+                if (!Objects.equals(count, modCounts.put(VisualConcept.MetaAttribute.CONNECTION_MOTION, count))) {
+                    changes.add(new VisualChangeBuilder(VisualProperty.CONNECTIONS_MOTION).forItems(1).build());
+                }
+                
                 count = graphDrawFlags == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(graphDrawFlags);
                 if (!Objects.equals(count, modCounts.put(VisualConcept.GraphAttribute.DRAW_FLAGS, count))) {
                     changes.add(new VisualChangeBuilder(VisualProperty.DRAW_FLAGS).forItems(1).build());
@@ -582,6 +588,7 @@ public final class GraphVisualAccess implements VisualAccess {
         graphBottomLabels = VisualConcept.GraphAttribute.BOTTOM_LABELS.get(rg);
         graphConnectionLabels = VisualConcept.GraphAttribute.TRANSACTION_LABELS.get(rg);
         graphConnectionOpacity = VisualConcept.GraphAttribute.CONNECTION_OPACITY.get(rg);
+        graphConnectionMotion = VisualConcept.MetaAttribute.CONNECTION_MOTION.get(rg);
         graphConnectionMode = VisualConcept.GraphAttribute.CONNECTION_MODE.get(rg);
         graphDrawFlags = VisualConcept.GraphAttribute.DRAW_FLAGS.get(rg);
         graphCamera = VisualConcept.GraphAttribute.CAMERA.get(rg);
@@ -624,7 +631,8 @@ public final class GraphVisualAccess implements VisualAccess {
                 referredAttr = readGraph.getAttribute(GraphElementType.VERTEX, colorAttrName);
             }
         }
-        vertexColor = referredAttr != Graph.NOT_FOUND && readGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : VisualConcept.VertexAttribute.COLOR.get(readGraph);
+        defaultVertexColorAttribute = VisualConcept.VertexAttribute.COLOR.get(readGraph);
+        vertexColor = referredAttr != Graph.NOT_FOUND && readGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : defaultVertexColorAttribute;
     }
 
     private void recalculateTransactionColorAttribute(final ReadableGraph readGraph) {
@@ -635,7 +643,8 @@ public final class GraphVisualAccess implements VisualAccess {
                 referredAttr = readGraph.getAttribute(GraphElementType.TRANSACTION, colorAttrName);
             }
         }
-        transactionColor = referredAttr != Graph.NOT_FOUND && readGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : VisualConcept.TransactionAttribute.COLOR.get(readGraph);
+        defaultTransactionColorAttribute = VisualConcept.TransactionAttribute.COLOR.get(readGraph);
+        transactionColor = referredAttr != Graph.NOT_FOUND && readGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : defaultTransactionColorAttribute;
     }
 
     private void recalculateConnectionMode(final ReadableGraph readGraph) {
@@ -705,10 +714,17 @@ public final class GraphVisualAccess implements VisualAccess {
         final int maxTransactions = graphMaxTransactions != Graph.NOT_FOUND ? readGraph.getIntValue(graphMaxTransactions, 0) : VisualGraphDefaults.DEFAULT_MAX_TRANSACTION_TO_DRAW;
 
         final int connectionUpperBound;
-        if (connectionMode == ConnectionMode.LINK) {
-            connectionUpperBound = linkCount;
+        if (connectionMode == null) {
+            connectionUpperBound = readGraph.getTransactionCount();
         } else {
-            connectionUpperBound = connectionMode == ConnectionMode.EDGE ? readGraph.getEdgeCount() : readGraph.getTransactionCount();
+            connectionUpperBound = switch (connectionMode) {
+                case LINK ->
+                    linkCount;
+                case EDGE ->
+                    readGraph.getEdgeCount();
+                default ->
+                    readGraph.getTransactionCount();
+            };
         }
         connectionElementTypes = new GraphElementType[connectionUpperBound];
         connectionElementIds = new int[connectionUpperBound];
@@ -801,6 +817,10 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
+    public float getConnectionMotion() {
+        return graphConnectionMotion != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphConnectionMotion, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_MOTION;
+    }
+    @Override
     public int getTopLabelCount() {
         return topLabelAttrs.length;
     }
@@ -891,7 +911,7 @@ public final class GraphVisualAccess implements VisualAccess {
         }
     }
 
-    private ConnectionDirection getTransactionConnectionDirection(final int connection) {        
+    private ConnectionDirection getTransactionConnectionDirection(final int connection) {
         final int transactionDirection = accessGraph.getTransactionDirection(connectionElementIds[connection]);
         switch (transactionDirection) {
             case Graph.UPHILL:
@@ -904,7 +924,7 @@ public final class GraphVisualAccess implements VisualAccess {
         }
     }
 
-    private ConnectionDirection getEdgeConnectionDirection(final int connection) {        
+    private ConnectionDirection getEdgeConnectionDirection(final int connection) {
         final int edgeDirection = accessGraph.getEdgeDirection(connectionElementIds[connection]);
         switch (edgeDirection) {
             case Graph.UPHILL:
@@ -985,6 +1005,9 @@ public final class GraphVisualAccess implements VisualAccess {
         ConstellationColor color = null;
         if (vertexColor != Graph.NOT_FOUND) {
             color = accessGraph.getObjectValue(vertexColor, accessGraph.getVertex(vertex));
+            if (color == null && defaultVertexColorAttribute != Graph.NOT_FOUND && vertexColor != defaultVertexColorAttribute) {
+                color = accessGraph.getObjectValue(defaultVertexColorAttribute, accessGraph.getVertex(vertex));
+            }
         }
         return color != null ? color : VisualGraphDefaults.DEFAULT_VERTEX_COLOR;
     }
@@ -1112,7 +1135,10 @@ public final class GraphVisualAccess implements VisualAccess {
                     mixColor = graphMixColor != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphMixColor, 0) : VisualGraphDefaults.DEFAULT_MIX_COLOR;
                     for (int i = 0; i < accessGraph.getLinkTransactionCount(linkId); i++) {
                         final int transactionId = accessGraph.getLinkTransaction(linkId, i);
-                        final ConstellationColor transColor = accessGraph.getObjectValue(transactionColor, transactionId);
+                        ConstellationColor transColor = accessGraph.getObjectValue(transactionColor, transactionId);
+                        if (transColor == null) {
+                            transColor = accessGraph.getObjectValue(defaultTransactionColorAttribute, transactionId);
+                        }
                         if (color != null && !color.equals(transColor)) {
                             color = mixColor;
                         } else {
@@ -1125,7 +1151,10 @@ public final class GraphVisualAccess implements VisualAccess {
                     mixColor = graphMixColor != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphMixColor, 0) : VisualGraphDefaults.DEFAULT_MIX_COLOR;
                     for (int i = 0; i < accessGraph.getEdgeTransactionCount(edgeId); i++) {
                         final int transactionId = accessGraph.getEdgeTransaction(edgeId, i);
-                        final ConstellationColor transColor = accessGraph.getObjectValue(transactionColor, transactionId);
+                        ConstellationColor transColor = accessGraph.getObjectValue(transactionColor, transactionId);
+                        if (transColor == null) {
+                            transColor = accessGraph.getObjectValue(defaultTransactionColorAttribute, transactionId);
+                        }
                         if (color != null && !color.equals(transColor)) {
                             color = mixColor;
                         } else {
@@ -1136,6 +1165,9 @@ public final class GraphVisualAccess implements VisualAccess {
                 case TRANSACTION:
                 default:
                     color = accessGraph.getObjectValue(transactionColor, connectionElementIds[connection]);
+                    if (color == null && defaultTransactionColorAttribute != Graph.NOT_FOUND && transactionColor != defaultTransactionColorAttribute) {
+                        color = accessGraph.getObjectValue(defaultTransactionColorAttribute, connectionElementIds[connection]);
+                    }
                     break;
             }
         }
@@ -1175,39 +1207,42 @@ public final class GraphVisualAccess implements VisualAccess {
         if (transactionVisibility != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
+                    float linkLayerVisibility = -1;
                     float linkVisibility = -1;
                     if (transactionLayerVisibility != Graph.NOT_FOUND) {
                         final int linkId = connectionElementIds[connection];
                         for (int i = 0; i < accessGraph.getLinkTransactionCount(linkId); i++) {
                             final int transactionId = accessGraph.getLinkTransaction(linkId, i);
-                            linkVisibility = Math.max(linkVisibility, accessGraph.getFloatValue(transactionLayerVisibility, transactionId)); // handle case of no layer vis - ie no layer
+                            linkLayerVisibility = Math.max(linkLayerVisibility, accessGraph.getFloatValue(transactionLayerVisibility, transactionId)); // handle case of no layer vis - ie no layer
+                            linkVisibility = Math.max(linkVisibility, accessGraph.getFloatValue(transactionVisibility, transactionId));
                         }
-                        return linkVisibility;
+                        return linkLayerVisibility * linkVisibility;
                     } else {
                         return VisualGraphDefaults.DEFAULT_TRANSACTION_VISIBILITY;
                     }
 
                 case EDGE:
+                    float edgeLayerVisibility = -1;
                     float edgeVisibility = -1;
                     if (transactionLayerVisibility != Graph.NOT_FOUND) {
                         final int edgeId = connectionElementIds[connection];
                         for (int i = 0; i < accessGraph.getEdgeTransactionCount(edgeId); i++) {
                             final int transactionId = accessGraph.getEdgeTransaction(edgeId, i);
-                            edgeVisibility = Math.max(edgeVisibility, accessGraph.getFloatValue(transactionLayerVisibility, transactionId));
+                            edgeLayerVisibility = Math.max(edgeLayerVisibility, accessGraph.getFloatValue(transactionLayerVisibility, transactionId));
+                            edgeVisibility = Math.max(edgeVisibility, accessGraph.getFloatValue(transactionVisibility, transactionId));
                         }
-                        return edgeVisibility;
+                        return edgeLayerVisibility * edgeVisibility;
                     } else {
                         return VisualGraphDefaults.DEFAULT_TRANSACTION_VISIBILITY;
                     }
 
                 case TRANSACTION:
                 default:
-                    float transLayerVisibility = transactionLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(transactionLayerVisibility, connectionElementIds[connection]) : VisualGraphDefaults.DEFAULT_TRANSACTION_FILTER_VISIBILITY;
+                    final float transLayerVisibility = transactionLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(transactionLayerVisibility, connectionElementIds[connection]) : VisualGraphDefaults.DEFAULT_TRANSACTION_FILTER_VISIBILITY;
                     return transLayerVisibility * accessGraph.getFloatValue(transactionVisibility, connectionElementIds[connection]);
             }
         }
         float defaultLayerVisibility = transactionLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(transactionLayerVisibility, accessGraph.getTransaction(connection)) : VisualGraphDefaults.DEFAULT_TRANSACTION_FILTER_VISIBILITY;
-
         return defaultLayerVisibility * VisualGraphDefaults.DEFAULT_TRANSACTION_VISIBILITY;
     }
 
@@ -1504,6 +1539,9 @@ public final class GraphVisualAccess implements VisualAccess {
 
         count = graphConnectionOpacity == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphConnectionOpacity);
         modCounts.put(VisualConcept.GraphAttribute.CONNECTION_OPACITY, count);
+        
+        count = graphConnectionMotion == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphConnectionMotion);
+        modCounts.put(VisualConcept.MetaAttribute.CONNECTION_MOTION, count);
 
         count = graphDrawFlags == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphDrawFlags);
         modCounts.put(VisualConcept.GraphAttribute.DRAW_FLAGS, count);
@@ -1582,6 +1620,5 @@ public final class GraphVisualAccess implements VisualAccess {
 
         count = transactionWidth == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionWidth);
         modCounts.put(VisualConcept.TransactionAttribute.WIDTH, count);
-
     }
 }

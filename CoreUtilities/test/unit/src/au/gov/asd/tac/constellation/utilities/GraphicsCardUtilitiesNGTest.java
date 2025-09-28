@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -52,7 +52,7 @@ public class GraphicsCardUtilitiesNGTest {
             .append("   final line   ").toString();
 
     @AfterMethod
-    private void tearDownMethod() {
+    public void tearDownMethod() throws Exception {
         GraphicsCardUtilities.clear();
         new File(DXDIAG_ABSOLUTE_PATH).delete();
     }
@@ -70,7 +70,7 @@ public class GraphicsCardUtilitiesNGTest {
             // Mock the call to dxdiag by Runtime.exec() to create a dxdiag file
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
-            when(runtime.exec(anyString())).thenAnswer(invocation -> {
+            when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
                     writer.write(DXDIAG_OUTPUT);
                 }
@@ -100,7 +100,7 @@ public class GraphicsCardUtilitiesNGTest {
             // Mock the call to dxdiag by Runtime.exec() to create a dxdiag file
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
-            when(runtime.exec(anyString())).thenAnswer(invocation -> {
+            when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 new File(DXDIAG_ABSOLUTE_PATH).createNewFile();
                 return null;
             });
@@ -130,7 +130,7 @@ public class GraphicsCardUtilitiesNGTest {
             // Mock the call to dxdiag by Runtime.exec() to create a dummy dxdiag file
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
-            when(runtime.exec(anyString())).thenAnswer(invocation -> {
+            when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
                     writer.write(dummyDxDiag);
                 }
@@ -170,7 +170,7 @@ public class GraphicsCardUtilitiesNGTest {
             // file wasn't deleted
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
-            when(runtime.exec(anyString())).thenAnswer(invocation -> {
+            when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 if (dxDiagFile.exists()) {
                     throw new IOException("Test Failure: dxDiagFile exists");
                 }
@@ -182,13 +182,7 @@ public class GraphicsCardUtilitiesNGTest {
             assertNull(GraphicsCardUtilities.getError());
         }
     }
-
-    /**
-     * A dxdiag file already exists but cannot be removed.
-     */
-    //@Test
-    //public void testReadOnlyFileExists() {}
-    //FIXME: refactor needed to inject file creation into the class
+    
     /**
      * When an IOException is thrown and caught the getter exposes the error.
      *
@@ -202,7 +196,7 @@ public class GraphicsCardUtilitiesNGTest {
             // Mock the call to dxdiag by Runtime.exec() to throw an IOException
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
-            when(runtime.exec(anyString())).thenAnswer(invocation -> {
+            when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 throw new IOException(err);
             });
 
@@ -223,7 +217,7 @@ public class GraphicsCardUtilitiesNGTest {
             // Mock the call to dxdiag by Runtime.exec() to create a dxdiag file
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
-            when(runtime.exec(anyString())).thenAnswer(invocation -> {
+            when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
                     writer.write(DXDIAG_ABSOLUTE_PATH);
                 }
@@ -231,16 +225,16 @@ public class GraphicsCardUtilitiesNGTest {
             });
 
             // Verify that using getters will run exec a single time...
-            verify(runtime, times(0)).exec(anyString());
+            verify(runtime, times(0)).exec(any(String[].class));
             GraphicsCardUtilities.getDxDiagInfo();
-            verify(runtime, times(1)).exec(anyString());
+            verify(runtime, times(1)).exec(any(String[].class));
             GraphicsCardUtilities.getDxDiagInfo();
-            verify(runtime, times(1)).exec(anyString());
+            verify(runtime, times(1)).exec(any(String[].class));
 
             // until clear() is called, which will cause exec() to be run again
             GraphicsCardUtilities.clear();
             GraphicsCardUtilities.getDxDiagInfo();
-            verify(runtime, times(2)).exec(anyString());
+            verify(runtime, times(2)).exec(any(String[].class));
         }
     }
 
@@ -256,7 +250,7 @@ public class GraphicsCardUtilitiesNGTest {
             // Mock the call to dxdiag by Runtime.exec() to create a dxdiag file
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
-            when(runtime.exec(anyString())).thenAnswer(invocation -> {
+            when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
                     writer.write(DXDIAG_OUTPUT);
                 }
@@ -276,7 +270,7 @@ public class GraphicsCardUtilitiesNGTest {
             // Now have the mock return an empty dxdiag file
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
-            when(runtime.exec(anyString())).thenAnswer(invocation -> {
+            when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 new File(DXDIAG_ABSOLUTE_PATH).createNewFile();
                 return null;
             });
@@ -294,7 +288,7 @@ public class GraphicsCardUtilitiesNGTest {
             // Finally have the mock return an error
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
-            when(runtime.exec(anyString())).thenAnswer(invocation -> {
+            when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 throw new IOException();
             });
 
@@ -305,5 +299,4 @@ public class GraphicsCardUtilitiesNGTest {
             assertNotNull(GraphicsCardUtilities.getError());
         }
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ListNamedColors extends RestService {
 
     private static final String NAME = "list_named_colors";
+    private static final String EXAMPLE_RESPONSES_PATH = "listNamedColorsExample";
 
     @Override
     public String getName() {
@@ -59,5 +60,10 @@ public class ListNamedColors extends RestService {
                 .forEach(cocol -> root.put(cocol.getName(), cocol.getHtmlColor()));
 
         mapper.writeValue(out, root);
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

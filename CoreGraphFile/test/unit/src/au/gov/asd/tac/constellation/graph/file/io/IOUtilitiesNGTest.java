@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.TimeZone;
-import static javatests.TestSupport.fail;
 import static org.testng.Assert.assertNull;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.Test;
@@ -154,38 +153,38 @@ public class IOUtilitiesNGTest {
 
     @Test
     public void escapeControl() {
-        String controlChars = "";
+        final StringBuilder controlChars = new StringBuilder();
         for (int i = 0; i < ' '; i++) {
             if (i != 9 && i != 10 && i != 13) {
-                controlChars += (char) i;
+                controlChars.append((char) i);
             }
         }
-
-        assertEquals("Control characters", controlChars, IoUtilities.escape(controlChars));
+        
+        assertEquals("Control characters", controlChars.toString(), IoUtilities.escape(controlChars.toString()));
     }
 
     @Test
     public void unescapeControl() {
-        String controlChars = "";
+        final StringBuilder controlChars = new StringBuilder();
         for (int i = 0; i < ' '; i++) {
             if (i != 9 && i != 10 && i != 13) {
-                controlChars += (char) i;
+                controlChars.append((char) i);
             }
         }
 
-        assertEquals("Control characters", controlChars, IoUtilities.unescape(controlChars));
+        assertEquals("Control characters", controlChars.toString(), IoUtilities.unescape(controlChars.toString()));
     }
 
     @Test
     public void roundTripControl() {
-        String controlChars = "";
+        final StringBuilder controlChars = new StringBuilder();
         for (int i = 0; i < ' '; i++) {
             if (i != 9 && i != 10 && i != 13) {
-                controlChars += (char) i;
+                controlChars.append((char) i);
             }
         }
 
-        assertEquals("Control characters", controlChars, IoUtilities.unescape(IoUtilities.escape(controlChars)));
+        assertEquals("Control characters", controlChars.toString(), IoUtilities.unescape(IoUtilities.escape(controlChars.toString())));
     }
 
     @Test
@@ -256,19 +255,16 @@ public class IOUtilitiesNGTest {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void unescapeBadTrailingBackslash() {
         IoUtilities.unescape("trailing\\");
-        fail("Trailing backslash should fail");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void unescapeBadChar() {
         IoUtilities.unescape("\\b");
-        fail("Bad character should fail");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void unescapeBadNull() {
         IoUtilities.unescape(null);
-        fail("Unescaping null should fail");
     }
 
     @Test
@@ -331,7 +327,6 @@ public class IOUtilitiesNGTest {
     public void parseColorNameBad() {
         final String in = "red";
         IoUtilities.parseColor(in);
-        fail("Can't parse names");
     }
 
     @Test
@@ -370,14 +365,12 @@ public class IOUtilitiesNGTest {
     public void parseDateTimeBad1() throws ParseException, GraphParseException {
         final String d = "7";
         IoUtilities.parseDateTime(d);
-        fail("Invalid datetime shouldn't parse");
     }
 
     @Test(expectedExceptions = GraphParseException.class)
     public void parseDateTimeBad2() throws ParseException, GraphParseException {
         final String d = "11-09-02 12:56:30.456+1000";
         IoUtilities.parseDateTime(d);
-        fail("Invalid datetime shouldn't parse");
     }
 
     @Test
@@ -400,14 +393,12 @@ public class IOUtilitiesNGTest {
     public void parseDateBad1() throws ParseException, GraphParseException {
         final String d = "7";
         IoUtilities.parseDate(d);
-        fail("Invalid date shouldn't parse");
     }
 
     @Test(expectedExceptions = GraphParseException.class)
     public void parseDateBad2() throws ParseException, GraphParseException {
         final String d = "11-09-02";
         IoUtilities.parseDateTime(d);
-        fail("Invalid date shouldn't parse");
     }
 
     @Test
@@ -417,7 +408,7 @@ public class IOUtilitiesNGTest {
         in.addAll(Arrays.asList(strings));
         final String[] expected = {"_from", "_to", "_aardvark", "_id", "first", "Second", "third", "Zlast"};
         Collections.sort(in, new IoUtilities.LCComparator());
-        assertArrayEquals("Sort ignore case", expected, in.toArray(new String[in.size()]));
+        assertArrayEquals("Sort ignore case", expected, in.toArray(String[]::new));
     }
 
     @Test

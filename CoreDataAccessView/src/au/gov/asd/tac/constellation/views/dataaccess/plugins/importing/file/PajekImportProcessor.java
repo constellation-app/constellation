@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin.RETRIEVE_TRANSACTIONS_PARAMETER_ID;
 import java.io.BufferedReader;
@@ -35,7 +36,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javafx.stage.FileChooser.ExtensionFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.NotifyDescriptor;
 import static org.openide.NotifyDescriptor.DEFAULT_OPTION;
 import org.openide.util.lookup.ServiceProvider;
@@ -53,6 +56,8 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
     
     public static final String VERTEX_HEADER = "*V";
     public static final String EDGE_HEADER = "*E";
+    
+    private static final Pattern WHITESPACES_REGEX = Pattern.compile("\\s+", Pattern.UNICODE_CHARACTER_CLASS);
 
     @Override
     public String getName() {
@@ -61,7 +66,7 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
 
     @Override
     public ExtensionFilter getExtensionFilter() {
-        return new ExtensionFilter("Pajek files", "*.net");
+        return new ExtensionFilter("Pajek files", FileExtensionConstants.PAJEK);
     }
 
     @Override
@@ -111,7 +116,7 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
                 } else if (processEdges && retrieveTransactions) {
                     try {
                         // Read edge data
-                        final String[] fields = line.split("\\s+");
+                        final String[] fields = WHITESPACES_REGEX.split(line);
                         final String srcId = fields[0];
                         final String dstId = fields[1];
                         final String weight = fields[2];
@@ -131,13 +136,19 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
                 }
             }
         } catch (final FileNotFoundException ex) {
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "File " + filename + " not found", "Import Pajek File", DEFAULT_OPTION, 
+            final String errorMsg = StringUtils.isEmpty(filename) ? "File not specified" : "File not found: " + filename;
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import Pajek File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-            LOGGER.log(Level.SEVERE, ex, () -> "File " + filename + " not found");
+            final Throwable fnfEx = new FileNotFoundException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
+            fnfEx.setStackTrace(ex.getStackTrace());
+            LOGGER.log(Level.SEVERE, errorMsg, fnfEx);
         } catch (final IOException ex) {
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import Pajek File", DEFAULT_OPTION, 
+            final String errorMsg = StringUtils.isEmpty(filename) ? "File not specified " : "Error reading file: " + filename;
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import Pajek File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-            LOGGER.log(Level.SEVERE, ex, () -> "Error reading file: " + filename);
+            final Throwable ioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
+            ioEx.setStackTrace(ex.getStackTrace());
+            LOGGER.log(Level.SEVERE, errorMsg, ioEx);
         }
     }
 }

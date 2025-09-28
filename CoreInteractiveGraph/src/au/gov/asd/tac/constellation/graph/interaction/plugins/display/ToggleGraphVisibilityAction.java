@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ public final class ToggleGraphVisibilityAction extends AbstractAction implements
 
     private static final Icon HIDDEN_ICON = UserInterfaceIconProvider.HIDDEN.buildIcon(16, Color.BLACK);
     private static final Icon VISIBLE_ICON = UserInterfaceIconProvider.VISIBLE.buildIcon(16, Color.BLACK);
+    
     private final GraphNode context;
 
     /**
@@ -67,7 +68,7 @@ public final class ToggleGraphVisibilityAction extends AbstractAction implements
         final boolean visibleAboveThreshold = isCurrentVisibility(context.getGraph());
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.SET_VISIBLE_ABOVE_THRESHOLD)
                 .withParameter(SetVisibleAboveThresholdPlugin.FLAG_PARAMETER_ID, !visibleAboveThreshold)
-                .executeLater(this.context.getGraph());
+                .executeLater(context.getGraph());
     }
 
     @Override
@@ -77,14 +78,11 @@ public final class ToggleGraphVisibilityAction extends AbstractAction implements
 
     private boolean isCurrentVisibility(final Graph graph) {
         boolean visibleAboveThreshold = VisualGraphDefaults.DEFAULT_GRAPH_VISIBILITY;
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int visibleAboveThresholdAttr = VisualConcept.GraphAttribute.VISIBLE_ABOVE_THRESHOLD.get(rg);
             if (visibleAboveThresholdAttr != Graph.NOT_FOUND) {
                 visibleAboveThreshold = rg.getBooleanValue(visibleAboveThresholdAttr, 0);
             }
-        } finally {
-            rg.release();
         }
         return visibleAboveThreshold;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,10 @@ package au.gov.asd.tac.constellation.webserver;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import static au.gov.asd.tac.constellation.webserver.WebServer.getNotebookDir;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -27,6 +30,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
+import javafx.application.Platform;
+import javafx.scene.control.Alert.AlertType;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -46,12 +51,23 @@ public class StartJupyterNotebookAction implements ActionListener {
     private static final String JUPYTER_NOTEBOOK = "jupyter-notebook";
     private static final String JUPYTER_OUTPUT = "Jupyter Notebook";
 
+    private static final String ALERT_HEADER_TEXT = "Unable to start Jupyter Notebook in directory:\n%s";
+    private static final String ALERT_TEXT = "Please enter a valid path in\nSetup -> Options -> Constellation : Notebook Directory";
+
     @Override
     public void actionPerformed(final ActionEvent e) {
-        WebServer.start();
-
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String dir = prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
+        final File dirFile = new File(dir);
+
+        // If folder doesnt exist, alert user
+        if (!dirFile.exists()) {
+            alertUserUnableToStart();
+            return;
+        }
+
+        WebServer.start();
+
         try {
             // Start the jupyter-notebook process with its stderr redirected to
             // its stdout, and stdout being fed into an InputOutput window.
@@ -61,7 +77,7 @@ public class StartJupyterNotebookAction implements ActionListener {
             final List<String> exe = new ArrayList<>();
             exe.add(JUPYTER_NOTEBOOK);
             final ProcessBuilder pb = new ProcessBuilder(exe)
-                    .directory(new File(dir))
+                    .directory(dirFile)
                     .redirectErrorStream(true);
 
             final Process jupyter = pb.start();
@@ -101,5 +117,13 @@ public class StartJupyterNotebookAction implements ActionListener {
                     null
             );
         }
+    }
+
+    private void alertUserUnableToStart() {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))) {
+            return;
+        }
+
+        Platform.runLater(() -> NotifyDisplayer.displayAlert("Attention", String.format(ALERT_HEADER_TEXT, getNotebookDir()), ALERT_TEXT, AlertType.WARNING, ScreenWindowsHelper.getMainWindowCentrePoint()));
     }
 }

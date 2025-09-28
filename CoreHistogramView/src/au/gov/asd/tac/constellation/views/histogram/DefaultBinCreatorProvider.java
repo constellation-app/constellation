@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,17 @@ package au.gov.asd.tac.constellation.views.histogram;
 
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ByteAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.ByteObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.DoubleAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.DoubleObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.FloatObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.LongObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ShortAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.ShortObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import org.openide.util.lookup.ServiceProvider;
@@ -96,6 +102,34 @@ public class DefaultBinCreatorProvider extends AttributeBinCreatorProvider {
         AttributeType.LINK_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(DoubleAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MIN_DOUBLE_ATTRIBUTE_BIN_PROVIDER);
         AttributeType.LINK_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MIN_DATETIME_ATTRIBUTE_BIN_PROVIDER);
 
+        AttributeType.LINK_SUM_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ByteObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_SUM_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_SUM_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ShortObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_SUM_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_SUM_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(IntegerObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_SUM_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_SUM_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(LongObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_SUM_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_SUM_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(FloatObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_SUM_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_SUM_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(DoubleObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_SUM_DOUBLE_ATTRIBUTE_BIN_PROVIDER);
+
+        AttributeType.LINK_AVERAGE_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ByteObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_AVERAGE_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_AVERAGE_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ShortObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_AVERAGE_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_AVERAGE_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(IntegerObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_AVERAGE_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_AVERAGE_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(LongObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_AVERAGE_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_AVERAGE_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(FloatObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_AVERAGE_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_AVERAGE_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(DoubleObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_AVERAGE_DOUBLE_ATTRIBUTE_BIN_PROVIDER);
+
+        AttributeType.LINK_MAX_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ByteObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MAX_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_MAX_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ShortObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MAX_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_MAX_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(IntegerObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MAX_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_MAX_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(LongObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MAX_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_MAX_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(FloatObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MAX_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_MAX_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(DoubleObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MAX_DOUBLE_ATTRIBUTE_BIN_PROVIDER);
+
+        AttributeType.LINK_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ByteObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MIN_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ShortObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MIN_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(IntegerObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MIN_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(LongObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MIN_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(FloatObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MIN_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.LINK_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(DoubleObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.LINK_TRANSACTION_MIN_DOUBLE_ATTRIBUTE_BIN_PROVIDER);
+        
         AttributeType.LINK_UNIQUE_VALUES_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(AttributeType.DEFAULT_ATTRIBUTE_TYPE, DefaultBinCreators.LINK_TRANSACTION_UNIQUE_VALUES_ATTRIBUTE_BIN_PROVIDER);
 
         // EDGE AGGREGATE FUNCTIONS FOR TRANSACTION ATTRIBUTES
@@ -128,6 +162,34 @@ public class DefaultBinCreatorProvider extends AttributeBinCreatorProvider {
         AttributeType.EDGE_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(FloatAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MIN_FLOAT_ATTRIBUTE_BIN_PROVIDER);
         AttributeType.EDGE_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(DoubleAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MIN_DOUBLE_ATTRIBUTE_BIN_PROVIDER);
         AttributeType.EDGE_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MIN_DATETIME_ATTRIBUTE_BIN_PROVIDER);
+
+        AttributeType.EDGE_SUM_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ByteObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_SUM_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_SUM_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ShortObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_SUM_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_SUM_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(IntegerObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_SUM_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_SUM_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(LongObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_SUM_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_SUM_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(FloatObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_SUM_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_SUM_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(DoubleObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_SUM_DOUBLE_ATTRIBUTE_BIN_PROVIDER);
+
+        AttributeType.EDGE_AVERAGE_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ByteObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_AVERAGE_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_AVERAGE_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ShortObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_AVERAGE_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_AVERAGE_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(IntegerObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_AVERAGE_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_AVERAGE_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(LongObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_AVERAGE_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_AVERAGE_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(FloatObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_AVERAGE_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_AVERAGE_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(DoubleObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_AVERAGE_DOUBLE_ATTRIBUTE_BIN_PROVIDER);
+
+        AttributeType.EDGE_MAX_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ByteObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MAX_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_MAX_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ShortObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MAX_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_MAX_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(IntegerObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MAX_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_MAX_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(LongObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MAX_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_MAX_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(FloatObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MAX_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_MAX_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(DoubleObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MAX_DOUBLE_ATTRIBUTE_BIN_PROVIDER);
+
+        AttributeType.EDGE_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ByteObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MIN_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(ShortObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MIN_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(IntegerObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MIN_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(LongObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MIN_LONG_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(FloatObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MIN_FLOAT_ATTRIBUTE_BIN_PROVIDER);
+        AttributeType.EDGE_MIN_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(DoubleObjectAttributeDescription.ATTRIBUTE_NAME, DefaultBinCreators.EDGE_TRANSACTION_MIN_DOUBLE_ATTRIBUTE_BIN_PROVIDER);
 
         AttributeType.EDGE_UNIQUE_VALUES_TRANSACTION_ATTRIBUTE.registerAttributeBinCreator(AttributeType.DEFAULT_ATTRIBUTE_TYPE, DefaultBinCreators.EDGE_TRANSACTION_UNIQUE_VALUES_ATTRIBUTE_BIN_PROVIDER);
 

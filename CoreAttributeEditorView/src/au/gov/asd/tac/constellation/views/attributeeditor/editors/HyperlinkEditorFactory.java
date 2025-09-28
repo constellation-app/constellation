@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,17 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type hyperlink
  *
  * @author twilight_sparkle
  */
@@ -36,8 +35,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
     @Override
-    public AbstractEditor<URI> createEditor(final EditOperation editOperation, final DefaultGetter<URI> defaultGetter, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
-        return new HyperlinkEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<URI> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<URI> validator, final URI defaultValue, final URI initialValue) {
+        return new HyperlinkEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -47,16 +46,18 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
     public class HyperlinkEditor extends AbstractEditor<URI> {
 
-        private CheckBox noValueCheckBox;
         private TextField textField;
 
-        protected HyperlinkEditor(final EditOperation editOperation, final DefaultGetter<URI> defaultGetter, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected HyperlinkEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<URI> validator, final URI defaultValue, final URI initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
+        }
+        
+        protected String getURIText() {
+            return textField.getText();
         }
 
         @Override
         public void updateControlsWithValue(final URI value) {
-            noValueCheckBox.setSelected(value == null);
             if (value != null) {
                 textField.setText(String.valueOf(value));
             }
@@ -64,9 +65,6 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
         @Override
         protected URI getValueFromControls() throws ControlsInvalidException {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
             try {
                 return new URI(textField.getText());
             } catch (final URISyntaxException ex) {
@@ -76,22 +74,12 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
             textField = new TextField();
             textField.textProperty().addListener((o, n, v) -> update());
-
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                textField.setDisable(noValueCheckBox.isSelected());
-                update();
-            });
-
-            controls.addRow(0, textField);
-            controls.addRow(1, noValueCheckBox);
+            
+            final VBox controls = new VBox(textField);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
         }
     }

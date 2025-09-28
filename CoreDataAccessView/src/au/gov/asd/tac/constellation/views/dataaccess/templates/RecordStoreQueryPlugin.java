@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,15 +34,14 @@ import au.gov.asd.tac.constellation.plugins.arrangements.VertexListInclusionGrap
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
+import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 /**
  * A plugin template for a query plugin that uses RecordStores for its
@@ -78,7 +77,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
     private final List<RecordStoreValidator> validators;
 
     private static final String THREAD_POOL_NAME = "RecordStore Query Plugin";
-    private static final ExecutorService PLUGIN_EXECUTOR = Executors.newCachedThreadPool();
+    private static final ExecutorService PLUGIN_EXECUTOR = ConstellationGlobalThreadPool.getThreadPool().getCachedThreadPool();
 
     /**
      * Base constructor for all implementations of RecordStoreQueryPlugin
@@ -110,17 +109,12 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
     @Override
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         switch (getRecordStoreType()) {
-            case GraphRecordStoreUtilities.SOURCE:
-                queryRecordStore = GraphRecordStoreUtilities.getSelectedVertices(graph);
-                break;
-            case GraphRecordStoreUtilities.TRANSACTION:
-                queryRecordStore = GraphRecordStoreUtilities.getSelectedTransactions(graph);
-                break;
-            case GraphRecordStoreUtilities.ALL:
-                queryRecordStore = GraphRecordStoreUtilities.getAllSelected(graph);
-                break;
-            default:
-                break;
+            case GraphRecordStoreUtilities.SOURCE -> queryRecordStore = GraphRecordStoreUtilities.getSelectedVertices(graph);
+            case GraphRecordStoreUtilities.TRANSACTION -> queryRecordStore = GraphRecordStoreUtilities.getSelectedTransactions(graph);
+            case GraphRecordStoreUtilities.ALL -> queryRecordStore = GraphRecordStoreUtilities.getAllSelected(graph);
+            default -> {
+                // Do nothing
+            }
         }
     }
 
@@ -169,10 +163,10 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
             // If the query thread throws an exception then cancel the plugin.
         } catch (ExecutionException ex) {
             final Throwable cause = ex.getCause();
-            if (cause instanceof RuntimeException) {
-                throw (RuntimeException) cause;
-            } else if (cause instanceof PluginException) {
-                throw (PluginException) cause;
+            if (cause instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            } else if (cause instanceof PluginException pluginException) {
+                throw pluginException;
             } else {
                 throw new RuntimeException(ex);
             }
@@ -310,7 +304,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
      */
     protected void removeValidator(final Class<? extends RecordStoreValidator> c) {
         // Create a new List that contains everything but instances of the given class.
-        final List<RecordStoreValidator> rv = validators.stream().filter(v -> !v.getClass().equals(c)).collect(Collectors.toList());
+        final List<RecordStoreValidator> rv = validators.stream().filter(v -> !v.getClass().equals(c)).toList();
         validators.clear();
         validators.addAll(rv);
     }

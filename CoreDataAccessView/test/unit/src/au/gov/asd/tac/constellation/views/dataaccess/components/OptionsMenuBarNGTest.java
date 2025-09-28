@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessParametersIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
@@ -29,6 +30,7 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
@@ -109,12 +111,14 @@ public class OptionsMenuBarNGTest {
             optionsMenuBar.init();
         }
 
+        final String iconSet = JavafxStyleManager.isDarkTheme() ? "Light" : "Dark";
+        
         // Load Templates Menu Item
         verifyMenuItem(
                 optionsMenuBar.getLoadMenuItem(),
                 "Load Templates",
                 new Image(OptionsMenuBar.class.getResourceAsStream(
-                        "resources/DataAccessLoadTemplate.png"
+                        "resources/DataAccessLoadTemplate" + iconSet + ".png"
                 ))
         );
 
@@ -134,7 +138,16 @@ public class OptionsMenuBarNGTest {
                 optionsMenuBar.getSaveMenuItem(),
                 "Save Templates",
                 new Image(OptionsMenuBar.class.getResourceAsStream(
-                        "resources/DataAccessSaveTemplate.png"
+                        "resources/DataAccessSaveTemplate" + iconSet + ".png"
+                ))
+        );
+
+        // Connection Logging Menu Item
+        verifyMenuItem(
+                optionsMenuBar.getConnectionLoggingMenuItem(),
+                "Connection Logging",
+                new Image(OptionsMenuBar.class.getResourceAsStream(
+                        "resources/DataAccessConnectionLogging" + iconSet + ".png"
                 ))
         );
 
@@ -143,14 +156,16 @@ public class OptionsMenuBarNGTest {
             final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
             final TabPane tabPane = mock(TabPane.class);
             final ActionEvent actionEvent = mock(ActionEvent.class);
+            final Scene scene = mock(Scene.class);
 
             when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
+            when(dataAccessPane.getScene()).thenReturn(scene);
             when(dataAccessTabPane.getTabPane()).thenReturn(tabPane);
 
             optionsMenuBar.getSaveMenuItem().getOnAction().handle(actionEvent);
 
             prefProviderMockedStatic.verify(() -> DataAccessParametersIoProvider
-                    .saveParameters(tabPane));
+                    .saveParameters(tabPane, null));
             verify(actionEvent).consume();
         }
 
@@ -159,7 +174,7 @@ public class OptionsMenuBarNGTest {
                 optionsMenuBar.getSaveResultsItem(),
                 "Save Results",
                 new Image(OptionsMenuBar.class.getResourceAsStream(
-                        "resources/DataAccessSaveResults.png"
+                        "resources/DataAccessSaveResults" + iconSet + ".png"
                 ))
         );
         assertTrue(optionsMenuBar.getSaveResultsItem().isSelected());
@@ -171,7 +186,7 @@ public class OptionsMenuBarNGTest {
                 optionsMenuBar.getDeselectPluginsOnExecutionMenuItem(),
                 "Deselect On Go",
                 new Image(OptionsMenuBar.class.getResourceAsStream(
-                        "resources/DataAccessUnchecked.png"
+                        "resources/DataAccessUnchecked" + iconSet + ".png"
                 ))
         );
         assertTrue(optionsMenuBar.getDeselectPluginsOnExecutionMenuItem().isSelected());
@@ -202,6 +217,7 @@ public class OptionsMenuBarNGTest {
                         optionsMenuBar.getLoadMenuItem(),
                         optionsMenuBar.getSaveMenuItem(),
                         optionsMenuBar.getSaveResultsItem(),
+                        optionsMenuBar.getConnectionLoggingMenuItem(),
                         optionsMenuBar.getDeselectPluginsOnExecutionMenuItem()
                 )
         );
@@ -319,11 +335,8 @@ public class OptionsMenuBarNGTest {
         }
 
         // Compare images size
-        if (firstImage.getWidth() != secondImage.getWidth()) {
-            return false;
-        }
-
-        if (firstImage.getHeight() != secondImage.getHeight()) {
+        if (firstImage.getWidth() != secondImage.getWidth()
+                || firstImage.getHeight() != secondImage.getHeight()) {
             return false;
         }
 

@@ -44,6 +44,7 @@
 package au.gov.asd.tac.constellation.graph.file.open;
 
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import com.google.common.collect.ImmutableList;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -52,6 +53,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -104,24 +107,54 @@ public final class RecentFiles {
      */
     private static final int MAX_HISTORY_ITEMS = 10;
 
+    /**
+     * This is the system property that is set to true in order to make the AWT
+     * thread run in headless mode for tests, etc.
+     */
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
+    
+    /**
+     * Flag to indicate if the init process has completed, 
+     * which means the recent files "history" data is now available
+     */
+    private static final CountDownLatch historyReady = new CountDownLatch(1);
+
     private RecentFiles() {
         // Intentionally left blank
     }
 
     /**
-     * Starts to listen for recently closed files
+     * Will start a listener for recently closed files
      */
     public static void init() {
-        WindowManager.getDefault().invokeWhenUIReady(() -> {
-            final List<HistoryItem> loaded = load();
-            synchronized (HISTORY_LOCK) {
-                HISTORY.addAll(0, loaded);
-            }
-            TopComponent.getRegistry().
-                    addPropertyChangeListener(RECENT_FILE_SAVED);
-        });
+        if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            WindowManager.getDefault().invokeWhenUIReady(() -> delayedInit());
+        } else {
+            // We are in HEADLESS mode ... do not wait for UI to be ready
+            delayedInit();
+        }
     }
 
+    /**
+     * Starts the listener for recently closed files
+     */
+    private static void delayedInit() {
+        final List<HistoryItem> loaded = load();
+        synchronized (HISTORY_LOCK) {
+            HISTORY.addAll(0, loaded);
+        }
+        TopComponent.getRegistry().addPropertyChangeListener(RECENT_FILE_SAVED);
+        decrementHistoryReadyLatch();        
+    }
+
+    /**
+     * Will decrement the historyReady CountDownLatch
+     * Placed this code into it's own method so it can be called separately in unit testing.
+     */
+    public static void decrementHistoryReadyLatch(){
+        historyReady.countDown();
+    }
+    
     /**
      * Add the specified path to the recent file list.
      *
@@ -153,6 +186,17 @@ public final class RecentFiles {
      * @return list of recent files
      */
     public static List<HistoryItem> getUniqueRecentFiles() {
+        if (historyReady.getCount() != 0) {
+            try {
+                LOGGER.log(Level.WARNING, ">> Timing issue encountered: Recent Files data is being accessed before it has been initialised <<");
+                if (!historyReady.await(120, TimeUnit.SECONDS)) {
+                    LOGGER.log(Level.WARNING, ">> Recent Files did not initialise within 2 minutes <<", new Exception(NotifyDisplayer.BLOCK_POPUP_FLAG + "WARNING: Recent Files data did not initialise within a reasonable time"));
+                }
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, ex.toString(), ex);
+                Thread.currentThread().interrupt();
+            }
+        }
         synchronized (HISTORY_LOCK) {
             return getRecentFiles().stream()
                     .filter(file -> convertPath2File(file.getPath()) != null)
@@ -234,7 +278,7 @@ public final class RecentFiles {
         final Preferences localPrefs = getPrefs();
         for (int i = 0; i < history.size(); i++) {
             final HistoryItem hi = history.get(i);
-            if ((hi.id != i) && (hi.id >= history.size())) {
+            if (hi.id != i && hi.id >= history.size()) {
                 localPrefs.remove(PROP_URL_PREFIX + hi.id);
             }
             hi.id = i;
@@ -269,7 +313,7 @@ public final class RecentFiles {
             historyProbablyValid = false;
             synchronized (HISTORY_LOCK) {
                 // avoid duplicates
-                HistoryItem hItem = null;
+                HistoryItem hItem;
                 do {
                     hItem = findHistoryItem(path);
                 } while (HISTORY.remove(hItem));
@@ -283,26 +327,7 @@ public final class RecentFiles {
             }
         }
     }
-
-    /**
-     * Removes file represented by given TopComponent from the list
-     */
-    private static void removeFile(final TopComponent tc) {
-        historyProbablyValid = false;
-        if (tc instanceof CloneableTopComponent) {
-            final String path = obtainPath(tc);
-            if (path != null) {
-                synchronized (HISTORY_LOCK) {
-                    final HistoryItem hItem = findHistoryItem(path);
-                    if (hItem != null) {
-                        HISTORY.remove(hItem);
-                    }
-                    store();
-                }
-            }
-        }
-    }
-
+    
     private static String obtainPath(final TopComponent tc) {
         final DataObject dObj = tc.getLookup().lookup(DataObject.class);
         if (dObj != null) {
@@ -329,9 +354,13 @@ public final class RecentFiles {
     }
 
     public static FileObject convertPath2File(final String path) {
-        File f = new File(path);
-        f = FileUtil.normalizeFile(f);
-        return f == null ? null : FileUtil.toFileObject(f);
+        final File file = new File(path);
+        final File normalizedFile = FileUtil.normalizeFile(file);
+        if (normalizedFile == null || file.isDirectory()) {
+            return null;
+        } else {
+            return FileUtil.toFileObject(normalizedFile);
+        }
     }
 
     /**
@@ -376,8 +405,8 @@ public final class RecentFiles {
 
         public String getFileName() {
             if (fileName == null) {
-                int pos = path.lastIndexOf(File.separatorChar);
-                if ((pos != -1) && (pos < path.length())) {
+                final int pos = path.lastIndexOf(File.separatorChar);
+                if (pos != -1 && pos < path.length()) {
                     fileName = path.substring(pos + 1);
                 } else {
                     fileName = path;
@@ -393,8 +422,8 @@ public final class RecentFiles {
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj instanceof HistoryItem) {
-                return ((HistoryItem) obj).getPath().equals(path);
+            if (obj instanceof HistoryItem historyItem) {
+                return historyItem.getPath().equals(path);
             }
             return false;
         }

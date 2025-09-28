@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.pluginreporter.panes;
 
+import au.gov.asd.tac.constellation.plugins.gui.MultiChoiceInputPane;
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
@@ -31,7 +37,6 @@ import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -45,17 +50,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.controlsfx.control.CheckComboBox;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbPreferences;
 
 /**
- * A PluginReporterPane provides a UI where all PluginReports for a single graph
- * are displayed.
+ * A PluginReporterPane provides a UI where all PluginReports for a single graph are displayed.
  *
  * @author sirius
  */
-public class PluginReporterPane extends BorderPane implements ListChangeListener<String> {
+public class PluginReporterPane extends BorderPane {
 
     private static final String FILTERED_TAGS_KEY = "filteredTags";
 
@@ -66,10 +69,8 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private GraphReport graphReport = null;
 
     private final ObservableList<String> availableTags = FXCollections.observableArrayList();
-    private final CheckComboBox<String> tagComboBox = new CheckComboBox<>(availableTags);
-    private final Set<String> filteredTags = new HashSet<>();
+    private final Set<String> filteredTags = new HashSet<>(); // filter out tags
     private PluginReportFilter pluginReportFilter = null;
-
 
     // The height of the report box last time we looked
     // This allows us to see if a change in the vertical scroll
@@ -88,20 +89,45 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     // the JavaFX thread from running out of memory
     private static final int MAXIMUM_REPORT_PANES = 300;
 
+    final PluginParameters params = new PluginParameters();
+    public static final String REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(PluginReporterPane.class, "report_settings");    
+  
     public PluginReporterPane() {
 
         // Update filtered tags from preferences
         final Preferences prefs = NbPreferences.forModule(PluginReporterPane.class);
         String filteredTagString = prefs.get(FILTERED_TAGS_KEY, PluginTags.LOW_LEVEL);
-        filteredTags.addAll(Arrays.asList(filteredTagString.split(SeparatorConstants.TAB, 0)));
-
+        filteredTags.addAll(Arrays.asList(filteredTagString.trim().split(SeparatorConstants.TAB, 0)));
+        
+        // Add multichoice filter
+        
+        final PluginParameter<MultiChoiceParameterValue> reportSettingOptions = MultiChoiceParameterType.build(REPORT_SETTINGS_PARAMETER_ID);
+        
+        reportSettingOptions.setName("Report Settings");
+        reportSettingOptions.setDescription("Report Settings");
+        reportSettingOptions.setEnabled(true);
+        
+        params.addParameter(reportSettingOptions);
+        
+        params.addController(REPORT_SETTINGS_PARAMETER_ID, (masterId, parameters, change) -> {
+            if (change == ParameterChange.VALUE) {
+                onChanged();
+           }
+        });
+        
         // The filter drop down
         Label filterLabel = new Label("Filter: ");
-        tagComboBox.setMaxWidth(Double.MAX_VALUE);
-        tagComboBox.setMinWidth(50);
+        
+        // Add MultiChoiceInputPane as Filter
+        final MultiChoiceInputPane reportSettingPane = new MultiChoiceInputPane(reportSettingOptions);
+        reportSettingPane.setFieldWidth(250);
+        reportSettingPane.setFieldMinWidth(200);
+        reportSettingPane.setMaxHeight(20.0);
+
         // Group these together so the Toolbar treats them as a unit.
-        final HBox filterBox = new HBox(filterLabel, tagComboBox);
+        final HBox filterBox = new HBox(filterLabel, reportSettingPane);
         filterBox.setAlignment(Pos.BASELINE_LEFT);
+        filterBox.setPadding(new Insets(0, 0, 4, 0));
 
         // The clear button
         Button clearButton = new Button("Clear");
@@ -119,13 +145,14 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             setPluginReportFilter(defaultReportFilter);
         });
 
-        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
+        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
         Button helpButton = new Button("", helpImage);
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent; -fx-effect: null; ");
         helpButton.setOnAction((ActionEvent event)
                 -> new HelpCtx(getClass().getPackage().getName()).display());
 
         controlToolbar.getItems().addAll(
-                filterBox,
+                filterLabel, reportSettingPane,
                 clearButton, showAllButton, helpButton);
         setTop(controlToolbar);
 
@@ -149,14 +176,19 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         });
         setCenter(reportBoxScroll);
     }
-
-    @Override
-    public void onChanged(ListChangeListener.Change<? extends String> c) {
-        filteredTags.addAll(tagComboBox.getItems());
-        filteredTags.removeAll(tagComboBox.getCheckModel().getCheckedItems());
+    
+    public void onChanged() {
+        if (params.hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
+            final MultiChoiceParameterValue multiChoiceValue = params.getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
+            final List<String> options = multiChoiceValue.getOptions();
+            final List<String> choices = multiChoiceValue.getChoices();
+            
+            filteredTags.addAll(options);
+            filteredTags.removeAll(choices);            
+        }                
 
         // Save the new filtered tags to preferences
-        StringBuilder prefString = new StringBuilder();
+        final StringBuilder prefString = new StringBuilder();
         String delimiter = "";
         for (String filteredTag : filteredTags) {
             prefString.append(delimiter);
@@ -181,8 +213,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     }
 
     /**
-     * Update the reports shown in the report box to reflect those recorded
-     * against the current graph.
+     * Update the reports shown in the report box to reflect those recorded against the current graph.
      *
      * @param refresh
      */
@@ -221,25 +252,31 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     }
 
     void updateTags() {
-        tagComboBox.getCheckModel().getCheckedItems().removeListener(this);
-        tagComboBox.getCheckModel().clearChecks();
+        final List<String> alltags = new ArrayList<>();
         if (graphReport != null) {
             final List<String> tags = new ArrayList<>(graphReport.getUTags());
-            int[] selectedIndices = new int[tags.size()];
-            int selectedIndexCount = 0;
-            int tagIndex = 0;
-            for (String tag : tags) {
+            final List<String> selectedIndices = new ArrayList<>();
+            for (final String tag : tags) {
+                alltags.add(tag);
                 if (!availableTags.contains(tag)) {
                     availableTags.add(tag);
                 }
                 if (!filteredTags.contains(tag)) {
-                    tagIndex = availableTags.indexOf(tag);
-                    selectedIndices[selectedIndexCount++] = tagIndex; //AIOOBE = DED.
-                }
+                    selectedIndices.add(tag); //AIOOBE = DED.
+                }            
             }
-            tagComboBox.getCheckModel().checkIndices(Arrays.copyOfRange(selectedIndices, 0, selectedIndexCount));
+                        
+            if (params.hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
+                final MultiChoiceParameterValue multiChoiceValue = params.getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);                
+                multiChoiceValue.setOptions(alltags);
+                multiChoiceValue.setChoices(selectedIndices);
+                @SuppressWarnings("unchecked") // REPORT_SETTINGS_PARAMETER will always be of type MultiChoiceParameter
+                final PluginParameter<MultiChoiceParameterValue> filterTypeParameter 
+                        = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(REPORT_SETTINGS_PARAMETER_ID);
+                // fire property event to prevent a looping event trigger on parameter value
+                filterTypeParameter.fireChangeEvent(ParameterChange.PROPERTY);
+            }
         }
-        tagComboBox.getCheckModel().getCheckedItems().addListener(this);
     }
 
     public synchronized void setGraphReport(GraphReport graphReport) {
@@ -254,4 +291,12 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             return report.getStartTime() > clearTime;
         }
     };
+
+    public synchronized GraphReport getGraphReport() {
+        return graphReport;
+    }
+
+    public PluginReportFilter getPluginReportFilter() {
+        return pluginReportFilter;
+    }
 }

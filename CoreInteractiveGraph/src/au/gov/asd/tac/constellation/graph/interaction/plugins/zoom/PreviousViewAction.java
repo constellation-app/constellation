@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,9 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
@@ -33,26 +30,11 @@ import org.openide.util.NbBundle.Messages;
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.zoom.PreviousViewAction")
 @ActionRegistration(displayName = "#CTL_PreviousViewAction", iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/zoom/resources/zoom_from_selection.png", surviveFocusChange = true)
-@ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Tools", position = 0)
-})
+@ActionReference(path = "Menu/Experimental/Tools", position = 0)
 @Messages("CTL_PreviousViewAction=Previous Camera View")
-public final class PreviousViewAction implements ActionListener {
-
-    private final GraphNode context;
-
-    /**
-     * Construct a new ZoomFromSelectionAction.
-     *
-     * @param context GraphNode.
-     */
+public final class PreviousViewAction extends SimplePluginAction {
+    
     public PreviousViewAction(final GraphNode context) {
-        this.context = context;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.PREVIOUS_VIEW)
-                .executeLater(context.getGraph());
+        super(context, InteractiveGraphPluginRegistry.PREVIOUS_VIEW);
     }
 }

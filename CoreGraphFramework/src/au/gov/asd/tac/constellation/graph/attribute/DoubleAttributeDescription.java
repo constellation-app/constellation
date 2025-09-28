@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,25 +50,29 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
     public static final String ATTRIBUTE_NAME = "double";
     public static final Class<Double> NATIVE_CLASS = double.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.DOUBLE;
-    private static final double DEFAULT_VALUE = 0;
+    public static final double DEFAULT_VALUE = 0;
 
     private double[] data = new double[0];
     private double defaultValue = DEFAULT_VALUE;
-
-    @SuppressWarnings("unchecked") // Casts are manually checked
+    
     private double convertFromObject(final Object object) throws IllegalArgumentException {
-        if (object == null) {
-            return (double) getDefault();
-        } else if (object instanceof Number) {
-            return ((Number) object).doubleValue();
-        } else if (object instanceof Boolean) {
-            return ((Boolean) object) ? 1.0 : 0.0;
-        } else if (object instanceof Character) {
-            return (double) ((Character) object);
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else {
-            throw new IllegalArgumentException(String.format(
+        switch (object) {
+            case Number number -> {
+                return number.doubleValue();
+            }       
+            case Boolean bool -> {
+                return Boolean.TRUE.equals(bool) ? 1.0 : 0.0;
+            }       
+            case Character character -> {
+                return character;
+            }       
+            case String string -> {
+                return convertFromString(string);
+            }
+            case null -> {
+                return (double) getDefault();
+            }
+            default -> throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to double", object.getClass()));
         }
     }
@@ -81,7 +85,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
                 return Double.parseDouble(string);
             } catch (final NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(
-                        "Error converting String '%s' to short", string), ex);
+                        "Error converting String '%s' to double", string), ex);
             }
         }
     }
@@ -132,7 +136,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = (double) value;
+        data[id] = value;
     }
 
     @Override
@@ -142,7 +146,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = (double) value;
+        data[id] = value;
     }
 
     @Override
@@ -152,7 +156,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public void setInt(final int id, final int value) {
-        data[id] = (double) value;
+        data[id] = value;
     }
 
     @Override
@@ -162,7 +166,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public void setLong(final int id, final long value) {
-        data[id] = (double) value;
+        data[id] = value;
     }
 
     @Override
@@ -172,7 +176,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public void setFloat(final int id, final float value) {
-        data[id] = (double) value;
+        data[id] = value;
     }
 
     @Override
@@ -202,7 +206,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = (double) value;
+        data[id] = value;
     }
 
     @Override
@@ -286,12 +290,12 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (DoubleReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new DoubleVariable() {
             @Override
             public double readDouble() {
@@ -299,7 +303,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
             }
 
             @Override
-            public void writeDouble(double value) {
+            public void writeDouble(final double value) {
                 graph.setDoubleValue(attribute, indexReadable.readInt(), value);
             }
         };

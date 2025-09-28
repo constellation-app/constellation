@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,9 @@
 package au.gov.asd.tac.constellation.views.analyticview.results;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
+import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,7 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 /**
  * The result of an AnalyticPlugin, which will be supported by one or more
@@ -39,26 +39,24 @@ public abstract class AnalyticResult<D extends AnalyticData> {
     protected final Map<IdentificationData, D> result = new LinkedHashMap<>();
     protected final Map<String, String> metadata = new HashMap<>();
     protected boolean ignoreNullResults = false;
-    protected AnalyticController analyticController = null;
+    protected AnalyticViewController analyticViewController = null;
     protected final List<ResultListener<D>> resultListeners = new ArrayList<>();
 
-    public void setSelectionOnGraph(final List<D> results) {
+    public void setSelectionOnGraph(final Iterable<D> results) {
         final List<Integer> verticesToSelect = new ArrayList<>();
         final List<Integer> transactionsToSelect = new ArrayList<>();
-        results.forEach(result -> {
-            if (result.getElementType() == GraphElementType.VERTEX) {
-                verticesToSelect.add(result.getElementId());
-            } else if (result.getElementType() == GraphElementType.TRANSACTION) {
-                transactionsToSelect.add(result.getElementId());
-            } else {
-                // Do nothing
+        results.forEach(analyticResult -> {
+            if (analyticResult.getElementType() == GraphElementType.VERTEX) {
+                verticesToSelect.add(analyticResult.getElementId());
+            } else if (analyticResult.getElementType() == GraphElementType.TRANSACTION) {
+                transactionsToSelect.add(analyticResult.getElementId());
             }
         });
-        analyticController.selectOnGraph(GraphElementType.VERTEX, verticesToSelect);
-        analyticController.selectOnGraph(GraphElementType.TRANSACTION, transactionsToSelect);
+        analyticViewController.selectOnGraph(GraphElementType.VERTEX, verticesToSelect);
+        analyticViewController.selectOnGraph(GraphElementType.TRANSACTION, transactionsToSelect);
     }
 
-    public void setSelectionOnVisualisation(final GraphElementType elementType, final List<Integer> elementIds) {
+    public void setSelectionOnVisualisation(final GraphElementType elementType, final Collection<Integer> elementIds) {
         final List<D> selectedElementScores = new ArrayList<>();
         final List<D> ignoredElementScores = new ArrayList<>();
         result.values().forEach(elementScore -> {
@@ -66,8 +64,6 @@ public abstract class AnalyticResult<D extends AnalyticData> {
                 ignoredElementScores.add(elementScore);
             } else if (elementIds.contains(elementScore.getElementId())) {
                 selectedElementScores.add(elementScore);
-            } else {
-                // Do nothing
             }
         });
         resultListeners.forEach(listener -> listener.resultChanged(selectedElementScores, ignoredElementScores));
@@ -103,7 +99,7 @@ public abstract class AnalyticResult<D extends AnalyticData> {
     }
 
     public final List<D> get() {
-        return Collections.unmodifiableList(result.values().stream().collect(Collectors.toList()));
+        return Collections.unmodifiableList(result.values().stream().toList());
     }
 
     public final Map<IdentificationData, D> getResult() {
@@ -114,8 +110,8 @@ public abstract class AnalyticResult<D extends AnalyticData> {
         this.result.put(resultData.getIdentificationData(), resultData);
     }
 
-    public void addAll(final List<D> results) {
-        results.forEach(result -> this.result.put(result.getIdentificationData(), result));
+    public void addAll(final Iterable<D> results) {
+        results.forEach(analyticResult -> this.result.put(analyticResult.getIdentificationData(), analyticResult));
     }
 
     public final boolean hasMetadata() {
@@ -138,8 +134,8 @@ public abstract class AnalyticResult<D extends AnalyticData> {
         this.ignoreNullResults = ignoreNullResults;
     }
 
-    public final void setAnalyticController(final AnalyticController analyticController) {
-        this.analyticController = analyticController;
+    public final void setAnalyticViewController(final AnalyticViewController analyticViewController) {
+        this.analyticViewController = analyticViewController;
     }
 
     public final void addResultListener(final ResultListener<D> listener) {
