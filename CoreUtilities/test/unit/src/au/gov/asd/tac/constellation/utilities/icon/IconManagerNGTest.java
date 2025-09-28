@@ -44,7 +44,7 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class IconManagerNGTest {
-
+    
     private static final Logger LOGGER = Logger.getLogger(IconManagerNGTest.class.getName());
 
     private static final Map<String, ConstellationIcon> TEST_CACHE = new HashMap<>();

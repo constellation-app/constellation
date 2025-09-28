@@ -80,7 +80,7 @@ public class DefaultCustomIconProviderNGTest {
             defaultCustomIconProviderMock.when(() -> DefaultCustomIconProvider.containsIcon(Mockito.any())).thenCallRealMethod();
             defaultCustomIconProviderMock.when(() -> DefaultCustomIconProvider.reloadIcons()).thenCallRealMethod();
             defaultCustomIconProviderMock.when(() -> DefaultCustomIconProvider.loadIcons()).thenCallRealMethod();
-
+            
             // Create a test icon to be removed by testRemoveIcon
             final ConstellationColor iconColor = ConstellationColor.BLUEBERRY;
             final ConstellationIcon iconBackground = DefaultIconProvider.FLAT_SQUARE;
@@ -93,10 +93,10 @@ public class DefaultCustomIconProviderNGTest {
                     .build();
             icon.setEditable(true);
             System.out.println("===== INITIALISE TEST =====");
-
+            
             prepareFileDir(testFile);
             DefaultCustomIconProvider.reloadIcons();
-
+            
             // Add a test icon to be removed later
             System.out.println("Adding initial Icon: " + icon.getExtendedName());
             IconManager.addIcon(icon);
@@ -117,7 +117,7 @@ public class DefaultCustomIconProviderNGTest {
             System.out.print("TEST: Add an icon: ");
             testAddIcon(icon2);
             System.out.println(" *PASSED*");
-
+            
             //Run testAddIconFileDoesExist
             System.out.print("TEST: Dont allow adding same icon again: ");
             testAddIconFileDoesExist(icon2);
@@ -127,22 +127,21 @@ public class DefaultCustomIconProviderNGTest {
             System.out.print("TEST: Remove the new icon: ");
             testRemoveIcon(icon2);
             System.out.println(" *PASSED*");
-
+            
             // Run testRemoveIconDoesNotExist
             System.out.print("TEST: Dont allow removing same icon again: ");
             testRemoveIconDoesNotExist(icon2);
             System.out.println(" *PASSED*");
-
+            
             // Run testLoadIcons
             System.out.print("TEST: Check icon cache matches directory entries: ");
             testCacheMatch(testFile);
             System.out.println(" *PASSED*");
-
+            
             System.out.print("TEST: Check the number of calls on a static method: ");
             // Verify defaultCustomIconProvider.getIconDirectory was called the correct number of times
             defaultCustomIconProviderMock.verify(() -> DefaultCustomIconProvider.getIconDirectory(), atLeast(5));
             System.out.println(" *PASSED*");
-
         }
     }
 
@@ -172,7 +171,7 @@ public class DefaultCustomIconProviderNGTest {
         // Check if the icon is present in the local cache
         final boolean localCacheEntryExists = DefaultCustomIconProvider.containsIcon(icon.getName());
         assertEquals(localCacheEntryExists, true);
-
+        
         // try to add an icon that already exists
         final boolean result = IconManager.addIcon(icon);
         assertEquals(result, false);
@@ -187,7 +186,6 @@ public class DefaultCustomIconProviderNGTest {
         // Test removing an icon
         final boolean result = IconManager.removeIcon(icon.getExtendedName());
         assertEquals(result, true);
-
     }
 
     /**
