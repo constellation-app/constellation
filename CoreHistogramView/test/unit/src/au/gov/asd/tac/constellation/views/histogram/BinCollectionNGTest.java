@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.histogram;
 
-import java.util.Arrays;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

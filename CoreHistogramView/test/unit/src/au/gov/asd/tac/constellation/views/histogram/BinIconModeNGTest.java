@@ -51,7 +51,7 @@ public class BinIconModeNGTest {
         final BinIconMode instance = BinIconMode.NONE;
         final float expResult = 0.0F;
         final float result = instance.getWidth();
-        assertEquals(result, expResult, 0.0);
+        assertEquals(result, expResult);
     }
 
     /**
@@ -63,7 +63,7 @@ public class BinIconModeNGTest {
         final BinIconMode instance = BinIconMode.ICON;
         final float expResult = 1.5F;
         final float result = instance.getWidth();
-        assertEquals(result, expResult, 0.0);
+        assertEquals(result, expResult);
     }
 
     /**
@@ -75,7 +75,7 @@ public class BinIconModeNGTest {
         final BinIconMode instance = BinIconMode.COLOR;
         final float expResult = 1.5F;
         final float result = instance.getWidth();
-        assertEquals(result, expResult, 0.0);
+        assertEquals(result, expResult);
     }
 
     /**
