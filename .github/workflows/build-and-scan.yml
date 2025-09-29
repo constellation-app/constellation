@@ -78,7 +78,7 @@ jobs:
       with:
         image: ${{ env.RUNNER_IMAGE }}
         options: |
-          --mount type=bind,source=${{ github.workspace }},target=/code
+          --mount "type=bind,source=${{ github.workspace }},target=/code"
           --workdir /code/constellation
         run: |
           .githubutilities/sonar.sh "${GITHUB_REPOSITORY}" "${PULL_REQUEST_NUMBER}" "${DESTINATION_BRANCH}" "${SOURCE_BRANCH}" "${SONAR_TOKEN}"
