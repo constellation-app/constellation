@@ -233,9 +233,7 @@ public class ProjectUpdater extends Task {
         final DocumentBuilder builder = builderFactory.newDocumentBuilder();
 
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        // Ant's build.xml can not use this
-//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         final Transformer transformer = transformerFactory.newTransformer();
 
         // Create a document to work on
@@ -253,9 +251,7 @@ public class ProjectUpdater extends Task {
 
     private static void saveXMLFile(final Document document, final File xmlFile) throws IOException, TransformerException {
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        // Ant's build.xml can not use this
-//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         final Transformer transformer = transformerFactory.newTransformer();
 
         try (final FileOutputStream out = new FileOutputStream(xmlFile)) {
