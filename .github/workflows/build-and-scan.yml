@@ -71,9 +71,6 @@ jobs:
           .githubutilities/run-tests.sh ${{ steps.verbosity.outputs.VERBOSITY }}
 
     - name: Run Sonar
-#      run: |
-#        docker pull "${RUNNER_IMAGE}"
-#        docker run --mount "type=bind,source=${{ github.workspace }},target=/code" --workdir /code/constellation/ "${RUNNER_IMAGE}" .githubutilities/sonar.sh "${GITHUB_REPOSITORY}" "${PULL_REQUEST_NUMBER}" "${DESTINATION_BRANCH}" "${SOURCE_BRANCH}" "${SONAR_TOKEN}"
       uses: addnab/docker-run-action@v3
       with:
         image: ${{ env.RUNNER_IMAGE }}
