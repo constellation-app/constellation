@@ -61,7 +61,6 @@ public class InfoWindowSupportNGTest {
         }
     }
 
-    //@Test(expectedExceptions = UnsupportedOperationException.class, expectedExceptionsMessageRegExp = "Not supported yet.")
     @Test
     public void infoWindowSupportTest_changed() {
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
