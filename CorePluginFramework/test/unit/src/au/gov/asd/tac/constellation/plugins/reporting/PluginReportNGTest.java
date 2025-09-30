@@ -48,7 +48,7 @@ public class PluginReportNGTest {
     private static final String PLUGIN_TEST_NAME = "Test";
     private static final String PLUGIN_TEST_DESCRIPTION = "DESCRIPTION";
     private static final String PLUGIN_TEST_MESSAGE = "TEST MESSAGE";
-    private static final int ACCEPTABLE_RANGE = 5;
+    private static final int ACCEPTABLE_RANGE = 3;
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -143,7 +143,7 @@ public class PluginReportNGTest {
     @Test
     public void testTime() {
         // test start time with some tolerance
-        assertEquals(report.getStartTime(), startTimeMillis, 3);
+        assertEquals(report.getStartTime(), startTimeMillis, ACCEPTABLE_RANGE);
         //test stop time
         final long currentTimeMillis = System.currentTimeMillis();
         report.stop();
