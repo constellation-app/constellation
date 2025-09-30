@@ -61,6 +61,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 /**
  * The HistogramDisplay provides a panel the actually shows the histogram bins with their associated bars and labels.
@@ -93,7 +94,7 @@ public class HistogramDisplay2 extends BorderPane {
     private static final int MAXIMUM_BAR_HEIGHT = 99;
     private static final int MINIMUM_BAR_WIDTH = 4;
     private static final int MINIMUM_SELECTED_WIDTH = 3;
-    private static final int MINIMUM_TEXT_WIDTH = 150;
+    private static final int MINIMUM_TEXT_WIDTH = 30;
     private static final int MAXIMUM_TEXT_WIDTH = 300;
     private static final int PREFERRED_HEIGHT = 600;
     private static final int DEFAULT_FONT_SIZE = 12;
@@ -123,7 +124,7 @@ public class HistogramDisplay2 extends BorderPane {
 
     private final TableView<HistogramBar> tableView = new TableView<>();
 
-    private double tableWidth = 0;
+    private double barWidth = 0;
     private static final int VISIBLE_INDEX_EXTEND = 3;
     private int firstVisibleIndex;
     private int lastVisibleIndex;
@@ -133,6 +134,7 @@ public class HistogramDisplay2 extends BorderPane {
 
     // Table view columns
     private final TableColumn<HistogramBar, Node> iconCol = new TableColumn<>("Icon");
+    private final TableColumn<HistogramBar, String> propertyCol = new TableColumn<>("Property");
     private final TableColumn<HistogramBar, StackPane> barCol = new TableColumn<>("Bar");
 
     private final HBox headerRow = new HBox();
@@ -145,6 +147,9 @@ public class HistogramDisplay2 extends BorderPane {
     private static final float TABLE_WIDTH_TO_PROPERTY_WIDTH_MULT = 0.3F;
     // Need to take 3 because otherwise the right of the bar is cut off
     private static final int BAR_LENGTH_SUBTRACTION = 3;
+
+    private double prevPropertyWidth = MINIMUM_TEXT_WIDTH;
+    private static final int PROPERTY_WIDTH_PADDING = 30;
 
     public static Color getBackgroundColor() {
         return BACKGROUND_COLOR;
@@ -178,10 +183,8 @@ public class HistogramDisplay2 extends BorderPane {
 
         setPrefHeight(PREFERRED_HEIGHT);
 
-        final TableColumn<HistogramBar, String> propertyCol = new TableColumn<>("Property");
         propertyCol.setCellValueFactory(new PropertyValueFactory<>("propertyName"));
         propertyCol.setResizable(false);
-        propertyCol.prefWidthProperty().bind(tableView.widthProperty().multiply(TABLE_WIDTH_TO_PROPERTY_WIDTH_MULT));
         propertyCol.setMinWidth(MINIMUM_TEXT_WIDTH);
         propertyCol.setMaxWidth(MAXIMUM_TEXT_WIDTH);
 
@@ -209,8 +212,9 @@ public class HistogramDisplay2 extends BorderPane {
         barCol.setCellValueFactory(new PropertyValueFactory("bar"));
         barCol.setResizable(false);
         barCol.setStyle("-fx-alignment: CENTER-LEFT;");
+
         // Automatically adjusts width of the column to fit
-        tableView.widthProperty().addListener((obs, oldVal, newVal) -> barCol.setPrefWidth((double) newVal - propertyCol.getWidth() - iconCol.getWidth() - BAR_PADDING));
+        tableView.widthProperty().addListener((obs, oldVal, newVal) -> barCol.setPrefWidth((double) newVal - Math.max(prevPropertyWidth, MINIMUM_TEXT_WIDTH) - iconCol.getWidth() - BAR_PADDING));
 
         // Update table whenever histogram is resized
         barCol.widthProperty().addListener((obs, oldVal, newVal) -> updateTable(true, (double) newVal - BAR_LENGTH_SUBTRACTION));
@@ -293,7 +297,7 @@ public class HistogramDisplay2 extends BorderPane {
 
         verticalBar.valueProperty().addListener((obs, oldVal, newVal) -> {
             recalculateVisibleIndexes((double) newVal);
-            updateTable(true, tableWidth);
+            updateTable(true, barWidth);
         });
     }
 
@@ -339,8 +343,20 @@ public class HistogramDisplay2 extends BorderPane {
     private synchronized void updateHeaderAndTable() {
         recalculateVisibleIndexes(prevScrollValue);
 
+        final double maxPropertyWidth = calculateLongestPropertyWidth(isRebuildRequired());
+        propertyCol.setPrefWidth(maxPropertyWidth);
+
+        barCol.setPrefWidth(tableView.getWidth() - maxPropertyWidth - iconCol.getWidth() - BAR_PADDING);
+
         updateHeader(barHeight * FONT_SCALE_FACTOR);
-        updateTable(true, tableWidth);
+        updateTable(true, barWidth);
+    }
+
+    private boolean isRebuildRequired() {
+        if (binCollection == null) {
+            return true;
+        }
+        return (prevNumBars != binCollection.getBins().length) || tableView.getItems().isEmpty();
     }
 
     private synchronized void updateTable(final boolean updateBinCounts, final double width) {
@@ -366,7 +382,7 @@ public class HistogramDisplay2 extends BorderPane {
             return;
         }
 
-        tableWidth = width;
+        barWidth = width;
 
         iconCol.setPrefWidth(barHeight + 10);
 
@@ -377,7 +393,7 @@ public class HistogramDisplay2 extends BorderPane {
 
         final ObservableList<HistogramBar> listOfHistogrambars = FXCollections.observableArrayList();
 
-        final boolean rebuildRows = (prevNumBars != bins.length) || tableView.getItems().isEmpty();
+        final boolean rebuildRows = isRebuildRequired();
 
         for (int i = 0; i < bins.length; i++) {
             final Bin bin = bins[i];
@@ -412,17 +428,18 @@ public class HistogramDisplay2 extends BorderPane {
             tableView.getItems().clear();
             tableView.setItems(listOfHistogrambars);
         }
+
         prevNumBars = bins.length;
         this.setCenter(mainVBox);
     }
 
     private void updateTableBars() {
-        updateTableBars(true, tableWidth);
+        updateTableBars(true, barWidth);
     }
 
     private void updateTableBars(final boolean updateBinCounts, final double width) {
         final Bin[] bins = binCollection.getBins();
-        tableWidth = width;
+        barWidth = width;
 
         final int maxCount = binCollection.getMaxElementCount();
         if (maxCount < 1) {
@@ -464,6 +481,53 @@ public class HistogramDisplay2 extends BorderPane {
 
         firstVisibleIndex = (int) Math.ceil(lower / heightPerRow) - VISIBLE_INDEX_EXTEND;
         lastVisibleIndex = (int) Math.ceil(upper / heightPerRow) + VISIBLE_INDEX_EXTEND;
+    }
+
+    private double calculateLongestPropertyWidth(final boolean rebuildRows) {
+        if (binCollection == null || tableView.getItems().isEmpty()) {
+            return 0;
+        }
+        final Bin[] bins = binCollection.getBins();
+
+        final ObservableList<HistogramBar> listOfHistogrambars = FXCollections.observableArrayList();
+        for (int i = 0; i < bins.length; i++) {
+            final Bin bin = bins[i];
+
+            // Property Text
+            final String category = bin.getLabel();
+            final String propertyString = category == null ? NO_VALUE : category;
+
+            // If rebuilding all row object put into list, else update row data
+            if (rebuildRows) {
+                listOfHistogrambars.add(new HistogramBar(null, propertyString, null, bin.getSelectedCount(), 0));
+            } else {
+                final HistogramBar histogramBar = tableView.getItems().get(i);
+                histogramBar.setPropertyName(propertyString);
+            }
+        }
+
+        if (rebuildRows) {
+            tableView.getItems().clear();
+            tableView.setItems(listOfHistogrambars);
+        }
+
+        // Create a Text object to measure string width
+        final Text text = new Text();
+        double maxWidth = 0;
+
+        // Iterate through items in the TableView
+        for (final HistogramBar item : tableView.getItems()) {
+            // Get the string representation for the specific column
+            final String cellValue = propertyCol.getCellData(item);
+            text.setText(cellValue);
+            double currentWidth = text.getLayoutBounds().getWidth();
+            if (currentWidth > maxWidth) {
+                maxWidth = currentWidth;
+            }
+        }
+
+        prevPropertyWidth = maxWidth + PROPERTY_WIDTH_PADDING;
+        return prevPropertyWidth;
     }
 
     private synchronized void updateHeader(final double fontSize) {
