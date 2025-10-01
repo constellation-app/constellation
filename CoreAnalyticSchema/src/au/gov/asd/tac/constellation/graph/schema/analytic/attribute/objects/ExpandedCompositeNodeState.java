@@ -189,7 +189,7 @@ public class ExpandedCompositeNodeState {
 
         // Add all the transactions between the expanded nodes to the expansion record store
         // Add the contraction record store to the graph, which creates the composite node and all its relevant transactions
-        int contractedVert = GraphRecordStoreUtilities.addRecordStoreToGraph(wg, addToGraphStore, false, false, null).get(0);
+        int contractedVert = GraphRecordStoreUtilities.addRecordStoreToGraph(wg, addToGraphStore, false, false, null, true).get(0);
 
         // Set the x,y,z and composite node state for the newly added composite node.
         wg.setFloatValue(xAttr, contractedVert, x);
