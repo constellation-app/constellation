@@ -305,6 +305,9 @@ public class HistogramDisplay2 extends BorderPane {
         this.binCollection = binCollection;
         this.binIconMode = binIconMode;
         activeBin = -1;
+        dragStart = -1;
+        dragEnd = -1;
+        tableView.getSelectionModel().clearSelection();
         Platform.runLater(() -> updateDisplay());
     }
 
@@ -321,6 +324,9 @@ public class HistogramDisplay2 extends BorderPane {
     public void updateBinCollection() {
         binCollection.deactivateBins();
         activeBin = -1;
+        dragStart = -1;
+        dragEnd = -1;
+        tableView.getSelectionModel().clearSelection();
         Platform.runLater(() -> updateDisplay());
     }
 
@@ -739,36 +745,42 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     protected void handleMousePressed(final MouseEvent e) {
-        if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
-            shiftDown = e.isShiftDown();
-            controlDown = e.isControlDown();
-
-            final int bar = tableView.getSelectionModel().getSelectedIndex();
-
-            dragStart = (shiftDown && activeBin >= 0) ? activeBin : bar;
-            dragEnd = bar;
-
-            binSelectionMode.mousePressed(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd);
-
-            // Only need to update bars
-            updateTableBars();
-
-            updateHeader(barHeight * FONT_SCALE_FACTOR);
+        if (binCollection == null || e.getButton() != MouseButton.PRIMARY) {
+            return;
         }
+
+        shiftDown = e.isShiftDown();
+        controlDown = e.isControlDown();
+
+        final int bar = tableView.getSelectionModel().getSelectedIndex();
+        if (bar == -1) {
+            return;
+        }
+
+        dragStart = (shiftDown && activeBin >= 0) ? activeBin : bar;
+        dragEnd = bar;
+
+        binSelectionMode.mousePressed(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd);
+
+        // Only need to update bars
+        updateTableBars();
+
+        updateHeader(barHeight * FONT_SCALE_FACTOR);
     }
 
     protected void handleMouseReleased(final MouseEvent e) {
         this.requestFocus();
-        if (binCollection != null && e.getButton() == MouseButton.PRIMARY) {
-
-            binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
-            activeBin = dragStart == dragEnd ? dragStart : -1;
-
-            // Only need to update bars
-            updateTableBars();
-
-            updateHeader(barHeight * FONT_SCALE_FACTOR);
+        if (binCollection == null || e.getButton() != MouseButton.PRIMARY || (dragStart == -1 && dragEnd == -1)) {
+            return;
         }
+
+        binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
+        activeBin = dragStart == dragEnd ? dragStart : -1;
+
+        // Only need to update bars
+        updateTableBars();
+
+        updateHeader(barHeight * FONT_SCALE_FACTOR);
     }
 
     protected void handleMouseEntered() {
