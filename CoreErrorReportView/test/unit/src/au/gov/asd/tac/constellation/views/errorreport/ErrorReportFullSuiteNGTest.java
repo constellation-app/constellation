@@ -170,7 +170,7 @@ public class ErrorReportFullSuiteNGTest {
         System.out.println("\n>>>> Check active levels: " + activeLevels);
 
         System.out.println("\n\n>>>> Waiting for WARN/INFO/FINE dialogs");
-        storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.WARNING, Level.INFO, Level.FINE)), 3);
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.WARNING, Level.INFO, Level.FINE)), 3);
         System.out.println("\n\n>>>> Done Waiting");
         System.out.println("\n>>>> Check WARN/INFO/FINE list size");
         assertEquals(storedList.size(), 3);
@@ -196,7 +196,7 @@ public class ErrorReportFullSuiteNGTest {
             erdm.showErrorDialog(erEntry, true); // should redisplay dialog in review mode
         }
 
-        storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.SEVERE, Level.WARNING, Level.INFO, Level.FINE)), 4);
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.SEVERE, Level.WARNING, Level.INFO, Level.FINE)), 4);
         dismissPopups(storedList);
 
         final ErrorReportTopComponent ertcInstance = new ErrorReportTopComponent();
@@ -220,7 +220,7 @@ public class ErrorReportFullSuiteNGTest {
         filterTypeParameter.fireChangeEvent(ParameterChange.PROPERTY);
         
         System.out.println("\n\n>>>> Waiting for TC dialogs");
-        storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.WARNING)), 1);
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.WARNING)), 1);
         System.out.println("\n\n>>>> Done Waiting");
 
         System.out.println("\n>>>> Check WARNINGS list size");
