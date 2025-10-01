@@ -126,11 +126,11 @@ public class HistogramDisplay2 extends BorderPane {
 
     private double barWidth = 0;
     private static final int VISIBLE_INDEX_EXTEND = 3;
-    private int firstVisibleIndex;
-    private int lastVisibleIndex;
 
     private static final int DEFAULT_FIRST_VISIBLE_INDEX = 0;
     private static final int DEFAULT_LAST_VISIBLE_INDEX = 40;
+    private int firstVisibleIndex = DEFAULT_FIRST_VISIBLE_INDEX;
+    private int lastVisibleIndex = DEFAULT_LAST_VISIBLE_INDEX;
 
     // Table view columns
     private final TableColumn<HistogramBar, Node> iconCol = new TableColumn<>("Icon");
@@ -144,12 +144,13 @@ public class HistogramDisplay2 extends BorderPane {
 
     private int prevNumBars = 0;
 
-    private static final float TABLE_WIDTH_TO_PROPERTY_WIDTH_MULT = 0.3F;
     // Need to take 3 because otherwise the right of the bar is cut off
     private static final int BAR_LENGTH_SUBTRACTION = 3;
 
     private double prevPropertyWidth = MINIMUM_TEXT_WIDTH;
     private static final int PROPERTY_WIDTH_PADDING = 30;
+    
+     private static final int GAP_BETWEEN_BARS = 6;
 
     public static Color getBackgroundColor() {
         return BACKGROUND_COLOR;
@@ -674,6 +675,7 @@ public class HistogramDisplay2 extends BorderPane {
     private void updateBarHeight() {
         barHeight = (barHeightBase * FontUtilities.getApplicationFontSize()) / DEFAULT_FONT_SIZE;
         tableView.setStyle(FONT_SIZE_CSS_PROPERTY + barHeight * FONT_SCALE_FACTOR);
+        tableView.setFixedCellSize(barHeight + GAP_BETWEEN_BARS);
     }
 
     /**
