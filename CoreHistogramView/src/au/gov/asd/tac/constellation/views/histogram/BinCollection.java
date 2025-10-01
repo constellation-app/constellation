@@ -76,7 +76,7 @@ public class BinCollection {
         return binElements.clone();
     }
 
-    public void sort(BinComparator binComparator) {
+    public void sort(final BinComparator binComparator) {
         Arrays.sort(bins, binComparator);
     }
 
@@ -95,7 +95,7 @@ public class BinCollection {
         }
     }
 
-    public void updateSelection(GraphReadMethods graph) {
+    public void updateSelection(final GraphReadMethods graph) {
 
         binSelector.setElementType(graph, elementType);
 
@@ -113,7 +113,7 @@ public class BinCollection {
         }
     }
 
-    public void selectOnlyBins(GraphWriteMethods graph, int firstBin, int lastBin) {
+    public void selectOnlyBins(final GraphWriteMethods graph, final int firstBin, final int lastBin) {
         binSelector.setElementType(graph, elementType);
         for (int binPosition = 0; binPosition < bins.length; binPosition++) {
             final Bin bin = bins[binPosition];
@@ -129,7 +129,7 @@ public class BinCollection {
         }
     }
 
-    public void selectBins(GraphWriteMethods graph, int firstBin, int lastBin, boolean select) {
+    public void selectBins(final GraphWriteMethods graph, final int firstBin, final int lastBin, final boolean select) {
         binSelector.setElementType(graph, elementType);
         for (int binPosition = firstBin; binPosition <= lastBin; binPosition++) {
             final Bin bin = bins[binPosition];
@@ -143,7 +143,7 @@ public class BinCollection {
         }
     }
 
-    public void invertBins(GraphWriteMethods graph, int firstBin, int lastBin) {
+    public void invertBins(final GraphWriteMethods graph, final int firstBin, final int lastBin) {
         binSelector.setElementType(graph, elementType);
         for (int binPosition = firstBin; binPosition <= lastBin; binPosition++) {
             final Bin bin = bins[binPosition];
@@ -157,7 +157,7 @@ public class BinCollection {
         }
     }
 
-    public void completeBins(GraphWriteMethods graph, int firstBin, int lastBin) {
+    public void completeBins(final GraphWriteMethods graph, final int firstBin, final int lastBin) {
         binSelector.setElementType(graph, elementType);
         for (int binPosition = firstBin; binPosition <= lastBin; binPosition++) {
             final Bin bin = bins[binPosition];
@@ -173,7 +173,7 @@ public class BinCollection {
         }
     }
 
-    public void filterSelection(GraphWriteMethods graph) {
+    public void filterSelection(final GraphWriteMethods graph) {
         binSelector.setElementType(graph, elementType);
         for (final Bin bin : bins) {
             if (!bin.getIsActivated()) {
@@ -189,7 +189,7 @@ public class BinCollection {
         }
     }
 
-    public void expandSelection(GraphWriteMethods graph) {
+    public void expandSelection(final GraphWriteMethods graph) {
         binSelector.setElementType(graph, elementType);
         for (final Bin bin : bins) {
             if (bin.getIsActivated()) {
@@ -205,7 +205,7 @@ public class BinCollection {
         }
     }
 
-    public void saveBinsToGraph(GraphWriteMethods graph, int attributeId) {
+    public void saveBinsToGraph(final GraphWriteMethods graph, final int attributeId) {
         for (final Bin bin : bins) {
             int position = bin.getFirstElement();
             while (position >= 0) {
@@ -230,7 +230,10 @@ public class BinCollection {
         }
     }
 
-    public static BinCollection createBinCollection(GraphReadMethods graph, GraphElementType elementType, String attribute, BinCreator binCreator, ElementSet filter, BinFormatter formatter, PluginParameters binFormatterParameters) {
+    public static BinCollection createBinCollection(final GraphReadMethods graph, final GraphElementType elementType,
+            final String attribute, final BinCreator binCreator, final ElementSet filter, final BinFormatter formatter,
+            final PluginParameters binFormatterParameters
+    ) {
 
         final int elementCount = elementType.getElementCount(graph);
 

@@ -39,6 +39,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
@@ -123,8 +124,10 @@ public class HistogramPane extends BorderPane {
 
     private static final int MIN_LABEL_WIDTH = 90;
     private static final int PREF_LABEL_WIDTH = 90;
+    private static final int MIN_FORMAT_LABEL_WIDTH = 60;
 
     private static final int CONTROLS_PADDING = 5;
+    private static final int EDIT_FORMAT_BUTTON_WIDTH = 31;
 
     public HistogramPane(final HistogramTopComponent2 histogramTopComponent) {
         topComponent = histogramTopComponent;
@@ -228,8 +231,20 @@ public class HistogramPane extends BorderPane {
         propertyLabel.setMinWidth(MIN_LABEL_WIDTH);
         propertyLabel.setPrefWidth(PREF_LABEL_WIDTH);
 
+        final Label propertyForamtterLabel = new Label("Formatter:");
+        propertyForamtterLabel.setMinWidth(MIN_FORMAT_LABEL_WIDTH);
+        propertyForamtterLabel.setPrefWidth(PREF_LABEL_WIDTH);
+        propertyForamtterLabel.setAlignment(Pos.CENTER_RIGHT);
+
+        final Button editFormatterButton = new Button("Edit");
+        editFormatterButton.setOnAction(e -> binFormatterComboHandler());
+        editFormatterButton.setMinWidth(EDIT_FORMAT_BUTTON_WIDTH);
+        editFormatterButton.setDisable(true);
+        binFormatterCombo.valueProperty().addListener((obs, oldVal, newVal) -> editFormatterButton.setDisable(newVal == null));
+
         final HBox propertyHBox = new HBox(4);
-        propertyHBox.getChildren().addAll(propertyLabel, propertyChoice, binFormatterCombo);
+
+        propertyHBox.getChildren().addAll(propertyLabel, propertyChoice, propertyForamtterLabel, binFormatterCombo, editFormatterButton);
         propertyHBox.setAlignment(javafx.geometry.Pos.CENTER);
 
         ////////////////////
@@ -650,7 +665,7 @@ public class HistogramPane extends BorderPane {
     }
 
     protected void updateBinComparator() {
-        BinComparator binComparator = (BinComparator) sortChoice.getValue();
+        final BinComparator binComparator = (BinComparator) sortChoice.getValue();
         topComponent.setBinComparator(this.descendingButton.isSelected() ? binComparator.getReverse() : binComparator);
     }
 

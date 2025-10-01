@@ -18,8 +18,7 @@ package au.gov.asd.tac.constellation.views.histogram;
 import java.util.Comparator;
 
 /**
- * BinComparator represents the different ways in which 2 bins can be compared
- * and therefore sorted in the histogram.
+ * BinComparator represents the different ways in which 2 bins can be compared and therefore sorted in the histogram.
  *
  * @author sirius
  */
@@ -70,7 +69,7 @@ public enum BinComparator implements Comparator<Bin> {
      */
     KEY("Label (Text)", true, false) {
         @Override
-        public int compare(Bin o1, Bin o2) {
+        public int compare(final Bin o1, final Bin o2) {
             return o2.compareTo(o1);
         }
 
@@ -84,7 +83,7 @@ public enum BinComparator implements Comparator<Bin> {
      */
     REVERSE_KEY("Label (Text ascending)", false, false) {
         @Override
-        public int compare(Bin o1, Bin o2) {
+        public int compare(final Bin o1, final Bin o2) {
             return o1.compareTo(o2);
         }
 
@@ -98,7 +97,7 @@ public enum BinComparator implements Comparator<Bin> {
      */
     TOTAL_COUNT("Total Count", true, false) {
         @Override
-        public int compare(Bin o1, Bin o2) {
+        public int compare(final Bin o1, final Bin o2) {
             if (o1.getElementCount() > o2.getElementCount()) {
                 return 1;
             } else if (o1.getElementCount() < o2.getElementCount()) {
@@ -118,7 +117,7 @@ public enum BinComparator implements Comparator<Bin> {
      */
     REVERSE_TOTAL_COUNT("Total Count (descending)", false, false) {
         @Override
-        public int compare(Bin o1, Bin o2) {
+        public int compare(final Bin o1, final Bin o2) {
             if (o1.getElementCount() > o2.getElementCount()) {
                 return -1;
             } else if (o1.getElementCount() < o2.getElementCount()) {
@@ -138,7 +137,7 @@ public enum BinComparator implements Comparator<Bin> {
      */
     SELECTED_COUNT("Selected Count", true, true) {
         @Override
-        public int compare(Bin o1, Bin o2) {
+        public int compare(final Bin o1, final Bin o2) {
             if (o1.getSelectedCount() > o2.getSelectedCount()) {
                 return 1;
             } else if (o1.getSelectedCount() < o2.getSelectedCount()) {
@@ -154,12 +153,11 @@ public enum BinComparator implements Comparator<Bin> {
         }
     },
     /**
-     * Sort bins by the number of selected elements in each bin in reverse
-     * order.
+     * Sort bins by the number of selected elements in each bin in reverse order.
      */
     REVERSE_SELECTED_COUNT("Selected Count (descending)", false, true) {
         @Override
-        public int compare(Bin o1, Bin o2) {
+        public int compare(final Bin o1, final Bin o2) {
             if (o1.getSelectedCount() > o2.getSelectedCount()) {
                 return -1;
             } else if (o1.getSelectedCount() < o2.getSelectedCount()) {
@@ -179,7 +177,7 @@ public enum BinComparator implements Comparator<Bin> {
      */
     SELECTED_PROPORTION("Selected Proportion", true, true) {
         @Override
-        public int compare(Bin o1, Bin o2) {
+        public int compare(final Bin o1, final Bin o2) {
             final int o1Score = o1.getSelectedCount() * o2.getElementCount();
             final int o2Score = o2.getSelectedCount() * o1.getElementCount();
             if (o1Score > o2Score) {
@@ -197,12 +195,11 @@ public enum BinComparator implements Comparator<Bin> {
         }
     },
     /**
-     * Sort bins by the proportion of elements in the bin that are selected in
-     * reverse order.
+     * Sort bins by the proportion of elements in the bin that are selected in reverse order.
      */
     REVERSE_SELECTED_PROPORTION("Selected Proportion (descending)", false, true) {
         @Override
-        public int compare(Bin o1, Bin o2) {
+        public int compare(final Bin o1, final Bin o2) {
             final int o1Score = o1.getSelectedCount() * o2.getElementCount();
             final int o2Score = o2.getSelectedCount() * o1.getElementCount();
             if (o1Score > o2Score) {
@@ -224,7 +221,7 @@ public enum BinComparator implements Comparator<Bin> {
     private final boolean ascending;
     private final boolean usesSelection;
 
-    private BinComparator(String label, boolean ascending, boolean usesSelection) {
+    private BinComparator(final String label, final boolean ascending, final boolean usesSelection) {
         this.label = label;
         this.ascending = ascending;
         this.usesSelection = usesSelection;
