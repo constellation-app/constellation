@@ -149,7 +149,7 @@ public class PluginReportNGTest {
         report.stop();
         assertEquals(report.getCurrentStep(), 1);
         assertEquals(report.getTotalSteps(), 0);
-        // Assert two values are equal, within reason. Sometimes they're off by 1
+        // Assert two values are equal, within reason
         assertEquals(report.getStopTime(), currentTimeMillis, ACCEPTABLE_RANGE);
     }
 
