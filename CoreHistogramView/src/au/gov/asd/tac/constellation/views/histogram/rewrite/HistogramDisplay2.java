@@ -149,8 +149,8 @@ public class HistogramDisplay2 extends BorderPane {
 
     private double prevPropertyWidth = MINIMUM_TEXT_WIDTH;
     private static final int PROPERTY_WIDTH_PADDING = 30;
-    
-     private static final int GAP_BETWEEN_BARS = 6;
+
+    private static final int GAP_BETWEEN_BARS = 6;
 
     public static Color getBackgroundColor() {
         return BACKGROUND_COLOR;

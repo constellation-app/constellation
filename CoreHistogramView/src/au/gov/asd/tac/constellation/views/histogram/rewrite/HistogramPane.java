@@ -129,6 +129,8 @@ public class HistogramPane extends BorderPane {
     private static final int CONTROLS_PADDING = 5;
     private static final int EDIT_FORMAT_BUTTON_WIDTH = 31;
 
+    private BinFormatter prevFormatter;
+
     public HistogramPane(final HistogramTopComponent2 histogramTopComponent) {
         topComponent = histogramTopComponent;
 
@@ -223,7 +225,7 @@ public class HistogramPane extends BorderPane {
         HBox.setHgrow(propertyChoice, Priority.ALWAYS);
 
         binFormatterCombo = new ComboBox();
-        binFormatterCombo.setOnAction(e -> binFormatterComboHandler());
+        binFormatterCombo.setOnAction(e -> binFormatterComboHandler(false));
         binFormatterCombo.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(binFormatterCombo, Priority.ALWAYS);
 
@@ -237,7 +239,7 @@ public class HistogramPane extends BorderPane {
         propertyForamtterLabel.setAlignment(Pos.CENTER_RIGHT);
 
         final Button editFormatterButton = new Button("Edit");
-        editFormatterButton.setOnAction(e -> binFormatterComboHandler());
+        editFormatterButton.setOnAction(e -> binFormatterComboHandler(true));
         editFormatterButton.setMinWidth(EDIT_FORMAT_BUTTON_WIDTH);
         editFormatterButton.setDisable(true);
         binFormatterCombo.valueProperty().addListener((obs, oldVal, newVal) -> editFormatterButton.setDisable(newVal == null));
@@ -601,10 +603,12 @@ public class HistogramPane extends BorderPane {
     }
 
     // Handles changes in the bin formatter combo box
-    private void binFormatterComboHandler() {
-        if (isAdjusting) {
+    private void binFormatterComboHandler(final boolean ignorePrevFormatter) {
+        if (isAdjusting || (prevFormatter == binFormatterCombo.getValue() && !ignorePrevFormatter)) {
             return;
         }
+
+        prevFormatter = (BinFormatter) binFormatterCombo.getValue();
 
         final BinFormatter binFormatter = (BinFormatter) binFormatterCombo.getValue();
         if (binFormatter == null) {
@@ -635,7 +639,10 @@ public class HistogramPane extends BorderPane {
                     CURRENT_PARAMETER_IDS.put(binFormatter, parameters.copy());
                     Platform.runLater(() -> topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getValue(), parameters));
                 } else if (currentHistogramState != null) {
-                    Platform.runLater(() -> binFormatterCombo.getSelectionModel().select(currentHistogramState.getBinFormatter()));
+                    Platform.runLater(() -> {
+                        prevFormatter = (BinFormatter) currentHistogramState.getBinFormatter();
+                        binFormatterCombo.getSelectionModel().select(currentHistogramState.getBinFormatter());
+                    });
                 }
             });
 
