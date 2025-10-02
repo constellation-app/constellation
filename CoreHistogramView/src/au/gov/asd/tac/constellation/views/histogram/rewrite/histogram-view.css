@@ -16,9 +16,6 @@
     Created on : 2 June 2025, 9:48:27 am
     Author     : Quasar985
 */
-.no-value {
-    -fx-text-fill: #FFFF00;/*Yellow*/
-}
 
 .label:bar-bin-count {
     -fx-padding: 0 1em 0 0;
