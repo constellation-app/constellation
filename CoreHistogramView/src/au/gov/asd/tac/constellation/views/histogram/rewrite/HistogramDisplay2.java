@@ -356,13 +356,12 @@ public class HistogramDisplay2 extends BorderPane {
     private synchronized void updateHeaderAndTable() {
         recalculateVisibleIndexes(prevScrollValue);
 
-        final double maxPropertyWidth = calculateLongestPropertyWidth(isRebuildRequired());
-        propertyCol.setPrefWidth(maxPropertyWidth);
-
-        barCol.setPrefWidth(tableView.getWidth() - maxPropertyWidth - iconCol.getWidth() - BAR_PADDING);
-
         updateHeader(barHeight * FONT_SCALE_FACTOR);
         updateTable(true, barWidth);
+
+        final double maxPropertyWidth = calculateLongestPropertyWidth(isRebuildRequired());
+        propertyCol.setPrefWidth(maxPropertyWidth);
+        barCol.setPrefWidth(tableView.getWidth() - maxPropertyWidth - iconCol.getWidth() - BAR_PADDING);
     }
 
     private boolean isRebuildRequired() {
