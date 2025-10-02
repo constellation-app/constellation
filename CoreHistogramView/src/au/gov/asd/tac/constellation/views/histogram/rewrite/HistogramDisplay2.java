@@ -323,6 +323,11 @@ public class HistogramDisplay2 extends BorderPane {
         return binIconMode;
     }
 
+    // For testing
+    protected TableView getTableView() {
+        return tableView;
+    }
+
     public void updateBinCollection() {
         binCollection.deactivateBins();
         activeBin = -1;
@@ -361,7 +366,7 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     private boolean isRebuildRequired() {
-        if (binCollection == null) {
+        if (binCollection == null || binCollection.getBins() == null) {
             return true;
         }
         return (prevNumBars != binCollection.getBins().length) || tableView.getItems().isEmpty();

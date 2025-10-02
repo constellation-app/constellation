@@ -34,6 +34,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -47,6 +48,7 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
@@ -304,12 +306,22 @@ public class HistogramDisplay2NGTest {
         instance.setBinSelectionMode(binSpy);
         instance.setBinCollection(binCollection, binIconMode);
 
+        final TableView tableView = instance.getTableView();
+        final ObservableList<HistogramBar> listOfHistogrambars = FXCollections.observableArrayList();
+        final int selectedCount = 0;
+        final int totalCount = 1;
+        listOfHistogrambars.add(new HistogramBar(null, "", null, selectedCount, totalCount));
+
+        tableView.setItems(listOfHistogrambars);
+        final int indexToSelect = 0;
+        tableView.getSelectionModel().select(indexToSelect);
+
         // Run function
         instance.handleMousePressed(e);
 
         // Verify functions were called
         verify(e).getButton();
-        verify(binSpy).mousePressed(e.isShiftDown(), e.isControlDown(), binCollection.getBins(), -1, -1);
+        verify(binSpy).mousePressed(e.isShiftDown(), e.isControlDown(), binCollection.getBins(), indexToSelect, indexToSelect);
     }
 
     /**
@@ -337,12 +349,25 @@ public class HistogramDisplay2NGTest {
         instance.setBinSelectionMode(binSpy);
         instance.setBinCollection(binCollection, binIconMode);
 
+        final TableView tableView = instance.getTableView();
+        final ObservableList<HistogramBar> listOfHistogrambars = FXCollections.observableArrayList();
+        final int selectedCount = 0;
+        final int totalCount = 1;
+        listOfHistogrambars.add(new HistogramBar(null, "", null, selectedCount, totalCount));
+
+        tableView.setItems(listOfHistogrambars);
+        final int indexToSelect = 0;
+        tableView.getSelectionModel().select(indexToSelect);
+
+        // Has to be run to set up instance
+        instance.handleMousePressed(e);
+
         // Run function
         instance.handleMouseReleased(e);
 
         // Verify functions were called
-        verify(e).getButton();
-        verify(binSpy).mouseReleased(e.isShiftDown(), e.isControlDown(), binCollection.getBins(), -1, -1, topComponent);
+        verify(e, times(2)).getButton();
+        verify(binSpy).mouseReleased(e.isShiftDown(), e.isControlDown(), binCollection.getBins(), indexToSelect, indexToSelect, topComponent);
     }
 
     /**
