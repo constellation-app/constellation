@@ -107,7 +107,6 @@ public class DataAccessUtilitiesNGTest {
 
             assertSame(actual, dataAccessPane);
         }
-
     }
 
     @Test
@@ -179,7 +178,6 @@ public class DataAccessUtilitiesNGTest {
     @Test
     public void testGetDataAccessPaneNotCalledByEventDispatchThreadInterruptError() {
         System.out.println("testGetDataAccessPaneNotCalledByEventDispatchThreadInterruptError");
-
         try (final MockedStatic<SwingUtilities> swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class)) {
 
             swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
