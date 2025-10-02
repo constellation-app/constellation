@@ -190,8 +190,7 @@ public class HistogramDisplay2 extends BorderPane {
         propertyCol.setMaxWidth(MAXIMUM_TEXT_WIDTH);
 
         final PseudoClass noValueClass = PseudoClass.getPseudoClass("no-value");
-        propertyCol.setCellFactory(tableColumn
-                -> new TableCell<>() {
+        propertyCol.setCellFactory(tableColumn -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -201,8 +200,7 @@ public class HistogramDisplay2 extends BorderPane {
 
                 this.pseudoClassStateChanged(noValueClass, NO_VALUE.equals(item));
             }
-        }
-        );
+        });
 
         iconCol.setCellValueFactory(new PropertyValueFactory("icon"));
         iconCol.setResizable(false);
@@ -250,6 +248,9 @@ public class HistogramDisplay2 extends BorderPane {
                     final int newDragEnd = row.getIndex();
                     binSelectionMode.mouseDragged(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, newDragEnd);
                     dragEnd = newDragEnd;
+
+                    // Select the dragged row on the table view too
+                    tableView.getSelectionModel().select(newDragEnd);
 
                     // Only need to update bars
                     updateTableBars();
