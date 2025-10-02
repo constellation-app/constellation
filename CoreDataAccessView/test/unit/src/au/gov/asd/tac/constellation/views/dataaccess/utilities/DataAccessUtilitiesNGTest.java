@@ -91,7 +91,6 @@ public class DataAccessUtilitiesNGTest {
         final DataAccessViewTopComponent topComponent = mock(DataAccessViewTopComponent.class);
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
 
-
         try (final MockedStatic<SwingUtilities> swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class); final MockedStatic<WindowManager> windowManagerStaticMock = Mockito.mockStatic(WindowManager.class)) {
             swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
 
@@ -105,7 +104,6 @@ public class DataAccessUtilitiesNGTest {
 
             verify(topComponent, times(1)).open();
             verify(topComponent, times(1)).requestVisible();
-
 
             assertSame(actual, dataAccessPane);
         }
