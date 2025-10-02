@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2025-09-26 Add New Experimental Histogram View
+<p>New Experimental Histogram View added
+<p>Can be found in Experimental->Views->New Histogram
+
 == 2025-07-23 Add spell checking in Notes View
 <p>Spell check now added to following functions:
 <p>Notes View -> New Note / Edit Note Pane
