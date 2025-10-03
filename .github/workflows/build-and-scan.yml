@@ -78,4 +78,4 @@ jobs:
           --mount type=bind,source=${{ github.workspace }},target=/code
           --workdir /code/constellation
         run: |
-          .githubutilities/sonar.sh "${GITHUB_REPOSITORY}" ${{ env.PULL_REQUEST_NUMBER }} ${{ env.DESTINATION_BRANCH }} ${{ env.SOURCE_BRANCH }} ${{ env.SONAR_TOKEN }}
+          .githubutilities/sonar.sh "${GITHUB_REPOSITORY}" "${{ env.PULL_REQUEST_NUMBER }}" "${{ env.DESTINATION_BRANCH }}" "${{ env.SOURCE_BRANCH }}" "${{ env.SONAR_TOKEN }}"
