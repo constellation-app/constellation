@@ -5,7 +5,7 @@ source .githubutilities/functions.sh
 title "Run Sonar Scanning"
 
 if [ ! -z $2 ]; then
-  if [ "$1" != "constellation-app/constellation" ]; then
+  if [ $1 != "constellation-app/constellation" ]; then
     echo "skipping running sonar-scanner"
   else
     SONAR_PULLREQUEST_BRANCH="$(echo $1 | awk '{split($0,a,"/"); print a[1]}')/$4"
