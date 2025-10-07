@@ -41,7 +41,6 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollBar;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -190,15 +189,34 @@ public class HistogramDisplay2 extends BorderPane {
         propertyCol.setMaxWidth(MAXIMUM_TEXT_WIDTH);
 
         final PseudoClass noValueClass = PseudoClass.getPseudoClass("no-value");
+        final PseudoClass selectedClass = PseudoClass.getPseudoClass("row-selected");
         propertyCol.setCellFactory(tableColumn -> new TableCell<>() {
             @Override
-            protected void updateItem(String item, boolean empty) {
+            protected void updateItem(final String item, final boolean empty) {
+
+                final Bin bin;
+
+                if (binCollection != null && binCollection.getBins() != null && getIndex() > 0 && getIndex() < binCollection.getBins().length) {
+                    bin = binCollection.getBins()[getIndex()];
+                } else {
+                    bin = null;
+                }
+
                 super.updateItem(item, empty);
 
                 // Requires this for text to appear, for some reason
-                this.setText(item);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    this.setText(item);
+                }
 
+                // If no value, style appropriately
                 this.pseudoClassStateChanged(noValueClass, NO_VALUE.equals(item));
+
+                // If selected, style appropriately
+                this.pseudoClassStateChanged(selectedClass, (bin != null && bin.getSelectedCount() > 0));
             }
         });
 
@@ -216,12 +234,11 @@ public class HistogramDisplay2 extends BorderPane {
         tableView.widthProperty().addListener((obs, oldVal, newVal) -> barCol.setPrefWidth((double) newVal - Math.max(prevPropertyWidth, MINIMUM_TEXT_WIDTH) - iconCol.getWidth() - BAR_PADDING));
 
         // Update table whenever histogram is resized
-        barCol.widthProperty().addListener((obs, oldVal, newVal) -> updateTable(true, (double) newVal - BAR_LENGTH_SUBTRACTION));
+        barCol.widthProperty().addListener((obs, oldVal, newVal) -> updateTable(true, (double) newVal - BAR_LENGTH_SUBTRACTION, false));
 
         tableView.getColumns().setAll(iconCol, propertyCol, barCol);
         tableView.getStyleClass().add("noheader");
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
-        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         VBox.setVgrow(tableView, Priority.ALWAYS);
 
@@ -249,11 +266,7 @@ public class HistogramDisplay2 extends BorderPane {
                     binSelectionMode.mouseDragged(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, newDragEnd);
                     dragEnd = newDragEnd;
 
-                    // Select the dragged row on the table view too
-                    tableView.getSelectionModel().select(newDragEnd);
-
-                    // Only need to update bars
-                    updateTableBars();
+                    updateTable(true);
                     updateHeader(barHeight * FONT_SCALE_FACTOR);
                 }
             });
@@ -299,7 +312,7 @@ public class HistogramDisplay2 extends BorderPane {
 
         verticalBar.valueProperty().addListener((obs, oldVal, newVal) -> {
             recalculateVisibleIndexes((double) newVal);
-            updateTable(true, barWidth);
+            updateTable();
         });
     }
 
@@ -357,7 +370,7 @@ public class HistogramDisplay2 extends BorderPane {
         recalculateVisibleIndexes(prevScrollValue);
 
         updateHeader(barHeight * FONT_SCALE_FACTOR);
-        updateTable(true, barWidth);
+        updateTable();
 
         final double maxPropertyWidth = calculateLongestPropertyWidth(isRebuildRequired());
         propertyCol.setPrefWidth(maxPropertyWidth);
@@ -371,7 +384,15 @@ public class HistogramDisplay2 extends BorderPane {
         return (prevNumBars != binCollection.getBins().length) || tableView.getItems().isEmpty();
     }
 
-    private synchronized void updateTable(final boolean updateBinCounts, final double width) {
+    private synchronized void updateTable() {
+        updateTable(true, barWidth, false);
+    }
+
+    private synchronized void updateTable(final boolean forceRebuild) {
+        updateTable(true, barWidth, forceRebuild);
+    }
+
+    private synchronized void updateTable(final boolean updateBinCounts, final double width, final boolean forceRebuild) {
         if (HeadlessUtilities.isHeadless()) {
             return;
         }
@@ -405,7 +426,7 @@ public class HistogramDisplay2 extends BorderPane {
 
         final ObservableList<HistogramBar> listOfHistogrambars = FXCollections.observableArrayList();
 
-        final boolean rebuildRows = isRebuildRequired();
+        final boolean rebuildRows = forceRebuild || isRebuildRequired();
 
         for (int i = 0; i < bins.length; i++) {
             final Bin bin = bins[i];
@@ -443,30 +464,6 @@ public class HistogramDisplay2 extends BorderPane {
 
         prevNumBars = bins.length;
         this.setCenter(mainVBox);
-    }
-
-    private void updateTableBars() {
-        updateTableBars(true, barWidth);
-    }
-
-    private void updateTableBars(final boolean updateBinCounts, final double width) {
-        final Bin[] bins = binCollection.getBins();
-        barWidth = width;
-
-        final int maxCount = binCollection.getMaxElementCount();
-        if (maxCount < 1) {
-            return;
-        }
-
-        final double fontSize = barHeight * FONT_SCALE_FACTOR;
-        for (int i = 0; i < bins.length; i++) {
-            final Bin bin = bins[i];
-
-            // Bars
-            final StackPane rectBar = (i >= firstVisibleIndex && i <= lastVisibleIndex) ? constructBar(bin, maxCount, updateBinCounts, width, i, fontSize) : null;
-
-            tableView.getItems().get(i).setBar(rectBar);
-        }
     }
 
     private void recalculateVisibleIndexes(final double scrollValue) {
@@ -769,8 +766,7 @@ public class HistogramDisplay2 extends BorderPane {
 
         binSelectionMode.mousePressed(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd);
 
-        // Only need to update bars
-        updateTableBars();
+        updateTable(true);
 
         updateHeader(barHeight * FONT_SCALE_FACTOR);
     }
@@ -784,8 +780,7 @@ public class HistogramDisplay2 extends BorderPane {
         binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
         activeBin = dragStart == dragEnd ? dragStart : -1;
 
-        // Only need to update bars
-        updateTableBars();
+        updateTable(true);
 
         updateHeader(barHeight * FONT_SCALE_FACTOR);
     }

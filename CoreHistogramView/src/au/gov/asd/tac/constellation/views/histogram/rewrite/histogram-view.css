@@ -49,6 +49,11 @@
     -fx-text-fill: #FFFF00; /*Yellow*/
 }
 
+.table-cell:row-selected{
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
 .table-cell {
     -fx-border-color: null;
 }
