@@ -215,7 +215,8 @@ public class HistogramDisplay2 extends BorderPane {
                 // If no value, style appropriately
                 this.pseudoClassStateChanged(noValueClass, NO_VALUE.equals(item));
 
-                // If selected, style appropriately
+                // If selected, style appropriately.
+                // NOTE: This is based on the associated bin's selectedCount, not the tableView's record of selected rows
                 this.pseudoClassStateChanged(selectedClass, (bin != null && bin.getSelectedCount() > 0));
             }
         });
