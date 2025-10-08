@@ -374,6 +374,7 @@ public class HistogramDisplay2 extends BorderPane {
         updateTable();
 
         final double maxPropertyWidth = calculateLongestPropertyWidth(isRebuildRequired());
+
         propertyCol.setPrefWidth(maxPropertyWidth);
         barCol.setPrefWidth(tableView.getWidth() - maxPropertyWidth - iconCol.getWidth() - BAR_PADDING);
     }
@@ -530,9 +531,15 @@ public class HistogramDisplay2 extends BorderPane {
             // Get the string representation for the specific column
             final String cellValue = propertyCol.getCellData(item);
             text.setText(cellValue);
-            double currentWidth = text.getLayoutBounds().getWidth();
+
+            final double currentWidth = text.getLayoutBounds().getWidth();
             if (currentWidth > maxWidth) {
                 maxWidth = currentWidth;
+            }
+
+            if (maxWidth > (MAXIMUM_TEXT_WIDTH - PROPERTY_WIDTH_PADDING)) {
+                maxWidth = MAXIMUM_TEXT_WIDTH - PROPERTY_WIDTH_PADDING;
+                break;
             }
         }
 
