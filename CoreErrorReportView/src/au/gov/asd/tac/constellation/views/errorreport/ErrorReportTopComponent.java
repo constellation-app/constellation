@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import javafx.scene.layout.BorderPane;
@@ -389,6 +390,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         multiRedispItem.setToggleGroup(popupFrequency);
 
         oneRedispItem.setSelected(true);
+        final int applicationFontSize = FontUtilities.getApplicationFontSize();        
         popupControl.getItems().add(neverItem);
         popupControl.getItems().add(oneItem);
         popupControl.getItems().add(oneRedispItem);
@@ -396,7 +398,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         popupControl.getItems().add(multiRedispItem);
         popupControl.setMaxWidth(200);
         popupControl.setMinHeight(26);
-        popupControl.setMaxHeight(26);
+        popupControl.setPrefHeight(applicationFontSize * 2);
 
         final Button clearButton = new Button("Clear All Reports");
         clearButton.setTooltip(new Tooltip("Clear all current error reports"));
@@ -409,7 +411,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             updateSessionErrorsBox(-1);
         });
         clearButton.setMinHeight(26);
-        clearButton.setMaxHeight(26);
+        clearButton.setPrefHeight(applicationFontSize * 2);
 
         final WritableImage maximizeImage = new WritableImage(22, 16);
         final WritableImage minimizeImage = new WritableImage(22, 16);
@@ -442,30 +444,29 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final ToolBar controlToolbar2 = new ToolBar();
         final Label reportSettingsLabel = new Label("Report:");
         final Label popupReportSettingsLabel = new Label("Popup:");
+        
         final MultiChoiceInputPane reportSettingPane = new MultiChoiceInputPane(reportSettingOptions);
-        reportSettingsLabel.setMaxWidth(50);
         reportSettingsLabel.setPadding(new Insets(0, -5, 0, 0));
+        reportSettingsLabel.autosize();
         reportSettingPane.setMinWidth(150);
         reportSettingPane.setPrefWidth(220);
-        reportSettingPane.setMaxWidth(240);
+        reportSettingPane.setPrefHeight(applicationFontSize * 2);
         reportSettingPane.setPadding(new Insets(0, -2, 0, 0));
         HBox.setHgrow(reportSettingPane, Priority.SOMETIMES);
 
         final MultiChoiceInputPane popupSettingPane = new MultiChoiceInputPane(popupReportSettingOptions);
-        popupReportSettingsLabel.setMaxWidth(45);
         popupReportSettingsLabel.setPadding(new Insets(0, -5, 0, 5));
+        popupReportSettingsLabel.autosize();
         popupSettingPane.setMinWidth(70);
         popupSettingPane.setPrefWidth(100);
-        popupSettingPane.setMaxWidth(240);
         HBox.setHgrow(popupSettingPane, Priority.ALWAYS);
 
         controlToolbar.getItems().addAll(settingsBox, minimizeButton, maximizeButton, popupControl, clearButton, helpButton);
         controlToolbar2.getItems().addAll(reportSettingsLabel, reportSettingPane, popupReportSettingsLabel, popupSettingPane);
-        controlToolbar.setPrefHeight(20);
-        controlToolbar2.setPrefHeight(20);
+        controlToolbar.setPrefHeight(applicationFontSize * 2);
 
         final VBox toolboxContainer = new VBox();
-        toolboxContainer.setPrefHeight(20);
+        toolboxContainer.setPrefHeight(applicationFontSize * 2);
         toolboxContainer.setMaxHeight(20);
         toolboxContainer.getChildren().add(controlToolbar);
         toolboxContainer.getChildren().add(controlToolbar2);

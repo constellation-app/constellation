@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
@@ -55,7 +56,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
     private final DataAccessViewTopComponent parentComponent;
     private final DataAccessTabPane dataAccessTabPane;
-    private final OptionsMenuBar optionsMenuBar;
+    private final OptionsMenuBar workflowOptionsMenuBar;
     private final ButtonToolbar buttonToolbar;
 
     private final TextField searchPluginTextField;
@@ -73,8 +74,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         // the UI components here while it does that
         DataAccessPaneState.getCurrentGraphId();
 
-        this.optionsMenuBar = new OptionsMenuBar(this);
-        this.optionsMenuBar.init();
+        this.workflowOptionsMenuBar = new OptionsMenuBar(this);
+        this.workflowOptionsMenuBar.init();
 
         this.buttonToolbar = new ButtonToolbar(this);
         this.buttonToolbar.init();
@@ -137,7 +138,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      */
     public void addUIComponents() {
         final VBox vbox = new VBox(
-                getOptionsMenuBar().getMenuBar(),
+                getWorkflowOptionsMenuBar().getMenuBar(),
                 getSearchPluginTextField(),
                 getDataAccessTabPane().getTabPane(),
                 getButtonToolbar().getRabRegionExectueHBoxBottom()
@@ -150,23 +151,22 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         AnchorPane.setRightAnchor(vbox, 0.0);
 
         getChildren().add(vbox);
-
-        AnchorPane.setTopAnchor(getButtonToolbar().getOptionsToolbar(), 5.0);
+        
         AnchorPane.setRightAnchor(getButtonToolbar().getOptionsToolbar(), 5.0);
-
+        AnchorPane.setTopAnchor(getButtonToolbar().getOptionsToolbar(), 5.0);
+        
         getChildren().add(getButtonToolbar().getOptionsToolbar());
 
         // Modifies the menu sizes and positions as the overall pane size is
         // either shrunk or grown
         widthProperty().addListener((observable, oldValue, newValue) -> {
+            final int fontSize = FontUtilities.getApplicationFontSize() * 2;
+            getWorkflowOptionsMenuBar().getMenuBar().setPrefHeight(fontSize);                
             if (newValue.intValue() <= 460) {
                 getButtonToolbar().handleShrinkingPane();
-
-                getOptionsMenuBar().getMenuBar().setMinHeight(60);
+                getWorkflowOptionsMenuBar().getMenuBar().setPrefHeight(60);
             } else {
                 getButtonToolbar().handleGrowingPane();
-
-                getOptionsMenuBar().getMenuBar().setMinHeight(36);
             }
         });
     }
@@ -257,8 +257,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      *
      * @return the options menu bar
      */
-    public OptionsMenuBar getOptionsMenuBar() {
-        return optionsMenuBar;
+    public OptionsMenuBar getWorkflowOptionsMenuBar() {
+        return workflowOptionsMenuBar;
     }
 
     /**

@@ -229,7 +229,7 @@ public class OptionsMenuBarNGTest {
                         optionsMenuBar.getOptionsMenu()
                 )
         );
-        assertEquals(optionsMenuBar.getMenuBar().getMinHeight(), 36.0);
+        assertEquals(optionsMenuBar.getMenuBar().getMinHeight(), -1.0);
         assertEquals(optionsMenuBar.getMenuBar().getPadding(), new Insets(4));
     }
 
