@@ -24,12 +24,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import javafx.scene.layout.BorderPane;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.Color;
 import java.awt.Image;
 import java.io.IOException;
-import javafx.scene.input.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -58,6 +56,8 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -504,6 +504,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     protected void handleComponentOpened() {
         errorReportRunning = true;
         ErrorReportDialogManager.getInstance().setErrorReportRunning(errorReportRunning);
+        setFloating(Bundle.CTL_ErrorReportTopComponent(), 0, 0, Spawn.RIGHT);
     }
 
     /**
@@ -706,7 +707,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 refreshSessionErrors();
                 final Date nextFilterDate = new Date();
                 final int errCount = sessionErrors.size();
-                // rebuild                
+                // rebuild
                 sessionErrorsBox.getChildren().clear();
 
                 // check popup selection               
