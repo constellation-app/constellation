@@ -371,7 +371,7 @@ public class HistogramDisplay2 extends BorderPane {
         recalculateVisibleIndexes(prevScrollValue);
 
         updateHeader(barHeight * FONT_SCALE_FACTOR);
-        updateTable();
+        updateTable(true);
 
         final double maxPropertyWidth = calculateLongestPropertyWidth(isRebuildRequired());
 
