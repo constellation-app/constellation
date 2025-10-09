@@ -108,4 +108,8 @@ public interface GraphEdit {
     public void executeGraphOperation(final GraphOperation operation);
 
     public void setAttributeIndexType(final int attribute, final GraphIndexType oldValue, final GraphIndexType newValue);
+    
+    public Object[] getObjectStack();
+    
+    public void setObjectStack(final Object[] objectStack);
 }
