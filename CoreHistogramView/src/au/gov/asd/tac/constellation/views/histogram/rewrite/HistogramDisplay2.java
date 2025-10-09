@@ -196,7 +196,7 @@ public class HistogramDisplay2 extends BorderPane {
 
                 final Bin bin;
 
-                if (binCollection != null && binCollection.getBins() != null && getIndex() > 0 && getIndex() < binCollection.getBins().length) {
+                if (binCollection != null && binCollection.getBins() != null && getIndex() >= 0 && getIndex() < binCollection.getBins().length) {
                     bin = binCollection.getBins()[getIndex()];
                 } else {
                     bin = null;
