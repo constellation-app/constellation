@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2025 Australian Signals Directorate
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,27 +17,39 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
-import java.util.Objects;
+import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
+import au.gov.asd.tac.constellation.views.attributeeditor.editors.StringEditorFactory.StringEditor;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
  *
  * @author spica
+ * @author antares
  */
 public class StringEditorFactoryNGTest {
-
+    
     private static final Logger LOGGER = Logger.getLogger(StringEditorFactoryNGTest.class.getName());
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        // Not currently required
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        // Not currently required
+    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -56,20 +68,16 @@ public class StringEditorFactoryNGTest {
     }
 
     /**
-     * Test of createEditor method, of class IconEditorFactory.
+     * Test of createEditor method, of class StringEditorFactory.
      */
     @Test
     public void testCreateEditor() {
-        System.out.println("testCreateEditor");
-
-        final AbstractEditorFactory.AbstractEditor<String> instance = new StringEditorFactory().createEditor(
-                mock(EditOperation.class),
-                mock(DefaultGetter.class),
-                mock(ValueValidator.class),
-                "",
-                "test");
-
-        assertEquals(instance.getClass(), StringEditorFactory.StringEditor.class);
+        System.out.println("createEditor");
+        
+        final StringEditorFactory instance = new StringEditorFactory();
+        final AbstractEditor<String> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
+        // could be different abstract editors for the string type but we want to make sure it's the right one
+        assertTrue(result instanceof StringEditor);
     }
     
     /**
@@ -78,33 +86,29 @@ public class StringEditorFactoryNGTest {
     @Test
     public void testGetAttributeType() {
         System.out.println("getAttributeType");
+
         final StringEditorFactory instance = new StringEditorFactory();        
-        assertTrue(instance.getAttributeType().equals(StringAttributeDescription.ATTRIBUTE_NAME));
+        assertEquals(instance.getAttributeType(), StringAttributeDescription.ATTRIBUTE_NAME);
     }
     
     /**
-     * Test StringEditor
+     * Test of updateControlsWithValue method, of class StringEditor.
      */
     @Test
-    public void testStringEditor() throws Exception{
-        System.out.println("testStringEditor");
-
-        final AbstractEditorFactory.AbstractEditor<String> instance = new StringEditorFactory().createEditor(
-                mock(EditOperation.class),
-                mock(DefaultGetter.class),
-                mock(ValueValidator.class),
-                "",
-                null);
-
-        instance.createEditorControls();
+    public void testUpdateControlsWithValue() {
+        System.out.println("updateControlsWithValue");
         
-        assertEquals(instance.getClass(), StringEditorFactory.StringEditor.class);
-        assertTrue(instance.noValueCheckBoxAvailable());
-        assertTrue(Objects.isNull(instance.getValueFromControls()));
+        final StringEditorFactory instance = new StringEditorFactory();
+        final StringEditor editor = instance.new StringEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
-        instance.updateControlsWithValue("test");
-        assertEquals(instance.getCurrentValue(), "test");
-        assertEquals(instance.getValueFromControls(), "test");        
+        // need to run in order for editor controls to be instantiated
+        editor.createEditorControls();
         
+        // default values from instantiation
+        // field is blank which should return null
+        assertNull(editor.getValueFromControls());
+        
+        editor.updateControlsWithValue("a test string");
+        assertEquals(editor.getValueFromControls(), "a test string");
     }
 }

@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -26,6 +25,7 @@ import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type float
  *
  * @author twilight_sparkle
  */
@@ -33,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class FloatEditorFactory extends AttributeValueEditorFactory<Float> {
 
     @Override
-    public AbstractEditor<Float> createEditor(final EditOperation editOperation, final DefaultGetter<Float> defaultGetter, final ValueValidator<Float> validator, final String editedItemName, final Float initialValue) {
-        return new FloatEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Float> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Float> validator, final Float defaultValue, final Float initialValue) {
+        return new FloatEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -46,8 +46,12 @@ public class FloatEditorFactory extends AttributeValueEditorFactory<Float> {
 
         private TextField numberField;
 
-        protected FloatEditor(final EditOperation editOperation, final DefaultGetter<Float> defaultGetter, final ValueValidator<Float> validator, final String editedItemName, final Float initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected FloatEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Float> validator, final Float defaultValue, final Float initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
+        }
+        
+        protected String getNumberText() {
+            return numberField.getText();
         }
 
         @Override
@@ -64,7 +68,7 @@ public class FloatEditorFactory extends AttributeValueEditorFactory<Float> {
         @Override
         protected Float getValueFromControls() throws ControlsInvalidException {
             try {
-                return Float.parseFloat(numberField.getText());
+                return Float.valueOf(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a float.");
             }
@@ -72,19 +76,13 @@ public class FloatEditorFactory extends AttributeValueEditorFactory<Float> {
 
         @Override
         protected Node createEditorControls() {
-            final VBox controls = new VBox();
-            controls.setAlignment(Pos.CENTER);
-
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-
-            controls.getChildren().add(numberField);
+            
+            final VBox controls = new VBox(numberField);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
         }
     }
 }

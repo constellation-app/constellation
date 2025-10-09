@@ -76,6 +76,11 @@ final class ApplicationOptionsPanel extends JPanel {
         return (Integer) autosaveSpinner.getModel().getValue();
     }
 
+    /** Get the value in the textfield from the spinner editor */
+    public int getAutosaveEditorFrequency() {
+        return Integer.parseInt(((JSpinner.DefaultEditor)autosaveSpinner.getEditor()).getTextField().getText());        
+    }
+
     public void setAutosaveFrequency(final int autosaveFrequency) {
         autosaveSpinner.getModel().setValue(autosaveFrequency);
     }
@@ -100,6 +105,11 @@ final class ApplicationOptionsPanel extends JPanel {
         return (Integer) webserverPortSpinner.getModel().getValue();
     }
 
+    /** Get the value in the textfield from the spinner editor */
+    public int getWebserverEditorPort() {
+        return Integer.parseInt(((JSpinner.DefaultEditor)webserverPortSpinner.getEditor()).getTextField().getText().replaceAll("[^0-9]", ""));
+    }
+     
     public void setWebserverPort(final int webserverPort) {
         webserverPortSpinner.getModel().setValue(webserverPort);
     }
@@ -138,6 +148,11 @@ final class ApplicationOptionsPanel extends JPanel {
 
     public String getFontSize() {
         return fontSizeSpinner.getValue().toString();
+    }
+    
+    /** Get the value in the textfield from the spinner editor */
+    public String getFontEditorSize() {
+        return ((JSpinner.DefaultEditor)fontSizeSpinner.getEditor()).getTextField().getText();        
     }
 
     public void setFontSize(final String fontSize) {
