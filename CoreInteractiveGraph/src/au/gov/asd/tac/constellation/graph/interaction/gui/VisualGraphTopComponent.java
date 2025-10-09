@@ -782,7 +782,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
                 if (dialog.isAccepted()) {
                     final String newGraphName = parameters.getStringValue(NEW_GRAPH_NAME_PARAMETER_ID);
-
+                    final GraphDataObject gdo = graphNode.getDataObject();
+                    if (gdo.getFileLock() != null && gdo.getFileChannel() != null) {
+                        gdo.unlockFile();
+                    }
                     if (!newGraphName.isEmpty()) {
                         try {
                             // set the graph object name so the name is retained when you Save As
