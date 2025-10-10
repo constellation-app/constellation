@@ -764,10 +764,8 @@ public class HistogramDisplay2 extends BorderPane {
         shiftDown = e.isShiftDown();
         controlDown = e.isControlDown();
 
-        final int bar = tableView.getSelectionModel().getSelectedIndex();
-        if (bar == -1) {
-            return;
-        }
+        final int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
+        final int bar = selectedIndex == -1 ? (tableView.getItems().size() - 1) : selectedIndex;
 
         dragStart = (shiftDown && activeBin >= 0) ? activeBin : bar;
         dragEnd = bar;
