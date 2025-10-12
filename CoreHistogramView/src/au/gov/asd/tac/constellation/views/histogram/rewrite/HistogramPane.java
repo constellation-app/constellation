@@ -81,6 +81,20 @@ public class HistogramPane extends BorderPane {
     // Tooltips
     private static final String HELP_TOOLTIP = "Display help for Data Access";
 
+    private static final int DISPLAY_PADDING = 10;
+
+    private static final int SELECT_BUTTON_WIDTH = 100;
+    private static final int DESCENDING_BUTTON_WIDTH = 100;
+
+    private static final int MIN_LABEL_WIDTH = 90;
+    private static final int PREF_LABEL_WIDTH = 90;
+    private static final int MIN_FORMAT_LABEL_WIDTH = 60;
+
+    private static final int CONTROLS_PADDING = 5;
+    private static final int EDIT_FORMAT_BUTTON_WIDTH = 31;
+
+    private static final int MAX_VISIBLE_ROW_COUNT = 10;
+
     private final Button helpButton;
     private final HistogramTopComponent2 topComponent;
 
@@ -116,18 +130,6 @@ public class HistogramPane extends BorderPane {
     private final ContextMenu actionsMenu;
 
     private final HistogramDisplay2 display;
-
-    private static final int DISPLAY_PADDING = 10;
-
-    private static final int SELECT_BUTTON_WIDTH = 100;
-    private static final int DESCENDING_BUTTON_WIDTH = 100;
-
-    private static final int MIN_LABEL_WIDTH = 90;
-    private static final int PREF_LABEL_WIDTH = 90;
-    private static final int MIN_FORMAT_LABEL_WIDTH = 60;
-
-    private static final int CONTROLS_PADDING = 5;
-    private static final int EDIT_FORMAT_BUTTON_WIDTH = 31;
 
     private BinFormatter prevFormatter;
 
@@ -441,9 +443,16 @@ public class HistogramPane extends BorderPane {
 
                     // Clear all items
                     propertyChoice.setItems(FXCollections.observableArrayList());
-
                     propertyChoice.getItems().addAll(attributes.keySet());
-                    propertyChoice.getSelectionModel().select(histogramState.getAttribute());
+
+                    if (attributes.keySet().size() == 1) {
+                        propertyChoice.getItems().add("");
+                    }
+                    propertyChoice.getSelectionModel().select(histogramState.getAttribute() != null ? histogramState.getAttribute() : 0);
+
+                    // Set number of visiable rows, cap at 10
+                    propertyChoice.hide();
+                    propertyChoice.setVisibleRowCount(Math.min(attributes.keySet().size(), MAX_VISIBLE_ROW_COUNT));
 
                     // Clear all items
                     binFormatterCombo.setItems(FXCollections.observableArrayList());
@@ -491,16 +500,16 @@ public class HistogramPane extends BorderPane {
                 propertyChoice.setItems(FXCollections.observableArrayList());
 
                 if (attributes != null) {
-                    attributes.keySet().stream().forEach(attribute -> propertyChoice.getItems().add(attribute));
-                    if (currentHistogramState != null) {
-                        propertyChoice.getSelectionModel().select(currentHistogramState.getAttribute());
-                    } else {
-                        Platform.runLater(() -> propertyChoice.getSelectionModel().select(0));
-                    }
+                    propertyChoice.getItems().addAll(attributes.keySet());
+                    propertyChoice.getSelectionModel().select(currentHistogramState != null ? currentHistogramState.getAttribute() : 0);
+                    propertyChoice.setVisibleRowCount(Math.min(attributes.keySet().size(), MAX_VISIBLE_ROW_COUNT));
                 } else {
                     propertyChoice.getItems().add("");
-                    Platform.runLater(() -> propertyChoice.getSelectionModel().select(0));
+                    propertyChoice.getSelectionModel().select(0);
+                    propertyChoice.setVisibleRowCount(1);
                 }
+
+                propertyChoice.hide();
             });
         }
 
