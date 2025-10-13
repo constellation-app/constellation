@@ -374,7 +374,6 @@ public class HistogramDisplay2 extends BorderPane {
         updateTable(true);
 
         prevPropertyWidth = calculateLongestPropertyWidth(isRebuildRequired());
-        System.out.println("prevPropertyWidth " + prevPropertyWidth);
 
         propertyCol.setPrefWidth(prevPropertyWidth);
         barCol.setPrefWidth(tableView.getWidth() - prevPropertyWidth - iconCol.getWidth() - BAR_PADDING);

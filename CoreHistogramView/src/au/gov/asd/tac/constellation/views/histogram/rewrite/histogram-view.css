@@ -19,15 +19,12 @@
 
 .label:bar-bin-count {
     -fx-padding: 0 1em 0 0;
+    -fx-text-fill: #e0e0e0;
 }
 
 .header-row{
     -fx-text-fill: #FFFFFF;/*White*/
 
-}
-
-.histogram-text{
-    -fx-text-fill: #C0C0C0;/*Silver*/
 }
 
 .noheader .column-header-background {
@@ -56,6 +53,7 @@
 
 .table-cell {
     -fx-border-color: null;
+    -fx-text-fill: #e0e0e0;
 }
 
 .table-view .table-column{
