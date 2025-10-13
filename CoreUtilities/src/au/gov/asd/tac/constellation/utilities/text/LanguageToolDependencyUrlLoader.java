@@ -34,6 +34,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -66,7 +67,7 @@ public class LanguageToolDependencyUrlLoader {
             final File languageToolIndriyaFolder = new File(jarFolder, "ext/languagetoolconf");
 
             if (!languageToolIndriyaFolder.exists() || !languageToolIndriyaFolder.isDirectory()) {
-                LOGGER.log(Level.SEVERE, String.format("Can't locate the directory containing LanguageTool dependencies- '%s'.", languageToolIndriyaFolder.getAbsolutePath()));
+                LOGGER.log(Level.SEVERE, "Can't locate the directory containing LanguageTool dependencies- '{0}'.", languageToolIndriyaFolder.getAbsolutePath());
                 return null;
             }
 
@@ -94,8 +95,8 @@ public class LanguageToolDependencyUrlLoader {
                     .collect(Collectors.toSet());
 
         } catch (final IOException e) {
-            LOGGER.log(Level.SEVERE, String.format("Can't load the dependencies file- '%s'.", languagetoolDependenciesListFile));
-            return null;
+            LOGGER.log(Level.SEVERE, "Can't load the dependencies file- '{0}'.", languagetoolDependenciesListFile);
+            return Collections.emptySet();
         }
     }
 
@@ -104,7 +105,7 @@ public class LanguageToolDependencyUrlLoader {
 
         if (!dependencyFolder.exists() || !dependencyFolder.isDirectory()) {
             LOGGER.log(Level.SEVERE, String.format("Can't locate the directory containing common dependencies- '%s'.", dependencyFolder.getAbsolutePath()));
-            return null;
+            return libLanguageToolUrls;
         }
 
         final File[] files = dependencyFolder.listFiles((dir, name) -> name.endsWith(".jar"));
