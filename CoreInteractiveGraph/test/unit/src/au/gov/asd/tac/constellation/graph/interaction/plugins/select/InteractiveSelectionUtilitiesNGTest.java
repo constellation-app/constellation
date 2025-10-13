@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.select;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix33f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -97,6 +98,6 @@ public class InteractiveSelectionUtilitiesNGTest {
         // converting world coords of 0,0,0
         final Vector3f sceneCoords = InteractiveSelectionUtilities.convertWorldToScene(1F, 1F, 1F, new Vector3f(0F, 0F, 0F), rotMatrix, 2);
         
-        assertTrue(sceneCoords.areSame(new Vector3f(1F, 1F, -1F)));
+        assertEquals(sceneCoords, new Vector3f(1F, 1F, -1F));
     } 
 }
