@@ -67,7 +67,7 @@ public class LanguageToolDependencyUrlLoader {
             final File languageToolIndriyaFolder = new File(jarFolder, "ext/languagetoolconf");
 
             if (!languageToolIndriyaFolder.exists() || !languageToolIndriyaFolder.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "Can't locate the directory containing LanguageTool dependencies- '{0}'.", languageToolIndriyaFolder.getAbsolutePath());
+                LOGGER.log(Level.SEVERE, "Can''t locate the directory containing LanguageTool dependencies- '{0}'.", languageToolIndriyaFolder.getAbsolutePath());
                 return null;
             }
 
@@ -95,7 +95,7 @@ public class LanguageToolDependencyUrlLoader {
                     .collect(Collectors.toSet());
 
         } catch (final IOException e) {
-            LOGGER.log(Level.SEVERE, "Can't load the dependencies file- '{0}'.", languagetoolDependenciesListFile);
+            LOGGER.log(Level.SEVERE, "Can''t load the dependencies file- '{0}'.", languagetoolDependenciesListFile);
             return Collections.emptySet();
         }
     }
