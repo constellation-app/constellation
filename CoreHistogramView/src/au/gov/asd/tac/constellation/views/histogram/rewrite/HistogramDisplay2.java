@@ -373,10 +373,11 @@ public class HistogramDisplay2 extends BorderPane {
         updateHeader(barHeight * FONT_SCALE_FACTOR);
         updateTable(true);
 
-        final double maxPropertyWidth = calculateLongestPropertyWidth(isRebuildRequired());
+        prevPropertyWidth = calculateLongestPropertyWidth(isRebuildRequired());
+        System.out.println("prevPropertyWidth " + prevPropertyWidth);
 
-        propertyCol.setPrefWidth(maxPropertyWidth);
-        barCol.setPrefWidth(tableView.getWidth() - maxPropertyWidth - iconCol.getWidth() - BAR_PADDING);
+        propertyCol.setPrefWidth(prevPropertyWidth);
+        barCol.setPrefWidth(tableView.getWidth() - prevPropertyWidth - iconCol.getWidth() - BAR_PADDING);
     }
 
     private boolean isRebuildRequired() {
@@ -538,13 +539,12 @@ public class HistogramDisplay2 extends BorderPane {
             }
 
             if (maxWidth > (MAXIMUM_TEXT_WIDTH - PROPERTY_WIDTH_PADDING)) {
-                maxWidth = MAXIMUM_TEXT_WIDTH - PROPERTY_WIDTH_PADDING;
+                maxWidth = (double) MAXIMUM_TEXT_WIDTH - (double) PROPERTY_WIDTH_PADDING;
                 break;
             }
         }
 
-        prevPropertyWidth = maxWidth + PROPERTY_WIDTH_PADDING;
-        return prevPropertyWidth;
+        return maxWidth + PROPERTY_WIDTH_PADDING;
     }
 
     private synchronized void updateHeader(final double fontSize) {

@@ -691,12 +691,12 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         scrollpane.setViewPosition(new Point(0, Math.max(0, y)));
     }
 
-    public static java.awt.Color fxtColorToAwtColor(final javafx.scene.paint.Color fxColor) {
+    public static Color fxtColorToAwtColor(final javafx.scene.paint.Color fxColor) {
         final int r = (int) Math.round(fxColor.getRed() * 255);
         final int g = (int) Math.round(fxColor.getGreen() * 255);
         final int b = (int) Math.round(fxColor.getBlue() * 255);
         final int a = (int) Math.round(fxColor.getOpacity() * 255);
 
-        return new java.awt.Color(r, g, b, a);
+        return new Color(r, g, b, a);
     }
 }
