@@ -59,7 +59,7 @@ public final class DirectedShortestPathsAction implements ActionListener {
     @Override
     public void actionPerformed(final ActionEvent event) {
         if (!isAnyNodeSelected(context.getGraph())) {
-            Platform.runLater(() -> NotifyDisplayer.displayAlert("Attention", ALERT_HEADER_TEXT, ALERT_TEXT, AlertType.NONE, ScreenWindowsHelper.getMainWindowCentrePoint()));
+            Platform.runLater(() -> NotifyDisplayer.displayAlert("Attention", ALERT_HEADER_TEXT, ALERT_TEXT, AlertType.WARNING, ScreenWindowsHelper.getMainWindowCentrePoint()));
             return;
         }
         PluginExecution.withPlugin(AlgorithmPluginRegistry.DIRECTED_SHORTEST_PATHS)
