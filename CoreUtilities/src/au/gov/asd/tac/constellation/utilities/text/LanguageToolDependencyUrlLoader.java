@@ -67,7 +67,7 @@ public class LanguageToolDependencyUrlLoader {
             final File languageToolIndriyaFolder = new File(jarFolder, "ext/languagetoolconf");
 
             if (!languageToolIndriyaFolder.exists() || !languageToolIndriyaFolder.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "Can''t locate the directory containing LanguageTool dependencies- '{0}'.", languageToolIndriyaFolder.getAbsolutePath());
+                LOGGER.log(Level.SEVERE, "Can''t locate the directory containing LanguageTool dependencies- ''{0}''.", languageToolIndriyaFolder.getAbsolutePath());
                 return null;
             }
 
@@ -95,7 +95,7 @@ public class LanguageToolDependencyUrlLoader {
                     .collect(Collectors.toSet());
 
         } catch (final IOException e) {
-            LOGGER.log(Level.SEVERE, "Can''t load the dependencies file- '{0}'.", languagetoolDependenciesListFile);
+            LOGGER.log(Level.SEVERE, "Can''t load the dependencies file- ''{0}''.", languagetoolDependenciesListFile);
             return Collections.emptySet();
         }
     }
@@ -104,7 +104,7 @@ public class LanguageToolDependencyUrlLoader {
         List<URL> libLanguageToolUrls = new ArrayList<>();
 
         if (!dependencyFolder.exists() || !dependencyFolder.isDirectory()) {
-            LOGGER.log(Level.SEVERE, String.format("Can't locate the directory containing common dependencies- '%s'.", dependencyFolder.getAbsolutePath()));
+            LOGGER.log(Level.SEVERE, "Can''t locate the directory containing common dependencies- ''{0}''.", dependencyFolder.getAbsolutePath());
             return libLanguageToolUrls;
         }
 
@@ -116,7 +116,7 @@ public class LanguageToolDependencyUrlLoader {
                         try {
                             return file.toURI().toURL();
                         } catch (final MalformedURLException e) {
-                            LOGGER.log(Level.SEVERE, String.format("MalformedURLException thrown populating the URL of '%s'.", file.getName()));
+                            LOGGER.log(Level.SEVERE, "MalformedURLException thrown populating the URL of ''{0}''.", file.getName());
                             return null;
                         }
                     })
