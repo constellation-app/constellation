@@ -529,11 +529,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         final ConstellationColor color = graph.getObjectValue(attributeInt, currElement);
         boolean matches = false;
 
-        // if the color of the attribute matches the users color matches = true
-        if (colorValues.getFilter().equals(IS) && colorValues.getColorValue().equals(color)) {
-            matches = true;
-            // if the color of the attribute doesnt match the users color matches = true
-        } else if (colorValues.getFilter().equals(IS_NOT) && !colorValues.getColorValue().equals(color)) {
+        // if filter = is, and the color of the attribute matches the users color matches = true
+        // if filter = is not, and the color of the attribute doesnt match the users color matches = true
+        if (colorValues.getFilter().equals(IS) && colorValues.getColorValue().equals(color)
+                || colorValues.getFilter().equals(IS_NOT) && !colorValues.getColorValue().equals(color)) {
             matches = true;
         }
         return matches;
@@ -633,12 +632,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         final ConstellationIcon icon = graph.getObjectValue(attributeInt, currElement);
         boolean matches = false;
 
-        // if the icon of the attribute matches the users icon matches = true
-        if (iconValues.getFilter().equals(IS) && iconValues.getIconValue().equals(icon)) {
-            matches = true;
-
-            // if the icon of the attribute does not match the users icon matches = true
-        } else if (iconValues.getFilter().equals(IS_NOT) && !iconValues.getIconValue().equals(icon)) {
+        // if filter = is, and the icon of the attribute matches the users icon matches = true
+        // if filter = is not, and the icon of the attribute does not match the users icon matches = true
+        if (iconValues.getFilter().equals(IS) && iconValues.getIconValue().equals(icon)
+                || iconValues.getFilter().equals(IS_NOT) && !iconValues.getIconValue().equals(icon)) {
             matches = true;
         }
         return matches;

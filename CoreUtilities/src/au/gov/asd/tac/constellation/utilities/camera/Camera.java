@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * This class holds the state of the camera used by the renderer.
@@ -170,27 +171,48 @@ public final class Camera implements Serializable {
     public float getMix() {
         return ((float) mixRatio) / (MIX_RATIO_MAX - MIX_RATIO_MIN);
     }
-    
-    /**
-     * Method used for testing to check if camera values are equal
-     * 
-     * @param camera the camera to compare to this instance
-     * @return true if the cameras are the same, false otherwise
-     */
-    public boolean areSame(final Camera camera) {
-        return lookAtEye.areSame(camera.lookAtEye) 
-                && lookAtCentre.areSame(camera.lookAtCentre) 
-                && lookAtUp.areSame(camera.lookAtUp) 
-                && lookAtRotation.areSame(camera.lookAtRotation) 
-                && lookAtPreviousEye.areSame(camera.lookAtPreviousEye)
-                && lookAtPreviousCentre.areSame(camera.lookAtPreviousCentre) 
-                && lookAtPreviousUp.areSame(camera.lookAtPreviousUp) 
-                && lookAtPreviousRotation.areSame(camera.lookAtPreviousRotation) 
-                && visibilityLow == camera.visibilityLow
-                && visibilityHigh == camera.visibilityHigh
-                && mixRatio == camera.mixRatio
-                && objectFrame.areSame(camera.objectFrame)
-                && boundingBox.areSame(camera.boundingBox);
-        
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(lookAtEye);
+        hash = 97 * hash + Objects.hashCode(lookAtCentre);
+        hash = 97 * hash + Objects.hashCode(lookAtUp);
+        hash = 97 * hash + Objects.hashCode(lookAtRotation);
+        hash = 97 * hash + Objects.hashCode(lookAtPreviousEye);
+        hash = 97 * hash + Objects.hashCode(lookAtPreviousCentre);
+        hash = 97 * hash + Objects.hashCode(lookAtPreviousUp);
+        hash = 97 * hash + Objects.hashCode(lookAtPreviousRotation);
+        hash = 97 * hash + Objects.hashCode(boundingBox);
+        hash = 97 * hash + Objects.hashCode(objectFrame);
+        hash = 97 * hash + Float.floatToIntBits(visibilityLow);
+        hash = 97 * hash + Float.floatToIntBits(visibilityHigh);
+        hash = 97 * hash + mixRatio;
+        return hash;
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final Camera other = (Camera) obj;
+        return lookAtEye.equals(other.lookAtEye) 
+                && lookAtCentre.equals(other.lookAtCentre) 
+                && lookAtUp.equals(other.lookAtUp) 
+                && lookAtRotation.equals(other.lookAtRotation) 
+                && lookAtPreviousEye.equals(other.lookAtPreviousEye)
+                && lookAtPreviousCentre.equals(other.lookAtPreviousCentre) 
+                && lookAtPreviousUp.equals(other.lookAtPreviousUp) 
+                && lookAtPreviousRotation.equals(other.lookAtPreviousRotation) 
+                && visibilityLow == other.visibilityLow
+                && visibilityHigh == other.visibilityHigh
+                && mixRatio == other.mixRatio
+                && objectFrame.equals(other.objectFrame)
+                && boundingBox.equals(other.boundingBox);
+    }
+    
 }

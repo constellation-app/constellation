@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## Changes in October 2025
+-   Removed `areSame()` from `BoundingBox`, `Camera`, `Frame`, `Vector3f` in favour of implementing `equals()`.
+
 ## Changes in September 2025
 -   Removed `DefaultGetter` and `PrimaryKeyDefaultGetter` due to limited implementations. Uses now instead will use default value directly. e.g. Constructors and `createEditor()` now pass the default value instead of the `DefaultGetter`
 -   Renamed `AbstractEditor.setDefaultValue()` to `AbstractEditor.setToDefaultValue()` to clarify function's intention.

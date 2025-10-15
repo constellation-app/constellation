@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -76,7 +75,7 @@ public class ZoomOutPluginNGTest {
         // Start with a default camera
         final Camera originalCamera = new Camera();
         graph.setObjectValue(cameraAttribute, 0, originalCamera);
-        assertTrue(originalCamera.areSame(graph.getObjectValue(cameraAttribute, 0)));
+        assertEquals(originalCamera, graph.getObjectValue(cameraAttribute, 0));
 
         // Create a plugin and run it, asserting that the camera has moved 10 units
         final ZoomOutPlugin instance = new ZoomOutPlugin();

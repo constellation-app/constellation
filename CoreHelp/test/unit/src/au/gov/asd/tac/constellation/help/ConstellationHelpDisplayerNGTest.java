@@ -295,10 +295,10 @@ public class ConstellationHelpDisplayerNGTest {
             
             tocFile = File.createTempFile("toc", ".md");
             
-            final OutputStream out = new FileOutputStream(outputFile);
             final String returnHTML = text + text2 + text3;
             try (final MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class);
-                    final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
+                    final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS);
+                    final OutputStream out = new FileOutputStream(outputFile)) {
                 mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenCallRealMethod();
                 mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString())).thenCallRealMethod();
                 mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.generateHTMLOutput(Mockito.any(), Mockito.any())).thenReturn(returnHTML);
@@ -306,17 +306,17 @@ public class ConstellationHelpDisplayerNGTest {
 
                 ConstellationHelpDisplayer.copy(filePath, out);
                 out.flush();
-                out.close();
                 assertTrue(outputFile.length() != 0);
             }
 
             // assert that output file now has the correct contents
-            final BufferedReader reader = new BufferedReader(new FileReader(outputFile));
-            String line;
+            try (final BufferedReader reader = new BufferedReader(new FileReader(outputFile))) {
+                String line;
 
-            int linecount = 0;
-            while ((line = reader.readLine()) != null) {
-                assertEquals(line, fileContents.get(linecount++).replace("\n", ""));
+                int linecount = 0;
+                while ((line = reader.readLine()) != null) {
+                    assertEquals(line, fileContents.get(linecount++).replace("\n", ""));
+                }
             }
         } finally {
             // Cleanup

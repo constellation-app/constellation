@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.ImageIcon;
 
@@ -72,7 +73,7 @@ public interface ContextMenuProvider {
      * items provided by getItems.
      */
     public default List<ImageIcon> getIcons(final GraphReadMethods graph, final GraphElementType elementType, final int elementId) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**

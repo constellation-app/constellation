@@ -148,7 +148,7 @@ public class CameraIOProviderNGTest {
         Mockito.verify(mockGraphWriteMethods, times(1)).setObjectValue(captorAtributeId.capture(), captorElementId.capture(), captorCamera.capture());
         assertEquals((int)captorAtributeId.getValue(), attributeId);
         assertEquals((int)captorElementId.getValue(), elementId);
-        assertEquals(expected.areSame(captorCamera.getValue()), true);
+        assertEquals(expected, captorCamera.getValue());
     }
 
     /**

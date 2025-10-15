@@ -66,7 +66,7 @@ public class CameraAttributeDescriptionNGTest {
         final Object stringResult = instance.convertFromObject("");
         assertTrue(stringResult instanceof Camera);
         final Camera resultCam = (Camera) stringResult;
-        assertTrue(resultCam.areSame(new Camera()));
+        assertEquals(resultCam, new Camera());
 
         final Object otherResult = instance.convertFromObject(42);
         // should return itself

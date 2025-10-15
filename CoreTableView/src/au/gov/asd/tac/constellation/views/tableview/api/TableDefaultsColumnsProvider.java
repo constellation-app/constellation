@@ -25,6 +25,8 @@ import java.util.Set;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * The default option for getting the default columns. 
+ * This gets the key attributes off the graph.
  *
  * @author Andromeda-224
  */

@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -94,7 +94,7 @@ public class PreviousViewPluginNGTest {
         // Start with a default camera
         final Camera originalCamera = new Camera();
         graph.setObjectValue(cameraAttribute, 0, originalCamera);
-        assertTrue(originalCamera.areSame(graph.getObjectValue(cameraAttribute, 0)));
+        assertEquals(originalCamera, graph.getObjectValue(cameraAttribute, 0));
         
         // Deep copy the default camera before adding vecs to it
         final Camera clonedCamera = new Camera(originalCamera);
@@ -110,11 +110,11 @@ public class PreviousViewPluginNGTest {
         graph.setObjectValue(cameraAttribute, 0, clonedCamera);
         
         // Assert that the camera is set correctly to the cloned, changed camera
-        assertTrue(clonedCamera.areSame(graph.getObjectValue(cameraAttribute, 0)));
+        assertEquals(clonedCamera, graph.getObjectValue(cameraAttribute, 0));
         
         // Create a plugin and run it, asserting that the camera is now back to the original camera
         final PreviousViewPlugin instance = new PreviousViewPlugin();
         instance.edit(graph, null, null);
-        assertTrue(originalCamera.areSame(graph.getObjectValue(cameraAttribute, 0)));
+        assertEquals(originalCamera, graph.getObjectValue(cameraAttribute, 0));
     }
 }

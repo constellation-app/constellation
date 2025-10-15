@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import java.util.List;
 
 /**
+ * An interface for defining the attributes that will be presented in default 
+ * columns for the Table View.
  *
  * @author Andromeda-224
  */
@@ -27,6 +29,9 @@ public interface TableDefaultColumns {
        
     /**
      * Gets the default graph attributes.
+     * 
+     * @param graph The graph to get the attributes from
+     * 
      * @return List of default graph attributes.
      */
     public List<GraphAttribute> getDefaultAttributes(final Graph graph);

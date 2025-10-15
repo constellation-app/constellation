@@ -125,18 +125,18 @@ public class ResetViewPluginNGTest {
         parameters.setStringValue(AXIS_PARAMETER_ID, "x");
         
         final Camera beforeCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertTrue(beforeCamera.lookAtCentre.areSame(new Vector3f(0F, 0F, 0F)));
-        assertTrue(beforeCamera.lookAtEye.areSame(new Vector3f(0F, 0F, 10F)));
-        assertTrue(beforeCamera.lookAtUp.areSame(new Vector3f(0F, 1F, 0F)));
-        assertTrue(beforeCamera.lookAtRotation.areSame(new Vector3f(0F, 0F, 0F)));
+        assertEquals(beforeCamera.lookAtCentre, new Vector3f(0F, 0F, 0F));
+        assertEquals(beforeCamera.lookAtEye, new Vector3f(0F, 0F, 10F));
+        assertEquals(beforeCamera.lookAtUp, new Vector3f(0F, 1F, 0F));
+        assertEquals(beforeCamera.lookAtRotation, new Vector3f(0F, 0F, 0F));
         
         instance.edit(graph, null, parameters);
         
         final Camera afterCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertTrue(afterCamera.lookAtCentre.areSame(new Vector3f(2.5F, 2.5F, 2.5F)));
-        assertTrue(afterCamera.lookAtEye.areSame(new Vector3f(49.40852F, 2.5F, 2.5F)));
-        assertTrue(afterCamera.lookAtUp.areSame(new Vector3f(0F, 1F, 0F)));
-        assertTrue(afterCamera.lookAtRotation.areSame(new Vector3f(2.5F, 2.5F, 2.5F)));
+        assertEquals(afterCamera.lookAtCentre, new Vector3f(2.5F, 2.5F, 2.5F));
+        assertEquals(afterCamera.lookAtEye, new Vector3f(49.40852F, 2.5F, 2.5F));
+        assertEquals(afterCamera.lookAtUp, new Vector3f(0F, 1F, 0F));
+        assertEquals(afterCamera.lookAtRotation, new Vector3f(2.5F, 2.5F, 2.5F));
     }
     
     /**
@@ -154,18 +154,18 @@ public class ResetViewPluginNGTest {
         parameters.setStringValue(AXIS_PARAMETER_ID, "y");
         
         final Camera beforeCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertTrue(beforeCamera.lookAtCentre.areSame(new Vector3f(0F, 0F, 0F)));
-        assertTrue(beforeCamera.lookAtEye.areSame(new Vector3f(0F, 0F, 10F)));
-        assertTrue(beforeCamera.lookAtUp.areSame(new Vector3f(0F, 1F, 0F)));
-        assertTrue(beforeCamera.lookAtRotation.areSame(new Vector3f(0F, 0F, 0F)));
+        assertEquals(beforeCamera.lookAtCentre, new Vector3f(0F, 0F, 0F));
+        assertEquals(beforeCamera.lookAtEye, new Vector3f(0F, 0F, 10F));
+        assertEquals(beforeCamera.lookAtUp, new Vector3f(0F, 1F, 0F));
+        assertEquals(beforeCamera.lookAtRotation, new Vector3f(0F, 0F, 0F));
         
         instance.edit(graph, null, parameters);
         
         final Camera afterCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertTrue(afterCamera.lookAtCentre.areSame(new Vector3f(2.5F, 2.5F, 2.5F)));
-        assertTrue(afterCamera.lookAtEye.areSame(new Vector3f(2.5F, 49.40852F, 2.5F)));
-        assertTrue(afterCamera.lookAtUp.areSame(new Vector3f(0F, 0F, -1F)));
-        assertTrue(afterCamera.lookAtRotation.areSame(new Vector3f(2.5F, 2.5F, 2.5F)));
+        assertEquals(afterCamera.lookAtCentre, new Vector3f(2.5F, 2.5F, 2.5F));
+        assertEquals(afterCamera.lookAtEye, new Vector3f(2.5F, 49.40852F, 2.5F));
+        assertEquals(afterCamera.lookAtUp, new Vector3f(0F, 0F, -1F));
+        assertEquals(afterCamera.lookAtRotation, new Vector3f(2.5F, 2.5F, 2.5F));
     }
     
     /**
@@ -183,17 +183,17 @@ public class ResetViewPluginNGTest {
         parameters.setStringValue(AXIS_PARAMETER_ID, "z");
         
         final Camera beforeCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertTrue(beforeCamera.lookAtCentre.areSame(new Vector3f(0F, 0F, 0F)));
-        assertTrue(beforeCamera.lookAtEye.areSame(new Vector3f(0F, 0F, 10F)));
-        assertTrue(beforeCamera.lookAtUp.areSame(new Vector3f(0F, 1F, 0F)));
-        assertTrue(beforeCamera.lookAtRotation.areSame(new Vector3f(0F, 0F, 0F)));
+        assertEquals(beforeCamera.lookAtCentre, new Vector3f(0F, 0F, 0F));
+        assertEquals(beforeCamera.lookAtEye, new Vector3f(0F, 0F, 10F));
+        assertEquals(beforeCamera.lookAtUp, new Vector3f(0F, 1F, 0F));
+        assertEquals(beforeCamera.lookAtRotation, new Vector3f(0F, 0F, 0F));
         
         instance.edit(graph, null, parameters);
         
         final Camera afterCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertTrue(afterCamera.lookAtCentre.areSame(new Vector3f(2.5F, 2.5F, 2.5F)));
-        assertTrue(afterCamera.lookAtEye.areSame(new Vector3f(2.5F, 2.5F, 49.40852F)));
-        assertTrue(afterCamera.lookAtUp.areSame(new Vector3f(0F, 1F, 0F)));
-        assertTrue(afterCamera.lookAtRotation.areSame(new Vector3f(2.5F, 2.5F, 2.5F)));
+        assertEquals(afterCamera.lookAtCentre, new Vector3f(2.5F, 2.5F, 2.5F));
+        assertEquals(afterCamera.lookAtEye, new Vector3f(2.5F, 2.5F, 49.40852F));
+        assertEquals(afterCamera.lookAtUp, new Vector3f(0F, 1F, 0F));
+        assertEquals(afterCamera.lookAtRotation, new Vector3f(2.5F, 2.5F, 2.5F));
     }
 }

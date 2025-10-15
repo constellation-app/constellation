@@ -19,6 +19,8 @@
 
 .text-area .scroll-pane {
     -fx-background-color: transparent;
+    -fx-hbar-policy: never;
+    -fx-vbar-policy: never;
 }
 
 .text-area .scroll-pane .viewport {
@@ -27,11 +29,6 @@
 
 .text-area .scroll-pane .content {
     -fx-background-color: transparent;
-}
-
-.text-area .scroll-pane {
-    -fx-hbar-policy: never;
-    -fx-vbar-policy: never;
 }
 
 .scroll-pane .content {

@@ -22,8 +22,8 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -139,10 +139,10 @@ public class BoundingBoxUtilitiesNGTest {
         
         BoundingBoxUtilities.recalculateFromGraph(box, graph, false);
         
-        assertTrue(box.getBoundingBoxMinimum().areSame(new Vector3f(0F, 1F, 0F)));
-        assertTrue(box.getBoundingBoxMaximum().areSame(new Vector3f(2F, 2F, 4F)));
-        assertTrue(box.getMin2().areSame(new Vector3f(0F, 2F, 2F)));
-        assertTrue(box.getMax2().areSame(new Vector3f(5F, 5F, 6F)));
+        assertEquals(box.getBoundingBoxMinimum(), new Vector3f(0F, 1F, 0F));
+        assertEquals(box.getBoundingBoxMaximum(), new Vector3f(2F, 2F, 4F));
+        assertEquals(box.getMin2(), new Vector3f(0F, 2F, 2F));
+        assertEquals(box.getMax2(), new Vector3f(5F, 5F, 6F));
     }
     
     /**
@@ -159,10 +159,10 @@ public class BoundingBoxUtilitiesNGTest {
         
         BoundingBoxUtilities.recalculateFromGraph(box, graph, true);
         
-        assertTrue(box.getBoundingBoxMinimum().areSame(new Vector3f(0F, 2F, 2F)));
-        assertTrue(box.getBoundingBoxMaximum().areSame(new Vector3f(2F, 2F, 4F)));
-        assertTrue(box.getMin2().areSame(new Vector3f(0F, 2F, 2F)));
-        assertTrue(box.getMax2().areSame(new Vector3f(4F, 5F, 6F)));
+        assertEquals(box.getBoundingBoxMinimum(), new Vector3f(0F, 2F, 2F));
+        assertEquals(box.getBoundingBoxMaximum(), new Vector3f(2F, 2F, 4F));
+        assertEquals(box.getMin2(), new Vector3f(0F, 2F, 2F));
+        assertEquals(box.getMax2(), new Vector3f(4F, 5F, 6F));
     }
 
     /**
@@ -181,9 +181,9 @@ public class BoundingBoxUtilitiesNGTest {
         
         BoundingBoxUtilities.encompassSpecifiedElements(box, graph, vertices);
         
-        assertTrue(box.getBoundingBoxMinimum().areSame(new Vector3f(0F, 1F, 0F)));
-        assertTrue(box.getBoundingBoxMaximum().areSame(new Vector3f(2F, 2F, 4F)));
-        assertTrue(box.getMin2().areSame(new Vector3f(0F, 2F, 3F)));
-        assertTrue(box.getMax2().areSame(new Vector3f(5F, 4F, 5F)));
+        assertEquals(box.getBoundingBoxMinimum(), new Vector3f(0F, 1F, 0F));
+        assertEquals(box.getBoundingBoxMaximum(), new Vector3f(2F, 2F, 4F));
+        assertEquals(box.getMin2(), new Vector3f(0F, 2F, 3F));
+        assertEquals(box.getMax2(), new Vector3f(5F, 4F, 5F));
     }   
 }
