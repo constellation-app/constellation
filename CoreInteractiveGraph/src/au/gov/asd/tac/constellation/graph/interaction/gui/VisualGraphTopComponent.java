@@ -141,7 +141,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.netbeans.api.actions.Savable;
 import org.netbeans.spi.actions.AbstractSavable;
@@ -781,10 +780,13 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 dialog.showAndWait();
 
                 if (dialog.isAccepted()) {
-                    final String newGraphName = parameters.getStringValue(NEW_GRAPH_NAME_PARAMETER_ID);
-
+                    final String newGraphName = parameters.getStringValue(NEW_GRAPH_NAME_PARAMETER_ID).replaceAll("\\n", "");
                     if (!newGraphName.isEmpty()) {
                         try {
+                            final GraphDataObject gdo = graphNode.getDataObject();                    
+                            if (gdo.getFileLock() != null && gdo.getFileChannel() != null) {
+                                gdo.unlockFile();
+                            }                                                        
                             // set the graph object name so the name is retained when you Save As
                             graphNode.getDataObject().rename(newGraphName);
 
@@ -796,6 +798,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                             setName(newGraphName);
                             setDisplayName(newGraphName);
                             setHtmlDisplayName(newGraphName); // this changes the text on the tab
+                            gdo.lockFile();
                         } catch (final IOException ex) {
                             throw new RuntimeException(String.format("The name %s already exists.", newGraphName), ex);
                         }
