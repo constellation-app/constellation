@@ -5,5 +5,8 @@
         <tocitem text="Histogram View">
             <tocitem text="Histogram" target="au.gov.asd.tac.constellation.views.histogram.HistogramTopComponent" />
         </tocitem>
+        <tocitem text="Histogram View 2">
+            <tocitem text="Histogram2" target="au.gov.asd.tac.constellation.views.histogram.rewrite.HistogramTopComponent2" />
+        </tocitem>
     </tocitem>
 </toc>

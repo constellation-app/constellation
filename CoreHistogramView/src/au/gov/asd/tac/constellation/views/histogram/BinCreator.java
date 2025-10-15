@@ -24,8 +24,8 @@ import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
 import java.util.Map;
 
 /**
- * A BinCreator is the class that actually creates a collection of bins from the
- * elements in the graph. Most of the hard work is passed to the bin itself.
+ * A BinCreator is the class that actually creates a collection of bins from the elements in the graph. Most of the hard
+ * work is passed to the bin itself.
  *
  * @author sirius
  */
@@ -86,12 +86,12 @@ public class BinCreator {
                     bins.put(currentBin, currentBin);
                 }
                 if (currentBin != null) {
-                    currentBin.elementCount++;
+                    currentBin.setElementCount(currentBin.getElementCount() + 1);
                     if (selectedAttributeId != Graph.NOT_FOUND && elementType.isSelected(graph, element, selectedAttributeId)) {
-                        currentBin.selectedCount++;
+                        currentBin.setSelectedCount(currentBin.getSelectedCount() + 1);
                     }
-                    binElements[position] = currentBin.firstElement < 0 ? -1 : currentBin.firstElement;
-                    currentBin.firstElement = position;
+                    binElements[position] = currentBin.getFirstElement() < 0 ? -1 : currentBin.getFirstElement();
+                    currentBin.setFirstElement(position);
                 }
             }
         }
