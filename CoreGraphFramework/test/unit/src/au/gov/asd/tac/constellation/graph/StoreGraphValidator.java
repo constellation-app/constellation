@@ -352,6 +352,16 @@ public final class StoreGraphValidator implements GraphWriteMethods {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public int addTransaction(int sourceVertex, int destinationVertex, boolean directed, boolean isFromComposite) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public int addTransaction(int transaction, int sourceVertex, int destinationVertex, boolean directed, boolean isFromComposite) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     private class Vertex {
 
         private int id;
