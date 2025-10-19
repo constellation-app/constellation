@@ -23,7 +23,8 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -107,14 +108,14 @@ public class ZoomToSelectionPluginNGTest {
         System.out.println("edit");
         
         final Camera beforeCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertTrue(beforeCamera.areSame(new Camera()));
+        assertEquals(beforeCamera, new Camera());
         
         final ZoomToSelectionPlugin instance = new ZoomToSelectionPlugin();
         instance.edit(graph, null, null);
         
         final Camera afterCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertFalse(afterCamera.areSame(new Camera()));
-        assertTrue(afterCamera.lookAtCentre.areSame(new Vector3f(-2.5F, -2.5F, -2.5F)));
-        assertTrue(afterCamera.lookAtEye.areSame(new Vector3f(-2.5F, -2.5F, 17.24302F)));
+        assertNotEquals(afterCamera, new Camera());
+        assertEquals(afterCamera.lookAtCentre, new Vector3f(-2.5F, -2.5F, -2.5F));
+        assertEquals(afterCamera.lookAtEye, new Vector3f(-2.5F, -2.5F, 17.24302F));
     }
 }

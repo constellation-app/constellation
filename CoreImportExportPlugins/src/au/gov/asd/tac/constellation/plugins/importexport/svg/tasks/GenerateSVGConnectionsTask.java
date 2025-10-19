@@ -181,14 +181,14 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
                                 final Vector3f lowArowHeadBasePoint = graph.offsetPosition(lowEndPoint, 1.0F, lowDirectionVector);
 
                                 // Only build the high arrow head if the high arrow head has not been cropped
-                                if (highFrustumEntryPoint.areSame(highEndPoint)) {
+                                if (highFrustumEntryPoint.equals(highEndPoint)) {
                                     buildArrowHead(svgArrowHeadHigh, highEndPoint, highArrowHeadBasePoint, highArowHeadConnectionPoint, vertexTagentDirection);
                                     svgArrowHeadHigh.setParent(svgConnection);
                                     highArrowShaftPosition.set(highArowHeadConnectionPoint);
                                 }
 
                                 // Only build the low arrow head if the low arrow head has not been cropped
-                                if (lowFrustumEntryPoint.areSame(lowEndPoint)) {
+                                if (lowFrustumEntryPoint.equals(lowEndPoint)) {
                                     buildArrowHead(svgArrowHeadLow, lowEndPoint, lowArowHeadBasePoint, lowArowHeadConnectionPoint, vertexTagentDirection);
                                     svgArrowHeadLow.setParent(svgConnection);
                                     lowArrowShaftPosition.set(lowArowHeadConnectionPoint);
@@ -196,7 +196,7 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
                             }
                             case LOW_TO_HIGH -> {
                                 // Only build the high arrow head if the high arrow head has not been cropped
-                                if (highFrustumEntryPoint.areSame(highEndPoint)) {
+                                if (highFrustumEntryPoint.equals(highEndPoint)) {
                                     buildArrowHead(svgArrowHeadHigh, highEndPoint, highArowHeadConnectionPoint, highArowHeadConnectionPoint, vertexTagentDirection);
                                     svgArrowHeadHigh.setParent(svgConnection);
                                     highArrowShaftPosition.set(highArowHeadConnectionPoint);
@@ -205,7 +205,7 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
                             }
                             case HIGH_TO_LOW -> {
                                 // Only build the low arrow head if the high arrow head has not been cropped
-                                if (lowFrustumEntryPoint.areSame(lowEndPoint)) {
+                                if (lowFrustumEntryPoint.equals(lowEndPoint)) {
                                     buildArrowHead(svgArrowHeadLow, lowEndPoint, lowArowHeadConnectionPoint, lowArowHeadConnectionPoint, vertexTagentDirection);
                                     svgArrowHeadLow.setParent(svgConnection);
                                     lowArrowShaftPosition.set(lowArowHeadConnectionPoint);
