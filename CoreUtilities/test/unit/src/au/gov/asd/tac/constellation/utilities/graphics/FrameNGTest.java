@@ -440,24 +440,24 @@ public class FrameNGTest {
     }
     
     @Test
-    public void testAreSame() {
+    public void testEquals() {
         final Frame f = getFrame();
         final Frame f2 = getFrame();
-        assertTrue(f.areSame(f2));
+        assertTrue(f.equals(f2));
         
         f.setForwardVector(V1);
-        assertFalse(f.areSame(f2));
+        assertFalse(f.equals(f2));
         f.setForwardVector(f2.getForwardVector());
         
         f.setOrigin(V3);
-        assertFalse(f.areSame(f2));
+        assertFalse(f.equals(f2));
         f.setOrigin(f2.getOrigin());
         
         f.setUpVector(V2);
-        assertFalse(f.areSame(f2));
+        assertFalse(f.equals(f2));
         f.setUpVector(f2.getUpVector());
         
-        assertTrue(f.areSame(f2));
+        assertTrue(f.equals(f2));
     }
     
     /**

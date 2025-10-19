@@ -103,19 +103,19 @@ public class RotateCameraPluginNGTest {
         parameters.setFloatValue(Z_PARAMETER_ID, 90F);
         
         final Camera beforeCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertTrue(beforeCamera.lookAtCentre.areSame(new Vector3f(0F, 0F, 0F)));
-        assertTrue(beforeCamera.lookAtEye.areSame(new Vector3f(0F, 0F, 10F)));
-        assertTrue(beforeCamera.lookAtUp.areSame(new Vector3f(0F, 1F, 0F)));
+        assertEquals(beforeCamera.lookAtCentre, new Vector3f(0F, 0F, 0F));
+        assertEquals(beforeCamera.lookAtEye, new Vector3f(0F, 0F, 10F));
+        assertEquals(beforeCamera.lookAtUp, new Vector3f(0F, 1F, 0F));
         
         instance.edit(graph, null, parameters);
         
         final Camera afterCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertTrue(afterCamera.lookAtCentre.areSame(new Vector3f(0F, 0F, 0F)));
+        assertEquals(afterCamera.lookAtCentre, new Vector3f(0F, 0F, 0F));
         // in an ideal world, this one should be 10,0,0
         // unfortunately the conversion from degrees to radians in the calculations can only be approximate
         // and so subsequent calculations using that will also not quite the expected correct answer
-        assertTrue(afterCamera.lookAtEye.areSame(new Vector3f(9.999999F, 4.3711384e-7F, 3.5527133e-14F)));
+        assertEquals(afterCamera.lookAtEye, new Vector3f(9.999999F, 4.3711384e-7F, 3.5527133e-14F));
         // similarly this would be 0,-1,0 in an ideal world
-        assertTrue(afterCamera.lookAtUp.areSame(new Vector3f(4.3711385e-8F, -0.99999994F, -8.742277e-8F)));
+        assertEquals(afterCamera.lookAtUp, new Vector3f(4.3711385e-8F, -0.99999994F, -8.742277e-8F));
     }   
 }
