@@ -96,7 +96,6 @@ public class TooltipMouseMovedHandlerNGTest {
         System.out.println("testHandle");
         final TextArea textInputControl = spy(new TextArea());
         final TooltipPane tooltipPane = spy(new TooltipPane());
-        //when(textInputControl.getSkin()).thenReturn(null);
 
         try (final MockedStatic<TooltipUtilities> ttuStatic = mockStatic(TooltipUtilities.class, CALLS_REAL_METHODS)) {
             ttuStatic.when(() -> TooltipUtilities.selectActiveArea(Mockito.any(TextInputControl.class), Mockito.any(List.class))).thenAnswer((Answer<Void>) invocation -> null);

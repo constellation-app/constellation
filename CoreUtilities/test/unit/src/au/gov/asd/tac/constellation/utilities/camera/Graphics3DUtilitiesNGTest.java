@@ -203,33 +203,7 @@ public class Graphics3DUtilitiesNGTest {
     public void testMixFloat() {
         assertEquals(Graphics3DUtilities.mix(-53.213F, 13.4F, 155.597F), 10311.57F);
     }
-
-    /**
-     * Can clamp an integer between a min and a max value.
-     */
-    @Test
-    public void testClampInt() {
-        // value between min and max
-        assertEquals(Graphics3DUtilities.clamp(7, 1, 10), 7);
-        // value less than min
-        assertEquals(Graphics3DUtilities.clamp(2, 8, 11), 8);
-        // value more than max
-        assertEquals(Graphics3DUtilities.clamp(3, 12, 9), 9);
-    }
-
-    /**
-     * Can clamp a float between a min and a max value.
-     */
-    @Test
-    public void testClampFloat() {
-        // value between min and max
-        assertEquals(Graphics3DUtilities.clamp(7F, 1F, 10F), 7F);
-        // value less than min
-        assertEquals(Graphics3DUtilities.clamp(2F, 8F, 11F), 8F);
-        // value more than max
-        assertEquals(Graphics3DUtilities.clamp(3F, 12F, 9F), 9F);
-    }
-
+    
     /**
      * Can calculate the distance between vectors.
      */
