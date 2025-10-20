@@ -51,7 +51,7 @@ public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
 
     public static final String SOURCE_NODE_PARAMETER_ID = PluginParameter.buildId(DirectedShortestPathsPlugin.class, "source_node");
 
-    private static final Integer SOURCE_NODE_NOT_SET = -1;
+    private static final int SOURCE_NODE_NOT_SET = -1;
 
     private Map<String, Integer> selectedNodes = null;
 

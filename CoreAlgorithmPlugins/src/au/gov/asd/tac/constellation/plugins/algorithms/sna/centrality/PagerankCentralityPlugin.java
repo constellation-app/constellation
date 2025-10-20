@@ -163,7 +163,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
                     final int linkHighId = graph.getLinkHighVertex(linkId);
                     if (linkLowId != linkHighId) {
                         // If it isnt a link to itself
-                        final Integer neighbourId = pgVertex.vertexId == linkLowId ? linkHighId : linkLowId;
+                        final int neighbourId = pgVertex.vertexId == linkLowId ? linkHighId : linkLowId;
                         final int edgeCount = graph.getLinkEdgeCount(linkId);
                         for (int edgePosition = 0; edgePosition < edgeCount; edgePosition++) {
                             // Then for every edge in the link
