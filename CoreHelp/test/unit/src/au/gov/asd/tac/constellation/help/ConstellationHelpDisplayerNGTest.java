@@ -118,8 +118,8 @@ public class ConstellationHelpDisplayerNGTest {
             final Desktop mockDesktop = mock(Desktop.class);
             when(mockDesktop.isSupported(Desktop.Action.BROWSE)).thenReturn(true);
 
-            desktopStaticMock.when(() -> Desktop.isDesktopSupported()).thenReturn(true);
-            desktopStaticMock.when(() -> Desktop.getDesktop()).thenReturn(mockDesktop);
+            desktopStaticMock.when(Desktop::isDesktopSupported).thenReturn(true);
+            desktopStaticMock.when(Desktop::getDesktop).thenReturn(mockDesktop);
 
             assertTrue(instance.display(helpCtx));
 
@@ -127,8 +127,8 @@ public class ConstellationHelpDisplayerNGTest {
             verify(prefs, times(1)).getBoolean(Mockito.eq(key), Mockito.anyBoolean());
             mockedHelpMapperStatic.verify(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId)), times(1));
             verify(mockDesktop, times(1)).isSupported(Desktop.Action.BROWSE);
-            desktopStaticMock.verify(() -> Desktop.isDesktopSupported(), times(1));
-            desktopStaticMock.verify(() -> Desktop.getDesktop(), times(1));
+            desktopStaticMock.verify(Desktop::isDesktopSupported, times(1));
+            desktopStaticMock.verify(Desktop::getDesktop, times(1));
             mockedHelpDisplayerStatic.verify(() -> ConstellationHelpDisplayer.browse(Mockito.any()), times(1));
 
         }
@@ -172,8 +172,8 @@ public class ConstellationHelpDisplayerNGTest {
             final Desktop mockDesktop = mock(Desktop.class);
             when(mockDesktop.isSupported(Desktop.Action.BROWSE)).thenReturn(false);
 
-            desktopStaticMock.when(() -> Desktop.isDesktopSupported()).thenReturn(false);
-            desktopStaticMock.when(() -> Desktop.getDesktop()).thenReturn(mockDesktop);
+            desktopStaticMock.when(Desktop::isDesktopSupported).thenReturn(false);
+            desktopStaticMock.when(Desktop::getDesktop).thenReturn(mockDesktop);
 
             assertFalse(instance.display(helpCtx));
 
@@ -181,8 +181,8 @@ public class ConstellationHelpDisplayerNGTest {
             verify(prefs, times(1)).getBoolean(Mockito.eq(key), Mockito.anyBoolean());
             mockedHelpMapperStatic.verify(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId)), times(1));
             verify(mockDesktop, times(0)).isSupported(Desktop.Action.BROWSE);
-            desktopStaticMock.verify(() -> Desktop.isDesktopSupported(), times(1));
-            desktopStaticMock.verify(() -> Desktop.getDesktop(), times(0)); // lazy check within if statement never hits this
+            desktopStaticMock.verify(Desktop::isDesktopSupported, times(1));
+            desktopStaticMock.verify(Desktop::getDesktop, times(0)); // lazy check within if statement never hits this
             mockedHelpDisplayerStatic.verifyNoInteractions();
         }
     }
@@ -229,8 +229,8 @@ public class ConstellationHelpDisplayerNGTest {
                 final Desktop mockDesktop = mock(Desktop.class);
                 when(mockDesktop.isSupported(Desktop.Action.BROWSE)).thenReturn(true);
 
-                desktopStaticMock.when(() -> Desktop.isDesktopSupported()).thenReturn(true);
-                desktopStaticMock.when(() -> Desktop.getDesktop()).thenReturn(mockDesktop);
+                desktopStaticMock.when(Desktop::isDesktopSupported).thenReturn(true);
+                desktopStaticMock.when(Desktop::getDesktop).thenReturn(mockDesktop);
 
                 final int expectedPort = 8888;
                 webServerStaticMock.when(() -> HelpWebServer.start()).thenReturn(expectedPort);
@@ -241,8 +241,8 @@ public class ConstellationHelpDisplayerNGTest {
                 verify(prefs, times(1)).getBoolean(Mockito.eq(key), Mockito.anyBoolean());
                 mockedHelpMapperStatic.verify(() -> HelpMapper.getHelpAddress(Mockito.eq(helpId)), times(1));
                 verify(mockDesktop, times(1)).isSupported(Desktop.Action.BROWSE);
-                desktopStaticMock.verify(() -> Desktop.isDesktopSupported(), times(1));
-                desktopStaticMock.verify(() -> Desktop.getDesktop(), times(1));
+                desktopStaticMock.verify(Desktop::isDesktopSupported, times(1));
+                desktopStaticMock.verify(Desktop::getDesktop, times(1));
                 final String expectedNavigationURL = String.format("http://localhost:%d/%s", expectedPort,
                         ("file:/" + expectedFileLocation + "/ext/docs/CoreHelp/help-options.md").replace("//", "/").replace("\\", "/"));
                 mockedHelpDisplayerStatic.verify(() -> ConstellationHelpDisplayer.browse(Mockito.eq(new URI(expectedNavigationURL))), times(1));

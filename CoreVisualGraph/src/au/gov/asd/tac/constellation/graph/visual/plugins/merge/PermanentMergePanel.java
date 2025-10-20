@@ -145,7 +145,7 @@ public final class PermanentMergePanel extends JPanel {
             if (value == null) {
                 value = "";
             }
-            if (value.length() > 0) {
+            if (!value.isEmpty()) {
                 nodeTable.getColumnModel().getColumn(column).setHeaderValue("<html>" + field + "<br>(" + value + ")");
             } else {
                 nodeTable.getColumnModel().getColumn(column).setHeaderValue(field);

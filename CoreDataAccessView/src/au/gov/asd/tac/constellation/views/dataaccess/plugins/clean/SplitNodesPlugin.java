@@ -227,8 +227,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 if (allOccurrences) {
                     final String[] substrings = Arrays.stream(identifier.split(character))
                             .filter(value
-                                    -> value != null && value.length() > 0
-                            )
+                                    -> value != null && !value.isEmpty()                            )
                             .toArray(size -> new String[size]);
                     
                     if (substrings.length <= 0) {

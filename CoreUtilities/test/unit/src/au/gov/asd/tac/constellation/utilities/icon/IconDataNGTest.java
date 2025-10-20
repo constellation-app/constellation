@@ -72,7 +72,7 @@ public class IconDataNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         iconDataStaticMock = Mockito.mockStatic(IconData.class);
         imageIOStaticMock = Mockito.mockStatic(ImageIO.class);
         svgObjectStaticMock = Mockito.mockStatic(SVGObject.class);

@@ -98,7 +98,7 @@ public class DateTimeEditorFactoryNGTest {
         
         try (final MockedStatic<LocalDate> localDateMockedStatic = Mockito.mockStatic(LocalDate.class, Mockito.CALLS_REAL_METHODS);
                 final MockedStatic<LocalTime> localTimeMockedStatic = Mockito.mockStatic(LocalTime.class, Mockito.CALLS_REAL_METHODS)) {
-            localDateMockedStatic.when(() -> LocalDate.now()).thenReturn(LocalDate.EPOCH);
+            localDateMockedStatic.when(LocalDate::now).thenReturn(LocalDate.EPOCH);
             localTimeMockedStatic.when(() -> LocalTime.now(ZoneOffset.UTC)).thenReturn(LocalTime.NOON);
             
             // need to run in order for editor controls to be instantiated

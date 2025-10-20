@@ -27,7 +27,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
-import static org.fxmisc.wellbehaved.event.InputMap.when;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -65,7 +64,7 @@ public class OpenFilePluginNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         fileChooserStaticMock = mockStatic(FileChooser.class);
         openFileStaticMock = mockStatic(OpenFile.class);
     }

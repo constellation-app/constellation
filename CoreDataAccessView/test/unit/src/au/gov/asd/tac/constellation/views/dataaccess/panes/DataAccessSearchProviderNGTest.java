@@ -58,12 +58,12 @@ public class DataAccessSearchProviderNGTest {
     private static final Icon WARNING_ICON = UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor());
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         MockitoAnnotations.openMocks(this);
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         // Check usage is correct before moving on
         validateMockitoUsage();
     }

@@ -139,7 +139,7 @@ public class GraphRecordStoreUtilities {
                 }
             }
 
-            idValue = idBuilder.length() == 0 ? "***" : idBuilder.toString();
+            idValue = idBuilder.isEmpty() ? "***" : idBuilder.toString();
         }
 
         final int vertex = getVertex(graph, idValue, vertexMap, initializeWithSchema, newVertices);

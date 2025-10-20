@@ -472,7 +472,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         public String toString() {
             final StringBuilder sb = new StringBuilder();
             files.stream().forEach(file -> {
-                if (sb.length() > 0) {
+                if (!sb.isEmpty()) {
                     sb.append(SeparatorConstants.SEMICOLON);
                 }
 

@@ -758,7 +758,7 @@ public class PluginParameters implements PluginParameterListener {
     public String toString() {
         final StringBuilder buffer = new StringBuilder();
         for (Entry<String, PluginParameter<?>> parameterEntry : parameters.entrySet()) {
-            if (buffer.length() > 0) {
+            if (!buffer.isEmpty()) {
                 buffer.append(", ");
             }
             buffer.append(parameterEntry.getKey());
