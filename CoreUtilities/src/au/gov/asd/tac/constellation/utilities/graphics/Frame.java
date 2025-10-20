@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.graphics;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * The GLFrame (OrthonormalFrame) class. Possibly the most useful little piece
@@ -553,14 +554,31 @@ public final class Frame implements Serializable {
         return array;
     }
     
-    
-    public boolean areSame(final Frame frame) {
-        return origin.areSame(frame.origin)
-                && forward.areSame(frame.forward)
-                && up.areSame(frame.up)
-                && absm == frame.absm;
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(origin);
+        hash = 97 * hash + Objects.hashCode(forward);
+        hash = 97 * hash + Objects.hashCode(up);
+        hash = 97 * hash + Float.floatToIntBits(absm);
+        return hash;
     }
-
+    
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final Frame other = (Frame) obj;
+        return origin.equals(other.origin)
+                && forward.equals(other.forward)
+                && up.equals(other.up)
+                && absm == other.absm;
+    }
+    
     @Override
     public String toString() {
         return String.format("o=(%s) f=(%s) u=(%s)", origin, forward, up);
