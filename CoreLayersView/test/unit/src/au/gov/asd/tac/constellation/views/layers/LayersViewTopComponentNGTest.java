@@ -86,7 +86,7 @@ public class LayersViewTopComponentNGTest {
             mockedTopComponent.setPaneStatus();
 
             verify(mockedTopComponent).createContent();
-            verify(lvp).setEnabled(Mockito.eq(false));
+            verify(lvp).setEnabled(false);
         }
     }
 
@@ -114,7 +114,7 @@ public class LayersViewTopComponentNGTest {
             mockedTopComponent.setPaneStatus();
 
             verify(mockedTopComponent).createContent();
-            verify(lvp).setEnabled(Mockito.eq(true));
+            verify(lvp).setEnabled(true);
         }
     }
 

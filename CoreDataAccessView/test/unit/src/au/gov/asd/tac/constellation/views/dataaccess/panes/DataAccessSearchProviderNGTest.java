@@ -207,7 +207,7 @@ public class DataAccessSearchProviderNGTest {
 
         // Do nothing when the plugin is called to expand
         // May never get here with the code existing in the Platform thread.
-        doNothing().when(qpPane).expandPlugin(Mockito.eq("SelectTopN"));
+        doNothing().when(qpPane).expandPlugin("SelectTopN");
 
         // Mock the static method getQueryPhasePane to return the mocked QueryPhasePane
         try (MockedStatic<DataAccessTabPane> mockedStatic = Mockito.mockStatic(DataAccessTabPane.class)) {
