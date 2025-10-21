@@ -78,7 +78,7 @@ public class PluginReporterPaneNGTest {
 
             instance.onChanged();
 
-            verify(prefs, times(1)).put(Mockito.eq(key), Mockito.eq(returnValue));
+            verify(prefs, times(1)).put(key, returnValue);
         }
     }
 

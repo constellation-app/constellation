@@ -45,9 +45,8 @@ public class VisualGraphOpenerNGTest {
     private MockedStatic<AutosaveUtilities> autosaveUtilitiesMock;
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
-        autosaveUtilitiesMock = 
-                mockStatic(AutosaveUtilities.class, Mockito.CALLS_REAL_METHODS);
+    public void setUpMethod() {
+        autosaveUtilitiesMock = mockStatic(AutosaveUtilities.class, Mockito.CALLS_REAL_METHODS);
     }
     
     @AfterMethod

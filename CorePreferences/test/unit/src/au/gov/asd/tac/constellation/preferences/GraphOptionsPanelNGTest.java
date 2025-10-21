@@ -31,7 +31,7 @@ public class GraphOptionsPanelNGTest {
     private GraphOptionsPanel graphOptionsPanel;
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         graphOptionsPanel = spy(GraphOptionsPanel.class);        
     }
 

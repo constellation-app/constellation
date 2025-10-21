@@ -46,7 +46,7 @@ public class VertexGraphLabelsAttributeInteraction extends AbstractAttributeInte
             labelsString.append(label.getColor());
             labelsString.append("), ");
         });
-        return labelsString.length() > 0 ? labelsString.substring(0, labelsString.length() - 2) : labelsString.toString();
+        return !labelsString.isEmpty() ? labelsString.substring(0, labelsString.length() - 2) : labelsString.toString();
     }
 
     @Override

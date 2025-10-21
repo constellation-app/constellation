@@ -59,7 +59,7 @@ public class HashmodCSVImportFileParserNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         hashmodInputSourceMock = mock(HashmodInputSource.class);
         csvParserMock = mock(CSVParser.class);
         iteratorMock = mock(Iterator.class);
