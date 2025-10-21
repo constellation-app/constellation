@@ -30,7 +30,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +55,7 @@ public class NifiClient extends RestClient {
     // TODO: make this more robust and efficient.
     private static final HashMap<String, String> SUBMIT_CACHE = new HashMap<>();
 
-    private NifiFileSubmitResponse postToNodes(final List<Tuple<String, String>> headers, final byte[] bytes, final Boolean stopAfterFirstAccept) throws IOException {
+    private NifiFileSubmitResponse postToNodes(final List<Tuple<String, String>> headers, final byte[] bytes, final boolean stopAfterFirstAccept) throws IOException {
         final List<String> nodes = DEFAULT_CONFIG.getNifiNodes();
         boolean anyNodeResponded = false;
         String acceptingNode = null;
@@ -71,7 +70,7 @@ public class NifiClient extends RestClient {
                     response = new NifiFileSubmitResponse(this.responseCode, this.responseMessage, this.headerFields, this.bytes);
                     acceptingNode = node;
                     LOGGER.log(Level.INFO, "Success: response code {0} from node {1}", new Object[]{responseCode, node});
-                    if (Boolean.TRUE.equals(stopAfterFirstAccept)) {
+                    if (stopAfterFirstAccept) {
                         LOGGER.log(Level.INFO, "Stopping after node {0} accepted request", node);
                         break;
                     } else {

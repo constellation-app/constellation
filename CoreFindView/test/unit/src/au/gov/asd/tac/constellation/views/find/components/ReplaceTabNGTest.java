@@ -196,7 +196,7 @@ public class ReplaceTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(findViewTopComponent);
-        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
+        doNothing().when(mockController).replaceMatchingElements(true, false, false);
 
         /**
          * Create a basicFindMock and adds a temporary choice box and textFild
@@ -233,7 +233,7 @@ public class ReplaceTabNGTest {
 
             replaceMock.replaceAllAction();
 
-            verify(replaceMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
+            verify(replaceMock, times(1)).saveSelected(GraphElementType.VERTEX);
             verify(replaceMock, times(1)).updateBasicReplaceParamters();
             verify(mockController, times(1)).replaceMatchingElements(true, false, false);
         }
@@ -252,7 +252,7 @@ public class ReplaceTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(findViewTopComponent);
-        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
+        doNothing().when(mockController).replaceMatchingElements(false, true, false);
 
         /**
          * Create a basicFindMock and adds a temporary choice box and textFild
@@ -289,7 +289,7 @@ public class ReplaceTabNGTest {
 
             replaceMock.replaceNextAction();
 
-            verify(replaceMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
+            verify(replaceMock, times(1)).saveSelected(GraphElementType.VERTEX);
             verify(replaceMock, times(1)).updateBasicReplaceParamters();
             verify(mockController, times(1)).replaceMatchingElements(false, true, false);
         }

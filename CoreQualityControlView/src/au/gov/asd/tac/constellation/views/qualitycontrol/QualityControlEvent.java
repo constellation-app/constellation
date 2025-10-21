@@ -178,7 +178,7 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
     public String getReasons() {
         final StringBuilder buf = new StringBuilder();
         for (final String reason : reasons) {
-            if (buf.length() > 0) {
+            if (!buf.isEmpty()) {
                 buf.append(", ");
             }
             buf.append(reason);

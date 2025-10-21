@@ -42,7 +42,7 @@ public class SetColorValuesOperationNGTest {
     private final int elementId = 1;
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         wg = mock(WritableGraph.class);        
     }
 

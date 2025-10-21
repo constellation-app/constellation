@@ -188,8 +188,7 @@ public class LayersDualGraphSyncNGTest {
         } finally {
             writableGraph.commit();
         }
-
-        //PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(queries, 1)).executeNow(graph);
+        
         try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
             assertEquals(readableGraph.getLongValue(layerMaskV, vxId1), 3);
             assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId1), 1.0f);

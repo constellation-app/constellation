@@ -90,7 +90,7 @@ public class ConstellationLogFormatter extends Formatter {
             exceptionBlock.append(stackTrace);
             exceptionBlock.append(SeparatorConstants.NEWLINE);
         }
-        if (!repeatedException && exceptionBlock.length() == 0) {
+        if (!repeatedException && exceptionBlock.isEmpty()) {
             repeatedExceptionBlock = "";
         }
 
@@ -118,7 +118,7 @@ public class ConstellationLogFormatter extends Formatter {
             repeatedLogCount = 0;
         }
 
-        repeatedLogMessage = exceptionBlock.length() > 0 ? exceptionBlock.toString() : formattedMessage;
+        repeatedLogMessage = !exceptionBlock.isEmpty() ? exceptionBlock.toString() : formattedMessage;
         final String outputString = pendingMessage + prefix.toString() + repeatedLogMessage;
         pendingMessage = "";
         return outputString;

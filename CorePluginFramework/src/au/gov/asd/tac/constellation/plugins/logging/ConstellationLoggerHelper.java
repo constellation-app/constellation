@@ -279,7 +279,7 @@ public class ConstellationLoggerHelper {
      */
     private static void addFileStatistics(final Properties properties, final Collection<File> files) throws PluginException {
         if (files != null) {
-            Integer counter = files.size();
+            int counter = files.size();
             for (File file : files) {
                 properties.setProperty(String.format(STRING_NUMBER_FORMAT, FILE_NAME, counter), file.getAbsolutePath());
                 properties.setProperty(String.format(STRING_NUMBER_FORMAT, FILE_SIZE, counter), Long.toString(file.length()));

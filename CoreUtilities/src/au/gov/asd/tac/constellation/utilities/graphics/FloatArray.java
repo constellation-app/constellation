@@ -522,7 +522,7 @@ public final class FloatArray implements Iterable<Float> {
     public String toString() {
         final StringBuilder b = new StringBuilder();
         for (int i = 0; i < size; i++) {
-            if (b.length() > 0) {
+            if (!b.isEmpty()) {
                 b.append(',');
             }
             b.append(String.valueOf(elementData[i]));

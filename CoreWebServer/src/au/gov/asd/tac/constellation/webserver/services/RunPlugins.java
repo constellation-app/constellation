@@ -189,7 +189,7 @@ public class RunPlugins extends RestService {
             buf.append(errorQueue.remove().toString());
         }
 
-        if (buf.length() > 0) {
+        if (!buf.isEmpty()) {
             throw new RestServiceException(buf.toString());
         }
     }

@@ -140,7 +140,7 @@ public class LayersViewPaneNGTest {
 
         latch.await();
         
-        verify(spiedLvp).setEnabled(Mockito.eq(true));
+        verify(spiedLvp).setEnabled(true);
         verify(spiedLvp).setCenter(Mockito.same(spiedLvp.layersViewVBox));
     }
     
@@ -167,7 +167,7 @@ public class LayersViewPaneNGTest {
 
         latch.await();
         
-        verify(spiedLvp).setEnabled(Mockito.eq(false));
+        verify(spiedLvp).setEnabled(false);
         verify(spiedLvp).setCenter(Mockito.same(spiedLvp.noGraphPane));
     }
 }

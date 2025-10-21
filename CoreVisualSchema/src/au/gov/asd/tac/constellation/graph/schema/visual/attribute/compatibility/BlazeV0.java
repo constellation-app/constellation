@@ -100,7 +100,7 @@ public class BlazeV0 implements Serializable, Comparable<BlazeV0> {
     }
 
     public static BlazeV0 valueOf(final String s) {
-        if (s != null && s.length() > 0) {
+        if (s != null && !s.isEmpty()) {
             final Matcher m = BLAZE_PATTERN.matcher(s);
             if (m.matches()) {
                 final int angle = Integer.parseInt(m.group(1));

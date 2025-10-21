@@ -28,11 +28,7 @@ public class Scatter3dChoiceParameters {
     private boolean xLogarithmic = false;
     private boolean yLogarithmic = false;
     private boolean zLogarithmic = false;
-    private Boolean doNotScale = false;
-
-    public Scatter3dChoiceParameters() {
-        // Method intentionally left blank
-    }
+    private boolean doNotScale = false;
 
     public static Scatter3dChoiceParameters getDefaultParameters() {
         return new Scatter3dChoiceParameters();
@@ -55,19 +51,19 @@ public class Scatter3dChoiceParameters {
         this.zDimension = zDimension;
     }
 
-    public void setLogarithmicX(final Boolean xLogarithmic) {
+    public void setLogarithmicX(final boolean xLogarithmic) {
         this.xLogarithmic = xLogarithmic;
     }
 
-    public void setLogarithmicY(final Boolean yLogarithmic) {
+    public void setLogarithmicY(final boolean yLogarithmic) {
         this.yLogarithmic = yLogarithmic;
     }
 
-    public void setLogarithmicZ(final Boolean zLogarithmic) {
+    public void setLogarithmicZ(final boolean zLogarithmic) {
         this.zLogarithmic = zLogarithmic;
     }
 
-    public void setDoNotScale(final Boolean doNotScale) {
+    public void setDoNotScale(final boolean doNotScale) {
         this.doNotScale = doNotScale;
     }
 

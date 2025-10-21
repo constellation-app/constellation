@@ -54,7 +54,7 @@ public class DecoratorsAttributeInteraction extends AbstractAttributeInteraction
             decoratorsString.append(String.format("SW: %s, ", decoratorsVal.getSouthWestDecoratorAttribute()));
         }
 
-        return decoratorsString.length() > 0 ? decoratorsString.substring(0, decoratorsString.length() - 2) : decoratorsString.toString();
+        return !decoratorsString.isEmpty() ? decoratorsString.substring(0, decoratorsString.length() - 2) : decoratorsString.toString();
     }
 
     @Override
