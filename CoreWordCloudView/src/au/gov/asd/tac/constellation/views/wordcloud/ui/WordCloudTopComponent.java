@@ -92,8 +92,8 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
         panel.setScene(scene);
 
         // Update word cloud pane's size when window size changes
-        scene.heightProperty().addListener((obv, oldVal, newVal) -> 
-            wordCloudPane.setContentHeight(newVal.intValue()));
+        scene.heightProperty().addListener((obv, oldVal, newVal)
+                -> wordCloudPane.setContentHeight(newVal.intValue()));
     }
 
     @Override
@@ -116,7 +116,7 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
             }
 
             if (graph != null) {
-                // Add listener to new graph 
+                // Add listener to new graph
                 this.graph = graph;
                 this.graph.addGraphChangeListener(this);
 
@@ -152,12 +152,13 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
         }
         setPaneStatus();
     }
-    
+
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
         controller.updateGraph();
         setPaneStatus();
+        setFloating(Bundle.CTL_WordCloudTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -166,12 +167,12 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
         controller.updateGraph();
         setPaneStatus();
     }
-        
+
     /**
-     * Sets the status of the pane dependent on if a graph is currently active.
-     * The status is used to enable or disable the view when a graph exists.
+     * Sets the status of the pane dependent on if a graph is currently active. The status is used to enable or disable
+     * the view when a graph exists.
      */
-    protected void setPaneStatus(){
+    protected void setPaneStatus() {
         createContent().setEnabled(GraphManager.getDefault().getActiveGraph() != null);
     }
 
