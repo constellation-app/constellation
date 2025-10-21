@@ -103,8 +103,8 @@ public class HistogramTopComponent2NGTest {
         System.out.println("createStyle");
         final HistogramTopComponent2 instance = new HistogramTopComponent2();
 
-        //final String expResult =  "resources/histogram-view.css"; // Uncomment when histogram rewrite fully replaces old histogram
-        final String expResult = "histogram-view.css";// Remove this when histogram rewrite fully replaces old histogram
+        //final String expResult =  "resources/histogram-view-light.css"; // Uncomment when histogram rewrite fully replaces old histogram
+        final String expResult = "histogram-view-light.css";// Remove this when histogram rewrite fully replaces old histogram
 
         final String result = instance.createStyle();
         assertEquals(result, expResult);
