@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParamete
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.histogram.AttributeType;
 import au.gov.asd.tac.constellation.views.histogram.BinCollection;
@@ -160,8 +161,15 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
     @Override
     protected String createStyle() {
-        //return "resources/histogram-view.css"; // TODO: Uncomment when histogram rewrite fully replaces old histogram, and move histogram-view.css into resources folder
-        return "histogram-view.css";// Remove this when histogram rewrite fully replaces old histogram
+
+        // TODO: Uncomment code below when histogram rewrite fully replaces old histogram,
+        //       and move histogram-view-dark.css and histogram-view-light.css into resources folder
+//        return JavafxStyleManager.isDarkTheme()
+//                ? "resources/histogram-view-dark.css"
+//                : "resources/histogram-view-light.css";
+        return JavafxStyleManager.isDarkTheme()
+                ? "histogram-view-dark.css"
+                : "histogram-view-light.css";
     }
 
     @Override

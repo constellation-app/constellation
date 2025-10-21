@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.histogram.rewrite;
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.histogram.Bin;
 import au.gov.asd.tac.constellation.views.histogram.BinCollection;
 import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
@@ -72,7 +73,7 @@ import javafx.scene.text.Text;
  */
 public class HistogramDisplay2 extends BorderPane {
 
-    private static final String BACKGROUND_COLOR_STRING = "#444444";
+    private static final String BACKGROUND_COLOR_STRING = JavafxStyleManager.isDarkTheme() ? "#444444" : "#f5f5f5";
     private static final Color BACKGROUND_COLOR = Color.web(BACKGROUND_COLOR_STRING);
     public static final Color BAR_COLOR = Color.rgb(30, 144, 255);
     public static final Color SELECTED_COLOR = Color.RED.darker();

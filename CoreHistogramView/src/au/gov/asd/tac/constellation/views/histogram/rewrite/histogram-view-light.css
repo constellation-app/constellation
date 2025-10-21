@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *//* 
-    Created on : 2 June 2025, 9:48:27 am
+    Created on : 21 October 2025, 9:52:16 am
     Author     : Quasar985
 */
 
@@ -23,7 +23,7 @@
 }
 
 .header-row{
-    -fx-text-fill: #FFFFFF;/*White*/
+    /*    -fx-text-fill: #FFFFFF;White*/
 
 }
 
@@ -43,17 +43,18 @@
 }
 
 .table-cell:no-value{
-    -fx-text-fill: #FFFF00; /*Yellow*/
+    -fx-text-fill: #cccc00; /* Dark Yellow*/
+
 }
 
 .table-cell:row-selected{
-    -fx-text-fill: white;
+/*    -fx-text-fill: white;*/
     -fx-font-weight: bold;
 }
 
 .table-cell {
     -fx-border-color: null;
-    -fx-text-fill: #e0e0e0;
+    /*    -fx-text-fill: #e0e0e0;*/
 }
 
 .table-view .table-column{
