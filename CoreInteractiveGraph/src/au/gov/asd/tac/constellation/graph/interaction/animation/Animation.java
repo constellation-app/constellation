@@ -120,7 +120,7 @@ public abstract class Animation {
      * finite number of frames.
      */
     protected final void setFinished() {
-        finished = true;
+        finished = true;        
     }
 
     /**
@@ -140,7 +140,7 @@ public abstract class Animation {
                 try {
                     if (lockGraphSafely(graph)) {
                         initialise(wg);
-                        wg.commit();
+                        wg.commit(finished);
                         editGraph(graph);
                     } 
                 } catch (final InterruptedException ex) {
@@ -148,7 +148,7 @@ public abstract class Animation {
                 } finally {
                     if (lockGraphSafely(graph)) {                    
                         reset(wg);
-                        wg.commit();
+                        wg.commit(finished);
                     }
                     AnimationUtilities.notifyComplete(this);
                 }    
@@ -171,7 +171,7 @@ public abstract class Animation {
                     && lockGraphSafely(graph)){    
                 // Animate a frame
                 animate(wg);
-                wg.commit();
+                wg.commit(finished);
             }
             
             // Sleep until it is time for the next frame
@@ -199,7 +199,7 @@ public abstract class Animation {
     }
 
     protected void stop() {
-        setFinished();
+        setFinished();        
     }
     
     /**
