@@ -71,8 +71,7 @@ public class NumberInputPaneNGTest {
         final NumberInputPane numberInputPane = spy(new NumberInputPane(maxMinParam));
         final Node field = numberInputPane.getChildren().get(0);
         assertTrue(field instanceof Spinner);
-        if (field instanceof Spinner) {
-            final Spinner spinner = (Spinner) field;
+        if (field instanceof Spinner spinner) {
             final int intValue = Integer.parseInt(spinner.getValueFactory().getValue().toString());
             assertTrue(intValue == Integer.MAX_VALUE);
             spinner.decrement();

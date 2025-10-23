@@ -205,51 +205,43 @@ public class NumberInputPane<T> extends Pane {
      * @return IntegerSpinnerValueFactory
      */
     private IntegerSpinnerValueFactory customIntegerSpinnerValueFactory(final int min, final int max, final int initialValue) {
-     SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory = 
-            new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initialValue) {
+        final SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory
+                = new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initialValue) {
             @Override
-            public void increment(int steps) {
-                int currentValue = getValue();
-                int max = getMax();
-                int min = getMin(); // Get the minimum value for resetting
+            public void increment(final int steps) {
+                final int currentValue = getValue();
+                final int max = getMax();
+                final int min = getMin(); // Get the minimum value for resetting
                 // Set to the Integer.MAX_VALUE if current value already at max,
                 // otherwise it ticks over to the minimum.
                 if (currentValue == max) {
                     setValue(max);
                 } else {
-                    int newValue = currentValue + steps;
-
-                    if (newValue > max) {
-                        setValue(min); // Reset to minimum when max is exceeded
-                    } else {
-                        setValue(newValue);
-                    }
+                    final int newValue = currentValue + steps;
+                    // Reset to maximum when max is exceeded
+                    setValue(newValue > max ? max : newValue);
                 }
             }
 
-            // You might also want to override decrement() if similar behavior is desired for decrementing below min.
+            // override decrement() to reset to minimum when min is exceeded for decrementing below min.
             @Override
             public void decrement(int steps) {
-                int currentValue = getValue();
-                int min = getMin();
-                int max = getMax(); // Get the maximum value for resetting
-                
+                final int currentValue = getValue();
+                final int min = getMin();
+                final int max = getMax(); // Get the maximum value for resetting
+
                 // Set to the Integer.MIN_VALUE if current value already at min,
                 // otherwise it ticks over to the maximum.
                 if (currentValue == min) {
                     setValue(min);
                 } else {
-                    int newValue = currentValue - steps;
-
-                    if (newValue < min) {
-                        setValue(max); // Reset to maximum when min is exceeded (optional, for wrapping)
-                    } else {
-                        setValue(newValue);
-                    }
+                    final int newValue = currentValue - steps;
+                    // Reset to minimum when min is exceeded (optional, for wrapping)
+                    setValue(newValue < min ? min : newValue);
                 }
             }
         };
-     return valueFactory;
+        return valueFactory;
     }
     private void setParameterBasedOnType(final PluginParameter<?> parameter, final Number min, final Number max) {
         try {
