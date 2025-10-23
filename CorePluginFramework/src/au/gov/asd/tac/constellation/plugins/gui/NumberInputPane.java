@@ -128,7 +128,9 @@ public class NumberInputPane<T> extends Pane {
         // when the string doesn't validate.
         field.getEditor().textProperty().addListener((ov, oldValue, newValue) -> {
             if (newValue.isEmpty() || "-".equals(newValue)) {
-                // Detected a backspace/overwrite. The resulting value is just a minus sign, or an empty string. Reset to minimum value.
+                // Detected a backspace/overwrite. The resulting value is just a minus sign, or an empty string.
+                // Clear editor as it seems to retain the "-". Reset to minimum value.
+                field.getEditor().setText("");
                 field.getEditor().setText(newValue + (pv.getMinimumValue() != null ? Integer.toString(pv.getMinimumValue().intValue()) : "0"));
                 if (field.getEditor().getText().equals(oldValue)) {
                     repeatedOccurrences++;
@@ -210,8 +212,8 @@ public class NumberInputPane<T> extends Pane {
             @Override
             public void increment(final int steps) {
                 final int currentValue = getValue();
-                final int max = getMax();
-                final int min = getMin(); // Get the minimum value for resetting
+                final int max = getMax(); // Get the maximum value for resetting
+                
                 // Set to the Integer.MAX_VALUE if current value already at max,
                 // otherwise it ticks over to the minimum.
                 if (currentValue == max) {
@@ -227,9 +229,8 @@ public class NumberInputPane<T> extends Pane {
             @Override
             public void decrement(int steps) {
                 final int currentValue = getValue();
-                final int min = getMin();
-                final int max = getMax(); // Get the maximum value for resetting
-
+                final int min = getMin(); // Get the minimum value for resetting
+                
                 // Set to the Integer.MIN_VALUE if current value already at min,
                 // otherwise it ticks over to the maximum.
                 if (currentValue == min) {
