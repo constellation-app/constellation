@@ -86,7 +86,7 @@ public class FileChooserNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         completableFutureMockedStatic.when(() -> {
             CompletableFuture.completedFuture(ArgumentMatchers.<Optional<List<File>>>any());
         })

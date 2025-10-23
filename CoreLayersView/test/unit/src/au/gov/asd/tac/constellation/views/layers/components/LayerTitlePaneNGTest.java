@@ -94,7 +94,7 @@ public class LayerTitlePaneNGTest {
 
         latch.await();
         
-        verify(spiedLtp).setQuery(Mockito.eq(query));
+        verify(spiedLtp).setQuery(query);
     }
 
     /**
@@ -122,7 +122,7 @@ public class LayerTitlePaneNGTest {
 
         latch.await();
 
-        verify(spiedLtp).setQuery(Mockito.eq(query));
+        verify(spiedLtp).setQuery(query);
     }
 
     /**
@@ -151,7 +151,7 @@ public class LayerTitlePaneNGTest {
 
         latch.await();
 
-        verify(spiedLtp).setSelected(Mockito.eq(true));
+        verify(spiedLtp).setSelected(true);
     }
 
     /**
@@ -180,6 +180,6 @@ public class LayerTitlePaneNGTest {
 
         latch.await();
 
-        verify(spiedLtp).setDescription(Mockito.eq(description));
+        verify(spiedLtp).setDescription(description);
     }
 }

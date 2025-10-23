@@ -63,6 +63,8 @@ jobs:
             --volume /home/runner/.ivy2:/root/.ivy2
             --workdir /code/constellation-applications
           run: |
+            git config --global --add safe.directory /code/constellation
+            git config --global --add safe.directory /code/constellation-adaptors
             ./build-zip.sh -a constellation -m "constellation constellation-adaptors"
 
       - name: Upload Linux Build

@@ -223,7 +223,7 @@ public class BinCollection {
             buf.append(String.format("%s\t%d\n", label, bin.getElementCount()));
         }
 
-        if (buf.length() > 0) {
+        if (!buf.isEmpty()) {
             final StringSelection ss = new StringSelection(buf.toString());
             final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());

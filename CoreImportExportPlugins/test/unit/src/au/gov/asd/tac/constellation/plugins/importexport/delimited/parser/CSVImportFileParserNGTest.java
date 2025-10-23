@@ -65,7 +65,7 @@ public class CSVImportFileParserNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         inputSourceMock = mock(InputSource.class);
         pluginParametersMock = mock(PluginParameters.class);
         csvParserMock = mock(CSVParser.class);

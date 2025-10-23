@@ -325,6 +325,7 @@ public class AttributeEditorPanel extends BorderPane {
 
     private TitledPane createHeaderTitledPane(final HeadingType headingType, final StringProperty title, final VBox container) {
         final TitledPane result = new TitledPane();
+        final int fontSize = FontUtilities.getApplicationFontSize();
         result.setContent(container);
         final BorderPane headerGraphic = new BorderPane();
         final HBox optionsButtons = new HBox(5);
@@ -336,7 +337,7 @@ public class AttributeEditorPanel extends BorderPane {
         showEmptyToggle.setAlignment(Pos.CENTER);
         showEmptyToggle.setTextAlignment(TextAlignment.CENTER);
         showEmptyToggle.setStyle("-fx-background-insets: 0, 0; -fx-padding: 0");
-        showEmptyToggle.setPrefSize(80, 12);
+        showEmptyToggle.setPrefSize(80 * (fontSize / 12), fontSize);
         showEmptyToggle.setPadding(new Insets(5));
         showEmptyToggle.setTooltip(new Tooltip("Show empty attributes"));
         final String emptyKey;
@@ -369,7 +370,7 @@ public class AttributeEditorPanel extends BorderPane {
         showHiddenToggle.setAlignment(Pos.CENTER);
         showHiddenToggle.setTextAlignment(TextAlignment.CENTER);
         showHiddenToggle.setStyle("-fx-background-insets: 0, 0; -fx-padding: 0");
-        showHiddenToggle.setPrefSize(80, 12);
+        showHiddenToggle.setPrefSize(80 * (fontSize / 12), fontSize);
         showHiddenToggle.setPadding(new Insets(5));
         showHiddenToggle.setTooltip(new Tooltip("Show hidden attributes"));
         final String hiddenKey = switch (headingType) {

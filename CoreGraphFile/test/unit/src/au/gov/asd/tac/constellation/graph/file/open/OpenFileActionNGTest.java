@@ -53,7 +53,7 @@ public class OpenFileActionNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         pluginExecutionStaticMock = mockStatic(PluginExecution.class);
         pluginExecutionMock = mock(PluginExecution.class);
     }

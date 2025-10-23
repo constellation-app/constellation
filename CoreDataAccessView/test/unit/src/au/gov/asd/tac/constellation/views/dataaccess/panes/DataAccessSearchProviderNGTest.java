@@ -58,12 +58,12 @@ public class DataAccessSearchProviderNGTest {
     private static final Icon WARNING_ICON = UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor());
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         MockitoAnnotations.openMocks(this);
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         // Check usage is correct before moving on
         validateMockitoUsage();
     }
@@ -207,7 +207,7 @@ public class DataAccessSearchProviderNGTest {
 
         // Do nothing when the plugin is called to expand
         // May never get here with the code existing in the Platform thread.
-        doNothing().when(qpPane).expandPlugin(Mockito.eq("SelectTopN"));
+        doNothing().when(qpPane).expandPlugin("SelectTopN");
 
         // Mock the static method getQueryPhasePane to return the mocked QueryPhasePane
         try (MockedStatic<DataAccessTabPane> mockedStatic = Mockito.mockStatic(DataAccessTabPane.class)) {

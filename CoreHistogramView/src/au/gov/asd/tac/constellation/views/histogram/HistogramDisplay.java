@@ -507,7 +507,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private int getBarAtPoint(Point p, boolean bounded) {
         int n = (int) ((p.y - 2 + GAP_BETWEEN_BARS / 2F) / (GAP_BETWEEN_BARS + barHeight)) - 1;
         if (bounded) {
-            n = Math.min(Math.max(n, 0), binCollection.getBins().length - 1);
+            n = Math.clamp(n, 0, binCollection.getBins().length - 1);
         }
 
         return n;

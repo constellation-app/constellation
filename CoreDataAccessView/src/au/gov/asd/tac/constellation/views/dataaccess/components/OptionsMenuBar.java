@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
@@ -26,7 +27,6 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -186,6 +186,7 @@ public class OptionsMenuBar {
         ////////////////////
         // Menu Setup
         ////////////////////
+        final int applicationFontSize = FontUtilities.getApplicationFontSize();        
         optionsMenu = new Menu(OPTIONS_MENU_TEXT, SETTINGS_ICON);
         optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem,
                 connectionLoggingMenuItem, deselectPluginsOnExecutionMenuItem);
@@ -193,7 +194,7 @@ public class OptionsMenuBar {
         optionsMenu.addEventHandler(Menu.ON_SHOWING, event -> updateMenuEntry());
         menuBar = new MenuBar();
         menuBar.getMenus().add(optionsMenu);
-        menuBar.setMinHeight(36);
+        menuBar.setPrefHeight(applicationFontSize * 2);
         menuBar.setPadding(new Insets(4));
     }
 
@@ -300,9 +301,7 @@ public class OptionsMenuBar {
          * @param newValue the new value of the save results menu checkbox
          */
         @Override
-        public void changed(final ObservableValue<? extends Boolean> observable,
-                final Boolean oldValue,
-                final Boolean newValue) {
+        public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
             if (Boolean.TRUE.equals(newValue)) {
                 lastChange = FileChooser.openOpenDialog(getDataAccessResultsFileChooser()).thenAccept(optionalFolder
                         -> optionalFolder.ifPresentOrElse(

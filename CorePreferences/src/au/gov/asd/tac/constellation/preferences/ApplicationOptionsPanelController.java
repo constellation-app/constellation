@@ -123,11 +123,14 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
 
         return applicationOptionsPanel.getUserDirectory() != null
                 && applicationOptionsPanel.getAutosaveFrequency() > 0
+                && applicationOptionsPanel.getAutosaveEditorFrequency() > 0
                 && applicationOptionsPanel.getWebserverPort() > 0
+                && applicationOptionsPanel.getWebserverEditorPort() > 0
                 && applicationOptionsPanel.getNotebookDirectory() != null
                 && applicationOptionsPanel.getRestDirectory() != null
                 && applicationOptionsPanel.getCurrentFont() != null
                 && applicationOptionsPanel.getFontSize() != null
+                && applicationOptionsPanel.getFontEditorSize() != null
                 && applicationOptionsPanel.getColorModeSelection() != null;
     }
 
@@ -139,14 +142,17 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         return !(applicationOptionsPanel.getUserDirectory().equals(prefs.get(ApplicationPreferenceKeys.USER_DIR, ApplicationPreferenceKeys.USER_DIR_DEFAULT))
                 && applicationOptionsPanel.isAutosaveEnabled() == prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT)
                 && applicationOptionsPanel.getAutosaveFrequency() == prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT)
+                && applicationOptionsPanel.getAutosaveEditorFrequency() == prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT)
                 && applicationOptionsPanel.isWelcomeOnStartupSelected() == prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT)
                 && applicationOptionsPanel.isWhatsNewOnStartupSelected() == prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT)
                 && applicationOptionsPanel.getWebserverPort() == prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT)
+                && applicationOptionsPanel.getWebserverEditorPort() == prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT)
                 && applicationOptionsPanel.getNotebookDirectory().equals(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT))
                 && applicationOptionsPanel.getRestDirectory().equals(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT))
                 && applicationOptionsPanel.isDownloadPythonClientSelected() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
                 && applicationOptionsPanel.getCurrentFont().equals(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT))
                 && applicationOptionsPanel.getFontSize().equals(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT))
+                && applicationOptionsPanel.getFontEditorSize().equals(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT))
                 && applicationOptionsPanel.getColorModeSelection().equals(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT))
                 && applicationOptionsPanel.isEnableSpellCheckingSelected() == prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
     }

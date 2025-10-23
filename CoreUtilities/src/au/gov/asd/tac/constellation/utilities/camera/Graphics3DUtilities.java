@@ -278,32 +278,6 @@ public class Graphics3DUtilities {
     }
 
     /**
-     * An implementation of the GLSL <tt>clamp()</tt> function.
-     *
-     * @param x the value to clamp.
-     * @param minVal the minimum value.
-     * @param maxVal the maximum value.
-     *
-     * @return min (max (x, minVal), maxVal).
-     */
-    public static int clamp(final int x, final int minVal, final int maxVal) {
-        return Math.min(Math.max(x, minVal), maxVal);
-    }
-
-    /**
-     * An implementation of the GLSL <tt>clamp()</tt> function.
-     *
-     * @param x the value to clamp.
-     * @param minVal the minimum value.
-     * @param maxVal the maximum value.
-     *
-     * @return min (max (x, minVal), maxVal).
-     */
-    public static float clamp(final float x, final float minVal, final float maxVal) {
-        return Math.min(Math.max(x, minVal), maxVal);
-    }
-
-    /**
      * An implementation of the GLSL <tt>distance</tt> function.
      *
      * @param p0 A Vector3f.

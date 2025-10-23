@@ -72,7 +72,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
     private static final File ICON_FILE = new File(DROP_DOWN_ARROW_ICON_PATH);
     
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         installedFileLocatorMocked = mock(InstalledFileLocator.class);
         installedFileLocatorMockedStatic = Mockito.mockStatic(InstalledFileLocator.class);
     }
