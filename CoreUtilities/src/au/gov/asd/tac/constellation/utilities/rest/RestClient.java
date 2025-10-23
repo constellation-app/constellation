@@ -18,10 +18,10 @@ package au.gov.asd.tac.constellation.utilities.rest;
 import au.gov.asd.tac.constellation.utilities.log.ConnectionLogging;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.https.HttpsUtilities;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -366,8 +366,10 @@ public abstract class RestClient {
      * @throws IOException
      */
     private String generateJsonFromFlatMap(final List<Tuple<String, String>> params) throws IOException {
+        System.out.println("!!! RestClient generateJsonFromFlatMap");
         final ByteArrayOutputStream json = new ByteArrayOutputStream();
-        final JsonFactory jsonFactory = new MappingJsonFactory();
+       // final JsonFactory jsonFactory = JsonFactoryUtilities.getMappingJsonFactory(); // testing, No test case apparently QWERTY
+        final JsonFactory jsonFactory = JsonFactoryUtilities.getJsonFactory();
         try (final JsonGenerator jg = jsonFactory.createGenerator(json)) {
             jg.writeStartObject();
             

@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.graph.processing;
 
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -100,7 +100,7 @@ public class RecordStoreUtilities {
      */
     public static RecordStore fromJson(final InputStream in) throws IOException {
         final RecordStore recordStore;
-        try (final JsonParser parser = new MappingJsonFactory().createParser(in)) {
+        try (final JsonParser parser = JsonFactoryUtilities.getJsonFactory().createParser(in)) { // no test cases, tested in CompositeNodeStateNGTest QWERTY
             recordStore = new GraphRecordStore();
             JsonToken currentToken = parser.nextToken();
             if (currentToken != JsonToken.START_ARRAY) {

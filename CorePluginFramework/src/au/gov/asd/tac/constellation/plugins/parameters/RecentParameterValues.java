@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.plugins.parameters;
 
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -35,24 +35,23 @@ import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 
 /**
- * RecentParameterValues stores the most recent value associated with each
- * PluginParameter. This allows new UIs that allow users to edit
- * PluginParameters can show a display with parameter values identical to how
- * the user left them last time they edited the values.
+ * RecentParameterValues stores the most recent value associated with each PluginParameter. This allows new UIs that
+ * allow users to edit PluginParameters can show a display with parameter values identical to how the user left them
+ * last time they edited the values.
  *
  * @author sirius
  */
 public class RecentParameterValues {
-    
+
     private static final Logger LOGGER = Logger.getLogger(RecentParameterValues.class.getName());
 
     private static final Map<String, List<String>> RECENT_VALUES = new HashMap<>();
     private static final List<RecentValuesListener> LISTENERS = new ArrayList<>();
     private static final Preferences PREFERENCES = NbPreferences.forModule(RecentParameterValuesKey.class);
     private static final int SAVE_LIMIT = 5;
-    private static final JsonFactory FACTORY = new MappingJsonFactory();
+    //private static final JsonFactory FACTORY = JsonFactoryUtilities.getJsonFactory(); // Seems to work QWERTY
 
-    public static void storeRecentValue(String parameterId, String parameterValue) {
+    public static void storeRecentValue(final String parameterId, final String parameterValue) {
         synchronized (RECENT_VALUES) {
             List<String> values = RECENT_VALUES.get(parameterId);
             if (values == null) {
@@ -67,8 +66,8 @@ public class RecentParameterValues {
         }
     }
 
-    public static List<String> getRecentValues(String parameterId) {
-        synchronized(RECENT_VALUES) {
+    public static List<String> getRecentValues(final String parameterId) {
+        synchronized (RECENT_VALUES) {
             if (RECENT_VALUES.isEmpty()) {
                 loadFromPreference();
             }
@@ -81,7 +80,7 @@ public class RecentParameterValues {
      *
      * @param listener the listener to be added.
      */
-    public static void addListener(RecentValuesListener listener) {
+    public static void addListener(final RecentValuesListener listener) {
         if (listener != null) {
             synchronized (LISTENERS) {
                 LISTENERS.add(listener);
@@ -94,7 +93,7 @@ public class RecentParameterValues {
      *
      * @param listener the listener to be removed.
      */
-    public static void removeListener(RecentValuesListener listener) {
+    public static void removeListener(final RecentValuesListener listener) {
         synchronized (LISTENERS) {
             LISTENERS.remove(listener);
         }
@@ -105,18 +104,20 @@ public class RecentParameterValues {
      *
      * @param e the change event to be sent to all listeners.
      */
-    public static void fireChangeEvent(RecentValuesChangeEvent e) {
+    public static void fireChangeEvent(final RecentValuesChangeEvent e) {
         synchronized (LISTENERS) {
             for (RecentValuesListener listener : LISTENERS) {
                 listener.recentValuesChanged(e);
-            }               
+            }
         }
     }
 
     public static void saveToPreferences() {
+        System.out.println("saveToPreferences");
         synchronized (RECENT_VALUES) {
             final ByteArrayOutputStream json = new ByteArrayOutputStream();
-            try (final JsonGenerator jg = FACTORY.createGenerator(json)) {
+//            try (final JsonGenerator jg = FACTORY.createGenerator(json)) {
+            try (final JsonGenerator jg = JsonFactoryUtilities.getJsonFactory().createGenerator(json)) {
                 jg.writeStartObject();
                 for (Entry<String, List<String>> entry : RECENT_VALUES.entrySet()) {
                     List<String> recentVals = entry.getValue();
@@ -144,26 +145,63 @@ public class RecentParameterValues {
         }
     }
 
+//    public static void loadFromPreference() {
+//        synchronized (RECENT_VALUES) {
+//            final String recentValuesJSON = PREFERENCES.get(RecentParameterValuesKey.RECENT_VALUES, "");
+//            if (!recentValuesJSON.isEmpty()) {
+//                try (final JsonParser jp = FACTORY.createParser(recentValuesJSON)) {
+//                    if (jp.nextToken() == JsonToken.START_OBJECT) {
+//                        while (jp.nextToken() != JsonToken.END_OBJECT) {
+//                            if (jp.getCurrentToken() == JsonToken.START_ARRAY) {
+//                                List<String> recentVals = new ArrayList<>();
+//                                String fieldName = jp.currentName();
+//                                while (jp.nextToken() != JsonToken.END_ARRAY) {
+//                                    recentVals.add(jp.getValueAsString());
+//                                }
+//                                RECENT_VALUES.put(fieldName, recentVals);
+//                            }
+//                        }
+//                    }
+//                } catch (final IOException ex) {
+//                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+//                }
+//            }
+//        }
+//    }
+    // reorganised
     public static void loadFromPreference() {
+        System.out.println("loadFromPreference");
+//        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+//            System.out.println(ste);
+//        }
         synchronized (RECENT_VALUES) {
             final String recentValuesJSON = PREFERENCES.get(RecentParameterValuesKey.RECENT_VALUES, "");
-            if (!recentValuesJSON.isEmpty()) {
-                try (final JsonParser jp = FACTORY.createParser(recentValuesJSON)) {
-                    if (jp.nextToken() == JsonToken.START_OBJECT) {
-                        while (jp.nextToken() != JsonToken.END_OBJECT) {
-                            if (jp.getCurrentToken() == JsonToken.START_ARRAY) {
-                                List<String> recentVals = new ArrayList<>();
-                                String fieldName = jp.currentName();
-                                while (jp.nextToken() != JsonToken.END_ARRAY) {
-                                    recentVals.add(jp.getValueAsString());
-                                }
-                                RECENT_VALUES.put(fieldName, recentVals);
-                            }
-                        }
-                    }
-                } catch (final IOException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            if (recentValuesJSON.isEmpty()) {
+                return;
+            }
+
+//            try (final JsonParser jp = FACTORY.createParser(recentValuesJSON)) {
+            System.out.println("before getting factory");
+            try (final JsonParser jp = JsonFactoryUtilities.getJsonFactory().createParser(recentValuesJSON)) {
+                System.out.println("after getting factory");
+                if (jp.nextToken() != JsonToken.START_OBJECT) {
+                    return;
                 }
+                while (jp.nextToken() != JsonToken.END_OBJECT) {
+                    if (jp.getCurrentToken() != JsonToken.START_ARRAY) {
+                        continue;
+                    }
+
+                    List<String> recentVals = new ArrayList<>();
+                    String fieldName = jp.currentName();
+                    while (jp.nextToken() != JsonToken.END_ARRAY) {
+                        recentVals.add(jp.getValueAsString());
+                    }
+                    RECENT_VALUES.put(fieldName, recentVals);
+                }
+
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }
