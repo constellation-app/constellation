@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -62,6 +63,13 @@ import org.openide.util.NbPreferences;
  */
 public class WelcomeViewPane extends BorderPane {
 
+    /**
+     * @return the bottomHBox
+     */
+    public HBox getBottomRecentSection() {
+        return bottomHBox;
+    }
+
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
     private final BorderPane pane;
@@ -75,6 +83,7 @@ public class WelcomeViewPane extends BorderPane {
     private static final Image PLACEHOLDER_IMAGE = new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"));
 
     private static final Button[] recentGraphButtons = new Button[10];
+    private final HBox bottomHBox = new HBox();
 
     public WelcomeViewPane() {
         pane = new BorderPane();
@@ -132,13 +141,12 @@ public class WelcomeViewPane extends BorderPane {
 
             //Create HBoxes for the right_vbox
             final HBox topHBox = new HBox();
-            final HBox bottomHBox = new HBox();
 
             //hbox formatting
             topHBox.setPadding(new Insets(50, 0, 50, 0));
             topHBox.setSpacing(10);
-            bottomHBox.setPadding(new Insets(50, 0, 50, 0));
-            bottomHBox.setSpacing(10);
+            getBottomRecentSection().setPadding(new Insets(50, 0, 50, 0));
+            getBottomRecentSection().setSpacing(10);
 
             final WelcomePageLayoutProvider layout = Lookup.getDefault().lookup(WelcomePageLayoutProvider.class);
 
@@ -186,11 +194,11 @@ public class WelcomeViewPane extends BorderPane {
             recent.setId("title");
             rightVBox.getChildren().add(topHBox);
             rightVBox.getChildren().add(recent);
-            rightVBox.getChildren().add(bottomHBox);
+            rightVBox.getChildren().add(getBottomRecentSection());
 
             // add the recent graphs section 
             final FlowPane flow = recentGraphsSetup();
-            bottomHBox.getChildren().add(flow);
+            getBottomRecentSection().getChildren().add(flow);
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             VBox.setVgrow(rightVBox, Priority.ALWAYS);
             this.setCenter(pane);
@@ -310,5 +318,16 @@ public class WelcomeViewPane extends BorderPane {
         if (!lastFileOpenAndSaveLocation.equals(path)) {
             PREFERENCES.put(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, path);
         }
+    }
+    /**
+     * Get the latest recent files and repopulate the recent section.
+     */
+    public final void refreshRecentFiles() {
+        final FlowPane flow = recentGraphsSetup();
+        // Remove current flowpane which contain recent graphs
+        if (getBottomRecentSection().getChildren().size() > 0) {
+            getBottomRecentSection().getChildren().remove(0);
+        }
+        getBottomRecentSection().getChildren().add(flow);
     }
 }
