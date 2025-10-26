@@ -37,6 +37,18 @@
                 <package>Lib.xml.sax</package>
                 <package>Lib.xml.sax.drivers2</package>
                 <package>android.annotation</package>
+                <package>antlr</package>
+                <package>antlr.ASdebug</package>
+                <package>antlr.actions.cpp</package>
+                <package>antlr.actions.csharp</package>
+                <package>antlr.actions.java</package>
+                <package>antlr.actions.python</package>
+                <package>antlr.build</package>
+                <package>antlr.collections</package>
+                <package>antlr.collections.impl</package>
+                <package>antlr.debug</package>
+                <package>antlr.debug.misc</package>
+                <package>antlr.preprocessor</package>
                 <package>au.com.objectix.jgridshift</package>
                 <package>com.carrotsearch.hppc</package>
                 <package>com.carrotsearch.hppc.cursors</package>
@@ -145,6 +157,7 @@
                 <package>com.jhlabs.math</package>
                 <package>com.jhlabs.vecmath</package>
                 <package>com.jogamp.common</package>
+                <package>com.jogamp.common.av</package>
                 <package>com.jogamp.common.jvm</package>
                 <package>com.jogamp.common.net</package>
                 <package>com.jogamp.common.net.asset</package>
@@ -162,6 +175,14 @@
                 <package>com.jogamp.graph.curve.tess</package>
                 <package>com.jogamp.graph.font</package>
                 <package>com.jogamp.graph.geom</package>
+                <package>com.jogamp.graph.ui</package>
+                <package>com.jogamp.graph.ui.layout</package>
+                <package>com.jogamp.graph.ui.shapes</package>
+                <package>com.jogamp.graph.ui.widgets</package>
+                <package>com.jogamp.math</package>
+                <package>com.jogamp.math.geom</package>
+                <package>com.jogamp.math.geom.plane</package>
+                <package>com.jogamp.math.util</package>
                 <package>com.jogamp.nativewindow</package>
                 <package>com.jogamp.nativewindow.awt</package>
                 <package>com.jogamp.nativewindow.egl</package>
@@ -199,12 +220,11 @@
                 <package>com.jogamp.opengl.glu</package>
                 <package>com.jogamp.opengl.glu.gl2</package>
                 <package>com.jogamp.opengl.glu.gl2es1</package>
-                <package>com.jogamp.opengl.math</package>
-                <package>com.jogamp.opengl.math.geom</package>
                 <package>com.jogamp.opengl.swt</package>
                 <package>com.jogamp.opengl.util</package>
                 <package>com.jogamp.opengl.util.av</package>
                 <package>com.jogamp.opengl.util.awt</package>
+                <package>com.jogamp.opengl.util.caps</package>
                 <package>com.jogamp.opengl.util.gl2</package>
                 <package>com.jogamp.opengl.util.glsl</package>
                 <package>com.jogamp.opengl.util.glsl.fixedfunc</package>
@@ -808,6 +828,7 @@
                 <package>jnr.posix.util</package>
                 <package>jnr.posix.windows</package>
                 <package>jogamp.common</package>
+                <package>jogamp.common.av</package>
                 <package>jogamp.common.jvm</package>
                 <package>jogamp.common.os</package>
                 <package>jogamp.common.os.elf</package>
@@ -818,17 +839,16 @@
                 <package>jogamp.graph.curve.tess</package>
                 <package>jogamp.graph.font</package>
                 <package>jogamp.graph.font.typecast</package>
+                <package>jogamp.graph.font.typecast.cff</package>
                 <package>jogamp.graph.font.typecast.ot</package>
                 <package>jogamp.graph.font.typecast.ot.mac</package>
                 <package>jogamp.graph.font.typecast.ot.table</package>
-                <package>jogamp.graph.font.typecast.t2</package>
                 <package>jogamp.graph.font.typecast.tt.engine</package>
-                <package>jogamp.graph.geom.plane</package>
+                <package>jogamp.graph.ui</package>
+                <package>jogamp.graph.ui.shapes</package>
                 <package>jogamp.nativetag.common.linux.amd64</package>
                 <package>jogamp.nativetag.common.macosx.universal</package>
                 <package>jogamp.nativetag.common.windows.amd64</package>
-                <package>jogamp.nativetag.nativewindow.windows.i586</package>
-                <package>jogamp.nativetag.newt.windows.i586</package>
                 <package>jogamp.nativetag.opencl.linux.amd64</package>
                 <package>jogamp.nativetag.opencl.macosx.universal</package>
                 <package>jogamp.nativetag.opencl.windows.amd64</package>
@@ -882,7 +902,6 @@
                 <package>jogamp.opengl.ios.eagl</package>
                 <package>jogamp.opengl.macosx.cgl</package>
                 <package>jogamp.opengl.macosx.cgl.awt</package>
-                <package>jogamp.opengl.openal.av</package>
                 <package>jogamp.opengl.util</package>
                 <package>jogamp.opengl.util.av</package>
                 <package>jogamp.opengl.util.av.impl</package>
@@ -2896,6 +2915,10 @@
                 <binary-origin>release/modules/ext/annotations-4.1.1.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/antlr-2.7.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/antlr-2.7.7.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/apiguardian-api-1.1.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/apiguardian-api-1.1.2.jar</binary-origin>
             </class-path-extension>
@@ -3072,20 +3095,20 @@
                 <binary-origin>release/modules/ext/flowless-0.7.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-natives-linux-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt-natives-linux-amd64.jar</binary-origin>
+                <runtime-relative-path>ext/gluegen-rt-2.6.0-natives-linux-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gluegen-rt-2.6.0-natives-linux-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-natives-macosx-universal.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt-natives-macosx-universal.jar</binary-origin>
+                <runtime-relative-path>ext/gluegen-rt-2.6.0-natives-macosx-universal.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gluegen-rt-2.6.0-natives-macosx-universal.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-natives-windows-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt-natives-windows-amd64.jar</binary-origin>
+                <runtime-relative-path>ext/gluegen-rt-2.6.0-natives-windows-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gluegen-rt-2.6.0-natives-windows-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt.jar</binary-origin>
+                <runtime-relative-path>ext/gluegen-rt-2.6.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gluegen-rt-2.6.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/grpc-api-1.68.0.jar</runtime-relative-path>
@@ -3364,36 +3387,36 @@
                 <binary-origin>release/modules/ext/jna-platform-5.12.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jocl-natives-linux-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-natives-linux-amd64.jar</binary-origin>
+                <runtime-relative-path>ext/jocl-2.6.0-natives-linux-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-2.6.0-natives-linux-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jocl-natives-macosx-universal.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-natives-macosx-universal.jar</binary-origin>
+                <runtime-relative-path>ext/jocl-2.6.0-natives-macosx-universal.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-2.6.0-natives-macosx-universal.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jocl-natives-windows-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-natives-windows-amd64.jar</binary-origin>
+                <runtime-relative-path>ext/jocl-2.6.0-natives-windows-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-2.6.0-natives-windows-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jocl.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl.jar</binary-origin>
+                <runtime-relative-path>ext/jocl-2.6.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-2.6.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-natives-linux-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jogl-all-natives-linux-amd64.jar</binary-origin>
+                <runtime-relative-path>ext/jogl-all-2.6.0-natives-linux-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-2.6.0-natives-linux-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-natives-macosx-universal.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jogl-all-natives-macosx-universal.jar</binary-origin>
+                <runtime-relative-path>ext/jogl-all-2.6.0-natives-macosx-universal.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-2.6.0-natives-macosx-universal.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-natives-windows-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jogl-all-natives-windows-amd64.jar</binary-origin>
+                <runtime-relative-path>ext/jogl-all-2.6.0-natives-windows-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-2.6.0-natives-windows-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jogl-all.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jogl-all.jar</binary-origin>
+                <runtime-relative-path>ext/jogl-all-2.6.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-2.6.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/json-20240303.jar</runtime-relative-path>
@@ -3624,28 +3647,12 @@
                 <binary-origin>release/modules/ext/nashorn-core-15.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/nativewindow-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/nativewindow-natives-windows-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/nativewindow.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/nativewindow.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/net.opengis.fes-32.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/net.opengis.fes-32.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/net.opengis.ows-32.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/net.opengis.ows-32.3.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/newt-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/newt-natives-windows-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/newt.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/newt.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/objenesis-3.4.jar</runtime-relative-path>
