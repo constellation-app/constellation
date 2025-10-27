@@ -68,7 +68,6 @@
         <dependency org="org.openjdk.nashorn" name="nashorn-core" rev="15.7" />
         <dependency org="org.python" name="jython-standalone" rev="2.7.4" />
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1" />
-        <!-- processing core.jar -->
         
         <!-- Dependency for languagetool using indriya v1.3 -->
         <dependency org="org.languagetool" name="language-en" rev="6.7" />
