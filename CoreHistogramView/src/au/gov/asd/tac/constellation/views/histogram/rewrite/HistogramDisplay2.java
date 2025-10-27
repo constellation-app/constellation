@@ -74,7 +74,7 @@ import javafx.scene.text.Text;
 public class HistogramDisplay2 extends BorderPane {
 
     private static final String BACKGROUND_COLOR_STRING = JavafxStyleManager.isDarkTheme() ? "#444444" : "#f5f5f5";
-    
+
     private static final Color BACKGROUND_COLOR = Color.web(BACKGROUND_COLOR_STRING);
     public static final Color BAR_COLOR = JavafxStyleManager.isDarkTheme() ? Color.rgb(30, 144, 255) : Color.rgb(102, 178, 255);
     public static final Color SELECTED_COLOR = JavafxStyleManager.isDarkTheme() ? Color.RED.darker() : Color.rgb(237, 44, 44);//Color.RED;
@@ -101,6 +101,7 @@ public class HistogramDisplay2 extends BorderPane {
     private static final int DEFAULT_FONT_SIZE = 12;
     private static final int BAR_PADDING = 30;
     private static final int ICON_PADDING = 10;
+    private static final float BAR_TEXT_THRESHOLD_MULTIPLIER = 0.95F;
 
     private final HistogramTopComponent2 topComponent;
     private int barHeightBase = 18;
@@ -672,8 +673,32 @@ public class HistogramDisplay2 extends BorderPane {
             final String binCount = (bin.getSelectedCount() > 0) ? Integer.toString(bin.getSelectedCount()) + "/" + Integer.toString(bin.getElementCount()) : Integer.toString(bin.getElementCount());
             final Label binCountlabel = new Label(binCount);
 
+            // Font size
             binCountlabel.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
-            binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count"), true); // Set styling
+
+            // Reset all styling
+            binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count"), false);
+            binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count-unselected"), false);
+            binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count-selected"), false);
+            binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count-activated"), false);
+
+            // Determine what part of bar the text is on top of, and style accordingly
+            final double threshold = width * BAR_TEXT_THRESHOLD_MULTIPLIER;
+            // If unselected (blue part) is less than threshold, then the text can ONLY be over the grey background of bar
+            if (barLength < threshold) {
+                binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count"), true);
+            } else if (selectedLength < threshold) {
+                // else if blue part is behind text, and selected part (red or yellow) is not
+                binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count-unselected"), true);
+            } else if (!bin.getIsActivated()) {
+                // else the selected part (red or yellow) must be behind text, figure out if it's red or yellow
+                // is red
+                binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count-selected"), true);
+            } else {
+                // is yellow
+                binCountlabel.pseudoClassStateChanged(PseudoClass.getPseudoClass("bar-bin-count-activated"), true);
+            }
+
             binCountlabel.setMinHeight(barHeight);
 
             rectBar.getChildren().add(binCountlabel);
