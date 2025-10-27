@@ -272,13 +272,13 @@ public class HierarchicalArranger implements Arranger {
         final int yId = VisualConcept.VertexAttribute.Y.get(wg);
         final int zId = VisualConcept.VertexAttribute.Z.get(wg);
 
-        final double xMinAdj = Math.max(Math.min(Math.log(maxLevelVertices) * 2, 9), 0);
+        final double xMinAdj = Math.clamp(Math.log(maxLevelVertices) * 2, 0, 9);
 
         double displayLevel = -1.0;
         int verticesRemaining;
         int verticesForRow;
         int vertexCounter;
-        final double xMinDefaultAdj = Math.max(Math.min(Math.log(maxNodesPerRow) * 2, 9), 0);
+        final double xMinDefaultAdj = Math.clamp(Math.log(maxNodesPerRow) * 2, 0, 9);
         double yStep;
         double xAdj;
         double yDir;
@@ -300,7 +300,7 @@ public class HierarchicalArranger implements Arranger {
                 if (verticesForRow > 4) {
                     yStep = Math.max(0, Math.min((ygap / 2) * (Math.log10(verticesForRow) - 1), ygap / 2));
                     yDir = 2 * yStep / verticesForRow;
-                    xAdj = Math.max(Math.min(Math.log(verticesForRow) * 2, 9), 0);
+                    xAdj = Math.clamp(Math.log(verticesForRow) * 2, 0, 9);
                 }
 
                 final float xMaxOffset = maxLevelVertices <= maxNodesPerRow ? maxLevelVertices * (xgap - (float) xMinAdj) / 2F : maxNodesPerRow * (xgap - (float) xMinDefaultAdj) / 2F;

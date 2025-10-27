@@ -412,7 +412,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
      * @param exceptionHashcode
      * @return true if the exception has recently been audited.
      */
-    private boolean isExceptionAudited(final Integer exceptionHashcode){
+    private boolean isExceptionAudited(final int exceptionHashcode) {
         if (recentExceptionAuditHashcodes.contains(exceptionHashcode)) {
             return true;
         }
@@ -429,7 +429,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
      * @param exceptionHashcode
      * @return true if the exception has recently been reported.
      */
-    private boolean isExceptionReported(final Integer exceptionHashcode){
+    private boolean isExceptionReported(final int exceptionHashcode) {
         if (recentExceptionReportHashcodes.contains(exceptionHashcode)) {
             return true;
         }

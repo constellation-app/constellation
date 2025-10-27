@@ -301,9 +301,7 @@ public class OptionsMenuBar {
          * @param newValue the new value of the save results menu checkbox
          */
         @Override
-        public void changed(final ObservableValue<? extends Boolean> observable,
-                final Boolean oldValue,
-                final Boolean newValue) {
+        public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
             if (Boolean.TRUE.equals(newValue)) {
                 lastChange = FileChooser.openOpenDialog(getDataAccessResultsFileChooser()).thenAccept(optionalFolder
                         -> optionalFolder.ifPresentOrElse(

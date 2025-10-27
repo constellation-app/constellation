@@ -357,7 +357,7 @@ public final class PerspectiveBookmarkTopComponent extends AbstractTopComponent 
 
     @Override
     public void graphClosed(final Graph graph) {
-//        enableUI(false);
+        // required for implementation of GraphManagerListener
     }
 
     @Override

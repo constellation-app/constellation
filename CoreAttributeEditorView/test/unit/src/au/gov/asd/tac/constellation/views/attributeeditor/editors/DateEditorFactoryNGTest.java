@@ -93,7 +93,7 @@ public class DateEditorFactoryNGTest {
         final DateEditor editor = instance.new DateEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         
         try (final MockedStatic<LocalDate> localDateMockedStatic = Mockito.mockStatic(LocalDate.class, Mockito.CALLS_REAL_METHODS)) {
-            localDateMockedStatic.when(() -> LocalDate.now()).thenReturn(LocalDate.EPOCH);
+            localDateMockedStatic.when(LocalDate::now).thenReturn(LocalDate.EPOCH);
             
             // need to run in order for editor controls to be instantiated
             editor.createEditorControls();

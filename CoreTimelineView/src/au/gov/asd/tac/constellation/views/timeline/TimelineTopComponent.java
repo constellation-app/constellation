@@ -785,27 +785,7 @@ public final class TimelineTopComponent extends AbstractTopComponent implements 
             if (temporalAttrId != Graph.NOT_FOUND) {
                 currentTemporalAttributeModificationCount = rg.getValueModificationCounter(temporalAttrId);
             }
-
-            /*final int transDimAttr = rg.getAttribute(GraphElementType.TRANSACTION,
-                        VisualConcept.TransactionAttribute.DIMMED.getName());
-                final int vertDimAttr = rg.getAttribute(GraphElementType.VERTEX,
-                        VisualConcept.VertexAttribute.DIMMED.getName());
-                final int transHideAttr = rg.getAttribute(GraphElementType.TRANSACTION,
-                        VisualConcept.TransactionAttribute.VISIBILITY.getName());
-                final int vertHideAttr = rg.getAttribute(GraphElementType.VERTEX,
-                        VisualConcept.VertexAttribute.VISIBILITY.getName());
-                if (transDimAttr != Graph.NOT_FOUND) {
-                    currentTransDimModificationCount = rg.getValueModificationCounter(transDimAttr);
-                }
-                if (vertDimAttr != Graph.NOT_FOUND) {
-                    currentVertDimModificationCount = rg.getValueModificationCounter(vertDimAttr);
-                }
-                if (transHideAttr != Graph.NOT_FOUND) {
-                    currentTransHideModificationCount = rg.getValueModificationCounter(transHideAttr);
-                }
-                if (vertHideAttr != Graph.NOT_FOUND) {
-                    currentVertHideModificationCount = rg.getValueModificationCounter(vertHideAttr);
-                }*/
+            
             // Detect graph changes to attributes:
             if (currentAttributeModificationCount != oldAttributeModificationCount) {
                 Platform.runLater(() -> {
@@ -826,19 +806,7 @@ public final class TimelineTopComponent extends AbstractTopComponent implements 
                     || currentVertSelectedModificationCount != oldVertSelectedModificationCount) {
                 // Do only a partial update, ie the timeline and selection area for histogram:
                 populateFromGraphNode(false);
-            } else {
-                // Do nothing
-            } // Detect changes of dim to transactions and vertices:
-            /*else if (!timelinePanel.isDimOrHideExpected(currentVertDimModificationCount, currentTransDimModificationCount)) {
-                    Platform.runLater(() -> {
-                        timelinePanel.setExclusionState(0);
-                    });
-                }
-                else if (!timelinePanel.isDimOrHideExpected(currentVertHideModificationCount, currentTransHideModificationCount)) {
-                    Platform.runLater(() -> {
-                        timelinePanel.setExclusionState(0);
-                    });
-                }*/
+            }
         }
     }
     // </editor-fold>

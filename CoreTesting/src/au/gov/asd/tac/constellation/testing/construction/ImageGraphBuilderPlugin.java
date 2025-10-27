@@ -395,8 +395,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                         unknownMetaformat = true;
                         continue;
                     }
-
-                    final IIOMetadataNode gce = (IIOMetadataNode) imgRootNode.getElementsByTagName("GraphicControlExtension").item(0);
+                    
                     final IIOMetadataNode imgDescr = (IIOMetadataNode) imgRootNode.getElementsByTagName("ImageDescriptor").item(0);
                     loffsets.add(Integer.valueOf(imgDescr.getAttribute("imageLeftPosition")));
                     toffsets.add(Integer.valueOf(imgDescr.getAttribute("imageTopPosition")));

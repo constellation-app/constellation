@@ -312,7 +312,6 @@ public final class HierarchicalControllerTopComponent extends AbstractTopCompone
         buttonGroup1.add(showRadioButton);
         org.openide.awt.Mnemonics.setLocalizedText(showRadioButton, org.openide.util.NbBundle.getMessage(HierarchicalControllerTopComponent.class, "HierarchicalControllerTopComponent.showRadioButton.text")); // NOI18N
         showRadioButton.setActionCommand(org.openide.util.NbBundle.getMessage(HierarchicalControllerTopComponent.class, "HierarchicalControllerTopComponent.showRadioButton.actionCommand")); // NOI18N
-        showRadioButton.setLabel(org.openide.util.NbBundle.getMessage(HierarchicalControllerTopComponent.class, "HierarchicalControllerTopComponent.showRadioButton.label")); // NOI18N
         showRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showRadioButtonActionPerformed(evt);
