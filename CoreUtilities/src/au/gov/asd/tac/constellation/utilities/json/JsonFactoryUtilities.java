@@ -37,26 +37,22 @@ public class JsonFactoryUtilities {
     }
 
     public static JsonFactory getJsonFactory() {
-        System.out.println("getJsonFactory");
         ensureJsonFactory();
         return JSON_FACTORY;
     }
 
     private static void ensureJsonFactory() {
-        System.out.println("ensureJsonFactory");
         if (JSON_FACTORY == null) {
             JSON_FACTORY = new JsonFactory();
         }
     }
 
     public static MappingJsonFactory getMappingJsonFactory() {
-        System.out.println("getMappingJsonFactory");
         ensureMappingJsonFactory();
         return MAPPING_FACTORY;
     }
 
     private static void ensureMappingJsonFactory() {
-        System.out.println("ensureMappingJsonFactory");
         if (MAPPING_FACTORY == null) {
             MAPPING_FACTORY = new MappingJsonFactory();
         }
