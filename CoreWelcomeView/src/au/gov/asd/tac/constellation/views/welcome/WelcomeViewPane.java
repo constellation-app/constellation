@@ -325,7 +325,7 @@ public class WelcomeViewPane extends BorderPane {
     public final void refreshRecentFiles() {
         final FlowPane flow = recentGraphsSetup();
         // Remove current flowpane which contain recent graphs
-        if (getBottomRecentSection().getChildren().size() > 0) {
+        if (!getBottomRecentSection().getChildren().isEmpty()) {
             getBottomRecentSection().getChildren().remove(0);
         }
         getBottomRecentSection().getChildren().add(flow);

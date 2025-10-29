@@ -18,10 +18,14 @@ package au.gov.asd.tac.constellation.views.welcome;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.layout.HBox;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -63,5 +67,17 @@ public class WelcomeTopComponentNGTest {
         String expResult = "resources/light_welcome.css";
 
         assertEquals(instance.createStyle(), expResult);
+    }
+    
+    /**
+     * Test of createContent method, of class WelcomeTopComponent.
+     */
+    @Test
+    public void testCreateContent() {
+        System.out.println("createContent");
+        final WelcomeTopComponent instance = spy(WelcomeTopComponent.class);
+        WelcomeViewPane pane = instance.createContent();
+        assertNotNull(pane);
+        assertTrue(pane.getBottomRecentSection() instanceof HBox);
     }
 }
