@@ -227,7 +227,7 @@ public class NumberInputPane<T> extends Pane {
 
             // override decrement() to reset to minimum when min is exceeded for decrementing below min.
             @Override
-            public void decrement(int steps) {
+            public void decrement(final int steps) {
                 final int currentValue = getValue();
                 final int min = getMin(); // Get the minimum value for resetting
                 
