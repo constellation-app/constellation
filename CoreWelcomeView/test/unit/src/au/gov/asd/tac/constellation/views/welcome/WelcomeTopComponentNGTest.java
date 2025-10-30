@@ -25,6 +25,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -83,12 +85,12 @@ public class WelcomeTopComponentNGTest {
     @Test
     public void testCreateContent() {
         System.out.println("createContent");
-        javafx.application.Platform.runLater(() -> {
+        try (final MockedStatic recentFilesStatic = Mockito.mockStatic(RecentFiles.class)) {
             final List<RecentFiles.HistoryItem> mockList = new ArrayList<>();
             final String path = "C:Temp";
             final RecentFiles.HistoryItem mockItem = new RecentFiles.HistoryItem(0, path);
             mockList.add(mockItem);
-            when(RecentFiles.getUniqueRecentFiles()).thenReturn(mockList);
+            recentFilesStatic.when(RecentFiles::getUniqueRecentFiles).thenReturn(mockList);
 
             final WelcomeTopComponent instance = spy(WelcomeTopComponent.class);
             final WelcomeViewPane pane = instance.createContent();
@@ -111,6 +113,6 @@ public class WelcomeTopComponentNGTest {
             } else {
                 assertFalse(true);
             }
-        });
+        }
     }
 }
