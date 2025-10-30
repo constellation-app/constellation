@@ -15,15 +15,23 @@
  */
 package au.gov.asd.tac.constellation.views.welcome;
 
+import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -75,9 +83,34 @@ public class WelcomeTopComponentNGTest {
     @Test
     public void testCreateContent() {
         System.out.println("createContent");
-        final WelcomeTopComponent instance = spy(WelcomeTopComponent.class);
-        WelcomeViewPane pane = instance.createContent();
-        assertNotNull(pane);
-        assertTrue(pane.getBottomRecentSection() instanceof HBox);
+        javafx.application.Platform.runLater(() -> {
+            final List<RecentFiles.HistoryItem> mockList = new ArrayList<>();
+            final String path = "C:Temp";
+            final RecentFiles.HistoryItem mockItem = new RecentFiles.HistoryItem(0, path);
+            mockList.add(mockItem);
+            when(RecentFiles.getUniqueRecentFiles()).thenReturn(mockList);
+
+            final WelcomeTopComponent instance = spy(WelcomeTopComponent.class);
+            final WelcomeViewPane pane = instance.createContent();
+
+            // check WelcomeTopComponent creates WelcomeViewPane
+            assertNotNull(pane);
+            // check that the WelcomeViewPane contains the HBox for recent files
+            assertTrue(pane.getBottomRecentSection() instanceof HBox);
+
+            pane.refreshRecentFiles();
+            final Node firstChild = pane.getBottomRecentSection().getChildren().getFirst();
+            // check that the flow pane has been created
+            if (firstChild instanceof FlowPane flowPane) {
+                if (flowPane.getChildren().getFirst() instanceof Button firstButton) {
+                    // check that the first button in the recent files list is the mocked filename
+                    assertTrue(firstButton.getText() == path);
+                } else {
+                    assertFalse(true);
+                }
+            } else {
+                assertFalse(true);
+            }
+        });
     }
 }
