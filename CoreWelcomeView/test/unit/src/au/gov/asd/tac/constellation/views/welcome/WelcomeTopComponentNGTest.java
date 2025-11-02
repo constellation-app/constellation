@@ -103,15 +103,13 @@ public class WelcomeTopComponentNGTest {
             pane.refreshRecentFiles();
             final Node firstChild = pane.getBottomRecentSection().getChildren().getFirst();
             // check that the flow pane has been created
+            assertTrue(firstChild instanceof FlowPane);
             if (firstChild instanceof FlowPane flowPane) {
+                assertTrue(flowPane.getChildren().getFirst() instanceof Button);
                 if (flowPane.getChildren().getFirst() instanceof Button firstButton) {
                     // check that the first button in the recent files list is the mocked filename
-                    assertTrue(firstButton.getText() == path);
-                } else {
-                    assertFalse(true);
+                    assertTrue(firstButton.getText().equals(path));
                 }
-            } else {
-                assertFalse(true);
             }
         }
     }
