@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -66,7 +68,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
                             locationDateTimes.add(neighbourLinkTransactionDateTime);
                         }
 
-                        final List<Integer> validNeighbourNeighbours = new ArrayList<>();
+                        final MutableIntList validNeighbourNeighbours = new IntArrayList();
                         final int neighbourNeighbourCount = graph.getVertexNeighbourCount(neighbourId);
                         for (int neighbourNeighbourPosition = 0; neighbourNeighbourPosition < neighbourNeighbourCount; neighbourNeighbourPosition++) {
                             final int neighbourNeighbourId = graph.getVertexNeighbour(neighbourId, neighbourNeighbourPosition);
@@ -79,7 +81,8 @@ public class EntityPathsLayer extends AbstractPathsLayer {
                         locationDateTimes.forEach(locationDateTime -> {
                             int pathNeighbourNeighbour = GraphConstants.NOT_FOUND;
                             long closestTimeDifference = Long.MAX_VALUE;
-                            for (final int neighbourNeighbourId : validNeighbourNeighbours) {
+                            for (int i = 0; i < validNeighbourNeighbours.size(); i++) {
+                                final int neighbourNeighbourId = validNeighbourNeighbours.get(i);
                                 final int neighbourNeighbourLinkId = graph.getLink(neighbourId, neighbourNeighbourId);
                                 final int neighbourNeighbourLinkTransactionCount = graph.getLinkTransactionCount(neighbourNeighbourLinkId);
                                 for (int neighbourNeighbourLinkTransactionPosition = 0; neighbourNeighbourLinkTransactionPosition < neighbourNeighbourLinkTransactionCount; neighbourNeighbourLinkTransactionPosition++) {

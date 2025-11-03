@@ -22,6 +22,8 @@ import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
 import java.util.BitSet;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * Utilities for calculating scores on a graph based on shortest paths. This utility makes use of the parallel breadth
@@ -478,7 +480,7 @@ public class PathScoringUtilities {
         final BitSet update = new BitSet(vertexCount);
         final BitSet updateUnmodified = new BitSet(vertexCount);
 
-        final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
+        final MutableIntList updatedVertexIndexArray = new IntArrayList();
 
         // initialise variables
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
@@ -592,7 +594,7 @@ public class PathScoringUtilities {
         final BitSet updateUnmodified = new BitSet(vertexCount); // A Copy of updateF that wont be modified during this functions execution, will be returned
         final BitSet updateF = new BitSet(vertexCount);
         final BitSet updateB = new BitSet(vertexCount);
-        final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
+        final MutableIntList updatedVertexIndexArray = new IntArrayList();
 
         // initialise variables
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {

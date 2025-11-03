@@ -42,6 +42,8 @@ import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * This class has been designed to create a simple graph with known elements and attributes for testing purposes.
@@ -69,8 +71,7 @@ public class TestableGraphBuilder {
     
     final Graph graph;
     
-    private final List<Integer> vertexIds = new ArrayList<>();
-    private final List<Integer> transactionIds = new ArrayList<>();
+    private final MutableIntList vertexIds = new IntArrayList();
 
     /**
      * Constructor used to create a Graph object with known elements and attributes.
@@ -471,20 +472,20 @@ public class TestableGraphBuilder {
     }
     
     public void withLoopedTransactions(final GraphWriteMethods gwm) {
-        for (final int vertex : vertexIds){
+        vertexIds.forEach(vertex -> {
             if (vertex % 3 == 0){
-                transactionIds.add(gwm.addTransaction(vertex, vertex, true));
+                gwm.addTransaction(vertex, vertex, true);
             }
             
             if (vertex % 6 == 0){
-                transactionIds.add(gwm.addTransaction(vertex, vertex, false));
+                gwm.addTransaction(vertex, vertex, false);
             }
             
             if (vertex % 12 == 0){
-                transactionIds.add(gwm.addTransaction(vertex, vertex, true));
-                transactionIds.add(gwm.addTransaction(vertex, vertex, false));
+                gwm.addTransaction(vertex, vertex, true);
+                gwm.addTransaction(vertex, vertex, false);
             }
-        }
+        });
     }
     
     public TestableGraphBuilder withLinearTransactions() throws InterruptedException{
@@ -498,20 +499,20 @@ public class TestableGraphBuilder {
     }
     
     public void withLinearTransactions(final GraphWriteMethods gwm) {
-        for (final int vertex : vertexIds){
+        vertexIds.forEach(vertex -> {
             if (vertex % 2 == 0){
-                transactionIds.add(gwm.addTransaction(vertex, 0, true));
+                gwm.addTransaction(vertex, 0, true);
             } else {
-                transactionIds.add(gwm.addTransaction(vertex, 0, false));
+                gwm.addTransaction(vertex, 0, false);
             }
             
             if (vertex == 10){
-                transactionIds.add(gwm.addTransaction(0, vertex, true));
-                transactionIds.add(gwm.addTransaction(0, vertex, false));
-                transactionIds.add(gwm.addTransaction(vertex, 0, true));
-                transactionIds.add(gwm.addTransaction(vertex, 0, false));
-            } 
-        }
+                gwm.addTransaction(0, vertex, true);
+                gwm.addTransaction(0, vertex, false);
+                gwm.addTransaction(vertex, 0, true);
+                gwm.addTransaction(vertex, 0, false);
+            }
+        });
     }
     
     public TestableGraphBuilder withConnectionMode(final ConnectionMode mode) throws InterruptedException{

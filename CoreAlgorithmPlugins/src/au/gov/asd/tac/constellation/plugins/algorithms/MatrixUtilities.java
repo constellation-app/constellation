@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.ejml.simple.SimpleMatrix;
 
 /**
@@ -62,18 +64,21 @@ public class MatrixUtilities {
             return new SimpleMatrix(0, 0);
         }
 
-        final ArrayList<Integer> updatedVertexIndexArray;
+        final MutableIntList updatedVertexIndexArray;
 
         // Populate list if it wasnt provided
         if (updatedVertexIndexs == null) {
-            updatedVertexIndexArray = new ArrayList<>();
+            updatedVertexIndexArray = new IntArrayList();
             for (int vxPosition = 0; vxPosition < vertexCount; vxPosition++) {
                 if (graph.getVertexNeighbourCount(graph.getVertex(vxPosition)) > 0) {
                     updatedVertexIndexArray.add(vxPosition);
                 }
             }
         } else {
-            updatedVertexIndexArray = new ArrayList<>(updatedVertexIndexs);
+            updatedVertexIndexArray = new IntArrayList();
+            for (final int updatedVertexIndex : updatedVertexIndexs) {
+                updatedVertexIndexArray.add(updatedVertexIndex);
+            }
         }
 
         final int updateVertexCount = updatedVertexIndexArray.size();
@@ -128,18 +133,21 @@ public class MatrixUtilities {
     public static SimpleMatrix degreeCompact(final GraphReadMethods graph, final List<Integer> updatedVertexIndexs) {
         final int vertexCount = graph.getVertexCount();
 
-        final ArrayList<Integer> updatedVertexIndexArray;
+        final MutableIntList updatedVertexIndexArray;
 
         // Populate list if it wasnt provided
         if (updatedVertexIndexs == null) {
-            updatedVertexIndexArray = new ArrayList<>();
+            updatedVertexIndexArray = new IntArrayList();
             for (int vxPosition = 0; vxPosition < vertexCount; vxPosition++) {
                 if (graph.getVertexNeighbourCount(graph.getVertex(vxPosition)) > 0) {
                     updatedVertexIndexArray.add(vxPosition);
                 }
             }
         } else {
-            updatedVertexIndexArray = new ArrayList<>(updatedVertexIndexs);
+            updatedVertexIndexArray = new IntArrayList();
+            for (final int updatedVertexIndex : updatedVertexIndexs) {
+                updatedVertexIndexArray.add(updatedVertexIndex);
+            }
         }
 
         final int updateVertexCount = updatedVertexIndexArray.size();

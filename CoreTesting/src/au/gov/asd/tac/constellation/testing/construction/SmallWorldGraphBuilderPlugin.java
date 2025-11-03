@@ -64,6 +64,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -281,7 +283,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
             }
 
             for (int j = 1; j < (k / 2) + 1; j++) {
-                final List<Integer> destinations = new ArrayList<>();
+                final MutableIntList destinations = new IntArrayList();
                 for (int i = j; i < n; i++) {
                     destinations.add(vxIds[i]);
                 }
@@ -298,7 +300,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
             }
 
             for (int j = 1; j < (k / 2) + 1; j++) {
-                final List<Integer> destinations = new ArrayList<>();
+                final MutableIntList destinations = new IntArrayList();
                 for (int i = j; i < n; i++) {
                     destinations.add(vxIds[i]);
                 }

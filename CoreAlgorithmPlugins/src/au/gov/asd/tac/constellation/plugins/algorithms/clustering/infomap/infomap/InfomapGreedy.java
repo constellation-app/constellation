@@ -28,12 +28,13 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.M
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  *
@@ -45,7 +46,7 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     protected FlowBase[] moduleFlowData;
     protected int[] moduleMembers;
-    protected ArrayList<Integer> emptyModules;
+    protected MutableIntList emptyModules;
 
     protected double nodeFlowLogNodeFlow; // Constant while the leaf network is the same.
     protected double flowLogFlow; // node.(flow + exitFlow)
@@ -101,7 +102,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         moduleFlowData = Resizer.resizeFlowBase(moduleFlowData, numNodes, treeData.getNodeFactory());
         moduleMembers = new int[numNodes];
         Arrays.fill(moduleMembers, 1);
-        emptyModules = new ArrayList<>(numNodes);
+        emptyModules = new IntArrayList(numNodes);
 
         int i = 0;
         for (final NodeBase nodeBase : activeNetwork) {
