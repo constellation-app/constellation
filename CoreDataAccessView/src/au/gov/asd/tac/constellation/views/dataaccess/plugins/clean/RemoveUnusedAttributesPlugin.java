@@ -30,6 +30,9 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -81,7 +84,7 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
         graphElements.add(GraphElementType.VERTEX);
         graphElements.add(GraphElementType.TRANSACTION);
         for (final GraphElementType element : graphElements) {
-            final Set<Integer> nullSet = new HashSet<>();
+            final MutableIntSet nullSet = new IntHashSet();
             final int elementCount = (element == GraphElementType.VERTEX) ? graph.getVertexCount() : graph.getTransactionCount();
             final int elementAttributeCount = graph.getAttributeCount(element);
 
@@ -111,7 +114,8 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
             }
 
             // Remove unused attributes found in the curent element
-            for (final int attribute : nullSet) {
+            for (final IntIterator iter = nullSet.intIterator(); iter.hasNext();) {
+                final int attribute = iter.next();
                 removedAttributeCount++;
                 interaction.setProgress(currentProcessStep, 
                         totalProcessSteps, 

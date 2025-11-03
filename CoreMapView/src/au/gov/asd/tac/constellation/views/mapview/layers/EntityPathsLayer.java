@@ -24,11 +24,11 @@ import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.mapview.utilities.GraphElement;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.set.primitive.MutableLongSet;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.set.mutable.primitive.LongHashSet;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -59,7 +59,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
                     final int neighbourId = graph.getVertexNeighbour(element.getId(), neighbourPosition);
                     final SchemaVertexType neighbourType = graph.getObjectValue(vertexTypeAttributeId, neighbourId);
                     if (neighbourType != null && !neighbourType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)) {
-                        final Set<Long> locationDateTimes = new HashSet<>();
+                        final MutableLongSet locationDateTimes = new LongHashSet();
                         final int neighbourLinkId = graph.getLink(element.getId(), neighbourId);
                         final int neighbourLinkTransactionCount = graph.getLinkTransactionCount(neighbourLinkId);
                         for (int neighbourLinkTransactionPosition = 0; neighbourLinkTransactionPosition < neighbourLinkTransactionCount; neighbourLinkTransactionPosition++) {

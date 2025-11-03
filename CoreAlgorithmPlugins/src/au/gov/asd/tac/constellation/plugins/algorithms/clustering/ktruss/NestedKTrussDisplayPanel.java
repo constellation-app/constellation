@@ -39,6 +39,8 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  *
@@ -63,14 +65,14 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     private int totalNeededHeight;
     private boolean expandHeight = false;
     private static final int PREFERRED_HEIGHT = 500;
-    private final Set<Integer> selectedRectangles;
+    private final MutableIntSet selectedRectangles;
     private Map<Integer, List<Integer>> childMapper;
 
     public NestedKTrussDisplayPanel(final KTrussState state, final Graph graph) {
         this.state = state;
         this.graph = graph;
         rectangleOffset = RECTANGLE_WIDTH / 2;
-        selectedRectangles = new HashSet<>();
+        selectedRectangles = new IntHashSet();
         addMouseListener(this);
     }
 

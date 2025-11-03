@@ -32,8 +32,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.collections.api.list.primitive.MutableDoubleList;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -126,8 +126,8 @@ public class KatzCentralityPlugin extends SimpleEditPlugin {
 
         // initialise katz values
         final int vertexCount = graph.getVertexCount();
-        final List<Double> tempKatz = new ArrayList<>();
-        final List<Double> katz = new ArrayList<>();
+        final MutableDoubleList tempKatz = new DoubleArrayList();
+        final MutableDoubleList katz = new DoubleArrayList();
         for (int i = 0; i < vertexCount; i++) {
             tempKatz.add(0.0);
             katz.add(1.0 / vertexCount);
@@ -181,7 +181,7 @@ public class KatzCentralityPlugin extends SimpleEditPlugin {
         final int katzAttribute = KATZ_ATTRIBUTE.ensure(graph);
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final int vertexId = graph.getVertex(vertexPosition);
-            graph.setFloatValue(katzAttribute, vertexId, Float.parseFloat(katz.get(vertexPosition).toString()));
+            graph.setFloatValue(katzAttribute, vertexId, (float) katz.get(vertexPosition));
         }
     }
 }
