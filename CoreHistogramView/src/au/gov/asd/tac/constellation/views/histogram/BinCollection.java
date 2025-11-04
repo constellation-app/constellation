@@ -58,6 +58,10 @@ public class BinCollection {
     public Bin[] getBins() {
         return bins;
     }
+    
+    public int getBinsLength() {
+        return bins != null ? bins.length : 0;
+    }
 
     public Bin[] getSelectedBins() {
         final List<Bin> selectedBins = new ArrayList<>();

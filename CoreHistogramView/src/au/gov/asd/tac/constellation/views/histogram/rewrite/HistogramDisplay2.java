@@ -76,9 +76,9 @@ public class HistogramDisplay2 extends BorderPane {
     private static final String BACKGROUND_COLOR_STRING = JavafxStyleManager.isDarkTheme() ? "#444444" : "#f5f5f5";
 
     private static final Color BACKGROUND_COLOR = Color.web(BACKGROUND_COLOR_STRING);
-    public static final Color BAR_COLOR = JavafxStyleManager.isDarkTheme() ? Color.rgb(30, 144, 255) : Color.rgb(102, 178, 255);
-    public static final Color SELECTED_COLOR = JavafxStyleManager.isDarkTheme() ? Color.RED.darker() : Color.rgb(237, 44, 44);//Color.RED;
-    public static final Color ACTIVE_COLOR = JavafxStyleManager.isDarkTheme() ? Color.YELLOW : Color.rgb(255, 255, 99);//Color.YELLOW.brighter();
+    public static final Color BAR_COLOR = JavafxStyleManager.isDarkTheme() ? Color.rgb(30, 144, 255) : Color.rgb(128, 191, 255);//Color.rgb(102, 178, 255);
+    public static final Color SELECTED_COLOR = JavafxStyleManager.isDarkTheme() ? Color.RED.darker() : Color.rgb(239, 67, 67);//Color.rgb(237, 44, 44);//Color.RED;
+    public static final Color ACTIVE_COLOR = JavafxStyleManager.isDarkTheme() ? Color.YELLOW : Color.rgb(255, 255, 128);//Color.rgb(255, 255, 99);//Color.YELLOW.brighter();
 
     private static final String NO_VALUE = "<No Value>";
     private static final String PROPERTY_VALUE = "Property Value";
@@ -146,13 +146,16 @@ public class HistogramDisplay2 extends BorderPane {
 
     private int prevNumBars = 0;
 
+    // TODO organise variables
     // Need to take 3 because otherwise the right of the bar is cut off
-    private static final int BAR_LENGTH_SUBTRACTION = 3;
+    private static final int BAR_LENGTH_SUBTRACTION = 5;//= 10;
 
     private double prevPropertyWidth = MINIMUM_TEXT_WIDTH;
     private static final int PROPERTY_WIDTH_PADDING = 30;
 
     private static final int GAP_BETWEEN_BARS = 6;
+
+    private boolean isIconColHidden = true;
 
     public static Color getBackgroundColor() {
         return BACKGROUND_COLOR;
@@ -226,8 +229,6 @@ public class HistogramDisplay2 extends BorderPane {
 
         iconCol.setCellValueFactory(new PropertyValueFactory("icon"));
         iconCol.setResizable(false);
-        iconCol.setMinWidth(barHeight);
-        iconCol.setPrefWidth(barHeight + ICON_PADDING);
         iconCol.setStyle("-fx-alignment: CENTER;");
 
         barCol.setCellValueFactory(new PropertyValueFactory("bar"));
@@ -235,8 +236,12 @@ public class HistogramDisplay2 extends BorderPane {
         barCol.setStyle("-fx-alignment: CENTER-LEFT;");
 
         // Automatically adjusts width of the column to fit
-        tableView.widthProperty().addListener((obs, oldVal, newVal) -> barCol.setPrefWidth((double) newVal - Math.max(prevPropertyWidth, MINIMUM_TEXT_WIDTH) - iconCol.getWidth() - BAR_PADDING));
-
+        // tableView.widthProperty().addListener((obs, oldVal, newVal) -> barCol.setPrefWidth((double) newVal - Math.max(prevPropertyWidth, MINIMUM_TEXT_WIDTH) - iconCol.getWidth() - BAR_PADDING + (isIconColHidden ? barHeight + ICON_PADDING : 0) - (isScrollBarVisible(binCollection.getBinsLength()) ? 10 : 0)));
+// test
+        // final DoubleBinding otherColumnsWidth = propertyCol.widthProperty().add(iconCol.widthProperty()); // Add all other columns
+        // barCol.prefWidthProperty().bind(tableView.widthProperty().subtract(otherColumnsWidth));
+        // NEWER
+        tableView.widthProperty().addListener((obs, oldVal, newVal) -> setBarColWidth((double) newVal));
         // Update table whenever histogram is resized
         barCol.widthProperty().addListener((obs, oldVal, newVal) -> updateTable(true, (double) newVal - BAR_LENGTH_SUBTRACTION, false));
 
@@ -277,7 +282,8 @@ public class HistogramDisplay2 extends BorderPane {
             return row;
         });
 
-        headerCountHBox.minWidthProperty().bind(barCol.widthProperty().add(BAR_PADDING));
+//        headerCountHBox.minWidthProperty().bind(barCol.widthProperty().add(BAR_PADDING));
+        headerCountHBox.minWidthProperty().bind(barCol.widthProperty());
         headerCountHBox.setAlignment(Pos.CENTER_RIGHT);
 
         headerRow.setAlignment(Pos.CENTER_RIGHT);
@@ -290,6 +296,15 @@ public class HistogramDisplay2 extends BorderPane {
         updateBarHeight();
 
         initializeListeners();
+    }
+
+    private void setBarColWidth(final double tableWidth) {
+        final double propertyColwidth = Math.max(prevPropertyWidth, MINIMUM_TEXT_WIDTH);
+
+        // if scroll bar visible make smaller
+        final double scrollBarAdjust = (binCollection != null && isScrollBarVisible(binCollection.getBinsLength())) ? 20 : 0;
+
+        barCol.setPrefWidth(tableWidth - propertyColwidth - iconCol.getWidth() - scrollBarAdjust);// - BAR_PADDING+ (isIconColHidden ? barHeight + ICON_PADDING : 0));
     }
 
     private void initializeSettings() {
@@ -379,7 +394,7 @@ public class HistogramDisplay2 extends BorderPane {
         prevPropertyWidth = calculateLongestPropertyWidth(isRebuildRequired());
 
         propertyCol.setPrefWidth(prevPropertyWidth);
-        barCol.setPrefWidth(tableView.getWidth() - prevPropertyWidth - iconCol.getWidth() - BAR_PADDING);
+        setBarColWidth(tableView.getWidth());
     }
 
     private boolean isRebuildRequired() {
@@ -422,7 +437,8 @@ public class HistogramDisplay2 extends BorderPane {
 
         barWidth = width;
 
-        iconCol.setPrefWidth(barHeight + 10);
+        isIconColHidden = binIconMode == BinIconMode.NONE;
+        iconCol.setPrefWidth(isIconColHidden ? 0 : barHeight + ICON_PADDING);
 
         // There is data and the user wants to see it
         final Bin[] bins = binCollection.getBins();
@@ -495,6 +511,18 @@ public class HistogramDisplay2 extends BorderPane {
 
         firstVisibleIndex = (int) Math.ceil(lower / heightPerRow) - VISIBLE_INDEX_EXTEND;
         lastVisibleIndex = (int) Math.ceil(upper / heightPerRow) + VISIBLE_INDEX_EXTEND;
+    }
+
+    private boolean isScrollBarVisible(final int numItems) {
+        //get height (what the user can see)
+        final float tableHeight = tableView.getHeight() > 0 ? (float) tableView.getHeight() : (float) this.getHeight() - (float) headerRow.getHeight();
+
+        final float heightPerRow = barHeight;
+
+        // get full height of tableView
+        final float fullHeight = heightPerRow * numItems;
+
+        return fullHeight > tableHeight;
     }
 
     private double calculateLongestPropertyWidth(final boolean rebuildRows) {
@@ -580,6 +608,7 @@ public class HistogramDisplay2 extends BorderPane {
         headerTotalBins.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
 
         headerValue.setMinHeight(barHeight);
+        //headerValue.minWidthProperty().bind(propertyCol.widthProperty().add(iconCol.getWidth()));
 
         final Pane spacer = new Pane();
         final Pane spacer2 = new Pane();
