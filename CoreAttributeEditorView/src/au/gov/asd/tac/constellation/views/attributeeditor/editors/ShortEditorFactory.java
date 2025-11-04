@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.ShortAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -26,6 +25,7 @@ import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type short
  *
  * @author cygnus_x-1
  */
@@ -33,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ShortEditorFactory extends AttributeValueEditorFactory<Short> {
 
     @Override
-    public AbstractEditor<Short> createEditor(final EditOperation editOperation, final DefaultGetter<Short> defaultGetter, final ValueValidator<Short> validator, final String editedItemName, final Short initialValue) {
-        return new ShortEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Short> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Short> validator, final Short defaultValue, final Short initialValue) {
+        return new ShortEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -46,8 +46,12 @@ public class ShortEditorFactory extends AttributeValueEditorFactory<Short> {
 
         private TextField numberField;
 
-        protected ShortEditor(final EditOperation editOperation, final DefaultGetter<Short> defaultGetter, final ValueValidator<Short> validator, final String editedItemName, final Short initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected ShortEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Short> validator, final Short defaultValue, final Short initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
+        }
+        
+        protected String getNumberText() {
+            return numberField.getText();
         }
 
         @Override
@@ -64,7 +68,7 @@ public class ShortEditorFactory extends AttributeValueEditorFactory<Short> {
         @Override
         protected Short getValueFromControls() throws ControlsInvalidException {
             try {
-                return Short.parseShort(numberField.getText());
+                return Short.valueOf(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a short.");
             }
@@ -72,19 +76,13 @@ public class ShortEditorFactory extends AttributeValueEditorFactory<Short> {
 
         @Override
         protected Node createEditorControls() {
-            final VBox controls = new VBox();
-            controls.setAlignment(Pos.CENTER);
-
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-
-            controls.getChildren().add(numberField);
+            
+            final VBox controls = new VBox(numberField);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
         }
     }
 }

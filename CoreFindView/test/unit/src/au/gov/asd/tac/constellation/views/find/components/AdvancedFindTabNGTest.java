@@ -323,7 +323,7 @@ public class AdvancedFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(findViewTopComponent);
-        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
+        doNothing().when(mockController).retrieveAdvancedSearch(true, false, false);
         Button mockButton = mock(Button.class);
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
@@ -389,7 +389,7 @@ public class AdvancedFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(findViewTopComponent);
-        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
+        doNothing().when(mockController).retrieveAdvancedSearch(false, true, false);
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
 
@@ -453,7 +453,7 @@ public class AdvancedFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(findViewTopComponent);
-        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(false), Mockito.eq(false));
+        doNothing().when(mockController).retrieveAdvancedSearch(false, false, false);
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
 

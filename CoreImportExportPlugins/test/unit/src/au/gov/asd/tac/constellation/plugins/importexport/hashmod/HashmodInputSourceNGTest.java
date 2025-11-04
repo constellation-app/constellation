@@ -49,7 +49,7 @@ public class HashmodInputSourceNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         inputStreamMock = mock(InputStream.class);
     }
 

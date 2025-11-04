@@ -98,7 +98,7 @@ public abstract class RestClient {
                 final String key = URLEncoder.encode(param.getFirst(), StandardCharsets.UTF_8.name()).replace("+", "%20");
                 final String value = URLEncoder.encode(param.getSecond(), StandardCharsets.UTF_8.name()).replace("+", "%20");
                 if (StringUtils.isNotBlank(key)) {
-                    if (query.length() > 0) {
+                    if (!query.isEmpty()) {
                         query.append('&');
                     }
                     query.append(String.format("%s=%s", key, value));
@@ -107,7 +107,7 @@ public abstract class RestClient {
                 } 
             }
         }
-        return URI.create(url + (query.length() > 0 ? "?" + query : "")).toURL();
+        return URI.create(url + (!query.isEmpty() ? "?" + query : "")).toURL();
     }
 
     /**

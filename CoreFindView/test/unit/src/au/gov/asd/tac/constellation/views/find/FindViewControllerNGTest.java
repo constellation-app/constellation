@@ -258,12 +258,12 @@ public class FindViewControllerNGTest {
                  * The first test should execute the plugin once on graph as the
                  * parameters are not set to look at all graphs
                  */
-                when(pluginExecution.executeLater(Mockito.eq(graph))).thenReturn(null);
+                when(pluginExecution.executeLater(graph)).thenReturn(null);
                 mockedStaticPlugin.when(() -> PluginExecution.withPlugin(Mockito.any(Plugin.class))).thenReturn(pluginExecution);
 
                 BasicFindPlugin basicFindPlugin = new BasicFindPlugin(instance.getCurrentBasicFindParameters(), true, false);
                 PluginExecution.withPlugin(basicFindPlugin).executeLater(graph);
-                verify(pluginExecution).executeLater(Mockito.eq(graph));
+                verify(pluginExecution).executeLater(graph);
 
                 /**
                  * Set the parameters to find in all graphs and repeat the same
@@ -277,7 +277,7 @@ public class FindViewControllerNGTest {
 
                 basicFindPlugin = new BasicFindPlugin(instance.getCurrentBasicFindParameters(), true, false);
                 PluginExecution.withPlugin(basicFindPlugin).executeLater(graph);
-                verify(pluginExecution, times(2)).executeLater(Mockito.eq(graph));
+                verify(pluginExecution, times(2)).executeLater(graph);
             }
         }
     }
@@ -318,11 +318,11 @@ public class FindViewControllerNGTest {
                  * The first test should execute the plugin once on graph as the
                  * parameters are not set to look at all graphs
                  */
-                when(pluginExecution.executeLater(Mockito.eq(graph))).thenReturn(null);
+                when(pluginExecution.executeLater(graph)).thenReturn(null);
                 mockedStaticPlugin.when(() -> PluginExecution.withPlugin(Mockito.any(Plugin.class))).thenReturn(pluginExecution);
 
                 instance.replaceMatchingElements(true, false, false);
-                verify(pluginExecution).executeLater(Mockito.eq(graph));
+                verify(pluginExecution).executeLater(graph);
 
                 /**
                  * Set the parameters to find in all graphs and repeat the same
@@ -335,8 +335,8 @@ public class FindViewControllerNGTest {
                 mockedStaticPlugin.when(() -> PluginExecution.withPlugin(Mockito.any(Plugin.class))).thenReturn(pluginExecution);
 
                 instance.replaceMatchingElements(true, false, false);
-                verify(pluginExecution, times(2)).executeLater(Mockito.eq(graph));
-                verify(pluginExecution).executeLater(Mockito.eq(graph2));
+                verify(pluginExecution, times(2)).executeLater(graph);
+                verify(pluginExecution).executeLater(graph2);
             }
         }
     }

@@ -56,7 +56,7 @@ public class DataAccessViewTopComponentNGTest {
     private DataAccessViewTopComponent dataAccessViewTopComponent;
     
     @BeforeClass(enabled = false)
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         proxyUtilsMockedStatic = Mockito.mockStatic(ProxyUtilities.class);
     }
 

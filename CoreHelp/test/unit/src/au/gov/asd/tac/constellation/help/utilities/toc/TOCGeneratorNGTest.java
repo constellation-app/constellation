@@ -147,7 +147,7 @@ public class TOCGeneratorNGTest {
             tempFileTOC = File.createTempFile("tempFileTOC", ".md");
             TOCGenerator.createTOCFile(tempFileTOC.getPath());
             assertFalse(tempFileTOC.length() != 0);
-            TOCGenerator.convertXMLMappings(xmlsFromFile, root);
+            TOCGenerator.convertXMLMappings(xmlsFromFile, root, false);
 
             // Assert file is not empty, meaning a TOC file has been created
             assertTrue(tempFileTOC.length() != 0);
@@ -170,7 +170,7 @@ public class TOCGeneratorNGTest {
         final List<File> xmlsFromFile = new ArrayList<>();
         final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem("root", ""));
         TOCGenerator.createTOCFile("incorrect/path/to/toc");
-        TOCGenerator.convertXMLMappings(xmlsFromFile, root);
+        TOCGenerator.convertXMLMappings(xmlsFromFile, root, false);
     }
 
     /**
@@ -230,7 +230,7 @@ public class TOCGeneratorNGTest {
 
             // try with resources
             try (final FileWriter fw = new FileWriter(tempFileTOC)) {
-                TOCGenerator.convertXMLMappings(xmlsFromFile, fw, root);
+                TOCGenerator.convertXMLMappings(xmlsFromFile, fw, root, false);
             }
             assertEquals(root.getChildren().size(), 1);
 
@@ -260,16 +260,15 @@ public class TOCGeneratorNGTest {
             assertNotNull(tempFileTOC);
             assertTrue(tempFileTOC.exists());
 
-            final BufferedReader reader = new BufferedReader(new FileReader(tempFileTOC));
+            try (final BufferedReader reader = new BufferedReader(new FileReader(tempFileTOC))) {
+                assertEquals(reader.readLine(), String.format("<div class=\"%s\">", "container"));
+                assertEquals(reader.readLine(), String.format("<div id=\"%s\">", "accordion"));
 
-            assertEquals(reader.readLine(), String.format("<div class=\"%s\">", "container"));
-            assertEquals(reader.readLine(), String.format("<div id=\"%s\">", "accordion"));
-
-            // ensure following lines are not empty - if they are, this means that the
-            // files did not get parsed correctly and therefore did not write into the file.
-            assertNotNull(reader.readLine());
-            assertNotNull(reader.readLine());
-
+                // ensure following lines are not empty - if they are, this means that the
+                // files did not get parsed correctly and therefore did not write into the file.
+                assertNotNull(reader.readLine());
+                assertNotNull(reader.readLine());
+            }
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
@@ -294,13 +293,13 @@ public class TOCGeneratorNGTest {
         final String title = "click here";
         final String url = "www.link.com/to/follow.aspx";
         final String expResult = String.format("<a href=\"%s\">%s</a><br/>", url, title);
-        final String result = TOCGenerator.generateHTMLLink(title, url);
+        final String result = TOCGenerator.generateHTMLLink(title, url, false);
         assertEquals(result, expResult);
 
         final String title1 = null;
         final String url1 = null;
         final String expResult1 = String.format("<a href=\"%s\">%s</a><br/>", url1, title1);
-        final String result1 = TOCGenerator.generateHTMLLink(title1, url1);
+        final String result1 = TOCGenerator.generateHTMLLink(title1, url1, false);
         assertEquals(result1, expResult1);
     }
     
@@ -333,12 +332,13 @@ public class TOCGeneratorNGTest {
                 });
             }
 
-            final BufferedReader reader = new BufferedReader(new FileReader(tempFile));
-            String line;
+            try (final BufferedReader reader = new BufferedReader(new FileReader(tempFile))) {
+                String line;
 
-            int linecount = 0;
-            while ((line = reader.readLine()) != null) {
-                assertEquals(line, fileContents.get(linecount++).replace("\n", ""));
+                int linecount = 0;
+                while ((line = reader.readLine()) != null) {
+                    assertEquals(line, fileContents.get(linecount++).replace("\n", ""));
+                }
             }
         } finally {
             // Cleanup
@@ -388,12 +388,13 @@ public class TOCGeneratorNGTest {
                 });
             }
 
-            final BufferedReader reader = new BufferedReader(new FileReader(tempFile));
-            String line;
+            try (final BufferedReader reader = new BufferedReader(new FileReader(tempFile))) {
+                String line;
 
-            int linecount = 0;
-            while ((line = reader.readLine()) != null) {
-                assertEquals(line, "" + fileContents.get(linecount++).replace("\n", ""));
+                int linecount = 0;
+                while ((line = reader.readLine()) != null) {
+                    assertEquals(line, "" + fileContents.get(linecount++).replace("\n", ""));
+                }
             }
         } finally {
             // Cleanup
@@ -432,12 +433,13 @@ public class TOCGeneratorNGTest {
                 });
             }
 
-            final BufferedReader reader = new BufferedReader(new FileReader(tempFile));
-            String line;
+            try (final BufferedReader reader = new BufferedReader(new FileReader(tempFile))) {
+                String line;
 
-            int linecount = 0;
-            while ((line = reader.readLine()) != null) {
-                assertEquals(line, "    " + fileContents.get(linecount++).replace("\n", ""));
+                int linecount = 0;
+                while ((line = reader.readLine()) != null) {
+                    assertEquals(line, "    " + fileContents.get(linecount++).replace("\n", ""));
+                }
             }
         } finally {
             // Cleanup

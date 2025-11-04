@@ -23,12 +23,12 @@ import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -47,12 +47,10 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javax.swing.filechooser.FileFilter;
@@ -62,17 +60,16 @@ import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type icon
  *
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AttributeValueEditorFactory.class)
 public class IconEditorFactory extends AttributeValueEditorFactory<ConstellationIcon> {
 
-    private static final String TITLE = "Add New Icon(s)";
-
     @Override
-    public AbstractEditor<ConstellationIcon> createEditor(final EditOperation editOperation, final DefaultGetter<ConstellationIcon> defaultGetter, final ValueValidator<ConstellationIcon> validator, final String editedItemName, final ConstellationIcon initialValue) {
-        return new IconEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<ConstellationIcon> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationIcon> validator, final ConstellationIcon defaultValue, final ConstellationIcon initialValue) {
+        return new IconEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -81,6 +78,8 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
     }
 
     public class IconEditor extends AbstractEditor<ConstellationIcon> {
+        
+        private static final String TITLE = "Add New Icon(s)";
 
         private static final String LIGHT_THEME = "/au/gov/asd/tac/constellation/views/attributeeditor/resources/attribute-icon-editor-light.css";
         private static final int BUTTON_SPACING = 10;
@@ -90,8 +89,12 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         private TreeItem<IconNode> treeRoot;
         private TreeItem<IconNode> builtInItem;
 
-        protected IconEditor(final EditOperation editOperation, final DefaultGetter<ConstellationIcon> defaultGetter, final ValueValidator<ConstellationIcon> validator, final String editedItemName, final ConstellationIcon initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected IconEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationIcon> validator, final ConstellationIcon defaultValue, final ConstellationIcon initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
+        }
+        
+        protected String getListSelection() {
+            return listView.getSelectionModel().getSelectedItem();
         }
 
         @Override
@@ -114,17 +117,6 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
-            final ColumnConstraints cc = new ColumnConstraints();
-            cc.setHgrow(Priority.ALWAYS);
-            controls.getColumnConstraints().add(cc);
-            final RowConstraints rc = new RowConstraints();
-            rc.setVgrow(Priority.ALWAYS);
-            controls.getRowConstraints().add(rc);
-
             // build tree structure of icon
             final IconNode builtInNode = new IconNode("(Built-in)", IconManager.getIconNames(false));
 
@@ -141,42 +133,37 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             treeRoot = new TreeItem<>(new IconNode("Icons", new HashSet<>()));
             treeRoot.setExpanded(true);
 
-            treeView = new TreeView<>();
+            treeView = new TreeView<>(treeRoot);
             treeView.setShowRoot(true);
-            treeView.setRoot(treeRoot);
             treeView.getStyleClass().add("rounded");
-            treeView.setOnMouseClicked((MouseEvent event) -> refreshIconList());
+            treeView.setOnMouseClicked(event -> refreshIconList(null));
 
-            final SplitPane splitPane = new SplitPane();
+            final SplitPane splitPane = new SplitPane(treeView, listView);
             splitPane.setId("hiddenSplitter");
             splitPane.setOrientation(Orientation.HORIZONTAL);
-            splitPane.getItems().add(treeView);
-            splitPane.getItems().add(listView);
-            controls.addRow(0, splitPane);
+            
             if (!JavafxStyleManager.isDarkTheme()) {
                 splitPane.getStylesheets().add(IconEditorFactory.class.getResource(LIGHT_THEME).toExternalForm());
             }
-
+            
             final HBox addRemoveBox = createAddRemoveBox();
-            controls.addRow(1, addRemoveBox);
-
+            
+            final VBox controls = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, 
+                    splitPane, addRemoveBox);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
         }
 
         private void reloadUserDefinedIcons(final String iconFile) {
             final IconNode userNode = new IconNode("(User-defined)", IconManager.getIconNames(true));
             final TreeItem<IconNode> userItem = new TreeItem<>(userNode);
-            this.addNode(userItem, userNode);
-            treeRoot.getChildren().clear();
-            treeRoot.getChildren().add(builtInItem);
-            treeRoot.getChildren().add(userItem);
+            addNode(userItem, userNode);
+            
+            treeRoot.getChildren().setAll(builtInItem, userItem);
+            
             if (StringUtils.isNotBlank(iconFile)) {
-                TreeItem<IconNode> currentIcon = findIconNode(treeRoot, iconFile);
+                final TreeItem<IconNode> currentIcon = findIconNode(treeRoot, iconFile);
                 treeView.getSelectionModel().select(currentIcon);
             }
             refreshIconList(iconFile);
@@ -190,40 +177,18 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
          */
         private List<File> iconWalk(final File path) {
             final List<File> files = new ArrayList<>();
-            iconWalk(path, files);
-            return files;
-        }
-
-        /**
-         * Navigate through all files in path and its subdirectories, adding any
-         * files found to match icon file types to the list of icons returned.
-         *
-         * @param path Path to search for icons.
-         * @param files Files already found.
-         * @return Complete list of all icon files found (new + those passed
-         * in).
-         */
-        private List<File> iconWalk(final File path, final List<File> files) {
-            final List<File> addedFiles = new ArrayList<>();
             for (final File f : path.listFiles()) {
                 if (f.isDirectory()) {
-                    addedFiles.add(f);
+                    files.addAll(iconWalk(f));
                 } else {
                     if (Strings.CI.endsWith(f.getAbsolutePath(), FileExtensionConstants.JPG)
                             || Strings.CI.endsWith(f.getAbsolutePath(), FileExtensionConstants.GIF)
                             || Strings.CI.endsWith(f.getAbsolutePath(), FileExtensionConstants.PNG)) {
-                        addedFiles.add(f);
+                        files.add(f);
                     }
                 }
             }
-
-            addedFiles.forEach(file -> {
-                if (file.isDirectory()) {
-                    iconWalk(file, files);
-                } else {
-                    files.add(file);
-                }
-            });
+            
             return files;
         }
 
@@ -242,11 +207,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             }
 
         }
-
-        private void refreshIconList() {
-            refreshIconList(null);
-        }
-
+        
         private void refreshIconList(final String iconFile) {
             listView.getItems().clear();
             if (treeView.getSelectionModel().getSelectedItem() != null) {
@@ -267,9 +228,6 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         }
 
         private void addNode(final TreeItem<IconNode> item, final IconNode node) {
-            if (node.getChildren().length == 0) {
-                return;
-            }
             for (final IconNode childNode : node.getChildren()) {
                 final TreeItem<IconNode> childItem = new TreeItem<>(childNode);
                 item.getChildren().add(childItem);
@@ -278,8 +236,8 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         }
 
         private void addIcons(final List<File> selectedFiles) {
-            Platform.runLater(() -> {
-                if (!selectedFiles.isEmpty()) {
+            if (!selectedFiles.isEmpty()) {
+                Platform.runLater(() -> {
                     String lastIconName = null;
 
                     for (final File selectedFile : selectedFiles) {
@@ -288,7 +246,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                             final ConstellationIcon customIcon = new ConstellationIcon.Builder(iconName, new FileIconData(selectedFile)).build();
 
                             if (IconManager.addIcon(customIcon)) {
-                                lastIconName = selectedFile.getName().substring(0, selectedFile.getName().length() - 4);
+                                lastIconName = iconName;
                             }
                         }
                     }
@@ -296,30 +254,30 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                     if (lastIconName != null) {
                         reloadUserDefinedIcons(lastIconName);
                     }
-                }
-            });
+                });
+            }
         }
 
         private HBox createAddRemoveBox() {
-            //add/remove/clear button
-            final HBox addRemoveBox = new HBox(BUTTON_SPACING);
-            addRemoveBox.setAlignment(Pos.CENTER_RIGHT);
+            // add/remove/clear button
             final Button addFilesButton = new Button("Add File(s)...");
-            final Button addDirButton = new Button("Add Directory...");
-            final Button removeButton = new Button("Remove");
-
             addFilesButton.setOnAction(event -> FileChooser.openMultiDialog(getIconEditorFileChooser()).thenAccept(optionalFiles -> optionalFiles.ifPresent(files -> addIcons(files))));
 
+            final Button addDirButton = new Button("Add Directory...");
             addDirButton.setOnAction(event -> FileChooser.openOpenDialog(getIconEditorFolderChooser()).thenAccept(optionalFolder -> optionalFolder.ifPresent(folder -> addIcons(iconWalk(folder)))));
 
+            final Button removeButton = new Button("Remove");
             removeButton.setOnAction(event -> {
                 final boolean iconRemoved = IconManager.removeIcon(listView.getSelectionModel().getSelectedItem());
                 if (iconRemoved) {
                     reloadUserDefinedIcons("");
                 }
             });
-
-            addRemoveBox.getChildren().addAll(addFilesButton, addDirButton, removeButton);
+            
+            final HBox addRemoveBox = new HBox(BUTTON_SPACING, 
+                    addFilesButton, addDirButton, removeButton);
+            addRemoveBox.setAlignment(Pos.CENTER_RIGHT);
+            
             return addRemoveBox;
         }
 
@@ -328,7 +286,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
          *
          * @return the created file chooser.
          */
-        public FileChooserBuilder getIconEditorFileChooser() {
+        protected FileChooserBuilder getIconEditorFileChooser() {
             return new FileChooserBuilder(TITLE)
                     .setTitle(TITLE)
                     .setAcceptAllFileFilterUsed(false)
@@ -355,7 +313,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
          *
          * @return the created folder chooser.
          */
-        public FileChooserBuilder getIconEditorFolderChooser() {
+        protected FileChooserBuilder getIconEditorFolderChooser() {
             return new FileChooserBuilder(TITLE)
                     .setTitle(TITLE)
                     .setAcceptAllFileFilterUsed(false)
@@ -384,7 +342,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                 imageView.setFitHeight(RECT_SIZE);
                 final ColumnConstraints titleConstraint = new ColumnConstraints(RECT_SIZE);
                 titleConstraint.setHalignment(HPos.CENTER);
-                gridPane.getColumnConstraints().addAll(titleConstraint);
+                gridPane.getColumnConstraints().add(titleConstraint);
                 gridPane.add(imageView, 0, 0);
 
                 // dimension text
@@ -403,29 +361,29 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                 if (iconName.isEmpty()) {
                     iconName = "(no icon)";
                 }
-                this.setText(iconName);
+                setText(iconName);
 
                 // tooltip
                 final Tooltip tt = new Tooltip(item);
-                this.setTooltip(tt);
+                setTooltip(tt);
 
-                this.setGraphic(gridPane);
-                this.setPrefHeight(RECT_SIZE + SPACING);
+                setGraphic(gridPane);
+                setPrefHeight(RECT_SIZE + SPACING);
             } else {
-                this.setText(null);
-                this.setGraphic(null);
+                setText(null);
+                setGraphic(null);
             }
         }
     }
 
-    public class IconNode {
+    private class IconNode {
 
         private final String name;
         private final IconNode parent;
-        private final TreeSet<String> icons = new TreeSet<>();
-        private final TreeMap<String, IconNode> children = new TreeMap<>();
+        private final Set<String> icons = new TreeSet<>();
+        private final Map<String, IconNode> children = new TreeMap<>();
 
-        public IconNode(String name, IconNode parent) {
+        public IconNode(final String name, final IconNode parent) {
             this.name = name;
             this.parent = parent;
         }
@@ -443,15 +401,9 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                     for (int i = 0; i < splitString.length - 1; i++) {
                         final IconNode childNode = new IconNode(splitString[i], currentNode);
                         final IconNode tempNode = currentNode.addChild(childNode);
-                        if (tempNode == null) {
-                            currentNode = childNode;
-                        } else {
-                            currentNode = tempNode;
-                        }
+                        currentNode = tempNode == null ? childNode : tempNode;
                     }
                     currentNode.icons.add(iconName);
-                } else {
-                    // Do nothing
                 }
             }
         }
@@ -461,8 +413,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         }
 
         public String[] getIconLabels() {
-            String[] type = new String[0];
-            return icons.toArray(type);
+            return icons.toArray(String[]::new);
         }
 
         public IconNode getParent() {
@@ -470,8 +421,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         }
 
         public IconNode[] getChildren() {
-            IconNode[] type = new IconNode[0];
-            return children.values().toArray(type);
+            return children.values().toArray(IconNode[]::new);
         }
 
         public IconNode addChild(final IconNode child) {
@@ -487,14 +437,12 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj == null) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
+            
             final IconNode other = (IconNode) obj;
-            return (this.getName() == null) ? (other.getName() == null) : this.name.equals(other.name);
+            return this.getName() == null ? other.getName() == null : this.name.equals(other.name);
         }
 
         @Override

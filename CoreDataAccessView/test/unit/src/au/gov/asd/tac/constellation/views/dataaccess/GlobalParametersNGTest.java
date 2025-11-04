@@ -49,7 +49,7 @@ public class GlobalParametersNGTest {
     private static MockedStatic<Lookup> lookupStaticMock;
     
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         lookupStaticMock = Mockito.mockStatic(Lookup.class);
     }
 

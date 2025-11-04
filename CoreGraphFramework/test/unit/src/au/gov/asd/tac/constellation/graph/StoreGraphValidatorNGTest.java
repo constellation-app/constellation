@@ -90,7 +90,7 @@ public class StoreGraphValidatorNGTest {
                 }
                 // Remove vertex
                 case 3 -> {
-                    int v = (int) (Math.random() * graph.getVertexCapacity());
+                    int v = rand.nextInt(graph.getVertexCapacity());
                     if (graph.vertexExists(v)) {
                         graph.removeVertex(v);
                         validator.removeVertex(v);

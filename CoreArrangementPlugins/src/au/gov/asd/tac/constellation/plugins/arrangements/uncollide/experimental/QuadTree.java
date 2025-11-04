@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import org.python.modules.math;
 
 /**
  * http://gamedev.tutsplus.com/tutorials/implementation/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space/
@@ -111,11 +110,11 @@ public class QuadTree extends AbstractTree {
     protected double getDelta(final int vertex1, final int vertex2) {
         float deltaX = wg.getFloatValue(xId, vertex1) - wg.getFloatValue(xId, vertex2);
         float deltaY = wg.getFloatValue(yId, vertex1) - wg.getFloatValue(yId, vertex2);
-        return math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     }
 
     @Override
     protected double getCollisionDistance(final int vertex1, final int vertex2) {
-        return math.sqrt(2 * wg.getFloatValue(rId, vertex1)) + math.sqrt(2 * wg.getFloatValue(rId, vertex2));
+        return Math.sqrt(2 * wg.getFloatValue(rId, vertex1)) + Math.sqrt(2 * wg.getFloatValue(rId, vertex2));
     }
 }

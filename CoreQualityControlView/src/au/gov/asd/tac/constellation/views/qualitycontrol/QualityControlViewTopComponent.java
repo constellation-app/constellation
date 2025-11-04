@@ -103,6 +103,11 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
     }
 
     @Override
+    protected void componentActivated() {
+        setVisible(true);
+    }
+            
+    @Override
     protected void handleGraphClosed(final Graph graph) {
         qualityControlViewPane.refreshQualityControlView(null);
     }

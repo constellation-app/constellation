@@ -1,5 +1,18 @@
 # Constellation Changes
 
+## Changes in October 2025
+-   Removed `areSame()` from `BoundingBox`, `Camera`, `Frame`, `Vector3f` in favour of implementing `equals()`.
+-   Removed `Graphics3DUtilities.clamp()` which is no longer required now that `Math.clamp()` does the same thing.
+
+## Changes in September 2025
+-   Removed `DefaultGetter` and `PrimaryKeyDefaultGetter` due to limited implementations. Uses now instead will use default value directly. e.g. Constructors and `createEditor()` now pass the default value instead of the `DefaultGetter`
+-   Renamed `AbstractEditor.setDefaultValue()` to `AbstractEditor.setToDefaultValue()` to clarify function's intention.
+-   Updated `AbstractEditorFactory.AbstractEditor` to include a constructor with a boolean parameter for whether "No value" is allowed.
+    The existing constructor now passes to this new constructor, passing false for the new parameter.
+-   Updated `AbstractEditorFactory.AbstractEditor.noValueCheckBoxAvailable()` to no longer be abstract and simply return the boolean value set from the new constructor.
+    It is also renamed to `AbstractEditorFactory.AbstractEditor.isNoValueAllowed()`. Existing editors overriding this function should now instead pass this value into the constructor.
+-   Updated the order of parameters for `AbstractEditorFactory.AbstractEditor` constructors and `AbstractEditorFactory.createEditor()` functions, in an attempt to make them more intuitive.
+
 ## Changes in June 2025
 -   Removed `Auth` and `AuthPanel` classes as they were unused.
 -   Removed `DragElementsPlugin` and `LineDragger` classes which were unused.

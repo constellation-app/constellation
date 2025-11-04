@@ -303,12 +303,12 @@ public class FindViewTopComponentNGTest {
         topComponent.UpdateUI();
 
         // verify each function was called once
-        verify(basicFindTab).saveSelected(Mockito.eq(GraphElementType.VERTEX));
-        verify(basicFindTab).populateAttributes(Mockito.eq(GraphElementType.VERTEX));
-        verify(basicFindTab).updateSelectedAttributes(Mockito.eq(basicFindTab.getMatchingAttributeList(GraphElementType.VERTEX)));
-        verify(replaceTab).saveSelected(Mockito.eq(GraphElementType.VERTEX));
-        verify(replaceTab).populateAttributes(Mockito.eq(GraphElementType.VERTEX));
-        verify(replaceTab).updateSelectedAttributes(Mockito.eq(basicFindTab.getMatchingAttributeList(GraphElementType.VERTEX)));
+        verify(basicFindTab).saveSelected(GraphElementType.VERTEX);
+        verify(basicFindTab).populateAttributes(GraphElementType.VERTEX);
+        verify(basicFindTab).updateSelectedAttributes(basicFindTab.getMatchingAttributeList(GraphElementType.VERTEX));
+        verify(replaceTab).saveSelected(GraphElementType.VERTEX);
+        verify(replaceTab).populateAttributes(GraphElementType.VERTEX);
+        verify(replaceTab).updateSelectedAttributes(basicFindTab.getMatchingAttributeList(GraphElementType.VERTEX));
 
     }
 

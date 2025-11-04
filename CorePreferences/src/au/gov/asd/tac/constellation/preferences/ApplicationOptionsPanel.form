@@ -56,7 +56,7 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="notebookPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="fontPanel" min="-2" pref="95" max="-2" attributes="0"/>
+              <Component id="fontPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="spellCheckingPanel" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -112,7 +112,7 @@
                   <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                   <Component id="autosaveCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="autosaveSpinner" min="-2" pref="55" max="-2" attributes="0"/>
+                  <Component id="autosaveSpinner" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="autosaveLabel" min="-2" pref="230" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
@@ -244,7 +244,7 @@
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
-                                  <Component id="webserverPortSpinner" min="-2" pref="85" max="-2" attributes="0"/>
+                                  <Component id="webserverPortSpinner" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
                               <Component id="restDirectoryText" max="32767" attributes="0"/>
