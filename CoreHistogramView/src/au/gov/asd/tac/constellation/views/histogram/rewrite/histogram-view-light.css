@@ -32,7 +32,7 @@
 /*The red part of the bar*/
 .label:bar-bin-count-selected {
     -fx-padding: 0 1em 0 0;
-    -fx-text-fill: #e0e0e0;  /* Light Grey */
+    -fx-text-fill: black;
 }
 
 /*The yellow part of the bar*/
