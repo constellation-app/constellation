@@ -129,7 +129,7 @@ public class HistogramDisplay2 extends BorderPane {
     private final ContextMenu copyMenu = new ContextMenu();
 
     private final VBox mainVBox = new VBox();
-    
+
     private final TableView<HistogramBar> tableView = new TableView<>();
 
     private double barWidth = 0;
@@ -150,8 +150,6 @@ public class HistogramDisplay2 extends BorderPane {
     private int prevNumBars = 0;
 
     private double prevPropertyWidth = MINIMUM_TEXT_WIDTH;
-
-    private boolean isIconColHidden = true;
 
     public static Color getBackgroundColor() {
         return BACKGROUND_COLOR;
@@ -429,8 +427,7 @@ public class HistogramDisplay2 extends BorderPane {
 
         barWidth = width;
 
-        isIconColHidden = binIconMode == BinIconMode.NONE;
-        iconCol.setPrefWidth(isIconColHidden ? 0 : barHeight + ICON_PADDING);
+        iconCol.setPrefWidth(binIconMode == BinIconMode.NONE ? 0 : barHeight + ICON_PADDING);
 
         // There is data and the user wants to see it
         final Bin[] bins = binCollection.getBins();

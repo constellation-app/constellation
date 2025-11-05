@@ -41,11 +41,6 @@
     -fx-text-fill: black;
 }
 
-.header-row{
-    /*    -fx-text-fill: #FFFFFF;White*/
-
-}
-
 .noheader .column-header-background {
     -fx-max-height: 0;
     -fx-pref-height: 0;
@@ -67,13 +62,11 @@
 }
 
 .table-cell:row-selected{
-    /*    -fx-text-fill: white;*/
     -fx-font-weight: bold;
 }
 
 .table-cell {
     -fx-border-color: null;
-    /*    -fx-text-fill: #e0e0e0;*/
 }
 
 .table-view .table-column{
