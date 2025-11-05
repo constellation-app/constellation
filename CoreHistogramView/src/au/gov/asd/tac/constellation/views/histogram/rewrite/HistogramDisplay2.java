@@ -76,9 +76,9 @@ public class HistogramDisplay2 extends BorderPane {
     private static final String BACKGROUND_COLOR_STRING = JavafxStyleManager.isDarkTheme() ? "#444444" : "#f5f5f5";
 
     private static final Color BACKGROUND_COLOR = Color.web(BACKGROUND_COLOR_STRING);
-    public static final Color BAR_COLOR = JavafxStyleManager.isDarkTheme() ? Color.rgb(30, 144, 255) : Color.rgb(128, 191, 255);//Color.rgb(102, 178, 255);
-    public static final Color SELECTED_COLOR = JavafxStyleManager.isDarkTheme() ? Color.RED.darker() : Color.rgb(239, 67, 67);//Color.rgb(237, 44, 44);//Color.RED;
-    public static final Color ACTIVE_COLOR = JavafxStyleManager.isDarkTheme() ? Color.YELLOW : Color.rgb(255, 255, 128);//Color.rgb(255, 255, 99);//Color.YELLOW.brighter();
+    public static final Color BAR_COLOR = JavafxStyleManager.isDarkTheme() ? Color.rgb(30, 144, 255) : Color.rgb(128, 191, 255);
+    public static final Color SELECTED_COLOR = JavafxStyleManager.isDarkTheme() ? Color.RED.darker() : Color.rgb(239, 67, 67);
+    public static final Color ACTIVE_COLOR = JavafxStyleManager.isDarkTheme() ? Color.YELLOW : Color.rgb(255, 255, 128);
 
     private static final String NO_VALUE = "<No Value>";
     private static final String PROPERTY_VALUE = "Property Value";
