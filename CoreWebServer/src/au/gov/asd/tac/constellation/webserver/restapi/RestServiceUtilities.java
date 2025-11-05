@@ -123,6 +123,9 @@ public class RestServiceUtilities {
      * @param parameters The parameters to be assigned values.
      */
     public static void parametersFromJson(final JsonNode json, final PluginParameters parameters) {
+        if (json == null) {
+            return;
+        }
         json.properties().iterator().forEachRemaining(entry -> {
             final String parameterName = entry.getKey();
             if (parameters.hasParameter(parameterName)) {
