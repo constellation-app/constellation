@@ -21,6 +21,9 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.TextField;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -37,7 +40,7 @@ import org.testng.annotations.Test;
 public class DateTimePickerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(DateTimePickerNGTest.class.getName());
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -63,7 +66,6 @@ public class DateTimePickerNGTest {
     public void tearDownMethod() throws Exception {
         // Not currently required
     }
-
 
     /**
      * Test of setCurrentDateTime method, of class DateTimePicker.
@@ -103,20 +105,6 @@ public class DateTimePickerNGTest {
     }
 
     /**
-     * Test of isActive method, of class DateTimePicker.
-     */
-    @Test
-    public void testIsActive() {
-        System.out.println("isActive");
-        final DateTimePicker instance = new DateTimePicker(true);
-        final boolean expResult = false;
-        final boolean result = instance.isActive();
-        assertEquals(result, expResult);
-        instance.setActive(true);
-        assertTrue(instance.isActive());
-    }
-    
-    /**
      * Test of getCurrentDateTime method, of class DateTimePicker.
      */
     @Test
@@ -144,5 +132,52 @@ public class DateTimePickerNGTest {
 
         final ZoneId result = instance.getZoneId();
         assertEquals(result, zone);
+    }
+
+    /**
+     * Test of validateBlankInput method, of class DateTimePicker.
+     */
+    @Test
+    public void testValidateInput() {
+        System.out.println("validateInput");
+        final DateTimePicker instance = new DateTimePicker(false);
+
+        // Not numbers only, greater than 2 in length.
+        assertEquals(instance.validateInput("23", "23x"), "23");
+
+        // Numbers only, greater than 2 in length.
+        assertEquals(instance.validateInput("23", "230"), "23");
+
+        // Not numbers only, lesser than 2 in length.
+        assertEquals(instance.validateInput("", "x"), "");
+
+        // Numbers only, lesser than 2 in length.
+        assertEquals(instance.validateInput("23", "2"), "2");
+    }
+
+    /**
+     * Test of validateBlankInput method, of class DateTimePicker.
+     */
+    @Test
+    public void testValidateBlankInput() {
+        System.out.println("validateBlankInput");
+        final DateTimePicker instance = new DateTimePicker(false);
+        final TextField textField = mock(TextField.class);
+
+        when(textField.isFocused()).thenReturn(false);
+
+        when(textField.getText()).thenReturn("");
+        assertEquals(instance.validateBlankInput(textField), "0");
+
+        when(textField.getText()).thenReturn("23");
+        assertEquals(instance.validateBlankInput(textField), "23");
+
+        when(textField.isFocused()).thenReturn(true);
+
+        when(textField.getText()).thenReturn("");
+        assertEquals(instance.validateBlankInput(textField), "");
+
+        when(textField.getText()).thenReturn("23");
+        assertEquals(instance.validateBlankInput(textField), "23");
     }
 }

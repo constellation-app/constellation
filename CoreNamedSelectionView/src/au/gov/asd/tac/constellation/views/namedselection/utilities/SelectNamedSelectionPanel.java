@@ -96,9 +96,9 @@ public class SelectNamedSelectionPanel extends JPanel {
 
         jScrollPane1.setViewportView(nsList);
 
-        jRadioButton1.setLabel(org.openide.util.NbBundle.getMessage(SelectNamedSelectionPanel.class, "SelectNamedSelectionPanel.jRadioButton1.label")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jRadioButton1, org.openide.util.NbBundle.getMessage(SelectNamedSelectionPanel.class, "SelectNamedSelectionPanel.jRadioButton1.text")); // NOI18N
 
-        jRadioButton2.setLabel(org.openide.util.NbBundle.getMessage(SelectNamedSelectionPanel.class, "SelectNamedSelectionPanel.jRadioButton2.label")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jRadioButton2, org.openide.util.NbBundle.getMessage(SelectNamedSelectionPanel.class, "SelectNamedSelectionPanel.jRadioButton2.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

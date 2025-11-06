@@ -108,10 +108,10 @@ public class DefaultCustomIconProviderNGTest {
             final ConstellationIcon iconSymbol2 = AnalyticIconProvider.ANDROID;
 
             ConstellationIcon icon2 = new ConstellationIcon.Builder("Category2.TestIcon",
-                new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
-                        iconBackground2.buildBufferedImage(16, iconColor2.getJavaColor()),
-                        iconSymbol2.buildBufferedImage(16), 0, 0)))
-                .build();
+                    new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
+                            iconBackground2.buildBufferedImage(16, iconColor2.getJavaColor()),
+                            iconSymbol2.buildBufferedImage(16), 0, 0)))
+                    .build();
             
             // Run testAddIcon
             System.out.print("TEST: Add an icon: ");
@@ -137,12 +137,11 @@ public class DefaultCustomIconProviderNGTest {
             System.out.print("TEST: Check icon cache matches directory entries: ");
             testCacheMatch(testFile);
             System.out.println(" *PASSED*");
-                       
+            
             System.out.print("TEST: Check the number of calls on a static method: ");
             // Verify defaultCustomIconProvider.getIconDirectory was called the correct number of times
             defaultCustomIconProviderMock.verify(() -> DefaultCustomIconProvider.getIconDirectory(), atLeast(5));
             System.out.println(" *PASSED*");
-            
         }
     }
 
@@ -187,12 +186,12 @@ public class DefaultCustomIconProviderNGTest {
         // Test removing an icon
         final boolean result = IconManager.removeIcon(icon.getExtendedName());
         assertEquals(result, true);
-        
     }
 
     /**
      * Test of removeIcon method, of class DefaultCustomIconProvider, using an
      * icon that does not exist.
+     *
      * @param icon
      */
     private void testRemoveIconDoesNotExist(final ConstellationIcon icon) {

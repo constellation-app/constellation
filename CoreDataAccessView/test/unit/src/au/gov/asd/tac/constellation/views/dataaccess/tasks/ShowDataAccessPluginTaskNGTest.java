@@ -44,6 +44,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ShowDataAccessPluginTaskNGTest {
+    
     private static final String PLUGIN_NAME = "pluginName";
     
     private static MockedStatic<DataAccessUtilities> dataAccessUtilsMockedStatic;
@@ -57,7 +58,7 @@ public class ShowDataAccessPluginTaskNGTest {
     private ShowDataAccessPluginTask showDataAccessPluginTask;
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         dataAccessUtilsMockedStatic = Mockito.mockStatic(DataAccessUtilities.class);
         dataAccessTabPaneMockedStatic = Mockito.mockStatic(DataAccessTabPane.class);
         platformMockedStatic = Mockito.mockStatic(Platform.class);

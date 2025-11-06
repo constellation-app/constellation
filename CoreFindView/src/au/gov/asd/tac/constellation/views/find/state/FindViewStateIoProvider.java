@@ -63,17 +63,17 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
             final String replaceString = jnode.get("replaceString").asText();
             final String graphElementString = jnode.get("graphElement").asText();
             final GraphElementType graphElement = GraphElementType.getValue(graphElementString);
-            final Boolean standardText = jnode.get("standardText").asBoolean();
-            final Boolean regEx = jnode.get("regEx").asBoolean();
-            final Boolean ignoreCase = jnode.get("ignoreCase").asBoolean();
-            final Boolean exactMatch = jnode.get("exactMatch").asBoolean();
-            final Boolean replaceSelectionWithResults = jnode.get("replaceSelectionWithResults").asBoolean();
-            final Boolean addToSelection = jnode.get("addToSelection").asBoolean();
-            final Boolean removeFromSelection = jnode.get("removeFromSelection").asBoolean();
-            final Boolean replaceInSelected = jnode.get("replaceInSelected").asBoolean();
-            final Boolean searchAllGraphs = jnode.get("searchAllGraphs").asBoolean();
-            final Boolean currentSelection = jnode.get("currentSelection").asBoolean();
-            final Boolean currentGraph = jnode.get("currentGraph").asBoolean();
+            final boolean standardText = jnode.get("standardText").asBoolean();
+            final boolean regEx = jnode.get("regEx").asBoolean();
+            final boolean ignoreCase = jnode.get("ignoreCase").asBoolean();
+            final boolean exactMatch = jnode.get("exactMatch").asBoolean();
+            final boolean replaceSelectionWithResults = jnode.get("replaceSelectionWithResults").asBoolean();
+            final boolean addToSelection = jnode.get("addToSelection").asBoolean();
+            final boolean removeFromSelection = jnode.get("removeFromSelection").asBoolean();
+            final boolean replaceInSelected = jnode.get("replaceInSelected").asBoolean();
+            final boolean searchAllGraphs = jnode.get("searchAllGraphs").asBoolean();
+            final boolean currentSelection = jnode.get("currentSelection").asBoolean();
+            final boolean currentGraph = jnode.get("currentGraph").asBoolean();
 
             // Get the selected attributes
             final List<Attribute> selectedAttributes = new ArrayList<>();

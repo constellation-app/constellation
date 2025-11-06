@@ -99,7 +99,7 @@ public class RunPlugin extends RestService {
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String pluginName = parameters.getStringValue(PLUGIN_NAME_PARAMETER_ID);
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
-        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        final Graph graph = (graphId == null || "null".equals(graphId)) ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         if (graph != null) {
             try {
                 final ObjectMapper mapper = new ObjectMapper();

@@ -39,7 +39,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.layout.GridPane;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -137,8 +136,8 @@ public class BooleanCriteriaPanelNGTest {
         tempList.add(booleanCriteriaPanel);
         tempGrid.add(tempList.get(0), 0, 0);
 
-        when(parentComponent.getCorrespondingCriteriaList(Mockito.eq(type))).thenReturn(tempList);
-        when(parentComponent.getCorrespondingGridPane(Mockito.eq(type))).thenReturn(tempGrid);
+        when(parentComponent.getCorrespondingCriteriaList(type)).thenReturn(tempList);
+        when(parentComponent.getCorrespondingGridPane(type)).thenReturn(tempGrid);
 
         final List<AdvancedCriteriaBorderPane> criteriaList = parentComponent.getCorrespondingCriteriaList(type);
 

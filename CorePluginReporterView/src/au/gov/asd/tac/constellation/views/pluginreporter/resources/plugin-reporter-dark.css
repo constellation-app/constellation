@@ -37,10 +37,6 @@
     -fx-text-fill: #222222;
 }
 
-.errorMessageText {
-    -fx-text-fill: #222222;
-}
-
 .progress-bar .bar {
     -fx-padding: 5 5 5 5;
     -fx-background-insets: 3 4 4 4;

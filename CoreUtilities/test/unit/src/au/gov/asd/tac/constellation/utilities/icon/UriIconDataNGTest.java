@@ -62,7 +62,7 @@ public class UriIconDataNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         httpsUtilitiesStaticMock = Mockito.mockStatic(HttpsUtilities.class);
         httpsConnectionStaticMock = Mockito.mockStatic(HttpsConnection.class);
         uriStaticMock = Mockito.mockStatic(URI.class);

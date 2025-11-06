@@ -260,7 +260,7 @@ public final class HashmodAction implements ActionListener {
                         final int vxId = vxOrder2[j];
 
                         String attr1Value = wg.getObjectValue(transaction1Attribute, vxId);
-                        for (int k = 0; k < vxPos && attr1Value != null && attr1Value.length() > 0; k++) {
+                        for (int k = 0; k < vxPos && attr1Value != null && !attr1Value.isEmpty(); k++) {
                             if (Thread.interrupted()) {
                                 throw new InterruptedException();
                             }

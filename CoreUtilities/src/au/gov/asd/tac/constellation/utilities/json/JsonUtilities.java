@@ -313,7 +313,7 @@ public class JsonUtilities {
 
         if (node.has(attribute)) {
             for (final JsonNode entry : node.get(attribute)) {
-                if (sb.length() > 0) {
+                if (!sb.isEmpty()) {
                     sb.append(delimiter);
                 }
                 sb.append(getNodeText(entry));

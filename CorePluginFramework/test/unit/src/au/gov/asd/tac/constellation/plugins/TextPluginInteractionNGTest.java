@@ -45,7 +45,7 @@ public class TextPluginInteractionNGTest {
     private final int totalStep = 2;
     private final String testMessage = "Test Message";
     private final String runningState = "Running State";
-    private final Boolean cancellableTrue = true;
+    private final boolean cancellableTrue = true;
     private final int selectedItems = 1;
     private static final String GRAPH_ID = "Graph ID";
     private static final String HELP_ID = "Help_ID";

@@ -69,7 +69,7 @@ public class GraphicsCardUtilitiesNGTest {
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
             // Mock the call to dxdiag by Runtime.exec() to create a dxdiag file
             final Runtime runtime = mock(Runtime.class);
-            runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
+            runtimeMockedStatic.when(Runtime::getRuntime).thenReturn(runtime);
             when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
                     writer.write(DXDIAG_OUTPUT);
@@ -99,7 +99,7 @@ public class GraphicsCardUtilitiesNGTest {
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
             // Mock the call to dxdiag by Runtime.exec() to create a dxdiag file
             final Runtime runtime = mock(Runtime.class);
-            runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
+            runtimeMockedStatic.when(Runtime::getRuntime).thenReturn(runtime);
             when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 new File(DXDIAG_ABSOLUTE_PATH).createNewFile();
                 return null;
@@ -129,7 +129,7 @@ public class GraphicsCardUtilitiesNGTest {
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
             // Mock the call to dxdiag by Runtime.exec() to create a dummy dxdiag file
             final Runtime runtime = mock(Runtime.class);
-            runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
+            runtimeMockedStatic.when(Runtime::getRuntime).thenReturn(runtime);
             when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
                     writer.write(dummyDxDiag);
@@ -169,7 +169,7 @@ public class GraphicsCardUtilitiesNGTest {
             // Mock the call to dxdiag by Runtime.exec() to throw an Exception if the dxdiag
             // file wasn't deleted
             final Runtime runtime = mock(Runtime.class);
-            runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
+            runtimeMockedStatic.when(Runtime::getRuntime).thenReturn(runtime);
             when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 if (dxDiagFile.exists()) {
                     throw new IOException("Test Failure: dxDiagFile exists");
@@ -195,7 +195,7 @@ public class GraphicsCardUtilitiesNGTest {
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
             // Mock the call to dxdiag by Runtime.exec() to throw an IOException
             final Runtime runtime = mock(Runtime.class);
-            runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
+            runtimeMockedStatic.when(Runtime::getRuntime).thenReturn(runtime);
             when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 throw new IOException(err);
             });
@@ -216,7 +216,7 @@ public class GraphicsCardUtilitiesNGTest {
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
             // Mock the call to dxdiag by Runtime.exec() to create a dxdiag file
             final Runtime runtime = mock(Runtime.class);
-            runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
+            runtimeMockedStatic.when(Runtime::getRuntime).thenReturn(runtime);
             when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
                     writer.write(DXDIAG_ABSOLUTE_PATH);
@@ -249,7 +249,7 @@ public class GraphicsCardUtilitiesNGTest {
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
             // Mock the call to dxdiag by Runtime.exec() to create a dxdiag file
             final Runtime runtime = mock(Runtime.class);
-            runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
+            runtimeMockedStatic.when(Runtime::getRuntime).thenReturn(runtime);
             when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
                     writer.write(DXDIAG_OUTPUT);
@@ -269,7 +269,7 @@ public class GraphicsCardUtilitiesNGTest {
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
             // Now have the mock return an empty dxdiag file
             final Runtime runtime = mock(Runtime.class);
-            runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
+            runtimeMockedStatic.when(Runtime::getRuntime).thenReturn(runtime);
             when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 new File(DXDIAG_ABSOLUTE_PATH).createNewFile();
                 return null;
@@ -287,7 +287,7 @@ public class GraphicsCardUtilitiesNGTest {
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
             // Finally have the mock return an error
             final Runtime runtime = mock(Runtime.class);
-            runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
+            runtimeMockedStatic.when(Runtime::getRuntime).thenReturn(runtime);
             when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
                 throw new IOException();
             });

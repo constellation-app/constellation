@@ -91,8 +91,8 @@ public class HelpOptionsPanelControllerNGTest {
             instance.update();
 
             // verify that the panel was set with the proper value
-            verify(panel, times(1)).setOnlineHelpOption(Mockito.eq(returnValue));
-            verify(panel, times(1)).setOfflineHelpPort(Mockito.eq(port));
+            verify(panel, times(1)).setOnlineHelpOption(returnValue);
+            verify(panel, times(1)).setOfflineHelpPort(port);
         }
     }
 
@@ -124,8 +124,8 @@ public class HelpOptionsPanelControllerNGTest {
             instance.update();
 
             // verify that the panel was set with the proper value
-            verify(panel, times(1)).setOnlineHelpOption(Mockito.eq(returnValue));
-            verify(panel, times(1)).setOfflineHelpPort(Mockito.eq(port));
+            verify(panel, times(1)).setOnlineHelpOption(returnValue);
+            verify(panel, times(1)).setOfflineHelpPort(port);
         }
     }
 
@@ -156,7 +156,7 @@ public class HelpOptionsPanelControllerNGTest {
         doCallRealMethod().when(instance).applyChanges();
 
         prefs = mock(Preferences.class);
-        doNothing().when(prefs).putBoolean(Mockito.eq(key), Mockito.eq(returnValue));
+        doNothing().when(prefs).putBoolean(key, returnValue);
 
         // Create static mock of NbPreferences to return the preferences mock
         try (final MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
@@ -170,7 +170,7 @@ public class HelpOptionsPanelControllerNGTest {
             // verify getpanel was called
             verify(instance, times(1)).getPanel();
             // verify that the preference was put with the correct value
-            verify(prefs, times(1)).putBoolean(Mockito.eq(key), Mockito.eq(returnValue));
+            verify(prefs, times(1)).putBoolean(key, returnValue);
             // verify that the panel method get help option was called
             verify(panel, times(1)).isOnlineHelpSelected();
 
@@ -186,7 +186,7 @@ public class HelpOptionsPanelControllerNGTest {
             // verify getpanel was not called anymore
             verify(instance, times(1)).getPanel();
             // verify that the preference was not called again
-            verify(prefs, times(1)).putBoolean(Mockito.eq(key), Mockito.eq(returnValue));
+            verify(prefs, times(1)).putBoolean(key, returnValue);
             // verify that the panel method was not called again
             verify(panel, times(1)).isOnlineHelpSelected();
 
@@ -202,7 +202,7 @@ public class HelpOptionsPanelControllerNGTest {
             // verify getpanel was not called anymore
             verify(instance, times(1)).getPanel();
             // verify that the preference was not called again
-            verify(prefs, times(1)).putBoolean(Mockito.eq(key), Mockito.eq(returnValue));
+            verify(prefs, times(1)).putBoolean(key, returnValue);
             // verify that the panel method was not called again
             verify(panel, times(1)).isOnlineHelpSelected();
 
@@ -213,7 +213,7 @@ public class HelpOptionsPanelControllerNGTest {
             when(instance.isValid()).thenReturn(validValue);
 
             // update mocks and returned values
-            doNothing().when(prefs).putBoolean(Mockito.eq(key), Mockito.eq(!returnValue));
+            doNothing().when(prefs).putBoolean(key, !returnValue);
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(HelpPreferenceKeys.class))).thenReturn(prefs);
 
             instance.applyChanges();
@@ -225,8 +225,8 @@ public class HelpOptionsPanelControllerNGTest {
             // verify getpanel was not called anymore
             verify(instance, times(2)).getPanel();
             // verify that the preference was called with a different operand
-            verify(prefs, times(1)).putBoolean(Mockito.eq(key), Mockito.eq(!returnValue));
-            verify(prefs, times(1)).putBoolean(Mockito.eq(key), Mockito.eq(returnValue));
+            verify(prefs, times(1)).putBoolean(key, !returnValue);
+            verify(prefs, times(1)).putBoolean(key, returnValue);
             // verify that the panel method was not called again
             verify(panel, times(2)).isOnlineHelpSelected();
         }

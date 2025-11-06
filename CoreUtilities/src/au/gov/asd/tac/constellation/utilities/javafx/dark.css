@@ -256,10 +256,6 @@
     -fx-background-color: #444444;
 }
 
-.titled-pane {
-    -fx-base: #333333;
-}
-
 .list-view {
     -fx-control-inner-background: #444444;
 }

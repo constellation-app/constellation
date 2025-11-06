@@ -227,8 +227,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 if (allOccurrences) {
                     final String[] substrings = Arrays.stream(identifier.split(character))
                             .filter(value
-                                    -> value != null && value.length() > 0
-                            )
+                                    -> value != null && !value.isEmpty()                            )
                             .toArray(size -> new String[size]);
                     
                     if (substrings.length <= 0) {
@@ -340,7 +339,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 final int sourceVertex = graph.getTransactionSourceVertex(originalTransactionId);
                 final int destinationVertex = graph.getTransactionDestinationVertex(originalTransactionId);
                 int newTransactionId = 0;
-                final Boolean directed = graph.getBooleanValue(transactionDirectedAttribute, originalTransactionId);
+                final boolean directed = graph.getBooleanValue(transactionDirectedAttribute, originalTransactionId);
 
                 if (sourceVertex == selectedNode && destinationVertex == selectedNode) {
                     newTransactionId = graph.addTransaction(newVertexId, newVertexId, directed);
@@ -348,8 +347,6 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                     newTransactionId = graph.addTransaction(newVertexId, destinationVertex, directed);
                 } else if (destinationVertex == selectedNode) {
                     newTransactionId = graph.addTransaction(sourceVertex, newVertexId, directed);
-                } else {
-                    // Do nothing
                 }
 
                 //Loops through all the transaction attributes and copy them to the new transaction

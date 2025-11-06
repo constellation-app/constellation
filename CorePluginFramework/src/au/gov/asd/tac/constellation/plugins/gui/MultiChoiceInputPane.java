@@ -66,15 +66,27 @@ public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoicePa
 
     @Override
     public PluginParameterListener getPluginParameterListener() {
-        return (final PluginParameter<?> parameter, final ParameterChange change) -> Platform.runLater(() -> {
+        return (final PluginParameter<?> param, final ParameterChange change) -> Platform.runLater(() -> {
             @SuppressWarnings("unchecked") //mcPluginParameter is a MultiChoiceParameter
-            final PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) parameter;
+            final PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) param;
             switch (change) {
                 case VALUE -> {
-                    // Don't change the value if it isn't necessary.
-                    final List<ParameterValue> selection = getFieldValue();
-                    if (!selection.equals(MultiChoiceParameterType.getChoicesData(mcPluginParameter))){
-                        setFieldValue(selection);
+                    final List<ParameterValue> paramOptions = MultiChoiceParameterType.getOptionsData(mcPluginParameter);
+                    if (!((MultiChoiceInput) input).getOptions().equals(paramOptions)) {
+                        ((MultiChoiceInput) input).setOptions(paramOptions);
+                        final List<ParameterValue> choicesData = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter);
+                        // Only keep the value if it's in the new choices.
+                        if (paramOptions.stream().anyMatch(choicesData::contains)) {
+                            setFieldValue((List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter));
+                        } else {
+                            setFieldValue(null);
+                        }
+                    } else {
+                        // Don't change the value if it isn't necessary.
+                        final List<ParameterValue> selection = getFieldValue();
+                        if (!selection.equals(MultiChoiceParameterType.getChoicesData(mcPluginParameter))){
+                            setFieldValue(selection);
+                        }
                     }
                 }
                 case PROPERTY -> {

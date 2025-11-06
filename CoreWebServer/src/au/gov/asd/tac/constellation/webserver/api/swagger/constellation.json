@@ -3,11 +3,18 @@
     "info": {
         "title": "CONSTELLATION REST Services",
         "description": "<p>A REST API for CONSTELLATION.</p><p>The <span style=\"font-family:monospace\">X-CONSTELLATION-SECRET</span> value is required for all REST API endpoints. It can be found in <span style=\"font-family:monospace\">$HOME/.ipython/rest.json</span> after the REST server has been started.",
-        "version": "2.0.0"
+        "version": "(under development)"
     },
     "paths": {      
     },
-    "components":{        
+    "components":{
+        "securitySchemes": {
+            "ConstellationSecret": {
+                "type": "apiKey",
+                "name": "X-CONSTELLATION-SECRET",
+                "in": "header"
+            }
+        },
         "examples":{
             "runPluginExample": {
                 "request": {

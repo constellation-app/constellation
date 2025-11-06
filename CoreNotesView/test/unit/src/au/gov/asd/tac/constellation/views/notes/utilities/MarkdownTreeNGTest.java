@@ -126,7 +126,6 @@ public class MarkdownTreeNGTest {
         instance.parse();
 
         root = instance.getRoot();
-        //assertEquals(root.getChildren().size(), 3);
         assertTrue(getTypeString(root.getChildren().get(0).getType()).equals("ITALIC"));
         assertTrue(getTypeString(root.getChildren().get(1).getType()).equals("BOLD"));
         assertTrue(getTypeString(root.getChildren().get(2).getType()).equals("STRIKETHROUGH"));

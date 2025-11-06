@@ -150,10 +150,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version3_3() {
-        String minimum_Version = "3.3";
+        String minimumVersion = "3.3";
         String current = "3.3";
         boolean expResult = true;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_Version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 

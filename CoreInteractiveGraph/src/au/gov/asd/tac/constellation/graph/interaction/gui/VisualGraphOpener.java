@@ -365,6 +365,8 @@ public final class VisualGraphOpener extends GraphOpener {
             if (gdo.getPrimaryFile().getPath() != null) {
                 openingGraphs.remove(Paths.get(gdo.getPrimaryFile().getPath()));
             }
+            // lock the file after opening
+            gdo.lockFile();
         }
     }
 

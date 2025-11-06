@@ -105,7 +105,7 @@ public class DataAccessPaneNGTest {
     public void init() {
         assertSame(dataAccessPane.getParentComponent(), dataAccessViewTopComponent);
 
-        assertNotNull(dataAccessPane.getOptionsMenuBar());
+        assertNotNull(dataAccessPane.getWorkflowOptionsMenuBar());
         assertNotNull(dataAccessPane.getButtonToolbar());
 
         assertNotNull(dataAccessPane.getSearchPluginTextField());
@@ -173,7 +173,7 @@ public class DataAccessPaneNGTest {
 
         assertEquals(vbox.getChildren().size(), 4);
 
-        assertSame(vbox.getChildren().get(0), dataAccessPane.getOptionsMenuBar().getMenuBar());
+        assertSame(vbox.getChildren().get(0), dataAccessPane.getWorkflowOptionsMenuBar().getMenuBar());
         assertSame(vbox.getChildren().get(1), dataAccessPane.getSearchPluginTextField());
         assertSame(vbox.getChildren().get(2), dataAccessPane.getDataAccessTabPane().getTabPane());
         assertSame(vbox.getChildren().get(3), dataAccessPane.getButtonToolbar().getRabRegionExectueHBoxBottom());
@@ -195,20 +195,20 @@ public class DataAccessPaneNGTest {
         final OptionsMenuBar mockOptionsMenuBar = mock(OptionsMenuBar.class);
         final MenuBar mockMenuBar = mock(MenuBar.class);
         when(dataAccessPane.getButtonToolbar()).thenReturn(mockButtonToolbar);
-        when(dataAccessPane.getOptionsMenuBar()).thenReturn(mockOptionsMenuBar);
+        when(dataAccessPane.getWorkflowOptionsMenuBar()).thenReturn(mockOptionsMenuBar);
         when(mockOptionsMenuBar.getMenuBar()).thenReturn(mockMenuBar);
 
         // Shrink the Pane
         dataAccessPane.resize(400, 500);
 
         verify(mockButtonToolbar).handleShrinkingPane();
-        verify(mockMenuBar).setMinHeight(60);
+        verify(mockMenuBar).setPrefHeight(60);
 
         // Grow the Pane
         dataAccessPane.resize(500, 500);
 
         verify(mockButtonToolbar).handleGrowingPane();
-        verify(mockMenuBar).setMinHeight(36);
+        verify(mockMenuBar).setPrefHeight(60);
     }
 
     @Test
