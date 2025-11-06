@@ -86,7 +86,6 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
         @Override
         protected Node createEditorControls() {
             final Label nameLabel = new Label("Type Name:");
-            final VBox nameBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, nameLabel, nameText);
             nameText = new TextField();
             nameText.textProperty().addListener(ev -> {
                 if (!selectionIsActive) {
@@ -94,6 +93,7 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
                 }
                 update();
             });
+            final VBox nameBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, nameLabel, nameText);
             
             // get all types supported by the current schema
             final List<SchemaTransactionType> types = new ArrayList<>();
