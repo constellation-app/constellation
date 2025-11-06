@@ -28,8 +28,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class SelectNamedSelectionPanel extends JPanel {
 
-    public static final int USE_CURRENTLY_SELECTED = -1;
-    public static final int NO_OPTION_SELECTED = -2;
+    public static final int NO_OPTION_SELECTED = -1;
+    public static final int USE_CURRENTLY_SELECTED = -2;
 
     private final List<NamedSelection> namedSelections;
 
@@ -67,8 +67,8 @@ public class SelectNamedSelectionPanel extends JPanel {
     }
 
     /**
-     * @return the ID of the chosen Named Selection, if one was chosen. Otherwise, it will return: <b>-1</b> if the if
-     * the "Use Currently Selected" option is chosen OR it will return <b>-2</b> if no option was selected.
+     * @return the ID of the chosen Named Selection, if one was chosen. Otherwise, it will return: <b>USE_CURRENTLY_SELECTED</b> if the if
+     * the "Use Currently Selected" option is chosen OR it will return <b>NO_OPTION_SELECTED</b> if no option was selected.
      */
     public int getNamedSelectionId() {
         if (useSelectedElementsRadioButton.isSelected()) {
