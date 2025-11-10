@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
-import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -56,7 +55,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import org.openide.awt.NotificationDisplayer;
-import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
