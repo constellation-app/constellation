@@ -21,14 +21,14 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.collections.api.block.comparator.primitive.IntComparator;
 import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
@@ -93,13 +93,13 @@ public final class SpanningTree {
 
         // Get a list of all links sorted by weight.
         final int linkCount = wg.getLinkCount();
-        final ArrayList<Integer> links = new ArrayList<>(linkCount);
+        final MutableIntList links = new IntArrayList(linkCount);
         for (int position = 0; position < linkCount; position++) {
             final int linkId = wg.getLink(position);
             links.add(linkId);
         }
-
-        Collections.sort(links, new LinkSorter(wg, isMinimal));
+        
+        links.sortThis(new LinkSorter(wg, isMinimal));
 
         // Put each vertex in its own tree (where a tree is conveniently named after its root.
         final Map<Integer, MutableIntSet> treeVxs = new HashMap<>();
@@ -133,7 +133,7 @@ public final class SpanningTree {
 
         // Iterate through the sorted links, looking for vertices in different trees.
         final MutableIntSet spanningLinks = new IntHashSet();
-        for (final Integer linkId : links) {
+        links.forEach(linkId -> {
             final int vx0Id = wg.getLinkLowVertex(linkId);
             final int vx1Id = wg.getLinkHighVertex(linkId);
             final int tree1Name = vxTrees[vx0Id];
@@ -151,7 +151,7 @@ public final class SpanningTree {
                 final int tvx1Id = origVxToTree[vx1Id];
                 tree.addTransaction(tvx0Id, tvx1Id, false);
             }
-        }
+        });
 
         // Make sure we have all of the vertices.
         assert tree.getVertexCount() == wg.getVertexCount();
@@ -215,7 +215,7 @@ public final class SpanningTree {
         }
     }
 
-    private static class LinkSorter implements Comparator<Integer>, Serializable {
+    private static class LinkSorter implements IntComparator, Serializable {
 
         private final GraphWriteMethods wg;
         private final int comp;
@@ -226,7 +226,7 @@ public final class SpanningTree {
         }
 
         @Override
-        public int compare(final Integer link0Id, final Integer link1Id) {
+        public int compare(int link0Id, int link1Id) {
             final int weight0 = wg.getLinkTransactionCount(link0Id);
             final int weight1 = wg.getLinkTransactionCount(link1Id);
 

@@ -169,7 +169,8 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
                 int index = 0;
                 final Map<Integer, ConstellationColor> colorMap = new HashMap<>();
                 final ConstellationColor[] colorPalette = ConstellationColor.createPalette(numberOfClusters);
-                for (final IntIterator iter  = clusterNumbers.intIterator(); iter.hasNext();) {
+                final IntIterator iter  = clusterNumbers.intIterator();
+                while (iter.hasNext()) {
                     final int clusterNumber = iter.next();
                     colorMap.put(clusterNumber, colorPalette[index]);
                     index++;

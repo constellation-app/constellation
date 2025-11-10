@@ -19,8 +19,8 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  *
@@ -77,7 +77,7 @@ public class ProductBuilder extends GraphBuilder {
         }
 
         // Used to store transactions as they are calculated
-        final List<Integer> transactionsList = new ArrayList<>();
+        final MutableIntList transactionsList = new IntArrayList();
 
         // Iterate through each vertex in g1
         for (int i = 0; i < g1Vertices.length; i++) {
@@ -174,17 +174,11 @@ public class ProductBuilder extends GraphBuilder {
                 }
             }
         }
-
-        final int[] transactions = new int[transactionsList.size()];
-        int currentTrans = 0;
-        for (final int transID : transactionsList) {
-            transactions[currentTrans++] = transID;
-        }
-
-        return new ProductBuilder(graph, leftGraphs, rightGraphs, transactions);
+        
+        return new ProductBuilder(graph, leftGraphs, rightGraphs, transactionsList.toArray());
     }
 
-    private static void addLinkProduct(final GraphWriteMethods graph, final GraphReadMethods g1, final GraphReadMethods g2, final List<Integer> transactions, final int[][] rightGraphs, final int[] g1Vertices, final int[] g2Vertices, final int x, final int y, final int x2, final int y2, final boolean g1Counts, final boolean g2Counts) {
+    private static void addLinkProduct(final GraphWriteMethods graph, final GraphReadMethods g1, final GraphReadMethods g2, final MutableIntList transactions, final int[][] rightGraphs, final int[] g1Vertices, final int[] g2Vertices, final int x, final int y, final int x2, final int y2, final boolean g1Counts, final boolean g2Counts) {
         // we only consider neighbour relations from a vertex of lower index to a vertex of higher index
         if (g1Vertices[x2] < g1Vertices[x] || g2Vertices[y2] < g1Vertices[y]) {
             return;

@@ -48,6 +48,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.Lookup;
 
 /**
@@ -119,9 +121,9 @@ public class ColumnVisibilityContextMenu {
         showDefaultColumnsMenu = createCustomMenu(DEFAULT_COLUMNS, e -> {
             final TableDefaultColumns tableDefaultColumnsProvider = Lookup.getDefault().lookup(TableDefaultColumns.class);
             
-            final List<Integer> ids = tableDefaultColumnsProvider.getDefaultAttributes(getTableViewTopComponent().getCurrentGraph()).stream()
-                    .map(GraphAttribute::getId)
-                    .collect(Collectors.toList());
+            final MutableIntList ids = new IntArrayList(tableDefaultColumnsProvider.getDefaultAttributes(getTableViewTopComponent().getCurrentGraph()).stream()
+                    .mapToInt(GraphAttribute::getId)
+                    .toArray());
 
             getActiveTableReference().updateVisibleColumns(
                     getTableViewTopComponent().getCurrentGraph(),

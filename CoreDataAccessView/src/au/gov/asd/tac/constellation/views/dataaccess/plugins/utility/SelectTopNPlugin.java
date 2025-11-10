@@ -267,8 +267,9 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                 ), 
                 true, parameters, selectedNodes.size());
         
-        // Calculate the Top N for Selected Nodes 
-        for (IntIterator iter = selectedNodes.intIterator(); iter.hasNext();) {
+        // Calculate the Top N for Selected Nodes
+        final IntIterator iter = selectedNodes.intIterator();
+        while (iter.hasNext()) {
             final int vxId = iter.next();
             final String label = graph.getStringValue(vertexLabelAttribute, vxId);
             final Map<Integer, Integer> occurrences = new HashMap<>();

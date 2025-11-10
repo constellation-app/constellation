@@ -405,8 +405,7 @@ public class TestableGraphBuilder {
         };
         
         // Build the Verticies
-        for (int id = 0; id < 17 ; id++){
-            
+        for (int id = 0; id < 17 ; id++){            
             vertexIds.add(gwm.addVertex(id));    
                       
             final int shell = (int) Math.ceil(id / 8F);

@@ -114,7 +114,8 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
             }
 
             // Remove unused attributes found in the curent element
-            for (final IntIterator iter = nullSet.intIterator(); iter.hasNext();) {
+            final IntIterator iter = nullSet.intIterator();
+            while (iter.hasNext()) {
                 final int attribute = iter.next();
                 removedAttributeCount++;
                 interaction.setProgress(currentProcessStep, 

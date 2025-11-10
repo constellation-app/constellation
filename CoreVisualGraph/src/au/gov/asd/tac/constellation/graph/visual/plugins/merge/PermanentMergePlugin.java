@@ -33,12 +33,12 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
@@ -164,7 +164,7 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
             transactionAttributes.add(wg.getAttribute(GraphElementType.TRANSACTION, i));
         }
 
-        final Set<Integer> usedNodes = new HashSet<>();
+        final MutableIntSet usedNodes = new IntHashSet();
         for (final Integer selectedVxId : selections) {
             if (!wg.vertexExists(selectedVxId)) {
                 continue;

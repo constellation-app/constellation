@@ -245,7 +245,7 @@ public class PathScoringUtilities {
         final BitSet turn = new BitSet(vxCount);
         final BitSet newUpdate = new BitSet(vxCount);
 
-        final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
+        final MutableIntList updatedVertexIndexArray = new IntArrayList();
 
         // initialising variables
         for (int vxPosition = 0; vxPosition < vxCount; vxPosition++) {
@@ -351,7 +351,7 @@ public class PathScoringUtilities {
         final BitSet newUpdate = new BitSet(vertexCount);
         final BitSet turn = new BitSet(vertexCount);
 
-        final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
+        final MutableIntList updatedVertexIndexArray = new IntArrayList();
 
         // initialising variables
         for (int vxPosition = 0; vxPosition < vertexCount; vxPosition++) {
@@ -788,7 +788,7 @@ public class PathScoringUtilities {
         }
     }
 
-    private static void updateAveragePathScoresUndirected(final ArrayList<Float> distances, final float[] scores, final BitSet turn, final BitSet[] sendBuffer, final ArrayList<Integer> updateVertexArray, final GraphReadMethods graph) {
+    private static void updateAveragePathScoresUndirected(final ArrayList<Float> distances, final float[] scores, final BitSet turn, final BitSet[] sendBuffer, final MutableIntList updateVertexArray, final GraphReadMethods graph) {
         // for each node that has a message in transit, update its eccentricity
         for (int vxPos = turn.nextSetBit(0); vxPos >= 0; vxPos = turn.nextSetBit(vxPos + 1)) {
             int vxId = graph.getVertex(vxPos);

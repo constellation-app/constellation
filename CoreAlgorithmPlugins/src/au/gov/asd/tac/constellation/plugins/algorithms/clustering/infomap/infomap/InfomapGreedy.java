@@ -454,7 +454,7 @@ public abstract class InfomapGreedy extends InfomapBase {
                 // Update empty module vector.
                 if (moduleMembers[newM] == 0) {
                     // Remove last element.
-                    emptyModules.remove(emptyModules.size() - 1);
+                    emptyModules.removeAtIndex(emptyModules.size() - 1);
                 }
 
                 if (moduleMembers[oldM] == 1) {
@@ -646,7 +646,7 @@ public abstract class InfomapGreedy extends InfomapBase {
                 final int bestModuleIndex = bestDeltaModule.getModule();
                 // Update empty module vector.
                 if (moduleMembers[bestModuleIndex] == 0) {
-                    emptyModules.remove(emptyModules.size() - 1);
+                    emptyModules.removeAtIndex(emptyModules.size() - 1);
                 }
                 if (moduleMembers[current.getIndex()] == 1) {
                     emptyModules.add(current.getIndex());
