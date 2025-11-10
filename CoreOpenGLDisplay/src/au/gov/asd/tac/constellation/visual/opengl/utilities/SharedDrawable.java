@@ -156,8 +156,15 @@ public final class SharedDrawable {
             LOGGER.log(Level.INFO, "No glyph textures to export");
         }
     }
+    
+    
+    // initilises the gl profile (whihc can take considerable amount of time).
+    // not necessary to call before using glprofile
+     public static synchronized void initGLProfile() {
+        getGLProfile();
+    }
 
-    public static GLProfile getGLProfile() {
+    public static synchronized GLProfile getGLProfile() {
         final long startTime = System.currentTimeMillis();
         final GLProfile glProfile = GLProfile.get(GLProfile.GL3);
         final long endTime = System.currentTimeMillis();

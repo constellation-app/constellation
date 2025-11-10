@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.log.ConstellationLogFormatter;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -51,8 +52,8 @@ public class Startup implements Runnable {
     private static final String VERSION = "(under development)";
 
     /**
-     * This is the system property that is set to true in order to make the AWT
-     * thread run in headless mode for tests, etc.
+     * This is the system property that is set to true in order to make the AWT thread run in headless mode for tests,
+     * etc.
      */
     private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
 
@@ -68,23 +69,28 @@ public class Startup implements Runnable {
                 handler.setFormatter(new ConstellationLogFormatter());
             }
         }
+        
+        final Thread thread = new Thread(() -> {
+            SharedDrawable.initGLProfile();
+        });
+        thread.start();
 
         ConstellationSecurityManager.startSecurityLater(null);
-        
+
         // only process for quicksearch and if fontsize is customised                
         if (UIManager.get("customFontSize") != null) {
             final List<? extends Action> actions = Utilities.actionsForPath("Actions/Edit");
             for (final Action action : actions) {
                 if (action.getClass().getName().toLowerCase().contains("quicksearchaction")) {
                     final Component toolbarPresenter = ((Presenter.Toolbar) action).getToolbarPresenter();
-                    for (final Component c : ((Container)toolbarPresenter).getComponents()) {
+                    for (final Component c : ((Container) toolbarPresenter).getComponents()) {
                         processComponentTree(c);
                     }
                     break;
                 }
             }
         }
-        
+
         // application environment
         final String environment = System.getProperty(SYSTEM_ENVIRONMENT);
         final String name = environment != null
@@ -93,7 +99,7 @@ public class Startup implements Runnable {
 
         // We only want to run this if headless is NOT set to true
         if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
-            ConstellationLAFSettings.applyTabColorSettings();        
+            ConstellationLAFSettings.applyTabColorSettings();
             // update the main window title with the version number
             WindowManager.getDefault().invokeWhenUIReady(() -> {
                 final JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
@@ -105,28 +111,38 @@ public class Startup implements Runnable {
         FontUtilities.initialiseOutputFontPreferenceOnFirstUse();
         FontUtilities.initialiseApplicationFontPreferenceOnFirstUse();
 
-        ProxyUtilities.setProxySelector(null);
+        ProxyUtilities.setProxySelector(null); 
     }
 
     /**
      * Traverse the component tree to find the right source to set the size.
+     *
      * @param source component to traverse.
      */
     public void processComponentTree(final Component source) {
         if (source instanceof JScrollPane jsp) {
             final Dimension origSize = jsp.getSize();
             final int customFontSize = (int) UIManager.get("customFontSize");
-            final Dimension newDimension = new Dimension(origSize.width + (customFontSize/2), 19 * customFontSize / 12);
-            
+            final Dimension newDimension = new Dimension(origSize.width + (customFontSize / 2), 19 * customFontSize / 12);
+
             jsp.setMinimumSize(newDimension);
             jsp.setPreferredSize(newDimension);
-            jsp.getViewport().setPreferredSize(newDimension);            
+            jsp.getViewport().setPreferredSize(newDimension);
         }
         // traverse the component tree
         if (source instanceof Container sc) {
             for (final Component c : sc.getComponents()) {
                 processComponentTree(c);
             }
-        }   
+        }
     }
+
+//    public static synchronized GLProfile getGLProfile() {
+//        final long startTime = System.currentTimeMillis();
+//        final GLProfile glProfile = GLProfile.get(GLProfile.GL3);
+//        final long endTime = System.currentTimeMillis();
+//        LOGGER.log(Level.INFO, "Took {0} seconds to retrieve a GL3 profile", (endTime - startTime) / 1000);
+//
+//        return glProfile;
+//    }
 }
