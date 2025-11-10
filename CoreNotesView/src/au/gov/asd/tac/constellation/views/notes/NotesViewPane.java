@@ -655,7 +655,7 @@ public class NotesViewPane extends BorderPane {
                             notesToRender.add(entry);
                         }
                     });
-                };
+                }
 
             });
         }

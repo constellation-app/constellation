@@ -143,9 +143,7 @@ public final class SpanningTree {
                 final MutableIntSet s2 = treeVxs.get(tree2Name);
                 treeVxs.remove(tree2Name);
                 s1.addAll(s2);
-                s2.forEach(vx2 -> {
-                    vxTrees[vx2] = tree1Name;
-                });
+                s2.forEach(vx2 -> vxTrees[vx2] = tree1Name);
                 spanningLinks.add(linkId);
                 final int tvx0Id = origVxToTree[vx0Id];
                 final int tvx1Id = origVxToTree[vx1Id];
@@ -215,7 +213,7 @@ public final class SpanningTree {
         }
     }
 
-    private static class LinkSorter implements IntComparator, Serializable {
+    private static class LinkSorter implements IntComparator {
 
         private final GraphWriteMethods wg;
         private final int comp;

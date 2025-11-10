@@ -208,9 +208,7 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
 
                 try {
                     // Copy attributes from old to new transaction.
-                    transactionAttributes.forEach(attrId -> {
-                        wg.setObjectValue(attrId, newTxId, wg.getObjectValue(attrId, txId));
-                    });
+                    transactionAttributes.forEach(attrId -> wg.setObjectValue(attrId, newTxId, wg.getObjectValue(attrId, txId)));
 
                     // Don't validate the transaction key here.
                     // The transaction key includes the src+dst vertex keys. The new merged vertex probably has the same keys as

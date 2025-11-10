@@ -155,7 +155,7 @@ public abstract class AbstractTree {
         }
 
         // ...and colliders at this level.
-        objects.forEach(object -> colliders.add(object));
+        objects.forEach(colliders::add);
 
         return colliders;
     }

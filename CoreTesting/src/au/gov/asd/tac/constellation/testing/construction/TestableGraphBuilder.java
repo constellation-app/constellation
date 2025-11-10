@@ -499,11 +499,7 @@ public class TestableGraphBuilder {
     
     public void withLinearTransactions(final GraphWriteMethods gwm) {
         vertexIds.forEach(vertex -> {
-            if (vertex % 2 == 0){
-                gwm.addTransaction(vertex, 0, true);
-            } else {
-                gwm.addTransaction(vertex, 0, false);
-            }
+            gwm.addTransaction(vertex, 0, vertex % 2 == 0);
             
             if (vertex == 10){
                 gwm.addTransaction(0, vertex, true);

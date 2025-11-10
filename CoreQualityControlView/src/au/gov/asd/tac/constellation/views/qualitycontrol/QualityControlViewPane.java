@@ -867,9 +867,7 @@ public final class QualityControlViewPane extends BorderPane {
                 }
             }
 
-            vertexIds.forEach(vertexId -> {
-                graph.removeVertex(vertexId);
-            });
+            vertexIds.forEach(graph::removeVertex);
         }
 
         @Override
