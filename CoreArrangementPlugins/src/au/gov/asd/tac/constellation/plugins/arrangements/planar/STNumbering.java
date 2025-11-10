@@ -27,6 +27,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  *
@@ -50,7 +52,7 @@ public class STNumbering {
         public final Set<TreeNode> descendants;
         public final Set<TreeNode> ancestors;
         public final Set<TreeNode> defactoPendants;
-        public final Set<Integer> pendants;
+        public final MutableIntSet pendants;
         private Set<TreeNode> componentNeighours = null;
 
         public TreeNode(final int vxID) {
@@ -68,7 +70,7 @@ public class STNumbering {
                 ancestors.addAll(parent.ancestors);
             }
             defactoPendants = new HashSet<>();
-            pendants = new HashSet<>();
+            pendants = new IntHashSet();
         }
 
         public int getvLow() {
@@ -122,8 +124,8 @@ public class STNumbering {
             final List<TreeNode> stNumberedComponent = new ArrayList<>();
 
             // Set up the old vertices and edges, and the stack for building an st numbering
-            final Set<Integer> oldVxIDs = new HashSet<>();
-            final Set<Integer> oldLxIDs = new HashSet<>();
+            final MutableIntSet oldVxIDs = new IntHashSet();
+            final MutableIntSet oldLxIDs = new IntHashSet();
             final Deque<TreeNode> pathfinderStack = new LinkedList<>();
             oldVxIDs.add(t.vxID);
             pathfinderStack.push(t);
@@ -167,7 +169,7 @@ public class STNumbering {
         }
     }
 
-    private List<TreeNode> pathfinder(final TreeNode v, final TreeNode t, final Set<Integer> oldVxIDs, final Set<Integer> oldLxIDs) {
+    private List<TreeNode> pathfinder(final TreeNode v, final TreeNode t, final MutableIntSet oldVxIDs, final MutableIntSet oldLxIDs) {
         final List<TreeNode> path = new ArrayList<>();
 
         // Check for 'new' cycle edges between v and its ancestors.
@@ -270,7 +272,6 @@ public class STNumbering {
         int nextPreorder = currentPreorder + 1;
         TreeNode n;
         for (int i = 0; i < graph.getVertexNeighbourCount(vxID); i++) {
-
             final int neighbourID = graph.getVertexNeighbour(vxID, i);
 
             // loop case
