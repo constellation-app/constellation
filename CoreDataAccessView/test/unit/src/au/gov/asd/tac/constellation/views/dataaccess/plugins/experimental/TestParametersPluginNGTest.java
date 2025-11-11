@@ -94,7 +94,7 @@ public class TestParametersPluginNGTest {
         final PluginParameters result = instance.createParameters();
 
         // Test correct amount of parameters are added
-        final int expResult = 20;
+        final int expResult = 21;
         assertEquals(result.getParameters().size(), expResult);
 
         // Test correct controllers are added by name
