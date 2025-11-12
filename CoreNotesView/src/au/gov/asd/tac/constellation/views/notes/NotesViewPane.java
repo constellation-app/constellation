@@ -88,6 +88,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.HelpCtx;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -143,8 +145,8 @@ public class NotesViewPane extends BorderPane {
     private static final String FONT_SIZE = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
     private static final String USER_CHOSEN_COLOR = USER_COLOR;
 
-    private final List<Integer> nodesSelected = new ArrayList<>();
-    private final List<Integer> transactionsSelected = new ArrayList<>();
+    private final MutableIntList nodesSelected = new IntArrayList();
+    private final MutableIntList transactionsSelected = new IntArrayList();
     private final List<String> tagsUpdater = new ArrayList<>();
     private ObservableList<String> tagsFiltersList;
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
@@ -326,8 +328,7 @@ public class NotesViewPane extends BorderPane {
                             // Get selected transactions from the graph.
                             final List<Integer> selectedTransactions = new ArrayList<>();
 
-                            final ReadableGraph rg = activeGraph.getReadableGraph();
-                            try {
+                            try (final ReadableGraph rg = activeGraph.getReadableGraph()) {
                                 // Add selected nodes.
                                 final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
                                 if (vxSelectedAttr != Graph.NOT_FOUND) {
@@ -362,8 +363,6 @@ public class NotesViewPane extends BorderPane {
                                     notesViewEntries.get(notesViewEntries.size() - 1).setTransactionsSelected(selectedTransactions);
                                 }
 
-                            } finally {
-                                rg.release();
                             }
                         }
                     }
@@ -644,18 +643,18 @@ public class NotesViewPane extends BorderPane {
                         notesToRender.add(entry);
                     }
                     // Show notes related to the selected nodes.
-                    for (final int node : nodesSelected) {
+                    nodesSelected.forEach(node -> {
                         if (entry.getNodesSelected() != null && entry.getNodesSelected().contains(node) && !notesToRender.contains(entry)) {
                             notesToRender.add(entry);
                         }
-                    }
+                    });
                     // Shows notes related to the selected transactions.
-                    for (final int transaction : transactionsSelected) {
+                    transactionsSelected.forEach(transaction -> {
                         if (entry.getTransactionsSelected() != null && entry.getTransactionsSelected().contains(transaction)
                                 && !notesToRender.contains(entry)) {
                             notesToRender.add(entry);
                         }
-                    }
+                    });
                 }
 
             });
@@ -1146,11 +1145,11 @@ public class NotesViewPane extends BorderPane {
                 noteToEdit.setGraphAttribute(false);
             }
             final List<Integer> originalNodes = noteToEdit.getNodesSelected();
-            for (final int node : nodesSelected) {
+            nodesSelected.forEach(node -> {
                 if (!originalNodes.contains(node)) {
                     originalNodes.add(node);
                 }
-            }
+            });
             noteToEdit.setNodesSelected(originalNodes);
         }
 
@@ -1159,11 +1158,11 @@ public class NotesViewPane extends BorderPane {
                 noteToEdit.setGraphAttribute(false);
             }
             final List<Integer> originalTransactions = noteToEdit.getTransactionsSelected();
-            for (final int transaction : transactionsSelected) {
+            transactionsSelected.forEach(transaction -> {
                 if (!originalTransactions.contains(transaction)) {
                     originalTransactions.add(transaction);
                 }
-            }
+            });
             noteToEdit.setTransactionsSelected(originalTransactions);
         }
     }
@@ -1176,23 +1175,23 @@ public class NotesViewPane extends BorderPane {
 
         if (!nodesSelected.isEmpty()) {
             final List<Integer> originalNodes = noteToEdit.getNodesSelected();
-            for (final int node : nodesSelected) {
+            nodesSelected.forEach(node -> {
                 if (originalNodes.contains(node)) {
                     final int index = originalNodes.indexOf(node);
                     originalNodes.remove(index);
                 }
-            }
+            });
             noteToEdit.setNodesSelected(originalNodes);
         }
 
         if (!transactionsSelected.isEmpty()) {
             final List<Integer> originalTransactions = noteToEdit.getTransactionsSelected();
-            for (final int transaction : transactionsSelected) {
+            transactionsSelected.forEach(transaction -> {
                 if (originalTransactions.contains(transaction)) {
                     final int index = originalTransactions.indexOf(transaction);
                     originalTransactions.remove(index);
                 }
-            }
+            });
             noteToEdit.setTransactionsSelected(originalTransactions);
         }
 

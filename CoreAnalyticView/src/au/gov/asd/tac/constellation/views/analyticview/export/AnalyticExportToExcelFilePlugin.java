@@ -28,17 +28,17 @@ import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * Plugin that exports the provided analytic view results table's rows as an Excel spreadsheet.
@@ -75,10 +75,10 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
             final Sheet sheet = workbook.createSheet(sheetName);
 
             // get the indexes of all visible columns
-            final List<Integer> visibleIndices = table.getColumns().stream()
+            final MutableIntList visibleIndices = new IntArrayList(table.getColumns().stream()
                     .filter(column -> column.isVisible())
-                    .map(column -> table.getColumns().indexOf(column))
-                    .collect(Collectors.toList());
+                    .mapToInt(column -> table.getColumns().indexOf(column))
+                    .toArray());
 
             // iterate through the visible columns and print each ones name to the sheet
             final Row headerRow = sheet.createRow(0);

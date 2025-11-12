@@ -61,6 +61,7 @@
         <dependency org="log4j" name="log4j" rev="1.2.17" />
         <dependency org="org.commonmark" name="commonmark" rev="0.27.0" />
         <dependency org="org.controlsfx" name="controlsfx" rev="11.2.2" />
+        <dependency org="org.eclipse.collections" name="eclipse-collections" rev="13.0.0" />
         <dependency org="org.eclipse.jetty" name="jetty-server" rev="12.1.3" />
         <dependency org="org.eclipse.jetty.ee10" name="jetty-ee10-servlet" rev="12.1.3" />
         <dependency org="org.ejml" name="ejml-simple" rev="0.44.0" />

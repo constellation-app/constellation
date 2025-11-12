@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -44,6 +43,8 @@ import javax.swing.JLabel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * An application for viewing fonts rendered as glyphs in OpenGL.
@@ -386,7 +387,7 @@ public class GlyphsFrame extends JFrame {
         String line = (String) textLines.getModel().getSelectedItem();
         final boolean isZalgo = cbZalgo.isSelected();
         if (isZalgo) {
-            final List<Integer> codepoints = new ArrayList<>();
+            final MutableIntList codepoints = new IntArrayList();
             final int length = line.length();
             int offset = 0; 
             while (offset < length) {
@@ -398,7 +399,7 @@ public class GlyphsFrame extends JFrame {
 
                 offset += cc;
             }
-            final int[] cpi = codepoints.stream().mapToInt(i -> i).toArray();
+            final int[] cpi = codepoints.toArray();
             line = new String(cpi, 0, cpi.length);
         }
 

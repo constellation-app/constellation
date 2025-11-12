@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,6 +30,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * A representation of a grouping operation on a graph.
@@ -270,7 +271,9 @@ public final class GraphTaxonomy {
 
         // Add the vertices.
         // TODO: do these need to be sorted?
-        for (final Integer k : getSortedTaxaKeys()) {
+        final MutableIntList sortedKeys = getSortedTaxaKeys();
+        for (int i = 0; i < sortedKeys.size(); i++) {
+            final int k = sortedKeys.get(i);
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
@@ -439,13 +442,13 @@ public final class GraphTaxonomy {
      *
      * @return An ArrayList containing taxa sorted as described above.
      */
-    private ArrayList<Integer> getSortedTaxaKeys() {
-        final ArrayList<Integer> keys = new ArrayList<>(taxa.size());
+    private MutableIntList getSortedTaxaKeys() {
+        final MutableIntList keys = new IntArrayList(taxa.size());
         for (final Integer k : taxa.keySet()) {
             keys.add(k);
         }
 
-        Collections.sort(keys, (final Integer key1, final Integer key2) -> {
+        keys.sortThis((final int key1, final int key2) -> {
             if (key1 == singletonKey) {
                 return -1;
             } else if (key2 == singletonKey) {

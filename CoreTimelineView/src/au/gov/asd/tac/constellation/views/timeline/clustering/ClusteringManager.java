@@ -38,6 +38,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  * Clustering Manager
@@ -281,8 +283,8 @@ public class ClusteringManager {
                 elementsToUnhide = null;
                 dimOrHideTree(lowerTimeExtent, upperTimeExtent, exclusionState);
 
-                final Set<Integer> transactionsToUndim = new HashSet<>();
-                final Set<Integer> transactionsToUnhide = new HashSet<>();
+                final MutableIntSet transactionsToUndim = new IntHashSet();
+                final MutableIntSet transactionsToUnhide = new IntHashSet();
 
                 undimmedVerticesOnGraph.clear();
                 unhiddenVerticesOnGraph.clear();

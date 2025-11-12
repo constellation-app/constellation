@@ -74,6 +74,8 @@ import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -164,7 +166,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     // Quick and dirty way of mapping existing nodeid + layer number to new nodeid.
     private final Map<String, Integer> nodeDups = new HashMap<>();
-    private final Map<Float, List<Integer>> transactionLayers = new HashMap<>();
+    private final Map<Float, MutableIntList> transactionLayers = new HashMap<>();
     // Map nodeId to a list of layer numbers.
     private final Map<Integer, BitSet> nodeIdToLayers = new HashMap<>();
     private Map<Integer, Integer> srcVxMap = new HashMap<>();
@@ -388,16 +390,17 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             float z = 0;
             final float step = getWidth(wgcopy) / values.size();
             for (final Entry<Integer, List<Float>> entry : remappedLayers.entrySet()) {
-                for (final Entry<Float, List<Integer>> currentLayer : transactionLayers.entrySet()) {
+                for (final Entry<Float, MutableIntList> currentLayer : transactionLayers.entrySet()) {
                     if (entry.getValue().contains(currentLayer.getKey())) {
-                        for (final int txId : currentLayer.getValue()) {
+                        for (int i = 0; i < currentLayer.getValue().size(); i++) {
                             final float origLayer = currentLayer.getKey();
                             int newLayer = 0;
                             if (entry.getValue().contains(origLayer)) {
                                 //Overwrite value
                                 newLayer = entry.getKey();
                             }
-
+                            
+                            final int txId = currentLayer.getValue().get(i);
                             final LayerName dn = new LayerName(newLayer, displayNames.get(newLayer));
                             wgcopy.setObjectValue(timeLayerAttr, txId, dn);
 
@@ -433,7 +436,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             // By definition, the duplicates will have transactions between them, including the original layer
             // (because we just deleted transactions that belong in different layers, leaving only the transactions
             // that belong in the original layer).
-            final List<Integer> vertices = new ArrayList<>();
+            final MutableIntList vertices = new IntArrayList();
             for (int position = 0; position < wgcopy.getVertexCount(); position++) {
                 final int vertexId = wgcopy.getVertex(position);
                 final int nTx = wgcopy.getVertexTransactionCount(vertexId);
@@ -442,7 +445,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 }
             }
 
-            vertices.stream().forEach(wgcopy::removeVertex);
+            vertices.forEach(wgcopy::removeVertex);
 
             if (drawTxGuides) {
                 interaction.setProgress(5, 6, "Draw guide lines", false);
@@ -502,7 +505,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 final float layer = (float) (date - d1t) / intervalLength;
 
                 if (!transactionLayers.containsKey(layer)) {
-                    transactionLayers.put(layer, new ArrayList<>());
+                    transactionLayers.put(layer, new IntArrayList());
                 }
 
                 transactionLayers.get(layer).add(txId);
@@ -579,7 +582,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 if (transactionLayers.containsKey(layer)) {
                     transactionLayers.get(layer).add(txId);
                 } else {
-                    final List<Integer> transactionIds = new ArrayList<>();
+                    final MutableIntList transactionIds = new IntArrayList();
                     transactionIds.add(txId);
                     transactionLayers.put(layer, transactionIds);
                 }
@@ -627,7 +630,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         for (final Entry<Integer, List<Float>> entry : remappedLayers.entrySet()) {
             final StringBuilder sb = new StringBuilder();
             for (final float layer : entry.getValue()) {
-                for (int txId : transactionLayers.get(layer)) {
+                for (int i = 0; i < transactionLayers.get(layer).size(); i++) {
+                    final int txId = transactionLayers.get(layer).get(i);
                     final Calendar cal = new GregorianCalendar();
                     final long date = wgcopy.getLongValue(dtAttr, txId);
                     cal.setTimeInMillis(date);

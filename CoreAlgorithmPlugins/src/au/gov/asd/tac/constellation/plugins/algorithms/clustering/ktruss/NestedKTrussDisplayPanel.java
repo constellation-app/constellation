@@ -30,15 +30,15 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  *
@@ -63,14 +63,14 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     private int totalNeededHeight;
     private boolean expandHeight = false;
     private static final int PREFERRED_HEIGHT = 500;
-    private final Set<Integer> selectedRectangles;
-    private Map<Integer, List<Integer>> childMapper;
+    private final MutableIntSet selectedRectangles;
+    private Map<Integer, MutableIntList> childMapper;
 
     public NestedKTrussDisplayPanel(final KTrussState state, final Graph graph) {
         this.state = state;
         this.graph = graph;
         rectangleOffset = RECTANGLE_WIDTH / 2;
-        selectedRectangles = new HashSet<>();
+        selectedRectangles = new IntHashSet();
         addMouseListener(this);
     }
 
@@ -143,16 +143,16 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
         for (int i = state.getNumComponents() - 1; i >= 0; i--) {
             // Get the parent (and its list of children) of the current component
             final int parent = state.getComponentParent(i);
-            List<Integer> childList = childMapper.get(parent);
+            MutableIntList childList = childMapper.get(parent);
 
             // These components are not K-trusses.
             if (parent == i) {
                 childMapper.put(i, null);
                 // These components are 3-Trusses with parents that are not K-Trusses.
             } else if (state.getComponentParent(parent) == parent) {
-                List<Integer> selfChildList = childMapper.get(i);
+                MutableIntList selfChildList = childMapper.get(i);
                 if (selfChildList == null) {
-                    selfChildList = new ArrayList<>();
+                    selfChildList = new IntArrayList();
                 }
                 selfChildList.add(i);
                 childMapper.put(i, selfChildList);
@@ -163,7 +163,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
                 // These components are K-Trusses for K > 3.
             } else {
                 if (childList == null) {
-                    childList = new ArrayList<>();
+                    childList = new IntArrayList();
                 }
                 childList.add(i);
                 childMapper.put(parent, childList);
@@ -197,9 +197,8 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
 
         // calculate the rectangle details for each component
         for (int i = 0; i < state.getNumComponents(); i++) {
-
             //If we see a top level graph component which is not a k-truss, give it dummy values of 0 height and x/y positions.
-            final List<Integer> childList = childMapper.get(i);
+            final MutableIntList childList = childMapper.get(i);
             if (childList == null) {
                 if (state.getComponentParent(i) == i) {
                     final int[] rect = {0, 0, 0};
@@ -220,7 +219,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
             }
 
             // Initialise the variables for position and size calculation of the children of the current component
-            final Iterator<Integer> childIter = childList.iterator();
+            final IntIterator childIter = childList.intIterator();
             // The cumulative height of the child column - used to determine the y-position of child components relative to the current component.
             int childColumnHeight = 0;
 
@@ -290,28 +289,28 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
 
     private void removeFromSelection(final int i) {
         selectedRectangles.remove(i);
-        final List<Integer> childList = childMapper.get(i);
+        final MutableIntList childList = childMapper.get(i);
         if (childList == null) {
             return;
         }
-        for (final int child : childList) {
+        childList.forEach(child -> {
             if (child != i) {
                 removeFromSelection(child);
             }
-        }
+        });
     }
 
     private void addToSelection(final int i) {
         selectedRectangles.add(i);
-        final List<Integer> childList = childMapper.get(i);
+        final MutableIntList childList = childMapper.get(i);
         if (childList == null) {
             return;
         }
-        for (final int child : childList) {
+        childList.forEach(child -> {
             if (child != i) {
                 addToSelection(child);
             }
-        }
+        });
     }
 
     private void selectComponent(final int componentNum, final int selectionMode) {
