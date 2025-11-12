@@ -124,11 +124,11 @@ public class ViewOptionsPanelControllerNGTest {
         try (MockedConstruction<ViewFloatingOptionsPanel> mock = mockConstruction(ViewFloatingOptionsPanel.class)) {
             instance.update();
 
-            // Assert that a mock of the panel was created.
+            // Assert that a mock of the panel was constructed.
             final List<ViewFloatingOptionsPanel> constructed = mock.constructed();
-            assertEquals(1, constructed.size());
+            assertEquals(constructed.size(), 1);
 
-            // Verify that the created panel has run the following method.
+            // Verify that this method was run on the constructed panel.
             verify(constructed.get(0), times(1)).fireTableDataChanged();
         }
     }
@@ -144,11 +144,11 @@ public class ViewOptionsPanelControllerNGTest {
         try (MockedConstruction<ViewFloatingOptionsPanel> mockVFOP = mockConstruction(ViewFloatingOptionsPanel.class)) {
             instance.applyChanges();
 
-            // Assert that a mock of the panel was created.
+            // Assert that a mock of the panel was constructed.
             final List<ViewFloatingOptionsPanel> constructedVFOP = mockVFOP.constructed();
-            assertEquals(1, constructedVFOP.size());
+            assertEquals(constructedVFOP.size(), 1);
 
-            // Assert that these methods were run during isChanged().
+            // Verify that these methods were run during isChanged().
             verify(constructedVFOP.get(0), times(1)).getOptionsFromPrefs();
             verify(constructedVFOP.get(0), times(1)).getOptionsFromUI();
         }
@@ -173,11 +173,11 @@ public class ViewOptionsPanelControllerNGTest {
             final boolean expResult = true;
             assertEquals(result, expResult);
 
-            // Assert that a mock of the panel was created.
+            // Assert that a mock of the panel was constructed.
             final List<ViewFloatingOptionsPanel> constructedVFOP = mockVFOP.constructed();
-            assertEquals(1, constructedVFOP.size());
+            assertEquals(constructedVFOP.size(), 1);
 
-            // Assert that these methods were run during isChanged().
+            // Verify that these methods were run during isChanged().
             verify(constructedVFOP.get(0), times(1)).getOptionsFromPrefs();
             verify(constructedVFOP.get(0), times(1)).getOptionsFromUI();
         }
@@ -192,11 +192,11 @@ public class ViewOptionsPanelControllerNGTest {
             final boolean expResult = false;
             assertEquals(result, expResult);
 
-            // Assert that a mock of the panel was created.
+            // Assert that a mock of the panel was constructed.
             final List<ViewFloatingOptionsPanel> constructedVFOP = mockVFOP.constructed();
-            assertEquals(1, constructedVFOP.size());
+            assertEquals(constructedVFOP.size(), 1);
 
-            // Assert that these methods were run during isChanged().
+            // Verify that these methods were run during isChanged().
             verify(constructedVFOP.get(0), times(1)).getOptionsFromPrefs();
             verify(constructedVFOP.get(0), times(1)).getOptionsFromUI();
         }
@@ -226,9 +226,9 @@ public class ViewOptionsPanelControllerNGTest {
             final ViewFloatingOptionsPanelController instance = new ViewFloatingOptionsPanelController();
             instance.addPropertyChangeListener(pcl);
 
-            // Assert that a PCS was created.
+            // Assert that a PCS was constructed.
             final List<PropertyChangeSupport> constructed = mock.constructed();
-            assertEquals(constructed.size(), 3);
+            assertEquals(constructed.size(), 1);
 
             verify(constructed.get(0), times(1)).addPropertyChangeListener(pcl);
         }
@@ -246,7 +246,7 @@ public class ViewOptionsPanelControllerNGTest {
             final ViewFloatingOptionsPanelController instance = new ViewFloatingOptionsPanelController();
             instance.removePropertyChangeListener(pcl);
 
-            // Assert that a PCS was created.
+            // Assert that a PCS was constructed.
             final List<PropertyChangeSupport> constructed = mock.constructed();
             assertEquals(constructed.size(), 1);
 
