@@ -215,33 +215,27 @@ public class ViewOptionsPanelControllerNGTest {
     }
 
     /**
-     * Test of addPropertyChangeListener method, of class ViewFloatingOptionsPanelController.
+     * Test of addPropertyChangeListener and removePropertyChangeListener methods, of class
+     * ViewFloatingOptionsPanelController.
      */
     @Test
-    public void testAddPropertyChangeListener() {
-        System.out.println("addPropertyChangeListener");
+    public void testAddRemovePropertyChangeListener() {
+        System.out.println("addRemovePropertyChangeListener");
         final PropertyChangeListener pcl = null;
 
+        // Test adding the Property Change Listener.
         try (MockedConstruction<PropertyChangeSupport> mock = mockConstruction(PropertyChangeSupport.class)) {
             final ViewFloatingOptionsPanelController instance = new ViewFloatingOptionsPanelController();
             instance.addPropertyChangeListener(pcl);
 
             // Assert that a PCS was constructed.
             final List<PropertyChangeSupport> constructed = mock.constructed();
-            assertEquals(constructed.size(), 1);
+            assertEquals(constructed.size(), 3);
 
             verify(constructed.get(0), times(1)).addPropertyChangeListener(pcl);
         }
-    }
 
-    /**
-     * Test of removePropertyChangeListener method, of class ViewFloatingOptionsPanelController.
-     */
-    @Test
-    public void testRemovePropertyChangeListener() {
-        System.out.println("removePropertyChangeListener");
-        final PropertyChangeListener pcl = null;
-
+        // Test removing the Property Change Listener.
         try (MockedConstruction<PropertyChangeSupport> mock = mockConstruction(PropertyChangeSupport.class)) {
             final ViewFloatingOptionsPanelController instance = new ViewFloatingOptionsPanelController();
             instance.removePropertyChangeListener(pcl);
