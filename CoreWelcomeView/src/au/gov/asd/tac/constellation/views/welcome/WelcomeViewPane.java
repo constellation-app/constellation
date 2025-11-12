@@ -23,12 +23,13 @@ import static au.gov.asd.tac.constellation.graph.interaction.plugins.io.screensh
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
-import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -53,6 +54,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
+import org.openide.awt.NotificationDisplayer;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
@@ -242,6 +244,14 @@ public class WelcomeViewPane extends BorderPane {
                 //on the button action
                 final String path = fileDetails.get(i).getPath();
                 recentGraphButtons[i].setOnAction(e -> {
+                    if (!(new File(path).isFile())) {
+                        final String msg = String.format("The graph %s does not exist.", path);
+                        NotificationDisplayer.getDefault().notify(
+                                "Recent Files",
+                                UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()),
+                                msg, null);
+                        return;
+                    }
                     OpenFile.open(RecentFiles.convertPath2File(path), -1);
                     saveCurrentDirectory(path);
                 });
