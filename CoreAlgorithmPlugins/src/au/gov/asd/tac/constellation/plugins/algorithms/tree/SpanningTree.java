@@ -224,7 +224,7 @@ public final class SpanningTree {
         }
 
         @Override
-        public int compare(int link0Id, int link1Id) {
+        public int compare(final int link0Id, final int link1Id) {
             final int weight0 = wg.getLinkTransactionCount(link0Id);
             final int weight1 = wg.getLinkTransactionCount(link1Id);
 

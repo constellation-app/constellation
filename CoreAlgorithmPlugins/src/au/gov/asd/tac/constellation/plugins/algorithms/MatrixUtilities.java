@@ -75,10 +75,9 @@ public class MatrixUtilities {
                 }
             }
         } else {
-            updatedVertexIndexArray = new IntArrayList();
-            for (final int updatedVertexIndex : updatedVertexIndexs) {
-                updatedVertexIndexArray.add(updatedVertexIndex);
-            }
+            updatedVertexIndexArray = new IntArrayList(updatedVertexIndexs.stream()
+                    .mapToInt(i -> i)
+                    .toArray());
         }
 
         final int updateVertexCount = updatedVertexIndexArray.size();
@@ -144,10 +143,9 @@ public class MatrixUtilities {
                 }
             }
         } else {
-            updatedVertexIndexArray = new IntArrayList();
-            for (final int updatedVertexIndex : updatedVertexIndexs) {
-                updatedVertexIndexArray.add(updatedVertexIndex);
-            }
+            updatedVertexIndexArray = new IntArrayList(updatedVertexIndexs.stream()
+                    .mapToInt(i -> i)
+                    .toArray());
         }
 
         final int updateVertexCount = updatedVertexIndexArray.size();
