@@ -22,11 +22,12 @@ import java.util.TreeMap;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * The defined views and their floating options for Core.
  *
  * @author sol695510
  */
-@ServiceProvider(service = ViewOptionsProvider.class, position = 1000)
-public class ViewOptionsList extends ViewOptionsProvider {
+@ServiceProvider(service = ViewFloatingOptionsProvider.class, position = 1000)
+public class ViewFloatingOptions extends ViewFloatingOptionsProvider {
 
     @Override
     public final Map<String, Boolean> getViewOptions() {

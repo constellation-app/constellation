@@ -21,15 +21,15 @@ import java.util.TreeMap;
 import org.openide.util.Lookup;
 
 /**
- * Keys used to access View preferences.
+ * Keys used to access view floating preferences.
  *
  * @author sol695510
  */
-public class ViewPreferenceKeys {
+public class ViewFloatingPreferenceKeys {
 
     public static final Map<String, Boolean> getDefaultViewOptions() {
         final Map<String, Boolean> defaultViewOptions = new TreeMap<>();
-        Lookup.getDefault().lookupAll(ViewOptionsProvider.class).forEach(lookup -> defaultViewOptions.putAll(lookup.getViewOptions()));
+        Lookup.getDefault().lookupAll(ViewFloatingOptionsProvider.class).forEach(lookup -> defaultViewOptions.putAll(lookup.getViewOptions()));
         return Collections.unmodifiableMap(defaultViewOptions);
     }
 }

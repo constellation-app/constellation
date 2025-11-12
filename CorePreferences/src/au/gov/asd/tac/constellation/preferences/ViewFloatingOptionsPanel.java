@@ -20,22 +20,21 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import org.openide.util.NbPreferences;
 
 /**
- * UI panel for View options.
+ * UI panel for view floating options.
  *
  * @author sol695510
  */
-public class ViewOptionsPanel extends JPanel {
+public class ViewFloatingOptionsPanel extends JPanel {
 
     private final DefaultTableModel tableModel;
-    private final Preferences prefs = NbPreferences.forModule(ViewPreferenceKeys.class);
-    private final Map<String, Boolean> defaultOptions = ViewPreferenceKeys.getDefaultViewOptions();
+    private final Preferences prefs = NbPreferences.forModule(ViewFloatingPreferenceKeys.class);
+    private final Map<String, Boolean> defaultOptions = ViewFloatingPreferenceKeys.getDefaultViewOptions();
 
-    protected ViewOptionsPanel() {
+    protected ViewFloatingOptionsPanel() {
         tableModel = new DefaultTableModel(new Object[]{"View", "Floating"}, 0) {
             @Override
             public Class getColumnClass(final int column) {
@@ -91,10 +90,6 @@ public class ViewOptionsPanel extends JPanel {
         }
 
         return Collections.unmodifiableMap(optionsFromPrefs);
-    }
-
-    private final JTable getJTable() {
-        return jTable;
     }
 
     /**

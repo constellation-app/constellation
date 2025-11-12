@@ -26,7 +26,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
 /**
- * UI Controller for the View options panel.
+ * UI Controller for the view floating options panel.
  *
  * @author sol695510
  */
@@ -40,16 +40,16 @@ import org.openide.util.NbPreferences;
     "ViewOptions_DisplayName=View",
     "ViewOptions_Keywords=View"
 })
-public class ViewOptionsPanelController extends OptionsPanelController {
+public class ViewFloatingOptionsPanelController extends OptionsPanelController {
 
-    private ViewOptionsPanel panel;
+    private ViewFloatingOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    private final Preferences prefs = NbPreferences.forModule(ViewPreferenceKeys.class);
-    private final Map<String, Boolean> defaultOptions = ViewPreferenceKeys.getDefaultViewOptions();
+    private final Preferences prefs = NbPreferences.forModule(ViewFloatingPreferenceKeys.class);
+    private final Map<String, Boolean> defaultOptions = ViewFloatingPreferenceKeys.getDefaultViewOptions();
 
     @Override
     public void update() {
-        final ViewOptionsPanel viewOptionsPanel = getPanel();
+        final ViewFloatingOptionsPanel viewOptionsPanel = getPanel();
         viewOptionsPanel.fireTableDataChanged();
     }
 
@@ -60,7 +60,7 @@ public class ViewOptionsPanelController extends OptionsPanelController {
 
             if (isChanged()) {
                 pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
-                final ViewOptionsPanel viewOptionsPanel = getPanel();
+                final ViewFloatingOptionsPanel viewOptionsPanel = getPanel();
 
                 for (final String view : defaultOptions.keySet()) {
                     prefs.putBoolean(view, viewOptionsPanel.getOptionsFromUI().get(view));
@@ -81,7 +81,7 @@ public class ViewOptionsPanelController extends OptionsPanelController {
 
     @Override
     public boolean isChanged() {
-        final ViewOptionsPanel viewOptionsPanel = getPanel();
+        final ViewFloatingOptionsPanel viewOptionsPanel = getPanel();
         return !viewOptionsPanel.getOptionsFromUI().equals(viewOptionsPanel.getOptionsFromPrefs());
     }
 
@@ -105,9 +105,9 @@ public class ViewOptionsPanelController extends OptionsPanelController {
         pcs.removePropertyChangeListener(pcl);
     }
 
-    public ViewOptionsPanel getPanel() {
+    public ViewFloatingOptionsPanel getPanel() {
         if (panel == null) {
-            panel = new ViewOptionsPanel();
+            panel = new ViewFloatingOptionsPanel();
         }
 
         return panel;

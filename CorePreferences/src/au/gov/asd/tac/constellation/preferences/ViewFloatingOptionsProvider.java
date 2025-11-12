@@ -18,11 +18,11 @@ package au.gov.asd.tac.constellation.preferences;
 import java.util.Map;
 
 /**
- * Provides views.
+ * Provides views and their floating options.
  *
  * @author sol695510
  */
-public abstract class ViewOptionsProvider {
+public abstract class ViewFloatingOptionsProvider {
 
     public abstract Map<String, Boolean> getViewOptions();
 }
