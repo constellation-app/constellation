@@ -44,7 +44,6 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Level;
@@ -56,6 +55,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.Strings;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -169,7 +170,7 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
     }
 
     private void removeSelectedPlanesActionPerformed(final ActionEvent e) {
-        final List<Integer> toRemove = getSelectedPlanes();
+        final MutableIntList toRemove = getSelectedPlanes();
         if (!toRemove.isEmpty()) {
             final MyListModel model = ((DragDropList) planeList).getModel();
             for (int i = toRemove.size() - 1; i >= 0; i--) {
@@ -181,7 +182,7 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
     }
 
     private void moveToSelectedVerticesActionPerformed(final ActionEvent e) {
-        final List<Integer> selectedPlanes = getSelectedPlanes();
+        final MutableIntList selectedPlanes = getSelectedPlanes();
         if (!selectedPlanes.isEmpty()) {
             final PlanePositionPanel ppp = new PlanePositionPanel();
             final DialogDescriptor dd = new DialogDescriptor(ppp, "Plane position");
@@ -193,7 +194,7 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
     }
 
     private void scaleSelectedPlanesAction(final ActionEvent e) {
-        final List<Integer> selectedPlanes = getSelectedPlanes();
+        final MutableIntList selectedPlanes = getSelectedPlanes();
         if (!selectedPlanes.isEmpty()) {
             final Plane plane;
             try (final ReadableGraph rg = graph.getReadableGraph()) {
@@ -210,8 +211,8 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
         }
     }
 
-    private List<Integer> getSelectedPlanes() {
-        final List<Integer> selected = new ArrayList<>();
+    private MutableIntList getSelectedPlanes() {
+        final MutableIntList selected = new IntArrayList();
         final ListSelectionModel lsm = planeList.getSelectionModel();
         if (lsm.getMinSelectionIndex() != -1) {
             for (int ix = lsm.getMinSelectionIndex(); ix <= lsm.getMaxSelectionIndex(); ix++) {
@@ -532,9 +533,9 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
     @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.DELETE})
     private static class RemovePlanePlugin extends SimpleEditPlugin {
 
-        final List<Integer> toRemove;
+        final MutableIntList toRemove;
 
-        public RemovePlanePlugin(final List<Integer> toRemove) {
+        public RemovePlanePlugin(final MutableIntList toRemove) {
             this.toRemove = toRemove;
         }
 
@@ -566,9 +567,9 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
     private static class SetPlanePositionPlugin extends SimpleEditPlugin {
 
         final PlanePositionPanel ppp;
-        final List<Integer> selectedPlanes;
+        final MutableIntList selectedPlanes;
 
-        public SetPlanePositionPlugin(final PlanePositionPanel ppp, final List<Integer> selectedPlanes) {
+        public SetPlanePositionPlugin(final PlanePositionPanel ppp, final MutableIntList selectedPlanes) {
             this.ppp = ppp;
             this.selectedPlanes = selectedPlanes;
         }
@@ -617,7 +618,8 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
 
                 final PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
                 final PlaneState state = new PlaneState(oldState);
-                for (int ix : selectedPlanes) {
+                for (int i = 0; i < selectedPlanes.get(i); i++) {
+                    final int ix = selectedPlanes.get(i);
                     final Plane plane = state.getPlane(ix);
                     final float[] xyz = ppp.getPosition(centre[BBoxf.X], centre[BBoxf.Y], centre[BBoxf.Z], nradius, plane.getWidth(), plane.getHeight());
                     plane.setX(xyz[0]);
@@ -642,10 +644,10 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
     @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.MODIFY})
     private static class ScalePlanesPlugin extends SimpleEditPlugin {
 
-        final List<Integer> selectedPlanes;
+        final MutableIntList selectedPlanes;
         final float newScale;
 
-        public ScalePlanesPlugin(final List<Integer> selectedPlanes, final float newScale) {
+        public ScalePlanesPlugin(final MutableIntList selectedPlanes, final float newScale) {
             this.selectedPlanes = selectedPlanes;
             this.newScale = newScale;
         }
@@ -663,7 +665,7 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
             }
             final PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
             final PlaneState state = new PlaneState(oldState);
-            for (int ix : selectedPlanes) {
+            selectedPlanes.forEach(ix -> {
                 final Plane plane = state.getPlane(ix);
                 final float centrex = plane.getX() + plane.getWidth() / 2F;
                 final float centrey = plane.getY() + plane.getHeight() / 2F;
@@ -673,7 +675,7 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
                 plane.setY(centrey - h / 2F);
                 plane.setWidth(w);
                 plane.setHeight(h);
-            }
+            });
             wg.setObjectValue(planesAttr, 0, state);
         }
     }

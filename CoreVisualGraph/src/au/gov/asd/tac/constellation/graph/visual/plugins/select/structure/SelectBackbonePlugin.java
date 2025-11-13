@@ -24,9 +24,9 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.IntStream;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -42,7 +42,7 @@ public class SelectBackbonePlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        final List<Integer> selectedNodes = new ArrayList<>();
+        final MutableIntList selectedNodes = new IntArrayList();
         final int selectedNodeAttrId = VisualConcept.VertexAttribute.SELECTED.get(graph);
         final int selectedTransactionAttrId = VisualConcept.TransactionAttribute.SELECTED.get(graph);
 

@@ -33,13 +33,14 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -54,8 +55,8 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
     private static final String THREAD_POOL_NAME = "Default Plugin Environment";
     
-    private static final List<Integer> recentExceptionAuditHashcodes = new ArrayList<>();
-    private static final List<Integer> recentExceptionReportHashcodes = new ArrayList<>();
+    private static final MutableIntList recentExceptionAuditHashcodes = new IntArrayList();
+    private static final MutableIntList recentExceptionReportHashcodes = new IntArrayList();
 
     private final ExecutorService pluginExecutor = ConstellationGlobalThreadPool.getThreadPool().getCachedThreadPool();
 
@@ -418,7 +419,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         }
         recentExceptionAuditHashcodes.add(exceptionHashcode);
         while (recentExceptionAuditHashcodes.size() > 10) {
-            recentExceptionAuditHashcodes.remove(0);
+            recentExceptionAuditHashcodes.removeAtIndex(0);
         }
         return false;
     }
@@ -435,7 +436,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         }
         recentExceptionReportHashcodes.add(exceptionHashcode);
         while (recentExceptionReportHashcodes.size() > 10) {
-            recentExceptionReportHashcodes.remove(0);
+            recentExceptionReportHashcodes.removeAtIndex(0);
         }
         return false;
     }

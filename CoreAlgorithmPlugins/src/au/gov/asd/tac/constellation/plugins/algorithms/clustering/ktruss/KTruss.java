@@ -18,15 +18,15 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * Execute a k-truss action
@@ -57,7 +57,7 @@ public class KTruss {
         private int currentComponentNum;
         // A list of the values of k which caused changes in the graph.
         // That is those values of k for which the graph contained k-1 trusses that were not k-trusses.
-        private final List<Integer> significantClusters = new ArrayList<>();
+        private final MutableIntList significantClusters = new IntArrayList();
 
         // These data structures are used to keep track of the nesting of connected components as the value of k increases.
         // This information is used to display nested k-trusses in the KTrussControllerTopComponent
@@ -110,7 +110,7 @@ public class KTruss {
             // ie. those values of k for which the graph contained k-1 trusses that were not k-trusses.
             final boolean[] extantKTrusses = new boolean[highestK + 2];
             Arrays.fill(extantKTrusses, false);
-            final Iterator<Integer> iter = significantClusters.iterator();
+            final IntIterator iter = significantClusters.intIterator();
             while (iter.hasNext()) {
                 extantKTrusses[iter.next()] = true;
             }
