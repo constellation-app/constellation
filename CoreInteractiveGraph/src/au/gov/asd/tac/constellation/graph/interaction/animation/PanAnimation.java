@@ -30,6 +30,13 @@ import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
  */
 public final class PanAnimation extends Animation {
 
+    /**
+     * @return the step
+     */
+    public int getStep() {
+        return step;
+    }
+
     private static final int STEPS = 24;
 
     private final String name;
@@ -65,8 +72,8 @@ public final class PanAnimation extends Animation {
 
     @Override
     public void animate(final GraphWriteMethods wg) {
-        if (step <= STEPS) {
-            final float t = step / (float) STEPS;
+        if (getStep() <= STEPS) {
+            final float t = getStep() / (float) STEPS;
             final float mix = reflect(t);
 
             camera = new Camera(camera);
