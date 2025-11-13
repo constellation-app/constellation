@@ -158,7 +158,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         commit(description, commitName, false);
     }
     
-    public void commit(final Object description, final String commitName, boolean addToUndo) throws DuplicateKeyException {
+    public void commit(final Object description, final String commitName, final boolean addToUndo) throws DuplicateKeyException {
         if (currentEdit == null || !globalWriteLock.isHeldByCurrentThread()) {
             throw new IllegalMonitorStateException("commit: attempt to unlock write lock, not locked by current thread");
         }
