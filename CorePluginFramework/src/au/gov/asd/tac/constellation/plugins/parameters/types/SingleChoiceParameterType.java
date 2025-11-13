@@ -26,7 +26,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -246,6 +247,14 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
     public static void setEditable(final PluginParameter<?> parameter, boolean editable) {
         parameter.setProperty(EDITABLE, editable);
     }
+    
+    public static void setIcons(final PluginParameter<SingleChoiceParameterValue> parameter, final List<Image> icons) {
+        parameter.getParameterValue().setIcons(icons.stream().map(icon -> new ImageView(icon)).toList());
+    }
+
+    public static List<ImageView> getIcons(final PluginParameter<SingleChoiceParameterValue> parameter) {
+        return parameter.getParameterValue().getIcons();
+    }
 
     /**
      * Constructs a new instance of this type.
@@ -272,6 +281,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         // If it's a nested class, make sure it's a static nested class rather than an inner class,
         // to avoid possible NoSuchMethodExceptions
         private final List<ParameterValue> options;
+        private final List<ImageView> icons;
         private ParameterValue choice;
         private final Class<? extends ParameterValue> innerClass;
 
@@ -281,6 +291,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          */
         public SingleChoiceParameterValue() {
             options = new ArrayList<>();
+            icons = new ArrayList<>();
             choice = null;
             innerClass = StringParameterValue.class;
         }
@@ -294,6 +305,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          */
         public SingleChoiceParameterValue(final Class<? extends ParameterValue> innerClass) {
             options = new ArrayList<>();
+            icons = new ArrayList<>();
             choice = null;
             this.innerClass = innerClass;
         }
@@ -310,6 +322,8 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         public SingleChoiceParameterValue(final SingleChoiceParameterValue sc) {
             options = new ArrayList<>();
             options.addAll(sc.options);
+            icons = new ArrayList<>();
+            icons.addAll(sc.icons);
             choice = sc.choice != null ? sc.choice.copy() : null;
             innerClass = sc.innerClass;
         }
@@ -348,6 +362,26 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
                 this.options.add(doOption);
             }
             choice = null;
+        }
+        
+        /**
+         * Set the collection of icons from a list of InageIcons.
+         *
+         * @param icons A list of ImageIcons to set the collection of icons
+         * from.
+         */
+        public void setIcons(final List<ImageView> icons) {
+            this.icons.clear();
+            this.icons.addAll(icons);
+        }
+
+        /**
+         * Get the collection of options from a list of Strings.
+         *
+         * @return A list of ImageIcons representing the icons.
+         */
+        public List<ImageView> getIcons() {
+            return Collections.unmodifiableList(this.icons);
         }
 
         /**
