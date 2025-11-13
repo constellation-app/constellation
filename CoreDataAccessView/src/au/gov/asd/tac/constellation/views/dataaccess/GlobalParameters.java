@@ -15,21 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginGraphs;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessConcept;
-import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
-import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -59,8 +46,6 @@ public abstract class GlobalParameters {
     private static final Logger LOGGER = Logger.getLogger(GlobalParameters.class.getName());
     
     private static PluginParameters globalParameters = null;
-    
-    private static final String SAVE_STATE_PLUGIN_NAME = "Data Access View: Save State";
 
     /**
      * The global parameters defined by this class.
@@ -109,40 +94,6 @@ public abstract class GlobalParameters {
             globalParametersObjects.stream().forEach(globalParametersObject -> 
                 globalParametersObject.postProcess(globalParameters)
             );
-            
-            for (final Map.Entry<String, PluginParameter<?>> parameterEntry : globalParameters.getParameters().entrySet()) {
-                final PluginParameterListener listener = (final PluginParameter<?> parameter, final ParameterChange change) -> {
-                // Save the current data access view state
-                    PluginExecution.withPlugin(new SimplePlugin(SAVE_STATE_PLUGIN_NAME) {
-                        @Override
-                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                            final Graph graph = GraphManager.getDefault().getActiveGraph();
-                            if (graph != null) {
-                                final ReadableGraph readableGraph = graph.getReadableGraph();
-                                final int dataAccessStateAttribute = DataAccessConcept.MetaAttribute.DATAACCESS_STATE.get(readableGraph);
-                                if (dataAccessStateAttribute != Graph.NOT_FOUND) {
-                                    final DataAccessState dataAccessState = readableGraph.getObjectValue(dataAccessStateAttribute, 0);
-                                    readableGraph.close();
-                                    if (dataAccessState != null && !dataAccessState.getState().isEmpty()) {
-                                        final Map<String, String> tabState = dataAccessState.getState().get(0);
-                                        final String pp = tabState.get(parameter.getId());
-                                        if ((pp == null && parameter.getStringValue() != null) || !pp.equals(parameter.getStringValue())) {
-                                            DataAccessUtilities.saveDataAccessState(
-                                                    DataAccessUtilities.getDataAccessPane().getDataAccessTabPane().getTabPane(), graph);
-                                        }
-                                    }
-                                } else {
-                                    readableGraph.close();
-                                    // If there is no data access view state for the graph, create one
-                                    DataAccessUtilities.saveDataAccessState(
-                                            DataAccessUtilities.getDataAccessPane().getDataAccessTabPane().getTabPane(), graph);
-                                }
-                            }
-                        }
-                    }).executeLater(null);
-                };
-                parameterEntry.getValue().addListener(listener);
-            }
         }
 
         return globalParameters;
