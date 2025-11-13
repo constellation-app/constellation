@@ -99,6 +99,7 @@ public class HistogramDisplay2 extends BorderPane {
     private static final int MAXIMUM_TEXT_WIDTH = 300;
     private static final int PREFERRED_HEIGHT = 600;
     private static final int DEFAULT_FONT_SIZE = 12;
+    private static final int DEFAULT_BAR_HEIGHT = 18;
     private static final int ICON_PADDING = 10;
     private static final float BAR_TEXT_THRESHOLD_MULTIPLIER = 0.95F;
     private static final int BAR_LENGTH_SUBTRACTION = 5;// Need to take 5 because otherwise the right of the bar is cut off
@@ -116,8 +117,12 @@ public class HistogramDisplay2 extends BorderPane {
     private static final int DEFAULT_LAST_VISIBLE_INDEX = 40;
 
     private final HistogramTopComponent2 topComponent;
-    private int barHeightBase = 18;
+    private int barHeightBase = DEFAULT_BAR_HEIGHT;
     private int barHeight = (barHeightBase * FontUtilities.getApplicationFontSize()) / DEFAULT_FONT_SIZE;   // the vertical thickness of the bars
+
+    private float minHeaderTextHeight = barHeight / 2;
+    private float maxHeaderTextHeight = barHeight * 1.5F;
+
     private BinCollection binCollection = null;
     private BinIconMode binIconMode = BinIconMode.NONE;
     private BinSelectionMode binSelectionMode = BinSelectionMode.ADD_TO_SELECTION;
@@ -270,7 +275,7 @@ public class HistogramDisplay2 extends BorderPane {
                     dragEnd = newDragEnd;
 
                     updateTable(true);
-                    updateHeader(barHeight * FONT_SCALE_FACTOR);
+                    updateHeader();
                 }
             });
             return row;
@@ -378,7 +383,7 @@ public class HistogramDisplay2 extends BorderPane {
     private synchronized void updateHeaderAndTable() {
         recalculateVisibleIndexes(prevScrollValue);
 
-        updateHeader(barHeight * FONT_SCALE_FACTOR);
+        updateHeader();
         updateTable(true);
 
         prevPropertyWidth = calculateLongestPropertyWidth(isRebuildRequired());
@@ -573,7 +578,10 @@ public class HistogramDisplay2 extends BorderPane {
         return maxWidth + PROPERTY_WIDTH_PADDING;
     }
 
-    private synchronized void updateHeader(final double fontSize) {
+    private synchronized void updateHeader() {
+        final double height = Math.clamp(barHeight, minHeaderTextHeight, maxHeaderTextHeight);
+        final double fontSize = height * FONT_SCALE_FACTOR;
+
         if (HeadlessUtilities.isHeadless()) {
             return;
         }
@@ -735,6 +743,11 @@ public class HistogramDisplay2 extends BorderPane {
 
     private void updateBarHeight() {
         barHeight = (barHeightBase * FontUtilities.getApplicationFontSize()) / DEFAULT_FONT_SIZE;
+
+        final int defaultAdjustedBarHeight = DEFAULT_BAR_HEIGHT * FontUtilities.getApplicationFontSize() / DEFAULT_FONT_SIZE;
+        minHeaderTextHeight = defaultAdjustedBarHeight / 2;
+        maxHeaderTextHeight = defaultAdjustedBarHeight * 1.5F;
+
         tableView.setStyle(FONT_SIZE_CSS_PROPERTY + barHeight * FONT_SCALE_FACTOR);
         tableView.setFixedCellSize(barHeight + GAP_BETWEEN_BARS);
     }
@@ -750,7 +763,6 @@ public class HistogramDisplay2 extends BorderPane {
         }
 
         updateBarHeight();
-
         updateDisplay();
     }
 
@@ -765,7 +777,15 @@ public class HistogramDisplay2 extends BorderPane {
         }
 
         updateBarHeight();
+        updateDisplay();
+    }
 
+    /**
+     * Prompts an update to display to account for the application's font size change
+     *
+     */
+    public void applicationFontSizeChanged() {
+        updateBarHeight();
         updateDisplay();
     }
 
@@ -825,7 +845,7 @@ public class HistogramDisplay2 extends BorderPane {
 
         updateTable(true);
 
-        updateHeader(barHeight * FONT_SCALE_FACTOR);
+        updateHeader();
     }
 
     protected void handleMouseReleased(final MouseEvent e) {
@@ -839,7 +859,7 @@ public class HistogramDisplay2 extends BorderPane {
 
         updateTable(true);
 
-        updateHeader(barHeight * FONT_SCALE_FACTOR);
+        updateHeader();
     }
 
     protected void handleMouseEntered() {

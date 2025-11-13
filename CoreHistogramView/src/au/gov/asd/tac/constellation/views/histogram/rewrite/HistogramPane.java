@@ -371,6 +371,9 @@ public class HistogramPane extends BorderPane {
         controls.setPadding(new Insets(CONTROLS_PADDING, CONTROLS_PADDING, CONTROLS_PADDING, CONTROLS_PADDING));
 
         this.setCenter(viewPane);
+        
+        // Attach font listener to detect application level font size change (the exact label to attach to is arbitrary)
+        graphElementLabel.fontProperty().addListener((obs, oldVal, newVal) -> display.applicationFontSizeChanged());
 
         // Update display for initial values
         updateDisplay();
