@@ -117,8 +117,8 @@ public class HelpServletNGTest {
 
             when(requestMock1.getRequestURI()).thenReturn("/file:/C:/Projects/constellation/build/cluster/modules/ext/docs/"
                     + "CoreAnalyticView/ext/docs/CoreAnalyticView/question-best-connects-network.md");
-            doNothing().when(responseMock1).sendRedirect(Mockito.eq("/file:/C:/Projects/constellation/build/cluster/modules/ext/docs/"
-                    + "CoreAnalyticView/question-best-connects-network.md"));
+            doNothing().when(responseMock1).sendRedirect("/file:/C:/Projects/constellation/build/cluster/modules/ext/docs/"
+                    + "CoreAnalyticView/question-best-connects-network.md");
             when(requestMock1.getHeader("referer")).thenReturn("/file:/C:/Projects/constellation/build/cluster/modules/ext/docs/"
                     + "CoreAnalyticView/analytic-view.md");
             
@@ -145,6 +145,7 @@ public class HelpServletNGTest {
      *
      * @throws java.io.IOException
      * @throws jakarta.servlet.ServletException
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testDoGetResponseRedirectWithSpaces() throws IOException, ServletException, InterruptedException {
@@ -158,8 +159,8 @@ public class HelpServletNGTest {
 
             when(requestMock1.getRequestURI()).thenReturn("/file:/C:/Projects/test%20constellation/build/cluster/modules/ext/docs/"
                     + "CoreAnalyticView/ext/docs/CoreAnalyticView/question-best-connects-network.md");
-            doNothing().when(responseMock1).sendRedirect(Mockito.eq("/file:/C:/Projects/test%20constellation/build/cluster/modules/ext/docs/"
-                    + "CoreAnalyticView/question-best-connects-network.md"));
+            doNothing().when(responseMock1).sendRedirect("/file:/C:/Projects/test%20constellation/build/cluster/modules/ext/docs/"
+                    + "CoreAnalyticView/question-best-connects-network.md");
             when(requestMock1.getHeader("referer")).thenReturn("/file:/C:/Projects/test%20constellation/build/cluster/modules/ext/docs/"
                     + "CoreAnalyticView/analytic-view.md");
 

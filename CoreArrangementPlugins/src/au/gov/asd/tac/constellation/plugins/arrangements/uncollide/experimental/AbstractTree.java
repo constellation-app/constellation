@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * This class provides an abstract representation of a Tree designed to help
@@ -40,7 +42,7 @@ public abstract class AbstractTree {
 
     final int level;
     AbstractBoundingBox box;
-    List<Integer> objects;
+    MutableIntList objects;
     AbstractTree[] nodes;
 
     /**
@@ -50,7 +52,7 @@ public abstract class AbstractTree {
      */
     protected AbstractTree(final GraphReadMethods graph, final Dimensions d) {
         this.level = 0;
-        this.objects = new ArrayList<>();
+        this.objects = new IntArrayList();
         this.nodes = null;
         this.box = BoxFactory.create(graph, d);
 
@@ -69,7 +71,7 @@ public abstract class AbstractTree {
     protected AbstractTree(final AbstractTree parent, final AbstractBoundingBox box) {
         this.level = parent.level + 1;
         this.box = box;
-        objects = new ArrayList<>();
+        objects = new IntArrayList();
         nodes = null;
         // Inherit parent values for graph based variables.
         wg = parent.wg;
@@ -125,7 +127,7 @@ public abstract class AbstractTree {
             while (i < objects.size()) { // For each object get the index and insert it into the subnode if it fits in one. If it fits in a subnode remove it from this list of objects.
                 final int index = getIndex(objects.get(i));
                 if (index != -1) {
-                    nodes[index].insert(objects.remove(i));
+                    nodes[index].insert(objects.removeAtIndex(i));
                 } else {
                     i++;
                 }
@@ -153,7 +155,7 @@ public abstract class AbstractTree {
         }
 
         // ...and colliders at this level.
-        colliders.addAll(objects);
+        objects.forEach(colliders::add);
 
         return colliders;
     }

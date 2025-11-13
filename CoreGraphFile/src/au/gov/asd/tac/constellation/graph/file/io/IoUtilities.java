@@ -102,7 +102,7 @@ public final class IoUtilities {
             }
         }
 
-        if (t.length() > 0) {
+        if (!t.isEmpty()) {
             t.append(s.substring(begin));
             return t.toString();
         }
@@ -156,7 +156,7 @@ public final class IoUtilities {
             i++;
         }
 
-        if (t.length() > 0) {
+        if (!t.isEmpty()) {
             t.append(s.substring(begin));
             return t.toString();
         }
@@ -400,7 +400,7 @@ public final class IoUtilities {
     public static String join(final Iterable<String> a, final char separator) {
         final StringBuilder buf = new StringBuilder();
         for (final String s : a) {
-            if (buf.length() > 0) {
+            if (!buf.isEmpty()) {
                 buf.append(separator);
             }
             buf.append(s);

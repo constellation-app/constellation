@@ -119,7 +119,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
         final String query = parameters.getParameters().get(QUERY_PARAMETER_ID).getStringValue();
         @SuppressWarnings("unchecked") // DEFINITIONS_PARAMETER_ID will always contain a list of ImportDefinition
         final List<ImportDefinition> definitions = (List<ImportDefinition>) parameters.getParameters().get(DEFINITIONS_PARAMETER_ID).getObjectValue();
-        final Boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
+        final boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
         boolean positionalAtrributesExist = false;
         int totalImportedRows = 0;
 

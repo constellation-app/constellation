@@ -199,7 +199,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                         jsonGenerator.writeBoolean(note.isUserCreated());
                         jsonGenerator.writeBoolean(note.isGraphAttribute());
 
-                        if (!Boolean.TRUE.equals(note.isGraphAttribute()) && note.isUserCreated()) {
+                        if (!note.isGraphAttribute() && note.isUserCreated()) {
 
                             if (note.getNodesSelected() != null) {
                                 // Add nodes that are selected to the note
@@ -227,7 +227,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
 
                             jsonGenerator.writeString(note.getNodeColour());
 
-                        } else if (Boolean.TRUE.equals(note.isGraphAttribute()) && note.isUserCreated()) {
+                        } else if (note.isGraphAttribute() && note.isUserCreated()) {
                             jsonGenerator.writeString(note.getNodeColour());
                         }
 

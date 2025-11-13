@@ -2,7 +2,7 @@
 <project name="update-dependencies" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:if="ant:if">
     
     <!-- ivy properties -->
-    <property name="ivy.install.version" value="2.5.0"/>
+    <property name="ivy.install.version" value="2.5.3"/>
     <property name="ivy.jar.dir" value="${user.home}/.ivy2"/>
     <property name="ivy.cache.dir" value="${ivy.jar.dir}/cache"/>
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-${ivy.install.version}.jar"/>

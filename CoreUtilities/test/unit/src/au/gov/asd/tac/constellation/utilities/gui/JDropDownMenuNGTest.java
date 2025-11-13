@@ -33,7 +33,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.event.ListSelectionListener;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -71,7 +70,7 @@ public class JDropDownMenuNGTest {
     private static final File ICON_FILE = new File(DROP_DOWN_ARROW_ICON_PATH);
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         installedFileLocatorMocked = mock(InstalledFileLocator.class);
         installedFileLocatorMockedStatic = Mockito.mockStatic(InstalledFileLocator.class);
     }

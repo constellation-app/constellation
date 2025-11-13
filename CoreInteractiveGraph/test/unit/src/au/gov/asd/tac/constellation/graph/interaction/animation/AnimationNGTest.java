@@ -61,11 +61,6 @@ public class AnimationNGTest {
     private GraphNode graphNodeMock;
     private MockedStatic<GraphNode> graphNodeStaticMock;
     
-    
-    public AnimationNGTest() {
-    }
-
-
     @BeforeMethod
     public void setUpMethod() throws Exception {
         colorWarpAnimation = spy(ColorWarpAnimation.class);

@@ -21,15 +21,15 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
+import org.eclipse.collections.api.block.comparator.primitive.IntComparator;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  * Determine a graph's minimal or maximal spanning tree using Kruskal's
@@ -93,22 +93,22 @@ public final class SpanningTree {
 
         // Get a list of all links sorted by weight.
         final int linkCount = wg.getLinkCount();
-        final ArrayList<Integer> links = new ArrayList<>(linkCount);
+        final MutableIntList links = new IntArrayList(linkCount);
         for (int position = 0; position < linkCount; position++) {
             final int linkId = wg.getLink(position);
             links.add(linkId);
         }
-
-        Collections.sort(links, new LinkSorter(wg, isMinimal));
+        
+        links.sortThis(new LinkSorter(wg, isMinimal));
 
         // Put each vertex in its own tree (where a tree is conveniently named after its root.
-        final Map<Integer, Set<Integer>> treeVxs = new HashMap<>();
+        final Map<Integer, MutableIntSet> treeVxs = new HashMap<>();
         final int[] vxTrees = new int[wg.getVertexCapacity()];
         Arrays.fill(vxTrees, Graph.NOT_FOUND);
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
 
-            final Set<Integer> s = new HashSet<>();
+            final MutableIntSet s = new IntHashSet();
             s.add(vxId);
             treeVxs.put(vxId, s);
             vxTrees[vxId] = vxId;
@@ -132,26 +132,24 @@ public final class SpanningTree {
         }
 
         // Iterate through the sorted links, looking for vertices in different trees.
-        final Set<Integer> spanningLinks = new HashSet<>();
-        for (final Integer linkId : links) {
+        final MutableIntSet spanningLinks = new IntHashSet();
+        links.forEach(linkId -> {
             final int vx0Id = wg.getLinkLowVertex(linkId);
             final int vx1Id = wg.getLinkHighVertex(linkId);
             final int tree1Name = vxTrees[vx0Id];
             final int tree2Name = vxTrees[vx1Id];
             if (tree1Name != tree2Name) {
-                final Set<Integer> s1 = treeVxs.get(tree1Name);
-                final Set<Integer> s2 = treeVxs.get(tree2Name);
+                final MutableIntSet s1 = treeVxs.get(tree1Name);
+                final MutableIntSet s2 = treeVxs.get(tree2Name);
                 treeVxs.remove(tree2Name);
                 s1.addAll(s2);
-                for (final Integer vx2 : s2) {
-                    vxTrees[vx2] = tree1Name;
-                }
+                s2.forEach(vx2 -> vxTrees[vx2] = tree1Name);
                 spanningLinks.add(linkId);
                 final int tvx0Id = origVxToTree[vx0Id];
                 final int tvx1Id = origVxToTree[vx1Id];
                 tree.addTransaction(tvx0Id, tvx1Id, false);
             }
-        }
+        });
 
         // Make sure we have all of the vertices.
         assert tree.getVertexCount() == wg.getVertexCount();
@@ -165,7 +163,7 @@ public final class SpanningTree {
         }
 
         if (selectTxs) {
-            for (final Iterator<Integer> e = spanningLinks.iterator(); e.hasNext();) {
+            for (final IntIterator e = spanningLinks.intIterator(); e.hasNext();) {
                 final int slinkId = e.next();
 
                 final int ltxCount = wg.getLinkTransactionCount(slinkId);
@@ -215,7 +213,7 @@ public final class SpanningTree {
         }
     }
 
-    private static class LinkSorter implements Comparator<Integer>, Serializable {
+    private static class LinkSorter implements IntComparator {
 
         private final GraphWriteMethods wg;
         private final int comp;
@@ -226,7 +224,7 @@ public final class SpanningTree {
         }
 
         @Override
-        public int compare(final Integer link0Id, final Integer link1Id) {
+        public int compare(final int link0Id, final int link1Id) {
             final int weight0 = wg.getLinkTransactionCount(link0Id);
             final int weight1 = wg.getLinkTransactionCount(link1Id);
 
