@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
-import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
@@ -24,6 +23,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
 import java.util.Date;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
@@ -49,7 +49,8 @@ import org.openide.DialogDisplayer;
 import org.openide.modules.Places;
 
 /**
- * This defines the dialog that will be displayed when an Unexpected Error occurs
+ * This defines the dialog that will be displayed when an Unexpected Error
+ * occurs
  *
  * @author OrionsGuardian
  */
@@ -105,16 +106,11 @@ public class ErrorReportDialog {
         final Label imageLabel = new Label(" \n ");
         final Color errorIconColor;
         errorIconColor = switch (errorEntry.getErrorLevel().getName()) {
-            case "SEVERE" ->
-                new Color(215, 95, 95);
-            case "WARNING" ->
-                new Color(210, 130, 65);
-            case "INFO" ->
-                new Color(170, 170, 65);
-            case "FINE", "FINER", "FINEST" ->
-                new Color(50, 160, 160);
-            default ->
-                new Color(200, 120, 150);
+            case "SEVERE" -> new Color(215, 95, 95);
+            case "WARNING" -> new Color(210, 130, 65);
+            case "INFO" -> new Color(170, 170, 65);
+            case "FINE", "FINER", "FINEST" -> new Color(50, 160, 160);
+            default -> new Color(200, 120, 150);
         };
         final ImageView errorImage = new ImageView(UserInterfaceIconProvider.ERROR.buildImage(36, errorIconColor));
         imageLabel.setGraphic(errorImage);
@@ -139,7 +135,7 @@ public class ErrorReportDialog {
 
         errorHeadingText.getChildren().add(messageDesc);
         errorHeadingText.setPadding(new Insets(3, 0, 10, 0));
-
+        
         final BorderPane headingSection = new BorderPane();
 
         if (showOccs) {
@@ -183,12 +179,12 @@ public class ErrorReportDialog {
         blockRepeatsCheckbox.setSelected(errorEntry.isBlockRepeatedPopups());
         buttonPane.setCenter(blockRepeatsCheckbox);
         buttonPane.setRight(closeButton);
-
+        
         root.widthProperty().addListener((final ObservableValue<? extends Number> observable, final Number oldValue, final Number newValue) -> {
             final int newWidth = newValue.intValue() - 55;
             messageDesc.setMaxWidth(newWidth > 120 ? newWidth : 120);
         });
-
+        
         final Scene scene = new Scene(root);
         scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         fxPanel.setScene(scene);
@@ -227,9 +223,6 @@ public class ErrorReportDialog {
      * @param title The title of the dialog.
      */
     public void showDialog(final String title) {
-        if (HeadlessUtilities.isHeadless()) {
-            return;
-        }
         SwingUtilities.invokeLater(() -> {
             final DialogDescriptor dd = new DialogDescriptor(fxPanel, title);
             dd.setOptions(new Object[0]);
