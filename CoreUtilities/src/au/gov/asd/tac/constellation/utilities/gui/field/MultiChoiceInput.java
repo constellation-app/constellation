@@ -33,7 +33,9 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupp
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 import java.util.Map;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.input.MouseEvent;
 
 /**
  * A {@link ChoiceInput} for managing multiple choice selection. This input
@@ -59,12 +61,12 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     private ChoiceInputDropDown choiceInputDropDown;
 
     public MultiChoiceInput() {
-        initialiseDepedantComponents();
+        initialiseDependantComponents();
     }
 
     public MultiChoiceInput(final ObservableList<C> options) {
         super(options);
-        initialiseDepedantComponents();
+        initialiseDependantComponents();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
@@ -231,20 +233,25 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     @Override
     public RightButton getRightButton() {
         return new RightButton(
-                new Label(""), ButtonType.DROPDOWN) {
-            
+                new Label("Select"), ButtonType.DROPDOWN) {
+
+//            @Override
+//            public EventHandler<? super MouseEvent> action() {
+//                return event -> executeRightButtonAction();
+//            }
+
             @Override
             public void show() {
                 // show our menu instead
-                executeRightButtonAction();               
+                executeRightButtonAction();
             }
-            
+
             @Override
             public void hide() {
                 // this is triggered when clicking away from button
                 setMenuShown(false);
             }
-        };             
+        };   
     }
 
     @Override

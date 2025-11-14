@@ -46,8 +46,7 @@ public abstract class ChoiceInputField<C extends Object, O extends Object>
 
     protected ChoiceInputField(final ObservableList<O> options) {
         if (options == null) {
-            throw new InvalidOperationException(
-                    "Attempting to Set Options with null options");
+            throw new InvalidOperationException("Attempting to Set Options with null options");
         }
         this.options.addAll(options);
     }
@@ -64,8 +63,7 @@ public abstract class ChoiceInputField<C extends Object, O extends Object>
         if (options != null) {
             this.options.addAll(options);
         } else {
-            throw new InvalidOperationException(
-                    "Attempting to Set Options with null options");
+            throw new InvalidOperationException("Attempting to Set Options with null options");
         }
     }
 
