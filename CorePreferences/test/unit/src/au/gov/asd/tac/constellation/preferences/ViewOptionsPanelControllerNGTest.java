@@ -248,7 +248,7 @@ public class ViewOptionsPanelControllerNGTest {
 
             // Assert that a mock of the PCS was constructed.
             final List<PropertyChangeSupport> constructedPCS = mockPCS.constructed();
-            assertEquals(constructedPCS.size(), 3);
+            assertEquals(constructedPCS.size(), 1);
 
             verify(constructedPCS.get(0), times(1)).addPropertyChangeListener(pcl);
         }
