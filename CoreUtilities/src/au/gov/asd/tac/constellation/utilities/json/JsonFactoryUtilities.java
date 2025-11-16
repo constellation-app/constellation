@@ -28,7 +28,6 @@ public class JsonFactoryUtilities {
     /* Both of these take significant time to initialise (~3 seconds for JsonFactory, and ~30 for MappingJsonFactory).
      * So they are only initialised when actually needed
      */
-//    private static JsonFactory JSON_FACTORY = new JsonFactory();
     private static JsonFactory JSON_FACTORY = null;
     private static MappingJsonFactory MAPPING_FACTORY = null;
 
