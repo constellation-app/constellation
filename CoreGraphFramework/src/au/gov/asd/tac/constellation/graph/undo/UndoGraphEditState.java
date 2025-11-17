@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 /**
  *
@@ -122,7 +124,7 @@ public class UndoGraphEditState {
             longStack[i] = in.readLong();
         }
 
-        final Map<Integer, Class<?>> classMap = new HashMap<>();
+        final MutableIntObjectMap<Class<?>> classMap = new IntObjectHashMap<>();
         classMap.put(0, null);
 
         objectCount = in.readInt();

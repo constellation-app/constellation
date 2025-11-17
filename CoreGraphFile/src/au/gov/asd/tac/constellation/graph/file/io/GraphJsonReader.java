@@ -48,13 +48,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.MutableIntLongMap;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
 import org.openide.util.Lookup;
 
 /**
@@ -77,7 +78,7 @@ public final class GraphJsonReader {
     private long globalModCount;
     private long attrModCount;
     private long structModCount;
-    private final Map<Integer, Long> attrValCount = new HashMap<>();
+    private final MutableIntLongMap attrValCount = new IntLongHashMap();
     private GraphByteReader byteReader;
 
     private static final String ATTRIBUTE_MOD_COUNT = "attribute_mod_count";
@@ -477,9 +478,9 @@ public final class GraphJsonReader {
         //set mod count vals
         if (version >= 1) {
             storeGraph.setModificationCounters(globalModCount, structModCount, attrModCount);
-            for (final Entry<Integer, Long> e : attrValCount.entrySet()) {
-                storeGraph.setValueModificationCounter(e.getKey(), e.getValue());
-            }
+            attrValCount.forEachKeyValue((key, value) -> {
+                storeGraph.setValueModificationCounter(key, value);
+            });
         }
 
         try {
@@ -597,7 +598,7 @@ public final class GraphJsonReader {
 
                 if (version >= 1) {
                     //get mod count for attribute
-                    final Long modCount = node.get("mod_count").longValue();
+                    final long modCount = node.get("mod_count").longValue();
                     attrValCount.put(attrId, modCount);
                 }
             } catch (final IllegalArgumentException ex) {
@@ -681,7 +682,8 @@ public final class GraphJsonReader {
                     if (idNode == null) {
                         final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.VX_ID, jp.currentLocation());
                         throw new GraphParseException(msg);
-                    }       final int jsonId = idNode.intValue();
+                    }
+                    final int jsonId = idNode.intValue();
                     id = graph.addVertex();
                     vertexPositions.put(jsonId, id);
                 }

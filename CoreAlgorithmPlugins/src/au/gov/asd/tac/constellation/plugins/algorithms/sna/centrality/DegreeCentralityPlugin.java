@@ -30,9 +30,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import org.eclipse.collections.api.map.primitive.MutableIntFloatMap;
+import org.eclipse.collections.api.tuple.primitive.IntFloatPair;
+import org.eclipse.collections.impl.map.mutable.primitive.IntFloatHashMap;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -128,7 +128,7 @@ public class DegreeCentralityPlugin extends SimpleEditPlugin {
 
         // calculate degree for every vertex on the graph
         int maxDegree = 0;
-        final Map<Integer, Float> degrees = new HashMap<>();
+        final MutableIntFloatMap degrees = new IntFloatHashMap();
         final int vertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final int vertexId = graph.getVertex(vertexPosition);
@@ -175,13 +175,13 @@ public class DegreeCentralityPlugin extends SimpleEditPlugin {
         }
 
         // update the graph with degree values
-        for (final Entry<Integer, Float> entry : degrees.entrySet()) {
+        for (final IntFloatPair keyValue : degrees.keyValuesView()) {
             if (normaliseByPossible) {
-                graph.setFloatValue(degreeAttribute, entry.getKey(), entry.getValue() / (vertexCount - 1));
+                graph.setFloatValue(degreeAttribute, keyValue.getOne(), keyValue.getTwo()/ (vertexCount - 1));
             } else if (normaliseByAvailable && maxDegree > 0) {
-                graph.setFloatValue(degreeAttribute, entry.getKey(), entry.getValue() / maxDegree);
+                graph.setFloatValue(degreeAttribute, keyValue.getOne(), keyValue.getTwo()/ maxDegree);
             } else {
-                graph.setFloatValue(degreeAttribute, entry.getKey(), entry.getValue());
+                graph.setFloatValue(degreeAttribute, keyValue.getOne(), keyValue.getTwo());
             }
         }
     }

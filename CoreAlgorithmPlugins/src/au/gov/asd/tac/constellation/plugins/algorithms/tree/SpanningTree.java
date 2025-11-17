@@ -20,15 +20,14 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import org.eclipse.collections.api.block.comparator.primitive.IntComparator;
 import org.eclipse.collections.api.iterator.IntIterator;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
@@ -102,7 +101,7 @@ public final class SpanningTree {
         links.sortThis(new LinkSorter(wg, isMinimal));
 
         // Put each vertex in its own tree (where a tree is conveniently named after its root.
-        final Map<Integer, MutableIntSet> treeVxs = new HashMap<>();
+        final MutableIntObjectMap<MutableIntSet> treeVxs = new IntObjectHashMap<>();
         final int[] vxTrees = new int[wg.getVertexCapacity()];
         Arrays.fill(vxTrees, Graph.NOT_FOUND);
         for (int position = 0; position < vxCount; position++) {

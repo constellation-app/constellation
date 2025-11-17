@@ -75,7 +75,12 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -168,9 +173,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private final Map<String, Integer> nodeDups = new HashMap<>();
     private final Map<Float, MutableIntList> transactionLayers = new HashMap<>();
     // Map nodeId to a list of layer numbers.
-    private final Map<Integer, BitSet> nodeIdToLayers = new HashMap<>();
-    private Map<Integer, Integer> srcVxMap = new HashMap<>();
-    private Map<Integer, Integer> dstVxMap = new HashMap<>();
+    private final MutableIntObjectMap<BitSet> nodeIdToLayers = new IntObjectHashMap<>();
+    private MutableIntIntMap srcVxMap = new IntIntHashMap();
+    private MutableIntIntMap dstVxMap = new IntIntHashMap();
     private final BitSet txToDelete = new BitSet();
 
     private PluginParameter<SingleChoiceParameterValue> dtAttrParam;
@@ -370,8 +375,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             wgcopy.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, ORIGINAL_ID_LABEL, "Original Node Id", -1, null);
 
             final List<Float> values = new ArrayList<>();
-            final Map<Integer, List<Float>> remappedLayers = new HashMap<>();
-            final Map<Integer, String> displayNames = new HashMap<>();
+            final MutableIntObjectMap<List<Float>> remappedLayers = new IntObjectHashMap<>();
+            final MutableIntObjectMap<String> displayNames = new IntObjectHashMap<>();
             if (useIntervals) {
                 final int intervalUnit = LAYER_INTERVALS.get(parameters.getParameters().get(UNIT_PARAMETER_ID).getStringValue());
                 final int intervalAmount = parameters.getParameters().get(AMOUNT_PARAMETER_ID).getIntegerValue();
@@ -389,15 +394,15 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             // Modify the copied graph to show our layers.
             float z = 0;
             final float step = getWidth(wgcopy) / values.size();
-            for (final Entry<Integer, List<Float>> entry : remappedLayers.entrySet()) {
+            for (final IntObjectPair<List<Float>> keyValue : remappedLayers.keyValuesView()) {
                 for (final Entry<Float, MutableIntList> currentLayer : transactionLayers.entrySet()) {
-                    if (entry.getValue().contains(currentLayer.getKey())) {
+                    if (keyValue.getTwo().contains(currentLayer.getKey())) {
                         for (int i = 0; i < currentLayer.getValue().size(); i++) {
                             final float origLayer = currentLayer.getKey();
                             int newLayer = 0;
-                            if (entry.getValue().contains(origLayer)) {
+                            if (keyValue.getTwo().contains(origLayer)) {
                                 //Overwrite value
-                                newLayer = entry.getKey();
+                                newLayer = keyValue.getOne();
                             }
                             
                             final int txId = currentLayer.getValue().get(i);
@@ -422,7 +427,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 }
                 if (isTransactionLayers) {
                     srcVxMap = dstVxMap;
-                    dstVxMap = new HashMap<>();
+                    dstVxMap = new IntIntHashMap();
                     z += step;
                 }
             }
@@ -453,7 +458,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 // Draw a grey vertical indicator line connecting the same nodes in each layer.
                 // We have to do this after the "remove node without transactions" step because we're adding more transactions.
                 if (!isTransactionLayers && remappedLayers.keySet().size() > 1) {
-                    nodeIdToLayers.keySet().stream().forEach(origNodeId -> {
+                    nodeIdToLayers.forEachKey(origNodeId -> {
                         int prevNodeId = -1;
                         final BitSet layers = nodeIdToLayers.get(origNodeId);
                         for (int layer = layers.nextSetBit(0); layer >= 0; layer = layers.nextSetBit(layer + 1)) {
@@ -487,8 +492,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * @param unit The interval unit in seconds.
      * @param amount The number of interval units per layer.
      */
-    private void buildIntervals(final GraphWriteMethods wgcopy, final List<Float> values, final Map<Integer, List<Float>> remappedLayers, final Map<Integer, String> displayNames, final int dtAttr, final Instant d1, final Instant d2, final int unit, final int amount) {
-
+    private void buildIntervals(final GraphWriteMethods wgcopy, final List<Float> values, final MutableIntObjectMap<List<Float>> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Instant d1, final Instant d2, final int unit, final int amount) {
         // Convert to milliseconds.
         final long intervalLength = unit * amount * 1000L;
         final long d1t = d1.toEpochMilli();
@@ -555,7 +559,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * @param unit
      * @param binAmount
      */
-    private void buildBins(final GraphWriteMethods wgcopy, final List<Float> values, final Map<Integer, List<Float>> remappedLayers, final Map<Integer, String> displayNames, final int dtAttr, final Instant d1, final Instant d2, final int unit, final int binAmount) {
+    private void buildBins(final GraphWriteMethods wgcopy, final List<Float> values, final MutableIntObjectMap<List<Float>> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Instant d1, final Instant d2, final int unit, final int binAmount) {
         final Calendar dtg = Calendar.getInstance();
         final float maxUnit = dtg.getMaximum(unit);
 
@@ -627,9 +631,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
         // Handle layer names of each layer.
         // Build a map (displayNames) of layer number -> label.
-        for (final Entry<Integer, List<Float>> entry : remappedLayers.entrySet()) {
+        for (final IntObjectPair<List<Float>> keyValue : remappedLayers.keyValuesView()) {
             final StringBuilder sb = new StringBuilder();
-            for (final float layer : entry.getValue()) {
+            for (final float layer : keyValue.getTwo()) {
                 for (int i = 0; i < transactionLayers.get(layer).size(); i++) {
                     final int txId = transactionLayers.get(layer).get(i);
                     final Calendar cal = new GregorianCalendar();
@@ -645,7 +649,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     }
                 }
             }
-            displayNames.put(entry.getKey(), sb.toString().substring(0, sb.toString().lastIndexOf(", ")));
+            displayNames.put(keyValue.getOne(), sb.toString().substring(0, sb.toString().lastIndexOf(", ")));
         }
     }
 
