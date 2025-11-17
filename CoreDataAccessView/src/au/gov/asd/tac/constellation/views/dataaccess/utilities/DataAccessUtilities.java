@@ -103,32 +103,34 @@ public class DataAccessUtilities {
 
             try {
                 final int dataAccessStateAttribute = DataAccessConcept.MetaAttribute.DATAACCESS_STATE.get(readableGraph);
-                final Tab step = dataAccessPane.getDataAccessTabPane().getTabPane().getTabs().get(0);
-                
-                if (dataAccessStateAttribute != Graph.NOT_FOUND) {
-                    final DataAccessState dataAccessState = readableGraph.getObjectValue(dataAccessStateAttribute, 0);
+                if (dataAccessPane.getDataAccessTabPane().getTabPane() != null && dataAccessPane.getDataAccessTabPane().getTabPane().getTabs() != null) {
+                    final Tab step = dataAccessPane.getDataAccessTabPane().getTabPane().getTabs().get(0);
 
-                    if (dataAccessState != null && !dataAccessState.getState().isEmpty()) {
-                        // TODO: support multiple tabs (not just first one in state) and not
-                        //       introduce memory leaks
-                        final Map<String, String> tabState = dataAccessState.getState().get(0);   
+                    if (dataAccessStateAttribute != Graph.NOT_FOUND) {
+                        final DataAccessState dataAccessState = readableGraph.getObjectValue(dataAccessStateAttribute, 0);
 
-                        DataAccessTabPane.getQueryPhasePane(step)
-                                .getGlobalParametersPane().getParams().getParameters().entrySet().stream()
-                                .forEach(param -> {
-                                    final PluginParameter<?> pp = param.getValue();
-                                    final String paramvalue = tabState.get(param.getKey());
-                                    if (paramvalue != null) {
-                                        pp.setStringValue(paramvalue);
-                                    } else {
-                                        pp.setStringValue("");
-                                    }
-                                });
+                        if (dataAccessState != null && !dataAccessState.getState().isEmpty()) {
+                            // TODO: support multiple tabs (not just first one in state) and not
+                            //       introduce memory leaks
+                            final Map<String, String> tabState = dataAccessState.getState().get(0);
+
+                            DataAccessTabPane.getQueryPhasePane(step)
+                                    .getGlobalParametersPane().getParams().getParameters().entrySet().stream()
+                                    .forEach(param -> {
+                                        final PluginParameter<?> pp = param.getValue();
+                                        final String paramvalue = tabState.get(param.getKey());
+                                        if (paramvalue != null) {
+                                            pp.setStringValue(paramvalue);
+                                        } else {
+                                            pp.setStringValue("");
+                                        }
+                                    });
+                        } else {
+                            DataAccessUtilities.setPluginParametersEmpty(step);
+                        }
                     } else {
                         DataAccessUtilities.setPluginParametersEmpty(step);
                     }
-                } else {
-                    DataAccessUtilities.setPluginParametersEmpty(step);
                 }
             } finally {
                 readableGraph.release();
