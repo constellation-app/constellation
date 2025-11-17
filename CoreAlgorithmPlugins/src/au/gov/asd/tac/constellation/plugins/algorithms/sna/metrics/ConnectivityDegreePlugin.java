@@ -30,8 +30,9 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.BitSet;
-import java.util.HashMap;
 import java.util.HashSet;
+import org.eclipse.collections.api.map.primitive.MutableObjectFloatMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectFloatHashMap;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -106,7 +107,7 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
 
         // calculate the number of connected components
         float maxEccentricity = 0;
-        final HashMap<BitSet, Float> maxEccentricityConnectedComponents = new HashMap<>();
+        final MutableObjectFloatMap<BitSet> maxEccentricityConnectedComponents = new ObjectFloatHashMap<>();
         final int vertexCount = graph.getVertexCount();
         int numComponents = 0;
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
