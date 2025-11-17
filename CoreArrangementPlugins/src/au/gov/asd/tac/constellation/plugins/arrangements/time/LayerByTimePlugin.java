@@ -70,17 +70,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.iterator.FloatIterator;
+import org.eclipse.collections.api.list.primitive.MutableFloatList;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.MutableFloatObjectMap;
 import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.api.tuple.primitive.FloatObjectPair;
 import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
+import org.eclipse.collections.impl.list.mutable.primitive.FloatArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.primitive.FloatObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -170,8 +177,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     }
 
     // Quick and dirty way of mapping existing nodeid + layer number to new nodeid.
-    private final Map<String, Integer> nodeDups = new HashMap<>();
-    private final Map<Float, MutableIntList> transactionLayers = new HashMap<>();
+    private final MutableObjectIntMap<String> nodeDups = new ObjectIntHashMap<>();
+    private final MutableFloatObjectMap<MutableIntList> transactionLayers = new FloatObjectHashMap<>();
     // Map nodeId to a list of layer numbers.
     private final MutableIntObjectMap<BitSet> nodeIdToLayers = new IntObjectHashMap<>();
     private MutableIntIntMap srcVxMap = new IntIntHashMap();
@@ -254,10 +261,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     @Override
     public void updateParameters(final Graph graph, final PluginParameters parameters) {
-
-        final ReadableGraph rg = graph.getReadableGraph();
         final List<String> dateTimeAttributes = new ArrayList<>();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int attributeCount = rg.getAttributeCount(GraphElementType.TRANSACTION);
             for (int i = 0; i < attributeCount; i++) {
                 final int attrId = rg.getAttribute(GraphElementType.TRANSACTION, i);
@@ -266,16 +271,13 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     dateTimeAttributes.add(attr.getName());
                 }
             }
-        } finally {
-            rg.release();
         }
         SingleChoiceParameterType.setOptions(dtAttrParam, dateTimeAttributes);
         parameters.addController(DATETIME_ATTRIBUTE_PARAMETER_ID, (masterId, paramMap, change) -> {
             if (change == ParameterChange.VALUE) {
                 final String attrName = paramMap.get(DATETIME_ATTRIBUTE_PARAMETER_ID).getStringValue();
-                final ReadableGraph rg2 = graph.getReadableGraph();
-                try {
-                    final int attrId = rg2.getAttribute(GraphElementType.TRANSACTION, attrName);
+                try (final ReadableGraph rg = graph.getReadableGraph()) {
+                    final int attrId = rg.getAttribute(GraphElementType.TRANSACTION, attrName);
                     if (attrId == Graph.NOT_FOUND) {
                         return;
                     }
@@ -305,8 +307,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                         max = swap;
                     }
                     dateRangeParam.setDateTimeRangeValue(new DateTimeRange(min, max));
-                } finally {
-                    rg2.release();
                 }
             }
         });
@@ -375,7 +375,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             wgcopy.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, ORIGINAL_ID_LABEL, "Original Node Id", -1, null);
 
             final List<Float> values = new ArrayList<>();
-            final MutableIntObjectMap<List<Float>> remappedLayers = new IntObjectHashMap<>();
+            final MutableIntObjectMap<MutableFloatList> remappedLayers = new IntObjectHashMap<>();
             final MutableIntObjectMap<String> displayNames = new IntObjectHashMap<>();
             if (useIntervals) {
                 final int intervalUnit = LAYER_INTERVALS.get(parameters.getParameters().get(UNIT_PARAMETER_ID).getStringValue());
@@ -394,18 +394,18 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             // Modify the copied graph to show our layers.
             float z = 0;
             final float step = getWidth(wgcopy) / values.size();
-            for (final IntObjectPair<List<Float>> keyValue : remappedLayers.keyValuesView()) {
-                for (final Entry<Float, MutableIntList> currentLayer : transactionLayers.entrySet()) {
-                    if (keyValue.getTwo().contains(currentLayer.getKey())) {
-                        for (int i = 0; i < currentLayer.getValue().size(); i++) {
-                            final float origLayer = currentLayer.getKey();
+            for (final IntObjectPair<MutableFloatList> keyValue : remappedLayers.keyValuesView()) {
+                for (final FloatObjectPair<MutableIntList> currentLayer : transactionLayers.keyValuesView()) {
+                    if (keyValue.getTwo().contains(currentLayer.getOne())) {
+                        for (int i = 0; i < currentLayer.getTwo().size(); i++) {
+                            final float origLayer = currentLayer.getOne();
                             int newLayer = 0;
                             if (keyValue.getTwo().contains(origLayer)) {
                                 //Overwrite value
                                 newLayer = keyValue.getOne();
                             }
                             
-                            final int txId = currentLayer.getValue().get(i);
+                            final int txId = currentLayer.getTwo().get(i);
                             final LayerName dn = new LayerName(newLayer, displayNames.get(newLayer));
                             wgcopy.setObjectValue(timeLayerAttr, txId, dn);
 
@@ -492,7 +492,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * @param unit The interval unit in seconds.
      * @param amount The number of interval units per layer.
      */
-    private void buildIntervals(final GraphWriteMethods wgcopy, final List<Float> values, final MutableIntObjectMap<List<Float>> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Instant d1, final Instant d2, final int unit, final int amount) {
+    private void buildIntervals(final GraphWriteMethods wgcopy, final List<Float> values, final MutableIntObjectMap<MutableFloatList> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Instant d1, final Instant d2, final int unit, final int amount) {
         // Convert to milliseconds.
         final long intervalLength = unit * amount * 1000L;
         final long d1t = d1.toEpochMilli();
@@ -529,7 +529,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         Collections.sort(values);
 
         for (int i = 0; i < values.size(); i++) {
-            final List<Float> runningLayers = new ArrayList<>();
+            final MutableFloatList runningLayers = new FloatArrayList();
             runningLayers.add(values.get(i));
             remappedLayers.put(i, runningLayers);
         }
@@ -559,7 +559,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * @param unit
      * @param binAmount
      */
-    private void buildBins(final GraphWriteMethods wgcopy, final List<Float> values, final MutableIntObjectMap<List<Float>> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Instant d1, final Instant d2, final int unit, final int binAmount) {
+    private void buildBins(final GraphWriteMethods wgcopy, final List<Float> values, final MutableIntObjectMap<MutableFloatList> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Instant d1, final Instant d2, final int unit, final int binAmount) {
         final Calendar dtg = Calendar.getInstance();
         final float maxUnit = dtg.getMaximum(unit);
 
@@ -610,7 +610,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         // Build a map (remappedLayers) of layer number -> list of layerIds.
         for (int i = 0; i <= maxUnit && i < values.size(); i++) {
             //Create new layer
-            final List<Float> runningLayers = new ArrayList<>();
+            final MutableFloatList runningLayers = new FloatArrayList();
             final int currentBinAmount = j + binAmount;
             for (; j < currentBinAmount && j < values.size(); j++) {
                 //Add value to layer
@@ -631,9 +631,11 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
         // Handle layer names of each layer.
         // Build a map (displayNames) of layer number -> label.
-        for (final IntObjectPair<List<Float>> keyValue : remappedLayers.keyValuesView()) {
+        for (final IntObjectPair<MutableFloatList> keyValue : remappedLayers.keyValuesView()) {
             final StringBuilder sb = new StringBuilder();
-            for (final float layer : keyValue.getTwo()) {
+            final FloatIterator iter = keyValue.getTwo().floatIterator();
+            while (iter.hasNext()) {
+                final float layer = iter.next();
                 for (int i = 0; i < transactionLayers.get(layer).size(); i++) {
                     final int txId = transactionLayers.get(layer).get(i);
                     final Calendar cal = new GregorianCalendar();
@@ -657,7 +659,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * Duplicates a node onto a specific layer, recording it in
      * <code>nodeDups</code> and returning the duplicate node id
      */
-    private int getDuplicateNode(final GraphWriteMethods graph, final Map<String, Integer> nodeDups, final int nodeId, final int layer) {
+    private int getDuplicateNode(final GraphWriteMethods graph, final MutableObjectIntMap<String> nodeDups, final int nodeId, final int layer) {
         final String key = String.format("%d/%d", nodeId, layer);
         if (!nodeDups.containsKey(key)) {
             // There isn't a duplicate for this node in this layer, so let's create one.

@@ -23,12 +23,12 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 
 /**
  *
@@ -67,7 +67,7 @@ public class UndoGraphEditState {
 
     private Object[] objectStack = new Object[1];
     private int objectCount = 0;
-    private Map<Object, Integer> objectMap = new HashMap<>();
+    private MutableObjectIntMap<Object> objectMap = new ObjectIntHashMap<>();
 
     private int currentAttribute = 0;
     private int currentId = 0;
@@ -325,9 +325,8 @@ public class UndoGraphEditState {
     }
 
     public int addObject(final Object object) {
-        final Integer existingObjectIndex = objectMap.get(object);
-        if (existingObjectIndex != null) {
-            return existingObjectIndex;
+        if (objectMap.containsKey(object)) {
+            return objectMap.get(object);
         }
         objectMap.put(object, objectCount);
         if (objectCount == objectStack.length) {
@@ -497,7 +496,7 @@ public class UndoGraphEditState {
             out.writeLong(longStack[i]);
         }
 
-        final Map<Class<?>, Integer> classMap = new HashMap<>();
+        final MutableObjectIntMap<Class<?>> classMap = new ObjectIntHashMap<>();
         classMap.put(null, 0);
 
         out.writeInt(objectCount);

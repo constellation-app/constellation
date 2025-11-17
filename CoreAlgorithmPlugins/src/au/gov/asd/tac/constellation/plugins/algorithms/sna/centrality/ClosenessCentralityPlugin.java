@@ -33,6 +33,8 @@ import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -158,7 +160,7 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
         // calculate the maximum closeness
         float maxCloseness = 0F;
         final Map<BitSet, Float> maxClosenessConnectedComponents = new HashMap<>();
-        final Map<BitSet, Integer> connectedComponentSize = new HashMap<>();
+        final MutableObjectIntMap<BitSet> connectedComponentSize = new ObjectIntHashMap<>();
         final int vertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final float closeness = closenesses[vertexPosition];
