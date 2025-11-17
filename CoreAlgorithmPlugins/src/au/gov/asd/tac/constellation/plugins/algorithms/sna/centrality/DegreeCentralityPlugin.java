@@ -160,7 +160,7 @@ public class DegreeCentralityPlugin extends SimpleEditPlugin {
                 }
             }
 
-            degrees.put(vertexId, (float) degree);
+            degrees.put(vertexId, degree);
             maxDegree = Math.max(degree, maxDegree);
         }
 

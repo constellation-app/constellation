@@ -478,9 +478,7 @@ public final class GraphJsonReader {
         //set mod count vals
         if (version >= 1) {
             storeGraph.setModificationCounters(globalModCount, structModCount, attrModCount);
-            attrValCount.forEachKeyValue((key, value) -> {
-                storeGraph.setValueModificationCounter(key, value);
-            });
+            attrValCount.forEachKeyValue((key, value) -> storeGraph.setValueModificationCounter(key, value));
         }
 
         try {
