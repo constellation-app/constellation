@@ -26,13 +26,16 @@ import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUt
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.IntFloatMap;
+import org.eclipse.collections.api.map.primitive.MutableIntFloatMap;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntFloatHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 
 /**
  * Hierarchical layout (Sugiyama based).
@@ -70,7 +73,7 @@ public class HierarchicalArranger implements Arranger {
 
         // Find out how far away each vertex is from each root.
         // Vertex vxId is at level levels[vxId].
-        final Map<Integer, Integer> levels = new HashMap<>();
+        final MutableIntIntMap levels = new IntIntHashMap();
         for (int i = 0; i < vxCount; i++) {
             levels.put(wg.getVertex(i), Integer.MAX_VALUE);
         }
@@ -109,7 +112,7 @@ public class HierarchicalArranger implements Arranger {
 
         // This is the part where line crossing minimisation is done.
         // if you want to fancy up the algorithm, this is where to concentrate.
-        final Map<Integer, Float> weights = new HashMap<>();
+        final MutableIntFloatMap weights = new IntFloatHashMap();
         for (int i = 0; i < vxCount; i++) {
             weights.put(wg.getVertex(i), 100.0F);
         }
@@ -159,7 +162,7 @@ public class HierarchicalArranger implements Arranger {
      *
      * @return The maximum level that was assigned.
      */
-    private static int assignLevels(final GraphWriteMethods wg, final int root, final Map<Integer, Integer> levels) {
+    private static int assignLevels(final GraphWriteMethods wg, final int root, final MutableIntIntMap levels) {
         int maxLevel = 0;
         levels.put(root, 0);
         final ArrayDeque<Integer> neighbourQueue = new ArrayDeque<>();
@@ -182,7 +185,7 @@ public class HierarchicalArranger implements Arranger {
         return maxLevel;
     }
 
-    private static boolean calculateAndSortWeights(final GraphReadMethods rg, final List<MutableIntList> vxLevels, final int level, final Map<Integer, Float> weights) {
+    private static boolean calculateAndSortWeights(final GraphReadMethods rg, final List<MutableIntList> vxLevels, final int level, final MutableIntFloatMap weights) {
         boolean reordered = false;
         final MutableIntList vxLevel = vxLevels.get(level);
         final MutableIntList vxLevelCopy = new IntArrayList(vxLevel.size()); // avoid ConcurrentModificationException
@@ -212,7 +215,7 @@ public class HierarchicalArranger implements Arranger {
         return reordered;
     }
 
-    private static void sortLevelByWeight(final MutableIntList vxLevel, final Map<Integer, Float> weights) {
+    private static void sortLevelByWeight(final MutableIntList vxLevel, final IntFloatMap weights) {
         vxLevel.sortThis((vxId1, vxId2) -> {
             final float weight1 = weights.get(vxId1);
             final float weight2 = weights.get(vxId2);

@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.geotools.api.data.FeatureWriter;
 import org.geotools.api.data.Transaction;
 import org.geotools.api.feature.simple.SimpleFeature;
@@ -158,7 +160,7 @@ public class Shape {
          * {@code CRS.decode()} is known to have performance issues so we are
          * going to cache the output to reduce delays.
          */
-        private static final Map<Integer, String> cache = new HashMap<>();
+        private static final MutableIntObjectMap<String> cache = new IntObjectHashMap<>();
 
         private SpatialReference(final String name, final int srid) {
             this.name = name;

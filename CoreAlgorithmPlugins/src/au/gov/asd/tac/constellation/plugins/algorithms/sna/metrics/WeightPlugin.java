@@ -27,8 +27,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.collections.api.map.primitive.MutableIntFloatMap;
+import org.eclipse.collections.api.tuple.primitive.IntFloatPair;
+import org.eclipse.collections.impl.map.mutable.primitive.IntFloatHashMap;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -66,7 +68,7 @@ public class WeightPlugin extends SimpleEditPlugin {
 
         // calculate weight for every pair of vertices on the graph
         float maxWeight = 0;
-        final Map<Integer, Float> weights = new HashMap<>();
+        final MutableIntFloatMap weights = new IntFloatHashMap();
         final int linkCount = graph.getLinkCount();
         for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
             final int linkId = graph.getLink(linkPosition);
@@ -79,14 +81,14 @@ public class WeightPlugin extends SimpleEditPlugin {
 
         // update the graph with weight values
         final int weightAttribute = WEIGHT_ATTRIBUTE.ensure(graph);
-        for (final Map.Entry<Integer, Float> entry : weights.entrySet()) {
-            final int transactionCount = graph.getLinkTransactionCount(entry.getKey());
+        for (final IntFloatPair keyValue : weights.keyValuesView()) {
+            final int transactionCount = graph.getLinkTransactionCount(keyValue.getOne());
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                final int transactionId = graph.getLinkTransaction(entry.getKey(), transactionPosition);
+                final int transactionId = graph.getLinkTransaction(keyValue.getOne(), transactionPosition);
                 if (normaliseByAvailable && maxWeight > 0) {
-                    graph.setFloatValue(weightAttribute, transactionId, entry.getValue() / maxWeight);
+                    graph.setFloatValue(weightAttribute, transactionId, keyValue.getTwo() / maxWeight);
                 } else {
-                    graph.setFloatValue(weightAttribute, transactionId, entry.getValue());
+                    graph.setFloatValue(weightAttribute, transactionId, keyValue.getTwo());
                 }
             }
         }

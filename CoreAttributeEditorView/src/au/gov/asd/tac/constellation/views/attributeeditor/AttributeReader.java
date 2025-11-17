@@ -38,6 +38,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.apache.commons.collections4.ListUtils;
+import org.eclipse.collections.api.map.primitive.MutableObjectBooleanMap;
+import org.eclipse.collections.api.map.primitive.ObjectBooleanMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectBooleanHashMap;
 import org.openide.util.NbPreferences;
 
 /**
@@ -102,7 +105,7 @@ public class AttributeReader {
      */
     public AttributeState refreshAttributes(final boolean preferenceChanged) {       
         // hidden attribute preferences
-        final Map<GraphElementType, Boolean> showHiddenPrefs = new HashMap<>();
+        final MutableObjectBooleanMap<GraphElementType> showHiddenPrefs = new ObjectBooleanHashMap<>();
         showHiddenPrefs.put(GraphElementType.GRAPH, prefs.getBoolean(AttributePreferenceKey.GRAPH_SHOW_HIDDEN, false));
         showHiddenPrefs.put(GraphElementType.VERTEX, prefs.getBoolean(AttributePreferenceKey.NODE_SHOW_HIDDEN, false));
         showHiddenPrefs.put(GraphElementType.TRANSACTION, prefs.getBoolean(AttributePreferenceKey.TRANSACTION_SHOW_HIDDEN, false));
@@ -216,7 +219,7 @@ public class AttributeReader {
         }
     }
 
-    private void updateElementAttributeNames(final ReadableGraph rg, final List<GraphElementType> elementTypes, final Set<String> hiddenAttrsSet, final Map<GraphElementType, Boolean> showHiddenPrefs) {
+    private void updateElementAttributeNames(final ReadableGraph rg, final List<GraphElementType> elementTypes, final Set<String> hiddenAttrsSet, final ObjectBooleanMap<GraphElementType> showHiddenPrefs) {
         elementAttributeData.clear();
         for (final GraphElementType elementType : elementTypes) {
             final int attributeCount = rg.getAttributeCount(elementType);

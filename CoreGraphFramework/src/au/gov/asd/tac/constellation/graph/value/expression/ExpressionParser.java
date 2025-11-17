@@ -26,6 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import org.eclipse.collections.api.map.primitive.MutableCharObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.CharObjectHashMap;
 
 /**
  *
@@ -103,7 +105,7 @@ public class ExpressionParser {
             return precedence;
         }
 
-        private static final Map<Character, Operator> OPERATOR_TOKENS = new HashMap<>();
+        private static final MutableCharObjectMap<Operator> OPERATOR_TOKENS = new CharObjectHashMap<>();
 
         static {
             for (final Operator operator : Operator.values()) {

@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.graph.interaction.animation;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.util.HashMap;
-import java.util.Map;
+import org.eclipse.collections.api.map.primitive.MutableIntFloatMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntFloatHashMap;
 
 /**
  * Case the node radius to throb larger and smaller than the actual node radius. 
@@ -37,7 +37,7 @@ public class ThrobbingNodeAnimation extends Animation {
     private float currentDirection = 0.05F;
     private float currentRadius = 1F;
     
-    final Map<Integer, Float> originalNodeRadii = new HashMap<>();
+    final MutableIntFloatMap originalNodeRadii = new IntFloatHashMap();
 
     @Override
     public void initialise(final GraphWriteMethods wg) {
@@ -66,7 +66,7 @@ public class ThrobbingNodeAnimation extends Animation {
                 final int vxId = wg.getVertex(pos);
                 
                 // If a node is added during animation its original radius needs to be captured. 
-                if (originalNodeRadii.get(vxId) == null){
+                if (!originalNodeRadii.containsKey(vxId)) {
                     registerNode(vxId, wg);
                 }
                 
@@ -77,7 +77,7 @@ public class ThrobbingNodeAnimation extends Animation {
 
     @Override
     public void reset(final GraphWriteMethods wg) {
-        originalNodeRadii.forEach((vxId, radius) -> wg.setObjectValue(nodeRadiusAttribute, vxId, radius));
+        originalNodeRadii.forEachKeyValue((vxId, radius) -> wg.setObjectValue(nodeRadiusAttribute, vxId, radius));
     }
 
     @Override

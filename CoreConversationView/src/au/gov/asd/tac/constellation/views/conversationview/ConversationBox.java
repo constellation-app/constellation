@@ -79,6 +79,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.openide.util.HelpCtx;
 
 /**
@@ -385,7 +387,7 @@ public final class ConversationBox extends StackPane {
     private void highlightRegions(final boolean needsUpdate) {
         foundCount = 0;
 
-        final Map<Integer, ConversationMessage> matches = new HashMap<>();
+        final MutableIntObjectMap<ConversationMessage> matches = new IntObjectHashMap<>();
         final List<ConversationMessage> visibleMessages = conversation.getVisibleMessages();
         final List<ConversationMessage> senderMessages = conversation.getSenderMessages();
 

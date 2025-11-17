@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import org.eclipse.collections.api.map.primitive.MutableIntDoubleMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
 
 /**
  *
@@ -32,26 +34,17 @@ import java.util.Set;
 public class ContentPairwiseSimilarityServices {
     
     private static final String UNSUPPORTED = "This calculator does not compute modulii";
-
-    public static class MutableDouble {
-
-        private double val;
-
-        public MutableDouble(final double val) {
-            this.val = val;
-        }
-    }
-
+    
     private PairwiseSimilarityCalculator similarityCalculator;
     private final PairwiseComparisonTokenHandler handler;
     private final List<ElementSimilarity> pairwiseSimilarities = Collections.synchronizedList(new LinkedList<>());
-    private final Map<Integer, Double> modulii = new HashMap<>();
+    private final MutableIntDoubleMap modulii = new IntDoubleHashMap();
     
-    private final Map<Integer, MutableDouble>[] pairwiseSimilaritiesCalculation;
+    private final MutableIntDoubleMap[] pairwiseSimilaritiesCalculation;
 
     private ContentPairwiseSimilarityServices(final PairwiseComparisonTokenHandler handler) {
         this.handler = handler;
-        pairwiseSimilaritiesCalculation = new HashMap[handler.elementCapacity];
+        pairwiseSimilaritiesCalculation = new IntDoubleHashMap[handler.elementCapacity];
     }
 
     public static Map<Integer, Integer> clusterSimilarElements(final PairwiseComparisonTokenHandler handler, final NGramAnalysisParameters nGramParams) {
@@ -93,7 +86,7 @@ public class ContentPairwiseSimilarityServices {
                 final int chunk2 = j;
                 handler.tokenElementFrequencies.values().parallelStream().forEach(value -> processPairsWithToken(value[chunk1], value[chunk2]));
                 for (int k = 0; k < pairwiseSimilaritiesCalculation.length; k++) {
-                    final Map<Integer, MutableDouble> elementSimilarities = pairwiseSimilaritiesCalculation[k];
+                    final MutableIntDoubleMap elementSimilarities = pairwiseSimilaritiesCalculation[k];
                     if (elementSimilarities != null) {
                         processPairwiseSimilarities(k, elementSimilarities, threshold);
                     }
@@ -124,26 +117,25 @@ public class ContentPairwiseSimilarityServices {
                 if (loElement <= hiElement) {
                     synchronized (pairwiseSimilaritiesCalculation) {
                         if (pairwiseSimilaritiesCalculation[loElement] == null) {
-                            pairwiseSimilaritiesCalculation[loElement] = new HashMap<>();
+                            pairwiseSimilaritiesCalculation[loElement] = new IntDoubleHashMap();
                         }
 
-                        final Map<Integer, MutableDouble> elementMap = pairwiseSimilaritiesCalculation[loElement];
+                        final MutableIntDoubleMap elementMap = pairwiseSimilaritiesCalculation[loElement];
                         if (!elementMap.containsKey(hiElement)) {
-                            elementMap.put(hiElement, new MutableDouble(0.0));
+                            elementMap.put(hiElement, 0.0);
                         } else {
-                            elementMap.get(hiElement).val += (freqMap1.get(loElement) * freqMap2.get(hiElement));
+                            elementMap.put(hiElement, freqMap1.get(loElement) * freqMap2.get(hiElement) + elementMap.get(hiElement));
                         }
                     }
                 }
             }));
     }
 
-    private void processPairwiseSimilarities(final int loElement, final Map<Integer, MutableDouble> elementSimilarities, final double threshold) {
-        final double loModulii = similarityCalculator.computeModulii() ? (double) modulii.get(loElement) : (double) handler.elementCardinalities.get(loElement);
-        elementSimilarities.entrySet().forEach(similarity -> {
-            final int hiElement = similarity.getKey();
-            final double hiModulii = similarityCalculator.computeModulii() ? (double) modulii.get(hiElement) : (double) handler.elementCardinalities.get(hiElement);
-            final double score = similarity.getValue().val / (Math.sqrt(loModulii * hiModulii));
+    private void processPairwiseSimilarities(final int loElement, final MutableIntDoubleMap elementSimilarities, final double threshold) {
+        final double loModulii = similarityCalculator.computeModulii() ? modulii.get(loElement) : (double) handler.elementCardinalities.get(loElement);
+        elementSimilarities.forEachKeyValue((hiElement, value) -> {
+            final double hiModulii = similarityCalculator.computeModulii() ? modulii.get(hiElement) : (double) handler.elementCardinalities.get(hiElement);
+            final double score = value / (Math.sqrt(loModulii * hiModulii));
             if (score >= threshold) {
                 pairwiseSimilarities.add(new ElementSimilarity(loElement, hiElement, score));
             }
@@ -226,7 +218,6 @@ public class ContentPairwiseSimilarityServices {
     }
 
     private Map<Integer, Integer> cluster() {
-
         final Map<Integer, Integer> elementToCluster = new HashMap<>();
         final Queue<Integer> freeClusters = new LinkedList<>();
         final Map<Integer, Set<Integer>> clusters = new HashMap<>();

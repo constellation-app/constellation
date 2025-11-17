@@ -48,10 +48,8 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
@@ -89,7 +87,9 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.openide.util.HelpCtx;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -156,7 +156,7 @@ public class NotesViewPane extends BorderPane {
     private boolean creatingFirstNote = true;
     private final NewNotePane newNotePane;
     private int noteID = 0;
-    private final Map<Integer, String> previouseColourMap = new HashMap<>();
+    private final MutableIntObjectMap<String> previousColourMap = new IntObjectHashMap<>();
 
     private static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
@@ -395,7 +395,10 @@ public class NotesViewPane extends BorderPane {
                         mdTree.parse();
                         note.setContentTextFlow(mdTree.getRenderedText());
 
-                        previouseColourMap.replace(note.getID(), note.getNodeColour());
+                        // replace if an entry already exists
+                        if (previousColourMap.contains(note.getID())) {
+                            previousColourMap.put(note.getID(), note.getNodeColour());
+                        }
 
                         note.setEditMode(false);
                         newNotePane.clearTextFields();
@@ -776,8 +779,8 @@ public class NotesViewPane extends BorderPane {
             newNote.setID(++noteID);
         }
 
-        if (!previouseColourMap.containsKey(newNote.getID())) {
-            previouseColourMap.put(newNote.getID(), newNote.getNodeColour());
+        if (!previousColourMap.containsKey(newNote.getID())) {
+            previousColourMap.put(newNote.getID(), newNote.getNodeColour());
         }
 
         // Define dateTime label
@@ -1064,8 +1067,8 @@ public class NotesViewPane extends BorderPane {
 
             deleteAlert.showAndWait();
             if (deleteAlert.getResult() == ButtonType.OK) {
-                if (previouseColourMap.containsKey(newNote.getID())) {
-                    previouseColourMap.remove(newNote.getID());
+                if (previousColourMap.containsKey(newNote.getID())) {
+                    previousColourMap.remove(newNote.getID());
                 }
                 synchronized (LOCK) {
                     if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {

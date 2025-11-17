@@ -23,10 +23,10 @@ import java.awt.image.DataBufferByte;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 
 /**
  * This class encapsulates a BufferedImage that holds rectangles containing
@@ -82,7 +82,7 @@ final class GlyphRectangleBuffer {
      * <p>
      * The key is the hash code of the image in the rectangle.
      */
-    private final Map<Integer, Integer> memory;
+    private final MutableIntIntMap memory;
 
     /**
      * How many rectangles have been created?
@@ -107,7 +107,7 @@ final class GlyphRectangleBuffer {
         this.height = height;
         this.bufferType = bufferType;
         rectBuffers = new ArrayList<>();
-        memory = new HashMap<>();
+        memory = new IntIntHashMap();
         reset();
     }
 
@@ -139,7 +139,6 @@ final class GlyphRectangleBuffer {
     }
 
     public void reset() {
-
         // Start with room for an arbitrary number of rectangles
         // so we don't have to grow the array too quickly.
         //
@@ -250,12 +249,7 @@ final class GlyphRectangleBuffer {
         //
         final int hashCode = Arrays.hashCode(img.getRGB(0, 0, w, h, null, 0, w));
 
-        Integer rectIndex = memory.get(hashCode);
-        if (rectIndex == null) {
-            rectIndex = addHashcode(hashCode, img, extra, w, h);
-        }
-
-        return rectIndex;
+        return getHashcode(hashCode, img, extra, w, h);
     }
 
     private synchronized int addImageToBuffer(final BufferedImage img, final int rectIndex, final int extra, final int w, final int h) {
@@ -350,13 +344,17 @@ final class GlyphRectangleBuffer {
         return true;
     }
 
-    private int addHashcode(final int hashCode, final BufferedImage img, final int extra, final int w, final int h) {
-        int value = memory.size();
-        Integer rectIndex = memory.putIfAbsent(hashCode, value);
-        if (rectIndex == null) {
+    private int getHashcode(final int hashCode, final BufferedImage img, final int extra, final int w, final int h) {
+        final int rectIndex;
+        if (memory.containsKey(hashCode)) {
+            rectIndex = memory.get(hashCode);
+        } else {
+            final int value = memory.size();
+            memory.put(hashCode, value);
             rectIndex = value;
             addImageToBuffer(img, rectIndex, extra, w, h);
         }
+        
         return rectIndex;
     }
 }

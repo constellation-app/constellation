@@ -18,12 +18,12 @@ package au.gov.asd.tac.constellation.plugins.arrangements.planar;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.arrangements.planar.STNumbering.TreeNode;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 
 /**
  *
@@ -48,7 +48,7 @@ public class PQTreeEmbedding {
     }
 
     private void generateInitialAdjacencyLists() {
-        final Map<Integer, Integer> componentVxIDsToStNumbers = new HashMap<>();
+        final MutableIntIntMap componentVxIDsToStNumbers = new IntIntHashMap();
         int i = 1;
         for (final TreeNode node : numberedComponent) {
             componentVxIDsToStNumbers.put(node.vxID, i++);

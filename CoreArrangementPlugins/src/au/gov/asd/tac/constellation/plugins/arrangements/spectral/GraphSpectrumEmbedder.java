@@ -23,6 +23,9 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
+import org.eclipse.collections.api.map.primitive.IntIntMap;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 
 /**
  *
@@ -68,13 +71,13 @@ public class GraphSpectrumEmbedder {
 
     private static class GraphMatrix {
 
-        private final Map<Integer, Integer> matrixPositionToID;
+        private final MutableIntIntMap matrixPositionToID;
         private final double[][] laplacianMatrix;
         private final int dimension;
 
-        private GraphMatrix(final double[][] laplacianMatrix, final Map<Integer, Integer> matrixPositionToID) {
+        private GraphMatrix(final double[][] laplacianMatrix, final IntIntMap matrixPositionToID) {
             this.laplacianMatrix = laplacianMatrix;
-            this.matrixPositionToID = new HashMap<>(matrixPositionToID);
+            this.matrixPositionToID = new IntIntHashMap(matrixPositionToID);
             this.dimension = laplacianMatrix.length;
         }
 
@@ -92,8 +95,8 @@ public class GraphSpectrumEmbedder {
             for (int i = 0; i < numVertices; i++) {
                 matrixEntries[i] = new double[numVertices];
             }
-            final Map<Integer, Integer> idToMatrixPosition = new HashMap<>();
-            final Map<Integer, Integer> matrixPositionToID = new HashMap<>();
+            final MutableIntIntMap idToMatrixPosition = new IntIntHashMap();
+            final MutableIntIntMap matrixPositionToID = new IntIntHashMap();
 
             int skips = 0;
             for (int i = 0; i < rg.getVertexCount(); i++) {

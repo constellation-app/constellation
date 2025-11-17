@@ -37,10 +37,9 @@ import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.versioning.SchemaUpdateProvider;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -78,7 +77,7 @@ public class AnalyticSchemaV2UpdateProvider extends SchemaUpdateProvider {
         if (!oldVertexRawAttribute.getAttributeType().equals(RawAttributeDescription.ATTRIBUTE_NAME)) {
             graph.setPrimaryKey(GraphElementType.VERTEX);
 
-            final Map<Integer, String> rawStringValues = new HashMap<>();
+            final MutableIntObjectMap<String> rawStringValues = new IntObjectHashMap<>();
             for (int vertexPosition = 0; vertexPosition < graph.getVertexCount(); vertexPosition++) {
                 final int vertexId = graph.getVertex(vertexPosition);
                 rawStringValues.put(vertexId, graph.getStringValue(oldVertexRawAttributeId, vertexId));
@@ -87,15 +86,13 @@ public class AnalyticSchemaV2UpdateProvider extends SchemaUpdateProvider {
                 
             final int newVertexRawAttribute = AnalyticConcept.VertexAttribute.RAW.ensure(graph);
             final int vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
-            for (final Entry<Integer, String> rawStringEntry : rawStringValues.entrySet()) {
-                final int vertexId = rawStringEntry.getKey();
-                final String rawValue = rawStringEntry.getValue();
+            rawStringValues.forEachKeyValue((vertexId, rawValue) -> {
                 graph.setObjectValue(newVertexRawAttribute, vertexId, new RawData(rawValue, null));
 
                 if (graph.getStringValue(vertexIdentifierAttribute, vertexId) == null) {
                     graph.setObjectValue(vertexIdentifierAttribute, vertexId, rawValue);
                 }
-            }
+            });
             updateVertexKeys = true;
         }
 
@@ -108,7 +105,7 @@ public class AnalyticSchemaV2UpdateProvider extends SchemaUpdateProvider {
         if (!oldVertexTypeAttribute.getAttributeType().equals(VertexTypeAttributeDescription.ATTRIBUTE_NAME)) {
             graph.setPrimaryKey(GraphElementType.VERTEX);
 
-            final Map<Integer, String> typeStringValues = new HashMap<>();
+            final MutableIntObjectMap<String> typeStringValues = new IntObjectHashMap<>();
             for (int vertexPosition = 0; vertexPosition < graph.getVertexCount(); vertexPosition++) {
                 final int vertexId = graph.getVertex(vertexPosition);
                 typeStringValues.put(vertexId, graph.getStringValue(oldVertexTypeAttributeId, vertexId));
@@ -117,15 +114,13 @@ public class AnalyticSchemaV2UpdateProvider extends SchemaUpdateProvider {
             
             final int newVertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
             final int vertexRawAttributeId = AnalyticConcept.VertexAttribute.RAW.ensure(graph);
-            for (final Entry<Integer, String> typeStringEntry : typeStringValues.entrySet()) {
-                final int vertexId = typeStringEntry.getKey();
-                final String typeValue = typeStringEntry.getValue();
+            typeStringValues.forEachKeyValue((vertexId, typeValue) -> {
                 final SchemaVertexType type = SchemaVertexTypeUtilities.getType(typeValue);
                 graph.setObjectValue(newVertexTypeAttributeId, vertexId, type);
 
                 final RawData rawValue = graph.getObjectValue(vertexRawAttributeId, vertexId);
                 graph.setObjectValue(vertexRawAttributeId, vertexId, rawValue != null ? new RawData(rawValue.getRawIdentifier(), typeValue) : new RawData(null, null));
-            }
+            });
 
             updateVertexKeys = true;
         }
@@ -148,7 +143,7 @@ public class AnalyticSchemaV2UpdateProvider extends SchemaUpdateProvider {
         if (!oldTransactionTypeAttribute.getAttributeType().equals(TransactionTypeAttributeDescription.ATTRIBUTE_NAME)) {
             graph.setPrimaryKey(GraphElementType.TRANSACTION);
 
-            final Map<Integer, String> typeStringValues = new HashMap<>();
+            final MutableIntObjectMap<String> typeStringValues = new IntObjectHashMap<>();
             for (int transactionPosition = 0; transactionPosition < graph.getTransactionCount(); transactionPosition++) {
                 final int transactionId = graph.getTransaction(transactionPosition);
                 typeStringValues.put(transactionId, graph.getStringValue(oldTransactionTypeAttributeId, transactionId));
@@ -156,10 +151,10 @@ public class AnalyticSchemaV2UpdateProvider extends SchemaUpdateProvider {
             graph.removeAttribute(oldTransactionTypeAttributeId);
             
             final int newTransactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
-            for (final Entry<Integer, String> typeStringEntry : typeStringValues.entrySet()) {
-                final SchemaTransactionType type = SchemaTransactionTypeUtilities.getType(typeStringEntry.getValue());
-                graph.setObjectValue(newTransactionTypeAttributeId, typeStringEntry.getKey(), type);
-            }
+            typeStringValues.forEachKeyValue((transactionId, typeValue) -> {
+                final SchemaTransactionType type = SchemaTransactionTypeUtilities.getType(typeValue);
+                graph.setObjectValue(newTransactionTypeAttributeId, transactionId, type);
+            });
 
             updateTransactionKeys = true;
         }
