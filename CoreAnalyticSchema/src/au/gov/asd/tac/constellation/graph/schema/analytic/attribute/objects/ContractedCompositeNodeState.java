@@ -130,7 +130,7 @@ public class ContractedCompositeNodeState {
 
         // Add the now complete expanded composite node store to the graph (do not initialise or complete with schema)
         final Map<String, Integer> vertexMap = new HashMap<>();
-        final List<Integer> expandedVerts = GraphRecordStoreUtilities.addRecordStoreToGraph(wg, addToGraphStore, false, false, null, vertexMap, null);
+        final List<Integer> expandedVerts = GraphRecordStoreUtilities.addRecordStoreToGraph(wg, addToGraphStore, false, false, null, vertexMap, null, true);
 
         // Create the expanded composite state for each expanded node and add it to those nodes.
         vertexMap.entrySet().forEach(entry -> {

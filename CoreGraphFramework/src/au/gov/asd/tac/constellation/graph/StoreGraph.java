@@ -779,12 +779,22 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
+    public int addTransaction(int transaction, int sourceVertex, int destinationVertex, final boolean directed) {
+        return addTransaction(transaction, sourceVertex, destinationVertex, directed, false);
+    }
+   
+    @Override
     public int addTransaction(final int sourceVertex, final int destinationVertex, final boolean directed) {
-        return addTransaction(-1, sourceVertex, destinationVertex, directed);
+        return addTransaction(-1, sourceVertex, destinationVertex, directed, false);
+    }
+    
+    @Override
+    public int addTransaction(final int sourceVertex, final int destinationVertex, final boolean directed, final boolean isFromComposite) {
+        return addTransaction(-1, sourceVertex, destinationVertex, directed, isFromComposite);
     }
 
     @Override
-    public int addTransaction(int transaction, int sourceVertex, int destinationVertex, final boolean directed) {
+    public int addTransaction(int transaction, int sourceVertex, int destinationVertex, final boolean directed,  final boolean isFromComposite) {
         // Ensure that the source vertex exists
         if (!vStore.elementExists(sourceVertex)) {
             throw new IllegalArgumentException("Attempt to create transaction from source vertex that does not exist: " + sourceVertex);
@@ -822,7 +832,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         final int destinationDirection;
         if (sourceVertex <= destinationVertex) {
             lowVertex = sourceVertex;
-            highVertex = destinationVertex;
+            highVertex = destinationVertex;            
             if (directed) {
                 lowDirection = OUTGOING;
                 highDirection = INCOMING;
@@ -843,8 +853,10 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             } else {
                 lowDirection = highDirection = UNDIRECTED;
                 sourceDirection = destinationDirection = UNDIRECTED;
-                sourceVertex = lowVertex;
-                destinationVertex = highVertex;
+                if (!isFromComposite) {
+                    sourceVertex = lowVertex;
+                    destinationVertex = highVertex;
+                }
             }
         }
 
@@ -919,7 +931,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         addElementToIndices(GraphElementType.TRANSACTION, transaction);
 
         if (graphEdit != null) {
-            graphEdit.addTransaction(sourceVertex, destinationVertex, directed, transaction);
+            final boolean newDirected = isFromComposite ? true : directed;
+            graphEdit.addTransaction(sourceVertex, destinationVertex, newDirected, transaction);
         }
 
         return transaction;

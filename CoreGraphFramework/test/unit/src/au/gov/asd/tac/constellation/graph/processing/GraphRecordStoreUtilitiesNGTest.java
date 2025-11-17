@@ -242,7 +242,7 @@ public class GraphRecordStoreUtilitiesNGTest {
         final Map<String, Integer> vertexMap = new HashMap<>();
         final Map<String, Integer> transactionMap = new HashMap<>();
 
-        final List<Integer> veritices = GraphRecordStoreUtilities.addRecordStoreToGraph(newGraph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, vertexMap, transactionMap);
+        final List<Integer> veritices = GraphRecordStoreUtilities.addRecordStoreToGraph(newGraph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, vertexMap, transactionMap, false);
         assertEquals(veritices.size(), 0);
     }
 
@@ -263,7 +263,7 @@ public class GraphRecordStoreUtilitiesNGTest {
         final Map<String, Integer> vertexMap = new HashMap<>();
         final Map<String, Integer> transactionMap = new HashMap<>();
 
-        final List<Integer> veritices = GraphRecordStoreUtilities.addRecordStoreToGraph(newGraph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, vertexMap, transactionMap);
+        final List<Integer> veritices = GraphRecordStoreUtilities.addRecordStoreToGraph(newGraph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, vertexMap, transactionMap, false);
         assertEquals(2, veritices.size());
         assertEquals(2, newGraph.getVertexCount());
         assertEquals(2, newGraph.getTransactionCount());
