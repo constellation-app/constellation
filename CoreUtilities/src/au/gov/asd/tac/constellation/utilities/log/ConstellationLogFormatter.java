@@ -35,6 +35,8 @@ import java.util.stream.Collectors;
  */
 public class ConstellationLogFormatter extends Formatter {
 
+    private final static String FULL_STACKTRACE = "~~~~ ~~~~ FULL STACKTRACE ~~~~ ~~~~";
+    
     // Store a copy of the previous log message, so we can check for repeats.
     private String repeatedLogMessage = "";
     private String repeatedExceptionBlock = "";
@@ -64,23 +66,36 @@ public class ConstellationLogFormatter extends Formatter {
         } else {
             formattedMessage = (logRecord.getMessage() != null ? logRecord.getMessage() : "") + SeparatorConstants.NEWLINE;
         }
+        if (formattedMessage.contains(FULL_STACKTRACE)) {
+            return formattedMessage;
+        }
 
+        boolean repeatedException = false;
         final StackTraceElement[] errTrace;
         if (error != null && error.getStackTrace() != null) {
             errTrace = error.getStackTrace();
         } else {
             errTrace = null;
         }
-        boolean repeatedException = false;
         if (errTrace != null) {
-            exceptionBlock.append((logRecord.getMessage() != null ? logRecord.getMessage() : ""));
-            exceptionBlock.append(SeparatorConstants.NEWLINE);
+            exceptionBlock.append(formattedMessage);
             exceptionBlock.append("  ");
             exceptionBlock.append(error.toString());
             exceptionBlock.append(SeparatorConstants.NEWLINE);
 
             final String stackTrace = Arrays.stream(errTrace)
-                    .map(entry -> "    at " + entry.toString())
+                    .map(entry -> {
+                        String sourceLine = entry.toString();
+                        final int scriptIndicator = sourceLine.indexOf("<script>");
+                        if (scriptIndicator > -1) {
+                            sourceLine = sourceLine.substring(scriptIndicator-1);
+                        }
+                        final int threadIndicator = sourceLine.indexOf("$");
+                        if (threadIndicator > -1) {
+                            sourceLine = sourceLine.substring(0, threadIndicator);
+                        }
+                        return "    at " + sourceLine;
+                    })
                     .collect(Collectors.joining(SeparatorConstants.NEWLINE));
 
             repeatedException = stackTrace.equals(repeatedExceptionBlock);
@@ -89,11 +104,13 @@ public class ConstellationLogFormatter extends Formatter {
             }
             exceptionBlock.append(stackTrace);
             exceptionBlock.append(SeparatorConstants.NEWLINE);
-        }
-        if (!repeatedException && exceptionBlock.isEmpty()) {
+        } else {
+            if (formattedMessage.trim().isBlank()) {
+                return "";
+            }            
             repeatedExceptionBlock = "";
         }
-
+        
         if (repeatedException || (!repeatedLogMessage.isBlank() && formattedMessage.equals(repeatedLogMessage))) {
             final StringBuilder repeatedResponse = new StringBuilder();
             repeatedResponse.append(prefix.toString());
