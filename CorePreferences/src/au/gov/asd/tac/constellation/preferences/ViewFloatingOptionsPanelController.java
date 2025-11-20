@@ -92,7 +92,7 @@ public class ViewFloatingOptionsPanelController extends OptionsPanelController {
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx(getClass().getName());
+        return new HelpCtx("au.gov.asd.tac.constellation.preferences.view");
     }
 
     @Override

@@ -45,14 +45,14 @@ import org.openide.windows.OnShowing;
 public class Generator implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(Generator.class.getName());
-    
+
     private static String baseDirectory = "";
     public static final String TOC_FILE_NAME = "toc.md";
     public static final String ROOT_NODE_NAME = "Constellation Documentation";
 
     /**
-     * This is the system property that is set to true in order to make the AWT
-     * thread run in headless mode for tests, etc.
+     * This is the system property that is set to true in order to make the AWT thread run in headless mode for tests,
+     * etc.
      */
     private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
 
@@ -64,15 +64,15 @@ public class Generator implements Runnable {
         if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
             return;
         }
-        
+
         // To update the online help TOC file change the boolean to true
         // Must also run adaptors when updating online help so those links aren't removed from the TOC
-        // Reset back to false after updating the TOC file 
-        final boolean updateOnlineHelp = false;
- 
+        // Reset back to false after updating the TOC file
+        final boolean updateOnlineHelp = true;
+
         if (updateOnlineHelp) {
             baseDirectory = getBaseDirectory();
-            
+
             // First: create the TOCFile in the base directory for ONLINE help
             // Create the online root node for application-wide table of contents
             TOCGenerator.createTOCFile(getOnlineHelpTOCDirectory() + TOC_FILE_NAME);
@@ -115,7 +115,7 @@ public class Generator implements Runnable {
      */
     protected static List<File> getXMLFiles() {
         baseDirectory = getBaseDirectory();
-        
+
         // Loop all providers and add files to the tocXMLFiles list
         final List<File> tocXMLFiles = new ArrayList<>();
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
@@ -164,7 +164,7 @@ public class Generator implements Runnable {
         final String newPath = jarIx > -1 ? path.toString().substring(0, jarIx) : "";
         return newPath != null ? newPath + File.separator + "ext" : "";
     }
-    
+
     public static String getOnlineHelpTOCDirectory() {
         baseDirectory = getBaseDirectory();
         final int index = baseDirectory.lastIndexOf("constellation" + File.separator);

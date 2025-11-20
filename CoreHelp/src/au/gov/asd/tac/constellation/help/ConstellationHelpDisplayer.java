@@ -60,14 +60,14 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     private static final Logger LOGGER = Logger.getLogger(ConstellationHelpDisplayer.class.getName());
 
     private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/help";
-    
+
     private static final String NEWLINE = "\n";
     private static final Pattern SPLIT_REGEX = Pattern.compile("</a>");
     private static final String SEP = File.separator;
-    
+
     // Run in a different thread, not the JavaFX thread
     private static final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
-    
+
     /**
      * Display the help page for the following HelpCtx
      *
@@ -115,7 +115,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         }
         return false;
     }
-    
+
     /**
      * Browse to the supplied URI using the desktops browser.
      *
@@ -151,7 +151,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     protected static InputStream getInputStream(final String filePath) throws FileNotFoundException {
         return new FileInputStream(Paths.get(filePath).toString());
     }
-    
+
     protected static String getFileURLString(final String relativePath) throws MalformedURLException {
         return new File(Generator.getBaseDirectory() + SEP + relativePath)
                 .toURI().toURL().toString();
@@ -168,15 +168,15 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
      */
     protected static String generateHTMLOutput(final InputStream tocInput, final InputStream pageInput) throws IOException {
         final StringBuilder html = new StringBuilder();
-        
+
         final InputStream htmlTemplate = getInputStream(Generator.getBaseDirectory() + SEP + "ext" + SEP + "bootstrap" + SEP + "assets" + SEP + "HelpTemplate.html");
-        final String templateHtml =  new String(htmlTemplate.readAllBytes(), StandardCharsets.UTF_8);
+        final String templateHtml = new String(htmlTemplate.readAllBytes(), StandardCharsets.UTF_8);
         html.append(templateHtml);
-        
+
         // Create the css and js links and scripts
         final String stylesheetLink = "<link href=\"\\%s\" rel='stylesheet'></link>";
         final String javascriptText = "<script type=\"text/javascript\" src=\"\\%s\" ></script>";
-        
+
         final String css = String.format(stylesheetLink, getFileURLString("ext/bootstrap/assets/css/app.css"));
         final String noScript = String.format(stylesheetLink, getFileURLString("ext/bootstrap/assets/css/noscript.css"));
         final String cssBootstrap = String.format(stylesheetLink, getFileURLString("ext/bootstrap/css/bootstrap.css"));
@@ -191,8 +191,8 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String bootstrapjs = String.format(javascriptText, getFileURLString("ext/bootstrap/js/bootstrap.js"));
         final String cookiejs = String.format("<script src=\"\\%s\" ></script>", getFileURLString("ext/bootstrap/js/js.cookie.min.js"));
         final String searchjs = String.format(javascriptText, getFileURLString("ext/bootstrap/js/index.min.js"));
-        
-        final StringBuilder scripts = new StringBuilder();      
+
+        final StringBuilder scripts = new StringBuilder();
         scripts.append(css).append(NEWLINE);
         scripts.append(noScript).append(NEWLINE);
         scripts.append(cssBootstrap).append(NEWLINE);
@@ -207,29 +207,28 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         scripts.append(bootstrapjs).append(NEWLINE);
         scripts.append(cookiejs).append(NEWLINE);
         scripts.append(searchjs).append(NEWLINE);
-        
+
         // Add in the links and scripts to the top of the file
         final int scriptIndex = html.indexOf("SCRIPTS");
         html.replace(scriptIndex, scriptIndex + 7, scripts.toString());
-        
-        
+
         // Add in the TOC
-        final String tocString =  new String(tocInput.readAllBytes(), StandardCharsets.UTF_8);
+        final String tocString = new String(tocInput.readAllBytes(), StandardCharsets.UTF_8);
         final Parser parser = Parser.builder().build();
         final HtmlRenderer renderer = HtmlRenderer.builder().build();
         final Node tocDocument = parser.parse(tocString);
         final String tocHtml = renderer.render(tocDocument);
         final int tocIndex = html.indexOf("TABLE_OF_CONTENTS");
         html.replace(tocIndex, tocIndex + 17, tocHtml);
-        
-        // Add in the help page 
+
+        // Add in the help page
         final String rawInput = new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
         final Node pageDocument = parser.parse(rawInput);
         final String pageHtml = renderer.render(pageDocument);
         final int pageIndex = html.indexOf("MAIN_PAGE");
         html.replace(pageIndex, pageIndex + 9, pageHtml);
-        
-        // Add in the list of documents to search 
+
+        // Add in the list of documents to search
         final List<String> documents = createSearchDocument(tocHtml);
         final StringBuilder documentString = new StringBuilder();
         documentString.append(documents.getFirst());
@@ -242,10 +241,10 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
         return html.toString();
     }
-    
+
     /**
      * Creates json file of documents to search. Each entry has an id, title, category and link.
-     * 
+     *
      * @param toc the toc file to base off
      * @return a list of json-formatted page entries
      */
@@ -255,7 +254,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String[] elements = SPLIT_REGEX.split(toc);
         int index = 0;
         String category = "";
-        
+
         for (final String element : elements) {
             if (element.contains("data-target")) {
                 final int dataIndex = element.indexOf("data-target");
@@ -272,7 +271,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                 // replaceAll to replace stops the search from working as the links require double \
                 final String link = linkString.substring(quoteIndex + 1, endIndex - 1).replaceAll("\\\\", "\\\\\\\\");
                 final String pageName = linkString.substring(endIndex + 1);
-                
+
                 final String page = String.format("""
                                     {
                                         "id": %s,
@@ -283,15 +282,15 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                                     """, index, pageName, category, link);
                 documents.add(page);
                 index++;
-                
+
             }
         }
-        
+
         // To update the online help search file change the boolean to true
         // Must also run adaptors when updating online help so those results aren't removed from the search file
-        // Reset back to false after updating the search file 
-        final boolean updateOnlineHelp = false;
-        
+        // Reset back to false after updating the search file
+        final boolean updateOnlineHelp = true;
+
         if (updateOnlineHelp) {
             // Create a json file for the online help search
             final String path = Generator.getOnlineHelpTOCDirectory() + "search.json";

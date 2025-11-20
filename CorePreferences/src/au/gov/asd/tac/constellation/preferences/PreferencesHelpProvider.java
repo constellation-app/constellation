@@ -44,6 +44,7 @@ public class PreferencesHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.preferences.application", MODULE_PATH + "application-preferences.md");
         map.put("au.gov.asd.tac.constellation.preferences.developer", MODULE_PATH + "developer-preferences.md");
         map.put("au.gov.asd.tac.constellation.preferences.graph", MODULE_PATH + "graph-preferences.md");
+        map.put("au.gov.asd.tac.constellation.preferences.view", MODULE_PATH + "view-preferences.md");
         return map;
     }
 
