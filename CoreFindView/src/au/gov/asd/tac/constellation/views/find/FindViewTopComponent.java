@@ -39,7 +39,7 @@ import org.openide.windows.TopComponent;
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
-        mode = "properties",
+        mode = "output",
         openAtStartup = false
 )
 @ActionID(
@@ -136,7 +136,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         UpdateUI();
         disableFindView();
         focusFindTextField();
-        setFloating(Bundle.CTL_FindViewTopComponent(), 600, 350, Spawn.LEFT);
+        setFloating(Bundle.CTL_FindViewTopComponent(), 600, 350, Spawn.BOTTOM);
     }
 
     /**

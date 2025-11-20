@@ -38,22 +38,12 @@ public class ViewFloatingOptionsPanel extends JPanel {
         tableModel = new DefaultTableModel(new Object[]{"View", "Floating"}, 0) {
             @Override
             public Class getColumnClass(final int column) {
-                return switch (column) {
-                    case 0 ->
-                        String.class; // View names.
-                    default ->
-                        Boolean.class; // Checkboxes.
-                };
+                return column == 0 ? String.class : Boolean.class;
             }
 
             @Override
             public boolean isCellEditable(final int row, final int column) {
-                return switch (column) {
-                    case 0 ->
-                        false;
-                    default ->
-                        true;
-                };
+                return column != 0;
             }
         };
 
