@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  */
 public class ConstellationLogFormatter extends Formatter {
 
-    private final static String FULL_STACKTRACE = "~~~~ ~~~~ FULL STACKTRACE ~~~~ ~~~~";
+    private final static String FULL_STACKTRACE = "~~~~ ~~~~ FULL STACKTRACE ~~~~ ~~~~"; // must match with entry in ErrorReportSessionData
     
     // Store a copy of the previous log message, so we can check for repeats.
     private String repeatedLogMessage = "";

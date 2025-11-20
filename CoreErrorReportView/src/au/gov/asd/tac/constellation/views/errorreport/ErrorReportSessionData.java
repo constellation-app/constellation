@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 public class ErrorReportSessionData {
 
     private static final Logger LOGGER = Logger.getLogger(ErrorReportSessionData.class.getName());
-    private final static String FULL_STACKTRACE = "~~~~ ~~~~ FULL STACKTRACE ~~~~ ~~~~";
+    private final static String FULL_STACKTRACE = "~~~~ ~~~~ FULL STACKTRACE ~~~~ ~~~~"; // must match with entry in ConstellationLogFormatter
     
     private final List<ErrorReportEntry> sessionErrors = new ArrayList<>();
     private final List<ErrorReportEntry> displayedErrors = new ArrayList<>();

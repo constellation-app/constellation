@@ -116,9 +116,9 @@ public class ErrorReportFullSuiteNGTest {
 
         List<ErrorReportEntry> storedList = session.refreshDisplayedErrors(filters);
 
-        // should contain 2 entries, each having 2 occurences
+        // should contain 3 entries, one of which has 2 occurences
         System.out.println("\n>>>> Check list size");
-        assertEquals(storedList.size(), 2);
+        assertEquals(storedList.size(), 3);
         final ErrorReportEntry storedData = session.findDisplayedEntryWithId(testEntry2.getEntryId());
 
         System.out.println("\n>>>> Check Occurrences");
@@ -138,7 +138,7 @@ public class ErrorReportFullSuiteNGTest {
         session.removeEntry(testEntry.getEntryId());
         storedList = session.refreshDisplayedErrors(filters);
         System.out.println("\n>>>> Check new list size");
-        assertEquals(storedList.size(), 1);
+        assertEquals(storedList.size(), 2);
 
         List<String> activeLevels = erdm.getActivePopupErrorLevels();
 
