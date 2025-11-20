@@ -95,7 +95,7 @@ public class HistogramDisplay2 extends BorderPane {
     private static final int MAXIMUM_BAR_HEIGHT = 99;
     private static final int MINIMUM_BAR_WIDTH = 4;
     private static final int MINIMUM_SELECTED_WIDTH = 3;
-    private static final int MINIMUM_TEXT_WIDTH = 30;
+    private static final int MINIMUM_TEXT_WIDTH = 90;
     private static final int MAXIMUM_TEXT_WIDTH = 300;
     private static final int PREFERRED_HEIGHT = 600;
     private static final int DEFAULT_FONT_SIZE = 12;
@@ -612,7 +612,7 @@ public class HistogramDisplay2 extends BorderPane {
         headerTotalBins.setStyle(FONT_SIZE_CSS_PROPERTY + fontSize);
 
         headerValue.setMinHeight(barHeight);
-        headerValue.prefWidthProperty().bind(propertyCol.widthProperty());
+        headerValue.minWidthProperty().bind(propertyCol.widthProperty());
 
         final Pane spacer = new Pane();
         final Pane spacer2 = new Pane();
