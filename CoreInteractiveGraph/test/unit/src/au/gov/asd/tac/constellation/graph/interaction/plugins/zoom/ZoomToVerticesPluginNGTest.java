@@ -28,7 +28,7 @@ import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -126,14 +126,14 @@ public class ZoomToVerticesPluginNGTest {
         parameters.setIntegerValue(VERTEX_PARAMETER_ID, vxId3);
         
         final Camera beforeCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertTrue(beforeCamera.areSame(new Camera()));
+        assertEquals(beforeCamera, new Camera());
         
         instance.edit(graph, null, parameters);
         
         final Camera afterCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertFalse(afterCamera.areSame(new Camera()));
-        assertTrue(afterCamera.lookAtCentre.areSame(new Vector3f(10, 11, 12)));
-        assertTrue(afterCamera.lookAtEye.areSame(new Vector3f(10, 11, 28)));
+        assertNotEquals(afterCamera, new Camera());
+        assertEquals(afterCamera.lookAtCentre, new Vector3f(10, 11, 12));
+        assertEquals(afterCamera.lookAtEye, new Vector3f(10, 11, 28));
     }
     
     /**
@@ -151,14 +151,14 @@ public class ZoomToVerticesPluginNGTest {
         parameters.setObjectValue(VERTICES_PARAMETER_ID, new int[]{vxId1, vxId2});
         
         final Camera beforeCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertTrue(beforeCamera.areSame(new Camera()));
+        assertEquals(beforeCamera, new Camera());
         
         instance.edit(graph, null, parameters);
         
         final Camera afterCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertFalse(afterCamera.areSame(new Camera()));
-        assertTrue(afterCamera.lookAtCentre.areSame(new Vector3f(-2.5F, -2.5F, -2.5F)));
-        assertTrue(afterCamera.lookAtEye.areSame(new Vector3f(-2.5F, -2.5F, 17.24302F)));
+        assertNotEquals(afterCamera, new Camera());
+        assertEquals(afterCamera.lookAtCentre, new Vector3f(-2.5F, -2.5F, -2.5F));
+        assertEquals(afterCamera.lookAtEye, new Vector3f(-2.5F, -2.5F, 17.24302F));
     }
     
     /**
@@ -176,14 +176,14 @@ public class ZoomToVerticesPluginNGTest {
         parameters.setObjectValue(VERTICES_PARAMETER_ID, Arrays.asList(vxId1, vxId2));
         
         final Camera beforeCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertTrue(beforeCamera.areSame(new Camera()));
+        assertEquals(beforeCamera, new Camera());
         
         instance.edit(graph, null, parameters);
         
         // this should be the same value as it was with the array
         final Camera afterCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertFalse(afterCamera.areSame(new Camera()));
-        assertTrue(afterCamera.lookAtCentre.areSame(new Vector3f(-2.5F, -2.5F, -2.5F)));
-        assertTrue(afterCamera.lookAtEye.areSame(new Vector3f(-2.5F, -2.5F, 17.24302F)));
+        assertNotEquals(afterCamera, new Camera());
+        assertEquals(afterCamera.lookAtCentre, new Vector3f(-2.5F, -2.5F, -2.5F));
+        assertEquals(afterCamera.lookAtEye, new Vector3f(-2.5F, -2.5F, 17.24302F));
     }
 }

@@ -73,7 +73,7 @@ public class ArrangeInGridGeneralPlugin extends SimpleEditPlugin {
         gridParams.setRowOffsets(pp.get(OFFSET_ROWS_PARAMETER_ID).getBooleanValue());
 
         final GridArranger arranger = new GridArranger(gridParams);
-        final Boolean maintainMean = pp.get(MAINTAIN_MEAN_PARAMETER_ID).getBooleanValue();
+        final boolean maintainMean = pp.get(MAINTAIN_MEAN_PARAMETER_ID).getBooleanValue();
         arranger.setMaintainMean(maintainMean);
 
         final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(graph, SelectedInclusionGraph.Connections.NONE);

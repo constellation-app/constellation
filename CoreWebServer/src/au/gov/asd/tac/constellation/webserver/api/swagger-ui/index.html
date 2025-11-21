@@ -34,21 +34,95 @@
     <div id="swagger-ui"></div>
 
     <script src="./swagger-ui-bundle.js"> </script>
-    <script src="./swagger-ui-standalone-preset.js"> </script>
+    <script src="./swagger-ui-standalone-preset.js"> </script>    
+    
     <script>
-    window.onload = function() {
+    
+    window.onload = function() {        
+        //experiment components wrapping       
+        
+        const MyApiKeyAuthPlugin = function() {
+        return {
+          statePlugins: {
+            auth: {
+              wrapActions: {
+                  authorize: (oriAction, system) => (payload) => {
+                      //get currently running server:port
+                  let currServer = system.oas3Selectors.selectedServer();                  
+                  let err = system.errActions;
+                  //clear any existing auth errors
+                  err.clear({ source: "auth" });
+                  if(payload && payload.ConstellationSecret && payload.ConstellationSecret.value) {
+                      if ( payload.ConstellationSecret.value.trim().length > 0) {
+                          //call any example endpoint to check authorization with entered secret
+                            fetch(`${currServer}/v2/service/reflect_json`, {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',                      
+                                'accept': '*/*',
+                                'X-CONSTELLATION-SECRET':payload.ConstellationSecret.value
+                              }
+                            }).then(response => {
+                                // Check if the response was successful (e.g., status code 200-299)
+                                if (!response.ok) {
+                                    err.newAuthErr( {
+                                      authId: "ConstellationSecret",
+                                      source: "auth",
+                                      level: "error",
+                                      message: `HTTP error! status: ${response.status} ${response.statusText}`
+                                    });
+                                  return;
+                                }
+                                // Parse the response body as JSON
+                                return oriAction(payload);
+                              }) .catch(error => {
+                                  err.newAuthErr( {
+                                        authId: "ConstellationSecret",
+                                        source: "auth",
+                                        level: "error",
+                                        message: `Error connecting to the rest server`
+                                    });                                    
+                                  return;
+                              });
+                      } else {
+                          err.newAuthErr( {
+                              authId: "ConstellationSecret",
+                              source: "auth",
+                              level: "error",
+                              message: `ConstellationSecret can not be empty`
+                          });
+                          return;
+                      }
+                      
+                  } else {
+                     err.newAuthErr( {
+                              authId: "ConstellationSecret",
+                              source: "auth",
+                              level: "error",
+                              message: `ConstellationSecret can not be empty`
+                          });
+                          return;
+                  }     
+                }
+              }
+            }
+          }
+        };
+      };    
+
       // Begin Swagger UI call region
       const ui = SwaggerUIBundle({
         url: "/swagger/constellation.json",
         dom_id: '#swagger-ui',
         deepLinking: true,
-        presets: [
+        presets: [            
           SwaggerUIBundle.presets.apis,
           SwaggerUIStandalonePreset
-        ],
+        ],        
         plugins: [
-          SwaggerUIBundle.plugins.DownloadUrl
-        ],
+          SwaggerUIBundle.plugins.DownloadUrl,          
+          MyApiKeyAuthPlugin          
+        ],        
         layout: "StandaloneLayout"
       })
       // End Swagger UI call region

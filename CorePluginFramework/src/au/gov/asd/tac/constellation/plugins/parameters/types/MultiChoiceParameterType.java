@@ -469,7 +469,7 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
         public String toString() {
             final StringBuilder b = new StringBuilder();
             for (final ParameterValue choice : options) {
-                if (b.length() > 0) {
+                if (!b.isEmpty()) {
                     b.append(SeparatorConstants.NEWLINE);
                 }
 

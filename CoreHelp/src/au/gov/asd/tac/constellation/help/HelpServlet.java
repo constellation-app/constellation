@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.SystemUtils;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -52,6 +53,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class HelpServlet extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(HelpServlet.class.getName());
+    
+    private static final Pattern FILE_AND_DRIVE = Pattern.compile("\\/file:\\/[a-zA-Z]:");
 
     private static final Map<String, String> MIME_TYPES = Map.of(
             ".css", "text/css",
@@ -219,8 +222,7 @@ public class HelpServlet extends HttpServlet {
      * @return the stripped path without /file:/home or drive letter within it.
      */
     protected static String stripLeadingPath(final String fullPath) {
-        return fullPath
-                .replaceAll("\\/file:\\/[a-zA-Z]:", "")
+        return FILE_AND_DRIVE.matcher(fullPath).replaceAll("")
                 .replace("/file:", "")
                 .replace("file:", "");
     }

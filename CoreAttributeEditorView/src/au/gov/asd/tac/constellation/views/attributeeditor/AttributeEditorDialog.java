@@ -31,11 +31,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 /**
- * Dialog for the editing of attribute values through CONSTELLATION's attribute
+ * Dialog for the editing of attribute values through Constellation's attribute
  * editor.
  * <br>
  * This is a modal javafx dialog.
- *
+ * 
  * @author twinkle2_little
  */
 public class AttributeEditorDialog extends ConstellationDialog {
@@ -45,7 +45,6 @@ public class AttributeEditorDialog extends ConstellationDialog {
     private final Label errorLabel;
     private final Button okButton;
     private final Button cancelButton;
-    private final Button defaultButton;
     private final CheckBox noValueCheckBox;
     private final VBox noValueVBox;
 
@@ -60,7 +59,6 @@ public class AttributeEditorDialog extends ConstellationDialog {
 
         okButton = new Button("OK");
         cancelButton = new Button("Cancel");
-        defaultButton = new Button("Restore Default");
         noValueCheckBox = new CheckBox("No Value");
 
         okCancelHBox = new HBox(20);
@@ -78,14 +76,6 @@ public class AttributeEditorDialog extends ConstellationDialog {
 
         cancelButton.setOnAction(e -> hideDialog());
 
-        defaultButton.setOnAction(e -> {
-            if (editor.noValueCheckBoxAvailable()) {
-                noValueCheckBox.setSelected(editor.isDefaultValueNull());
-            }
-
-            editor.setDefaultValue();
-        });
-
         noValueCheckBox.selectedProperty().addListener(e -> {
             if (noValueCheckBox.isSelected()) {
                 editor.storeValue();
@@ -97,13 +87,22 @@ public class AttributeEditorDialog extends ConstellationDialog {
             }
         });
 
+        okCancelHBox.getChildren().addAll(okButton, cancelButton);
+        
         if (defaultButtonAvailable) {
-            okCancelHBox.getChildren().addAll(okButton, cancelButton, defaultButton);
-        } else {
-            okCancelHBox.getChildren().addAll(okButton, cancelButton);
+            final Button defaultButton = new Button("Restore Default");
+            defaultButton.setOnAction(e -> {
+                if (editor.isNoValueAllowed()) {
+                    noValueCheckBox.setSelected(editor.isDefaultValueNull());
+                }
+
+                editor.setToDefaultValue();
+            });
+            
+            okCancelHBox.getChildren().add(defaultButton);
         }
 
-        if (editor.noValueCheckBoxAvailable()) {
+        if (editor.isNoValueAllowed()) {
             noValueVBox.getChildren().addAll(noValueCheckBox, okCancelHBox);
         }
 
@@ -117,7 +116,7 @@ public class AttributeEditorDialog extends ConstellationDialog {
                 editor.getEditorHeading(),
                 ec,
                 errorLabel,
-                editor.noValueCheckBoxAvailable() ? noValueVBox : okCancelHBox);
+                editor.isNoValueAllowed() ? noValueVBox : okCancelHBox);
 
         final Scene scene = new Scene(root);
         scene.setFill(Color.rgb(0, 0, 0, 0));

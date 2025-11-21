@@ -31,10 +31,10 @@ import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  *
@@ -140,7 +140,7 @@ public class LineBatcher implements SceneBatcher {
     }
 
     private final SortedMap<Integer, Integer> connectionPosToBufferPos = new TreeMap<>();
-    private final List<Integer> connections = new ArrayList<>();
+    private final MutableIntList connections = new IntArrayList();
 
     @Override
     public GLRenderableUpdateTask createBatch(final VisualAccess access) {

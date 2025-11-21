@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
  * @author Andromeda-224
  */
 public class PluginReportNGTest {
-    
+
     private PluginReport report;
     private GraphReport graphReport;
 
@@ -48,7 +48,8 @@ public class PluginReportNGTest {
     private static final String PLUGIN_TEST_NAME = "Test";
     private static final String PLUGIN_TEST_DESCRIPTION = "DESCRIPTION";
     private static final String PLUGIN_TEST_MESSAGE = "TEST MESSAGE";
-    
+    private static final int ACCEPTABLE_RANGE = 3;
+
     @BeforeMethod
     public void setUpMethod() throws Exception {
         plugin = new TestPlugin();
@@ -58,7 +59,7 @@ public class PluginReportNGTest {
         report = new PluginReport(graphReport, plugin);
         startTimeMillis = System.currentTimeMillis();
     }
-    
+
     @Test
     public void testGetPluginName() {
         assertEquals(report.getPluginName(), PLUGIN_TEST_NAME);
@@ -68,60 +69,60 @@ public class PluginReportNGTest {
     public void testGetPluginDescription() {
         assertEquals(report.getPluginDescription(), PLUGIN_TEST_DESCRIPTION);
     }
-    
+
     @Test
     public void testGetGraphReport() {
         assertEquals(report.getGraphReport(), graphReport);
     }
-    
+
     @Test
     public void testAddMessage() {
         report.addMessage(PLUGIN_TEST_MESSAGE);
         assertEquals(report.getLastMessage(), PLUGIN_TEST_MESSAGE);
         assertEquals(report.getAllMessages(), PLUGIN_TEST_MESSAGE);
     }
-    
+
     @Test
     public void testCurrentStep() {
         report.setCurrentStep(101);
         assertEquals(report.getCurrentStep(), 101);
     }
-    
+
     @Test
     public void testTotalSteps() {
         report.setTotalSteps(1002);
         assertEquals(report.getTotalSteps(), 1002);
     }
-    
+
     @Test
     public void testTags() {
         assertEquals(Arrays.toString(report.getTags()).contains(PluginTags.ANALYTIC), true);
         assertEquals(Arrays.toString(report.getTags()).contains(PluginTags.GENERAL), true);
         assertEquals(Arrays.toString(report.getTags()).contains(PluginTags.SEARCH), true);
-        
+
         assertEquals(report.hasLowLevelTag(), false);
-        final List<String> filteredTags = Arrays.asList(PluginTags.ANALYTIC, 
+        final List<String> filteredTags = Arrays.asList(PluginTags.ANALYTIC,
                 PluginTags.GENERAL,
                 PluginTags.SEARCH);
         assertEquals(report.containsAllTags(filteredTags), true);
-        
+
         final List<String> anyTags = Arrays.asList(PluginTags.LOW_LEVEL,
                 PluginTags.EXPORT);
         assertEquals(report.containsAnyTag(anyTags), false);
     }
-    
+
     @Test
     public void testExecutionStage() {
         report.setExecutionStage(PluginExecutionStageConstants.RUNNING);
         assertEquals(report.getExecutionStage(), PluginExecutionStageConstants.RUNNING);
     }
-    
+
     @Test
     public void testUndone() {
         report.setUndone(true);
         assertEquals(report.isUndone(), true);
     }
-    
+
     @Test
     public void testAddListener() {
         final PluginReportListener mockListener = Mockito.mock(PluginReportListener.class);
@@ -129,28 +130,29 @@ public class PluginReportNGTest {
         report.firePluginReportChangedEvent();
         Mockito.verify(mockListener, Mockito.times(1)).pluginReportChanged(report);
     }
-        
+
     @Test
     public void testRemoveListener() {
         final PluginReportListener mockListener = Mockito.mock(PluginReportListener.class);
         report.addPluginReportListener(mockListener);
         report.removePluginReportListener(mockListener);
-        report.firePluginReportChangedEvent();        
+        report.firePluginReportChangedEvent();
         Mockito.verify(mockListener, Mockito.times(0)).pluginReportChanged(report);
     }
-    
+
     @Test
     public void testTime() {
         // test start time with some tolerance
-        assertEquals(report.getStartTime(), startTimeMillis, 3); 
+        assertEquals(report.getStartTime(), startTimeMillis, ACCEPTABLE_RANGE);
         //test stop time
         final long currentTimeMillis = System.currentTimeMillis();
         report.stop();
         assertEquals(report.getCurrentStep(), 1);
         assertEquals(report.getTotalSteps(), 0);
-        assertEquals(report.getStopTime(), currentTimeMillis);
+        // Assert two values are equal, within reason
+        assertEquals(report.getStopTime(), currentTimeMillis, ACCEPTABLE_RANGE);
     }
-    
+
     @Test
     public void testError() {
         final InterruptedException intEx = Mockito.mock(InterruptedException.class);
@@ -166,7 +168,7 @@ public class PluginReportNGTest {
         assertEquals(report.getError(), ioEx);
         assertEquals(report.getExecutionStage(), PluginExecutionStageConstants.STOPPED);
     }
-     
+
     @Test
     public void testChildReport() {
         assertEquals(report.getUChildReports().size(), 0);
@@ -179,7 +181,7 @@ public class PluginReportNGTest {
         assertEquals(report.getUChildReports().size(), 1);
         assertEquals(report.getUChildReports().getFirst(), addedChildReport);
     }
-    
+
     private class TestPlugin extends SimplePlugin {
 
         public TestPlugin() {
@@ -190,7 +192,7 @@ public class PluginReportNGTest {
         public String getName() {
             return PLUGIN_TEST_NAME;
         }
-        
+
         @Override
         public String getDescription() {
             return PLUGIN_TEST_DESCRIPTION;
@@ -200,7 +202,7 @@ public class PluginReportNGTest {
         public String[] getTags() {
             return new String[]{PluginTags.ANALYTIC, PluginTags.GENERAL, PluginTags.SEARCH};
         }
-        
+
         @Override
         protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) {
             //Do nothing

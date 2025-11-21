@@ -22,7 +22,8 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -95,14 +96,14 @@ public class ZoomUtilitiesNGTest {
         graph.setFloatValue(zAttribute, vxId3, 12F);
         
         final Camera beforeCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertTrue(beforeCamera.areSame(new Camera()));
+        assertEquals(beforeCamera, new Camera());
         
         ZoomUtilities.zoom(graph, 2, new Vector3f(1, 2, 2));
         
         final Camera afterCamera = graph.getObjectValue(cameraAttribute, 0);
-        assertFalse(afterCamera.areSame(new Camera()));
-        assertTrue(afterCamera.lookAtCentre.areSame(new Vector3f(-2F/3, -4F/3, -4F/3)));
-        assertTrue(afterCamera.lookAtEye.areSame(new Vector3f(-2F/3, -4F/3, 26F/3)));
+        assertNotEquals(afterCamera, new Camera());
+        assertEquals(afterCamera.lookAtCentre, new Vector3f(-2F/3, -4F/3, -4F/3));
+        assertEquals(afterCamera.lookAtEye, new Vector3f(-2F/3, -4F/3, 26F/3));
     }
     
     /**

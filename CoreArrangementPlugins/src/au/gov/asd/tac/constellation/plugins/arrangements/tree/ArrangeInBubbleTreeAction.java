@@ -85,7 +85,7 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
             rg.release();
         }
     }
-    
+
     private void selectElementsAndRunArrangement(final ReadableGraph rg, final List<NamedSelection> namedSelections) {
         final Set<Integer> rootVxIds = new HashSet<>();
         final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(rg);
@@ -102,19 +102,17 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
         final Object result = DialogDisplayer.getDefault().notify(dd);
 
         if (result == DialogDescriptor.OK_OPTION) {
-            final long selectionId = ssp.getNamedSelectionId();
+            final int selectionId = ssp.getNamedSelectionId();
 
-            if (selectionId == -2) {
-
+            if (selectionId == SelectNamedSelectionPanel.USE_CURRENTLY_SELECTED) {
                 PluginExecutor.startWith(VisualGraphPluginRegistry.DESELECT_ALL)
                         .followedBy(ArrangementPluginRegistry.BUBBLE_TREE)
                         .set(ArrangeInBubbleTreePlugin.ROOTS_PARAMETER_ID, rootVxIds)
                         .set(ArrangeInBubbleTreePlugin.IS_MINIMAL_PARAMETER_ID, true)
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInBubbleTreeAction());
-                
-            } else if (selectionId != -1) {
-                
+
+            } else if (selectionId != SelectNamedSelectionPanel.NO_OPTION_SELECTED) {
                 final int namedSelectionId = rg.getAttribute(GraphElementType.VERTEX, "named_selection");
                 final long mask = 1L << selectionId;
                 rootVxIds.clear();
@@ -131,10 +129,10 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
                         .set(ArrangeInBubbleTreePlugin.IS_MINIMAL_PARAMETER_ID, true)
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInBubbleTreeAction());
-                
+
             }
         }
 
     }
-    
+
 }

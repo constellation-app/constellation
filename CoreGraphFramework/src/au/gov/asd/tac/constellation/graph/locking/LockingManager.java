@@ -155,11 +155,15 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
     }
 
     public void commit(final Object description, final String commitName) throws DuplicateKeyException {
+        commit(description, commitName, false);
+    }
+    
+    public void commit(final Object description, final String commitName, final boolean addToUndo) throws DuplicateKeyException {
         if (currentEdit == null || !globalWriteLock.isHeldByCurrentThread()) {
             throw new IllegalMonitorStateException("commit: attempt to unlock write lock, not locked by current thread");
         }
         if (currentEdit.hasChanged(writeContext.target.getModificationCounter())) {
-            currentEdit.commit(description, commitName);
+            currentEdit.commit(description, commitName, addToUndo);
         } else {
             currentEdit.rollBack(currentEdit.parent == null);
         }
@@ -380,7 +384,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
             return "Redo " + name;
         }
 
-        public void commit(final Object description, final String commitName) throws DuplicateKeyException {
+        public void commit(final Object description, final String commitName, final boolean addToUndo) throws DuplicateKeyException {
             try {
                 writeContext.target.validateKeys();
             } catch (final DuplicateKeyException ex) {
@@ -410,7 +414,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
 
                 writeContext = originalReadContext;
 
-                if (undoManager != null) {
+                if (undoManager != null && addToUndo) {
                     SwingUtilities.invokeLater(() -> undoManager.undoableEditHappened(new UndoableEditEvent(LockingManager.this, LockingEdit.this)));
                 }
                 currentEdit = null;

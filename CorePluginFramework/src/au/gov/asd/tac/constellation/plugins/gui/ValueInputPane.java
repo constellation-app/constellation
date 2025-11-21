@@ -164,7 +164,6 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 field.autoComplete(recentValuesCombo.getItems());
             }
 
-
             Platform.runLater(() -> {
                 final Text t = (Text) field.lookup(".text");
                 if (t != null) {

@@ -17,15 +17,15 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.BooleanObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type boolean_or_null
  *
  * @author twilight_sparkle
  */
@@ -33,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
     @Override
-    public AbstractEditor<Boolean> createEditor(final EditOperation editOperation, final DefaultGetter<Boolean> defaultGetter, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
-        return new BooleanObjectEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Boolean> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Boolean> validator, final Boolean defaultValue, final Boolean initialValue) {
+        return new BooleanObjectEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -46,8 +46,12 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
 
         private CheckBox checkBox;
 
-        protected BooleanObjectEditor(final EditOperation editOperation, final DefaultGetter<Boolean> defaultGetter, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected BooleanObjectEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Boolean> validator, final Boolean defaultValue, final Boolean initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
+        }
+        
+        protected boolean isCheckBoxDisabled() {
+            return checkBox.isDisable();
         }
 
         @Override
@@ -63,19 +67,15 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            checkBox = new CheckBox("True:");
+            checkBox = new CheckBox("True");
             checkBox.setAlignment(Pos.CENTER);
             checkBox.selectedProperty().addListener((v, o, n) -> update());
-            controls.addRow(0, checkBox);
+            
+            final VBox controls = new VBox(checkBox);
+            controls.setAlignment(Pos.CENTER);
+            controls.setFillWidth(true);
+            
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

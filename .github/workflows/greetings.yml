@@ -4,7 +4,9 @@ on: [pull_request, issues]
 
 jobs:
   greeting:
+
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/first-interaction@v1
       with:
@@ -27,4 +29,3 @@ jobs:
           We are working on a new version so just bear that in mind.
           
           **PS:** _I'm just an automated script, not a human being._
-          

@@ -248,12 +248,12 @@ public class VisualManagerNGTest {
             final VisualProcessor processor = mock(VisualProcessor.class);
             final VisualAccess access = mock(VisualAccess.class);
             final VisualManager instance = spy(new VisualManager(access, processor));
-            doNothing().when(instance).cancelProcessing(Mockito.eq(true));
+            doNothing().when(instance).cancelProcessing(true);
 
             instance.stopProcessing();
 
             // Verify that the processor had the following methods called.
-            verify(instance).cancelProcessing(Mockito.eq(true));
+            verify(instance).cancelProcessing(true);
             assertFalse(instance.isProcessing());
         }
     }
@@ -298,7 +298,7 @@ public class VisualManagerNGTest {
             final File imageFile = mock(File.class);
             final VisualOperation op = mock(VisualOperation.class);
             final VisualProcessor processor = mock(VisualProcessor.class);
-            when(processor.exportToImage(Mockito.eq(imageFile))).thenReturn(op);
+            when(processor.exportToImage(imageFile)).thenReturn(op);
             final VisualManager instance = new VisualManager(access, processor);
             final PriorityBlockingQueue<VisualOperation> queueBefore = instance.getOperations();
             final int size = queueBefore.size();
@@ -311,7 +311,7 @@ public class VisualManagerNGTest {
             assertEquals(queueAfter.size(), size + 1);
             assertFalse(containsOP);
             assertTrue(queueAfter.contains(op));
-            verify(processor, times(1)).exportToImage(Mockito.eq(imageFile));
+            verify(processor, times(1)).exportToImage(imageFile);
         }
     }
 
@@ -331,7 +331,7 @@ public class VisualManagerNGTest {
 
             final VisualOperation op = mock(VisualOperation.class);
             final VisualProcessor processor = mock(VisualProcessor.class);
-            when(processor.exportToBufferedImage(Mockito.eq(imageFile), Mockito.eq(waiter))).thenReturn(op);
+            when(processor.exportToBufferedImage(imageFile, waiter)).thenReturn(op);
             final VisualManager instance = new VisualManager(access, processor);
 
             final PriorityBlockingQueue<VisualOperation> queueBefore = instance.getOperations();
@@ -345,7 +345,7 @@ public class VisualManagerNGTest {
             assertEquals(queueAfter.size(), size + 1);
             assertFalse(containsOP);
             assertTrue(queueAfter.contains(op));
-            verify(processor, times(1)).exportToBufferedImage(Mockito.eq(imageFile), Mockito.eq(waiter));
+            verify(processor, times(1)).exportToBufferedImage(imageFile, waiter);
         }
     }
 

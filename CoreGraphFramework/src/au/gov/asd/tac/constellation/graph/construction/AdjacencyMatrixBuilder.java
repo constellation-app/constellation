@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.graph.construction;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  *
@@ -44,7 +44,7 @@ public class AdjacencyMatrixBuilder extends GraphBuilder {
             nodes[i] = constructVertex(graph);
         }
 
-        final List<Integer> transactionList = new ArrayList<>();
+        final MutableIntList transactionList = new IntArrayList();
         for (int i = 0; i < size; i++) {
             final int innerBound = directed ? 0 : i;
             for (int j = innerBound; j < size; j++) {
@@ -54,13 +54,7 @@ public class AdjacencyMatrixBuilder extends GraphBuilder {
             }
         }
 
-        final int[] transactions = new int[transactionList.size()];
-        int currentTras = 0;
-        for (final int transID : transactionList) {
-            transactions[currentTras++] = transID;
-        }
-
-        return new AdjacencyMatrixBuilder(graph, nodes, transactions);
+        return new AdjacencyMatrixBuilder(graph, nodes, transactionList.toArray());
     }
 
     public final int[] nodes;

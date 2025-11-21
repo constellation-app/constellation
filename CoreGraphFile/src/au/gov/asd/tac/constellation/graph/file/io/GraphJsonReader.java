@@ -44,17 +44,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.Lookup;
 
 /**
@@ -630,7 +630,7 @@ public final class GraphJsonReader {
             }
 
             // Gather the key labels.
-            final List<Integer> keyAttrIds = new ArrayList<>();
+            final MutableIntList keyAttributes = new IntArrayList();
             while (jp.nextToken() != JsonToken.END_ARRAY) {
                 // Read the key attributes from the array and create the graph key.
                 final String keyLabel = jp.readValueAs(String.class);
@@ -639,16 +639,10 @@ public final class GraphJsonReader {
                     throw new GraphParseException(msg);
                 }
 
-                keyAttrIds.add(attributes.get(keyLabel).attrId);
+                keyAttributes.add(attributes.get(keyLabel).attrId);
             }
 
-            // Create the primary key.
-            final int[] keyAttributes = new int[keyAttrIds.size()];
-            for (int i = 0; i < keyAttrIds.size(); i++) {
-                keyAttributes[i] = keyAttrIds.get(i);
-            }
-
-            graph.setPrimaryKey(elementType, keyAttributes);
+            graph.setPrimaryKey(elementType, keyAttributes.toArray());
 
             current = jp.nextToken();
         }

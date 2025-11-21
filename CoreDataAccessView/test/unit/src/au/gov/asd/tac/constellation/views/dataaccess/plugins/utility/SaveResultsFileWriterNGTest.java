@@ -62,7 +62,7 @@ public class SaveResultsFileWriterNGTest {
     private boolean dataValid = true;  // Does the contents of the saved file match the expected contents.
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         mockedDataAccessPreferenceKeys = mockStatic(DataAccessPreferenceUtilities.class);
         mockedRecordStoreUtilities = mockStatic(RecordStoreUtilities.class);
         mockedConstellationLoggerHelper = mockStatic(ConstellationLoggerHelper.class);

@@ -16,25 +16,21 @@
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.VertexAttributeNameAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
+import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type vertex_attribute_name
  *
  * @author twilight_sparkle
  */
@@ -42,8 +38,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactory<String> {
 
     @Override
-    public AbstractEditor<String> createEditor(final EditOperation editOperation, final DefaultGetter<String> defaultGetter, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
-        return new VertexAttributeNameEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<String> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<String> validator, final String defaultValue, final String initialValue) {
+        return new VertexAttributeNameEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -57,8 +53,8 @@ public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactor
         private TextField nameText;
         private boolean selectionIsActive = false;
 
-        protected VertexAttributeNameEditor(final EditOperation editOperation, final DefaultGetter<String> defaultGetter, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected VertexAttributeNameEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<String> validator, final String defaultValue, final String initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         @Override
@@ -84,36 +80,19 @@ public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactor
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
             attributeList = new ListView<>();
-
-            final List<String> attributeNames = new ArrayList<>();
-            // get all vertex attributes currently in the graph
-            final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
-            try {
-                for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
-                    attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.VERTEX, i)));
-                }
-            } finally {
-                rg.release();
-            }
-
-            final Label nameLabel = new Label("Attribute name:");
+            
+            final Label nameLabel = new Label("Attribute Name:");
             nameText = new TextField();
-            final VBox nameBox = new VBox(10);
-            nameBox.getChildren().addAll(nameLabel, nameText);
-
             nameText.textProperty().addListener(ev -> {
                 if (!selectionIsActive) {
                     attributeList.getSelectionModel().select(null);
                 }
                 update();
             });
-
-            final Label listLabel = new Label("Current attributes:");
+                      
+            final Label listLabel = new Label("Current Attributes:");
+            final List<String> attributeNames = AttributeUtilities.getAttributeNames(GraphElementType.VERTEX);
             Collections.sort(attributeNames);
             attributeList.getItems().addAll(attributeNames);
 
@@ -125,16 +104,9 @@ public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactor
                 }
                 selectionIsActive = false;
             });
-
-            controls.addRow(0, nameBox);
-            controls.addRow(1, listLabel);
-            controls.addRow(2, attributeList);
-            return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
+            
+            return new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, 
+                    nameLabel, nameText, listLabel, attributeList);
         }
     }
 }

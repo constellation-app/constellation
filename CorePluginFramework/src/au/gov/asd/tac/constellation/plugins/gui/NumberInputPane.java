@@ -28,6 +28,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import org.apache.commons.lang3.StringUtils;
@@ -76,12 +78,15 @@ public class NumberInputPane<T> extends Pane {
         final Boolean shrinkWidth = (Boolean) parameter.getProperty(FloatParameterType.SHRINK_VAL);
 
         switch (parameter.getType().getId()) {
-            case IntegerParameterType.ID -> field = new Spinner<>(
-                        min == null ? Integer.MIN_VALUE : min.intValue(),
-                        max == null ? Integer.MAX_VALUE : max.intValue(),
-                        init == null ? 0 : init.intValue(),
-                        step == null ? 1 : step.intValue()
-                );
+            case IntegerParameterType.ID ->  {
+                final int minVal = min == null ? Integer.MIN_VALUE : min.intValue();
+                final int maxVal = max == null ? Integer.MAX_VALUE : max.intValue();
+                final int initVal = init == null ? 0 : init.intValue();
+                final int stepVal = step == null ? 1 : step.intValue();
+                
+                field = new Spinner<>(minVal, maxVal, initVal, stepVal);
+                field.setValueFactory((SpinnerValueFactory<T>) customIntegerSpinnerValueFactory(minVal, maxVal, initVal));
+            }
             case FloatParameterType.ID -> field = new Spinner<>(
                         min == null ? Double.MIN_VALUE : min.doubleValue(),
                         max == null ? Double.MAX_VALUE : max.doubleValue(),
@@ -123,7 +128,9 @@ public class NumberInputPane<T> extends Pane {
         // when the string doesn't validate.
         field.getEditor().textProperty().addListener((ov, oldValue, newValue) -> {
             if (newValue.isEmpty() || "-".equals(newValue)) {
-                // Detected a backspace/overwrite. The resulting value is just a minus sign, or an empty string. Reset to minimum value.
+                // Detected a backspace/overwrite. The resulting value is just a minus sign, or an empty string.
+                // Clear editor as it seems to retain the "-". Reset to minimum value.
+                field.getEditor().setText("");
                 field.getEditor().setText(newValue + (pv.getMinimumValue() != null ? Integer.toString(pv.getMinimumValue().intValue()) : "0"));
                 if (field.getEditor().getText().equals(oldValue)) {
                     repeatedOccurrences++;
@@ -139,8 +146,8 @@ public class NumberInputPane<T> extends Pane {
             final String intPart = dotPos > -1 ? newValue.substring(0, dotPos) : newValue;
             final String decPart = dotPos > -1 ? newValue.substring(dotPos + 1) : "";
             final boolean isIntVal = parameter.getType().getId().equals(IntegerParameterType.ID);
-            // Integers: Max 9 digits.  Floats: Max 8 digits before the decimal, and 2 digits after.
-            if ((intPart.matches("[\\-][0-9]{1," + (isIntVal ? "9}" : "8}")) || intPart.matches("[0-9]{1," + (isIntVal ? "9}" : "8}")))
+            // Integers: MAX_VALUE is 10 digits.  Floats: Max 8 digits before the decimal, and 2 digits after.
+            if ((intPart.matches("[\\-][0-9]{1," + (isIntVal ? "10}" : "8}")) || intPart.matches("[0-9]{1," + (isIntVal ? "10}" : "8}")))
                                 && (dotPos == -1 || (decPart.matches("[0-9]{0,2}") && !isIntVal))) {
                 final String error = parameter.validateString(field.getValueFactory().getValue().toString());
                 if (error != null) {
@@ -187,7 +194,56 @@ public class NumberInputPane<T> extends Pane {
         );
         getChildren().add(field);
     }
+    
+    /**
+     * Create a custom Integer SpinnerValueFactory to override the increment
+     * and decrement methods because if you set the max to Integer.MAX_VALUE and
+     * increment beyond the Integer.MAX_VALUE, the spinner spins over to the
+     * minimum value; and if you decrement the spinner below the min value of
+     * Integer.MIN_VALUE, it ticks over to the Integer.MAX_VALUE.
+     * @param min Minimum integer to set on the spinner
+     * @param max Maximum integer to set on the spinner
+     * @param initialValue Default initial value in spinner
+     * @return IntegerSpinnerValueFactory
+     */
+    private IntegerSpinnerValueFactory customIntegerSpinnerValueFactory(final int min, final int max, final int initialValue) {
+        final SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory
+                = new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initialValue) {
+            @Override
+            public void increment(final int steps) {
+                final int currentValue = getValue();
+                final int max = getMax(); // Get the maximum value for resetting
+                
+                // Set to the Integer.MAX_VALUE if current value already at max,
+                // otherwise it ticks over to the minimum.
+                if (currentValue == max) {
+                    setValue(max);
+                } else {
+                    final int newValue = currentValue + steps;
+                    // Reset to maximum when max is exceeded
+                    setValue(newValue > max ? max : newValue);
+                }
+            }
 
+            // override decrement() to reset to minimum when min is exceeded for decrementing below min.
+            @Override
+            public void decrement(final int steps) {
+                final int currentValue = getValue();
+                final int min = getMin(); // Get the minimum value for resetting
+                
+                // Set to the Integer.MIN_VALUE if current value already at min,
+                // otherwise it ticks over to the maximum.
+                if (currentValue == min) {
+                    setValue(min);
+                } else {
+                    final int newValue = currentValue - steps;
+                    // Reset to minimum when min is exceeded (optional, for wrapping)
+                    setValue(newValue < min ? min : newValue);
+                }
+            }
+        };
+        return valueFactory;
+    }
     private void setParameterBasedOnType(final PluginParameter<?> parameter, final Number min, final Number max) {
         try {
             parameter.setError(null);
