@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 public class ErrorReportSessionData {
 
     private static final Logger LOGGER = Logger.getLogger(ErrorReportSessionData.class.getName());
-    private final static String FULL_STACKTRACE = "~~~~ ~~~~ FULL STACKTRACE ~~~~ ~~~~"; // must match with entry in ConstellationLogFormatter
+    private static final String FULL_STACKTRACE = "~~~~ ~~~~ FULL STACKTRACE ~~~~ ~~~~"; // must match with entry in ConstellationLogFormatter
     
     private final List<ErrorReportEntry> sessionErrors = new ArrayList<>();
     private final List<ErrorReportEntry> displayedErrors = new ArrayList<>();
@@ -117,8 +117,14 @@ public class ErrorReportSessionData {
                 // add new entry to the top
                 sessionErrors.add(0, entry);
                 if (entry.getErrorData().contains(" Caused By:")) {
-                    // put full execption details in log
-                    LOGGER.log(Level.INFO, "\n" + FULL_STACKTRACE + "\n" + entry.getErrorData());
+                    // put full exception details in log
+                    StringBuilder logMessage = new StringBuilder();
+                    logMessage.append(SeparatorConstants.NEWLINE)
+                            .append(FULL_STACKTRACE)
+                            .append(SeparatorConstants.NEWLINE)
+                            .append(entry.getErrorData());
+                            
+                    LOGGER.log(Level.INFO, logMessage.toString());
                 }
             }
             lastUpdate = new Date();

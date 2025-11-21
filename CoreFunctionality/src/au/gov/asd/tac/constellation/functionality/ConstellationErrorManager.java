@@ -47,7 +47,9 @@ public class ConstellationErrorManager extends Handler {
             if (messageColon == -1) {
                 messageColon = errorSummary.lastIndexOf("\n") - 1;
             }
-            if (messageColon < 0 && errorSummary.length() > 0) messageColon = 0;
+            if (messageColon < 0 && !errorSummary.isEmpty()) {
+                messageColon = 0;
+            }
             String extractedMessage = messageColon != -1 ? errorSummary.substring(messageColon + 2) : "";
             final boolean autoBlockPopup = extractedMessage.startsWith(NotifyDisplayer.BLOCK_POPUP_FLAG);
             if (autoBlockPopup) {
@@ -141,12 +143,10 @@ public class ConstellationErrorManager extends Handler {
     }
     
     @Override
-    public boolean isLoggable(final LogRecord record) {
-        final boolean firstCheck = super.isLoggable(record);
-        if (firstCheck) {
-            if (record.getThrown() != null) {
-                return false;
-            }
+    public boolean isLoggable(final LogRecord logRec) {
+        final boolean firstCheck = super.isLoggable(logRec);
+        if (firstCheck && logRec.getThrown() != null) {
+            return false;
         }
         return firstCheck;
     }
@@ -162,7 +162,7 @@ public class ConstellationErrorManager extends Handler {
     }
 
     @Override
-    public void publish(final LogRecord record) {
-        addToErrorReport(record);
+    public void publish(final LogRecord logRec) {
+        addToErrorReport(logRec);
     }
 }
