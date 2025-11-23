@@ -55,6 +55,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
@@ -75,7 +76,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.collections.api.iterator.FloatIterator;
 import org.eclipse.collections.api.list.primitive.MutableFloatList;
-import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.api.map.primitive.MutableFloatObjectMap;
 import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
@@ -83,22 +83,24 @@ import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
 import org.eclipse.collections.api.tuple.primitive.FloatObjectPair;
 import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
 import org.eclipse.collections.impl.list.mutable.primitive.FloatArrayList;
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.primitive.FloatObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
+import org.eclipse.collections.api.iterator.MutableIntIterator;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Use a datetime attribute on transactions to split the nodes and transactions
- * into layers on the z-axis.
+ * Use a datetime attribute on transactions to split the nodes and transactions into layers on the z-axis.
  * <p>
- * Note that we create a new graph with Visual Schema and operate on that. We do
- * this because the resulting graph has duplicate node names which would
- * otherwise be merged on an analytic schema. These nodes are duplicated and
- * lots of transactions are created for visual purposes.
+ * Note that we create a new graph with Visual Schema and operate on that. We do this because the resulting graph has
+ * duplicate node names which would otherwise be merged on an analytic schema. These nodes are duplicated and lots of
+ * transactions are created for visual purposes.
  *
  * @author procyon
  * @author antares
@@ -109,7 +111,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class LayerByTimePlugin extends SimpleReadPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(LayerByTimePlugin.class.getName());
-    
+
     public static final String DATETIME_ATTRIBUTE_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "date_time_attribute");
     private static final String DATETIME_PARAMETER_ID_NAME = "Date-time attribute";
     private static final String DATETIME_ATTRIBUTE_PARAMETER_ID_DESCRIPTION = "The date-time attribute to use for the layered graph.";
@@ -160,6 +162,12 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     private static final Map<String, Integer> LAYER_INTERVALS = new HashMap<>();
     private static final Map<String, Integer> BIN_CALENDAR_UNITS = new HashMap<>();
+
+    private enum ArrangeDirection {
+        X,
+        Y,
+        Z
+    }
 
     static {
         LAYER_INTERVALS.put("Seconds", 1);
@@ -272,33 +280,37 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 }
             }
         }
+
         SingleChoiceParameterType.setOptions(dtAttrParam, dateTimeAttributes);
         parameters.addController(DATETIME_ATTRIBUTE_PARAMETER_ID, (masterId, paramMap, change) -> {
-            if (change == ParameterChange.VALUE) {
-                final String attrName = paramMap.get(DATETIME_ATTRIBUTE_PARAMETER_ID).getStringValue();
-                try (final ReadableGraph rg = graph.getReadableGraph()) {
-                    final int attrId = rg.getAttribute(GraphElementType.TRANSACTION, attrName);
-                    if (attrId == Graph.NOT_FOUND) {
-                        return;
-                    }
 
-                    ZonedDateTime min = ZonedDateTime.ofInstant(Instant.now(), TimeZoneUtilities.UTC);
-                    ZonedDateTime max = ZonedDateTime.ofInstant(Instant.EPOCH, TimeZoneUtilities.UTC);
-                    final int txCount = rg.getTransactionCount();
-                    boolean nonNullDateTimeFound = false;
-                    for (int position = 0; position < txCount; position++) {
-                        final int txId = rg.getTransaction(position);
+            if (change != ParameterChange.VALUE) {
+                return;
+            }
 
-                        // Ignore zero and "null" dates.
-                        final ZonedDateTime dt = rg.getObjectValue(attrId, txId);
-                        if (dt != null) {
-                            nonNullDateTimeFound = true;
-                            if (dt.toInstant().isBefore(min.toInstant())) {
-                                min = dt;
-                            }
-                            if (dt.toInstant().isAfter(max.toInstant())) {
-                                max = dt;
-                            }
+            final String attrName = paramMap.get(DATETIME_ATTRIBUTE_PARAMETER_ID).getStringValue();
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
+                final int attrId = rg.getAttribute(GraphElementType.TRANSACTION, attrName);
+                if (attrId == Graph.NOT_FOUND) {
+                    return;
+                }
+
+                ZonedDateTime min = ZonedDateTime.ofInstant(Instant.now(), TimeZoneUtilities.UTC);
+                ZonedDateTime max = ZonedDateTime.ofInstant(Instant.EPOCH, TimeZoneUtilities.UTC);
+                final int txCount = rg.getTransactionCount();
+                boolean nonNullDateTimeFound = false;
+                for (int position = 0; position < txCount; position++) {
+                    final int txId = rg.getTransaction(position);
+
+                    // Ignore zero and "null" dates.
+                    final ZonedDateTime dt = rg.getObjectValue(attrId, txId);
+                    if (dt != null) {
+                        nonNullDateTimeFound = true;
+                        if (dt.toInstant().isBefore(min.toInstant())) {
+                            min = dt;
+                        }
+                        if (dt.toInstant().isAfter(max.toInstant())) {
+                            max = dt;
                         }
                     }
                     if (!nonNullDateTimeFound) {
@@ -333,6 +345,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             return;
         }
 
+        // Make a copy of the graph
         Graph copy;
         try {
             final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
@@ -358,11 +371,17 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         try {
             final int dtAttr = wgcopy.getAttribute(GraphElementType.TRANSACTION, dt.getName());
 
+            // Parameters
             final boolean useIntervals = parameters.getParameters().get(LAYER_BY_PARAMETER_ID).getStringValue().equals(INTERVAL_METHOD);
             final ZonedDateTime[] startEnd = parameters.getParameters().get(DATE_RANGE_PARAMETER_ID).getDateTimeRangeValue().getZonedStartEnd();
             final ZonedDateTime start = startEnd[0];
             final ZonedDateTime end = startEnd[1];
             final boolean isTransactionLayers = parameters.getParameters().get(TRANSACTION_AS_LAYER_PARAMETER_ID).getBooleanValue();
+            final boolean keepTxColors = parameters.getParameters().get(KEEP_TX_COLORS_PARAMETER_ID).getBooleanValue();
+            final boolean drawTxGuides = parameters.getParameters().get(DRAW_TX_GUIDES_PARAMETER_ID).getBooleanValue();
+            final boolean arrangeIn2d = true;//parameters.getParameters().get(DRAW_TX_GUIDES_PARAMETER_ID).getBooleanValue();
+            final ArrangeDirection direction = ArrangeDirection.Y;// TODO: make paramter
+            final int directionFlip = 1; // or -1
 
             //Establish new attributes.
             //Create and store graph attributes.
@@ -374,6 +393,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final ConstellationColor guidelineColor = ConstellationColor.getColorValue(0.25F, 0.25F, 0.25F, 1F);
             wgcopy.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, ORIGINAL_ID_LABEL, "Original Node Id", -1, null);
 
+            // Create lists of layers
             final List<Float> values = new ArrayList<>();
             final MutableIntObjectMap<MutableFloatList> remappedLayers = new IntObjectHashMap<>();
             final MutableIntObjectMap<String> displayNames = new IntObjectHashMap<>();
@@ -387,44 +407,84 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 buildBins(wgcopy, values, remappedLayers, displayNames, dtAttr, start.toInstant(), end.toInstant(), calendarUnit, binAmount);
             }
 
-            final boolean keepTxColors = parameters.getParameters().get(KEEP_TX_COLORS_PARAMETER_ID).getBooleanValue();
-
-            final boolean drawTxGuides = parameters.getParameters().get(DRAW_TX_GUIDES_PARAMETER_ID).getBooleanValue();
-
             // Modify the copied graph to show our layers.
             float z = 0;
             final float step = getWidth(wgcopy) / values.size();
+
+            // I forget where this goes, but im redoing it anyway so whatever
+            int layerPos = 0;
+            final int layerStep = 10;
+
+            final Vector3f inLayerDirection = new Vector3f(1, 0, 0);
+            final Vector3f perLayerDirection = switch (direction) {
+                case X ->
+                    new Vector3f(directionFlip, 0, 0);
+                case Y ->
+                    new Vector3f(0, directionFlip, 0);
+                case Z ->
+                    new Vector3f(0, 0, directionFlip);
+            };
+
             for (final IntObjectPair<MutableFloatList> keyValue : remappedLayers.keyValuesView()) {
+                // Each layer?
                 for (final FloatObjectPair<MutableIntList> currentLayer : transactionLayers.keyValuesView()) {
-                    if (keyValue.getTwo().contains(currentLayer.getOne())) {
-                        for (int i = 0; i < currentLayer.getTwo().size(); i++) {
-                            final float origLayer = currentLayer.getOne();
-                            int newLayer = 0;
-                            if (keyValue.getTwo().contains(origLayer)) {
-                                //Overwrite value
-                                newLayer = keyValue.getOne();
-                            }
-                            
-                            final int txId = currentLayer.getTwo().get(i);
-                            final LayerName dn = new LayerName(newLayer, displayNames.get(newLayer));
-                            wgcopy.setObjectValue(timeLayerAttr, txId, dn);
+                    if (!keyValue.getTwo().contains(currentLayer.getOne())) {
+                        continue;
+                    }
+                    
+                    final MutableIntSet nodesInLayer = new IntHashSet();
+                    for (int i = 0; i < currentLayer.getTwo().size(); i++) {
+                        final int newLayer = keyValue.getOne();
+                        final int txId = currentLayer.getTwo().get(i);
+                        final LayerName dn = new LayerName(newLayer, displayNames.get(newLayer));
+                        wgcopy.setObjectValue(timeLayerAttr, txId, dn);
 
-                            final float normLayer = newLayer / (remappedLayers.keySet().size() * 1F);
+                        final float normLayer = newLayer / (remappedLayers.keySet().size() * 1F);
 
-                            if (!keepTxColors) {
-                                final Color heatmap = new Color(Color.HSBtoRGB((1 - normLayer) * 2F / 3F, 0.5F, 1));
-                                final ConstellationColor color = ConstellationColor.getColorValue(heatmap.getRed() / 255F, heatmap.getGreen() / 255F, heatmap.getBlue() / 255F, 1F);
-                                wgcopy.setObjectValue(txColorAttr, txId, color);
-                            }
+                        if (!keepTxColors) {
+                            final Color heatmap = new Color(Color.HSBtoRGB((1 - normLayer) * 2F / 3F, 0.5F, 1));
+                            final ConstellationColor color = ConstellationColor.getColorValue(heatmap.getRed() / 255F, heatmap.getGreen() / 255F, heatmap.getBlue() / 255F, 1F);
+                            wgcopy.setObjectValue(txColorAttr, txId, color);
+                        }
 
-                            if (isTransactionLayers) {
-                                transactionsAsLayers(wgcopy, txId, z, step);
-                            } else {
-                                nodesAsLayers(wgcopy, txId, newLayer);
-                            }
+                        // makes these return a list of nodes that they affected
+                        if (isTransactionLayers) {
+                            transactionsAsLayers(wgcopy, txId, z, step, nodesInLayer);
+                        } else {
+                            nodesAsLayers(wgcopy, txId, newLayer, nodesInLayer);
                         }
                     }
+
+                    if (arrangeIn2d) {
+
+                        // For now, arrange the nodes just relative to the current step
+                        System.out.println("nodesInLayer " + nodesInLayer);
+                        final int xAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
+                        final int yAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
+                        final int zAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+
+                        int nodeInLayerPos = 0;
+                        final int sameLayerStep = 10;
+
+                        final MutableIntIterator iterator = nodesInLayer.intIterator();
+                        while (iterator.hasNext()) {
+                            final int nodeId = iterator.next();
+
+                            final Vector3f nodePosition = perLayerDirection.copy();
+                            // position whole layer
+
+                            // TODO refactor to be more dynamic with vectors representing positon
+                            //wgcopy.setFloatValue(attrId, nodeId, layerPos * directionFlip);
+                            //System.out.println("nodeId " + nodeId + " layerPos " + layerPos + " attrId " + attrId + " pos " + wgcopy.getFloatValue(attrId, nodeId));
+                            wgcopy.setFloatValue(xAttr, nodeId, nodeInLayerPos);
+                            wgcopy.setFloatValue(zAttr, nodeId, 0);
+                            nodeInLayerPos += sameLayerStep;
+                        }
+
+                        layerPos += layerStep;
+                    }
                 }
+
                 if (isTransactionLayers) {
                     srcVxMap = dstVxMap;
                     dstVxMap = new IntIntHashMap();
@@ -467,7 +527,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                                 final int sTxId = wgcopy.addTransaction(prevNodeId, nodeId, false);
                                 wgcopy.setBooleanValue(txGuideline, sTxId, true);
                                 wgcopy.setObjectValue(txColorAttr, sTxId, guidelineColor);
-                                final LayerName dn = new LayerName(1107, "Guideline");
+                                final LayerName dn = new LayerName(1107, "Guideline"); // MAGIC NUMBER
                                 wgcopy.setObjectValue(timeLayerAttr, sTxId, dn);
                             }
                             prevNodeId = nodeId;
@@ -475,6 +535,15 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     });
                 }
             }
+
+            // If we want it arranged in my new 2d view
+//            if (arrangeIn2d) {
+//                System.out.println("remappedLayers");
+//                System.out.println(remappedLayers);
+//                System.out.println("transactionLayers");
+//                System.out.println(transactionLayers);
+//
+//            }
         } finally {
             wgcopy.commit();
         }
@@ -505,7 +574,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             // Only use transactions that have a datetime value set.
             final long date = wgcopy.getLongValue(dtAttr, txId);
 
-            if (d1t <= date && date < d2t) {
+            if (d1t <= date && date <= d2t) { // FIXED
                 final float layer = (float) (date - d1t) / intervalLength;
 
                 if (!transactionLayers.containsKey(layer)) {
@@ -577,7 +646,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
             // Only use transactions that have a datetime value set.
             final long date = wgcopy.getLongValue(dtAttr, txId);
-            if (d1t <= date && date < d2t) {
+            if (d1t <= date && date <= d2t) {
                 dtg.setTimeInMillis(date);
                 dtg.setTimeZone(TimeZone.getTimeZone("UTC"));
 
@@ -656,8 +725,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     }
 
     /**
-     * Duplicates a node onto a specific layer, recording it in
-     * <code>nodeDups</code> and returning the duplicate node id
+     * Duplicates a node onto a specific layer, recording it in <code>nodeDups</code> and returning the duplicate node
+     * id
      */
     private int getDuplicateNode(final GraphWriteMethods graph, final MutableObjectIntMap<String> nodeDups, final int nodeId, final int layer) {
         final String key = String.format("%d/%d", nodeId, layer);
@@ -683,14 +752,14 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     final int attr = graph.getAttribute(GraphElementType.TRANSACTION, i);
                     final Object value = graph.getObjectValue(attr, fromId);
                     graph.setObjectValue(attr, toId, value);
-                }   
+                }
             }
             case VERTEX -> {
                 for (int i = 0; i < graph.getAttributeCount(GraphElementType.VERTEX); i++) {
                     final int attr = graph.getAttribute(GraphElementType.VERTEX, i);
                     final Object value = graph.getObjectValue(attr, fromId);
                     graph.setObjectValue(attr, toId, value);
-                }   
+                }
             }
             default -> {
                 // Do nothing 
@@ -701,7 +770,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     /**
      * Procedure for reordering the graph using nodes as layers on the z-axis.
      */
-    private void nodesAsLayers(final GraphWriteMethods graph, final int txId, final int layer) {
+    private void nodesAsLayers(final GraphWriteMethods graph, final int txId, final int layer, final MutableIntSet nodesInLayer) {
+        //System.out.println("nodesAsLayers txId " + txId + " layer " + layer);
         final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
         final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
         final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
@@ -709,6 +779,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         final int y2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
         final int z2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
         final int sNodeId = graph.getTransactionSourceVertex(txId);
+        //System.out.println("x: " + graph.getFloatValue(xAttr, sNodeId) + " y: " + graph.getFloatValue(yAttr, sNodeId) + " Z: " + graph.getFloatValue(zAttr, sNodeId));
         graph.setFloatValue(x2Attr, sNodeId, graph.getFloatValue(xAttr, sNodeId));
         graph.setFloatValue(y2Attr, sNodeId, graph.getFloatValue(yAttr, sNodeId));
         graph.setFloatValue(z2Attr, sNodeId, graph.getFloatValue(zAttr, sNodeId));
@@ -753,21 +824,30 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             txToDelete.set(txId);
             // Copy transactionAttributes.
             copyAttributes(graph, txId, dupTxId, GraphElementType.TRANSACTION);
+
+            //return new NodePair(dupSNodeId, dupDNodeId); // no clue if this is right
+            nodesInLayer.add(dupSNodeId);
+            nodesInLayer.add(dupDNodeId);
         } else {
             // In case we started with a non-flat layout, explicitly set z for the layer 0 nodes.
             graph.setFloatValue(zAttr, sNodeId, 0);
             graph.setFloatValue(zAttr, dNodeId, 0);
+
+            // return new NodePair(sNodeId, dNodeId); // no clue if this is right
+            nodesInLayer.add(sNodeId);
+            nodesInLayer.add(dNodeId);
         }
+
     }
 
     /**
-     * Procedure for reordering the graph using transactions as layers on the
-     * z-axis.
+     * Procedure for reordering the graph using transactions as layers on the z-axis.
      *
      *
      *
      */
-    private void transactionsAsLayers(final GraphWriteMethods graph, final int txId, final float z, final float step) {
+    private void transactionsAsLayers(final GraphWriteMethods graph, final int txId, final float z, final float step, final MutableIntSet nodesInLayer) {
+        //System.out.println("transactionsAsLayers txId " + txId + " z " + z + " step " + step);
         final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
         final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
         final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
@@ -777,6 +857,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         final int nodeAttr = graph.getAttribute(GraphElementType.VERTEX, ORIGINAL_ID_LABEL);
 
         final int srcVxId = graph.getTransactionSourceVertex(txId);
+        //System.out.println("x: " + graph.getFloatValue(xAttr, srcVxId) + " y: " + graph.getFloatValue(yAttr, srcVxId) + " Z: " + graph.getFloatValue(zAttr, srcVxId));
         graph.setFloatValue(x2Attr, srcVxId, graph.getFloatValue(xAttr, srcVxId));
         graph.setFloatValue(y2Attr, srcVxId, graph.getFloatValue(yAttr, srcVxId));
         graph.setFloatValue(z2Attr, srcVxId, graph.getFloatValue(zAttr, srcVxId));
@@ -811,6 +892,10 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         final int tlTxId = graph.addTransaction(tlSrcVxId, tlDstVxId, graph.getTransactionDirection(txId) != Graph.FLAT);
         copyAttributes(graph, txId, tlTxId, GraphElementType.TRANSACTION);
         graph.removeTransaction(txId);
+
+        //return new NodePair(tlSrcVxId, tlDstVxId);
+        nodesInLayer.add(tlSrcVxId);
+        nodesInLayer.add(tlDstVxId);
     }
 
     /**

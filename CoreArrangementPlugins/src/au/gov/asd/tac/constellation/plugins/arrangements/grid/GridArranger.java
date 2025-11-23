@@ -87,7 +87,9 @@ public class GridArranger implements Arranger {
 
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
-
+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+            System.out.println(ste);
+        }
         // Get/set the x,y,z attributes.
         if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName()) == Graph.NOT_FOUND) {
             wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", null, null);
@@ -105,6 +107,7 @@ public class GridArranger implements Arranger {
         final int radiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(wg);
 
         final int vxCount = wg.getVertexCount();
+        System.out.println("grid arranger vxcount " + vxCount);
         if (vxCount > 0) {
             final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
 
