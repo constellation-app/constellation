@@ -118,7 +118,7 @@ public class ErrorReportSessionData {
                 sessionErrors.add(0, entry);
                 if (entry.getErrorData().contains(" Caused By:")) {
                     // put full exception details in log
-                    StringBuilder logMessage = new StringBuilder();
+                    final StringBuilder logMessage = new StringBuilder();
                     logMessage.append(SeparatorConstants.NEWLINE)
                             .append(FULL_STACKTRACE)
                             .append(SeparatorConstants.NEWLINE)

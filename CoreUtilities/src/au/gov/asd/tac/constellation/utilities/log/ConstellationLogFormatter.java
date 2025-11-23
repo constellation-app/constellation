@@ -105,7 +105,7 @@ public class ConstellationLogFormatter extends Formatter {
             exceptionBlock.append(stackTrace);
             exceptionBlock.append(SeparatorConstants.NEWLINE);
         } else {
-            if (formattedMessage.trim().isBlank()) {
+            if (formattedMessage.isBlank()) {
                 return "";
             }            
             repeatedExceptionBlock = "";

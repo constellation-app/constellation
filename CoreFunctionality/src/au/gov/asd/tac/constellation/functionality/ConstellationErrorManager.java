@@ -127,7 +127,7 @@ public class ConstellationErrorManager extends Handler {
         
         final StackTraceElement[] segmentElems = ef.getStackTrace();
         if (segmentElems != null && segmentElems.length > 0) {
-            StringBuilder subStackTrace = new StringBuilder("");
+            final StringBuilder subStackTrace = new StringBuilder("");
             for (int i = 0; i < segmentElems.length; i++) {
                 subStackTrace.append(segmentElems[i].toString())
                         .append(SeparatorConstants.NEWLINE);
@@ -144,11 +144,7 @@ public class ConstellationErrorManager extends Handler {
     
     @Override
     public boolean isLoggable(final LogRecord logRec) {
-        final boolean firstCheck = super.isLoggable(logRec);
-        if (firstCheck && logRec.getThrown() != null) {
-            return false;
-        }
-        return firstCheck;
+        return super.isLoggable(logRec) && logRec.getThrown() == null;
     }
     
     @Override
