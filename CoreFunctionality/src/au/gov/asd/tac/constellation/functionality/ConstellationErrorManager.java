@@ -43,23 +43,31 @@ public class ConstellationErrorManager extends Handler {
             final StringBuilder errorMsg = new StringBuilder("");
             final Level errLevel = errorRecord.getLevel();
             final String errorSummary = errorRecord.getThrown().toString();
-            int messageColon = errorSummary.lastIndexOf("Exception:") + 9;
-            if (messageColon == -1) {
-                messageColon = errorSummary.lastIndexOf("\n") - 1;
+            int messageOffset = errorSummary.lastIndexOf("Exception:");
+            if (messageOffset > -1) {
+                messageOffset += 11;
+            } else {
+                int lastNewline = errorSummary.lastIndexOf(SeparatorConstants.NEWLINE);
+                if (lastNewline == errorSummary.length()) { 
+                    lastNewline = errorSummary.substring(0, lastNewline - 1).lastIndexOf(SeparatorConstants.NEWLINE);
+                }
+                messageOffset = lastNewline + 1;
             }
-            if (messageColon < 0 && !errorSummary.isEmpty()) {
-                messageColon = 0;
-            }
-            String extractedMessage = messageColon != -1 ? errorSummary.substring(messageColon + 2) : "";
+            String extractedMessage = errorSummary.substring(messageOffset);
             final boolean autoBlockPopup = extractedMessage.startsWith(NotifyDisplayer.BLOCK_POPUP_FLAG);
             if (autoBlockPopup) {
                 extractedMessage = extractedMessage.substring(NotifyDisplayer.BLOCK_POPUP_FLAG.length());
             }
-            final int prevDotPos = errorSummary.substring(0, (messageColon != -1 ? messageColon : errorSummary.length())).lastIndexOf(SeparatorConstants.PERIOD);
-            final String exceptionType = errorSummary.substring(prevDotPos + 1, (messageColon != -1 ? messageColon : errorSummary.length()));
+            int messageSegmentPos = extractedMessage.lastIndexOf(SeparatorConstants.NEWLINE);
+            if (messageSegmentPos > -1) {
+                messageSegmentPos = extractedMessage.substring(0, messageSegmentPos).lastIndexOf(SeparatorConstants.NEWLINE);
+            }
+            extractedMessage = extractedMessage.substring(messageSegmentPos + 1);
+            final int prevDotPos = errorSummary.substring(0, (messageOffset > 0 ? messageOffset : errorSummary.length())).lastIndexOf(SeparatorConstants.PERIOD);
+            final String exceptionType = errorSummary.substring(prevDotPos + 1, (messageOffset > 1 ? messageOffset - 2 : errorSummary.length()));
             String recordHeader = extractedMessage.isEmpty() ? exceptionType : extractedMessage;
-            String revisedSummary = errorSummary.substring(0, messageColon + 1) 
-                    + errorSummary.substring(messageColon + 1 + (autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG.length() : 0));
+            String revisedSummary = errorSummary.substring(0, messageOffset) 
+                    + errorSummary.substring(messageOffset + (autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG.length() : 0));
             if (!revisedSummary.endsWith(SeparatorConstants.NEWLINE)) {
                 revisedSummary += SeparatorConstants.NEWLINE;
             }
@@ -74,7 +82,6 @@ public class ConstellationErrorManager extends Handler {
             if (!recordHeader.endsWith(SeparatorConstants.NEWLINE)) {
                 recordHeader += SeparatorConstants.NEWLINE;
             }
-
             final ErrorReportEntry repEntry = new ErrorReportEntry( errLevel, recordHeader, 
                                                                     revisedSummary, errorMsg.toString(), 
                                                                     ErrorReportSessionData.getNextEntryId());
