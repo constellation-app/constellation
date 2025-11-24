@@ -269,7 +269,7 @@ public class HierarchicalArrangerNGTest {
         doReturn(graph).when(contextMock).getGraph();
 
         final SelectNamedSelectionPanel ssp = mock(SelectNamedSelectionPanel.class);
-        doReturn(-2L).when(ssp).getNamedSelectionId();
+        doReturn(SelectNamedSelectionPanel.USE_CURRENTLY_SELECTED).when(ssp).getNamedSelectionId();
 
         final MockedStatic<DialogDisplayer> ddStatic = mockStatic(DialogDisplayer.class);
         ddStatic.when(DialogDisplayer::getDefault).thenReturn(new MockedDialogDisplayer());

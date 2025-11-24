@@ -33,11 +33,13 @@ import au.gov.asd.tac.constellation.views.timeline.TimelineTopComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  * Clustering Manager
@@ -51,10 +53,10 @@ public class ClusteringManager {
     private Set<TreeElement> elementsToDraw = new HashSet<>();
     private Set<TreeElement> elementsToUndim = new HashSet<>();
     private Set<TreeElement> oldElementsToUndim;
-    private final Map<Integer, Integer> undimmedVerticesOnGraph = new HashMap<>();
+    private final MutableIntIntMap undimmedVerticesOnGraph = new IntIntHashMap();
     private Set<TreeElement> elementsToUnhide = new HashSet<>();
     private Set<TreeElement> oldElementsToUnhide;
-    private final Map<Integer, Integer> unhiddenVerticesOnGraph = new HashMap<>();
+    private final MutableIntIntMap unhiddenVerticesOnGraph = new IntIntHashMap();
 
     public TimeExtents generateTree(final GraphReadMethods graph, final String datetimeAttribute, final boolean selectedOnly) {
         final int transactionCount = graph.getTransactionCount();
@@ -281,8 +283,8 @@ public class ClusteringManager {
                 elementsToUnhide = null;
                 dimOrHideTree(lowerTimeExtent, upperTimeExtent, exclusionState);
 
-                final Set<Integer> transactionsToUndim = new HashSet<>();
-                final Set<Integer> transactionsToUnhide = new HashSet<>();
+                final MutableIntSet transactionsToUndim = new IntHashSet();
+                final MutableIntSet transactionsToUnhide = new IntHashSet();
 
                 undimmedVerticesOnGraph.clear();
                 unhiddenVerticesOnGraph.clear();
@@ -292,10 +294,9 @@ public class ClusteringManager {
                     for (final TreeElement te : elementsToUndim) {
                         if (te instanceof TreeLeaf leaf) {
                             transactionsToUndim.add(leaf.getId());
-                            final Integer countA = undimmedVerticesOnGraph.get(leaf.vertexIdA);
-                            final Integer countB = undimmedVerticesOnGraph.get(leaf.vertexIdB);
-                            undimmedVerticesOnGraph.put(leaf.vertexIdA, countA == null ? 1 : countA + 1);
-                            undimmedVerticesOnGraph.put(leaf.vertexIdB, countB == null ? 1 : countB + 1);
+                            // Note get returns 0 if the key doesn't already exist, hence we don't need to check the key beforehand
+                            undimmedVerticesOnGraph.put(leaf.vertexIdA, undimmedVerticesOnGraph.get(leaf.vertexIdA) + 1);
+                            undimmedVerticesOnGraph.put(leaf.vertexIdB, undimmedVerticesOnGraph.get(leaf.vertexIdB) + 1);
                         } else {
                             stack.add(te);
                             while (!stack.isEmpty()) {
@@ -303,10 +304,9 @@ public class ClusteringManager {
 
                                 if (element instanceof TreeLeaf leaf) {
                                     transactionsToUndim.add(leaf.getId());
-                                    final Integer countA = undimmedVerticesOnGraph.get(leaf.vertexIdA);
-                                    final Integer countB = undimmedVerticesOnGraph.get(leaf.vertexIdB);
-                                    undimmedVerticesOnGraph.put(leaf.vertexIdA, countA == null ? 1 : countA + 1);
-                                    undimmedVerticesOnGraph.put(leaf.vertexIdB, countB == null ? 1 : countB + 1);
+                                    // Note get returns 0 if the key doesn't already exist, hence we don't need to check the key beforehand
+                                    undimmedVerticesOnGraph.put(leaf.vertexIdA, undimmedVerticesOnGraph.get(leaf.vertexIdA) + 1);
+                                    undimmedVerticesOnGraph.put(leaf.vertexIdB, undimmedVerticesOnGraph.get(leaf.vertexIdB) + 1);
                                 } else {
                                     addLeavesToStack(element, stack);
                                 }
@@ -317,10 +317,9 @@ public class ClusteringManager {
                     for (final TreeElement te : elementsToUnhide) {
                         if (te instanceof TreeLeaf leaf) {
                             transactionsToUnhide.add(leaf.getId());
-                            final Integer countA = unhiddenVerticesOnGraph.get(leaf.vertexIdA);
-                            final Integer countB = unhiddenVerticesOnGraph.get(leaf.vertexIdB);
-                            unhiddenVerticesOnGraph.put(leaf.vertexIdA, countA == null ? 1 : countA + 1);
-                            unhiddenVerticesOnGraph.put(leaf.vertexIdB, countB == null ? 1 : countB + 1);
+                            // Note get returns 0 if the key doesn't already exist, hence we don't need to check the key beforehand
+                            unhiddenVerticesOnGraph.put(leaf.vertexIdA, unhiddenVerticesOnGraph.get(leaf.vertexIdA) + 1);
+                            unhiddenVerticesOnGraph.put(leaf.vertexIdB, unhiddenVerticesOnGraph.get(leaf.vertexIdB) + 1);
                         } else {
                             stack.add(te);
                             while (!stack.isEmpty()) {
@@ -328,11 +327,9 @@ public class ClusteringManager {
 
                                 if (element instanceof TreeLeaf leaf) {
                                     transactionsToUnhide.add(leaf.getId());
-
-                                    final Integer countA = unhiddenVerticesOnGraph.get(leaf.vertexIdA);
-                                    final Integer countB = unhiddenVerticesOnGraph.get(leaf.vertexIdB);
-                                    unhiddenVerticesOnGraph.put(leaf.vertexIdA, countA == null ? 1 : countA + 1);
-                                    unhiddenVerticesOnGraph.put(leaf.vertexIdB, countB == null ? 1 : countB + 1);
+                                    // Note get returns 0 if the key doesn't already exist, hence we don't need to check the key beforehand
+                                    unhiddenVerticesOnGraph.put(leaf.vertexIdA, unhiddenVerticesOnGraph.get(leaf.vertexIdA) + 1);
+                                    unhiddenVerticesOnGraph.put(leaf.vertexIdB, unhiddenVerticesOnGraph.get(leaf.vertexIdB) + 1);
                                 } else {
                                     addLeavesToStack(element, stack);
                                 }
@@ -439,7 +436,7 @@ public class ClusteringManager {
 
         private void populateDimOrHideSets(final Set<Integer> vertices,
                 final Set<Integer> verticesToUn,
-                final Map<Integer, Integer> verticesOnGraph,
+                final MutableIntIntMap verticesOnGraph,
                 final Set<TreeElement> elements,
                 final Set<TreeElement> oldElements,
                 final WritableGraph wg,
@@ -488,12 +485,12 @@ public class ClusteringManager {
             }
         }
 
-        private void processLeafOldGraph(final Set<Integer> vertices, final Map<Integer, Integer> verticesOnGraph, final TreeLeaf leaf, final WritableGraph wg, final boolean dimVertices) {
-            final Integer countAObject = verticesOnGraph.get(leaf.vertexIdA);
-            final int countA = countAObject != null ? countAObject - 1 : 0;
+        private void processLeafOldGraph(final Set<Integer> vertices, final MutableIntIntMap verticesOnGraph, final TreeLeaf leaf, final WritableGraph wg, final boolean dimVertices) {
+            final int countAObject = verticesOnGraph.get(leaf.vertexIdA);
+            final int countA = countAObject != 0 ? countAObject - 1 : 0;
 
-            final Integer countBObject = verticesOnGraph.get(leaf.vertexIdB);
-            final int countB = countBObject != null ? countBObject - 1 : 0;
+            final int countBObject = verticesOnGraph.get(leaf.vertexIdB);
+            final int countB = countBObject != 0 ? countBObject - 1 : 0;
 
             if (countA == 0) {
                 vertices.add(leaf.vertexIdA);
@@ -515,27 +512,24 @@ public class ClusteringManager {
             wg.setIntValue(transHideAttr, leaf.getId(), dimVertices ? 1 : 0);
         }
 
-        private void processLeaf(final Set<Integer> vertices, final Map<Integer, Integer> verticesOnGraph, final TreeLeaf leaf, final WritableGraph wg) {
+        private void processLeaf(final Set<Integer> vertices, final MutableIntIntMap verticesOnGraph, final TreeLeaf leaf, final WritableGraph wg) {
             final int transDimAttr = VisualConcept.TransactionAttribute.DIMMED.ensure(wg);
             final int transHideAttr = VisualConcept.TransactionAttribute.VISIBILITY.ensure(wg);
 
             wg.setBooleanValue(transDimAttr, leaf.getId(), false);
             wg.setIntValue(transHideAttr, leaf.getId(), 1);
 
-            final Integer countA = verticesOnGraph.get(leaf.vertexIdA);
-            final Integer countB = verticesOnGraph.get(leaf.vertexIdB);
-
-            if (countA == null) {
+            if (!verticesOnGraph.containsKey(leaf.vertexIdA)) {
                 verticesOnGraph.put(leaf.vertexIdA, 1);
                 vertices.add(leaf.vertexIdA);
             } else {
-                verticesOnGraph.put(leaf.vertexIdA, countA + 1);
+                verticesOnGraph.put(leaf.vertexIdA, verticesOnGraph.get(leaf.vertexIdA) + 1);
             }
-            if (countB == null) {
+            if (!verticesOnGraph.containsKey(leaf.vertexIdB)) {
                 verticesOnGraph.put(leaf.vertexIdB, 1);
                 vertices.add(leaf.vertexIdB);
             } else {
-                verticesOnGraph.put(leaf.vertexIdB, countB + 1);
+                verticesOnGraph.put(leaf.vertexIdB, verticesOnGraph.get(leaf.vertexIdB) + 1);
             }
         }
     }
