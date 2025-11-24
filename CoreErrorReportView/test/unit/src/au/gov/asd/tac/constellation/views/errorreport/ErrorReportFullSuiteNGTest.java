@@ -225,9 +225,11 @@ public class ErrorReportFullSuiteNGTest {
 
         System.out.println("\n>>>> Check WARNINGS list size");
         assertEquals(storedList.size(), 1);
-        System.out.println("\n\n>>>> Waiting 5s for updates to flow through");
-        delay(5000);
+        System.out.println("\n\n>>>> Waiting 8s for updates to flow through");
+        delay(8000);
+        System.out.println("\n>>>> Check if Error Report Icon is flashing");
         final boolean isFlashing = ertcInstance.isIconFlashing();
+        // icon should be flashing while there are error popups, and stop flashing when they are all dismissed
         assertTrue(isFlashing);
 
         ertcInstance.setReportsExpanded(false);
