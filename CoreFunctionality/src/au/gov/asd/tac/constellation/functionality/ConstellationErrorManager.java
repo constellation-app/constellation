@@ -36,7 +36,6 @@ import java.security.PrivilegedActionException;
 @ServiceProvider(service = Handler.class, supersedes = "org.netbeans.core.NbErrorManager")
 public class ConstellationErrorManager extends Handler {
 
-    
     public void addToErrorReport(final LogRecord errorRecord) {
         if (errorRecord != null && errorRecord.getThrown() != null) {
             final StackTraceElement[] elems = errorRecord.getThrown().getStackTrace();
@@ -93,58 +92,58 @@ public class ConstellationErrorManager extends Handler {
         }
     }
 
-    private void appendCause(final StringBuilder sbErrors, final String initialMessage, final Throwable ef, final int depth){
-        if (ef == null || depth > 20) {
+    private void appendCause(final StringBuilder errorLog, final String initialMessage, final Throwable transientException, final int depth){
+        if (transientException == null || depth > 20) {
             return;
         }
-        appendWrappedException(sbErrors, initialMessage, ef, depth);
-        final Throwable segmentCause = ef.getCause();
+        appendWrappedException(errorLog, initialMessage, transientException, depth);
+        final Throwable segmentCause = transientException.getCause();
         if (segmentCause != null) {
-            appendStackTrace(sbErrors, initialMessage, segmentCause, "  Caused By:\n");
-            appendCause(sbErrors, initialMessage, segmentCause, (depth + 1));
+            appendStackTrace(errorLog, initialMessage, segmentCause, "  Caused By:\n");
+            appendCause(errorLog, initialMessage, segmentCause, (depth + 1));
         }
     }
 
-    private void appendWrappedException(final StringBuilder sbErrors, final String initialMessage, final Throwable ef, final int depth) {
-        if (ef instanceof InvocationTargetException ite) {
-            appendStackTrace(sbErrors, initialMessage, ite.getTargetException(), "    InvocationTargetException:\n  Caused By:\n");
-            appendCause(sbErrors, initialMessage, ite.getTargetException(), (depth + 1));
-        } else if (ef instanceof UndeclaredThrowableException ute) {
-            appendStackTrace(sbErrors, initialMessage, ute.getUndeclaredThrowable(), "    UndeclaredThrowableException:\n  Caused By:\n");
-            appendCause(sbErrors, initialMessage, ute.getUndeclaredThrowable(), (depth + 1));
-        } else if (ef instanceof ExceptionInInitializerError eiie) {
-            appendStackTrace(sbErrors, initialMessage, eiie.getException(), "    ExceptionInInitializerError:\n  Caused By:\n");
-            appendCause(sbErrors, initialMessage, eiie.getException(), (depth + 1));
-        } else if (ef instanceof PrivilegedActionException pae) {
-            appendStackTrace(sbErrors, initialMessage, pae.getException(), "    PrivilegedActionException:\n  Caused By:\n");
-            appendCause(sbErrors, initialMessage, pae.getException(), (depth + 1));
+    private void appendWrappedException(final StringBuilder errorLog, final String initialMessage, final Throwable transientException, final int depth) {
+        if (transientException instanceof InvocationTargetException ite) {
+            appendStackTrace(errorLog, initialMessage, ite.getTargetException(), "    InvocationTargetException:\n  Caused By:\n");
+            appendCause(errorLog, initialMessage, ite.getTargetException(), (depth + 1));
+        } else if (transientException instanceof UndeclaredThrowableException ute) {
+            appendStackTrace(errorLog, initialMessage, ute.getUndeclaredThrowable(), "    UndeclaredThrowableException:\n  Caused By:\n");
+            appendCause(errorLog, initialMessage, ute.getUndeclaredThrowable(), (depth + 1));
+        } else if (transientException instanceof ExceptionInInitializerError eiie) {
+            appendStackTrace(errorLog, initialMessage, eiie.getException(), "    ExceptionInInitializerError:\n  Caused By:\n");
+            appendCause(errorLog, initialMessage, eiie.getException(), (depth + 1));
+        } else if (transientException instanceof PrivilegedActionException pae) {
+            appendStackTrace(errorLog, initialMessage, pae.getException(), "    PrivilegedActionException:\n  Caused By:\n");
+            appendCause(errorLog, initialMessage, pae.getException(), (depth + 1));
         }
     }
     
-    private void appendStackTrace(final StringBuilder sbErrors, final String initialMessage, final Throwable ef, final String hierarchyMessage) {
+    private void appendStackTrace(final StringBuilder errorLog, final String initialMessage, final Throwable transientException, final String hierarchyMessage) {
         final StringBuilder currentMessage = new StringBuilder("");
         boolean addedDescription = false;
         currentMessage.append(hierarchyMessage)
-                .append(ef.toString())
+                .append(transientException.toString())
                 .append(SeparatorConstants.NEWLINE);
-        if (!sbErrors.toString().contains(currentMessage.toString()) && !initialMessage.trim().contains(currentMessage.toString().trim())) {
+        if (!errorLog.toString().contains(currentMessage.toString()) && !initialMessage.trim().contains(currentMessage.toString().trim())) {
             addedDescription = true;
-            sbErrors.append(currentMessage.append(SeparatorConstants.NEWLINE).toString());
+            errorLog.append(currentMessage.append(SeparatorConstants.NEWLINE).toString());
         }
         
-        final StackTraceElement[] segmentElems = ef.getStackTrace();
+        final StackTraceElement[] segmentElems = transientException.getStackTrace();
         if (segmentElems != null && segmentElems.length > 0) {
             final StringBuilder subStackTrace = new StringBuilder("");
             for (int i = 0; i < segmentElems.length; i++) {
                 subStackTrace.append(segmentElems[i].toString())
                         .append(SeparatorConstants.NEWLINE);
             }
-            if (!sbErrors.toString().contains(subStackTrace.toString())) {
+            if (!errorLog.toString().contains(subStackTrace.toString())) {
                 if (!addedDescription) {
-                    sbErrors.append(hierarchyMessage)
+                    errorLog.append(hierarchyMessage)
                             .append(SeparatorConstants.NEWLINE);
                 }
-                sbErrors.append(subStackTrace.append(SeparatorConstants.NEWLINE).toString());
+                errorLog.append(subStackTrace.append(SeparatorConstants.NEWLINE).toString());
             }
         }
     }
