@@ -121,13 +121,8 @@ public enum BinIconMode {
         public Node createFXIcon(final Bin bin, final int height) {
             if (bin instanceof final ObjectBin objectBin) {
                 final Object key = objectBin.getKeyAsObject();
-                if (key instanceof final ConstellationColor colorValue) {
-
+                if (key instanceof final ConstellationColor colorValue && colorValue != null) {
                     // Make rectangle of that colour
-                    if (colorValue == null) {
-                        return null;
-                    }
-
                     final int arc = height / 3;
                     final Rectangle rect = new Rectangle(Double.valueOf(height), Double.valueOf(height), colorValue.getJavaFXColor());
                     rect.setArcHeight(arc);

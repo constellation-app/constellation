@@ -2,7 +2,7 @@
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
 == 2025-11-11 Add New Experimental Histogram View
-<p>New Experimental Histogram View added. This is a complete rewrite that can take advantage of JavaFX features present in other views
+<p>A new version of the histogram view has been added to the Experimental menu. This aligns the look and feel to be closer to that of other views
 <p>Can be found in Experimental->Views->New Histogram
 
 == 2025-07-23 Add spell checking in Notes View
