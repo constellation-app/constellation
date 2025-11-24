@@ -20,8 +20,11 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import java.util.ArrayList;
 import java.util.BitSet;
+import org.eclipse.collections.api.list.primitive.MutableFloatList;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.FloatArrayList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * Utilities for calculating scores on a graph based on shortest paths. This utility makes use of the parallel breadth
@@ -236,14 +239,14 @@ public class PathScoringUtilities {
     protected static ThreeTuple<BitSet[], float[], BitSet> computeAllPathsUndirectedThreeTuple(final GraphReadMethods graph, final ScoreType scoreType) {
         final int vxCount = graph.getVertexCount();
 
-        final ArrayList<Float> distances = new ArrayList<>();
+        final MutableFloatList distances = new FloatArrayList();
 
         final BitSet update = new BitSet(vxCount);
         final BitSet updateToReturn = new BitSet(vxCount);
         final BitSet turn = new BitSet(vxCount);
         final BitSet newUpdate = new BitSet(vxCount);
 
-        final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
+        final MutableIntList updatedVertexIndexArray = new IntArrayList();
 
         // initialising variables
         for (int vxPosition = 0; vxPosition < vxCount; vxPosition++) {
@@ -341,7 +344,7 @@ public class PathScoringUtilities {
 
         final int vertexCount = graph.getVertexCount();
 
-        final ArrayList<Float> distances = new ArrayList<>();
+        final MutableFloatList distances = new FloatArrayList();
 
         final BitSet update = new BitSet(vertexCount);
         final BitSet updateReturn = new BitSet(vertexCount);
@@ -349,7 +352,7 @@ public class PathScoringUtilities {
         final BitSet newUpdate = new BitSet(vertexCount);
         final BitSet turn = new BitSet(vertexCount);
 
-        final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
+        final MutableIntList updatedVertexIndexArray = new IntArrayList();
 
         // initialising variables
         for (int vxPosition = 0; vxPosition < vertexCount; vxPosition++) {
@@ -478,7 +481,7 @@ public class PathScoringUtilities {
         final BitSet update = new BitSet(vertexCount);
         final BitSet updateUnmodified = new BitSet(vertexCount);
 
-        final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
+        final MutableIntList updatedVertexIndexArray = new IntArrayList();
 
         // initialise variables
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
@@ -592,7 +595,7 @@ public class PathScoringUtilities {
         final BitSet updateUnmodified = new BitSet(vertexCount); // A Copy of updateF that wont be modified during this functions execution, will be returned
         final BitSet updateF = new BitSet(vertexCount);
         final BitSet updateB = new BitSet(vertexCount);
-        final ArrayList<Integer> updatedVertexIndexArray = new ArrayList<>();
+        final MutableIntList updatedVertexIndexArray = new IntArrayList();
 
         // initialise variables
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
@@ -786,7 +789,7 @@ public class PathScoringUtilities {
         }
     }
 
-    private static void updateAveragePathScoresUndirected(final ArrayList<Float> distances, final float[] scores, final BitSet turn, final BitSet[] sendBuffer, final ArrayList<Integer> updateVertexArray, final GraphReadMethods graph) {
+    private static void updateAveragePathScoresUndirected(final MutableFloatList distances, final float[] scores, final BitSet turn, final BitSet[] sendBuffer, final MutableIntList updateVertexArray, final GraphReadMethods graph) {
         // for each node that has a message in transit, update its eccentricity
         for (int vxPos = turn.nextSetBit(0); vxPos >= 0; vxPos = turn.nextSetBit(vxPos + 1)) {
             int vxId = graph.getVertex(vxPos);

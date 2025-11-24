@@ -59,6 +59,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -227,7 +229,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         final int fourDays = 4 * 24 * 60 * 60 * 1000;
 
         Set<Integer> destinations = Arrays.stream(startVxIds).boxed().collect(Collectors.toSet());
-        final List<Integer> repeats = new ArrayList<>();
+        final MutableIntList repeats = new IntArrayList();
         while (vx < n) {
             final int vxId = graph.addVertex();
             final String label = "Node_" + vxId;
@@ -274,8 +276,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
                         throw new InterruptedException();
                     }
                 }
-                repeats.add(vxId);
-                repeats.add(destination);
+                repeats.addAll(vxId, destination);
             }
             destinations = generateDestinations(repeats, m, r);
             vx++;
@@ -311,7 +312,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
      *
      * @return A random set of destinations
      */
-    private static Set<Integer> generateDestinations(final List<Integer> repeats, final int nVxStart, final SecureRandom r) {
+    private static Set<Integer> generateDestinations(final MutableIntList repeats, final int nVxStart, final SecureRandom r) {
         final Set<Integer> destinations = new HashSet<>();
         while (destinations.size() < nVxStart) {
             destinations.add(repeats.get(r.nextInt(repeats.size())));

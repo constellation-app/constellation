@@ -26,11 +26,16 @@ import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUt
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.IntFloatMap;
+import org.eclipse.collections.api.map.primitive.MutableIntFloatMap;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntFloatHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 
 /**
  * Hierarchical layout (Sugiyama based).
@@ -68,7 +73,7 @@ public class HierarchicalArranger implements Arranger {
 
         // Find out how far away each vertex is from each root.
         // Vertex vxId is at level levels[vxId].
-        final Map<Integer, Integer> levels = new HashMap<>();
+        final MutableIntIntMap levels = new IntIntHashMap();
         for (int i = 0; i < vxCount; i++) {
             levels.put(wg.getVertex(i), Integer.MAX_VALUE);
         }
@@ -91,9 +96,9 @@ public class HierarchicalArranger implements Arranger {
 
         // Now build a structure that holds a per-level list of vertices: ie vxLevels.get(i) contains the vertices at level i.
         // We couldn't build this before, because multiple roots will almost certainly cause vertices to change levels.
-        final ArrayList<ArrayList<Integer>> vxLevels = new ArrayList<>();
+        final List<MutableIntList> vxLevels = new ArrayList<>();
         for (int i = 0; i <= maxLevel; i++) {
-            vxLevels.add(new ArrayList<>());
+            vxLevels.add(new IntArrayList());
         }
 
         for (int position = 0; position < vxCount; position++) {
@@ -107,7 +112,7 @@ public class HierarchicalArranger implements Arranger {
 
         // This is the part where line crossing minimisation is done.
         // if you want to fancy up the algorithm, this is where to concentrate.
-        final Map<Integer, Float> weights = new HashMap<>();
+        final MutableIntFloatMap weights = new IntFloatHashMap();
         for (int i = 0; i < vxCount; i++) {
             weights.put(wg.getVertex(i), 100.0F);
         }
@@ -157,7 +162,7 @@ public class HierarchicalArranger implements Arranger {
      *
      * @return The maximum level that was assigned.
      */
-    private static int assignLevels(final GraphWriteMethods wg, final int root, final Map<Integer, Integer> levels) {
+    private static int assignLevels(final GraphWriteMethods wg, final int root, final MutableIntIntMap levels) {
         int maxLevel = 0;
         levels.put(root, 0);
         final ArrayDeque<Integer> neighbourQueue = new ArrayDeque<>();
@@ -180,12 +185,14 @@ public class HierarchicalArranger implements Arranger {
         return maxLevel;
     }
 
-    private static boolean calculateAndSortWeights(final GraphReadMethods rg, final ArrayList<ArrayList<Integer>> vxLevels, final int level, final Map<Integer, Float> weights) {
+    private static boolean calculateAndSortWeights(final GraphReadMethods rg, final List<MutableIntList> vxLevels, final int level, final MutableIntFloatMap weights) {
         boolean reordered = false;
-        final ArrayList<Integer> vxLevel = vxLevels.get(level);
-        final ArrayList<Integer> vxLevelCopy = new ArrayList<>(vxLevel); // avoid ConcurrentModificationException
-        final ArrayList<Integer> vxParentLevel = vxLevels.get(level - 1);
-        for (final int vxId : vxLevelCopy) {
+        final MutableIntList vxLevel = vxLevels.get(level);
+        final MutableIntList vxLevelCopy = new IntArrayList(vxLevel.size()); // avoid ConcurrentModificationException
+        vxLevelCopy.addAll(vxLevel);
+        final MutableIntList vxParentLevel = vxLevels.get(level - 1);
+        for (int i = 0; i < vxLevelCopy.size(); i++) {
+            final int vxId = vxLevelCopy.get(i);
             float weight = 0;
             for (int lposition = 0; lposition < rg.getVertexNeighbourCount(vxId); lposition++) {
                 final int nId = rg.getVertexNeighbour(vxId, lposition);
@@ -208,8 +215,8 @@ public class HierarchicalArranger implements Arranger {
         return reordered;
     }
 
-    private static void sortLevelByWeight(final ArrayList<Integer> vxLevel, final Map<Integer, Float> weights) {
-        Collections.sort(vxLevel, (vxId1, vxId2) -> {
+    private static void sortLevelByWeight(final MutableIntList vxLevel, final IntFloatMap weights) {
+        vxLevel.sortThis((vxId1, vxId2) -> {
             final float weight1 = weights.get(vxId1);
             final float weight2 = weights.get(vxId2);
             return Float.compare(weight1, weight2);
@@ -226,16 +233,17 @@ public class HierarchicalArranger implements Arranger {
      * @param weightSortedVxLevel the pre-sorted list of nodes where the start of the list has the least links, and the
      * end of the list has the most links.
      */
-    private static void busyOutermostOrdering(final ArrayList<Integer> weightSortedVxLevel) {
-        final ArrayList<Integer> vxLevelCopy = new ArrayList<>(weightSortedVxLevel); // avoid ConcurrentModificationException
+    private static void busyOutermostOrdering(final MutableIntList weightSortedVxLevel) {
         final int vxSize = weightSortedVxLevel.size();
+        final MutableIntList vxLevelCopy = new IntArrayList(vxSize); // avoid ConcurrentModificationException
+        vxLevelCopy.addAll(weightSortedVxLevel);
         weightSortedVxLevel.clear();
         boolean toggle = true;
         for (int i = vxSize - 1; i > -1; i--) {
             if (toggle) {
                 weightSortedVxLevel.add(vxLevelCopy.get(i));
             } else {
-                weightSortedVxLevel.add(0, vxLevelCopy.get(i));
+                weightSortedVxLevel.addAtIndex(0, vxLevelCopy.get(i));
             }
             toggle = !toggle;
         }
@@ -243,7 +251,7 @@ public class HierarchicalArranger implements Arranger {
         // this code makes the outer segments the busier ones, which seems to produce better arrangements in post-processing
         for (int i = 0; i < vxSize / 2; i++) {
             weightSortedVxLevel.add(weightSortedVxLevel.get(0));
-            weightSortedVxLevel.remove(0);
+            weightSortedVxLevel.removeAtIndex(0);
         }
     }
 
@@ -253,12 +261,11 @@ public class HierarchicalArranger implements Arranger {
      * @param wg
      * @param vxLevels
      */
-    private static void arrangeVertices(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels) {
-
+    private static void arrangeVertices(final GraphWriteMethods wg, final List<MutableIntList> vxLevels) {
         updateStatus(" starting vertex arrangement");
         int maxLevelVertices = 0;
         final int totalVertices = wg.getVertexCount();
-        for (final ArrayList<Integer> vxLevel : vxLevels) {
+        for (final MutableIntList vxLevel : vxLevels) {
             maxLevelVertices = Math.max(maxLevelVertices, vxLevel.size());
         }
         final int maxNodesPerRow = (int) Math.max(12, 12 * Math.log(totalVertices));
@@ -287,7 +294,7 @@ public class HierarchicalArranger implements Arranger {
         for (int level = 0; level < totalLevels; level++) {
             vertexCounter = -1;
             displayLevel += 1.0;
-            final ArrayList<Integer> vxLevel = vxLevels.get(level);
+            final MutableIntList vxLevel = vxLevels.get(level);
             final int levelVertices = vxLevel.size();
             displayLevel += Math.max(2 * Math.log((double) prevVertices + levelVertices) - 5, 0);
             verticesRemaining = levelVertices;
@@ -375,7 +382,7 @@ public class HierarchicalArranger implements Arranger {
      * @param passes proposed number of smoothing passes to perform (the actual number will vary depending on time
      * allowance and graph complexity)
      */
-    private static void applySmoothing(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels, final int passes) {
+    private static void applySmoothing(final GraphWriteMethods wg, final List<MutableIntList> vxLevels, final int passes) {
         updateStatus(" commencing smoothing passes: " + passes);
         boolean finalAdjustment = false;
         final long startTime = System.currentTimeMillis();
@@ -459,23 +466,26 @@ public class HierarchicalArranger implements Arranger {
      * @param topDownScan specifies the hierarchy direction to use in the arrangement.
      * @return
      */
-    private static int adjustArrangement(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels, final boolean topDownScan) {
+    private static int adjustArrangement(final GraphWriteMethods wg, final List<MutableIntList> vxLevels, final boolean topDownScan) {
         int swapsMade = 0;
         final int rangeStart = topDownScan ? 0 : vxLevels.size() - 1;
         final int rangeEnd = topDownScan ? vxLevels.size() - 2 : 1;
         final int rangeIncrement = topDownScan ? 1 : -1;
         for (int parentLevel = rangeStart; ((parentLevel <= rangeEnd && topDownScan) || (parentLevel >= rangeEnd && !topDownScan)); parentLevel += rangeIncrement) {
             final int scanLevel = topDownScan ? parentLevel + 1 : parentLevel - 1;
-            final ArrayList<Integer> vxLevel = vxLevels.get(scanLevel);
-            final ArrayList<Integer> vxLevelCopy = new ArrayList<>(vxLevel); // avoid ConcurrentModificationException
-            final ArrayList<Integer> vxLevelTempCopy = new ArrayList<>(vxLevel); // avoid ConcurrentModificationException
+            final MutableIntList vxLevel = vxLevels.get(scanLevel);
+            final MutableIntList vxLevelCopy = new IntArrayList(vxLevel.size()); // avoid ConcurrentModificationException
+            vxLevelCopy.addAll(vxLevel);
+            final MutableIntList vxLevelTempCopy = new IntArrayList(vxLevel.size()); // avoid ConcurrentModificationException
+            vxLevelTempCopy.addAll(vxLevel);
 
-            final ArrayList<Integer> vxParentLevel = vxLevels.get(parentLevel);
-            final ArrayList<Integer> vxCurrentParentIds = new ArrayList<>();
-            final ArrayList<Integer> vxTempParentIds = new ArrayList<>();
+            final MutableIntList vxParentLevel = vxLevels.get(parentLevel);
+            final MutableIntList vxCurrentParentIds = new IntArrayList();
+            final MutableIntList vxTempParentIds = new IntArrayList();
             double smallestDistance = 1000000;
 
-            for (final int vxId : vxLevelCopy) {
+            for (int i = 0; i < vxLevelCopy.size(); i++) {
+                final int vxId = vxLevelCopy.get(i);
                 double comparisonDistance;
                 double initialDistance = 0;
                 vxCurrentParentIds.clear();
@@ -492,7 +502,8 @@ public class HierarchicalArranger implements Arranger {
                 }
 
                 int swapTargetId = -1;
-                for (final int vxTempId : vxLevelTempCopy) {
+                for (int j = 0; j < vxLevelTempCopy.size(); j++) {
+                    final int vxTempId = vxLevelTempCopy.get(j);
                     if (vxTempId == vxId) {
                         continue;
                     }
@@ -512,16 +523,16 @@ public class HierarchicalArranger implements Arranger {
                     comparisonDistance = initialDistance + tempInitialDistance;
 
                     double leftTempDistance = 0;
-                    for (final int leftDx : vxCurrentParentIds) {
-                        leftTempDistance += calculateDistance(wg, leftDx, vxTempId);
+                    for (int leftDx = 0; leftDx < vxCurrentParentIds.size(); leftDx++) {
+                        leftTempDistance += calculateDistance(wg, vxCurrentParentIds.get(leftDx), vxTempId);
                     }
                     if (pCount > 1) {
                         leftTempDistance = leftTempDistance / pCount;
                     }
 
                     double rightTempDistance = 0;
-                    for (final int rightDx : vxTempParentIds) {
-                        rightTempDistance += calculateDistance(wg, rightDx, vxId);
+                    for (int rightDx = 0; rightDx < vxTempParentIds.size(); rightDx++) {
+                        rightTempDistance += calculateDistance(wg, vxTempParentIds.get(rightDx), vxId);
                     }
                     if (tpCount > 1) {
                         rightTempDistance = rightTempDistance / tpCount;
@@ -551,7 +562,7 @@ public class HierarchicalArranger implements Arranger {
      * @param vxLevels a container list where each entry is a list of nodes at a separate level in the hierarchy.
      * @return the number of nodes that were moved
      */
-    private static int minimiseTransactionDistances(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels) {
+    private static int minimiseTransactionDistances(final GraphWriteMethods wg, final List<MutableIntList> vxLevels) {
         // check each node on a level and see if switching positions with another node reduces the total length 
         // of transactions to all neightbours on different levels for both nodes being switched.
 
@@ -560,14 +571,18 @@ public class HierarchicalArranger implements Arranger {
         final int rangeEnd = vxLevels.size();
 
         for (int scanLevel = rangeStart; scanLevel < rangeEnd; scanLevel++) {
-            final ArrayList<Integer> vxLevel = vxLevels.get(scanLevel);
-            final ArrayList<Integer> vxLevelCopy = new ArrayList<>(vxLevel); // avoid ConcurrentModificationException
-            final ArrayList<Integer> vxLevelTempCopy = new ArrayList<>(vxLevel); // avoid ConcurrentModificationException
-            final ArrayList<Integer> tempNeighbours = new ArrayList<>();
-            final ArrayList<Integer> targetNeighbours = new ArrayList<>();
-            final ArrayList<Integer> lockedVertex = new ArrayList<>();
+            final MutableIntList vxLevel = vxLevels.get(scanLevel);
+            final MutableIntList vxLevelCopy = new IntArrayList(rangeEnd); // avoid ConcurrentModificationException
+            vxLevelCopy.addAll(vxLevel);
+            final MutableIntList vxLevelTempCopy = new IntArrayList(rangeEnd); // avoid ConcurrentModificationException
+            vxLevelTempCopy.addAll(vxLevel);
+            
+            final MutableIntList tempNeighbours = new IntArrayList();
+            final MutableIntList targetNeighbours = new IntArrayList();
+            final MutableIntList lockedVertex = new IntArrayList();
 
-            for (final int vxId : vxLevelCopy) {
+            for (int i = 0; i < vxLevelCopy.size(); i++) {
+                final int vxId = vxLevelCopy.get(i);
                 // for each node on the current level, calculate the distance to its parents and children for each position in the current level.
                 // switch positions with the smallest location, then lock that position.
                 double initialDistance = 0;
@@ -581,7 +596,8 @@ public class HierarchicalArranger implements Arranger {
                 }
 
                 int swapTargetId = -1;
-                for (final int vxTempId : vxLevelTempCopy) {
+                for (int j = 0; j < vxLevelTempCopy.size(); j++) {
+                    final int vxTempId = vxLevelTempCopy.get(j);
                     if (lockedVertex.contains(vxTempId)) {
                         continue;
                     }
@@ -590,8 +606,8 @@ public class HierarchicalArranger implements Arranger {
                         continue;
                     }
                     double tempInitialDistance = 0;
-                    for (final int neighbourId : tempNeighbours) {
-                        tempInitialDistance += calculateDistance(wg, vxTempId, neighbourId);
+                    for (int neighbourId = 0; neighbourId < tempNeighbours.size(); neighbourId++) {
+                        tempInitialDistance += calculateDistance(wg, vxTempId, tempNeighbours.get(neighbourId));
                     }
 
                     targetNeighbours.clear();
@@ -604,8 +620,8 @@ public class HierarchicalArranger implements Arranger {
                         }
                     }
                     double tnSwapDistance = 0;
-                    for (final int neighbourId : targetNeighbours) {
-                        tnSwapDistance += calculateDistance(wg, vxId, neighbourId);
+                    for (int neighbourId = 0; neighbourId < targetNeighbours.size(); neighbourId++) {
+                        tnSwapDistance += calculateDistance(wg, vxId, targetNeighbours.get(neighbourId));
                     }
 
                     if (tempInitialDistance < initialDistance && tnSwapDistance <= tnDistance) {
