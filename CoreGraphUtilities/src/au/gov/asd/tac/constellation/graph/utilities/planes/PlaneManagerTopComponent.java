@@ -46,6 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -71,6 +72,7 @@ import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -105,6 +107,7 @@ import org.openide.windows.TopComponent;
     "CTL_PlaneManagerTopComponent=Plane Manager",
     "HINT_PlaneManagerTopComponent=Plane Manager"
 })
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class PlaneManagerTopComponent extends AbstractTopComponent implements LookupListener, GraphChangeListener {
 
     private static final String TITLE = "Import plane";
@@ -373,7 +376,7 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
         if (node != null) {
             graphNode = node;
             graph = graphNode.getGraph();
-            
+
             try (final ReadableGraph rg = graph.getReadableGraph()) {
                 planesAttr = rg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
                 if (planesAttr != Graph.NOT_FOUND) {
@@ -678,5 +681,10 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
             });
             wg.setObjectValue(planesAttr, 0, state);
         }
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_PlaneManagerTopComponent(), Boolean.FALSE);
     }
 }

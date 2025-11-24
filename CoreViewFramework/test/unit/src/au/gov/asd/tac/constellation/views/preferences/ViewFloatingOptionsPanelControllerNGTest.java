@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.preferences;
+package au.gov.asd.tac.constellation.views.preferences;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
  *
  * @author sol695510
  */
-public class ViewOptionsPanelControllerNGTest {
+public class ViewFloatingOptionsPanelControllerNGTest {
 
     final Map<String, Boolean> viewOptionsDefault = Map.ofEntries(
             entry("Analytic View", Boolean.FALSE),
@@ -94,7 +94,7 @@ public class ViewOptionsPanelControllerNGTest {
             entry("Hierarchical", Boolean.TRUE),
             entry("K-Truss", Boolean.TRUE));
 
-    public ViewOptionsPanelControllerNGTest() {
+    public ViewFloatingOptionsPanelControllerNGTest() {
     }
 
     @BeforeClass
@@ -155,7 +155,7 @@ public class ViewOptionsPanelControllerNGTest {
 
             // Verify that these methods were run during isChanged().
             verify(constructedVFOP.get(0), times(1)).getOptionsFromPrefs();
-            verify(constructedVFOP.get(0), times(1 + viewOptionsDefault.size())).getOptionsFromUI();
+            verify(constructedVFOP.get(0), times(1)).getOptionsFromUI();
         }
 
         // When isChanged() returns false.

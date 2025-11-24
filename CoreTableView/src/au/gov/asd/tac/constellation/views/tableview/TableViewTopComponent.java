@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.views.tableview.plugins.SelectionToGraphPlugin;
@@ -35,6 +36,7 @@ import au.gov.asd.tac.constellation.views.tableview.state.TableViewState;
 import au.gov.asd.tac.constellation.views.tableview.tasks.TriggerDataUpdateTask;
 import au.gov.asd.tac.constellation.views.tableview.tasks.TriggerSelectionUpdateTask;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -45,6 +47,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -79,6 +82,7 @@ import org.openide.windows.TopComponent;
     "CTL_TableViewTopComponent=Table View",
     "HINT_TableViewTopComponent=Table View"
 })
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
     public static final Object TABLE_LOCK = new Object();
@@ -411,6 +415,11 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     public void handleComponentOpened() {
         super.handleComponentOpened();
         setFloating(Bundle.CTL_TableViewTopComponent(), 0, 0, Spawn.BOTTOM);
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_TableViewTopComponent(), Boolean.FALSE);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

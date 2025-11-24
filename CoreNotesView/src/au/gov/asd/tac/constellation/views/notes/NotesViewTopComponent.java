@@ -26,9 +26,11 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +38,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -63,6 +66,7 @@ import org.openide.windows.TopComponent;
     "CTL_NotesViewAction=Notes View",
     "CTL_NotesViewTopComponent=Notes View",
     "HINT_NotesViewTopComponent=Notes View"})
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> implements GraphReportListener, UndoRedoReportListener {
 
     private final NotesViewController notesViewController;
@@ -234,6 +238,11 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         if (activeGraph != null && undoRedoReport.getGraphId().equals(activeGraph.getId())) {
             notesViewPane.processNewUndoRedoReport(undoRedoReport);
         }
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_NotesViewTopComponent(), Boolean.FALSE);
     }
 
     /**

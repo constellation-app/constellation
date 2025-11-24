@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -66,6 +68,7 @@ import org.openide.windows.TopComponent;
     "CTL_AnalyticViewTopComponent=Analytic View",
     "HINT_AnalyticViewTopComponent=Analytic View"
 })
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticViewPane> {
 
     private static final String ANALYTIC_VIEW_GRAPH_CHANGED_THREAD_NAME = "Analytic View Graph Changed Updater";
@@ -259,5 +262,10 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     protected void handleComponentClosed() {
         super.handleComponentClosed();
         analyticViewPane.reset();
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_AnalyticViewTopComponent(), Boolean.FALSE);
     }
 }

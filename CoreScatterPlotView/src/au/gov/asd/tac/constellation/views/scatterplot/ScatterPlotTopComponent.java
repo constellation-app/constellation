@@ -21,16 +21,19 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotConcept;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotStateWriter;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -62,6 +65,7 @@ import org.openide.windows.TopComponent;
     "CTL_ScatterPlotTopComponent=Scatter Plot",
     "HINT_ScatterPlotTopComponent=Scatter Plot"
 })
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlotPane> {
 
     private ScatterPlotState currentState;
@@ -232,6 +236,11 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     public void handleComponentOpened() {
         super.handleComponentOpened();
         setFloating(Bundle.CTL_ScatterPlotTopComponent(), 0, 0, Spawn.LEFT);
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_ScatterPlotTopComponent(), Boolean.FALSE);
     }
 
     /**

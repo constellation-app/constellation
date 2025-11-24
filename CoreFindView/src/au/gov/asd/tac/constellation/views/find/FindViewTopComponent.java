@@ -19,13 +19,16 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.views.find.components.advanced.AdvancedCriteriaBorderPane;
+import java.util.Map;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -59,7 +62,7 @@ import org.openide.windows.TopComponent;
     "CTL_FindViewTopComponent=Find and Replace",
     "HINT_FindViewTopComponent=Find and Replace"
 })
-
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane> {
 
     private final FindViewPane pane;
@@ -226,7 +229,11 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
             // functionality for the change criteriapane function
             criteriaPane.setUpdateUI(false);
         }
+    }
 
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_FindViewTopComponent(), Boolean.TRUE);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

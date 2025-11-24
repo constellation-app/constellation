@@ -16,14 +16,17 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlListener;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
+import java.util.Map;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -51,6 +54,7 @@ import org.openide.windows.TopComponent;
     "CTL_QualityControlViewAction=Quality Control View",
     "CTL_QualityControlViewTopComponent=Quality Control View",
     "HINT_QualityControlViewTopComponent=Quality Control View"})
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class QualityControlViewTopComponent extends JavaFxTopComponent<QualityControlViewPane> implements QualityControlListener {
 
     private final QualityControlViewPane qualityControlViewPane;
@@ -107,10 +111,15 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
     protected void componentActivated() {
         setVisible(true);
     }
-            
+
     @Override
     protected void handleGraphClosed(final Graph graph) {
         qualityControlViewPane.refreshQualityControlView(null);
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_QualityControlViewTopComponent(), Boolean.FALSE);
     }
 
     /**

@@ -27,6 +27,7 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -59,6 +60,7 @@ import org.openide.windows.TopComponent;
     "CTL_MemoryManagerTopComponent=Memory Manager",
     "HINT_MemoryManagerTopComponent=Memory Manager"
 })
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class MemoryManagerTopComponent extends AbstractTopComponent implements MemoryManagerListener {
 
     public MemoryManagerTopComponent() {
@@ -157,5 +159,10 @@ public final class MemoryManagerTopComponent extends AbstractTopComponent implem
     @Override
     protected JScrollPane createContent() {
         return jScrollPane1;
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_MemoryManagerTopComponent(), Boolean.FALSE);
     }
 }

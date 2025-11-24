@@ -39,6 +39,7 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -55,6 +56,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -91,6 +93,7 @@ import org.openide.windows.TopComponent;
     "MSG_AddPerspective=Add perspective",
     "MSG_RemovePerspective=Remove perspective"
 })
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class PerspectiveBookmarkTopComponent extends AbstractTopComponent implements GraphManagerListener {
 
     private static final Logger LOGGER = Logger.getLogger(PerspectiveBookmarkTopComponent.class.getName());
@@ -497,5 +500,10 @@ public final class PerspectiveBookmarkTopComponent extends AbstractTopComponent 
             final int ix = perspectiveModel.addElement(p);
             SwingUtilities.invokeLater(() -> perspectivesList.setSelectedIndex(ix));
         }
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_PerspectiveBookmarkTopComponent(), Boolean.FALSE);
     }
 }

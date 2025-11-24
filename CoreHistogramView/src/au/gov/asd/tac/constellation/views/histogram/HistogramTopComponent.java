@@ -53,6 +53,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.UndoRedo;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -90,6 +91,7 @@ import org.openide.windows.TopComponent;
     "CTL_HistogramTopComponent=Histogram",
     "HINT_HistogramTopComponent=The histogram view will display attribute values as a bar chart"
 })
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class HistogramTopComponent extends AbstractTopComponent implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider {
 
     private static final int MIN_WIDTH = 425;
@@ -798,5 +800,10 @@ public final class HistogramTopComponent extends AbstractTopComponent implements
 
             SwingUtilities.invokeLater(display::repaint);
         }
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_HistogramTopComponent(), Boolean.FALSE);
     }
 }

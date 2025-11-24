@@ -40,6 +40,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -53,6 +54,7 @@ import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -87,6 +89,7 @@ import org.openide.windows.TopComponent;
     "CTL_KTrussControllerTopComponent=K-Truss",
     "HINT_KTrussControllerTopComponent=K-Truss"
 })
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class KTrussControllerTopComponent extends AbstractTopComponent implements LookupListener, GraphChangeListener, ComponentListener {
 
     private static final String TOGGLE_DISABLED = "Toggle Interactive: Disabled";
@@ -1068,5 +1071,10 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
             interactiveButton.setText(TOGGLE_ENABLED);
             interactiveButton.setSelected(false);
         }
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_KTrussControllerTopComponent(), Boolean.FALSE);
     }
 }

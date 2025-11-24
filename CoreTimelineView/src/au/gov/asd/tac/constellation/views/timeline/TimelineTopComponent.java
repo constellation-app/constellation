@@ -36,6 +36,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -63,6 +64,7 @@ import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -101,6 +103,7 @@ import org.openide.windows.TopComponent;
     "NoGraph=<No Active Graph>",
     "NoTemporal=<No Temporal Data Present On Current Graph>"
 })
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class TimelineTopComponent extends AbstractTopComponent implements LookupListener, GraphChangeListener, UndoRedo.Provider {
 
     private static final Logger LOGGER = Logger.getLogger(TimelineTopComponent.class.getName());
@@ -785,7 +788,7 @@ public final class TimelineTopComponent extends AbstractTopComponent implements 
             if (temporalAttrId != Graph.NOT_FOUND) {
                 currentTemporalAttributeModificationCount = rg.getValueModificationCounter(temporalAttrId);
             }
-            
+
             // Detect graph changes to attributes:
             if (currentAttributeModificationCount != oldAttributeModificationCount) {
                 Platform.runLater(() -> {
@@ -819,5 +822,10 @@ public final class TimelineTopComponent extends AbstractTopComponent implements 
     @Override
     protected StackPane createContent() {
         return root;
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_TimelineTopComponent(), Boolean.FALSE);
     }
 }

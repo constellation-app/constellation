@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.preferences;
+package au.gov.asd.tac.constellation.views.preferences;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -45,7 +45,7 @@ public class ViewFloatingOptionsPanelController extends OptionsPanelController {
     private ViewFloatingOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private final Preferences prefs = NbPreferences.forModule(ViewFloatingPreferenceKeys.class);
-    private final Map<String, Boolean> defaultOptions = ViewFloatingPreferenceKeys.getDefaultViewOptions();
+    private final Map<String, Boolean> defaultOptions = ViewFloatingPreferenceKeys.getDefaultViewFloatingPreferences();
 
     @Override
     public void update() {

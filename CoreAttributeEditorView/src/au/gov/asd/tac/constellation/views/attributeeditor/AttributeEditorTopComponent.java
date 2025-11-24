@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
@@ -264,5 +265,10 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
         if (reader != null) {
             attributePanel.updateEditorPanel(reader.refreshAttributes(true));
         }
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_AttributeEditorTopComponent(), Boolean.FALSE);
     }
 }

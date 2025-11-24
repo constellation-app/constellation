@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.lang.ref.Cleaner;
 import java.lang.ref.Cleaner.Cleanable;
+import java.util.Map;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -35,6 +36,7 @@ import org.openide.nodes.Node;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -66,6 +68,7 @@ import org.openide.windows.TopComponent;
     "CTL_SimpleGraphTopComponent=Simple Graph",
     "HINT_SimpleGraphTopComponent=Simple Graph"
 })
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class SimpleGraphTopComponent extends AbstractTopComponent implements GraphChangeListener, UndoRedo.Provider {
 
     private final InstanceContent instanceContent;
@@ -390,5 +393,10 @@ public final class SimpleGraphTopComponent extends AbstractTopComponent implemen
     @Override
     protected InstanceContent createContent() {
         return instanceContent;
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_SimpleGraphTopComponent(), Boolean.FALSE);
     }
 }

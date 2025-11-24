@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.namedselection;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionListElement;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionModDescPanel;
@@ -33,6 +34,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.swing.AbstractListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -50,6 +52,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -84,11 +87,12 @@ import org.openide.windows.TopComponent;
     "CTL_NamedSelectionAction=Named Selections",
     "CTL_NamedSelectionTopComponent=Named Selections",
     "HINT_NamedSelectionTopComponent=This window presents all named selections for an active graph."})
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> {
     // Labels used to mask UI in the event of having no active graph:
 
     private final JLabel lblNoGraph = new JLabel(Bundle.No_Active_Graph());
-    private final JPanel panelNoGraph = new JPanel(); 
+    private final JPanel panelNoGraph = new JPanel();
     private final int fontsize = UIManager.getFont("controlFont") != null ? UIManager.getFont("controlFont").getSize() : 12;
     /**
      * Uses an overloaded MouseAdapter class to intercept mouse interactions on the <code>lstNamedSelections</code>.
@@ -1113,5 +1117,10 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
             selections.clear();
             fireContentsChanged(this, 0, 0);
         }
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_NamedSelectionTopComponent(), Boolean.FALSE);
     }
 }

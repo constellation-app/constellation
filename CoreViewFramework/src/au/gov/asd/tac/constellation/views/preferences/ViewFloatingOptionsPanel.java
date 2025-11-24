@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.preferences;
+package au.gov.asd.tac.constellation.views.preferences;
 
 import java.util.Collections;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class ViewFloatingOptionsPanel extends JPanel {
 
     private final DefaultTableModel tableModel;
     private final Preferences prefs = NbPreferences.forModule(ViewFloatingPreferenceKeys.class);
-    private final Map<String, Boolean> defaultOptions = ViewFloatingPreferenceKeys.getDefaultViewOptions();
+    private final Map<String, Boolean> defaultOptions = ViewFloatingPreferenceKeys.getDefaultViewFloatingPreferences();
 
     protected ViewFloatingOptionsPanel() {
         tableModel = new DefaultTableModel(new Object[]{"View", "Floating"}, 0) {

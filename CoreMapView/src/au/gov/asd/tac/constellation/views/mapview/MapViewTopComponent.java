@@ -47,6 +47,7 @@ import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
@@ -71,6 +72,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -89,6 +91,7 @@ import org.openide.awt.ActionReferences;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -115,6 +118,7 @@ import org.openide.windows.TopComponent;
     "CTL_MapViewAction=Map View",
     "CTL_MapViewTopComponent=Map View",
     "HINT_MapViewTopComponent=Map View"})
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
     private static final String UPDATE_SELECTION_PLUGIN = "Map View: Update Selection on Graph";
@@ -638,7 +642,10 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                 }
             }
         }
-
     }
 
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_MapViewTopComponent(), Boolean.FALSE);
+    }
 }

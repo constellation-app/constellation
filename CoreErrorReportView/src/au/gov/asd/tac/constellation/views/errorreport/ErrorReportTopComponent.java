@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.Color;
 import java.awt.Image;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -71,6 +73,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -105,7 +108,7 @@ import org.openide.windows.TopComponent;
     "CTL_ErrorReportTopComponent=Error Report",
     "HINT_ErrorReportTopComponent=Error Report"
 })
-
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
     /**
@@ -190,7 +193,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     public static final String REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "report_settings");
     public static final String POPUP_REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "popup_report_settings");
 
-    ErrorReportTopComponent() {
+    public ErrorReportTopComponent() {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -390,7 +393,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         multiRedispItem.setToggleGroup(popupFrequency);
 
         oneRedispItem.setSelected(true);
-        final int applicationFontSize = FontUtilities.getApplicationFontSize();        
+        final int applicationFontSize = FontUtilities.getApplicationFontSize();
         popupControl.getItems().add(neverItem);
         popupControl.getItems().add(oneItem);
         popupControl.getItems().add(oneRedispItem);
@@ -444,7 +447,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final ToolBar controlToolbar2 = new ToolBar();
         final Label reportSettingsLabel = new Label("Report:");
         final Label popupReportSettingsLabel = new Label("Popup:");
-        
+
         final MultiChoiceInputPane reportSettingPane = new MultiChoiceInputPane(reportSettingOptions);
         reportSettingsLabel.setPadding(new Insets(0, -5, 0, 0));
         reportSettingsLabel.autosize();
@@ -711,7 +714,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 // rebuild
                 sessionErrorsBox.getChildren().clear();
 
-                // check popup selection               
+                // check popup selection
                 List<String> popupChoices = new ArrayList<>();
                 if (getParams().hasParameter(POPUP_REPORT_SETTINGS_PARAMETER_ID)) {
                     MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(POPUP_REPORT_SETTINGS_PARAMETER_ID);
@@ -1143,4 +1146,8 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         return ttlPane;
     }
 
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_ErrorReportTopComponent(), Boolean.FALSE);
+    }
 }

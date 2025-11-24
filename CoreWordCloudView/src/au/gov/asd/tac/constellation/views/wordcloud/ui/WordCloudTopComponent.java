@@ -18,10 +18,12 @@ package au.gov.asd.tac.constellation.views.wordcloud.ui;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.List;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
@@ -29,6 +31,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -63,6 +66,7 @@ import org.openide.windows.TopComponent;
     "CTL_WordCloudTopComponent=Word Cloud View",
     "HINT_WordCloudTopComponent=Word Cloud View"
 })
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPane> {
 
     private final JFXPanel panel = new JFXPanel();
@@ -174,6 +178,11 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
      */
     protected void setPaneStatus() {
         createContent().setEnabled(GraphManager.getDefault().getActiveGraph() != null);
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_WordCloudTopComponent(), Boolean.FALSE);
     }
 
     /**

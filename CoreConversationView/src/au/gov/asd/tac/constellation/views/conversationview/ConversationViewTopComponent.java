@@ -16,7 +16,9 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import java.util.Map;
 import java.util.Properties;
 import javafx.application.Platform;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -24,6 +26,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -63,6 +66,7 @@ import org.openide.windows.TopComponent;
     "CTL_ConversationViewTopComponent=Conversation View",
     "HINT_ConversationViewTopComponent=Conversation View"
 })
+@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
 public final class ConversationViewTopComponent extends JavaFxTopComponent<ConversationBox> {
 
     private final ConversationController controller;
@@ -121,6 +125,11 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     @Override
     protected void handleNewGraph(final Graph graph) {
         controller.updateComponent();
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_ConversationViewTopComponent(), Boolean.FALSE);
     }
 
     /**
