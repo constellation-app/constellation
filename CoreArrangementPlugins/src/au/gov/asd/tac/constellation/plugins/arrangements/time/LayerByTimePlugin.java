@@ -381,7 +381,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final boolean drawTxGuides = parameters.getParameters().get(DRAW_TX_GUIDES_PARAMETER_ID).getBooleanValue();
             final boolean arrangeIn2d = true;//parameters.getParameters().get(DRAW_TX_GUIDES_PARAMETER_ID).getBooleanValue();
             final ArrangeDirection direction = ArrangeDirection.Y;// TODO: make paramter
-            final int directionFlip = 1; // or -1
+            final int directionFlip = 10; // or -10
 
             //Establish new attributes.
             //Create and store graph attributes.
@@ -411,11 +411,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             float z = 0;
             final float step = getWidth(wgcopy) / values.size();
 
-            // I forget where this goes, but im redoing it anyway so whatever
-            int layerPos = 0;
-            final int layerStep = 10;
-
-            final Vector3f inLayerDirection = new Vector3f(1, 0, 0);
+            final Vector3f layerPosition = new Vector3f(0, 0, 0);
+            final Vector3f inLayerDirection = new Vector3f(10, 0, 0);
             final Vector3f perLayerDirection = switch (direction) {
                 case X ->
                     new Vector3f(directionFlip, 0, 0);
@@ -431,7 +428,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     if (!keyValue.getTwo().contains(currentLayer.getOne())) {
                         continue;
                     }
-                    
+
                     final MutableIntSet nodesInLayer = new IntHashSet();
                     for (int i = 0; i < currentLayer.getTwo().size(); i++) {
                         final int newLayer = keyValue.getOne();
@@ -456,32 +453,25 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     }
 
                     if (arrangeIn2d) {
-
                         // For now, arrange the nodes just relative to the current step
                         System.out.println("nodesInLayer " + nodesInLayer);
                         final int xAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
                         final int yAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
                         final int zAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
 
-                        int nodeInLayerPos = 0;
-                        final int sameLayerStep = 10;
+                        final Vector3f nodePosition = layerPosition.copy();
 
                         final MutableIntIterator iterator = nodesInLayer.intIterator();
                         while (iterator.hasNext()) {
                             final int nodeId = iterator.next();
 
-                            final Vector3f nodePosition = perLayerDirection.copy();
-                            // position whole layer
+                            // Set position
+                            wgcopy.setFloatValue(xAttr, nodeId, nodePosition.getX());
+                            wgcopy.setFloatValue(yAttr, nodeId, nodePosition.getY());
+                            wgcopy.setFloatValue(zAttr, nodeId, nodePosition.getZ());
 
-                            // TODO refactor to be more dynamic with vectors representing positon
-                            //wgcopy.setFloatValue(attrId, nodeId, layerPos * directionFlip);
-                            //System.out.println("nodeId " + nodeId + " layerPos " + layerPos + " attrId " + attrId + " pos " + wgcopy.getFloatValue(attrId, nodeId));
-                            wgcopy.setFloatValue(xAttr, nodeId, nodeInLayerPos);
-                            wgcopy.setFloatValue(zAttr, nodeId, 0);
-                            nodeInLayerPos += sameLayerStep;
+                            nodePosition.add(inLayerDirection);
                         }
-
-                        layerPos += layerStep;
                     }
                 }
 
@@ -490,6 +480,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     dstVxMap = new IntIntHashMap();
                     z += step;
                 }
+
+                layerPosition.add(perLayerDirection);
             }
 
             //Remove any outstanding transactions flagged for deletion
