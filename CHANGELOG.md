@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## Changes in November 2025
+-   Removed `ContentPairwiseSimilarityServices.MutableDouble` which was no longer needed.
+
 ## Changes in October 2025
 -   Removed `areSame()` from `BoundingBox`, `Camera`, `Frame`, `Vector3f` in favour of implementing `equals()`.
 -   Removed `Graphics3DUtilities.clamp()` which is no longer required now that `Math.clamp()` does the same thing.

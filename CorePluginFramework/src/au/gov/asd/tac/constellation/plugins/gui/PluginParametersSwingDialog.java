@@ -26,7 +26,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
@@ -47,6 +46,8 @@ import javax.swing.JButton;
 import javax.swing.UIManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
+import org.eclipse.collections.api.map.primitive.MutableObjectBooleanMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectBooleanHashMap;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -75,7 +76,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     private final String title;
     private final JFXPanel xp;
     
-    private final HashMap<PluginParameter<?>, Boolean> parameterValidity = new HashMap<>();
+    private final MutableObjectBooleanMap<PluginParameter<?>> parameterValidity = new ObjectBooleanHashMap<>();
     private final JButton acceptanceOption;
     private final PluginParameters parameters;
 
@@ -310,7 +311,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     }
 
     public boolean requirmentsSatisfied(){
-        return parameterValidity.values().stream().noneMatch(val -> val.equals(false));
+        return parameterValidity.values().noneSatisfy(val -> false);
     }
 
     /**
