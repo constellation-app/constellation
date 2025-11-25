@@ -31,8 +31,8 @@ import org.openide.util.NbPreferences;
 public class ViewFloatingOptionsPanel extends JPanel {
 
     private final DefaultTableModel tableModel;
-    private final Preferences prefs = NbPreferences.forModule(ViewFloatingPreferenceKeys.class);
-    private final Map<String, Boolean> defaultOptions = ViewFloatingPreferenceKeys.getDefaultViewFloatingPreferences();
+    private final Preferences prefs = NbPreferences.forModule(ViewFloatingOptionsPanelController.class);
+    private final Map<String, Boolean> defaultPrefs = ViewFloatingOptionsPanelController.getDefaultFloatingPreferences();
 
     protected ViewFloatingOptionsPanel() {
         tableModel = new DefaultTableModel(new Object[]{"View", "Floating"}, 0) {
@@ -47,7 +47,7 @@ public class ViewFloatingOptionsPanel extends JPanel {
             }
         };
 
-        final Map<String, Boolean> options = getOptionsFromPrefs().isEmpty() ? defaultOptions : getOptionsFromPrefs();
+        final Map<String, Boolean> options = getOptionsFromPrefs().isEmpty() ? defaultPrefs : getOptionsFromPrefs();
 
         for (final Map.Entry<String, Boolean> entry : options.entrySet()) {
             tableModel.addRow(new Object[]{entry.getKey(), entry.getValue()});
@@ -75,7 +75,7 @@ public class ViewFloatingOptionsPanel extends JPanel {
     protected final Map<String, Boolean> getOptionsFromPrefs() {
         final Map<String, Boolean> optionsFromPrefs = new TreeMap<>();
 
-        for (final Map.Entry<String, Boolean> entry : defaultOptions.entrySet()) {
+        for (final Map.Entry<String, Boolean> entry : defaultPrefs.entrySet()) {
             optionsFromPrefs.put(entry.getKey(), prefs.getBoolean(entry.getKey(), entry.getValue()));
         }
 

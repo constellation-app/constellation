@@ -15,9 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.preferences;
 
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Collections;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import org.netbeans.spi.options.OptionsPanelController;
@@ -44,8 +47,8 @@ public class ViewFloatingOptionsPanelController extends OptionsPanelController {
 
     private ViewFloatingOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    private final Preferences prefs = NbPreferences.forModule(ViewFloatingPreferenceKeys.class);
-    private final Map<String, Boolean> defaultOptions = ViewFloatingPreferenceKeys.getDefaultViewFloatingPreferences();
+    private final Preferences prefs = NbPreferences.forModule(ViewFloatingOptionsPanelController.class);
+    private final Map<String, Boolean> defaultPrefs = getDefaultFloatingPreferences();
 
     @Override
     public void update() {
@@ -62,7 +65,7 @@ public class ViewFloatingOptionsPanelController extends OptionsPanelController {
                 pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
                 final ViewFloatingOptionsPanel viewOptionsPanel = getPanel();
 
-                for (final String view : defaultOptions.keySet()) {
+                for (final String view : defaultPrefs.keySet()) {
                     prefs.putBoolean(view, viewOptionsPanel.getOptionsFromUI().get(view));
                 }
             }
@@ -111,5 +114,11 @@ public class ViewFloatingOptionsPanelController extends OptionsPanelController {
         }
 
         return panel;
+    }
+
+    public static final Map<String, Boolean> getDefaultFloatingPreferences() {
+        final Map<String, Boolean> defaultPrefs = new TreeMap<>();
+        Lookup.getDefault().lookupAll(AbstractTopComponent.class).forEach(lookup -> defaultPrefs.putAll(lookup.getFloatingPreference()));
+        return Collections.unmodifiableMap(defaultPrefs);
     }
 }
