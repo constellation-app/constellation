@@ -382,6 +382,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final boolean arrangeIn2d = true;//parameters.getParameters().get(DRAW_TX_GUIDES_PARAMETER_ID).getBooleanValue();
             final ArrangeDirection direction = ArrangeDirection.Y;// TODO: make paramter
             final int directionFlip = 10; // or -10
+            final int numColumns = 3;
 
             //Establish new attributes.
             //Create and store graph attributes.
@@ -412,18 +413,36 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final float step = getWidth(wgcopy) / values.size();
 
             final Vector3f layerPosition = new Vector3f(0, 0, 0);
-            final Vector3f inLayerDirection = new Vector3f(10, 0, 0);
+
+            final Vector3f nextColumnDirection = new Vector3f(1, 0, 0);
+            final Vector3f inLayerDirection = new Vector3f(1, 0, 0);
             final Vector3f perLayerDirection = switch (direction) {
                 case X ->
-                    new Vector3f(directionFlip, 0, 0);
+                    new Vector3f(1, 0, 0);
                 case Y ->
-                    new Vector3f(0, directionFlip, 0);
+                    new Vector3f(0, 1, 0);
                 case Z ->
-                    new Vector3f(0, 0, directionFlip);
+                    new Vector3f(0, 0, 1);
             };
+
+            // For 2d only right now, if the in-layer and per-layer directions are the same then we'll need to account for that so layers dont overlap
+            // They're the same direction if their dot product equals their lenghts multiplied together
+            final boolean sameDirection = (Vector3f.dotProduct(inLayerDirection, perLayerDirection) == inLayerDirection.getLength() * perLayerDirection.getLength());
+            System.out.println("sameDirection " + sameDirection);
+
+            // Scale according to the user's decided paramters, MIGHT NOT NEED
+            inLayerDirection.scale(10); // TODO make parameter
+            perLayerDirection.scale(directionFlip);
+            nextColumnDirection.scale(50);
+
+            System.out.println("remappedLayers.keyValuesView().size() " + remappedLayers.keyValuesView().size());
+            final int layersPerCol = (int) Math.ceil((float) remappedLayers.keyValuesView().size() / numColumns);
+            System.out.println("layersPerCol " + layersPerCol);
+            int remainingLayers = layersPerCol;
 
             for (final IntObjectPair<MutableFloatList> keyValue : remappedLayers.keyValuesView()) {
                 // Each layer?
+                System.out.println("transactionLayers.keyValuesView().size() " + transactionLayers.keyValuesView().size());
                 for (final FloatObjectPair<MutableIntList> currentLayer : transactionLayers.keyValuesView()) {
                     if (!keyValue.getTwo().contains(currentLayer.getOne())) {
                         continue;
@@ -471,6 +490,20 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                             wgcopy.setFloatValue(zAttr, nodeId, nodePosition.getZ());
 
                             nodePosition.add(inLayerDirection);
+
+                            if (sameDirection && iterator.hasNext()) {
+                                layerPosition.add(inLayerDirection);
+                            }
+                        }
+
+                        remainingLayers -= 1;
+
+                        if (remainingLayers <= 0) {
+                            remainingLayers = layersPerCol;
+                            final Vector3f subtractVector = perLayerDirection.copy();
+                            subtractVector.scale(layersPerCol);
+                            layerPosition.subtract(subtractVector);
+                            layerPosition.add(nextColumnDirection);
                         }
                     }
                 }
