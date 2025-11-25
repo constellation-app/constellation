@@ -52,7 +52,7 @@ import org.openide.windows.TopComponent;
 @Messages({
     "CTL_ImportDelimitedFileAction=From File...",
     "HINT_ImportDelimitedFile=Import from File"})
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class DelimitedImportTopComponent extends ImportTopComponent {
 
     private final DelimitedImportPane delimitedImportPane;

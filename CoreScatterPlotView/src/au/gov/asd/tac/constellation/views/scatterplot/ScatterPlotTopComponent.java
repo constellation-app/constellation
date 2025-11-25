@@ -65,7 +65,7 @@ import org.openide.windows.TopComponent;
     "CTL_ScatterPlotTopComponent=Scatter Plot",
     "HINT_ScatterPlotTopComponent=Scatter Plot"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlotPane> {
 
     private ScatterPlotState currentState;

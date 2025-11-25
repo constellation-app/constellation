@@ -93,7 +93,7 @@ import org.openide.windows.TopComponent;
     "CTL_HierarchicalControllerTopComponent=Hierarchical",
     "HINT_HierarchicalControllerTopComponent=Use this window to view communities of interest in the graph"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class HierarchicalControllerTopComponent extends AbstractTopComponent implements LookupListener, GraphChangeListener {
 
     private static final String INFO_STRING = "%s clusters";

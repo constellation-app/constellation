@@ -68,7 +68,7 @@ import org.openide.windows.TopComponent;
     "CTL_SimpleGraphTopComponent=Simple Graph",
     "HINT_SimpleGraphTopComponent=Simple Graph"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class SimpleGraphTopComponent extends AbstractTopComponent implements GraphChangeListener, UndoRedo.Provider {
 
     private final InstanceContent instanceContent;

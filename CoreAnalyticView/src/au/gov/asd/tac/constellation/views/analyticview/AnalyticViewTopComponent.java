@@ -68,7 +68,7 @@ import org.openide.windows.TopComponent;
     "CTL_AnalyticViewTopComponent=Analytic View",
     "HINT_AnalyticViewTopComponent=Analytic View"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticViewPane> {
 
     private static final String ANALYTIC_VIEW_GRAPH_CHANGED_THREAD_NAME = "Analytic View Graph Changed Updater";

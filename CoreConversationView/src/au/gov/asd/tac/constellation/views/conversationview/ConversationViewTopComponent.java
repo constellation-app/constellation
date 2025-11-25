@@ -66,7 +66,7 @@ import org.openide.windows.TopComponent;
     "CTL_ConversationViewTopComponent=Conversation View",
     "HINT_ConversationViewTopComponent=Conversation View"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class ConversationViewTopComponent extends JavaFxTopComponent<ConversationBox> {
 
     private final ConversationController controller;

@@ -107,7 +107,7 @@ import org.openide.windows.TopComponent;
     "CTL_PlaneManagerTopComponent=Plane Manager",
     "HINT_PlaneManagerTopComponent=Plane Manager"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class PlaneManagerTopComponent extends AbstractTopComponent implements LookupListener, GraphChangeListener {
 
     private static final String TITLE = "Import plane";

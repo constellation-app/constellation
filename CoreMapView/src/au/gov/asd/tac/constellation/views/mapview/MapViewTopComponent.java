@@ -118,7 +118,7 @@ import org.openide.windows.TopComponent;
     "CTL_MapViewAction=Map View",
     "CTL_MapViewTopComponent=Map View",
     "HINT_MapViewTopComponent=Map View"})
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
     private static final String UPDATE_SELECTION_PLUGIN = "Map View: Update Selection on Graph";

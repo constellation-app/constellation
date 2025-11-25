@@ -66,7 +66,7 @@ import org.openide.windows.TopComponent;
     "CTL_NotesViewAction=Notes View",
     "CTL_NotesViewTopComponent=Notes View",
     "HINT_NotesViewTopComponent=Notes View"})
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> implements GraphReportListener, UndoRedoReportListener {
 
     private final NotesViewController notesViewController;

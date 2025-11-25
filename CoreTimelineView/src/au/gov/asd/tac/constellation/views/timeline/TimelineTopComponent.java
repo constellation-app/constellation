@@ -103,7 +103,7 @@ import org.openide.windows.TopComponent;
     "NoGraph=<No Active Graph>",
     "NoTemporal=<No Temporal Data Present On Current Graph>"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class TimelineTopComponent extends AbstractTopComponent implements LookupListener, GraphChangeListener, UndoRedo.Provider {
 
     private static final Logger LOGGER = Logger.getLogger(TimelineTopComponent.class.getName());

@@ -69,7 +69,7 @@ import org.openide.windows.TopComponent;
     "CTL_TutorialTopComponentTopComponent=What's New",
     "HINT_TutorialTopComponentTopComponent=Whats New Page"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class WhatsNewTopComponent extends JavaFxTopComponent<WhatsNewViewPane> implements java.awt.event.ActionListener {
 
     private final WhatsNewViewPane pane;

@@ -66,7 +66,7 @@ import org.openide.windows.TopComponent;
     "CTL_WordCloudTopComponent=Word Cloud View",
     "HINT_WordCloudTopComponent=Word Cloud View"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPane> {
 
     private final JFXPanel panel = new JFXPanel();

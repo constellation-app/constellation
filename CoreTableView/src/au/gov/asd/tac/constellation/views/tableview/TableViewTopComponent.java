@@ -82,7 +82,7 @@ import org.openide.windows.TopComponent;
     "CTL_TableViewTopComponent=Table View",
     "HINT_TableViewTopComponent=Table View"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
     public static final Object TABLE_LOCK = new Object();

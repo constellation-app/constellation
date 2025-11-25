@@ -53,7 +53,7 @@ import org.openide.windows.TopComponent;
 @Messages({
     "CTL_ImportJDBCFileAction=From Database...",
     "HINT_ImportJDBCFile=Import from Database"})
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class JDBCImportTopComponent extends ImportTopComponent {
 
     private final JDBCImportPane jdbcImportPane;

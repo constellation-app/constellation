@@ -91,7 +91,7 @@ import org.openide.windows.TopComponent;
     "CTL_HistogramTopComponent=Histogram",
     "HINT_HistogramTopComponent=The histogram view will display attribute values as a bar chart"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class HistogramTopComponent extends AbstractTopComponent implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider {
 
     private static final int MIN_WIDTH = 425;

@@ -89,7 +89,7 @@ import org.openide.windows.TopComponent;
     "CTL_KTrussControllerTopComponent=K-Truss",
     "HINT_KTrussControllerTopComponent=K-Truss"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class KTrussControllerTopComponent extends AbstractTopComponent implements LookupListener, GraphChangeListener, ComponentListener {
 
     private static final String TOGGLE_DISABLED = "Toggle Interactive: Disabled";

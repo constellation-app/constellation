@@ -69,7 +69,7 @@ import org.openide.windows.TopComponent;
     "CTL_DataAccessViewTopComponent=Data Access View",
     "HINT_DataAccessViewTopComponent=Data Access View"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAccessPane> {
 
     private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("DAV-Thread", 1);

@@ -60,7 +60,7 @@ import org.openide.windows.TopComponent;
     "CTL_MemoryManagerTopComponent=Memory Manager",
     "HINT_MemoryManagerTopComponent=Memory Manager"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class MemoryManagerTopComponent extends AbstractTopComponent implements MemoryManagerListener {
 
     public MemoryManagerTopComponent() {

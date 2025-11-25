@@ -49,7 +49,7 @@ import org.openide.windows.TopComponent;
     "CTL_SchemaViewAction=Schema View",
     "CTL_SchemaViewTopComponent=Schema View",
     "HINT_SchemaViewTopComponent=Schema View"})
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewPane> {
 
     private final SchemaViewPane schemaViewPane;

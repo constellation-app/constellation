@@ -108,7 +108,7 @@ import org.openide.windows.TopComponent;
     "CTL_ErrorReportTopComponent=Error Report",
     "HINT_ErrorReportTopComponent=Error Report"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
     /**

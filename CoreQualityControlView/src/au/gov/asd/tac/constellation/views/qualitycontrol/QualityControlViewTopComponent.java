@@ -54,7 +54,7 @@ import org.openide.windows.TopComponent;
     "CTL_QualityControlViewAction=Quality Control View",
     "CTL_QualityControlViewTopComponent=Quality Control View",
     "HINT_QualityControlViewTopComponent=Quality Control View"})
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class QualityControlViewTopComponent extends JavaFxTopComponent<QualityControlViewPane> implements QualityControlListener {
 
     private final QualityControlViewPane qualityControlViewPane;

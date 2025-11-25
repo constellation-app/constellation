@@ -87,7 +87,7 @@ import org.openide.windows.TopComponent;
     "CTL_NamedSelectionAction=Named Selections",
     "CTL_NamedSelectionTopComponent=Named Selections",
     "HINT_NamedSelectionTopComponent=This window presents all named selections for an active graph."})
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> {
     // Labels used to mask UI in the event of having no active graph:
 

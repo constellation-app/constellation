@@ -64,7 +64,7 @@ import org.openide.windows.TopComponent;
     "CTL_WelcomeTopComponentTopComponent=Welcome Page",
     "HINT_WelcomeTopComponentTopComponent=Welcome Page"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPane> {
 
     private final WelcomeViewPane pane;

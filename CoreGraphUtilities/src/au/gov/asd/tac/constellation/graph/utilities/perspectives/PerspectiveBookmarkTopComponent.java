@@ -93,7 +93,7 @@ import org.openide.windows.TopComponent;
     "MSG_AddPerspective=Add perspective",
     "MSG_RemovePerspective=Remove perspective"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class PerspectiveBookmarkTopComponent extends AbstractTopComponent implements GraphManagerListener {
 
     private static final Logger LOGGER = Logger.getLogger(PerspectiveBookmarkTopComponent.class.getName());

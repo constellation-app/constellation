@@ -67,7 +67,7 @@ import org.openide.windows.TopComponent;
     "CTL_PluginReporterTopComponent=Plugin Reporter",
     "HINT_PluginReporterTopComponent=Plugin Reporter"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginReporterPane> implements GraphReportListener {
 
     private final PluginReporterPane reporterPane;

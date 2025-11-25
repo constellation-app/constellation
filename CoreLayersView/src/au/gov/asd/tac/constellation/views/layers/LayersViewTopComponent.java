@@ -62,7 +62,7 @@ import org.openide.windows.WindowManager;
     "CTL_LayersViewAction=Layers View",
     "CTL_LayersViewTopComponent=Layers View",
     "HINT_LayersViewTopComponent=Layers View"})
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewPane> {
 
     private final LayersViewController layersViewController;

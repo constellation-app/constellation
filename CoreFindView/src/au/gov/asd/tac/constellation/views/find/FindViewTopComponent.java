@@ -62,7 +62,7 @@ import org.openide.windows.TopComponent;
     "CTL_FindViewTopComponent=Find and Replace",
     "HINT_FindViewTopComponent=Find and Replace"
 })
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane> {
 
     private final FindViewPane pane;

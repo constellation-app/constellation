@@ -54,7 +54,7 @@ import org.openide.windows.TopComponent;
     "CTL_ScriptingViewAction=Scripting View",
     "CTL_ScriptingViewTopComponent=Scripting View",
     "HINT_ScriptingViewTopComponent=Scripting View"})
-@ServiceProvider(service = AbstractTopComponent.class, position = 1000)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class ScriptingViewTopComponent extends SwingTopComponent {
 
     private final ScriptingViewPane scriptingViewPane;
