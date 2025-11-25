@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
  *
  * @author sol695510
  */
-public class ViewFloatingOptionsPanelControllerNGTest {
+public class FloatingOptionsPanelControllerNGTest {
 
     final Map<String, Boolean> prefsAllFalse = Map.ofEntries(
             entry("Analytic View", Boolean.FALSE),
@@ -54,7 +54,7 @@ public class ViewFloatingOptionsPanelControllerNGTest {
             entry("Data Access View", Boolean.TRUE),
             entry("Error Report", Boolean.TRUE));
 
-    public ViewFloatingOptionsPanelControllerNGTest() {
+    public FloatingOptionsPanelControllerNGTest() {
     }
 
     @BeforeClass
@@ -74,18 +74,18 @@ public class ViewFloatingOptionsPanelControllerNGTest {
     }
 
     /**
-     * Test of update method, of class ViewFloatingOptionsPanelController.
+     * Test of update method, of class FloatingOptionsPanelController.
      */
     @Test
     public void testUpdate() {
         System.out.println("update");
-        final ViewFloatingOptionsPanelController instance = new ViewFloatingOptionsPanelController();
+        final FloatingOptionsPanelController instance = new FloatingOptionsPanelController();
 
-        try (MockedConstruction<ViewFloatingOptionsPanel> mock = mockConstruction(ViewFloatingOptionsPanel.class)) {
+        try (MockedConstruction<FloatingOptionsPanel> mock = mockConstruction(FloatingOptionsPanel.class)) {
             instance.update();
 
             // Assert that a mock of the panel was constructed.
-            final List<ViewFloatingOptionsPanel> constructed = mock.constructed();
+            final List<FloatingOptionsPanel> constructed = mock.constructed();
             assertEquals(constructed.size(), 1);
 
             // Verify that this method was run on the constructed panel.
@@ -94,15 +94,15 @@ public class ViewFloatingOptionsPanelControllerNGTest {
     }
 
     /**
-     * Test of applyChanges method, of class ViewFloatingOptionsPanelController.
+     * Test of applyChanges method, of class FloatingOptionsPanelController.
      */
     @Test
     public void testApplyChanges() {
         System.out.println("applyChanges");
-        final ViewFloatingOptionsPanelController instance = new ViewFloatingOptionsPanelController();
+        final FloatingOptionsPanelController instance = new FloatingOptionsPanelController();
 
         // When isChanged() returns true.
-        try (MockedConstruction<ViewFloatingOptionsPanel> mockVFOP = mockConstruction(ViewFloatingOptionsPanel.class, (mockInstance, context) -> {
+        try (MockedConstruction<FloatingOptionsPanel> mockVFOP = mockConstruction(FloatingOptionsPanel.class, (mockInstance, context) -> {
             when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
             when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllTrue);
         })) {
@@ -110,7 +110,7 @@ public class ViewFloatingOptionsPanelControllerNGTest {
             instance.applyChanges();
 
             // Assert that a mock of the panel was constructed.
-            final List<ViewFloatingOptionsPanel> constructedVFOP = mockVFOP.constructed();
+            final List<FloatingOptionsPanel> constructedVFOP = mockVFOP.constructed();
             assertEquals(constructedVFOP.size(), 1);
 
             // Verify that these methods were run during isChanged().
@@ -119,7 +119,7 @@ public class ViewFloatingOptionsPanelControllerNGTest {
         }
 
         // When isChanged() returns false.
-        try (MockedConstruction<ViewFloatingOptionsPanel> mockVFOP = mockConstruction(ViewFloatingOptionsPanel.class, (mockInstance, context) -> {
+        try (MockedConstruction<FloatingOptionsPanel> mockVFOP = mockConstruction(FloatingOptionsPanel.class, (mockInstance, context) -> {
             when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
             when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllFalse);
         })) {
@@ -127,22 +127,22 @@ public class ViewFloatingOptionsPanelControllerNGTest {
             instance.applyChanges();
 
             // Assert that a mock of the panel was not constructed.
-            final List<ViewFloatingOptionsPanel> constructedVFOP = mockVFOP.constructed();
+            final List<FloatingOptionsPanel> constructedVFOP = mockVFOP.constructed();
             assertEquals(constructedVFOP.size(), 0);
         }
     }
 
     /**
-     * Test of isChanged method, of class ViewFloatingOptionsPanelController.
+     * Test of isChanged method, of class FloatingOptionsPanelController.
      */
     @Test
     public void testIsChanged() {
         System.out.println("isChanged");
-        final ViewFloatingOptionsPanelController instance1 = new ViewFloatingOptionsPanelController();
-        final ViewFloatingOptionsPanelController instance2 = new ViewFloatingOptionsPanelController();
+        final FloatingOptionsPanelController instance1 = new FloatingOptionsPanelController();
+        final FloatingOptionsPanelController instance2 = new FloatingOptionsPanelController();
 
         // When the options from the Preferences and UI differ.
-        try (MockedConstruction<ViewFloatingOptionsPanel> mockVFOP = mockConstruction(ViewFloatingOptionsPanel.class, (mockInstance, context) -> {
+        try (MockedConstruction<FloatingOptionsPanel> mockVFOP = mockConstruction(FloatingOptionsPanel.class, (mockInstance, context) -> {
             when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
             when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllTrue);
         })) {
@@ -152,7 +152,7 @@ public class ViewFloatingOptionsPanelControllerNGTest {
             assertEquals(result, expResult);
 
             // Assert that a mock of the panel was constructed.
-            final List<ViewFloatingOptionsPanel> constructedVFOP = mockVFOP.constructed();
+            final List<FloatingOptionsPanel> constructedVFOP = mockVFOP.constructed();
             assertEquals(constructedVFOP.size(), 1);
 
             // Verify that these methods were run during isChanged().
@@ -161,7 +161,7 @@ public class ViewFloatingOptionsPanelControllerNGTest {
         }
 
         // When the options from the Preferences and UI match.
-        try (MockedConstruction<ViewFloatingOptionsPanel> mockVFOP = mockConstruction(ViewFloatingOptionsPanel.class, (mockInstance, context) -> {
+        try (MockedConstruction<FloatingOptionsPanel> mockVFOP = mockConstruction(FloatingOptionsPanel.class, (mockInstance, context) -> {
             when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
             when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllFalse);
         })) {
@@ -171,7 +171,7 @@ public class ViewFloatingOptionsPanelControllerNGTest {
             assertEquals(result, expResult);
 
             // Assert that a mock of the panel was constructed.
-            final List<ViewFloatingOptionsPanel> constructedVFOP = mockVFOP.constructed();
+            final List<FloatingOptionsPanel> constructedVFOP = mockVFOP.constructed();
             assertEquals(constructedVFOP.size(), 1);
 
             // Verify that these methods were run during isChanged().
@@ -181,12 +181,12 @@ public class ViewFloatingOptionsPanelControllerNGTest {
     }
 
     /**
-     * Test of getHelpCtx method, of class ViewFloatingOptionsPanelController.
+     * Test of getHelpCtx method, of class FloatingOptionsPanelController.
      */
     @Test
     public void testGetHelpCtx() {
         System.out.println("getHelpCtx");
-        final ViewFloatingOptionsPanelController instance = new ViewFloatingOptionsPanelController();
+        final FloatingOptionsPanelController instance = new FloatingOptionsPanelController();
 
         final HelpCtx result = instance.getHelpCtx();
         assertEquals(result.getClass(), HelpCtx.class);
@@ -194,7 +194,7 @@ public class ViewFloatingOptionsPanelControllerNGTest {
 
     /**
      * Test of addPropertyChangeListener and removePropertyChangeListener methods, of class
-     * ViewFloatingOptionsPanelController.
+ FloatingOptionsPanelController.
      */
     @Test
     public void testAddRemovePropertyChangeListener() {
@@ -203,7 +203,7 @@ public class ViewFloatingOptionsPanelControllerNGTest {
 
         // Test adding the Property Change Listener.
         try (MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
-            final ViewFloatingOptionsPanelController instance = new ViewFloatingOptionsPanelController();
+            final FloatingOptionsPanelController instance = new FloatingOptionsPanelController();
             instance.addPropertyChangeListener(pcl);
 
             // Assert that a mock of the PCS was constructed.
@@ -215,7 +215,7 @@ public class ViewFloatingOptionsPanelControllerNGTest {
 
         // Test removing the Property Change Listener.
         try (MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
-            final ViewFloatingOptionsPanelController instance = new ViewFloatingOptionsPanelController();
+            final FloatingOptionsPanelController instance = new FloatingOptionsPanelController();
             instance.removePropertyChangeListener(pcl);
 
             // Assert that a mock of the PCS was constructed.
@@ -227,14 +227,14 @@ public class ViewFloatingOptionsPanelControllerNGTest {
     }
 
     /**
-     * Test of getPanel method, of class ViewFloatingOptionsPanelController.
+     * Test of getPanel method, of class FloatingOptionsPanelController.
      */
     @Test
     public void testGetPanel() {
         System.out.println("getPanel");
-        final ViewFloatingOptionsPanelController instance = new ViewFloatingOptionsPanelController();
+        final FloatingOptionsPanelController instance = new FloatingOptionsPanelController();
 
-        final ViewFloatingOptionsPanel result = instance.getPanel();
-        assertEquals(result.getClass(), ViewFloatingOptionsPanel.class);
+        final FloatingOptionsPanel result = instance.getPanel();
+        assertEquals(result.getClass(), FloatingOptionsPanel.class);
     }
 }

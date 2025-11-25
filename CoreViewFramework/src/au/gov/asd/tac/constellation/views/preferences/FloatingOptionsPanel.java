@@ -28,13 +28,13 @@ import org.openide.util.NbPreferences;
  *
  * @author sol695510
  */
-public class ViewFloatingOptionsPanel extends JPanel {
+public class FloatingOptionsPanel extends JPanel {
 
     private final DefaultTableModel tableModel;
-    private final Preferences prefs = NbPreferences.forModule(ViewFloatingOptionsPanelController.class);
-    private final Map<String, Boolean> defaultPrefs = ViewFloatingOptionsPanelController.getDefaultFloatingPreferences();
+    private final Preferences prefs = NbPreferences.forModule(FloatingOptionsPanelController.class);
+    private final Map<String, Boolean> defaultPrefs = FloatingOptionsPanelController.getDefaultFloatingPreferences();
 
-    protected ViewFloatingOptionsPanel() {
+    protected FloatingOptionsPanel() {
         tableModel = new DefaultTableModel(new Object[]{"View", "Floating"}, 0) {
             @Override
             public Class getColumnClass(final int column) {
