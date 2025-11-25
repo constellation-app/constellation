@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views;
 
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
-import au.gov.asd.tac.constellation.views.preferences.FloatingOptionsPanelController;
+import au.gov.asd.tac.constellation.views.preferences.ViewOptionsPanelController;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
@@ -181,8 +181,8 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
      * @param spawn
      */
     protected final void setFloating(final String name, final int width, final int height, final Spawn spawn) {
-        final Preferences prefs = NbPreferences.forModule(FloatingOptionsPanelController.class);
-        final Boolean isFloating = prefs.getBoolean(name, FloatingOptionsPanelController.getDefaultFloatingPreferences().getOrDefault(name, false));
+        final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
+        final Boolean isFloating = prefs.getBoolean(name, ViewOptionsPanelController.getDefaultFloatingPreferences().getOrDefault(name, false));
         WindowManager.getDefault().setTopComponentFloating(this, isFloating);
 
         if (isFloating) {

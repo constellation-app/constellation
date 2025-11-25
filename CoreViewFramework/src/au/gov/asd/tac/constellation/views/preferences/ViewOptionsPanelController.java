@@ -43,16 +43,16 @@ import org.openide.util.NbPreferences;
     "ViewOptions_DisplayName=View",
     "ViewOptions_Keywords=View"
 })
-public class FloatingOptionsPanelController extends OptionsPanelController {
+public class ViewOptionsPanelController extends OptionsPanelController {
 
-    private FloatingOptionsPanel panel;
+    private ViewOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    private final Preferences prefs = NbPreferences.forModule(FloatingOptionsPanelController.class);
+    private final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
     private final Map<String, Boolean> defaultPrefs = getDefaultFloatingPreferences();
 
     @Override
     public void update() {
-        final FloatingOptionsPanel viewOptionsPanel = getPanel();
+        final ViewOptionsPanel viewOptionsPanel = getPanel();
         viewOptionsPanel.fireTableDataChanged();
     }
 
@@ -63,7 +63,7 @@ public class FloatingOptionsPanelController extends OptionsPanelController {
 
             if (isChanged()) {
                 pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
-                final FloatingOptionsPanel viewOptionsPanel = getPanel();
+                final ViewOptionsPanel viewOptionsPanel = getPanel();
 
                 for (final String view : defaultPrefs.keySet()) {
                     prefs.putBoolean(view, viewOptionsPanel.getOptionsFromUI().get(view));
@@ -84,7 +84,7 @@ public class FloatingOptionsPanelController extends OptionsPanelController {
 
     @Override
     public boolean isChanged() {
-        final FloatingOptionsPanel viewOptionsPanel = getPanel();
+        final ViewOptionsPanel viewOptionsPanel = getPanel();
         return !viewOptionsPanel.getOptionsFromUI().equals(viewOptionsPanel.getOptionsFromPrefs());
     }
 
@@ -108,9 +108,9 @@ public class FloatingOptionsPanelController extends OptionsPanelController {
         pcs.removePropertyChangeListener(pcl);
     }
 
-    public FloatingOptionsPanel getPanel() {
+    public ViewOptionsPanel getPanel() {
         if (panel == null) {
-            panel = new FloatingOptionsPanel();
+            panel = new ViewOptionsPanel();
         }
 
         return panel;
