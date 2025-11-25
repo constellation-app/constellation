@@ -39,6 +39,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.eclipse.collections.api.list.primitive.ImmutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * Plugin that exports the provided table's rows as an Excel spreadsheet.
@@ -88,10 +90,10 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
             final Sheet sheet = workbook.createSheet(sheetName);
 
             // get the indexes of all visible columns
-            final List<Integer> visibleIndices = table.getColumns().stream()
+            final ImmutableIntList visibleIndices = new IntArrayList(table.getColumns().stream()
                     .filter(column -> column.isVisible())
-                    .map(column -> table.getColumns().indexOf(column))
-                    .toList();
+                    .mapToInt(column -> table.getColumns().indexOf(column))
+                    .toArray()).toImmutable();
 
             // iterate through the visible columns and print each ones name to the sheet
             final Row headerRow = sheet.createRow(0);
@@ -239,7 +241,7 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
      * @param data the table rows to write
      * @param startIndex the current index in the sheet that can be written to
      */
-    private static void writeRecords(final Sheet sheet, final List<Integer> visibleIndices,
+    private static void writeRecords(final Sheet sheet, final ImmutableIntList visibleIndices,
             final List<ObservableList<String>> data, final int startIndex) {
         final AtomicInteger rowIndex = new AtomicInteger(startIndex);
         data.forEach(item -> {

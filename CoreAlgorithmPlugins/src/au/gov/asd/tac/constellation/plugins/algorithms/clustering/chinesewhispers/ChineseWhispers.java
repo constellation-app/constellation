@@ -20,8 +20,9 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.Arrays;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * Chinese whispers clustering based on BiemannTextGraph06.
@@ -93,7 +94,7 @@ public final class ChineseWhispers {
                 // Find the vertices connected to this vertex by the highest sum
                 // of link weights. Since in general we don;t do weights, we use
                 // the maximum number of transactions connected to a vertex.
-                final ArrayList<Integer> candidates = new ArrayList<>();
+                final MutableIntList candidates = new IntArrayList();
                 final int neighbours = wg.getVertexLinkCount(vxId);
                 int maxWeight = 0;
                 for (int npos = 0; npos < neighbours; npos++) {

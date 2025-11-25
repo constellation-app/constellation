@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.welcome;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.BorderLayout;
+import javafx.application.Platform;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -96,6 +97,11 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
 
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
         java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
         layout.columnWidths = new int[] {2};
         layout.rowHeights = new int[] {2};
@@ -136,6 +142,15 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
 
         add(jPanel2, new java.awt.GridBagConstraints());
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        Platform.runLater(()-> {
+            if (pane.getBottomRecentSection().getChildren()!= null) {
+                pane.refreshRecentFiles();
+            }
+        });
+    }//GEN-LAST:event_formComponentShown
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;

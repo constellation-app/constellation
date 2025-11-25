@@ -20,9 +20,11 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  * Arrange pendants so they stand out.
@@ -35,22 +37,22 @@ public class PendantsArranger implements Arranger {
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
         // Map neighbours to the set of vertices that have the same neighbours.
-        final Map<Set<Integer>, Set<Integer>> neighbourMap = new HashMap<>();
+        final Map<MutableIntSet, MutableIntSet> neighbourMap = new HashMap<>();
         final int vxCount = wg.getVertexCount();
         for (int position = 0; position < vxCount; position++) {
             final int vertex = wg.getVertex(position);
             if (wg.vertexExists(vertex)) {
                 // Find the neighbours of vertex.
-                final Set<Integer> neighbours = new HashSet<>();
+                final MutableIntSet neighbours = new IntHashSet();
                 final int neighbourCount = wg.getVertexNeighbourCount(vertex);
                 for (int n = 0; n < neighbourCount; n++) {
                     final int neighbour = wg.getVertexNeighbour(vertex, n);
                     neighbours.add(neighbour);
                 }
 
-                Set<Integer> existingMembers = neighbourMap.get(neighbours);
+                MutableIntSet existingMembers = neighbourMap.get(neighbours);
                 if (existingMembers == null) {
-                    existingMembers = new HashSet<>();
+                    existingMembers = new IntHashSet();
                     neighbourMap.put(neighbours, existingMembers);
                 }
 
@@ -58,9 +60,9 @@ public class PendantsArranger implements Arranger {
             }
         }
 
-        for (final Map.Entry<Set<Integer>, Set<Integer>> e : neighbourMap.entrySet()) {
-            final Set<Integer> neighbours = e.getKey();
-            final Set<Integer> vertices = e.getValue();
+        for (final Entry<MutableIntSet, MutableIntSet> e : neighbourMap.entrySet()) {
+            final MutableIntSet neighbours = e.getKey();
+            final MutableIntSet vertices = e.getValue();
 
             switch (neighbours.size()) {
                 case 0:
@@ -72,8 +74,8 @@ public class PendantsArranger implements Arranger {
                     // Therefore we do something so doublet layout only happens once.
                     boolean doLayout = true;
                     if (vertices.size() == 1 && neighbours.size() == 1) {
-                        final int v = vertices.iterator().next();
-                        final int n = neighbours.iterator().next();
+                        final int v = vertices.intIterator().next();
+                        final int n = neighbours.intIterator().next();
                         doLayout = v < n;
                     }
 
@@ -89,7 +91,7 @@ public class PendantsArranger implements Arranger {
         }
     }
 
-    private void layoutPendants(final GraphWriteMethods graph, final Set<Integer> vertices, final Set<Integer> neighbours) {
+    private void layoutPendants(final GraphWriteMethods graph, final MutableIntSet vertices, final MutableIntSet neighbours) {
         final int xAttr = VisualConcept.VertexAttribute.X.get(graph);
         final int yAttr = VisualConcept.VertexAttribute.Y.get(graph);
         final int zAttr = VisualConcept.VertexAttribute.Z.get(graph);
@@ -99,7 +101,7 @@ public class PendantsArranger implements Arranger {
         final int z2Attr = VisualConcept.VertexAttribute.Z2.get(graph);
         final boolean exists2 = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
 
-        final int neighbour = neighbours.iterator().next();
+        final int neighbour = neighbours.intIterator().next();
         final float neighbourX = graph.getFloatValue(xAttr, neighbour);
         final float neighbourY = graph.getFloatValue(yAttr, neighbour);
         final float neighbourZ = graph.getFloatValue(zAttr, neighbour);
@@ -117,14 +119,16 @@ public class PendantsArranger implements Arranger {
             graph.setFloatValue(y2Attr, neighbour, neighbourY);
             graph.setFloatValue(z2Attr, neighbour, neighbourZ);
 
-            for (final int vertex : vertices) {
+            vertices.forEach(vertex -> {
                 graph.setFloatValue(x2Attr, vertex, neighbourX);
                 graph.setFloatValue(y2Attr, vertex, neighbourY);
                 graph.setFloatValue(z2Attr, vertex, neighbourZ);
-            }
+            });
         }
 
-        for (final int vertex : vertices) {
+        final IntIterator iter = vertices.intIterator();
+        while (iter.hasNext()) {
+            final int vertex = iter.next();
             graph.setFloatValue(xAttr, vertex, neighbourX + (float) (Math.sin(angle) * radius));
             graph.setFloatValue(yAttr, vertex, neighbourY + (float) (Math.cos(angle) * radius));
             graph.setFloatValue(zAttr, vertex, neighbourZ);
