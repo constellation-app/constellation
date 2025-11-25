@@ -27,10 +27,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.util.HelpCtx;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -53,25 +49,6 @@ public class ViewOptionsPanelControllerNGTest {
             entry("Conversation View", Boolean.TRUE),
             entry("Data Access View", Boolean.TRUE),
             entry("Error Report", Boolean.TRUE));
-
-    public ViewOptionsPanelControllerNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
 
     /**
      * Test of update method, of class ViewOptionsPanelController.
@@ -193,8 +170,7 @@ public class ViewOptionsPanelControllerNGTest {
     }
 
     /**
-     * Test of addPropertyChangeListener and removePropertyChangeListener methods, of class
- ViewOptionsPanelController.
+     * Test of addPropertyChangeListener and removePropertyChangeListener methods, of class ViewOptionsPanelController.
      */
     @Test
     public void testAddRemovePropertyChangeListener() {
