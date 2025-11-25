@@ -40,59 +40,19 @@ import org.testng.annotations.Test;
  */
 public class ViewFloatingOptionsPanelControllerNGTest {
 
-    final Map<String, Boolean> viewOptionsDefault = Map.ofEntries(
+    final Map<String, Boolean> prefsAllFalse = Map.ofEntries(
             entry("Analytic View", Boolean.FALSE),
             entry("Attribute Editor", Boolean.FALSE),
             entry("Conversation View", Boolean.FALSE),
             entry("Data Access View", Boolean.FALSE),
-            entry("Error Report", Boolean.FALSE),
-            entry("Find and Replace", Boolean.TRUE),
-            entry("Histogram", Boolean.FALSE),
-            entry("Layers View", Boolean.FALSE),
-            entry("Map View", Boolean.FALSE),
-            entry("Named Selections", Boolean.FALSE),
-            entry("Notes View", Boolean.FALSE),
-            entry("Plugin Reporter", Boolean.FALSE),
-            entry("Quality Control View", Boolean.FALSE),
-            entry("Scatter Plot", Boolean.FALSE),
-            entry("Schema View", Boolean.FALSE),
-            entry("Scripting View", Boolean.FALSE),
-            entry("Table View", Boolean.FALSE),
-            entry("Timeline", Boolean.FALSE),
-            entry("Simple Graph", Boolean.FALSE),
-            entry("Perspective Bookmarks", Boolean.FALSE),
-            entry("Plane Manager", Boolean.FALSE),
-            entry("Memory Manager", Boolean.FALSE),
-            entry("Word Cloud View", Boolean.FALSE),
-            entry("Hierarchical", Boolean.FALSE),
-            entry("K-Truss", Boolean.FALSE));
+            entry("Error Report", Boolean.FALSE));
 
-    final Map<String, Boolean> viewOptionsAllTrue = Map.ofEntries(
+    final Map<String, Boolean> prefsAllTrue = Map.ofEntries(
             entry("Analytic View", Boolean.TRUE),
             entry("Attribute Editor", Boolean.TRUE),
             entry("Conversation View", Boolean.TRUE),
             entry("Data Access View", Boolean.TRUE),
-            entry("Error Report", Boolean.TRUE),
-            entry("Find and Replace", Boolean.TRUE),
-            entry("Histogram", Boolean.TRUE),
-            entry("Layers View", Boolean.TRUE),
-            entry("Map View", Boolean.TRUE),
-            entry("Named Selections", Boolean.TRUE),
-            entry("Notes View", Boolean.TRUE),
-            entry("Plugin Reporter", Boolean.TRUE),
-            entry("Quality Control View", Boolean.TRUE),
-            entry("Scatter Plot", Boolean.TRUE),
-            entry("Schema View", Boolean.TRUE),
-            entry("Scripting View", Boolean.TRUE),
-            entry("Table View", Boolean.TRUE),
-            entry("Timeline", Boolean.TRUE),
-            entry("Simple Graph", Boolean.TRUE),
-            entry("Perspective Bookmarks", Boolean.TRUE),
-            entry("Plane Manager", Boolean.TRUE),
-            entry("Memory Manager", Boolean.TRUE),
-            entry("Word Cloud View", Boolean.TRUE),
-            entry("Hierarchical", Boolean.TRUE),
-            entry("K-Truss", Boolean.TRUE));
+            entry("Error Report", Boolean.TRUE));
 
     public ViewFloatingOptionsPanelControllerNGTest() {
     }
@@ -143,8 +103,8 @@ public class ViewFloatingOptionsPanelControllerNGTest {
 
         // When isChanged() returns true.
         try (MockedConstruction<ViewFloatingOptionsPanel> mockVFOP = mockConstruction(ViewFloatingOptionsPanel.class, (mockInstance, context) -> {
-            when(mockInstance.getOptionsFromUI()).thenReturn(viewOptionsDefault);
-            when(mockInstance.getOptionsFromPrefs()).thenReturn(viewOptionsAllTrue);
+            when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
+            when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllTrue);
         })) {
 
             instance.applyChanges();
@@ -160,8 +120,8 @@ public class ViewFloatingOptionsPanelControllerNGTest {
 
         // When isChanged() returns false.
         try (MockedConstruction<ViewFloatingOptionsPanel> mockVFOP = mockConstruction(ViewFloatingOptionsPanel.class, (mockInstance, context) -> {
-            when(mockInstance.getOptionsFromUI()).thenReturn(viewOptionsDefault);
-            when(mockInstance.getOptionsFromPrefs()).thenReturn(viewOptionsDefault);
+            when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
+            when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllFalse);
         })) {
 
             instance.applyChanges();
@@ -183,8 +143,8 @@ public class ViewFloatingOptionsPanelControllerNGTest {
 
         // When the options from the Preferences and UI differ.
         try (MockedConstruction<ViewFloatingOptionsPanel> mockVFOP = mockConstruction(ViewFloatingOptionsPanel.class, (mockInstance, context) -> {
-            when(mockInstance.getOptionsFromUI()).thenReturn(viewOptionsDefault);
-            when(mockInstance.getOptionsFromPrefs()).thenReturn(viewOptionsAllTrue);
+            when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
+            when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllTrue);
         })) {
 
             final boolean result = instance1.isChanged();
@@ -202,8 +162,8 @@ public class ViewFloatingOptionsPanelControllerNGTest {
 
         // When the options from the Preferences and UI match.
         try (MockedConstruction<ViewFloatingOptionsPanel> mockVFOP = mockConstruction(ViewFloatingOptionsPanel.class, (mockInstance, context) -> {
-            when(mockInstance.getOptionsFromUI()).thenReturn(viewOptionsDefault);
-            when(mockInstance.getOptionsFromPrefs()).thenReturn(viewOptionsDefault);
+            when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
+            when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllFalse);
         })) {
 
             final boolean result = instance2.isChanged();
@@ -248,7 +208,7 @@ public class ViewFloatingOptionsPanelControllerNGTest {
 
             // Assert that a mock of the PCS was constructed.
             final List<PropertyChangeSupport> constructedPCS = mockPCS.constructed();
-            assertEquals(constructedPCS.size(), 1);
+            assertEquals(constructedPCS.size(), 3);
 
             verify(constructedPCS.get(0), times(1)).addPropertyChangeListener(pcl);
         }
