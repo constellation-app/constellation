@@ -39,7 +39,8 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     public enum Spawn {
         LEFT,
         RIGHT,
-        BOTTOM
+        BOTTOM,
+        CENTRE
     }
 
     protected P content;
@@ -194,7 +195,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                     final int mainHeight = mainWindow.getHeight();
                     final int mainX = mainWindow.getX();
                     final int mainY = mainWindow.getY();
-                    final int offsetY = 120; // Offsets floating component so it doesn't overlap with top toolbar icons.
+                    final int offsetY = 117; // Offsets floating component so it doesn't overlap with top toolbar icons.
 
                     final Dimension sidesSize = new Dimension(
                             width == 0 ? Math.round(mainWidth * 0.3F) : width,
@@ -203,6 +204,10 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                     final Dimension bottomSize = new Dimension(
                             width == 0 ? mainWidth : width,
                             height == 0 ? Math.round(mainHeight * 0.3F) : height);
+
+                    final Dimension centreSize = new Dimension(
+                            width == 0 ? mainWidth : width,
+                            height == 0 ? mainHeight - offsetY : height);
 
                     final Dimension size;
 
@@ -215,9 +220,13 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                             size = sidesSize;
                             window.setLocation(mainX + mainWidth - sidesSize.width, mainY + offsetY);
                         }
-                        default -> {
+                        case BOTTOM -> {
                             size = bottomSize;
                             window.setLocation(mainX, mainY + mainHeight - bottomSize.height);
+                        }
+                        default -> {
+                            size = centreSize;
+                            window.setLocation(mainX, mainY + offsetY);
                         }
                     }
 

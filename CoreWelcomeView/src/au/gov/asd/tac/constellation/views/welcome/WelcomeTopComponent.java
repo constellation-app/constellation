@@ -171,6 +171,12 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
     }
 
     @Override
+    protected void handleComponentOpened() {
+        super.handleComponentOpened();
+        setFloating(Bundle.CTL_WelcomeTopComponentTopComponent(), 0, 0, Spawn.CENTRE);
+    }
+
+    @Override
     public Map<String, Boolean> getFloatingPreference() {
         return Map.of(Bundle.CTL_WelcomeTopComponentTopComponent(), Boolean.FALSE);
     }

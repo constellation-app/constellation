@@ -167,6 +167,12 @@ public final class WhatsNewTopComponent extends JavaFxTopComponent<WhatsNewViewP
     }
 
     @Override
+    protected void handleComponentOpened() {
+        super.handleComponentOpened();
+        setFloating(Bundle.CTL_TutorialTopComponentTopComponent(), 0, 0, Spawn.CENTRE);
+    }
+
+    @Override
     public Map<String, Boolean> getFloatingPreference() {
         return Map.of(Bundle.CTL_TutorialTopComponentTopComponent(), Boolean.FALSE);
     }
