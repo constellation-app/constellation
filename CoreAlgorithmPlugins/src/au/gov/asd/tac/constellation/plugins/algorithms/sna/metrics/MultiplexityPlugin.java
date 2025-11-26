@@ -29,9 +29,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import org.eclipse.collections.api.map.primitive.MutableIntFloatMap;
+import org.eclipse.collections.api.tuple.primitive.IntFloatPair;
+import org.eclipse.collections.impl.map.mutable.primitive.IntFloatHashMap;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -79,7 +80,7 @@ public class MultiplexityPlugin extends SimpleEditPlugin {
 
         // calculate multiplexity for every pair of vertices on the graph
         float maxMultiplexity = 0;
-        final Map<Integer, Float> multiplexities = new HashMap<>();
+        final MutableIntFloatMap multiplexities = new IntFloatHashMap();
         final int linkCount = graph.getLinkCount();
         for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
             final int linkId = graph.getLink(linkPosition);
@@ -107,14 +108,14 @@ public class MultiplexityPlugin extends SimpleEditPlugin {
 
         // update the graph with multiplexity values
         final int multiplexityAttribute = MULTIPLEXITY_ATTRIBUTE.ensure(graph);
-        for (final Map.Entry<Integer, Float> entry : multiplexities.entrySet()) {
-            final int transactionCount = graph.getLinkTransactionCount(entry.getKey());
+        for (final IntFloatPair keyValue : multiplexities.keyValuesView()) {
+            final int transactionCount = graph.getLinkTransactionCount(keyValue.getOne());
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                final int transactionId = graph.getLinkTransaction(entry.getKey(), transactionPosition);
+                final int transactionId = graph.getLinkTransaction(keyValue.getOne(), transactionPosition);
                 if (normaliseByAvailable && maxMultiplexity > 0) {
-                    graph.setFloatValue(multiplexityAttribute, transactionId, entry.getValue() / maxMultiplexity);
+                    graph.setFloatValue(multiplexityAttribute, transactionId, keyValue.getTwo() / maxMultiplexity);
                 } else {
-                    graph.setFloatValue(multiplexityAttribute, transactionId, entry.getValue());
+                    graph.setFloatValue(multiplexityAttribute, transactionId, keyValue.getTwo());
                 }
             }
         }

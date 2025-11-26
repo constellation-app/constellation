@@ -26,7 +26,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
@@ -47,44 +46,44 @@ import javax.swing.JButton;
 import javax.swing.UIManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
+import org.eclipse.collections.api.map.primitive.MutableObjectBooleanMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectBooleanHashMap;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
 
 /**
- * Embed a JavaFX PluginParametersPane in a DialogDescriptor. This is akin to
- * {@link PluginParametersDialog} except for Swing based GUIs rather than JavaFX
- * based GUIs.
+ * Embed a JavaFX PluginParametersPane in a DialogDescriptor. This is akin to {@link PluginParametersDialog} except for
+ * Swing based GUIs rather than JavaFX based GUIs.
  *
  * @see PluginParametersDialog
  * @author algol
  * @author capricornunicorn123
  */
 public class PluginParametersSwingDialog implements PluginParametersPaneListener {
-    
+
     private static final Logger LOGGER = Logger.getLogger(PluginParametersSwingDialog.class.getName());
-    
+
     private final String[] acceptanceButtonLabels = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename", "Add", "Remove"};
     public static final String CANCEL = "Cancel";
     public static final String OK = "OK";
     public static final Image WARNING_IMAGE = UserInterfaceIconProvider.WARNING.buildImage(ConstellationColor.DARK_ORANGE.getJavaColor());
     public static final int PREFERED_WIDTH = 500;
-    
+
     private volatile String result;
     private final String title;
     private final JFXPanel xp;
     
-    private final HashMap<PluginParameter<?>, Boolean> parameterValidity = new HashMap<>();
+    private final MutableObjectBooleanMap<PluginParameter<?>> parameterValidity = new ObjectBooleanHashMap<>();
     private final JButton acceptanceOption;
     private final PluginParameters parameters;
 
     /**
-     * Display a dialog box containing the parameters that allows the user to
-     * enter values.
+     * Display a dialog box containing the parameters that allows the user to enter values.
      * <p>
-     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load" or "Rename"
-     * Rejection Button displayed as "Cancel".
+     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load"
+     * or "Rename" Rejection Button displayed as "Cancel".
      *
      * @param title The dialog box title.
      * @param parameters The plugin parameters.
@@ -94,27 +93,24 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     }
 
     /**
-     * Display a dialog box containing the parameters that allows the user to
-     * enter values.
+     * Display a dialog box containing the parameters that allows the user to enter values.
      * <p>
-     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load" or "Rename"
-     * Rejection Button displayed as "Cancel".
+     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load"
+     * or "Rename" Rejection Button displayed as "Cancel".
      *
      * @param title The dialog box title.
      * @param parameters The plugin parameters.
-     * @param excludedParameters Plugin parameters to exclude from the dialog
-     * box.
+     * @param excludedParameters Plugin parameters to exclude from the dialog box.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters) {
         this(title, parameters, excludedParameters, null, null, null);
     }
 
     /**
-     * Display a dialog box containing the parameters that allows the user to
-     * enter values.
+     * Display a dialog box containing the parameters that allows the user to enter values.
      * <p>
-     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load" or "Rename"
-     * Rejection Button displayed as "Cancel".
+     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load"
+     * or "Rename" Rejection Button displayed as "Cancel".
      *
      * @param title The dialog box title.
      * @param parameters The plugin parameters.
@@ -123,13 +119,12 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final String helpID) {
         this(title, parameters, null, null, null, helpID);
     }
-    
-        /**
-     * Display a dialog box containing the parameters that allows the user to
-     * enter values.
+
+    /**
+     * Display a dialog box containing the parameters that allows the user to enter values.
      * <p>
-     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load" or "Rename"
-     * Rejection Button displayed as "Cancel".
+     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load"
+     * or "Rename" Rejection Button displayed as "Cancel".
      *
      * @param title The dialog box title.
      * @param parameters The plugin parameters.
@@ -140,16 +135,14 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     }
 
     /**
-     * Display a dialog box containing the parameters that allows the user to
-     * enter values.
+     * Display a dialog box containing the parameters that allows the user to enter values.
      * <p>
-     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load" or "Rename"
-     * Rejection Button displayed as "Cancel".
+     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load"
+     * or "Rename" Rejection Button displayed as "Cancel".
      *
      * @param title The dialog box title.
      * @param parameters The plugin parameters.
-     * @param excludedParameters Plugin parameters to exclude from the dialog
-     * box.
+     * @param excludedParameters Plugin parameters to exclude from the dialog box.
      * @param acceptanceText acceptance Button text
      * @param disclaimer
      * @param helpID The JavaHelp ID of the help.
@@ -160,56 +153,12 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
         this.parameters = parameters;
         final CountDownLatch latch = new CountDownLatch(1);
         xp = helpID != null ? new JFXPanelWithHelp(helpID) : new JFXPanel();
-        Platform.runLater(() -> {
-            
-            // Create the panes
-            final BorderPane root = new BorderPane();
-            final ScrollPane scrollableContent = new ScrollPane();
-            final PluginParametersPane parametersPane = PluginParametersPane.buildPane(this.parameters, this, excludedParameters);
-            final HBox disclaimerPane = new HBox();
-            
-            // Style the panes
-            root.setMinWidth(PREFERED_WIDTH); /// Ensures parameters are not compressed too small
-            scrollableContent.setFitToWidth(true);  // Encourages verticle scrolling only
-            parametersPane.setPadding(new Insets(10)); //Padding makes the lyout more readable
-            final Color optionsPanelColor = UIManager.getLookAndFeel().getDefaults().getColor("OptionPane.background");
-            disclaimerPane.setStyle(String.format("-fx-background-color: #%06X;", 0xFFFFFF & optionsPanelColor.getRGB()));
-            
-            // Conditionaly style the disclaimer pane.
-            if (StringUtils.isNotBlank(disclaimer)){
-                
-                // The text for the disclaimer
-                final Label disclaimerText = new Label(disclaimer);
-                final Font font = FontUtilities.getOutputFont();
-                disclaimerText.setWrapText(true);
-                disclaimerText.setStyle("-fx-font-style: italic; -fx-font-family: " + font.getFamily());
-                
-                // The icon for the disclaimer
-                final ImageView iv = new ImageView(WARNING_IMAGE);
-                iv.setFitHeight(50);
-                iv.setPreserveRatio(true);
-                final VBox icon = new VBox(iv);
-                icon.setPadding(new Insets(0, 20, 0, 20));
-                
-                // Style the disclaimer
-                disclaimerPane.getChildren().addAll(icon, disclaimerText);
-                disclaimerPane.setAlignment(Pos.CENTER_LEFT);
-                disclaimerPane.setPadding(new Insets(10, 0, 0, 0));
-                disclaimerPane.setPrefWidth(PREFERED_WIDTH); // The root width has been set based on the ParameterPane and we want to keep it that way.
-            }     
-            
-            //Construct the pane
-            root.setCenter(scrollableContent);
-            scrollableContent.setContent(parametersPane);
-            root.setBottom(disclaimerPane);
-            
-            final Scene scene = new Scene(root);
-            scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
-            xp.setScene(scene);
-            xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
-            latch.countDown();
-        });
+        if (Platform.isFxApplicationThread()) {
+            setupPane(excludedParameters, disclaimer, latch);
+        } else {
+            Platform.runLater(() -> setupPane(excludedParameters, disclaimer, latch));
+        }
 
         try {
             latch.await();
@@ -219,25 +168,72 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
         }
     }
 
+    private void setupPane(final Set<String> excludedParameters, final String disclaimer, final CountDownLatch latch) {
+        // Create the panes
+        final BorderPane root = new BorderPane();
+        final ScrollPane scrollableContent = new ScrollPane();
+        final PluginParametersPane parametersPane = PluginParametersPane.buildPane(this.parameters, this, excludedParameters);
+        final HBox disclaimerPane = new HBox();
+
+        // Style the panes
+        root.setMinWidth(PREFERED_WIDTH); /// Ensures parameters are not compressed too small
+        scrollableContent.setFitToWidth(true);  // Encourages verticle scrolling only
+        parametersPane.setPadding(new Insets(10)); //Padding makes the lyout more readable
+        final Color optionsPanelColor = UIManager.getLookAndFeel().getDefaults().getColor("OptionPane.background");
+        disclaimerPane.setStyle(String.format("-fx-background-color: #%06X;", 0xFFFFFF & optionsPanelColor.getRGB()));
+
+        // Conditionaly style the disclaimer pane.
+        if (StringUtils.isNotBlank(disclaimer)) {
+            // The text for the disclaimer
+            final Label disclaimerText = new Label(disclaimer);
+            final Font font = FontUtilities.getOutputFont();
+            disclaimerText.setWrapText(true);
+            disclaimerText.setStyle("-fx-font-style: italic; -fx-font-family: " + font.getFamily());
+
+            // The icon for the disclaimer
+            final ImageView iv = new ImageView(WARNING_IMAGE);
+            iv.setFitHeight(50);
+            iv.setPreserveRatio(true);
+            final VBox icon = new VBox(iv);
+            icon.setPadding(new Insets(0, 20, 0, 20));
+
+            // Style the disclaimer
+            disclaimerPane.getChildren().addAll(icon, disclaimerText);
+            disclaimerPane.setAlignment(Pos.CENTER_LEFT);
+            disclaimerPane.setPadding(new Insets(10, 0, 0, 0));
+            disclaimerPane.setPrefWidth(PREFERED_WIDTH); // The root width has been set based on the ParameterPane and we want to keep it that way.
+        }
+
+        //Construct the pane
+        root.setCenter(scrollableContent);
+        scrollableContent.setContent(parametersPane);
+        root.setBottom(disclaimerPane);
+
+        final Scene scene = new Scene(root);
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+
+        xp.setScene(scene);
+        xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
+        latch.countDown();
+
+    }
+
     public void setSize(final Dimension dimension) {
         xp.setPreferredSize(dimension);
     }
 
     /**
-     * Generates a DialogDescripter window and waits until the user
-     * to select an option (the acceptance option will be highlighted). 
-     * The acceptance option is "OK" by default.
-     * The rejection option is "Cancel" by default. 
-     * Unless explicitly stated, the acceptance option will adjust 
-     * dynamically to express that keyword present in the title of the DialogDisplayer
-     * (i.e. "Build", "Save", "Export")
+     * Generates a DialogDescripter window and waits until the user to select an option (the acceptance option will be
+     * highlighted). The acceptance option is "OK" by default. The rejection option is "Cancel" by default. Unless
+     * explicitly stated, the acceptance option will adjust dynamically to express that keyword present in the title of
+     * the DialogDisplayer (i.e. "Build", "Save", "Export")
      */
     public void showAndWait() {
-        final DialogDescriptor dd = createDialogDescriptor(true);  
+        final DialogDescriptor dd = createDialogDescriptor(true);
         final Object r = DialogDisplayer.getDefault().notify(dd);
-        if (r == DialogDescriptor.CANCEL_OPTION){
+        if (r == DialogDescriptor.CANCEL_OPTION) {
             result = CANCEL;
-        } else if (r == DialogDescriptor.OK_OPTION){
+        } else if (r == DialogDescriptor.OK_OPTION) {
             parameters.storeRecentValues();
             result = OK;
         } else {
@@ -246,37 +242,52 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     }
 
     /**
-     * Generates a DialogDescripter window and waits until the user
-     * to select an option (No option will be highlighted). 
-     * The acceptance option is "OK" by default.
-     * The rejection option is "Cancel" by default. 
-     * Unless explicitly stated, the acceptance option will adjust 
-     * dynamically to express that keyword present in the title of the DialogDisplayer
+     * Generates a DialogDescripter window and waits until the user to select an option (No option will be highlighted).
+     * The acceptance option is "OK" by default. The rejection option is "Cancel" by default. Unless explicitly stated,
+     * the acceptance option will adjust dynamically to express that keyword present in the title of the DialogDisplayer
      * (i.e. "Build", "Save", "Export")
      */
     public void showAndWaitNoFocus() {
-        final DialogDescriptor dd = createDialogDescriptor(false);  
+        final DialogDescriptor dd = createDialogDescriptor(false);
         final Object r = DialogDisplayer.getDefault().notify(dd);
-        if (r == DialogDescriptor.CANCEL_OPTION){
+        if (r == DialogDescriptor.CANCEL_OPTION) {
             result = CANCEL;
-        } else if (r == DialogDescriptor.OK_OPTION){
+        } else if (r == DialogDescriptor.OK_OPTION) {
             parameters.storeRecentValues();
             result = OK;
         } else {
             result = null;
         }
     }
-    
+
     /**
-     * Generates a DialogDescripter window and dynamically sets the 
-     * acceptance option based on the title. 
-     * The acceptance option is "OK" by default.
-     * The rejection option is "Cancel" by default. 
-     * Unless explicitly stated, the acceptance option will adjust 
-     * dynamically to express that keyword present in the title of the DialogDisplayer
+     * Generates a DialogDescripter window and waits until the user to select an option (No option will be highlighted).
+     * The acceptance option is "OK" by default. The rejection option is "Cancel" by default. Unless explicitly stated,
+     * the acceptance option will adjust dynamically to express that keyword present in the title of the DialogDisplayer
      * (i.e. "Build", "Save", "Export")
-     * @param focused a Boolean representing if the 
-     * acceptance option should be highlighted by default
+     *
+     * @param focused a Boolean representing if the acceptance option should be highlighted by default
+     * @return The result of the user's interaction
+     */
+    public Object showAndReturnDisplay(final boolean focused) {
+        final DialogDescriptor dd = createDialogDescriptor(focused);
+        return DialogDisplayer.getDefault().notify(dd);
+    }
+
+    /**
+     * Stores the recent values of the parameters variable
+     */
+    public void storeRecentParameterValues() {
+        parameters.storeRecentValues();
+    }
+
+    /**
+     * Generates a DialogDescripter window and dynamically sets the acceptance option based on the title. The acceptance
+     * option is "OK" by default. The rejection option is "Cancel" by default. Unless explicitly stated, the acceptance
+     * option will adjust dynamically to express that keyword present in the title of the DialogDisplayer (i.e. "Build",
+     * "Save", "Export")
+     *
+     * @param focused a Boolean representing if the acceptance option should be highlighted by default
      * @Return
      */
     private DialogDescriptor createDialogDescriptor(final boolean focused) {
@@ -284,68 +295,67 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
         final Object[] options = {acceptanceOption, DialogDescriptor.CANCEL_OPTION};
         final Object focus = focused ? acceptanceOption : DialogDescriptor.NO_OPTION;
         final DialogDescriptor dd = new DialogDescriptor(xp, title, true, options, focus, DialogDescriptor.DEFAULT_ALIGN, null, null);
-        
+
         // Create an action listener for the custom button
         final ActionListener al = (ActionEvent e) -> dd.setValue(NotifyDescriptor.OK_OPTION);
         acceptanceOption.addActionListener(al);
 
         return dd;
     }
-    
-        
+
     @Override
     public void validityChanged(final boolean valid) {
-       //Not Required for this Listner
+        //Not Required for this Listner
     }
 
     @Override
     public void hierarchicalUpdate() {
-       //Not Required for this Listner
+        //Not Required for this Listner
     }
 
     @Override
-    public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied){
+    public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied) {
         parameterValidity.put(parameter, currentlySatisfied);
         acceptanceOption.setEnabled(requirmentsSatisfied());
     }
 
     public boolean requirmentsSatisfied(){
-        return parameterValidity.values().stream().noneMatch(val -> val.equals(false));
+        return parameterValidity.values().noneSatisfy(val -> false);
     }
 
     /**
      * The option that was selected by the user.
      *
-     * @return The option that was selected by the user; may be null if the user
-     * closed the dialog using the window close button.
+     * @return The option that was selected by the user; may be null if the user closed the dialog using the window
+     * close button.
      */
     public String getResult() {
         return result;
     }
 
     /**
-     * Generates the text of the PluginParameterPane acceptance button based on keywords in the Pane title.
-     * If developers have specified an acceptance button text, this specified text is returned.
-     * If no text was specified a key word is extracted from the title and returned. 
-     * If no word key word is extracted, "OK" is returned
-     * 
-     * @return 
+     * Generates the text of the PluginParameterPane acceptance button based on keywords in the Pane title. If
+     * developers have specified an acceptance button text, this specified text is returned. If no text was specified a
+     * key word is extracted from the title and returned. If no word key word is extracted, "OK" is returned
+     *
+     * @return
      */
     private String getAcceptanceButton(final String acceptanceText) {
         if (StringUtils.isNotBlank(acceptanceText)) {
             return acceptanceText;
         }
-        for (final String keyWord : acceptanceButtonLabels){
-            if (Strings.CI.contains(title, keyWord)){
+        for (final String keyWord : acceptanceButtonLabels) {
+            if (Strings.CI.contains(title, keyWord)) {
                 return keyWord;
             }
         }
         return PluginParametersSwingDialog.OK;
     }
-    
+
     /**
      * Checks to see if the acceptance button was selected.
-     * @return 
+     *
+     * @return
      */
     public boolean isAccepted() {
         return OK.equals(this.result);

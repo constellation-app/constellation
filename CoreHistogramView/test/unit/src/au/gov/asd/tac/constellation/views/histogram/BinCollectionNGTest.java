@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class BinCollectionNGTest {
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         // Not currently required
@@ -61,7 +61,8 @@ public class BinCollectionNGTest {
         final Bin bin0 = mock(Bin.class);
         final Bin bin1 = mock(Bin.class);
         final Bin bin2 = mock(Bin.class);
-        bin0.selectedCount = 5;
+
+        when(bin0.getSelectedCount()).thenReturn(5);
 
         final Bin[] bins = new Bin[3];
         bins[0] = bin0;
@@ -76,9 +77,9 @@ public class BinCollectionNGTest {
         final Bin[] result = instance.getSelectedBins();
 
         // Check that one bin was selected, and that was returned.
-        assertEquals(expResult[0],  result[0]);
+        assertEquals(expResult[0], result[0]);
 
-        bin0.selectedCount = 0;
+        when(bin0.getSelectedCount()).thenReturn(0);
 
         final Bin[] bins2 = new Bin[3];
         bins2[0] = bin0;
@@ -91,6 +92,6 @@ public class BinCollectionNGTest {
         final Bin[] result2 = instance.getSelectedBins();
 
         // Check that no bins are selected
-        assertEquals(expResult2.length,  result2.length);
+        assertEquals(expResult2.length, result2.length);
     }
 }
