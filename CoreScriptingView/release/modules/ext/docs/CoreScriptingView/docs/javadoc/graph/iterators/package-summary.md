@@ -4,19 +4,19 @@
 
 <div class="skipNav">
 
-[Skip navigation links](package-summary.md#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/package-summary.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../../overview-summary.md)
+-   [Overview](../ext/docs/CoreScriptingView/docs/javadoc/overview-summary.md)
 -   Package
 -   Class
--   [Tree](package-tree.md)
--   [Deprecated](../../deprecated-list.md)
--   [Index](../../index-all.md)
--   [Help](../../help-doc.md)
+-   [Tree](../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/package-tree.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -28,12 +28,12 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <div class="subNav">
 
--   [Prev Package](../package-summary.md)
--   [Next Package](../../utilities/package-summary.md)
+-   [Prev Package](../ext/docs/CoreScriptingView/docs/javadoc/graph/package-summary.md)
+-   [Next Package](../ext/docs/CoreScriptingView/docs/javadoc/utilities/package-summary.md)
 
 <!-- -->
 
--   [All Classes](../../allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/docs/javadoc/allclasses-noframe.md)
 
 <div>
 

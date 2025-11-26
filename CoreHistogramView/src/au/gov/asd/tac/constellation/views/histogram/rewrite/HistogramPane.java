@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
 import au.gov.asd.tac.constellation.views.histogram.BinSelectionMode;
 import static au.gov.asd.tac.constellation.views.histogram.HistogramControls.CURRENT_PARAMETER_IDS;
 import au.gov.asd.tac.constellation.views.histogram.HistogramState;
+import au.gov.asd.tac.constellation.views.histogram.HistogramTopComponent;
 import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.MenuItem;
@@ -64,7 +65,8 @@ import org.openide.util.HelpCtx;
  */
 public class HistogramPane extends BorderPane {
 
-    private static final String HISTOGRAM_TOP_COMPONENT_CLASS_NAME = HistogramTopComponent2.class.getName();
+    // Currently point to the old histogram view's help page, as their functionality is identical
+    private static final String HISTOGRAM_TOP_COMPONENT_CLASS_NAME = HistogramTopComponent.class.getName();
 
     // Styles
     private static final String HELP_STYLE = "-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null;";
@@ -371,6 +373,9 @@ public class HistogramPane extends BorderPane {
         controls.setPadding(new Insets(CONTROLS_PADDING, CONTROLS_PADDING, CONTROLS_PADDING, CONTROLS_PADDING));
 
         this.setCenter(viewPane);
+
+        // Attach font listener to detect application level font size change (the exact label to attach to is arbitrary)
+        graphElementLabel.fontProperty().addListener((obs, oldVal, newVal) -> display.applicationFontSizeChanged());
 
         // Update display for initial values
         updateDisplay();

@@ -17,14 +17,32 @@
     Author     : Quasar985
 */
 
+/*The grey part of the bar*/
 .label:bar-bin-count {
     -fx-padding: 0 1em 0 0;
-    -fx-text-fill: #e0e0e0;
+    -fx-text-fill: #e0e0e0;  /* Light Grey */
+}
+
+/*The blue part of the bar*/
+.label:bar-bin-count-unselected {
+    -fx-padding: 0 1em 0 0;
+    -fx-text-fill: #e0e0e0;  /* Light Grey */
+}
+
+/*The red part of the bar*/
+.label:bar-bin-count-selected {
+    -fx-padding: 0 1em 0 0;
+    -fx-text-fill: #e0e0e0;  /* Light Grey */
+}
+
+/*The yellow part of the bar*/
+.label:bar-bin-count-activated {
+    -fx-padding: 0 1em 0 0;
+    -fx-text-fill: black;
 }
 
 .header-row{
     -fx-text-fill: #FFFFFF;/*White*/
-
 }
 
 .noheader .column-header-background {

@@ -78,27 +78,24 @@ public enum BinIconMode {
         public Node createFXIcon(final Bin bin, final int height) {
             if (bin instanceof final ObjectBin objectBin) {
                 final Object key = objectBin.getKeyAsObject();
+                if (key instanceof final ConstellationIcon constellationIcon) {
 
-                if (key == null) {
-                    return null;
+                    final String iconLabel = constellationIcon.getName();
+                    BufferedImage icon = iconCache.get(iconLabel);
+                    if (icon == null) {
+                        icon = IconManager.getIcon(iconLabel).buildBufferedImage();
+                        iconCache.put(iconLabel, icon);
+                    }
+                    if (icon != null) {
+                        // convert icon into javafx image
+                        final Image image = SwingFXUtils.toFXImage(icon, null);
+                        final ImageView imageView = new ImageView(image);
+                        imageView.setFitHeight(height);
+                        imageView.setFitWidth(height);
+
+                        return imageView;
+                    }
                 }
-
-                final String iconLabel = ((ConstellationIcon) key).getName();
-                BufferedImage icon = iconCache.get(iconLabel);
-                if (icon == null) {
-                    icon = IconManager.getIcon(iconLabel).buildBufferedImage();
-                    iconCache.put(iconLabel, icon);
-                }
-                if (icon != null) {
-                    // convert icon into javafx image
-                    final Image image = SwingFXUtils.toFXImage(icon, null);
-                    final ImageView imageView = new ImageView(image);
-                    imageView.setFitHeight(height);
-                    imageView.setFitWidth(height);
-
-                    return imageView;
-                }
-
             }
             return null;
         }
@@ -124,18 +121,14 @@ public enum BinIconMode {
         public Node createFXIcon(final Bin bin, final int height) {
             if (bin instanceof final ObjectBin objectBin) {
                 final Object key = objectBin.getKeyAsObject();
-                final ConstellationColor colorValue = (ConstellationColor) key;
-
-                // Make rectangle of that colour
-                if (colorValue == null) {
-                    return null;
+                if (key instanceof final ConstellationColor colorValue && colorValue != null) {
+                    // Make rectangle of that colour
+                    final int arc = height / 3;
+                    final Rectangle rect = new Rectangle(Double.valueOf(height), Double.valueOf(height), colorValue.getJavaFXColor());
+                    rect.setArcHeight(arc);
+                    rect.setArcWidth(arc);
+                    return rect;
                 }
-
-                final int arc = height / 3;
-                final Rectangle rect = new Rectangle(Double.valueOf(height), Double.valueOf(height), colorValue.getJavaFXColor());
-                rect.setArcHeight(arc);
-                rect.setArcWidth(arc);
-                return rect;
             }
             return null;
         }

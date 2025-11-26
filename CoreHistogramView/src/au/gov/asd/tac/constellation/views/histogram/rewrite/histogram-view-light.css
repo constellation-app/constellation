@@ -17,14 +17,28 @@
     Author     : Quasar985
 */
 
+/*The grey part of the bar*/
 .label:bar-bin-count {
     -fx-padding: 0 1em 0 0;
-    -fx-text-fill: #e0e0e0;
+    -fx-text-fill: black;
 }
 
-.header-row{
-    /*    -fx-text-fill: #FFFFFF;White*/
+/*The blue part of the bar*/
+.label:bar-bin-count-unselected {
+    -fx-padding: 0 1em 0 0;
+    -fx-text-fill: black;
+}
 
+/*The red part of the bar*/
+.label:bar-bin-count-selected {
+    -fx-padding: 0 1em 0 0;
+    -fx-text-fill: black;
+}
+
+/*The yellow part of the bar*/
+.label:bar-bin-count-activated {
+    -fx-padding: 0 1em 0 0;
+    -fx-text-fill: black;
 }
 
 .noheader .column-header-background {
@@ -48,13 +62,11 @@
 }
 
 .table-cell:row-selected{
-/*    -fx-text-fill: white;*/
     -fx-font-weight: bold;
 }
 
 .table-cell {
     -fx-border-color: null;
-    /*    -fx-text-fill: #e0e0e0;*/
 }
 
 .table-view .table-column{

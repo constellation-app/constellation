@@ -32,10 +32,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -125,7 +125,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
         private static final Set<PagerankVertex> sinks = new HashSet<>();
         private static boolean treatUndirectedBidirectional;
         private static boolean normaliseByAvailable;
-        private static final Map<Integer, PagerankVertex> pagerankVertices = new HashMap<>();
+        private static final MutableIntObjectMap<PagerankVertex> pagerankVertices = new IntObjectHashMap<>();
         private static GraphWriteMethods graph;
         private static double dampingFactor = 0;
         private static int vertexCount = 0;

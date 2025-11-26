@@ -19,10 +19,11 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerUtilities;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.utils.ScreenPosition;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.openide.util.lookup.ServiceProvider;
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -91,7 +92,7 @@ public class ThiessenPolygonsLayer extends MapLayer {
 
         // map markers to colors
         final ConstellationColor[] palette = ConstellationColor.createPalette(onScreenMarkerCount);
-        final Map<Marker, Integer> paletteMap = new HashMap<>();
+        final MutableObjectIntMap<Marker> paletteMap = new ObjectIntHashMap<>();
         onScreenMarkers.forEach(marker -> paletteMap.put(marker,
                 MarkerUtilities.color(palette[onScreenMarkers.indexOf(marker)])));
 
@@ -119,7 +120,7 @@ public class ThiessenPolygonsLayer extends MapLayer {
             }
 
             // color this pixel based on its closest marker
-            if (closestMarker != null && paletteMap.get(closestMarker) != null) {
+            if (closestMarker != null && paletteMap.containsKey(closestMarker)) {
                 voronoiImage.pixels[pixelIndex] = paletteMap.get(closestMarker);
             }
         }

@@ -44,11 +44,9 @@ import com.fasterxml.jackson.core.JsonFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -88,6 +86,8 @@ import javafx.util.Pair;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
@@ -859,16 +859,14 @@ public final class QualityControlViewPane extends BorderPane {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            final Set<Integer> vertexIds = new HashSet<>();
+            final MutableIntSet vertexIds = new IntHashSet();
             for (final QualityControlEvent qualitycontrolEvent : qualitycontrolEvents) {
                 if (qualitycontrolEvent != null) {
                     vertexIds.add(qualitycontrolEvent.getVertex());
                 }
             }
 
-            for (final int vertexId : vertexIds) {
-                graph.removeVertex(vertexId);
-            }
+            vertexIds.forEach(graph::removeVertex);
         }
 
         @Override
@@ -891,7 +889,7 @@ public final class QualityControlViewPane extends BorderPane {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            final Set<Integer> vertexIds = new HashSet<>();
+            final MutableIntSet vertexIds = new IntHashSet();
             for (final QualityControlEvent qualitycontrolEvent : qualitycontrolEvents) {
                 if (qualitycontrolEvent != null) {
                     vertexIds.add(qualitycontrolEvent.getVertex());
@@ -937,7 +935,7 @@ public final class QualityControlViewPane extends BorderPane {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            final Set<Integer> vertexIds = new HashSet<>();
+            final MutableIntSet vertexIds = new IntHashSet();
             for (final QualityControlEvent qualitycontrolEvent : qualitycontrolEvents) {
                 if (qualitycontrolEvent != null) {
                     vertexIds.add(qualitycontrolEvent.getVertex());

@@ -101,6 +101,10 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
 
     private static final int MIN_WIDTH = 425;
     private static final int MIN_HEIGHT = 400;
+    private static final String ILLEGAL_ARG_GRAPH_ELEMENT = "Histogram graph element type was null";
+    private static final String ILLEGAL_ARG_BIN_FORMATTER = "Histogram bin formatter was null";
+    private static final String ILLEGAL_ARG_BIN_COMPARATOR = "Histogram bin comparator was null";
+    private static final String ILLEGAL_ARG_BIN_SELECTION_MODE = "Histogram bin selection mode was null";
 
     private long currentGlobalModificationCount = Long.MIN_VALUE;
     private long currentAttributeModificationCount = Long.MIN_VALUE;
@@ -414,7 +418,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
 
         if (elementType == null) {
-            throw new IllegalArgumentException("Null element type");
+            throw new IllegalArgumentException(ILLEGAL_ARG_GRAPH_ELEMENT);
         }
 
         if (currentHistogramState == null || elementType != currentHistogramState.getElementType() || attributeType != currentHistogramState.getAttributeType()
@@ -438,7 +442,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
 
         if (elementType == null) {
-            throw new IllegalArgumentException("Null element type");
+            throw new IllegalArgumentException(ILLEGAL_ARG_GRAPH_ELEMENT);
         }
 
         // If the current state is null or the elementType selected is not the one already selected.
@@ -492,7 +496,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
 
         if (binComparator == null) {
-            throw new IllegalArgumentException("Null bin comparator");
+            throw new IllegalArgumentException(ILLEGAL_ARG_BIN_COMPARATOR);
         }
 
         if (currentHistogramState == null || binComparator != currentHistogramState.getBinComparator()) {
@@ -514,7 +518,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
 
         if (binFormatter == null) {
-            throw new IllegalArgumentException("Null bin formatter");
+            throw new IllegalArgumentException(ILLEGAL_ARG_BIN_FORMATTER);
         }
 
         if (currentHistogramState == null || binFormatter != currentHistogramState.getBinFormatter() || parameters != currentHistogramState.getBinFormatterParameters()) {
@@ -536,7 +540,7 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         }
 
         if (binSelectionMode == null) {
-            throw new IllegalArgumentException("Null bin selection mode");
+            throw new IllegalArgumentException(ILLEGAL_ARG_BIN_SELECTION_MODE);
         }
 
         if (currentHistogramState == null || binSelectionMode != currentHistogramState.getBinSelectionMode()) {
