@@ -149,17 +149,19 @@ public class NumberInputPane<T> extends Pane {
             // Integers: MAX_VALUE is 10 digits.  Floats: Max 8 digits before the decimal, and 2 digits after.
             if ((intPart.matches("[\\-][0-9]{1," + (isIntVal ? "10}" : "8}")) || intPart.matches("[0-9]{1," + (isIntVal ? "10}" : "8}")))
                                 && (dotPos == -1 || (decPart.matches("[0-9]{0,2}") && !isIntVal))) {
-                final String error = parameter.validateString(field.getValueFactory().getValue().toString());
+                final String error = parameter.validateString(newValue);
                 if (error != null) {
                     tooltip.setText(error);
                     field.setTooltip(tooltip);
                     field.setId(INVALID_ID);
+                    currentTextValue = oldValue;
+                    field.getEditor().setText(oldValue);
                 } else {
                     tooltip.setText("");
                     field.setTooltip(null);
                     field.setId("");
+                    currentTextValue = newValue;
                 }
-                currentTextValue = newValue;
                 parameter.fireChangeEvent(ParameterChange.VALUE);
                 
             } else {
