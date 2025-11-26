@@ -247,10 +247,10 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
             try {
                 final Number n = CONVERTER.fromString(s);
                 if (n != null) {
-                    if (n.longValue() < Integer.MIN_VALUE || (min != null && n.intValue() < min)) {
+                    if (n.longValue() < min) {
                         return "Value too small";
                     }
-                    if (n.longValue() > Integer.MAX_VALUE || (max != null && n.intValue() > max)) {
+                    if (n.longValue() > max) {
                         return "Value too large";
                     }
                 }
