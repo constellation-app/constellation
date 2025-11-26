@@ -223,7 +223,6 @@ public abstract class RestClient {
      * @throws IOException
      */
     public void post(final String url, final List<Tuple<String, String>> params) throws IOException {
-        System.out.println("!!!!!!!!!!POST");
         logRequest(url, params, null);
         beforePost(url, params);
 
@@ -358,7 +357,6 @@ public abstract class RestClient {
      * @throws IOException
      */
     private String generateJsonFromFlatMap(final List<Tuple<String, String>> params) throws IOException {
-        System.out.println("!!! RestClient generateJsonFromFlatMap");
         final ByteArrayOutputStream json = new ByteArrayOutputStream();
         //final JsonFactory jsonFactory = JsonFactoryUtilities.getMappingJsonFactory(); 
         final JsonFactory jsonFactory = JsonFactoryUtilities.getJsonFactory();// tested in testPostInvalidResponseCode apparently QWERTY
