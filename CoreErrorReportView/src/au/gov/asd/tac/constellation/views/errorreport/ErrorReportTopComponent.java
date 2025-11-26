@@ -250,7 +250,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         };
 
         refreshTimer = new Timer();
-        refreshTimer.schedule(refreshAction, 840, 480);
+        refreshTimer.schedule(refreshAction, 745, 1475);
     }
 
     @Override
@@ -1023,7 +1023,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final VBox vBox = new VBox();
         vBox.setPadding(new Insets(1));
 
-        final TextArea data = new TextArea(entry.getSummaryHeading() + "\n" + entry.getErrorData());
+        final TextArea data = new TextArea(entry.getSummaryHeading() + entry.getErrorData());
         data.setStyle(FX_TEXT_FILL + textColour + ";" + FX_BACKGROUND + backgroundColour + "; -text-area-background: " + areaBackgroundColour + "; -fx-border-color: #505050; -fx-border-width: 2;");
         data.setEditable(false);
         data.setPadding(new Insets(2));

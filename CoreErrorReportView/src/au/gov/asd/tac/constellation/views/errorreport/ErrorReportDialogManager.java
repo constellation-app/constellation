@@ -83,7 +83,7 @@ public class ErrorReportDialogManager {
             }
         };
         final Timer refreshTimer = new Timer();
-        refreshTimer.schedule(refreshAction, 175, 475);        
+        refreshTimer.schedule(refreshAction, 745, 1475);        
     }
     
     public void updatePopupSettings(final int popupMode, final Iterable<String> popupFilters) {
