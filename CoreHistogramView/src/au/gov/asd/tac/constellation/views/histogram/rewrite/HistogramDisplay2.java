@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOw
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckerUtilities;
 import au.gov.asd.tac.constellation.views.histogram.Bin;
 import au.gov.asd.tac.constellation.views.histogram.BinCollection;
 import au.gov.asd.tac.constellation.views.histogram.BinIconMode;
@@ -173,6 +174,7 @@ public class HistogramDisplay2 extends BorderPane {
     }
 
     public HistogramDisplay2(final HistogramTopComponent2 topComponent) {
+        SpellCheckerUtilities.preInitSpellcheck();
         this.topComponent = topComponent;
 
         initializeSettings();
