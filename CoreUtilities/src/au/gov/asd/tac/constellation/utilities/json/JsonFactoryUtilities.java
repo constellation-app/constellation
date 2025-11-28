@@ -28,8 +28,8 @@ public class JsonFactoryUtilities {
     /* Both of these take significant time to initialise (~3 seconds for JsonFactory, and ~30 for MappingJsonFactory).
      * So they are only initialised when actually needed
      */
-    private static JsonFactory JSON_FACTORY = null;
-    private static MappingJsonFactory MAPPING_FACTORY = null;
+    private static JsonFactory jsonFactory = null;
+    private static MappingJsonFactory mappingFactory = null;
 
     private JsonFactoryUtilities() {
         throw new IllegalStateException("Utility class");
@@ -37,23 +37,23 @@ public class JsonFactoryUtilities {
 
     public static JsonFactory getJsonFactory() {
         ensureJsonFactory();
-        return JSON_FACTORY;
+        return jsonFactory;
     }
 
     private static void ensureJsonFactory() {
-        if (JSON_FACTORY == null) {
-            JSON_FACTORY = new JsonFactory();
+        if (jsonFactory == null) {
+            jsonFactory = new JsonFactory();
         }
     }
 
     public static MappingJsonFactory getMappingJsonFactory() {
         ensureMappingJsonFactory();
-        return MAPPING_FACTORY;
+        return mappingFactory;
     }
 
     private static void ensureMappingJsonFactory() {
-        if (MAPPING_FACTORY == null) {
-            MAPPING_FACTORY = new MappingJsonFactory();
+        if (mappingFactory == null) {
+            mappingFactory = new MappingJsonFactory();
         }
     }
 }
