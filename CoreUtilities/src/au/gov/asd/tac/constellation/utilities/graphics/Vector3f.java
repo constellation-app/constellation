@@ -400,6 +400,14 @@ public final class Vector3f implements Serializable {
     public Vector3f copy() {
         return new Vector3f(a[0], a[1], a[2]);
     }
+    public Vector3f reverse() {
+        a[0] = -a[0];
+        a[1] = -a[1];
+        a[2] = -a[2];
+        
+        return this;
+    }
+    
 
     @Override
     public int hashCode() {
