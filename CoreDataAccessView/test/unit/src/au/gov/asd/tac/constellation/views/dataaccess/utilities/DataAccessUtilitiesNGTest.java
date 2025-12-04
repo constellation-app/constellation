@@ -291,7 +291,7 @@ public class DataAccessUtilitiesNGTest {
             DataAccessUtilities.loadDataAccessState(dataAccessPane, graph);
 
             verify(pluginParameter1).setStringValue("parameter1_new_value");
-            verify(pluginParameter2, never()).setStringValue(anyString());
+            verify(pluginParameter2).setStringValue(anyString());
 
             verify(rGraph).release();
         }
