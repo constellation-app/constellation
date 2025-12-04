@@ -247,14 +247,12 @@ public class QualityControlViewPaneNGTest {
     public void testReadSerializedRuleEnabledStatuses() {
         System.out.println("readSerializedRuleEnabledStatuses");
 
-        try (
-                final MockedStatic<JsonUtilities> jsonUtilitiesMockedStatic = mockStatic(JsonUtilities.class); final MockedStatic<QualityControlViewPane> qualityControlViewPaneMockedStatic = mockStatic(QualityControlViewPane.class)) {
+        try (final MockedStatic<JsonUtilities> jsonUtilitiesMockedStatic = mockStatic(JsonUtilities.class); final MockedStatic<QualityControlViewPane> qualityControlViewPaneMockedStatic = mockStatic(QualityControlViewPane.class)) {
             final Map<String, String> jsonMap = new HashMap<>();
             jsonMap.put("Missing type", "false");
             jsonMap.put("Unknown type", "true");
 
-            jsonUtilitiesMockedStatic.when(() -> JsonUtilities.getStringAsMap(any(JsonFactory.class), anyString()))
-                    .thenReturn(jsonMap);
+            jsonUtilitiesMockedStatic.when(() -> JsonUtilities.getStringAsMap(anyString())).thenReturn(jsonMap);
 
             final MissingTypeRule mRule = new MissingTypeRule();
             final UnknownTypeRule uRule = new UnknownTypeRule();

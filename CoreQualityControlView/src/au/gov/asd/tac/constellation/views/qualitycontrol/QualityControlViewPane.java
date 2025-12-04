@@ -113,7 +113,6 @@ public final class QualityControlViewPane extends BorderPane {
     private static Map<QualityControlRule, Boolean> ruleEnabledStatuses = null;
     private static final List<ToggleGroup> toggleGroups = new ArrayList<>();
     private static final Map<QualityControlRule, Button> ruleEnableButtons = new HashMap<>();
-    private static final JsonFactory FACTORY = new MappingJsonFactory();
 
     private final TableColumn<QualityControlEvent, QualityControlEvent> identifierColumn;
     private final TableColumn<QualityControlEvent, QualityControlEvent> typeColumn;
@@ -768,7 +767,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Writes the rulePriorities to the preferences object.
      */
     private static void writeSerializedRulePriorities() {
-        final String mapAsString = JsonUtilities.getMapAsString(FACTORY, getPriorities());
+        final String mapAsString = JsonUtilities.getMapAsString(getPriorities());
         if (!mapAsString.isEmpty()) {
             PREFERENCES.put(ApplicationPreferenceKeys.RULE_PRIORITIES, mapAsString);
             try {
@@ -783,7 +782,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Writes the rule enabled statuses to the preferences object.
      */
     private static void writeSerializedRuleEnabledStatuses() {
-        final String mapAsString = JsonUtilities.getMapAsString(FACTORY, getEnablementStatuses());
+        final String mapAsString = JsonUtilities.getMapAsString(getEnablementStatuses());
         if (!mapAsString.isEmpty()) {
             PREFERENCES.put(ApplicationPreferenceKeys.RULE_ENABLED_STATUSES, mapAsString);
             try {
@@ -799,7 +798,7 @@ public final class QualityControlViewPane extends BorderPane {
      */
     public static void readSerializedRulePriorities() {
         getPriorities().clear();
-        final Map<String, String> priorityStringMap = JsonUtilities.getStringAsMap(FACTORY, PREFERENCES.get(ApplicationPreferenceKeys.RULE_PRIORITIES, ""));
+        final Map<String, String> priorityStringMap = JsonUtilities.getStringAsMap(PREFERENCES.get(ApplicationPreferenceKeys.RULE_PRIORITIES, ""));
         for (final Entry<String, String> entry : priorityStringMap.entrySet()) {
             getPriorities().put(QualityControlEvent.getRuleByString(entry.getKey()), QualityControlEvent.getCategoryFromString(entry.getValue()));
         }
@@ -810,7 +809,7 @@ public final class QualityControlViewPane extends BorderPane {
      */
     public static void readSerializedRuleEnabledStatuses() {
         getEnablementStatuses().clear();
-        final Map<String, String> enableStringMap = JsonUtilities.getStringAsMap(FACTORY, PREFERENCES.get(ApplicationPreferenceKeys.RULE_ENABLED_STATUSES, ""));
+        final Map<String, String> enableStringMap = JsonUtilities.getStringAsMap(PREFERENCES.get(ApplicationPreferenceKeys.RULE_ENABLED_STATUSES, ""));
         for (final Entry<String, String> entry : enableStringMap.entrySet()) {
             final QualityControlRule rule = QualityControlEvent.getRuleByString(entry.getKey());
             final boolean enabled = Boolean.parseBoolean(entry.getValue());
