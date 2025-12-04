@@ -472,6 +472,12 @@ public class GraphRecordStoreUtilities {
                         if (transactionValues.containsKey(IDENTIFIER + STRING_TYPE)) {
                             transactionValues.put(IDENTIFIER + STRING_TYPE, compositeTransactionId.toString());
                         }
+                        if (transactionValues.containsKey(ID)) {
+                            final String[] tranx = transactionValues.get(ID).split(":");
+                            if (tranx.length == 3) {
+                                transactionValues.put(ID, String.format("%s:%s:%s", tranx[0], tranx[1], tranx[2]));
+                            }
+                        }
                     }
                     transactionValues.put(SOURCE, originalDestNode);
                     transactionValues.put(DESTINATION, originalSourceNode);
