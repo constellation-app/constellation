@@ -190,7 +190,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
         });
         textArea.setContextMenu(contextMenu);
         textArea.setMinHeight(DEFAULT_CELL_HEIGHT);
-        textArea.setPadding(new Insets(0, 5, 0, 0));
+        textArea.setPadding(new Insets(0, 0, 0, 0));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">
@@ -238,7 +238,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * initializing. If not done this way, we get some ugly errors where methods
      * and objects don't exist...
      */
-    protected void initialiseDepedantComponents() {
+    protected void initialiseDependantComponents() {
         final HBox interactableContent = getInteractableContent();
 
         // Build out the visual Input components on the FX thread.
@@ -288,7 +288,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
                         menu.setAutoFix(true);
                         menu.setWidth(textArea.getWidth());
                         //Listen for key events for when arrows are pressed or when to hide the menu
-                        addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+                        addEventFilter(KeyEvent.KEY_PRESSED, (final KeyEvent event) -> {
                             menu.hide();
                             setMenuShown(false);
                         });
