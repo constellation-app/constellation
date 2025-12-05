@@ -180,11 +180,14 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     public static final String ROW_OR_COL_DIST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "row_col_dist");
     private static final String ROW_OR_COL_DIST_NAME = "Distance between rows/columns: ";
-    private static final int ROW_OR_COL_DIST_DEFAULT = 50;
+    private static final int ROW_OR_COL_DIST_DEFAULT = 10;
 
     private static final String ORIGINAL_ID_LABEL = "layer_original_id";
     private static final String LAYER_NAME = "layer";
     private static final String NLAYERS = "layers";
+
+    private static final String ROWS = "Rows";
+    private static final String COLS = "Cols";
 
     private static final Map<String, Integer> LAYER_INTERVALS = new HashMap<>();
     private static final Map<String, Integer> BIN_CALENDAR_UNITS = new HashMap<>();
@@ -232,6 +235,14 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     private PluginParameter<SingleChoiceParameterValue> dtAttrParam;
     private PluginParameter<DateTimeRangeParameterValue> dateRangeParam;
+
+    private PluginParameter<BooleanParameterValue> arrange2DParam;
+    private PluginParameter<SingleChoiceParameterValue> perLayerDirectionParameter;
+    private PluginParameter<IntegerParameterValue> numRowsOrColsParam;
+    private PluginParameter<SingleChoiceParameterValue> rowOrColParam;
+    private PluginParameter<SingleChoiceParameterValue> inLayerDirectionParameter;
+    private PluginParameter<IntegerParameterValue> distanceBetweenLayers;
+    private PluginParameter<IntegerParameterValue> distanceBetweenRowsOrCols;
 
     @Override
     public PluginParameters createParameters() {
@@ -287,44 +298,65 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         drawTxGuidesParam.setBooleanValue(DRAW_TX_GUIDES_DEFAULT);
         parameters.addParameter(drawTxGuidesParam);
 
-        final PluginParameter<BooleanParameterValue> arrange2DParam = BooleanParameterType.build(ARRANGE_2D_PARAMETER_ID);
+//        final PluginParameter<BooleanParameterValue> arrange2DParam = BooleanParameterType.build(ARRANGE_2D_PARAMETER_ID);
+        arrange2DParam = BooleanParameterType.build(ARRANGE_2D_PARAMETER_ID);
         arrange2DParam.setName(ARRANGE_2D_NAME);
         arrange2DParam.setDescription(ARRANGE_2D_DESCRIPTION);
         arrange2DParam.setBooleanValue(ARRANGE_2D_DEFAULT);
         parameters.addParameter(arrange2DParam);
+        arrange2DParam.addListener((oldValue, newValue) -> {
+            System.out.println("arrange2DParam newValue: " + newValue);
+            disableArrange2dOptions();
+        });
 
         // maybe this shoudl be either up or down for cols, and left or right for rows
-        final PluginParameter<SingleChoiceParameterValue> perLayerDirectionParameter = SingleChoiceParameterType.build(PER_LAYER_DIRECTION_PARAMETER_ID);
+//        final PluginParameter<SingleChoiceParameterValue> perLayerDirectionParameter = SingleChoiceParameterType.build(PER_LAYER_DIRECTION_PARAMETER_ID);
+        perLayerDirectionParameter = SingleChoiceParameterType.build(PER_LAYER_DIRECTION_PARAMETER_ID);
         perLayerDirectionParameter.setName(PER_LAYER_DIRECTION_NAME);
-        SingleChoiceParameterType.setOptions(perLayerDirectionParameter, new ArrayList<>(directionsMap.keySet()));
+//        SingleChoiceParameterType.setOptions(perLayerDirectionParameter, new ArrayList<>(directionsMap.keySet()));
+        final ArrayList<String> directionList = new ArrayList<>(directionsMap.keySet());
+        directionList.removeIf(s -> !s.contains("Y")); // TODO constant
+        SingleChoiceParameterType.setOptions(perLayerDirectionParameter, directionList);
         SingleChoiceParameterType.setChoice(perLayerDirectionParameter, "-Y (Down)");// TODO make this string a constant
+        perLayerDirectionParameter.setEnabled(false);
         parameters.addParameter(perLayerDirectionParameter);
 
-        final PluginParameter<IntegerParameterValue> numRowsOrColsParam = IntegerParameterType.build(NUM_ROWS_OR_COLS_PARAMETER_ID);
+//        final PluginParameter<IntegerParameterValue> numRowsOrColsParam = IntegerParameterType.build(NUM_ROWS_OR_COLS_PARAMETER_ID);
+        numRowsOrColsParam = IntegerParameterType.build(NUM_ROWS_OR_COLS_PARAMETER_ID);
         numRowsOrColsParam.setName(NUM_ROWS_OR_COLS_NAME);
         numRowsOrColsParam.setIntegerValue(NUM_ROWS_OR_COLS_DEFAULT);
+        numRowsOrColsParam.setEnabled(false);
         parameters.addParameter(numRowsOrColsParam);
 
-        final PluginParameter<SingleChoiceParameterValue> rowOrColParam = SingleChoiceParameterType.build(ROW_OR_COL_PARAMETER_ID);
+//        final PluginParameter<SingleChoiceParameterValue> rowOrColParam = SingleChoiceParameterType.build(ROW_OR_COL_PARAMETER_ID);
+        rowOrColParam = SingleChoiceParameterType.build(ROW_OR_COL_PARAMETER_ID);
         rowOrColParam.setName(ROW_OR_COL_NAME);
-        SingleChoiceParameterType.setOptions(rowOrColParam, new ArrayList<>(Arrays.asList("Rows", "Cols")));// TODO constants
-        SingleChoiceParameterType.setChoice(rowOrColParam, "Cols");// TODO make this string a constant
+        SingleChoiceParameterType.setOptions(rowOrColParam, new ArrayList<>(Arrays.asList(ROWS, COLS)));
+        SingleChoiceParameterType.setChoice(rowOrColParam, COLS);
+        rowOrColParam.setEnabled(false);
         parameters.addParameter(rowOrColParam);
+        rowOrColParam.addListener((oldValue, newValue) -> updatePerLayerDirectionChoices());
 
-        final PluginParameter<SingleChoiceParameterValue> inLayerDirectionParameter = SingleChoiceParameterType.build(IN_LAYER_DIRECTION_PARAMETER_ID);
+//        final PluginParameter<SingleChoiceParameterValue> inLayerDirectionParameter = SingleChoiceParameterType.build(IN_LAYER_DIRECTION_PARAMETER_ID);
+        inLayerDirectionParameter = SingleChoiceParameterType.build(IN_LAYER_DIRECTION_PARAMETER_ID);
         inLayerDirectionParameter.setName(IN_LAYER_DIRECTION_NAME);
         SingleChoiceParameterType.setOptions(inLayerDirectionParameter, new ArrayList<>(directionsMap.keySet()));
         SingleChoiceParameterType.setChoice(inLayerDirectionParameter, "X");// TODO make this string a constant
+        inLayerDirectionParameter.setEnabled(false);
         parameters.addParameter(inLayerDirectionParameter);
 
-        final PluginParameter<IntegerParameterValue> distanceBetweenLayers = IntegerParameterType.build(LAYER_DIST_PARAMETER_ID);
+//        final PluginParameter<IntegerParameterValue> distanceBetweenLayers = IntegerParameterType.build(LAYER_DIST_PARAMETER_ID);
+        distanceBetweenLayers = IntegerParameterType.build(LAYER_DIST_PARAMETER_ID);
         distanceBetweenLayers.setName(LAYER_DIST_NAME);
         distanceBetweenLayers.setIntegerValue(LAYER_DIST_DEFAULT);
+        distanceBetweenLayers.setEnabled(false);
         parameters.addParameter(distanceBetweenLayers);
 
-        final PluginParameter<IntegerParameterValue> distanceBetweenRowsOrCols = IntegerParameterType.build(ROW_OR_COL_DIST_PARAMETER_ID);
+//        final PluginParameter<IntegerParameterValue> distanceBetweenRowsOrCols = IntegerParameterType.build(ROW_OR_COL_DIST_PARAMETER_ID);
+        distanceBetweenRowsOrCols = IntegerParameterType.build(ROW_OR_COL_DIST_PARAMETER_ID);
         distanceBetweenRowsOrCols.setName(ROW_OR_COL_DIST_NAME);
         distanceBetweenRowsOrCols.setIntegerValue(ROW_OR_COL_DIST_DEFAULT);
+        distanceBetweenRowsOrCols.setEnabled(false);
         parameters.addParameter(distanceBetweenRowsOrCols);
 
         parameters.addController(LAYER_BY_PARAMETER_ID, (masterId, paramMap, change) -> {
@@ -344,8 +376,35 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         return parameters;
     }
 
+    private void updatePerLayerDirectionChoices() {
+        System.out.println("updatePerLayerDirectionChoices");
+        // update per layer direction based on if rows or columns is chosen
+        final boolean isRow = ROWS.equals(rowOrColParam.getStringValue());
+
+        final String substring = isRow ? "X" : "Y";
+        final ArrayList<String> directionList = new ArrayList<>(directionsMap.keySet());
+        directionList.removeIf(s -> !s.contains(substring));
+        SingleChoiceParameterType.setOptions(perLayerDirectionParameter, directionList);
+
+        final String choice = isRow ? "X" : "-Y (Down)";// TODO make this string a constant
+        //System.out.println("choice " + choice);
+        SingleChoiceParameterType.setChoice(perLayerDirectionParameter, choice);
+    }
+
+    private void disableArrange2dOptions() {
+        final boolean enable = arrange2DParam.getBooleanValue();
+
+        perLayerDirectionParameter.setEnabled(enable);
+        numRowsOrColsParam.setEnabled(enable);
+        rowOrColParam.setEnabled(enable);
+        inLayerDirectionParameter.setEnabled(enable);
+        distanceBetweenLayers.setEnabled(enable);
+        distanceBetweenRowsOrCols.setEnabled(enable);
+    }
+
     @Override
     public void updateParameters(final Graph graph, final PluginParameters parameters) {
+
         final List<String> dateTimeAttributes = new ArrayList<>();
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int attributeCount = rg.getAttributeCount(GraphElementType.TRANSACTION);
@@ -465,7 +524,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final int layerScale = parameters.getParameters().get(LAYER_DIST_PARAMETER_ID).getIntegerValue();
             final int columnScale = parameters.getParameters().get(ROW_OR_COL_DIST_PARAMETER_ID).getIntegerValue();
 
-            final boolean isRow = "Rows".equals(parameters.getParameters().get(ROW_OR_COL_PARAMETER_ID).getStringValue()); // TODO constant
+            final boolean isRow = ROWS.equals(parameters.getParameters().get(ROW_OR_COL_PARAMETER_ID).getStringValue());
             final Vector3f inLayerDirection = ((Vector3f) directionsMap.get(parameters.getParameters().get(IN_LAYER_DIRECTION_PARAMETER_ID).getStringValue())).copy();
 
             //Establish new attributes.
@@ -509,12 +568,18 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             inLayerDirection.scale(layerScale);
             //System.out.println("inLayerDirection " + inLayerDirection);
             perLayerDirection.scale(layerScale); // figure out how to dynamically scale this based on the longest chain
-            nextRowOrColumnDirection.scale(columnScale);
+            final int maxNodesInLayer = findMaxLayerSize(wgcopy);
+            nextRowOrColumnDirection.scale(columnScale * maxNodesInLayer);
 
             System.out.println("remappedLayers.keyValuesView().size() " + remappedLayers.keyValuesView().size());
-            final int layersPerRowOrCol = (int) Math.ceil((float) remappedLayers.keyValuesView().size() / numRowsOrCols);
-            System.out.println("layersPerRowOrCol " + layersPerRowOrCol);
-            int remainingLayers = layersPerRowOrCol;
+            final int layersPerRowOrCol = (int) Math.floor((float) remappedLayers.keyValuesView().size() / numRowsOrCols);
+            int layersPerRowOrColRemainder = remappedLayers.keyValuesView().size() % numRowsOrCols;
+
+            System.out.println("numRowsOrCols " + numRowsOrCols + " layersPerRowOrCol " + layersPerRowOrCol + " layersPerRowOrColRemainder " + layersPerRowOrColRemainder);
+            int remainingLayers = layersPerRowOrColRemainder > 0 ? layersPerRowOrCol + 1 : layersPerRowOrCol;
+            layersPerRowOrColRemainder -= 1;
+
+            System.out.println("maxNodesInLayer " + maxNodesInLayer);
 
             for (final IntObjectPair<MutableFloatList> keyValue : remappedLayers.keyValuesView()) {
                 // Each layer?
@@ -549,7 +614,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
                     if (arrangeIn2d) {
                         // For now, arrange the nodes just relative to the current step
-                        System.out.println("nodesInLayer " + nodesInLayer);
+                        System.out.println("nodesInLayer " + nodesInLayer + " nodesInLayer.size() " + nodesInLayer.size() + " currentLayer.getTwo().size() " + currentLayer.getTwo().size());
                         final int xAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
                         final int yAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
                         final int zAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
@@ -575,11 +640,15 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                         remainingLayers -= 1;
 
                         if (remainingLayers <= 0) {
-                            remainingLayers = layersPerRowOrCol;
+                            //remainingLayers = layersPerRowOrCol;
+                            remainingLayers = layersPerRowOrColRemainder > 0 ? layersPerRowOrCol + 1 : layersPerRowOrCol;
+
                             final Vector3f subtractVector = perLayerDirection.copy();
-                            subtractVector.scale(layersPerRowOrCol);
+                            subtractVector.scale(layersPerRowOrColRemainder >= 0 ? layersPerRowOrCol + 1 : layersPerRowOrCol); // GREATER THAN OR EQUAL
                             layerPosition.subtract(subtractVector);
                             layerPosition.add(nextRowOrColumnDirection);
+
+                            layersPerRowOrColRemainder -= 1;
                         }
                     }
                 }
@@ -636,18 +705,28 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     });
                 }
             }
-
-            // If we want it arranged in my new 2d view
-//            if (arrangeIn2d) {
-//                System.out.println("remappedLayers");
-//                System.out.println(remappedLayers);
-//                System.out.println("transactionLayers");
-//                System.out.println(transactionLayers);
-//
-//            }
         } finally {
             wgcopy.commit();
         }
+    }
+
+    private int findMaxLayerSize(final GraphWriteMethods graph) {
+        int max = 0;
+
+        for (final FloatObjectPair<MutableIntList> currentLayer : transactionLayers.keyValuesView()) {
+            final MutableIntSet nodesInLayer = new IntHashSet();
+            for (int i = 0; i < currentLayer.getTwo().size(); i++) {
+                final int txId = currentLayer.getTwo().get(i);
+                final int srcVxId = graph.getTransactionSourceVertex(txId);
+                final int dstVxId = graph.getTransactionDestinationVertex(txId);
+                nodesInLayer.add(srcVxId);
+                nodesInLayer.add(dstVxId);
+            }
+            if (nodesInLayer.size() > max) {
+                max = nodesInLayer.size();
+            }
+        }
+        return max;
     }
 
     /**
