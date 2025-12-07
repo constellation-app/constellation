@@ -36,24 +36,18 @@ public class JsonFactoryUtilities {
     }
 
     public static JsonFactory getJsonFactory() {
-        ensureJsonFactory();
-        return jsonFactory;
-    }
-
-    private static void ensureJsonFactory() {
         if (jsonFactory == null) {
             jsonFactory = new JsonFactory();
         }
+
+        return jsonFactory;
     }
 
     public static MappingJsonFactory getMappingJsonFactory() {
-        ensureMappingJsonFactory();
-        return mappingFactory;
-    }
-
-    private static void ensureMappingJsonFactory() {
         if (mappingFactory == null) {
             mappingFactory = new MappingJsonFactory();
         }
+
+        return mappingFactory;
     }
 }
