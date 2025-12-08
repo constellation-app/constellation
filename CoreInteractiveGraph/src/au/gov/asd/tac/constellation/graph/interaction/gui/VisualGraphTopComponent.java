@@ -82,6 +82,7 @@ import au.gov.asd.tac.constellation.plugins.update.UpdateComponent;
 import au.gov.asd.tac.constellation.plugins.update.UpdateController;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
@@ -800,7 +801,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                             setHtmlDisplayName(newGraphName); // this changes the text on the tab
                             gdo.lockFile();
                         } catch (final IOException ex) {
-                            throw new RuntimeException(String.format("The name %s already exists.", newGraphName), ex);
+                            NotifyDisplayer.display(String.format("The name %s already exists.", newGraphName), NotifyDescriptor.WARNING_MESSAGE);
                         }
                         savable.setModified(true);
                     }
