@@ -353,6 +353,9 @@ public class SchemaVertexTypeUtilities {
                                 } else if (currentExtractedType.compareTo(extractedType) > 0) {
                                     deficientResults.add(extractedType);
                                 }
+                            } else {
+                                isDeficientResult = true;
+                                break;
                             }
                         }
                         if (!isDeficientResult) {
