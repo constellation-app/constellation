@@ -348,9 +348,8 @@ public class SchemaVertexTypeUtilities {
                                 if (comparator.compare(extractedType.getType(), currentExtractedType.getType()) < 0) {
                                     isDeficientResult = true;
                                     break;
-                                } else if (comparator.compare(extractedType.getType(), currentExtractedType.getType()) > 0) {
-                                    deficientResults.add(extractedType);
-                                } else if (currentExtractedType.compareTo(extractedType) > 0) {
+                                } else if (comparator.compare(extractedType.getType(), currentExtractedType.getType()) > 0 ||
+                                        currentExtractedType.compareTo(extractedType) > 0) {
                                     deficientResults.add(extractedType);
                                 }
                             } else {
