@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      RELEASE_VERSION: "v3.3.0-rc1"
+      RELEASE_VERSION: "v3.3.0"
       RUNNER_IMAGE: constellationapplication/netbeans-runner:21.0.2
 
     steps:
