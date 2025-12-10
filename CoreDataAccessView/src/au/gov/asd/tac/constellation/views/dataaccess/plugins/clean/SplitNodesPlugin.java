@@ -55,6 +55,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -197,7 +199,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         );
         
         //Determine the positions of the selected nodes
-        final List<Integer> selectedVertexIds = new ArrayList<>();
+        final MutableIntList selectedVertexIds = new IntArrayList();
         final int graphVertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < graphVertexCount; vertexPosition++) {
             final int currentVertexId = graph.getVertex(vertexPosition);
@@ -210,12 +212,10 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         
         // Loop through the selected vertices and determine how many new verticies need to be added to the graph
         final List<Integer> newVertices = new ArrayList<>();
-        for (final int currentVertexId : selectedVertexIds) {
-            interaction.setProgress(
-                    ++currentProcessStep, 
-                    totalProcessSteps, 
-                    true
-            );
+        for (int vertex = 0; vertex < selectedVertexIds.size(); vertex++) {
+            interaction.setProgress(++currentProcessStep, totalProcessSteps, true);
+            
+            final int currentVertexId = selectedVertexIds.get(vertex);
             
             // Check that the current vertex contains the split string being searched for.
             final String identifier = graph.getStringValue(vertexIdentifierAttributeId, currentVertexId);
@@ -227,8 +227,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 if (allOccurrences) {
                     final String[] substrings = Arrays.stream(identifier.split(character))
                             .filter(value
-                                    -> value != null && value.length() > 0
-                            )
+                                    -> value != null && !value.isEmpty()                            )
                             .toArray(size -> new String[size]);
                     
                     if (substrings.length <= 0) {
@@ -340,7 +339,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 final int sourceVertex = graph.getTransactionSourceVertex(originalTransactionId);
                 final int destinationVertex = graph.getTransactionDestinationVertex(originalTransactionId);
                 int newTransactionId = 0;
-                final Boolean directed = graph.getBooleanValue(transactionDirectedAttribute, originalTransactionId);
+                final boolean directed = graph.getBooleanValue(transactionDirectedAttribute, originalTransactionId);
 
                 if (sourceVertex == selectedNode && destinationVertex == selectedNode) {
                     newTransactionId = graph.addTransaction(newVertexId, newVertexId, directed);
@@ -348,8 +347,6 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                     newTransactionId = graph.addTransaction(newVertexId, destinationVertex, directed);
                 } else if (destinationVertex == selectedNode) {
                     newTransactionId = graph.addTransaction(sourceVertex, newVertexId, directed);
-                } else {
-                    // Do nothing
                 }
 
                 //Loops through all the transaction attributes and copy them to the new transaction

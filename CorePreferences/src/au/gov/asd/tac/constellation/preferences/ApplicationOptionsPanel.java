@@ -76,6 +76,11 @@ final class ApplicationOptionsPanel extends JPanel {
         return (Integer) autosaveSpinner.getModel().getValue();
     }
 
+    /** Get the value in the textfield from the spinner editor */
+    public int getAutosaveEditorFrequency() {
+        return Integer.parseInt(((JSpinner.DefaultEditor)autosaveSpinner.getEditor()).getTextField().getText());        
+    }
+
     public void setAutosaveFrequency(final int autosaveFrequency) {
         autosaveSpinner.getModel().setValue(autosaveFrequency);
     }
@@ -100,6 +105,11 @@ final class ApplicationOptionsPanel extends JPanel {
         return (Integer) webserverPortSpinner.getModel().getValue();
     }
 
+    /** Get the value in the textfield from the spinner editor */
+    public int getWebserverEditorPort() {
+        return Integer.parseInt(((JSpinner.DefaultEditor)webserverPortSpinner.getEditor()).getTextField().getText().replaceAll("[^0-9]", ""));
+    }
+     
     public void setWebserverPort(final int webserverPort) {
         webserverPortSpinner.getModel().setValue(webserverPort);
     }
@@ -138,6 +148,11 @@ final class ApplicationOptionsPanel extends JPanel {
 
     public String getFontSize() {
         return fontSizeSpinner.getValue().toString();
+    }
+    
+    /** Get the value in the textfield from the spinner editor */
+    public String getFontEditorSize() {
+        return ((JSpinner.DefaultEditor)fontSizeSpinner.getEditor()).getTextField().getText();        
     }
 
     public void setFontSize(final String fontSize) {
@@ -241,7 +256,7 @@ final class ApplicationOptionsPanel extends JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(autosaveCheckBox)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(autosaveSpinner, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+                .addComponent(autosaveSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(autosaveLabel, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -320,7 +335,7 @@ final class ApplicationOptionsPanel extends JPanel {
                     .addGroup(webserverPanelLayout.createSequentialGroup()
                         .addGroup(webserverPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addGroup(webserverPanelLayout.createSequentialGroup()
-                                .addComponent(webserverPortSpinner, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(webserverPortSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(restDirectoryText))
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -556,7 +571,7 @@ final class ApplicationOptionsPanel extends JPanel {
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(notebookPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fontPanel, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)
+                .addComponent(fontPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(spellCheckingPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)

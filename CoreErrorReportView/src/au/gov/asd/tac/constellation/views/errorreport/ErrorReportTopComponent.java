@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import javafx.scene.layout.BorderPane;
@@ -188,7 +189,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     protected final PluginParameters params = new PluginParameters();
     public static final String REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "report_settings");
     public static final String POPUP_REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "popup_report_settings");
-        
+
     ErrorReportTopComponent() {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -246,7 +247,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         };
 
         refreshTimer = new Timer();
-        refreshTimer.schedule(refreshAction, 840, 480);
+        refreshTimer.schedule(refreshAction, 745, 1475);
     }
 
     @Override
@@ -301,7 +302,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         });
 
         updateSettings();
-        
+
         final PluginParameter<MultiChoiceParameterType.MultiChoiceParameterValue> reportSettingOptions = MultiChoiceParameterType.build(REPORT_SETTINGS_PARAMETER_ID);
         reportSettingOptions.setName("Report Settings");
         reportSettingOptions.setDescription("Report Settings");
@@ -316,7 +317,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         checked.add(SeverityCode.FINE.getCode());
         MultiChoiceParameterType.setChoices(reportSettingOptions, checked);
         reportSettingOptions.setEnabled(true);
-        
+
         final PluginParameter<MultiChoiceParameterType.MultiChoiceParameterValue> popupReportSettingOptions = MultiChoiceParameterType.build(POPUP_REPORT_SETTINGS_PARAMETER_ID);
         popupReportSettingOptions.setName("Popup Report Settings");
         popupReportSettingOptions.setDescription("Popup Report Settings");
@@ -330,10 +331,10 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         popupChecked.add(SeverityCode.WARNING.getCode());
         MultiChoiceParameterType.setChoices(popupReportSettingOptions, popupChecked);
         popupReportSettingOptions.setEnabled(true);
-        
+
         getParams().addParameter(reportSettingOptions);
         getParams().addParameter(popupReportSettingOptions);
-        
+
         getParams().addController(REPORT_SETTINGS_PARAMETER_ID, (masterId, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 filterUpdateDate = new Date();
@@ -341,7 +342,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 updateSessionErrorsBox(-1);
             }
         });
-        
+
         getParams().addController(POPUP_REPORT_SETTINGS_PARAMETER_ID, (masterId, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 filterUpdateDate = new Date();
@@ -349,7 +350,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 updateSessionErrorsBox(-1);
             }
         });
-                
+
         final MenuButton popupControl = new MenuButton("Popup Mode : 2 ");
         final ToggleGroup popupFrequency = new ToggleGroup();
 
@@ -389,6 +390,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         multiRedispItem.setToggleGroup(popupFrequency);
 
         oneRedispItem.setSelected(true);
+        final int applicationFontSize = FontUtilities.getApplicationFontSize();        
         popupControl.getItems().add(neverItem);
         popupControl.getItems().add(oneItem);
         popupControl.getItems().add(oneRedispItem);
@@ -396,7 +398,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         popupControl.getItems().add(multiRedispItem);
         popupControl.setMaxWidth(200);
         popupControl.setMinHeight(26);
-        popupControl.setMaxHeight(26);
+        popupControl.setPrefHeight(applicationFontSize * 2);
 
         final Button clearButton = new Button("Clear All Reports");
         clearButton.setTooltip(new Tooltip("Clear all current error reports"));
@@ -409,7 +411,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             updateSessionErrorsBox(-1);
         });
         clearButton.setMinHeight(26);
-        clearButton.setMaxHeight(26);
+        clearButton.setPrefHeight(applicationFontSize * 2);
 
         final WritableImage maximizeImage = new WritableImage(22, 16);
         final WritableImage minimizeImage = new WritableImage(22, 16);
@@ -442,30 +444,29 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final ToolBar controlToolbar2 = new ToolBar();
         final Label reportSettingsLabel = new Label("Report:");
         final Label popupReportSettingsLabel = new Label("Popup:");
+        
         final MultiChoiceInputPane reportSettingPane = new MultiChoiceInputPane(reportSettingOptions);
-        reportSettingsLabel.setMaxWidth(50);
         reportSettingsLabel.setPadding(new Insets(0, -5, 0, 0));
+        reportSettingsLabel.autosize();
         reportSettingPane.setMinWidth(150);
         reportSettingPane.setPrefWidth(220);
-        reportSettingPane.setMaxWidth(240);
+        reportSettingPane.setPrefHeight(applicationFontSize * 2);
         reportSettingPane.setPadding(new Insets(0, -2, 0, 0));
         HBox.setHgrow(reportSettingPane, Priority.SOMETIMES);
 
         final MultiChoiceInputPane popupSettingPane = new MultiChoiceInputPane(popupReportSettingOptions);
-        popupReportSettingsLabel.setMaxWidth(45);
         popupReportSettingsLabel.setPadding(new Insets(0, -5, 0, 5));
+        popupReportSettingsLabel.autosize();
         popupSettingPane.setMinWidth(70);
         popupSettingPane.setPrefWidth(100);
-        popupSettingPane.setMaxWidth(240);
         HBox.setHgrow(popupSettingPane, Priority.ALWAYS);
-        
+
         controlToolbar.getItems().addAll(settingsBox, minimizeButton, maximizeButton, popupControl, clearButton, helpButton);
         controlToolbar2.getItems().addAll(reportSettingsLabel, reportSettingPane, popupReportSettingsLabel, popupSettingPane);
-        controlToolbar.setPrefHeight(20);
-        controlToolbar2.setPrefHeight(20);
-        
+        controlToolbar.setPrefHeight(applicationFontSize * 2);
+
         final VBox toolboxContainer = new VBox();
-        toolboxContainer.setPrefHeight(20);
+        toolboxContainer.setPrefHeight(applicationFontSize * 2);
         toolboxContainer.setMaxHeight(20);
         toolboxContainer.getChildren().add(controlToolbar);
         toolboxContainer.getChildren().add(controlToolbar2);
@@ -527,7 +528,6 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final String infoBorder = "#b2b200";
         final String fineBorder = "#009c9c";
 
-
         List<String> choices = new ArrayList<>();
         List<String> choices2 = new ArrayList<>();
         if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
@@ -538,7 +538,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(POPUP_REPORT_SETTINGS_PARAMETER_ID);
             choices2 = multiChoiceValue.getChoices();
         }
-        
+
         final boolean severeRepIsSelected = choices.contains(SeverityCode.SEVERE.getCode());
         final boolean warningRepIsSelected = choices.contains(SeverityCode.WARNING.getCode());
         final boolean infoRepIsSelected = choices.contains(SeverityCode.INFO.getCode());
@@ -547,7 +547,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final boolean warningPopupIsSelected = choices2.contains(SeverityCode.WARNING.getCode());
         final boolean infoPopupIsSelected = choices2.contains(SeverityCode.INFO.getCode());
         final boolean finePopupIsSelected = choices2.contains(SeverityCode.FINE.getCode());
-        
+
         final String severeReportBorderShade = severeRepIsSelected ? severeFill : INACTIVE_BACKGROUND;
         final String warningReportBorderShade = warningRepIsSelected ? warningFill : INACTIVE_BACKGROUND;
         final String infoReportBorderShade = infoRepIsSelected ? infoFill : INACTIVE_BACKGROUND;
@@ -557,7 +557,6 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final String infoPopupBorderShade = infoPopupIsSelected ? infoFill : INACTIVE_BACKGROUND;
         final String finePopupBorderShade = finePopupIsSelected ? fineFill : INACTIVE_BACKGROUND;
 
-        
         updateSettingsIcon(severeReportFilter, severeReportBorderShade, severeRepIsSelected ? severeBorder : severeFill);
         updateSettingsIcon(warnReportFilter, warningReportBorderShade, warningRepIsSelected ? warningBorder : warningFill);
         updateSettingsIcon(infoReportFilter, infoReportBorderShade, infoRepIsSelected ? infoBorder : infoFill);
@@ -566,14 +565,13 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         updateSettingsIcon(warnPopupAllowed, warningPopupBorderShade, warningPopupIsSelected ? warningBorder : warningFill);
         updateSettingsIcon(infoPopupAllowed, infoPopupBorderShade, infoPopupIsSelected ? infoBorder : infoFill);
         updateSettingsIcon(finePopupAllowed, finePopupBorderShade, finePopupIsSelected ? fineBorder : fineFill);
-        
+
         updateFilterData();
     }
 
     public void updateFilterData() {
-        
 
-        List<String> popupChoices = new ArrayList<>();        
+        List<String> popupChoices = new ArrayList<>();
         if (getParams().hasParameter(POPUP_REPORT_SETTINGS_PARAMETER_ID)) {
             MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(POPUP_REPORT_SETTINGS_PARAMETER_ID);
             popupChoices = multiChoiceValue.getChoices();
@@ -584,7 +582,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final boolean warningPopupIsSelected = popupChoices.contains(SeverityCode.WARNING.getCode());
         final boolean infoPopupIsSelected = popupChoices.contains(SeverityCode.INFO.getCode());
         final boolean finePopupIsSelected = popupChoices.contains(SeverityCode.FINE.getCode());
-        
+
         if (severePopupIsSelected) {
             popupFilters.add(SeverityCode.SEVERE.getCode());
         }
@@ -626,11 +624,10 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             }
         }
         final ArrayList<String> activeFilters = new ArrayList<>();
-        
-        
+
         List<String> choices = new ArrayList<>();
         List<String> popupChoices = new ArrayList<>();
-        
+
         if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
             MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
             choices = multiChoiceValue.getChoices();
@@ -647,8 +644,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final boolean warningPopupIsSelected = popupChoices.contains(SeverityCode.WARNING.getCode());
         final boolean infoPopupIsSelected = popupChoices.contains(SeverityCode.INFO.getCode());
         final boolean finePopupIsSelected = popupChoices.contains(SeverityCode.FINE.getCode());
-        
-        
+
         if (severeRepIsSelected || severePopupIsSelected) {
             activeFilters.add(SeverityCode.SEVERE.getCode());
         }
@@ -713,7 +709,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 final int errCount = sessionErrors.size();
                 // rebuild                
                 sessionErrorsBox.getChildren().clear();
-                
+
                 // check popup selection               
                 List<String> popupChoices = new ArrayList<>();
                 if (getParams().hasParameter(POPUP_REPORT_SETTINGS_PARAMETER_ID)) {
@@ -724,7 +720,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 final boolean warningPopupIsSelected = popupChoices.contains(SeverityCode.WARNING.getCode());
                 final boolean infoPopupIsSelected = popupChoices.contains(SeverityCode.INFO.getCode());
                 final boolean finePopupIsSelected = popupChoices.contains(SeverityCode.FINE.getCode());
-        
+
                 for (int i = 0; i < errCount; i++) {
                     boolean allowPopupDisplay = false;
 
@@ -788,9 +784,11 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             alertTimer = null;
             return;
         }
+
         if (sessionErrorsBox.getChildren().isEmpty()) {
             return;
         }
+
         if (!iconFlashing) {
             iconFlashing = true;
             flashActivatedDate = previousRetrievalDate == null ? new Date() : new Date(previousRetrievalDate.getTime());
@@ -1021,7 +1019,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final VBox vBox = new VBox();
         vBox.setPadding(new Insets(1));
 
-        final TextArea data = new TextArea(entry.getSummaryHeading() + "\n" + entry.getErrorData());
+        final TextArea data = new TextArea(entry.getSummaryHeading() + entry.getErrorData());
         data.setStyle(FX_TEXT_FILL + textColour + ";" + FX_BACKGROUND + backgroundColour + "; -text-area-background: " + areaBackgroundColour + "; -fx-border-color: #505050; -fx-border-width: 2;");
         data.setEditable(false);
         data.setPadding(new Insets(2));

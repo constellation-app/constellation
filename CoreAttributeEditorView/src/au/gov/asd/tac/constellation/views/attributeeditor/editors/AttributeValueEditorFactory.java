@@ -58,15 +58,13 @@ public abstract class AttributeValueEditorFactory<V> extends AbstractEditorFacto
         final List<String> editTypes = new ArrayList<>();
         editTypes.add(attributeType);
         editTypes.addAll(interaction.getPreferredEditTypes());
-
-        String chosenEditType = null;
+        
         for (final String editType : editTypes) {
             if (typeHandlers.containsKey(editType)) {
-                chosenEditType = editType;
-                break;
+                return typeHandlers.get(editType);
             }
         }
-
-        return chosenEditType == null ? null : typeHandlers.get(chosenEditType);
+        
+        return null;
     }
 }

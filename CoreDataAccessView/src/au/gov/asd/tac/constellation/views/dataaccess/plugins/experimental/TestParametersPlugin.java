@@ -131,6 +131,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
     public static final String INTERACTION_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "interaction");
     public static final String LEVEL_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "level");
     public static final String SLEEP_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "sleep");
+    public static final String MAX_MIN_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "maxmin");
 
     //Debug Levels
     private static final String NONE = "None";
@@ -328,7 +329,14 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         IntegerParameterType.setMaximum(sleepParam, 20);
         sleepParam.setIntegerValue(0);
         params.addParameter(sleepParam);
-
+                
+        final PluginParameter<IntegerParameterValue> maxMinParam = IntegerParameterType.build(MAX_MIN_PARAMETER_ID);
+        maxMinParam.setName("Max Min");
+        maxMinParam.setDescription("Test Integer.MAX_VALUE and Integer.MIN_VALUE");
+        maxMinParam.setIntegerValue(Integer.MAX_VALUE);
+        IntegerParameterType.setMinimum(maxMinParam, Integer.MIN_VALUE);
+        params.addParameter(maxMinParam);
+                
         params.addController(SELECTED_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final boolean masterBoolean = master.getBooleanValue();

@@ -105,10 +105,10 @@ public class LogViewerSupport implements Runnable {
         try {
             while ((line = ins.readLine()) != null) {
                 ring.add(line);
-            } // end of while ((line = ins.readLine()) != null)
+            }
         } catch (final IOException ex) {
             LOGGER.log(Level.INFO, null, ex);
-        } // end of try-catch // end of try-catch
+        }
 
         // Now show the last OLD_LINES
         lines = ring.output();
@@ -126,13 +126,13 @@ public class LogViewerSupport implements Runnable {
                 if (lines >= MAX_LINES) {
                     io.getOut().reset();
                     lines = ring.output();
-                } // end of if (lines >= MAX_LINES)
+                }
 
                 while ((line = ins.readLine()) != null) {
                     if ((line = ring.add(line)) != null) {
                         io.getOut().println(line);
                         lines++;
-                    } // end of if ((line = ring.add(line)) != null)
+                    }
                 }
 
             } catch (final IOException ex) {
@@ -189,12 +189,12 @@ public class LogViewerSupport implements Runnable {
         public String add(final String line) {
             if (StringUtils.isBlank(line)) { // NOI18N
                 return null;
-            } // end of if (line == null || line.equals(""))
+            }
 
             while (count >= maxCount) {
                 anchor.removeFirst();
                 count--;
-            } // end of while (count >= maxCount)
+            }
 
             anchor.addLast(line);
             count++;

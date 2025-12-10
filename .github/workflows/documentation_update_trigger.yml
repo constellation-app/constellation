@@ -1,4 +1,4 @@
-name: GH Pages to Update Docs
+name: GitHub Pages to Update Docs
 # When documentation needs an update, a push to documentation_update branch will
 # trigger this action to send a request to the constellation-app.github.io to 
 # update the online documentation.
@@ -14,9 +14,11 @@ on:
 
 jobs:
   trigger-doco-update:
+
     runs-on: ubuntu-latest
+
     steps:
-      - name: trigger repository event
+      - name: Trigger Repository Event
         if: github.event.action != 'pong'
         run: |
           curl -X POST https://api.github.com/repos/constellation-app/constellation-app.github.io/dispatches \

@@ -64,5 +64,4 @@ public class ModifyAttributeEditOperation implements EditOperation {
             graph.updateAttributeDefaultValue(attributeData.getAttributeId(), attrNew.getDefaultValue());
         }
     }
-
 }

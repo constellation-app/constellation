@@ -368,11 +368,11 @@ public class Vector3fNGTest {
     }
     
     @Test
-    public void testAreSame() {
-        assertTrue(new Vector3f(F1, F2, F3).areSame(new Vector3f(F1, F2, F3)));
-        assertFalse(new Vector3f(F2, F2, F3).areSame(new Vector3f(F1, F2, F3)));
-        assertFalse(new Vector3f(F1, F1, F3).areSame(new Vector3f(F1, F2, F3)));
-        assertFalse(new Vector3f(F1, F2, F1).areSame(new Vector3f(F1, F2, F3)));
+    public void testEquals() {
+        assertTrue(new Vector3f(F1, F2, F3).equals(new Vector3f(F1, F2, F3)));
+        assertFalse(new Vector3f(F2, F2, F3).equals(new Vector3f(F1, F2, F3)));
+        assertFalse(new Vector3f(F1, F1, F3).equals(new Vector3f(F1, F2, F3)));
+        assertFalse(new Vector3f(F1, F2, F1).equals(new Vector3f(F1, F2, F3)));
     }
 
     /**

@@ -39,7 +39,7 @@ public class NotesViewEntry implements PluginReportListener {
 
     private String nodeColour = "#a26fc0";
     private final boolean userCreated;
-    private Boolean graphAttribute;
+    private boolean graphAttribute;
     private List<Integer> nodesSelected;
     private List<Integer> transactionsSelected;
     private List<String> tags = new ArrayList<>();
@@ -102,7 +102,7 @@ public class NotesViewEntry implements PluginReportListener {
         return userCreated;
     }
 
-    public Boolean isGraphAttribute() {
+    public boolean isGraphAttribute() {
         return graphAttribute;
     }
 

@@ -52,7 +52,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private final SpellChecker spellChecker = new SpellChecker(this);
     private final Insets insets = new Insets(4, 8, 4, 8);
-    public static final double EXTRA_HEIGHT = 3;
+    public static final double EXTRA_HEIGHT = 3;    
 
     private static final String UNDERLINE_AND_HIGHLIGHT_STYLE = "-rtfx-background-color:derive(yellow,-30%);"
             + "-rtfx-underline-color: red; "
@@ -149,9 +149,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
 
         // CheckMenuItem to toggle turn On/Off Spell Checking. On by default
         final CheckMenuItem toggleSpellCheckMenuItem = new CheckMenuItem("Turn On Spell Checking");
-        toggleSpellCheckMenuItem.setSelected(true);
-        toggleSpellCheckMenuItem.setDisable(!enableSpellChecking);
-        toggleSpellCheckMenuItem.setVisible(enableSpellChecking);
+        toggleSpellCheckMenuItem.setSelected(enableSpellChecking);
         toggleSpellCheckMenuItem.setOnAction(event -> {
             spellChecker.turnOffSpellChecking(!toggleSpellCheckMenuItem.isSelected());
             spellChecker.checkSpelling();
@@ -184,7 +182,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             return selectionRange == null || selectionRange.getLength() == 0;
         }, this.selectionProperty());
     }
-
+    
     public void autoComplete(final List<String> suggestions) {
         final Popup popup = new Popup();
         popup.setWidth(this.getWidth());

@@ -122,10 +122,8 @@ public class ShaderManager {
                     }
                     key = line.substring(0, line.length() - 1).trim();
                     value = "";
-                } else if (line.length() != 0) {
+                } else if (!line.isEmpty()) {
                     value += line + SeparatorConstants.NEWLINE;
-                } else {
-                    // Do nothing
                 }
             }
         }

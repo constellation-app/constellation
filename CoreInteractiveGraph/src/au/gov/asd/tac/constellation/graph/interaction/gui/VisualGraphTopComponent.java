@@ -82,6 +82,7 @@ import au.gov.asd.tac.constellation.plugins.update.UpdateComponent;
 import au.gov.asd.tac.constellation.plugins.update.UpdateController;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
@@ -141,7 +142,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.netbeans.api.actions.Savable;
 import org.netbeans.spi.actions.AbstractSavable;
@@ -666,6 +666,13 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
     @Override
     public boolean canClose() {
+        // Release file is done at this point in time so it may be closed even
+        // if it was not being modified; lock also needs to be released if
+        // save with gdo.createFromTemplate in handleSave() is called
+        final GraphDataObject gdo = graphNode.getDataObject();
+        if (gdo.getFileLock() != null && gdo.getFileChannel() != null) {
+            gdo.unlockFile();
+        }
         if (savable.isModified()) {
             final String message = String.format("Graph %s is modified. Save?", getDisplayName());
             final Object[] options = new Object[]{
@@ -774,10 +781,13 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 dialog.showAndWait();
 
                 if (dialog.isAccepted()) {
-                    final String newGraphName = parameters.getStringValue(NEW_GRAPH_NAME_PARAMETER_ID);
-
+                    final String newGraphName = parameters.getStringValue(NEW_GRAPH_NAME_PARAMETER_ID).replaceAll("\\n", "");
                     if (!newGraphName.isEmpty()) {
                         try {
+                            final GraphDataObject gdo = graphNode.getDataObject();                    
+                            if (gdo.getFileLock() != null && gdo.getFileChannel() != null) {
+                                gdo.unlockFile();
+                            }                                                        
                             // set the graph object name so the name is retained when you Save As
                             graphNode.getDataObject().rename(newGraphName);
 
@@ -789,8 +799,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                             setName(newGraphName);
                             setDisplayName(newGraphName);
                             setHtmlDisplayName(newGraphName); // this changes the text on the tab
+                            gdo.lockFile();
                         } catch (final IOException ex) {
-                            throw new RuntimeException(String.format("The name %s already exists.", newGraphName), ex);
+                            NotifyDisplayer.display(String.format("The name %s already exists.", newGraphName), NotifyDescriptor.WARNING_MESSAGE);
                         }
                         savable.setModified(true);
                     }
@@ -1012,6 +1023,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 if (Files.exists(filepath)) {
                     return;
                 }
+                // Added unlocking code here as Save action calls handleSave directly
+                if (gdo.getFileLock() != null && gdo.getFileChannel() != null) {
+                    gdo.unlockFile();
+                }
 
                 final GraphDataObject freshGdo = (GraphDataObject) gdo.createFromTemplate(gdo.getFolder(), tmpnam);
 
@@ -1105,9 +1120,15 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             }
 
             final File newFile = new File(folder.getPath(), name + ext);
+            final GraphDataObject dataObject = graphNode.getDataObject();
 
             // One last check if file were saving over doesn't have it's graph open UNLESS were saving over the file with the same graph
-            final Path currentFilePath = Paths.get(graphNode.getDataObject().getPrimaryFile().getPath());
+            final Path currentFilePath = Paths.get(dataObject.getPrimaryFile().getPath());
+            
+            // release the lock on the current file as SaveAs may have been requested on an existing file
+            if (dataObject.getFileLock() != null && dataObject.getFileChannel() != null) {
+                dataObject.unlockFile();
+            }
 
             // Check if overwriting open graph
             final Path filePath = Paths.get(newFile.getPath());
@@ -1141,6 +1162,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
             // Wait for screenshot to finish
             waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+            // lock new file after it is newly created
+            freshGdo.lockFile();                        
         }
     }
 

@@ -184,12 +184,12 @@ public class TooltipUtilitiesNGTest {
             when(pairMock.getKey()).thenReturn(10);
             when(pairMock.getValue()).thenReturn(200);
             ttuStatic.when(() -> TooltipUtilities.findActiveArea(Mockito.any(List.class))).thenReturn(pairMock);
-            doNothing().when(textControl).selectRange(Mockito.eq(10),Mockito.eq(200));
+            doNothing().when(textControl).selectRange(10, 200);
             
             TooltipUtilities.selectActiveArea(textControl, definitions);
 
             // verify calls
-            verify(textControl, times(1)).selectRange(Mockito.eq(10),Mockito.eq(200));
+            verify(textControl, times(1)).selectRange(10, 200);
         }
     }
     
@@ -207,12 +207,12 @@ public class TooltipUtilitiesNGTest {
             when(pairMock.getKey()).thenReturn(10);
             when(pairMock.getValue()).thenReturn(200);
             ttuStatic.when(() -> TooltipUtilities.findActiveArea(Mockito.any(List.class))).thenReturn(pairMock);
-            doNothing().when(textArea).selectRange(Mockito.eq(10),Mockito.eq(200));
+            doNothing().when(textArea).selectRange(10, 200);
             
             TooltipUtilities.selectActiveArea(textArea, definitions);
 
             // verify calls
-            verify(textArea, times(1)).selectRange(Mockito.eq(10),Mockito.eq(200));
+            verify(textArea, times(1)).selectRange(10, 200);
         }
     }
 }

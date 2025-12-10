@@ -30,20 +30,16 @@ import javafx.scene.Node;
 import org.openide.util.Lookup;
 
 /**
- * A class that facilitate common interactions between attributes and
- * CONSTELLATION's various views.
+ * A class that facilitate common interactions between attributes and CONSTELLATION's various views.
  * <p>
- * The methods here facilitate basic operations that are required for attributes
- * to be properly displayed and manipulated by views such as AttributeEditor,
- * Histogram, and Table View. However unlike AttributeDescription, this is not a
- * mandatory class for an attribute type. In the absence of an Interaction
- * class, views should still have some graceful default behaviour (and
- * importantly not throw any errors), although the default behaviour need not be
- * of any use for the type of attribute concerned.
+ * The methods here facilitate basic operations that are required for attributes to be properly displayed and
+ * manipulated by views such as AttributeEditor, Histogram, and Table View. However unlike AttributeDescription, this is
+ * not a mandatory class for an attribute type. In the absence of an Interaction class, views should still have some
+ * graceful default behaviour (and importantly not throw any errors), although the default behaviour need not be of any
+ * use for the type of attribute concerned.
  * <p>
- * Note that operations specific to certain types of attributes or specialised
- * views are not included here and should still be handled by the concerned
- * views themselves.
+ * Note that operations specific to certain types of attributes or specialised views are not included here and should
+ * still be handled by the concerned views themselves.
  *
  * @author twilight_sparkle
  * @param <T>
@@ -51,9 +47,8 @@ import org.openide.util.Lookup;
 public abstract class AbstractAttributeInteraction<T> {
 
     /**
-     * Get the priority associated with this interactions. There may be multiple
-     * interactions defined for a given attribute type. When this is the case,
-     * typically only the interaction with the highest priority should be used.
+     * Get the priority associated with this interactions. There may be multiple interactions defined for a given
+     * attribute type. When this is the case, typically only the interaction with the highest priority should be used.
      *
      * @return The priority of this interaction.
      */
@@ -64,61 +59,48 @@ public abstract class AbstractAttributeInteraction<T> {
     /**
      * Get the name of the attribute type this interaction is for.
      * <p>
-     * This should match the value of getName() in the corresponding
-     * AttributeDescription.
+     * This should match the value of getName() in the corresponding AttributeDescription.
      *
      * @return the name of the attribute type this interaction is for.
      */
     public abstract String getDataType();
 
     /**
-     * Get the text that best visually represents a particular value of this
-     * attribute type.
+     * Get the text that best visually represents a particular value of this attribute type.
      * <p>
-     * Note that this might differ substantially from the getStringValue()
-     * method provided by the AttributeDescription, as that method is intended
-     * for internal manipulation of the attribute rather than presentation of
-     * the attribute in a view. In particular, there is no need for this method
-     * to return a string from which the original value of the attribute can be
-     * recovered.
+     * Note that this might differ substantially from the getStringValue() method provided by the AttributeDescription,
+     * as that method is intended for internal manipulation of the attribute rather than presentation of the attribute
+     * in a view. In particular, there is no need for this method to return a string from which the original value of
+     * the attribute can be recovered.
      *
      * @param value an object representing the value the attribute.
-     * @return the text that best visually represents a particular value of this
-     * attribute type.
+     * @return the text that best visually represents a particular value of this attribute type.
      */
     public abstract String getDisplayText(final Object value);
 
     /**
-     * Get a list of nodes that visually represent a particular value of this
-     * attribute type. This method should be able to create said nodes to fit
-     * the dimensions specified by the requesting view.
+     * Get a list of nodes that visually represent a particular value of this attribute type. This method should be able
+     * to create said nodes to fit the dimensions specified by the requesting view.
      *
-     * @param value The attribute value for which to get a visual
-     * representation.
-     * @param width the width the nodes should be set to, or a negative value to
-     * indicate no preference.
-     * @param height the height the nodes should be set to, or a negative value
-     * to indicate no preference.
-     * @return a list of nodes that visually represent a particular value of
-     * this attribute type.
+     * @param value The attribute value for which to get a visual representation.
+     * @param width the width the nodes should be set to, or a negative value to indicate no preference.
+     * @param height the height the nodes should be set to, or a negative value to indicate no preference.
+     * @return a list of nodes that visually represent a particular value of this attribute type.
      */
     public List<Node> getDisplayNodes(final Object value, final double width, final double height) {
         return Collections.emptyList();
     }
 
     /**
-     * A list of names of attribute types, in order of which this attribute
-     * would be preferred to be edited by any view that allows editing of
-     * attribute values. If this list is empty, the attribute is only ever
-     * edited as its native type.
+     * A list of names of attribute types, in order of which this attribute would be preferred to be edited by any view
+     * that allows editing of attribute values. If this list is empty, the attribute is only ever edited as its native
+     * type.
      * <p>
-     * For any type in this list which is not the native type of this attribute,
-     * this class should also return appropriate AttributeValueTranslators when
-     * toEditTranslator() and fromEditTranslator() are called with that type.
+     * For any type in this list which is not the native type of this attribute, this class should also return
+     * appropriate AttributeValueTranslators when toEditTranslator() and fromEditTranslator() are called with that type.
      * <p>
-     * This could be used, for example, to allow editing date time attributes as
-     * strings if no date-time editor is available to the application (or a
-     * particular view).
+     * This could be used, for example, to allow editing date time attributes as strings if no date-time editor is
+     * available to the application (or a particular view).
      *
      * @return a list of names of attribute types.
      */
@@ -127,32 +109,26 @@ public abstract class AbstractAttributeInteraction<T> {
     }
 
     /**
-     * Get the translator which converts from native type to the specified type
-     * for editing.
+     * Get the translator which converts from native type to the specified type for editing.
      * <p>
-     * When overriding this method, if no specific translator matches in the
-     * concrete class, super.toEditTranslator() should be called to return the
-     * identity.
+     * When overriding this method, if no specific translator matches in the concrete class, super.toEditTranslator()
+     * should be called to return the identity.
      *
      * @param dataType the data type.
-     * @return the translator which converts from native type to the specified
-     * type for editing.
+     * @return the translator which converts from native type to the specified type for editing.
      */
     public AttributeValueTranslator toEditTranslator(final String dataType) {
         return AttributeValueTranslator.IDENTITY;
     }
 
     /**
-     * Get the translator which converts from the specified type to the native
-     * type after editing.
+     * Get the translator which converts from the specified type to the native type after editing.
      * <p>
-     * When overriding this method, if no specific translator matches in the
-     * concrete class, super.fromEditTranslator() should be called to return the
-     * identity.
+     * When overriding this method, if no specific translator matches in the concrete class, super.fromEditTranslator()
+     * should be called to return the identity.
      *
      * @param dataType the date type.
-     * @return the translator which converts from the specified type to the
-     * native type after editing.
+     * @return the translator which converts from the specified type to the native type after editing.
      */
     public AttributeValueTranslator fromEditTranslator(final String dataType) {
         if (dataType.equals(getDataType())) {
@@ -162,20 +138,18 @@ public abstract class AbstractAttributeInteraction<T> {
     }
 
     /**
-     * Get the validator that will validate values from the specified type after
-     * editing, prior to translation into the native type.
+     * Get the validator that will validate values from the specified type after editing, prior to translation into the
+     * native type.
      * <p>
-     * When overriding this method, if no specific validator matches in the
-     * concrete class, super.fromEditValidator() should be called to return the
-     * default validator (which validates all values). A common use case for
-     * overriding this method is when it is desirable for an attribute type to
-     * be 'edited' as a string, mainly for display purposes, but it does not
-     * make sense to convert this string back into the desired type, hence a
-     * validator that always fails can be used.
+     * When overriding this method, if no specific validator matches in the concrete class, super.fromEditValidator()
+     * should be called to return the default validator (which validates all values). A common use case for overriding
+     * this method is when it is desirable for an attribute type to be 'edited' as a string, mainly for display
+     * purposes, but it does not make sense to convert this string back into the desired type, hence a validator that
+     * always fails can be used.
      *
      * @param dataType the data type.
-     * @return the validator that will validate values from the specified type
-     * after editing, prior to translation into the native type.
+     * @return the validator that will validate values from the specified type after editing, prior to translation into
+     * the native type.
      */
     public ValueValidator<T> fromEditValidator(final String dataType) {
         return ValueValidator.getAlwaysSucceedValidator();
@@ -184,11 +158,9 @@ public abstract class AbstractAttributeInteraction<T> {
     /**
      * Whether or not attribute values of this type are comparable.
      * <p>
-     * This can be used by views to determine whether values of this attribute
-     * may be ordered. When this method returns false, the view must order these
-     * attribute values manually, noting that the ordering may as well be random
-     * as this means they are truly not comparable.
-     * {@link AttributeValueTranslator#IDENTITY}
+     * This can be used by views to determine whether values of this attribute may be ordered. When this method returns
+     * false, the view must order these attribute values manually, noting that the ordering may as well be random as
+     * this means they are truly not comparable. {@link AttributeValueTranslator#IDENTITY}
      *
      * @return Whether or not attribute values of this type are comparable.
      */
@@ -216,12 +188,11 @@ public abstract class AbstractAttributeInteraction<T> {
     /**
      * Get a comparable version of the supplied attribute value.
      * <p>
-     * This method may be used by views that need to sort attribute values. When
-     * the underlying attribute value is natively comparable, it is expected
-     * that this method should act as the identity function on its argument.
+     * This method may be used by views that need to sort attribute values. When the underlying attribute value is
+     * natively comparable, it is expected that this method should act as the identity function on its argument.
      * <p>
-     * Note that this should throw an UnsupportedOperationException when and
-     * only when {@link #isComparable isComparable()} returns false.
+     * Note that this should throw an UnsupportedOperationException when and only when
+     * {@link #isComparable isComparable()} returns false.
      *
      * @param value an object representing the attribute value.
      * @return a comparable version of the supplied attribute value.
@@ -280,9 +251,8 @@ public abstract class AbstractAttributeInteraction<T> {
     /**
      * Get the interaction for the specified data type.
      * <p>
-     * Uses lookup to find the right interaction. The Interactions of each type
-     * returned by this method are singletons. If no interaction for the given
-     * type is found, the default interaction is returned.
+     * Uses lookup to find the right interaction. The Interactions of each type returned by this method are singletons.
+     * If no interaction for the given type is found, the default interaction is returned.
      *
      * @param dataType the data type.
      * @return the interaction for the specified data type.
@@ -292,6 +262,9 @@ public abstract class AbstractAttributeInteraction<T> {
         if (ALL_INTERACTIONS.isEmpty()) {
             final Collection<? extends AbstractAttributeInteraction> attributeInteractions = Lookup.getDefault().lookupAll(AbstractAttributeInteraction.class);
             attributeInteractions.forEach(interaction -> {
+                if (interaction == null) {
+                    return;
+                }
                 if (!ALL_INTERACTIONS.containsKey(interaction.getDataType()) || ALL_INTERACTIONS.get(interaction.getDataType()).getPriority() < interaction.getPriority()) {
                     ALL_INTERACTIONS.put(interaction.getDataType(), interaction);
                 }

@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 import au.gov.asd.tac.constellation.functionality.dialog.ConstellationDialog;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -26,7 +27,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -52,7 +52,7 @@ public class NewAttributeDialog extends ConstellationDialog {
 
     private final ComboBox<String> typeBox;
     private final TextField labelText;
-    private final TextArea descriptionText;
+    private final SpellCheckingTextArea descriptionText;
 
     private final Button okButton;
 
@@ -90,7 +90,7 @@ public class NewAttributeDialog extends ConstellationDialog {
         GridPane.setConstraints(descriptionLabel, 0, 2);
         fieldPane.getChildren().add(descriptionLabel);
 
-        descriptionText = new TextArea();
+        descriptionText = new SpellCheckingTextArea(true);
         descriptionText.setPromptText("Attribute Description");
         descriptionText.setPrefSize(DESC_PREFWIDTH, DESC_PREFHEIGHT);
         GridPane.setConstraints(descriptionText, 1, 2);

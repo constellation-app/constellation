@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.SystemUtils;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -52,6 +53,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class HelpServlet extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(HelpServlet.class.getName());
+    
+    private static final Pattern FILE_AND_DRIVE = Pattern.compile("\\/file:\\/[a-zA-Z]:");
 
     private static final Map<String, String> MIME_TYPES = Map.of(
             ".css", "text/css",
@@ -147,29 +150,31 @@ public class HelpServlet extends HttpServlet {
      * @return new file path
      */
     protected static URL redirectPath(final String requestPath, final String referer) {
+        URL returnValue = null;
+        
         try {
             if (referer != null && !referer.contains("toc.md") && !requestPath.contains(".css") && !requestPath.contains(".js")
                     && !requestPath.contains(".ico")) {
-                if (requestPath.contains(".png")) {
-                    // get image referred by page itself
-                    final String extText = "/ext/";
-                    final int firstIndex = requestPath.indexOf(extText);
-                    if (firstIndex != -1) {
-                        final int secondIndex = requestPath.indexOf(extText, firstIndex + extText.length());
-                        if (secondIndex != -1) {
-                            // cut-off the duplicate section in the request path
-                            final String duplicateSubstring = requestPath.substring(firstIndex, secondIndex);
-                            final String fileString = new StringBuilder("/file:").append(SystemUtils.IS_OS_WINDOWS ? "/" : "").toString();
-                            final String newPath = requestPath.replaceFirst(duplicateSubstring, "").replace(fileString, "");
-                            final File imageFile = new File(newPath);
-                            final URL imageUrl = imageFile.toURI().toURL();
-                            HelpServlet.redirect = true;
-                            return imageUrl;
-                        }
+                
+                // remove duplicated path component
+                final String extText = "/ext/";
+                final int firstIndex = requestPath.indexOf(extText);
+                if (firstIndex != -1) {
+                    final int secondIndex = requestPath.indexOf(extText, firstIndex + extText.length());
+                    if (secondIndex != -1) {
+                        // cut-off the duplicate section in the request path
+                        final String duplicateSubstring = requestPath.substring(firstIndex, secondIndex);
+                        final String fileString = new StringBuilder("/file:").append(SystemUtils.IS_OS_WINDOWS ? "/" : "").toString();
+                        final String newPath = requestPath.replaceFirst(duplicateSubstring, "").replace(fileString, "");
+                        final File renamedFile = new File(newPath);
+                        final URL renamedUrl = renamedFile.toURI().toURL();
+                        HelpServlet.redirect = true;
+                        returnValue = renamedUrl;
                     }
-                } else if (requestPath.contains(".md")) {
+                }
+                
+                if (requestPath.contains(".md")) {
                     // find correct help page
-                    final String extText = "/ext/";
                     final int index = requestPath.lastIndexOf(extText);
                     if (index != -1) {
                         final String pathSubstring = requestPath.substring(index + extText.length()).replace("/", File.separator);
@@ -183,7 +188,7 @@ public class HelpServlet extends HttpServlet {
                                 // if helpAddress contains any backwards directory changes then these should be normalised first
                                 // before comparing with already-normalised requestPath
                                 if (helpAddress.contains("..")) {
-                                    filePath = Paths.get(filePath).normalize().toString();                                  
+                                    filePath = Paths.get(filePath).normalize().toString();
                                 }
                                 
                                 final File pageFile = new File(filePath);
@@ -192,7 +197,7 @@ public class HelpServlet extends HttpServlet {
                                 // check substring(1) as request path has leading /
                                 // Note: base dir may have spaces, so replace and check
                                 if (fileUrl.toString().replace("%20", " ").equals(requestPath.substring(1))) {
-                                    return null;
+                                    return returnValue;
                                 }
                                 
                                 HelpServlet.redirect = true;
@@ -207,7 +212,7 @@ public class HelpServlet extends HttpServlet {
         } catch (final IOException ex) {
             LOGGER.log(Level.WARNING, String.format("Redirect Failed! Could not navigate to: %s", requestPath), ex);
         }
-        return null;
+        return returnValue;
     }
 
     /**
@@ -217,8 +222,7 @@ public class HelpServlet extends HttpServlet {
      * @return the stripped path without /file:/home or drive letter within it.
      */
     protected static String stripLeadingPath(final String fullPath) {
-        return fullPath
-                .replaceAll("\\/file:\\/[a-zA-Z]:", "")
+        return FILE_AND_DRIVE.matcher(fullPath).replaceAll("")
                 .replace("/file:", "")
                 .replace("file:", "");
     }

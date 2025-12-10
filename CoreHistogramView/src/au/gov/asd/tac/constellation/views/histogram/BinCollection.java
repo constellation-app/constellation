@@ -32,9 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A BinCollection represents all the bins in a single histogram. All elements
- * in the graph will exist in exactly one bin unless they have been excluded
- * through a filter.
+ * A BinCollection represents all the bins in a single histogram. All elements in the graph will exist in exactly one
+ * bin unless they have been excluded through a filter.
  *
  * @author sirius
  */
@@ -60,11 +59,15 @@ public class BinCollection {
         return bins;
     }
     
+    public int getBinsLength() {
+        return bins != null ? bins.length : 0;
+    }
+
     public Bin[] getSelectedBins() {
         final List<Bin> selectedBins = new ArrayList<>();
         int count = 0;
-        for(final Bin bin : getBins()){
-            if(bin.selectedCount > 0){
+        for (final Bin bin : getBins()) {
+            if (bin.getSelectedCount() > 0) {
                 count++;
                 selectedBins.add(bin);
             }
@@ -77,51 +80,51 @@ public class BinCollection {
         return binElements.clone();
     }
 
-    public void sort(BinComparator binComparator) {
+    public void sort(final BinComparator binComparator) {
         Arrays.sort(bins, binComparator);
     }
 
     public int getMaxElementCount() {
         if (maxElementCount < 0) {
-            for (Bin bin : bins) {
-                maxElementCount = Math.max(maxElementCount, bin.elementCount);
+            for (final Bin bin : bins) {
+                maxElementCount = Math.max(maxElementCount, bin.getElementCount());
             }
         }
         return maxElementCount;
     }
 
     public void deactivateBins() {
-        for (Bin bin : bins) {
-            bin.activated = false;
+        for (final Bin bin : bins) {
+            bin.setIsActivated(false);
         }
     }
 
-    public void updateSelection(GraphReadMethods graph) {
+    public void updateSelection(final GraphReadMethods graph) {
 
         binSelector.setElementType(graph, elementType);
 
-        for (Bin bin : bins) {
-            bin.selectedCount = 0;
+        for (final Bin bin : bins) {
+            bin.setSelectedCount(0);
 
-            int position = bin.firstElement;
+            int position = bin.getFirstElement();
             while (position >= 0) {
                 final int element = elementType.getElement(graph, position);
                 if (binSelector.isSelected(graph, element)) {
-                    bin.selectedCount++;
+                    bin.setSelectedCount(bin.getSelectedCount() + 1);
                 }
                 position = binElements[position];
             }
         }
     }
 
-    public void selectOnlyBins(GraphWriteMethods graph, int firstBin, int lastBin) {
+    public void selectOnlyBins(final GraphWriteMethods graph, final int firstBin, final int lastBin) {
         binSelector.setElementType(graph, elementType);
         for (int binPosition = 0; binPosition < bins.length; binPosition++) {
-            Bin bin = bins[binPosition];
+            final Bin bin = bins[binPosition];
 
-            boolean select = binPosition >= firstBin && binPosition <= lastBin;
+            final boolean select = binPosition >= firstBin && binPosition <= lastBin;
 
-            int position = bin.firstElement;
+            int position = bin.getFirstElement();
             while (position >= 0) {
                 int element = elementType.getElement(graph, position);
                 binSelector.select(graph, element, select);
@@ -130,12 +133,12 @@ public class BinCollection {
         }
     }
 
-    public void selectBins(GraphWriteMethods graph, int firstBin, int lastBin, boolean select) {
+    public void selectBins(final GraphWriteMethods graph, final int firstBin, final int lastBin, final boolean select) {
         binSelector.setElementType(graph, elementType);
         for (int binPosition = firstBin; binPosition <= lastBin; binPosition++) {
-            Bin bin = bins[binPosition];
+            final Bin bin = bins[binPosition];
 
-            int position = bin.firstElement;
+            int position = bin.getFirstElement();
             while (position >= 0) {
                 int element = elementType.getElement(graph, position);
                 binSelector.select(graph, element, select);
@@ -144,12 +147,12 @@ public class BinCollection {
         }
     }
 
-    public void invertBins(GraphWriteMethods graph, int firstBin, int lastBin) {
+    public void invertBins(final GraphWriteMethods graph, final int firstBin, final int lastBin) {
         binSelector.setElementType(graph, elementType);
         for (int binPosition = firstBin; binPosition <= lastBin; binPosition++) {
-            Bin bin = bins[binPosition];
+            final Bin bin = bins[binPosition];
 
-            int position = bin.firstElement;
+            int position = bin.getFirstElement();
             while (position >= 0) {
                 int element = elementType.getElement(graph, position);
                 binSelector.select(graph, element, !binSelector.isSelected(graph, element));
@@ -158,14 +161,14 @@ public class BinCollection {
         }
     }
 
-    public void completeBins(GraphWriteMethods graph, int firstBin, int lastBin) {
+    public void completeBins(final GraphWriteMethods graph, final int firstBin, final int lastBin) {
         binSelector.setElementType(graph, elementType);
         for (int binPosition = firstBin; binPosition <= lastBin; binPosition++) {
-            Bin bin = bins[binPosition];
+            final Bin bin = bins[binPosition];
 
-            boolean select = bin.selectedCount > 0;
+            final boolean select = bin.getSelectedCount() > 0;
 
-            int position = bin.firstElement;
+            int position = bin.getFirstElement();
             while (position >= 0) {
                 int element = elementType.getElement(graph, position);
                 binSelector.select(graph, element, select);
@@ -174,29 +177,29 @@ public class BinCollection {
         }
     }
 
-    public void filterSelection(GraphWriteMethods graph) {
+    public void filterSelection(final GraphWriteMethods graph) {
         binSelector.setElementType(graph, elementType);
-        for (Bin bin : bins) {
-            if (!bin.activated) {
-                bin.selectedCount = 0;
-                int position = bin.firstElement;
+        for (final Bin bin : bins) {
+            if (!bin.getIsActivated()) {
+                bin.setSelectedCount(0);
+                int position = bin.getFirstElement();
                 while (position >= 0) {
                     int element = elementType.getElement(graph, position);
                     binSelector.select(graph, element, false);
                     position = binElements[position];
                 }
             }
-            bin.activated = false;
+            bin.setIsActivated(false);
         }
     }
 
-    public void expandSelection(GraphWriteMethods graph) {
+    public void expandSelection(final GraphWriteMethods graph) {
         binSelector.setElementType(graph, elementType);
-        for (Bin bin : bins) {
-            if (bin.activated) {
-                bin.activated = false;
-                bin.selectedCount = bin.elementCount;
-                int position = bin.firstElement;
+        for (final Bin bin : bins) {
+            if (bin.getIsActivated()) {
+                bin.setIsActivated(false);
+                bin.setSelectedCount(bin.getElementCount());
+                int position = bin.getFirstElement();
                 while (position >= 0) {
                     int element = elementType.getElement(graph, position);
                     binSelector.select(graph, element, true);
@@ -206,11 +209,11 @@ public class BinCollection {
         }
     }
 
-    public void saveBinsToGraph(GraphWriteMethods graph, int attributeId) {
-        for (Bin bin : bins) {
-            int position = bin.firstElement;
+    public void saveBinsToGraph(final GraphWriteMethods graph, final int attributeId) {
+        for (final Bin bin : bins) {
+            int position = bin.getFirstElement();
             while (position >= 0) {
-                int element = elementType.getElement(graph, position);
+                final int element = elementType.getElement(graph, position);
                 graph.setObjectValue(attributeId, element, bin);
                 position = binElements[position];
             }
@@ -221,22 +224,25 @@ public class BinCollection {
         final StringBuilder buf = new StringBuilder();
         for (final Bin bin : bins) {
             final String label = bin.getLabel() != null ? bin.getLabel() : HistogramDisplay.NO_VALUE;
-            buf.append(String.format("%s\t%d\n", label, bin.elementCount));
+            buf.append(String.format("%s\t%d\n", label, bin.getElementCount()));
         }
 
-        if (buf.length() > 0) {
+        if (!buf.isEmpty()) {
             final StringSelection ss = new StringSelection(buf.toString());
             final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
         }
     }
 
-    public static BinCollection createBinCollection(GraphReadMethods graph, GraphElementType elementType, String attribute, BinCreator binCreator, ElementSet filter, BinFormatter formatter, PluginParameters binFormatterParameters) {
+    public static BinCollection createBinCollection(final GraphReadMethods graph, final GraphElementType elementType,
+            final String attribute, final BinCreator binCreator, final ElementSet filter, final BinFormatter formatter,
+            final PluginParameters binFormatterParameters
+    ) {
 
         final int elementCount = elementType.getElementCount(graph);
 
         final int[] binElements = new int[elementCount];
-        Map<Bin, Bin> bins = new HashMap<>();
+        final Map<Bin, Bin> bins = new HashMap<>();
 
         binCreator.createBins(graph, elementType, attribute, bins, binElements, filter, formatter, binFormatterParameters);
 
@@ -250,17 +256,17 @@ public class BinCollection {
 
     @Override
     public String toString() {
-        StringBuilder out = new StringBuilder();
+        final StringBuilder out = new StringBuilder();
         out.append("BinCollection");
         String divider = "[";
-        for (Bin bin : bins) {
+        for (final Bin bin : bins) {
             out.append(divider);
             divider = ", ";
             out.append(bin);
             out.append('=');
-            out.append(bin.selectedCount);
+            out.append(bin.getSelectedCount());
             out.append('/');
-            out.append(bin.elementCount);
+            out.append(bin.getElementCount());
         }
         out.append(']');
         return out.toString();

@@ -57,7 +57,7 @@ public class WaitForQueriesToCompleteTaskNGTest {
     private WaitForQueriesToCompleteTask waitForQueriesToCompleteTask;
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         paneStateMockedStatic = Mockito.mockStatic(DataAccessPaneState.class);
         platformMockedStatic = Mockito.mockStatic(Platform.class);
         notificationDisplayerMockedStatic = Mockito.mockStatic(NotificationDisplayer.class);

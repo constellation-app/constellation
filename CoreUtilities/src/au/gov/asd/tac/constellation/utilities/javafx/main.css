@@ -91,9 +91,6 @@
     -fx-padding: 5 5 5 5;
 }
 
-.button:cancel {
-}
-
 .button:disabled {
     -fx-opacity: -fx-disabled-opacity;
 }

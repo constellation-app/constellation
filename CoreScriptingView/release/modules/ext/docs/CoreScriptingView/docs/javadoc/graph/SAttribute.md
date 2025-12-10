@@ -5,19 +5,19 @@
 
 <div class="skipNav">
 
-[Skip navigation links](SAttribute.md#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/docs/javadoc/graph/SAttribute.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../overview-summary.md)
--   [Package](package-summary.md)
+-   [Overview](../ext/docs/CoreScriptingView/docs/javadoc/overview-summary.md)
+-   [Package](../ext/docs/CoreScriptingView/docs/javadoc/graph/package-summary.md)
 -   Class
--   [Tree](package-tree.md)
--   [Deprecated](../deprecated-list.md)
--   [Index](../index-all.md)
--   [Help](../help-doc.md)
+-   [Tree](../ext/docs/CoreScriptingView/docs/javadoc/graph/package-tree.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -31,11 +31,11 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 -   Prev Class
 -   [<span
-    class="typeNameLink">Next Class</span>](SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+    class="typeNameLink">Next Class</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 
 <!-- -->
 
--   [All Classes](../allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -46,15 +46,15 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 -   Summary: 
 -   Nested | 
 -   Field | 
--   [Constructor](SAttribute.md#constructor.summary) | 
--   [Method](SAttribute.md#method.summary)
+-   [Constructor](../ext/docs/CoreScriptingView/docs/javadoc/graph/SAttribute.md#constructor.summary) | 
+-   [Method](../ext/docs/CoreScriptingView/docs/javadoc/graph/SAttribute.md#method.summary)
 
 <!-- -->
 
 -   Detail: 
 -   Field | 
--   [Constructor](SAttribute.md#constructor.detail) | 
--   [Method](SAttribute.md#method.detail)
+-   [Constructor](../ext/docs/CoreScriptingView/docs/javadoc/graph/SAttribute.md#constructor.detail) | 
+-   [Method](../ext/docs/CoreScriptingView/docs/javadoc/graph/SAttribute.md#method.detail)
 
 </div>
 

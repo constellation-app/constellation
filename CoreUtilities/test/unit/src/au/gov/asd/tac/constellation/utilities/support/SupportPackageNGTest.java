@@ -61,7 +61,7 @@ public class SupportPackageNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         placesStaticMock = mockStatic(Places.class);
     }
 

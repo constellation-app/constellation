@@ -116,9 +116,9 @@ public class ErrorReportFullSuiteNGTest {
 
         List<ErrorReportEntry> storedList = session.refreshDisplayedErrors(filters);
 
-        // should contain 2 entries, each having 2 occurences
+        // should contain 3 entries, one of which has 2 occurences
         System.out.println("\n>>>> Check list size");
-        assertEquals(storedList.size(), 2);
+        assertEquals(storedList.size(), 3);
         final ErrorReportEntry storedData = session.findDisplayedEntryWithId(testEntry2.getEntryId());
 
         System.out.println("\n>>>> Check Occurrences");
@@ -138,7 +138,7 @@ public class ErrorReportFullSuiteNGTest {
         session.removeEntry(testEntry.getEntryId());
         storedList = session.refreshDisplayedErrors(filters);
         System.out.println("\n>>>> Check new list size");
-        assertEquals(storedList.size(), 1);
+        assertEquals(storedList.size(), 2);
 
         List<String> activeLevels = erdm.getActivePopupErrorLevels();
 
@@ -170,7 +170,7 @@ public class ErrorReportFullSuiteNGTest {
         System.out.println("\n>>>> Check active levels: " + activeLevels);
 
         System.out.println("\n\n>>>> Waiting for WARN/INFO/FINE dialogs");
-        storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.WARNING, Level.INFO, Level.FINE)), 3);
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.WARNING, Level.INFO, Level.FINE)), 3);
         System.out.println("\n\n>>>> Done Waiting");
         System.out.println("\n>>>> Check WARN/INFO/FINE list size");
         assertEquals(storedList.size(), 3);
@@ -196,7 +196,7 @@ public class ErrorReportFullSuiteNGTest {
             erdm.showErrorDialog(erEntry, true); // should redisplay dialog in review mode
         }
 
-        storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.SEVERE, Level.WARNING, Level.INFO, Level.FINE)), 4);
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.SEVERE, Level.WARNING, Level.INFO, Level.FINE)), 4);
         dismissPopups(storedList);
 
         final ErrorReportTopComponent ertcInstance = new ErrorReportTopComponent();
@@ -220,14 +220,16 @@ public class ErrorReportFullSuiteNGTest {
         filterTypeParameter.fireChangeEvent(ParameterChange.PROPERTY);
         
         System.out.println("\n\n>>>> Waiting for TC dialogs");
-        storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.WARNING)), 1);
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.WARNING)), 1);
         System.out.println("\n\n>>>> Done Waiting");
 
         System.out.println("\n>>>> Check WARNINGS list size");
         assertEquals(storedList.size(), 1);
-        System.out.println("\n\n>>>> Waiting 5s for updates to flow through");
-        delay(5000);
+        System.out.println("\n\n>>>> Waiting 8s for updates to flow through");
+        delay(8000);
+        System.out.println("\n>>>> Check if Error Report Icon is flashing");
         final boolean isFlashing = ertcInstance.isIconFlashing();
+        // icon should be flashing while there are error popups, and stop flashing when they are all dismissed
         assertTrue(isFlashing);
 
         ertcInstance.setReportsExpanded(false);

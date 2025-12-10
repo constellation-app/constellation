@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 /**
  * this class is required for the unit testing
@@ -380,11 +382,11 @@ public final class StoreGraphValidator implements GraphWriteMethods {
         private Link link;
         private int direction;
     }
-    private final Map<Integer, Vertex> vertexMap = new HashMap<>();
+    private final MutableIntObjectMap<Vertex> vertexMap = new IntObjectHashMap<>();
     private final List<Vertex> vertexList = new ArrayList<>();
-    private final Map<Integer, Link> linkMap = new HashMap<>();
+    private final MutableIntObjectMap<Link> linkMap = new IntObjectHashMap<>();
     private final List<Link> linkList = new ArrayList<>();
-    private final Map<Integer, Transaction> transactionMap = new HashMap<>();
+    private final MutableIntObjectMap<Transaction> transactionMap = new IntObjectHashMap<>();
     private final List<Transaction> transactionList = new ArrayList<>();
 
     @Override

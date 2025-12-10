@@ -187,7 +187,7 @@
                 <package>au.gov.asd.tac.constellation.utilities.gui.field</package>
                 <package>au.gov.asd.tac.constellation.utilities.gui.field.framework</package>
                 <package>au.gov.asd.tac.constellation.utilities.gui.filechooser</package>
-                <package>au.gov.asd.tac.constellation.utilities.gui.recentvalue</package>
+                <package>au.gov.asd.tac.constellation.utilities.headless</package>
                 <package>au.gov.asd.tac.constellation.utilities.html</package>
                 <package>au.gov.asd.tac.constellation.utilities.https</package>
                 <package>au.gov.asd.tac.constellation.utilities.icon</package>

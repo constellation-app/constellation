@@ -20,36 +20,31 @@ import java.util.Set;
 
 /**
  * This class contains a number of constants that are the keys for various
- * display preferences in CONSTELLATION's attribute editor.
+ * display preferences in Constellation's attribute editor.
  *
  * @author twinkle2_little
  */
 public class AttributePreferenceKey {
-
-    /*
-     attribute hiding preference
-     */
-    public static final char SPLIT_CHAR = ';';
-    protected static final char[] META_CHARS = {SPLIT_CHAR};
-    protected static final Set<Character> SPLIT_CHAR_SET = new HashSet<>();
+    
+    // attribute hiding preference
     public static final String HIDDEN_ATTRIBUTES = "hiddenAttribute";
     public static final String GRAPH_SHOW_HIDDEN = "graphShowHidden";
     public static final String NODE_SHOW_HIDDEN = "nodeShowHidden";
     public static final String TRANSACTION_SHOW_HIDDEN = "transactionShowHidden";
     public static final String GRAPH_SHOW_EMPTY = "graphShowEmpty";
     public static final String NODE_SHOW_EMPTY = "nodeShowEmpty";
-    public static final String TRANSACTION_SHOW_EMPTY = "transactionShowEmpty"; 
+    public static final String TRANSACTION_SHOW_EMPTY = "transactionShowEmpty";
+    
     public static final String PRIMARY_KEY_ATTRIBUTE_COLOR = "primaryKeyAttributeColor";
     public static final String CUSTOM_ATTRIBUTE_COLOR = "customAttributeColor";
     public static final String SCHEMA_ATTRIBUTE_COLOR = "schemaAttributeColor";
     public static final String HIDDEN_ATTRIBUTE_COLOR = "hiddenAttributeColor";
-    protected static final Set<String> ATTRIBUTE_COLOR_PREFS = new HashSet<>();
+    
+    private static final char SPLIT_CHAR = ';';
+    protected static final char[] META_CHARS = {SPLIT_CHAR};
+    protected static final Set<Character> SPLIT_CHAR_SET = new HashSet<>();
 
     static {
         SPLIT_CHAR_SET.add(SPLIT_CHAR);
-        ATTRIBUTE_COLOR_PREFS.add(PRIMARY_KEY_ATTRIBUTE_COLOR);
-        ATTRIBUTE_COLOR_PREFS.add(CUSTOM_ATTRIBUTE_COLOR);
-        ATTRIBUTE_COLOR_PREFS.add(SCHEMA_ATTRIBUTE_COLOR);
-        ATTRIBUTE_COLOR_PREFS.add(HIDDEN_ATTRIBUTE_COLOR);
     }
 }

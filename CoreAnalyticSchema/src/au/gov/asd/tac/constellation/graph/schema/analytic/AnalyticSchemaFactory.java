@@ -139,15 +139,15 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
 
         @Override
         public void newVertex(final GraphWriteMethods graph, final int vertexId) {
-            super.newVertex(graph, vertexId);
-
+            // Other key attributes (TYPE here) have to be set before creating the new vertex in super.newVertex()
             final int vertexTypeAttribute = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
             final int vertexSourceAttribute = AnalyticConcept.VertexAttribute.SOURCE.ensure(graph);
 
             graph.setObjectValue(vertexTypeAttribute, vertexId, SchemaConceptUtilities.getDefaultVertexType());
             graph.setStringValue(vertexSourceAttribute, vertexId, "Manually Created");
 
-            graph.validateKey(GraphElementType.VERTEX, vertexId, false);
+            super.newVertex(graph, vertexId);
+
             completeVertex(graph, vertexId);
         }
 
@@ -281,8 +281,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
 
         @Override
         public void newTransaction(final GraphWriteMethods graph, final int transactionId) {
-            super.newTransaction(graph, transactionId);
-
+            // Other key attributes (TYPE and DATETIME here) have to be set before creating the new transaction in super.newTransaction()
             final int transactionTypeAttribute = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
             final int transactionDatetimeAttribuute = TemporalConcept.TransactionAttribute.DATETIME.ensure(graph);
             final int transactionSourceAttribute = AnalyticConcept.TransactionAttribute.SOURCE.ensure(graph);
@@ -295,7 +294,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             graph.setStringValue(transactionSourceAttribute, transactionId, "Manually Created");
             graph.setBooleanValue(transactionDirectedAttribute, transactionId, transactionDirected);
 
-            graph.validateKey(GraphElementType.TRANSACTION, transactionId, false);
+            super.newTransaction(graph, transactionId);
             completeTransaction(graph, transactionId);
         }
 

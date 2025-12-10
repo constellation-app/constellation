@@ -17,6 +17,9 @@ package au.gov.asd.tac.constellation.views.attributeeditor;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import static au.gov.asd.tac.constellation.graph.GraphElementType.GRAPH;
+import static au.gov.asd.tac.constellation.graph.GraphElementType.TRANSACTION;
+import static au.gov.asd.tac.constellation.graph.GraphElementType.VERTEX;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
@@ -55,10 +58,8 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.ListSelectionE
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.TimeZoneEditorFactory;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.AttributeValueEditOperation;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.CreateAttributeEditOperation;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.ModifyAttributeEditOperation;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.PrimaryKeyDefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.PrimaryKeyEditOperation;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.UpdateTimeZonePlugin;
 import java.time.ZoneId;
@@ -76,6 +77,7 @@ import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -156,7 +158,7 @@ public class AttributeEditorPanel extends BorderPane {
     private static final String SCHEMA_ATTRIBUTE_COLOR = DARK_MODE ? "#333333" : "#d6d6d6";
 
     private StackPane root;
-    private ArrayList<VBox> valueTitledPaneContainers = new ArrayList<>();
+    private List<VBox> valueTitledPaneContainers = new ArrayList<>();
     private VBox titledPaneHeadingsContainer;
     private final ScrollPane scrollPane = new ScrollPane();
     private final MenuBar optionsBar = new MenuBar();
@@ -199,8 +201,6 @@ public class AttributeEditorPanel extends BorderPane {
      * @param parent The TopComponent that the AttributeEditor is in.
      */
     public AttributeEditorPanel(final AttributeEditorTopComponent parent) {
-
-        initComponents();
         this.topComponent = parent;
 
         titledPaneHeadingsContainer = new VBox();
@@ -287,7 +287,7 @@ public class AttributeEditorPanel extends BorderPane {
         schemaMenuItem.setOnAction(e -> {
             final EditOperation editOperation = value -> prefs.put(correspondingPreference, ((ConstellationColor) value).getHtmlColor());
             @SuppressWarnings("unchecked") // return type of createEditor will actually be AbstractEditor<ConstellationColor>
-            final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(editOperation, String.format("for %s", itemName), ConstellationColor.fromFXColor(color));
+            final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(String.format("For %s", itemName), editOperation, ConstellationColor.fromFXColor(color));
             final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
             dialog.showDialog();
         });
@@ -325,6 +325,7 @@ public class AttributeEditorPanel extends BorderPane {
 
     private TitledPane createHeaderTitledPane(final HeadingType headingType, final StringProperty title, final VBox container) {
         final TitledPane result = new TitledPane();
+        final int fontSize = FontUtilities.getApplicationFontSize();
         result.setContent(container);
         final BorderPane headerGraphic = new BorderPane();
         final HBox optionsButtons = new HBox(5);
@@ -336,7 +337,7 @@ public class AttributeEditorPanel extends BorderPane {
         showEmptyToggle.setAlignment(Pos.CENTER);
         showEmptyToggle.setTextAlignment(TextAlignment.CENTER);
         showEmptyToggle.setStyle("-fx-background-insets: 0, 0; -fx-padding: 0");
-        showEmptyToggle.setPrefSize(80, 12);
+        showEmptyToggle.setPrefSize(80 * (fontSize / 12), fontSize);
         showEmptyToggle.setPadding(new Insets(5));
         showEmptyToggle.setTooltip(new Tooltip("Show empty attributes"));
         final String emptyKey;
@@ -369,7 +370,7 @@ public class AttributeEditorPanel extends BorderPane {
         showHiddenToggle.setAlignment(Pos.CENTER);
         showHiddenToggle.setTextAlignment(TextAlignment.CENTER);
         showHiddenToggle.setStyle("-fx-background-insets: 0, 0; -fx-padding: 0");
-        showHiddenToggle.setPrefSize(80, 12);
+        showHiddenToggle.setPrefSize(80 * (fontSize / 12), fontSize);
         showHiddenToggle.setPadding(new Insets(5));
         showHiddenToggle.setTooltip(new Tooltip("Show hidden attributes"));
         final String hiddenKey = switch (headingType) {
@@ -398,8 +399,7 @@ public class AttributeEditorPanel extends BorderPane {
                 if (currentGraph != null) {
                     final Map<String, Set<SchemaAttribute>> categoryAttributes = new TreeMap<>();
                     final Set<SchemaAttribute> otherAttributes = new TreeSet<>();
-                    final ReadableGraph rg = currentGraph.getReadableGraph();
-                    try {
+                    try (final ReadableGraph rg = currentGraph.getReadableGraph()) {
                         if (currentGraph.getSchema() != null) {
                             final SchemaFactory schemaFactory = currentGraph.getSchema().getFactory();
                             for (final SchemaAttribute attribute : schemaFactory.getRegisteredAttributes(elementType).values()) {
@@ -420,15 +420,13 @@ public class AttributeEditorPanel extends BorderPane {
                                 }
                             }
                         }
-                    } finally {
-                        rg.release();
                     }
 
                     for (final Entry<String, Set<SchemaAttribute>> entry : categoryAttributes.entrySet()) {
                         final Menu submenu = new Menu(entry.getKey());
                         for (final SchemaAttribute attribute : entry.getValue()) {
                             final MenuItem item = new MenuItem(attribute.getName());
-                            item.setOnAction((ActionEvent event1)
+                            item.setOnAction(event1
                                     -> PluginExecution.withPlugin(new AddAttributePlugin(attribute)).executeLater(currentGraph));
                             submenu.getItems().add(item);
                         }
@@ -439,7 +437,7 @@ public class AttributeEditorPanel extends BorderPane {
                         final Menu otherSubmenu = new Menu("Other");
                         for (final SchemaAttribute attribute : otherAttributes) {
                             final MenuItem item = new MenuItem(attribute.getName());
-                            item.setOnAction((final ActionEvent event1)
+                            item.setOnAction(event1
                                     -> PluginExecution.withPlugin(new AddAttributePlugin(attribute)).executeLater(currentGraph));
                             otherSubmenu.getItems().add(item);
                         }
@@ -463,7 +461,7 @@ public class AttributeEditorPanel extends BorderPane {
         editKeyButton.setTooltip(new Tooltip("Edit primary key"));
 
         if (elementType != GraphElementType.GRAPH) {
-            editKeyButton.setOnMouseClicked((MouseEvent event) -> {
+            editKeyButton.setOnMouseClicked(event -> {
                 event.consume();
                 editKeysAction(elementType);
             });
@@ -730,7 +728,7 @@ public class AttributeEditorPanel extends BorderPane {
     private Button createLoadMoreButton(final VBox parent, final AttributeData attribute) {
         final Button loadMoreButton = new Button("Load all data");
         loadMoreButton.setPrefHeight(CELL_HEIGHT);
-        loadMoreButton.setOnAction((ActionEvent t) -> {
+        loadMoreButton.setOnAction(event -> {
             final Object[] moreData = topComponent.getMoreData(attribute);
             final ObservableList<Object> listData = FXCollections.observableArrayList();
             listData.addAll(moreData);
@@ -749,14 +747,12 @@ public class AttributeEditorPanel extends BorderPane {
         newList.setCellFactory((ListView<Object> p) -> new AttributeValueCell(attribute.getDataType()));
 
         addCopyHandlersToListView(newList, attribute);
-        newList.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+        newList.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.isShortcutDown() && (event.getCode() == KeyCode.C)) {
                 copySelectedItems(newList, attribute.getDataType());
                 event.consume();
             } else if (event.isShortcutDown() && (event.getCode() == KeyCode.A)) {
                 event.consume();
-            } else {
-                // Do nothing
             }
         });
         return newList;
@@ -767,11 +763,7 @@ public class AttributeEditorPanel extends BorderPane {
         final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(dataType);
         final StringBuilder buffer = new StringBuilder();
         selectedItems.stream().map(item -> {
-            if (item == null) {
-                buffer.append(NO_VALUE_TEXT);
-            } else {
-                buffer.append(interaction.getDisplayText(item));
-            }
+            buffer.append(item == null ? NO_VALUE_TEXT : interaction.getDisplayText(item));
             return item;
         }).forEach(itm -> buffer.append(SeparatorConstants.NEWLINE));
 
@@ -863,7 +855,7 @@ public class AttributeEditorPanel extends BorderPane {
         final List<String> extantAttributeNames = currentAttributeNames.get(elementType);
         final ValueValidator<AttributePrototype> validator = v
                 -> extantAttributeNames.contains(v.getAttributeName()) ? "An attribute with that name already exists." : null;
-        final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Create %s attribute", elementType.getShortLabel()), AttributePrototype.getBlankPrototype(elementType));
+        final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(String.format("Create %s attribute", elementType.getShortLabel()), editOperation, validator, AttributePrototype.getBlankPrototype(elementType));
 
         ((AttributeEditor) editor).setGraphElementType(elementType);
         ((AttributeEditor) editor).setTypeModifiable(true);
@@ -876,7 +868,7 @@ public class AttributeEditorPanel extends BorderPane {
         final List<String> extantAttributeNames = currentAttributeNames.get(attr.getElementType());
         final ValueValidator<AttributePrototype> validator = v
                 -> extantAttributeNames.contains(v.getAttributeName()) && !attr.getAttributeName().equals(v.getAttributeName()) ? "An attribute with that name already exists." : null;
-        final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Modify %s attribute %s", attr.getElementType().getShortLabel(), attr.getAttributeName()), attr);
+        final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor( String.format("Modify %s attribute %s", attr.getElementType().getShortLabel(), attr.getAttributeName()), editOperation, validator, attr);
 
         ((AttributeEditor) editor).setGraphElementType(attr.getElementType());
         ((AttributeEditor) editor).setTypeModifiable(false);
@@ -887,7 +879,7 @@ public class AttributeEditorPanel extends BorderPane {
     private void updateTimeZoneAction(final AttributeData attr) {
         final EditOperation editOperation = zoneId
                 -> PluginExecution.withPlugin(new UpdateTimeZonePlugin((ZoneId) zoneId, attr)).executeLater(GraphManager.getDefault().getActiveGraph());
-        final AbstractEditor<ZoneId> editor = UPDATE_TIME_ZONE_EDITOR_FACTORY.createEditor(editOperation, String.format("Set time-zone for attribute %s", attr.getAttributeName()), TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
+        final AbstractEditor<ZoneId> editor = UPDATE_TIME_ZONE_EDITOR_FACTORY.createEditor(String.format("Set time-zone for attribute %s", attr.getAttributeName()), editOperation, TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
         final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();
     }
@@ -897,21 +889,24 @@ public class AttributeEditorPanel extends BorderPane {
         final List<String> allAttributes = new ArrayList<>();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (graph != null) {
-            final ReadableGraph rg = graph.getReadableGraph();
-            try {
+            List<SchemaAttribute> keysList = new ArrayList<>();
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
                 int[] keys = rg.getPrimaryKey(elementType);
-                for (int key : keys) {
+                for (final int key : keys) {
                     currentKeyAttributes.add(rg.getAttributeName(key));
                 }
                 for (int i = 0; i < rg.getAttributeCount(elementType); i++) {
                     allAttributes.add(rg.getAttributeName(rg.getAttribute(elementType, i)));
                 }
-            } finally {
-                rg.release();
+                if (rg.getSchema() != null) {
+                    keysList = rg.getSchema().getFactory().getKeyAttributes(elementType);
+                }
             }
+            
+            final List<String> keyNames = keysList.stream().map(s -> s.getName()).collect(Collectors.toList());
             final EditOperation editOperation = new PrimaryKeyEditOperation(elementType);
-            final DefaultGetter<List<String>> defaultGetter = new PrimaryKeyDefaultGetter(elementType);
-            final AbstractEditor<List<String>> editor = LIST_SELECTION_EDITOR_FACTORY.createEditor(editOperation, defaultGetter, String.format("Edit primary key for %ss", elementType.getShortLabel()), currentKeyAttributes);
+            
+            final AbstractEditor<List<String>> editor = LIST_SELECTION_EDITOR_FACTORY.createEditor(String.format("Edit primary key for %ss", elementType.getShortLabel()), editOperation, keyNames, currentKeyAttributes);
             ((ListSelectionEditor) editor).setPossibleItems(allAttributes);
             final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
             dialog.showDialog();
@@ -926,8 +921,7 @@ public class AttributeEditorPanel extends BorderPane {
         final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
         final ValueValidator<?> validator = interaction.fromEditValidator(editType);
         final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
-        final DefaultGetter<?> defaultGetter = attributeData::getDefaultValue;
-        final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
+        final AbstractEditor<?> editor = editorFactory.createEditor(attributeData.getAttributeName(), editOperation, validator, toTranslator.translate(attributeData.getDefaultValue()), toTranslator.translate(value));
         final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();
     }
@@ -952,16 +946,7 @@ public class AttributeEditorPanel extends BorderPane {
         }
         return maxWidth;
     }
-
-    /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
-     */
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-    }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // End of variables declaration//GEN-END:variables
-
+    
     private Node createAttributeValueNode(final Object[] values, final AttributeData attribute, final AttributeTitledPane parent, final boolean multiValue) {
 
         final boolean noneSelected = values == null;

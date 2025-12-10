@@ -23,5 +23,4 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors.operations;
 public interface EditOperation {
 
     public void performEdit(final Object value);
-
 }

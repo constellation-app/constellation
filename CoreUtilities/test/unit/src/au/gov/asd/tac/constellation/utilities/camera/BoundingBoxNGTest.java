@@ -380,32 +380,32 @@ public class BoundingBoxNGTest {
         assertEquals(bb.getCameraDistance(1F, 2F), MINIMUM_CAMERA_DISTANCE);
     }
     @Test
-    public void testAreSame() {
+    public void testEquals() {
         final BoundingBox bb = new BoundingBox();
         final BoundingBox bb2 = new BoundingBox();
-        assertTrue(bb.areSame(bb2));
-        assertTrue(bb2.areSame(bb));
+        assertTrue(bb.equals(bb2));
+        assertTrue(bb2.equals(bb));
         
         bb.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(MIN2), new Vector3f(MAX2));
         bb2.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(MIN2), new Vector3f(MAX2));
-        assertTrue(bb.areSame(bb2));
-        assertTrue(bb2.areSame(bb));
+        assertTrue(bb.equals(bb2));
+        assertTrue(bb2.equals(bb));
         
         bb.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(MIN2), new Vector3f(4,4,4));
-        assertFalse(bb.areSame(bb2));
-        assertFalse(bb2.areSame(bb));
+        assertFalse(bb.equals(bb2));
+        assertFalse(bb2.equals(bb));
         
         bb.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(4,4,4), new Vector3f(MAX2));
-        assertFalse(bb.areSame(bb2));
-        assertFalse(bb2.areSame(bb));
+        assertFalse(bb.equals(bb2));
+        assertFalse(bb2.equals(bb));
         
         bb.set(new Vector3f(MIN), new Vector3f(4,4,4), new Vector3f(MIN2), new Vector3f(MAX2));
-        assertFalse(bb.areSame(bb2));
-        assertFalse(bb2.areSame(bb));
+        assertFalse(bb.equals(bb2));
+        assertFalse(bb2.equals(bb));
         
         bb.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(MIN2), new Vector3f(MAX2));
-        assertTrue(bb.areSame(bb2));
-        assertTrue(bb2.areSame(bb));
+        assertTrue(bb.equals(bb2));
+        assertTrue(bb2.equals(bb));
     }
     
 
