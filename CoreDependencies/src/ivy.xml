@@ -74,7 +74,25 @@
         <dependency org="org.languagetool" name="language-en" rev="6.7" />
         <!-- languagetool-core should be getting installed as a dependency of 
              language-en but for some reason isn't. Remove this if it gets fixed -->
-        <dependency org="org.languagetool" name="languagetool-core" rev="6.7"/>
+        <dependency org="org.languagetool" name="languagetool-core" rev="6.7">
+            <exclude org="com.gitlab.dumonts" module="hunspell" />
+            <exclude org="com.google.protobuf" module="protobuf-java" />
+            <exclude org="com.hankcs" module="aho-corasick-double-array-trie" />
+            <exclude org="com.optimaize.languagedetector" module="language-detector" />
+            <exclude org="commons-validator" module="commons-validator" />
+            <exclude org="io.github.resilience4j" module="resilience4j-circuitbreaker" />
+            <exclude org="io.github.resilience4j" module="resilience4j-micrometer" />
+            <exclude org="io.grpc" module="grpc-netty-shaded" />
+            <exclude org="io.grpc" module="grpc-stub" />
+            <exclude org="io.micrometer" module="micrometer-registry-prometheus" />
+            <exclude org="io.opentelemetry" module="opentelemetry-semconv" />
+            <exclude org="io.prometheus" module="simpleclient" />
+            <exclude org="io.prometheus" module="simpleclient_guava" />
+            <exclude org="javax.annotation" module="javax.annotation-api" />
+            <exclude org="org.apache.commons" module="commons-pool2" />
+            <exclude org="org.apache.lucene" module="lucene-backward-codecs" />
+            <exclude org="org.apache.lucene" module="lucene-core" />
+        </dependency>
         <dependency org="tech.units" name="indriya" rev="1.3" conf="languagetoolconf">
             <exclude org="javax.measure" module="unit-api"/>
         </dependency>   
