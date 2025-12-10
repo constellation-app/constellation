@@ -65,67 +65,67 @@ au.gov.asd.tac.constellation.views.scripting 1.0
     </thead>
     <tbody>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="SAttributeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SAttributeIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SAttributeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SAttributeIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing attributes via scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="SEdgeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SEdgeIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SEdgeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SEdgeIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing edges via scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="SEdgeTransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SEdgeTransactionIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SEdgeTransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SEdgeTransactionIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing transactions from the context of edges via scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="SLinkEdgeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SLinkEdgeIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SLinkEdgeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SLinkEdgeIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing edges from the context of links via scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="SLinkIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SLinkIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SLinkIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SLinkIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing links via scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="SLinkTransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SLinkTransactionIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SLinkTransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SLinkTransactionIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing transactions from the context of links via scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="STransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">STransactionIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/STransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">STransactionIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing transactions via scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="SVertexEdgeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexEdgeIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SVertexEdgeIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexEdgeIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing edges from the context of vertices via scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="SVertexIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SVertexIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing vertices via scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="SVertexLinkIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexLinkIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SVertexLinkIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexLinkIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing links from the context of vertices via scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="SVertexTransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexTransactionIterator</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/SVertexTransactionIterator.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph.iterators">SVertexTransactionIterator</a></td>
     <td class="colLast"><div class="block">
     An iterator for accessing transactions from the context of vertices via scripting.
     </div></td>
