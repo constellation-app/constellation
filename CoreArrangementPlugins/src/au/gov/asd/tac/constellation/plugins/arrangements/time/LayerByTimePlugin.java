@@ -565,130 +565,103 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             // They're the same direction if their dot product equals their lenghts multiplied together
             final boolean isSameDirection = Vector3f.dotProduct(inLayerDirection, perLayerDirection) == inLayerDirection.getLength() * perLayerDirection.getLength();
             final boolean isOppositeDirection = -Vector3f.dotProduct(inLayerDirection, perLayerDirection) == inLayerDirection.getLength() * perLayerDirection.getLength();
-            System.out.println("isSameDirection " + isSameDirection + " isOppositeDirection " + isOppositeDirection);
-            System.out.println("Vector3f.dotProduct(inLayerDirection, perLayerDirection) " + Vector3f.dotProduct(inLayerDirection, perLayerDirection) + " inLayerDirection.getLength() * perLayerDirection.getLength() " + inLayerDirection.getLength() * perLayerDirection.getLength());
 
             // Scale according to the user's decided paramters, MIGHT NOT NEED
             inLayerDirection.scale(layerScale);
-            System.out.println("a");
-            //System.out.println("inLayerDirection " + inLayerDirection);
             perLayerDirection.scale(layerScale); // figure out how to dynamically scale this based on the longest chain
-            System.out.println("b");
             final int maxNodesInLayer = findMaxLayerSize(wgcopy);
-            System.out.println("c");
             nextRowOrColumnDirection.scale(columnScale * maxNodesInLayer);
 
-            System.out.println("remappedLayers.keyValuesView().size() " + remappedLayers.keyValuesView().size());
             final int layersPerRowOrCol = (int) Math.floor((float) remappedLayers.keyValuesView().size() / numRowsOrCols);
             int layersPerRowOrColRemainder = remappedLayers.keyValuesView().size() % numRowsOrCols;
 
-            System.out.println("numRowsOrCols " + numRowsOrCols + " layersPerRowOrCol " + layersPerRowOrCol + " layersPerRowOrColRemainder " + layersPerRowOrColRemainder);
             int remainingLayers = layersPerRowOrColRemainder > 0 ? layersPerRowOrCol + 1 : layersPerRowOrCol;
             layersPerRowOrColRemainder -= 1;
 
-            System.out.println("maxNodesInLayer " + maxNodesInLayer);
-
-            //System.out.println("transactionLayers.keyValuesView() " + transactionLayers.keyValuesView());
             final Object[] transactionLayerKeyValues = transactionLayers.keyValuesView().toArray();
-            //System.out.println("transactionLayers.keyValuesView().toArray() " + Arrays.toString(a));
 
-            for (final IntObjectPair<MutableFloatList> keyValue : remappedLayers.keyValuesView()) {
-                // Each layer?
-                for (int i = 0; i < transactionLayerKeyValues.length; i++) {
-                    final FloatObjectPair<MutableIntList> currentLayer = (FloatObjectPair) transactionLayerKeyValues[i];
-                    final IntObjectPair<MutableFloatList> remappedLayersKeyValue = findMatchingKeyValue(remappedLayers, currentLayer.getOne());
+            // Each layer
+            for (int i = 0; i < transactionLayerKeyValues.length; i++) {
+                final FloatObjectPair<MutableIntList> currentLayer = (FloatObjectPair) transactionLayerKeyValues[i];
+                final IntObjectPair<MutableFloatList> remappedLayersKeyValue = findMatchingKeyValue(remappedLayers, currentLayer.getOne());
 
-//                    if (remappedLayersKeyValue == null) {
-//                        continue;
-//                    }
-                    if (!keyValue.getTwo().contains(currentLayer.getOne())) {
-                        continue;
+                if (remappedLayersKeyValue == null) {
+                    continue;
+                }
+
+                final int nextLayerSize;
+                if (i + 1 < transactionLayerKeyValues.length) {
+                    nextLayerSize = findLayerSize(wgcopy, (FloatObjectPair) transactionLayerKeyValues[i + 1]);
+                } else {
+                    nextLayerSize = 0;
+                }
+
+                final MutableIntSet nodesInLayer = new IntHashSet();
+                for (int j = 0; j < currentLayer.getTwo().size(); j++) {
+                    final int newLayer = remappedLayersKeyValue.getOne();
+                    final int txId = currentLayer.getTwo().get(j);
+                    final LayerName dn = new LayerName(newLayer, displayNames.get(newLayer));
+                    wgcopy.setObjectValue(timeLayerAttr, txId, dn);
+
+                    final float normLayer = newLayer / (remappedLayers.keySet().size() * 1F);
+
+                    if (!keepTxColors) {
+                        final Color heatmap = new Color(Color.HSBtoRGB((1 - normLayer) * 2F / 3F, 0.5F, 1));
+                        final ConstellationColor color = ConstellationColor.getColorValue(heatmap.getRed() / 255F, heatmap.getGreen() / 255F, heatmap.getBlue() / 255F, 1F);
+                        wgcopy.setObjectValue(txColorAttr, txId, color);
                     }
-                    final int nextLayerSize;
-                    if (i + 1 < transactionLayerKeyValues.length) {
-                        // final FloatObjectPair<MutableIntList> nextLayer = (FloatObjectPair) a[j + 1];
-                        nextLayerSize = findLayerSize(wgcopy, (FloatObjectPair) transactionLayerKeyValues[i + 1]);
-                        //System.out.println("NEXT ELEMENT " + nextLayer + " count: " + nextLayer.getTwo().size() * 2 + " func count: " + nextLayerSize);
+
+                    // makes these return a list of nodes that they affected
+                    if (isTransactionLayers) {
+                        transactionsAsLayers(wgcopy, txId, z, step, nodesInLayer);
                     } else {
-                        nextLayerSize = 0;
+                        nodesAsLayers(wgcopy, txId, newLayer, nodesInLayer);
+                    }
+                }
+
+                if (arrangeIn2d) {
+                    // For now, arrange the nodes just relative to the current step
+                    final int xAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
+                    final int yAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
+                    final int zAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+
+                    // Calc the position the next node group should be
+                    final Vector3f nodePosition = layerPosition.copy();
+
+                    final MutableIntIterator iterator = nodesInLayer.intIterator();
+                    while (iterator.hasNext()) {
+                        final int nodeId = iterator.next();
+
+                        // Set position
+                        wgcopy.setFloatValue(xAttr, nodeId, nodePosition.getX());
+                        wgcopy.setFloatValue(yAttr, nodeId, nodePosition.getY());
+                        wgcopy.setFloatValue(zAttr, nodeId, nodePosition.getZ());
+
+                        nodePosition.add(inLayerDirection);
+
                     }
 
-                    final MutableIntSet nodesInLayer = new IntHashSet();
-                    for (int j = 0; j < currentLayer.getTwo().size(); j++) {
-                        final int newLayer = keyValue.getOne();
-                        final int txId = currentLayer.getTwo().get(j);
-                        final LayerName dn = new LayerName(newLayer, displayNames.get(newLayer));
-                        wgcopy.setObjectValue(timeLayerAttr, txId, dn);
-
-                        final float normLayer = newLayer / (remappedLayers.keySet().size() * 1F);
-
-                        if (!keepTxColors) {
-                            final Color heatmap = new Color(Color.HSBtoRGB((1 - normLayer) * 2F / 3F, 0.5F, 1));
-                            final ConstellationColor color = ConstellationColor.getColorValue(heatmap.getRed() / 255F, heatmap.getGreen() / 255F, heatmap.getBlue() / 255F, 1F);
-                            wgcopy.setObjectValue(txColorAttr, txId, color);
+                    if (isSameDirection || isOppositeDirection) {
+                        final Vector3f toAdd = perLayerDirection.copy();
+                        final int scaleAmount = isSameDirection ? nodesInLayer.size() : nextLayerSize; // If isSameDirection is FALSE, isOppositeDirection must be TRUE
+                        if (scaleAmount - 1 > 1) {
+                            toAdd.scale(scaleAmount - 1);
                         }
-
-                        // makes these return a list of nodes that they affected
-                        if (isTransactionLayers) {
-                            transactionsAsLayers(wgcopy, txId, z, step, nodesInLayer);
-                        } else {
-                            nodesAsLayers(wgcopy, txId, newLayer, nodesInLayer);
-                        }
+                        layerPosition.add(toAdd);
                     }
 
-                    if (arrangeIn2d) {
-                        // For now, arrange the nodes just relative to the current step
-                        //System.out.println("nodesInLayer " + nodesInLayer + " nodesInLayer.size() " + nodesInLayer.size() + " currentLayer.getTwo().size() " + currentLayer.getTwo().size());
-                        final int xAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-                        final int yAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-                        final int zAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+                    remainingLayers -= 1;
 
-                        // Calc the position the next node group should be
-                        final Vector3f nodePosition = layerPosition.copy();
+                    // Start new row or column
+                    newRowOrColStarted = false;
+                    if (remainingLayers <= 0) {
+                        newRowOrColStarted = true;
+                        remainingLayers = layersPerRowOrColRemainder > 0 ? layersPerRowOrCol + 1 : layersPerRowOrCol;
 
-                        final MutableIntIterator iterator = nodesInLayer.intIterator();
-                        while (iterator.hasNext()) {
-                            final int nodeId = iterator.next();
+                        rowColPosition.add(nextRowOrColumnDirection);
+                        layerPosition.set(rowColPosition);
 
-                            // Set position
-                            wgcopy.setFloatValue(xAttr, nodeId, nodePosition.getX());
-                            wgcopy.setFloatValue(yAttr, nodeId, nodePosition.getY());
-                            wgcopy.setFloatValue(zAttr, nodeId, nodePosition.getZ());
-
-                            nodePosition.add(inLayerDirection);
-
-                        }
-
-                        if (isSameDirection) {
-                            //System.out.println("SAME dir");
-                            final Vector3f toAdd = perLayerDirection.copy();
-                            if (nodesInLayer.size() - 1 > 1) {
-                                toAdd.scale(nodesInLayer.size() - 1);
-                            }
-                            layerPosition.add(toAdd);
-                        } else if (isOppositeDirection) {
-                            //System.out.println("OPPOSITE dir");
-                            final Vector3f toAdd = perLayerDirection.copy();
-                            if (nextLayerSize - 1 > 1) {
-                                toAdd.scale(nextLayerSize - 1);// might have to be the size of the next layer?
-                            }
-
-                            layerPosition.add(toAdd);
-                        }
-
-                        remainingLayers -= 1;
-
-                        // Start new row or column
-                        newRowOrColStarted = false;
-                        if (remainingLayers <= 0) {
-                            newRowOrColStarted = true;
-                            remainingLayers = layersPerRowOrColRemainder > 0 ? layersPerRowOrCol + 1 : layersPerRowOrCol;
-
-                            rowColPosition.add(nextRowOrColumnDirection);
-                            layerPosition.set(rowColPosition);
-
-                            layersPerRowOrColRemainder -= 1;
-                        }
+                        layersPerRowOrColRemainder -= 1;
                     }
                 }
 
@@ -754,17 +727,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         int max = 0;
 
         for (final FloatObjectPair<MutableIntList> currentLayer : transactionLayers.keyValuesView()) {
-//            final MutableIntSet nodesInLayer = new IntHashSet();
-//            for (int i = 0; i < currentLayer.getTwo().size(); i++) {
-//                final int txId = currentLayer.getTwo().get(i);
-//                final int srcVxId = graph.getTransactionSourceVertex(txId);
-//                final int dstVxId = graph.getTransactionDestinationVertex(txId);
-//                nodesInLayer.add(srcVxId);
-//                nodesInLayer.add(dstVxId);
-//            }
-//            if (nodesInLayer.size() > max) {
-//                max = nodesInLayer.size();
-//            }
             final int layerSize = findLayerSize(graph, currentLayer);
             if (layerSize > max) {
                 max = layerSize;
