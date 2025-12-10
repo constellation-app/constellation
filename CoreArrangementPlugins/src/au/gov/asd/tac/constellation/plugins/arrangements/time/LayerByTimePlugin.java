@@ -189,6 +189,16 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final String ROWS = "Rows";
     private static final String COLS = "Cols";
 
+    private static final String X = "X";
+    private static final String Y = "Y";
+    private static final String Z = "Z";
+
+    private static final String NEG_X = "-X";
+    private static final String NEG_Z = "-Z";
+
+    private static final String Y_UP = "Y (Up)";
+    private static final String Y_DOWN = "-Y (Down)";
+
     private static final Map<String, Integer> LAYER_INTERVALS = new HashMap<>();
     private static final Map<String, Integer> BIN_CALENDAR_UNITS = new HashMap<>();
 
@@ -209,19 +219,12 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         BIN_CALENDAR_UNITS.put("Year", Calendar.YEAR);
 
         // Populate directions hash map
-//        directionsMap.put("X", ArrangeDirection.X.getVector());
-//        directionsMap.put("-X", ArrangeDirection.X.getVector().reverse());
-//        directionsMap.put("Y (Up)", ArrangeDirection.Y.getVector());
-//        directionsMap.put("-Y (Down)", ArrangeDirection.Y.getVector().reverse());
-//        directionsMap.put("Z", ArrangeDirection.Z.getVector());
-//        directionsMap.put("-Z", ArrangeDirection.Z.getVector().reverse());
-        directionsMap.put("X", new Vector3f(1, 0, 0));
-        directionsMap.put("-X", new Vector3f(-1, 0, 0));
-        directionsMap.put("Y (Up)", new Vector3f(0, 1, 0));
-        directionsMap.put("-Y (Down)", new Vector3f(0, -1, 0));
-        directionsMap.put("Z", new Vector3f(0, 0, 1));
-        directionsMap.put("-Z", new Vector3f(0, 0, -1));
-
+        directionsMap.put(X, new Vector3f(1, 0, 0));
+        directionsMap.put(NEG_X, new Vector3f(-1, 0, 0));
+        directionsMap.put(Y_UP, new Vector3f(0, 1, 0));
+        directionsMap.put(Y_DOWN, new Vector3f(0, -1, 0));
+        directionsMap.put(Z, new Vector3f(0, 0, 1));
+        directionsMap.put(NEG_Z, new Vector3f(0, 0, -1));
     }
 
     // Quick and dirty way of mapping existing nodeid + layer number to new nodeid.
@@ -298,37 +301,28 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         drawTxGuidesParam.setBooleanValue(DRAW_TX_GUIDES_DEFAULT);
         parameters.addParameter(drawTxGuidesParam);
 
-//        final PluginParameter<BooleanParameterValue> arrange2DParam = BooleanParameterType.build(ARRANGE_2D_PARAMETER_ID);
         arrange2DParam = BooleanParameterType.build(ARRANGE_2D_PARAMETER_ID);
         arrange2DParam.setName(ARRANGE_2D_NAME);
         arrange2DParam.setDescription(ARRANGE_2D_DESCRIPTION);
         arrange2DParam.setBooleanValue(ARRANGE_2D_DEFAULT);
         parameters.addParameter(arrange2DParam);
-        arrange2DParam.addListener((oldValue, newValue) -> {
-            System.out.println("arrange2DParam newValue: " + newValue);
-            disableArrange2dOptions();
-        });
+        arrange2DParam.addListener((oldValue, newValue) -> disableArrange2dOptions());
 
-        // maybe this shoudl be either up or down for cols, and left or right for rows
-//        final PluginParameter<SingleChoiceParameterValue> perLayerDirectionParameter = SingleChoiceParameterType.build(PER_LAYER_DIRECTION_PARAMETER_ID);
         perLayerDirectionParameter = SingleChoiceParameterType.build(PER_LAYER_DIRECTION_PARAMETER_ID);
         perLayerDirectionParameter.setName(PER_LAYER_DIRECTION_NAME);
-//        SingleChoiceParameterType.setOptions(perLayerDirectionParameter, new ArrayList<>(directionsMap.keySet()));
         final ArrayList<String> directionList = new ArrayList<>(directionsMap.keySet());
-        directionList.removeIf(s -> !s.contains("Y")); // TODO constant
+        directionList.removeIf(s -> !s.contains(Y));
         SingleChoiceParameterType.setOptions(perLayerDirectionParameter, directionList);
-        SingleChoiceParameterType.setChoice(perLayerDirectionParameter, "-Y (Down)");// TODO make this string a constant
+        SingleChoiceParameterType.setChoice(perLayerDirectionParameter, Y_DOWN);
         perLayerDirectionParameter.setEnabled(false);
         parameters.addParameter(perLayerDirectionParameter);
 
-//        final PluginParameter<IntegerParameterValue> numRowsOrColsParam = IntegerParameterType.build(NUM_ROWS_OR_COLS_PARAMETER_ID);
         numRowsOrColsParam = IntegerParameterType.build(NUM_ROWS_OR_COLS_PARAMETER_ID);
         numRowsOrColsParam.setName(NUM_ROWS_OR_COLS_NAME);
         numRowsOrColsParam.setIntegerValue(NUM_ROWS_OR_COLS_DEFAULT);
         numRowsOrColsParam.setEnabled(false);
         parameters.addParameter(numRowsOrColsParam);
 
-//        final PluginParameter<SingleChoiceParameterValue> rowOrColParam = SingleChoiceParameterType.build(ROW_OR_COL_PARAMETER_ID);
         rowOrColParam = SingleChoiceParameterType.build(ROW_OR_COL_PARAMETER_ID);
         rowOrColParam.setName(ROW_OR_COL_NAME);
         SingleChoiceParameterType.setOptions(rowOrColParam, new ArrayList<>(Arrays.asList(ROWS, COLS)));
@@ -337,22 +331,19 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         parameters.addParameter(rowOrColParam);
         rowOrColParam.addListener((oldValue, newValue) -> updatePerLayerDirectionChoices());
 
-//        final PluginParameter<SingleChoiceParameterValue> inLayerDirectionParameter = SingleChoiceParameterType.build(IN_LAYER_DIRECTION_PARAMETER_ID);
         inLayerDirectionParameter = SingleChoiceParameterType.build(IN_LAYER_DIRECTION_PARAMETER_ID);
         inLayerDirectionParameter.setName(IN_LAYER_DIRECTION_NAME);
         SingleChoiceParameterType.setOptions(inLayerDirectionParameter, new ArrayList<>(directionsMap.keySet()));
-        SingleChoiceParameterType.setChoice(inLayerDirectionParameter, "X");// TODO make this string a constant
+        SingleChoiceParameterType.setChoice(inLayerDirectionParameter, X);
         inLayerDirectionParameter.setEnabled(false);
         parameters.addParameter(inLayerDirectionParameter);
 
-//        final PluginParameter<IntegerParameterValue> distanceBetweenLayers = IntegerParameterType.build(LAYER_DIST_PARAMETER_ID);
         distanceBetweenLayers = IntegerParameterType.build(LAYER_DIST_PARAMETER_ID);
         distanceBetweenLayers.setName(LAYER_DIST_NAME);
         distanceBetweenLayers.setIntegerValue(LAYER_DIST_DEFAULT);
         distanceBetweenLayers.setEnabled(false);
         parameters.addParameter(distanceBetweenLayers);
 
-//        final PluginParameter<IntegerParameterValue> distanceBetweenRowsOrCols = IntegerParameterType.build(ROW_OR_COL_DIST_PARAMETER_ID);
         distanceBetweenRowsOrCols = IntegerParameterType.build(ROW_OR_COL_DIST_PARAMETER_ID);
         distanceBetweenRowsOrCols.setName(ROW_OR_COL_DIST_NAME);
         distanceBetweenRowsOrCols.setIntegerValue(ROW_OR_COL_DIST_DEFAULT);
@@ -377,17 +368,15 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     }
 
     private void updatePerLayerDirectionChoices() {
-        System.out.println("updatePerLayerDirectionChoices");
         // update per layer direction based on if rows or columns is chosen
         final boolean isRow = ROWS.equals(rowOrColParam.getStringValue());
 
-        final String substring = isRow ? "X" : "Y";
+        final String substring = isRow ? X : Y;
         final ArrayList<String> directionList = new ArrayList<>(directionsMap.keySet());
         directionList.removeIf(s -> !s.contains(substring));
         SingleChoiceParameterType.setOptions(perLayerDirectionParameter, directionList);
 
-        final String choice = isRow ? "X" : "-Y (Down)";// TODO make this string a constant
-        //System.out.println("choice " + choice);
+        final String choice = isRow ? X : Y_DOWN;
         SingleChoiceParameterType.setChoice(perLayerDirectionParameter, choice);
     }
 
@@ -981,7 +970,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * Procedure for reordering the graph using nodes as layers on the z-axis.
      */
     private void nodesAsLayers(final GraphWriteMethods graph, final int txId, final int layer, final MutableIntSet nodesInLayer) {
-        //System.out.println("nodesAsLayers txId " + txId + " layer " + layer);
         final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
         final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
         final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
@@ -989,7 +977,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         final int y2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
         final int z2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
         final int sNodeId = graph.getTransactionSourceVertex(txId);
-        //System.out.println("x: " + graph.getFloatValue(xAttr, sNodeId) + " y: " + graph.getFloatValue(yAttr, sNodeId) + " Z: " + graph.getFloatValue(zAttr, sNodeId));
+
         graph.setFloatValue(x2Attr, sNodeId, graph.getFloatValue(xAttr, sNodeId));
         graph.setFloatValue(y2Attr, sNodeId, graph.getFloatValue(yAttr, sNodeId));
         graph.setFloatValue(z2Attr, sNodeId, graph.getFloatValue(zAttr, sNodeId));
@@ -1057,7 +1045,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      *
      */
     private void transactionsAsLayers(final GraphWriteMethods graph, final int txId, final float z, final float step, final MutableIntSet nodesInLayer) {
-        //System.out.println("transactionsAsLayers txId " + txId + " z " + z + " step " + step);
         final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
         final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
         final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
@@ -1067,7 +1054,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         final int nodeAttr = graph.getAttribute(GraphElementType.VERTEX, ORIGINAL_ID_LABEL);
 
         final int srcVxId = graph.getTransactionSourceVertex(txId);
-        //System.out.println("x: " + graph.getFloatValue(xAttr, srcVxId) + " y: " + graph.getFloatValue(yAttr, srcVxId) + " Z: " + graph.getFloatValue(zAttr, srcVxId));
         graph.setFloatValue(x2Attr, srcVxId, graph.getFloatValue(xAttr, srcVxId));
         graph.setFloatValue(y2Attr, srcVxId, graph.getFloatValue(yAttr, srcVxId));
         graph.setFloatValue(z2Attr, srcVxId, graph.getFloatValue(zAttr, srcVxId));
