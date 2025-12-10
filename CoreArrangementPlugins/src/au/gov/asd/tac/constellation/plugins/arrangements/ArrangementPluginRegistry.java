@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.plugins.arrangements.broccoli.ArrangeLikeBro
 import au.gov.asd.tac.constellation.plugins.arrangements.circle.ArrangeInCirclePlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.circle.ArrangeInCirclesPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.circle.ArrangeInSpherePlugin;
-import au.gov.asd.tac.constellation.plugins.arrangements.datetime.ArrangeByDateTimePlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.gather.GatherNodesInGraphPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.gather.GatherNodesPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridComponentsPlugin;
@@ -57,7 +56,6 @@ public class ArrangementPluginRegistry {
     public static final String CIRCLE = ArrangeInCirclePlugin.class.getName();
     public static final String CIRCLES = ArrangeInCirclesPlugin.class.getName();
     public static final String CONTRACT_GRAPH = ContractGraphPlugin.class.getName();
-    public static final String DATETIME = ArrangeByDateTimePlugin.class.getName();
     public static final String EXPAND_GRAPH = ExpandGraphPlugin.class.getName();
     public static final String FLATTEN_Z = FlattenZFieldPlugin.class.getName();
     public static final String FR2D = ArrangeByProximityPlugin.class.getName();
