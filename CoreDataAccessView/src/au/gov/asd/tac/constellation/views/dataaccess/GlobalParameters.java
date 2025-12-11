@@ -111,7 +111,7 @@ public abstract class GlobalParameters {
             );
             
             for (final Map.Entry<String, PluginParameter<?>> parameterEntry : globalParameters.getParameters().entrySet()) {
-                final PluginParameterListener listener = (final PluginParameter<?> parameter, final ParameterChange change) -> {
+                final PluginParameterListener listener = (final PluginParameter<?> parameter, final ParameterChange change) -> 
                 // Save the current data access view state
                     PluginExecution.withPlugin(new SimplePlugin(SAVE_STATE_PLUGIN_NAME) {
                         @Override
@@ -140,7 +140,6 @@ public abstract class GlobalParameters {
                             }
                         }
                     }).executeLater(null);
-                };
                 parameterEntry.getValue().addListener(listener);
             }
         }
