@@ -590,4 +590,6 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @see GraphIndexType#ORDERED
      */
     public void setAttributeIndexType(final int attribute, final GraphIndexType indexType);
+
+    public void setGraphElementMerger(final GraphElementMerger graphElementMerger);
 }
