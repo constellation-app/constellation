@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -340,12 +341,20 @@ public class SchemaVertexTypeUtilities {
                         final ExtractedVertexType currentExtractedType = new ExtractedVertexType(identifier, schemaVertexType, text, matcher.start(), matcher.end());
                         final List<ExtractedVertexType> deficientResults = new ArrayList<>();
                         boolean isDeficientResult = false;
+                        final Comparator comparator = VertexDominanceCalculator.getDefault().getComparator();
                         for (final ExtractedVertexType extractedType : extractedTypes) {
-                            if (currentExtractedType.compareTo(extractedType) < 0) {
+                            // do compare only if identifiers are the same
+                            if (identifier.equalsIgnoreCase(extractedType.identifier)) {
+                                if (comparator.compare(extractedType.getType(), currentExtractedType.getType()) < 0) {
+                                    isDeficientResult = true;
+                                    break;
+                                } else if (comparator.compare(extractedType.getType(), currentExtractedType.getType()) > 0 ||
+                                        currentExtractedType.compareTo(extractedType) > 0) {
+                                    deficientResults.add(extractedType);
+                                }
+                            } else {
                                 isDeficientResult = true;
                                 break;
-                            } else if (currentExtractedType.compareTo(extractedType) > 0) {
-                                deficientResults.add(extractedType);
                             }
                         }
                         if (!isDeficientResult) {

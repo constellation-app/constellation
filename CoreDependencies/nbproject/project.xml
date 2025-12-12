@@ -36,7 +36,6 @@
                 <package>Lib.xml.parsers</package>
                 <package>Lib.xml.sax</package>
                 <package>Lib.xml.sax.drivers2</package>
-                <package>android.annotation</package>
                 <package>au.com.objectix.jgridshift</package>
                 <package>com.carrotsearch.hppc</package>
                 <package>com.carrotsearch.hppc.cursors</package>
@@ -115,20 +114,9 @@
                 <package>com.google.errorprone.annotations</package>
                 <package>com.google.errorprone.annotations.concurrent</package>
                 <package>com.google.geo.type</package>
-                <package>com.google.gson</package>
-                <package>com.google.gson.annotations</package>
-                <package>com.google.gson.internal</package>
-                <package>com.google.gson.internal.bind</package>
-                <package>com.google.gson.internal.bind.util</package>
-                <package>com.google.gson.internal.reflect</package>
-                <package>com.google.gson.internal.sql</package>
-                <package>com.google.gson.reflect</package>
-                <package>com.google.gson.stream</package>
                 <package>com.google.j2objc.annotations</package>
                 <package>com.google.logging.type</package>
                 <package>com.google.longrunning</package>
-                <package>com.google.protobuf</package>
-                <package>com.google.protobuf.compiler</package>
                 <package>com.google.re2j</package>
                 <package>com.google.rpc</package>
                 <package>com.google.rpc.context</package>
@@ -141,7 +129,6 @@
                 <package>com.graphbuilder.math.func</package>
                 <package>com.graphbuilder.org.apache.harmony.awt.gl</package>
                 <package>com.graphbuilder.struc</package>
-                <package>com.hankcs.algorithm</package>
                 <package>com.jhlabs.composite</package>
                 <package>com.jhlabs.image</package>
                 <package>com.jhlabs.math</package>
@@ -236,15 +223,6 @@
                 <package>com.microsoft.schemas.office.x2006.digsig.impl</package>
                 <package>com.microsoft.schemas.vml</package>
                 <package>com.microsoft.schemas.vml.impl</package>
-                <package>com.optimaize.langdetect</package>
-                <package>com.optimaize.langdetect.cybozu</package>
-                <package>com.optimaize.langdetect.cybozu.util</package>
-                <package>com.optimaize.langdetect.frma</package>
-                <package>com.optimaize.langdetect.i18n</package>
-                <package>com.optimaize.langdetect.ngram</package>
-                <package>com.optimaize.langdetect.profiles</package>
-                <package>com.optimaize.langdetect.profiles.util</package>
-                <package>com.optimaize.langdetect.text</package>
                 <package>com.sun.activation.registries</package>
                 <package>com.sun.activation.viewers</package>
                 <package>com.sun.glass.ui.monocle</package>
@@ -253,24 +231,6 @@
                 <package>com.sun.istack.logging</package>
                 <package>com.sun.java.help.impl</package>
                 <package>com.sun.java.help.search</package>
-                <package>com.sun.jna</package>
-                <package>com.sun.jna.internal</package>
-                <package>com.sun.jna.platform</package>
-                <package>com.sun.jna.platform.dnd</package>
-                <package>com.sun.jna.platform.linux</package>
-                <package>com.sun.jna.platform.mac</package>
-                <package>com.sun.jna.platform.unix</package>
-                <package>com.sun.jna.platform.unix.aix</package>
-                <package>com.sun.jna.platform.unix.solaris</package>
-                <package>com.sun.jna.platform.win32</package>
-                <package>com.sun.jna.platform.win32.COM</package>
-                <package>com.sun.jna.platform.win32.COM.tlb</package>
-                <package>com.sun.jna.platform.win32.COM.tlb.imp</package>
-                <package>com.sun.jna.platform.win32.COM.util</package>
-                <package>com.sun.jna.platform.win32.COM.util.annotation</package>
-                <package>com.sun.jna.platform.wince</package>
-                <package>com.sun.jna.ptr</package>
-                <package>com.sun.jna.win32</package>
                 <package>com.sun.media.imageio.plugins.bmp</package>
                 <package>com.sun.media.imageio.plugins.jpeg2000</package>
                 <package>com.sun.media.imageio.plugins.pnm</package>
@@ -344,8 +304,6 @@
                 <package>de.fhpotsdam.unfolding.ui</package>
                 <package>de.fhpotsdam.unfolding.utils</package>
                 <package>de.fhpotsdam.utils</package>
-                <package>dumonts.hunspell</package>
-                <package>dumonts.hunspell.bindings</package>
                 <package>edu.washington.cs.knowitall.logic</package>
                 <package>edu.washington.cs.knowitall.regex</package>
                 <package>gov.nasa.worldwind</package>
@@ -447,134 +405,9 @@
                 <package>io.airlift.compress.lzo</package>
                 <package>io.airlift.compress.snappy</package>
                 <package>io.airlift.compress.zstd</package>
-                <package>io.github.resilience4j.circuitbreaker</package>
-                <package>io.github.resilience4j.circuitbreaker.event</package>
-                <package>io.github.resilience4j.circuitbreaker.internal</package>
-                <package>io.github.resilience4j.circuitbreaker.utils</package>
-                <package>io.github.resilience4j.core</package>
-                <package>io.github.resilience4j.core.exception</package>
-                <package>io.github.resilience4j.core.functions</package>
-                <package>io.github.resilience4j.core.lang</package>
-                <package>io.github.resilience4j.core.metrics</package>
-                <package>io.github.resilience4j.core.predicate</package>
-                <package>io.github.resilience4j.core.registry</package>
-                <package>io.github.resilience4j.micrometer</package>
-                <package>io.github.resilience4j.micrometer.tagged</package>
                 <package>io.grpc</package>
-                <package>io.grpc.internal</package>
-                <package>io.grpc.netty.shaded.io.grpc.netty</package>
-                <package>io.grpc.netty.shaded.io.netty.bootstrap</package>
-                <package>io.grpc.netty.shaded.io.netty.buffer</package>
-                <package>io.grpc.netty.shaded.io.netty.buffer.search</package>
-                <package>io.grpc.netty.shaded.io.netty.channel</package>
-                <package>io.grpc.netty.shaded.io.netty.channel.embedded</package>
-                <package>io.grpc.netty.shaded.io.netty.channel.epoll</package>
-                <package>io.grpc.netty.shaded.io.netty.channel.group</package>
-                <package>io.grpc.netty.shaded.io.netty.channel.internal</package>
-                <package>io.grpc.netty.shaded.io.netty.channel.local</package>
-                <package>io.grpc.netty.shaded.io.netty.channel.nio</package>
-                <package>io.grpc.netty.shaded.io.netty.channel.oio</package>
-                <package>io.grpc.netty.shaded.io.netty.channel.pool</package>
-                <package>io.grpc.netty.shaded.io.netty.channel.socket</package>
-                <package>io.grpc.netty.shaded.io.netty.channel.socket.nio</package>
-                <package>io.grpc.netty.shaded.io.netty.channel.socket.oio</package>
-                <package>io.grpc.netty.shaded.io.netty.channel.unix</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.address</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.base64</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.bytes</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.compression</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.http</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.http.cookie</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.http.cors</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.http.multipart</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.http.websocketx</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.http.websocketx.extensions</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.http.websocketx.extensions.compression</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.http2</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.json</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.marshalling</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.protobuf</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.rtsp</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.serialization</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.socks</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.socksx</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.socksx.v4</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.socksx.v5</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.spdy</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.string</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.codec.xml</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.flow</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.flush</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.ipfilter</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.logging</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.pcap</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.proxy</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.ssl</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.ssl.ocsp</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.ssl.util</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.stream</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.timeout</package>
-                <package>io.grpc.netty.shaded.io.netty.handler.traffic</package>
-                <package>io.grpc.netty.shaded.io.netty.internal.tcnative</package>
-                <package>io.grpc.netty.shaded.io.netty.resolver</package>
-                <package>io.grpc.netty.shaded.io.netty.util</package>
-                <package>io.grpc.netty.shaded.io.netty.util.collection</package>
-                <package>io.grpc.netty.shaded.io.netty.util.concurrent</package>
-                <package>io.grpc.netty.shaded.io.netty.util.internal</package>
-                <package>io.grpc.netty.shaded.io.netty.util.internal.logging</package>
-                <package>io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.counters</package>
-                <package>io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.maps</package>
-                <package>io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues</package>
-                <package>io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.atomic</package>
-                <package>io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.atomic.unpadded</package>
-                <package>io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.unpadded</package>
-                <package>io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.util</package>
-                <package>io.grpc.netty.shaded.io.netty.util.internal.svm</package>
                 <package>io.grpc.protobuf</package>
                 <package>io.grpc.protobuf.lite</package>
-                <package>io.grpc.stub</package>
-                <package>io.grpc.stub.annotations</package>
-                <package>io.grpc.util</package>
-                <package>io.micrometer.core.annotation</package>
-                <package>io.micrometer.core.aop</package>
-                <package>io.micrometer.core.instrument</package>
-                <package>io.micrometer.core.instrument.binder</package>
-                <package>io.micrometer.core.instrument.binder.cache</package>
-                <package>io.micrometer.core.instrument.binder.commonspool2</package>
-                <package>io.micrometer.core.instrument.binder.db</package>
-                <package>io.micrometer.core.instrument.binder.grpc</package>
-                <package>io.micrometer.core.instrument.binder.http</package>
-                <package>io.micrometer.core.instrument.binder.httpcomponents</package>
-                <package>io.micrometer.core.instrument.binder.hystrix</package>
-                <package>io.micrometer.core.instrument.binder.jetty</package>
-                <package>io.micrometer.core.instrument.binder.jpa</package>
-                <package>io.micrometer.core.instrument.binder.jvm</package>
-                <package>io.micrometer.core.instrument.binder.kafka</package>
-                <package>io.micrometer.core.instrument.binder.logging</package>
-                <package>io.micrometer.core.instrument.binder.mongodb</package>
-                <package>io.micrometer.core.instrument.binder.okhttp3</package>
-                <package>io.micrometer.core.instrument.binder.system</package>
-                <package>io.micrometer.core.instrument.binder.tomcat</package>
-                <package>io.micrometer.core.instrument.composite</package>
-                <package>io.micrometer.core.instrument.config</package>
-                <package>io.micrometer.core.instrument.config.validate</package>
-                <package>io.micrometer.core.instrument.cumulative</package>
-                <package>io.micrometer.core.instrument.distribution</package>
-                <package>io.micrometer.core.instrument.distribution.pause</package>
-                <package>io.micrometer.core.instrument.dropwizard</package>
-                <package>io.micrometer.core.instrument.internal</package>
-                <package>io.micrometer.core.instrument.logging</package>
-                <package>io.micrometer.core.instrument.noop</package>
-                <package>io.micrometer.core.instrument.push</package>
-                <package>io.micrometer.core.instrument.search</package>
-                <package>io.micrometer.core.instrument.simple</package>
-                <package>io.micrometer.core.instrument.step</package>
-                <package>io.micrometer.core.instrument.util</package>
-                <package>io.micrometer.core.ipc.http</package>
-                <package>io.micrometer.core.lang</package>
-                <package>io.micrometer.core.util.internal.logging</package>
-                <package>io.micrometer.prometheus</package>
                 <package>io.opentelemetry.api</package>
                 <package>io.opentelemetry.api.baggage</package>
                 <package>io.opentelemetry.api.baggage.propagation</package>
@@ -588,21 +421,6 @@
                 <package>io.opentelemetry.context</package>
                 <package>io.opentelemetry.context.internal.shaded</package>
                 <package>io.opentelemetry.context.propagation</package>
-                <package>io.opentelemetry.semconv.resource.attributes</package>
-                <package>io.opentelemetry.semconv.trace.attributes</package>
-                <package>io.perfmark</package>
-                <package>io.prometheus.client</package>
-                <package>io.prometheus.client.exemplars</package>
-                <package>io.prometheus.client.exemplars.tracer.common</package>
-                <package>io.prometheus.client.exemplars.tracer.otel</package>
-                <package>io.prometheus.client.exemplars.tracer.otel_agent</package>
-                <package>io.prometheus.client.exporter.common</package>
-                <package>io.prometheus.client.guava.cache</package>
-                <package>io.vavr</package>
-                <package>io.vavr.collection</package>
-                <package>io.vavr.concurrent</package>
-                <package>io.vavr.control</package>
-                <package>io.vavr.match.annotation</package>
                 <package>it.geosolutions.imageio.compression</package>
                 <package>it.geosolutions.imageio.compression.zipdeflate</package>
                 <package>it.geosolutions.imageio.core</package>
@@ -905,11 +723,6 @@
                 <package>morfologik.fsa.builders</package>
                 <package>morfologik.speller</package>
                 <package>morfologik.stemming</package>
-                <package>net.arnx.jsonic</package>
-                <package>net.arnx.jsonic.io</package>
-                <package>net.arnx.jsonic.util</package>
-                <package>net.arnx.jsonic.web</package>
-                <package>net.arnx.jsonic.web.extension</package>
                 <package>net.bytebuddy</package>
                 <package>net.bytebuddy.agent</package>
                 <package>net.bytebuddy.agent.builder</package>
@@ -1053,9 +866,6 @@
                 <package>opennlp.tools.util.model</package>
                 <package>opennlp.tools.util.normalizer</package>
                 <package>opennlp.tools.util.wordvector</package>
-                <package>org.HdrHistogram</package>
-                <package>org.HdrHistogram.packedarray</package>
-                <package>org.LatencyUtils</package>
                 <package>org.apache.commons.codec</package>
                 <package>org.apache.commons.codec.binary</package>
                 <package>org.apache.commons.codec.cli</package>
@@ -1124,20 +934,6 @@
                 <package>org.apache.commons.dbcp.cpdsadapter</package>
                 <package>org.apache.commons.dbcp.datasources</package>
                 <package>org.apache.commons.dbcp.managed</package>
-                <package>org.apache.commons.digester</package>
-                <package>org.apache.commons.digester.annotations</package>
-                <package>org.apache.commons.digester.annotations.handlers</package>
-                <package>org.apache.commons.digester.annotations.internal</package>
-                <package>org.apache.commons.digester.annotations.providers</package>
-                <package>org.apache.commons.digester.annotations.reflect</package>
-                <package>org.apache.commons.digester.annotations.rules</package>
-                <package>org.apache.commons.digester.annotations.spi</package>
-                <package>org.apache.commons.digester.annotations.utils</package>
-                <package>org.apache.commons.digester.parser</package>
-                <package>org.apache.commons.digester.plugins</package>
-                <package>org.apache.commons.digester.plugins.strategies</package>
-                <package>org.apache.commons.digester.substitution</package>
-                <package>org.apache.commons.digester.xmlrules</package>
                 <package>org.apache.commons.io</package>
                 <package>org.apache.commons.io.build</package>
                 <package>org.apache.commons.io.channels</package>
@@ -1267,9 +1063,6 @@
                 <package>org.apache.commons.math3.util</package>
                 <package>org.apache.commons.pool</package>
                 <package>org.apache.commons.pool.impl</package>
-                <package>org.apache.commons.pool2</package>
-                <package>org.apache.commons.pool2.impl</package>
-                <package>org.apache.commons.pool2.proxy</package>
                 <package>org.apache.commons.text</package>
                 <package>org.apache.commons.text.diff</package>
                 <package>org.apache.commons.text.io</package>
@@ -1278,10 +1071,6 @@
                 <package>org.apache.commons.text.numbers</package>
                 <package>org.apache.commons.text.similarity</package>
                 <package>org.apache.commons.text.translate</package>
-                <package>org.apache.commons.validator</package>
-                <package>org.apache.commons.validator.routines</package>
-                <package>org.apache.commons.validator.routines.checkdigit</package>
-                <package>org.apache.commons.validator.util</package>
                 <package>org.apache.log4j</package>
                 <package>org.apache.log4j.chainsaw</package>
                 <package>org.apache.log4j.config</package>
@@ -1313,34 +1102,6 @@
                 <package>org.apache.logging.log4j.status</package>
                 <package>org.apache.logging.log4j.util</package>
                 <package>org.apache.logging.log4j.util.internal</package>
-                <package>org.apache.lucene</package>
-                <package>org.apache.lucene.analysis</package>
-                <package>org.apache.lucene.analysis.tokenattributes</package>
-                <package>org.apache.lucene.codecs</package>
-                <package>org.apache.lucene.codecs.blocktree</package>
-                <package>org.apache.lucene.codecs.compressing</package>
-                <package>org.apache.lucene.codecs.lucene40</package>
-                <package>org.apache.lucene.codecs.lucene41</package>
-                <package>org.apache.lucene.codecs.lucene410</package>
-                <package>org.apache.lucene.codecs.lucene42</package>
-                <package>org.apache.lucene.codecs.lucene45</package>
-                <package>org.apache.lucene.codecs.lucene46</package>
-                <package>org.apache.lucene.codecs.lucene49</package>
-                <package>org.apache.lucene.codecs.lucene50</package>
-                <package>org.apache.lucene.codecs.lucene53</package>
-                <package>org.apache.lucene.codecs.lucene54</package>
-                <package>org.apache.lucene.codecs.perfield</package>
-                <package>org.apache.lucene.document</package>
-                <package>org.apache.lucene.index</package>
-                <package>org.apache.lucene.search</package>
-                <package>org.apache.lucene.search.similarities</package>
-                <package>org.apache.lucene.search.spans</package>
-                <package>org.apache.lucene.store</package>
-                <package>org.apache.lucene.util</package>
-                <package>org.apache.lucene.util.automaton</package>
-                <package>org.apache.lucene.util.fst</package>
-                <package>org.apache.lucene.util.mutable</package>
-                <package>org.apache.lucene.util.packed</package>
                 <package>org.apache.poi</package>
                 <package>org.apache.poi.common</package>
                 <package>org.apache.poi.common.usermodel</package>
@@ -1536,7 +1297,6 @@
                 <package>org.codehaus.jackson.sym</package>
                 <package>org.codehaus.jackson.type</package>
                 <package>org.codehaus.jackson.util</package>
-                <package>org.codehaus.mojo.animal_sniffer</package>
                 <package>org.commonmark</package>
                 <package>org.commonmark.internal</package>
                 <package>org.commonmark.internal.inline</package>
@@ -2170,7 +1930,6 @@
                 <package>org.hsqldb.types</package>
                 <package>org.hsqldb.util</package>
                 <package>org.huldra.math</package>
-                <package>org.intellij.lang.annotations</package>
                 <package>org.jaitools</package>
                 <package>org.jaitools.imageutils</package>
                 <package>org.jaitools.imageutils.iterator</package>
@@ -2227,7 +1986,6 @@
                 <package>org.jdesktop.swingx.tree</package>
                 <package>org.jdesktop.swingx.treetable</package>
                 <package>org.jdesktop.swingx.util</package>
-                <package>org.jetbrains.annotations</package>
                 <package>org.json</package>
                 <package>org.json.simple</package>
                 <package>org.json.simple.parser</package>
@@ -3049,20 +2807,8 @@
                 <binary-origin>release/modules/ext/GeographicLib-Java-1.49.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/HdrHistogram-2.1.12.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/HdrHistogram-2.1.12.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/LatencyUtils-2.0.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/LatencyUtils-2.0.3.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/SparseBitSet-1.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/SparseBitSet-1.3.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/aho-corasick-double-array-trie-1.2.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/aho-corasick-double-array-trie-1.2.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/aircompressor-0.27.jar</runtime-relative-path>
@@ -3071,18 +2817,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/angus-activation-2.0.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/angus-activation-2.0.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/animal-sniffer-annotations-1.24.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/animal-sniffer-annotations-1.24.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/annotations-12.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/annotations-12.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/annotations-4.1.1.4.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/annotations-4.1.1.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/apiguardian-api-1.1.2.jar</runtime-relative-path>
@@ -3149,10 +2883,6 @@
                 <binary-origin>release/modules/ext/commons-dbcp-1.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/commons-digester-2.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commons-digester-2.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/commons-io-2.20.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-io-2.20.0.jar</binary-origin>
             </class-path-extension>
@@ -3177,16 +2907,8 @@
                 <binary-origin>release/modules/ext/commons-pool-1.5.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/commons-pool2-2.12.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commons-pool2-2.12.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/commons-text-1.14.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-text-1.14.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/commons-validator-1.9.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commons-validator-1.9.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/controlsfx-11.2.2.jar</runtime-relative-path>
@@ -3289,36 +3011,12 @@
                 <binary-origin>release/modules/ext/grpc-api-1.75.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/grpc-context-1.75.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/grpc-context-1.75.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/grpc-core-1.75.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/grpc-core-1.75.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/grpc-netty-shaded-1.75.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/grpc-netty-shaded-1.75.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/grpc-protobuf-1.75.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/grpc-protobuf-1.75.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/grpc-protobuf-lite-1.75.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/grpc-protobuf-lite-1.75.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/grpc-stub-1.75.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/grpc-stub-1.75.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/grpc-util-1.75.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/grpc-util-1.75.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gson-2.11.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gson-2.11.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-api-32.4.jar</runtime-relative-path>
@@ -3413,10 +3111,6 @@
                 <binary-origin>release/modules/ext/hsqldb-2.7.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/hunspell-2.1.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/hunspell-2.1.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/imageio-ext-geocore-1.4.16.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/imageio-ext-geocore-1.4.16.jar</binary-origin>
             </class-path-extension>
@@ -3497,10 +3191,6 @@
                 <binary-origin>release/modules/ext/javax.activation-api-1.2.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/javax.annotation-api-1.3.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/javax.annotation-api-1.3.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/jaxb-api-2.4.0-b180830.0359.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jaxb-api-2.4.0-b180830.0359.jar</binary-origin>
             </class-path-extension>
@@ -3553,14 +3243,6 @@
                 <binary-origin>release/modules/ext/jgridshift-core-1.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jna-5.12.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jna-5.12.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jna-platform-5.12.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jna-platform-5.12.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/jocl-natives-linux-amd64.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jocl-natives-linux-amd64.jar</binary-origin>
             </class-path-extension>
@@ -3599,10 +3281,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/json-simple-1.1.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/json-simple-1.1.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jsonic-1.2.11.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jsonic-1.2.11.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jspecify-1.0.0.jar</runtime-relative-path>
@@ -3757,10 +3435,6 @@
                 <binary-origin>release/modules/ext/jython-standalone-2.7.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/language-detector-0.6.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/language-detector-0.6.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/language-en-6.7.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/language-en-6.7.jar</binary-origin>
             </class-path-extension>
@@ -3779,22 +3453,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/log4j-api-2.24.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/log4j-api-2.24.3.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lucene-backward-codecs-5.5.5.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lucene-backward-codecs-5.5.5.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lucene-core-5.5.5.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lucene-core-5.5.5.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/micrometer-core-1.7.12.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/micrometer-core-1.7.12.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/micrometer-registry-prometheus-1.7.12.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/micrometer-registry-prometheus-1.7.12.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/mockito-core-5.20.0.jar</runtime-relative-path>
@@ -3881,10 +3539,6 @@
                 <binary-origin>release/modules/ext/opentelemetry-context-1.42.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/opentelemetry-semconv-1.30.1-alpha.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/opentelemetry-semconv-1.30.1-alpha.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/org.eclipse.emf.common-2.15.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/org.eclipse.emf.common-2.15.0.jar</binary-origin>
             </class-path-extension>
@@ -3909,10 +3563,6 @@
                 <binary-origin>release/modules/ext/org.w3.xlink-32.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/perfmark-api-0.27.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/perfmark-api-0.27.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/picocontainer-1.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/picocontainer-1.2.jar</binary-origin>
             </class-path-extension>
@@ -3933,28 +3583,12 @@
                 <binary-origin>release/modules/ext/proto-google-common-protos-2.59.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/protobuf-java-3.25.8.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/protobuf-java-3.25.8.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/re2j-1.8.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/re2j-1.8.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/reactfx-2.0-M5.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/reactfx-2.0-M5.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/resilience4j-circuitbreaker-1.7.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/resilience4j-circuitbreaker-1.7.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/resilience4j-core-1.7.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/resilience4j-core-1.7.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/resilience4j-micrometer-1.7.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/resilience4j-micrometer-1.7.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/richtextfx-0.11.6.jar</runtime-relative-path>
@@ -3975,30 +3609,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/si-units-2.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/si-units-2.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/simpleclient-0.16.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/simpleclient-0.16.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/simpleclient_common-0.10.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/simpleclient_common-0.10.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/simpleclient_guava-0.16.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/simpleclient_guava-0.16.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/simpleclient_tracer_common-0.16.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/simpleclient_tracer_common-0.16.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/simpleclient_tracer_otel-0.16.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/simpleclient_tracer_otel-0.16.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/simpleclient_tracer_otel_agent-0.16.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/simpleclient_tracer_otel_agent-0.16.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/slf4j-api-2.0.17.jar</runtime-relative-path>
@@ -4043,14 +3653,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/uom-lib-common-2.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/uom-lib-common-2.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/vavr-0.10.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/vavr-0.10.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/vavr-match-0.10.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/vavr-match-0.10.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/wellbehavedfx-0.3.3.jar</runtime-relative-path>
