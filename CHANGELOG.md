@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## Changes in December 2025
+-   Removed `StyleGenerator` which was unused.
+
 ## Changes in November 2025
 -   Removed `ContentPairwiseSimilarityServices.MutableDouble` which was no longer needed.
 
