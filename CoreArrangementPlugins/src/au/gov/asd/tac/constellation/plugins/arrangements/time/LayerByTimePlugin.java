@@ -164,11 +164,11 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     public static final String PER_LAYER_DIRECTION_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "per_layer_direction");
     private static final String PER_LAYER_DIRECTION_NAME = "Direction to arrange new layers in: ";
 
-    public static final String NUM_ROWS_OR_COLS_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "numRowsOrCols");
+    public static final String NUM_ROWS_OR_COLS_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "num_rows_or_cols");
     private static final String NUM_ROWS_OR_COLS_NAME = "Number of: ";
     private static final int NUM_ROWS_OR_COLS_DEFAULT = 1;
 
-    public static final String ROW_OR_COL_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "rowOrCol");
+    public static final String ROW_OR_COL_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "row_or_col");
     private static final String ROW_OR_COL_NAME = "";
 
     public static final String IN_LAYER_DIRECTION_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "in_layer_direction");
@@ -367,36 +367,13 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         return parameters;
     }
 
-    private void updatePerLayerDirectionChoices() {
-        // update per layer direction based on if rows or columns is chosen
-        final boolean isRow = ROWS.equals(rowOrColParam.getStringValue());
-
-        final String substring = isRow ? X : Y;
-        final ArrayList<String> directionList = new ArrayList<>(directionsMap.keySet());
-        directionList.removeIf(s -> !s.contains(substring));
-        SingleChoiceParameterType.setOptions(perLayerDirectionParameter, directionList);
-
-        final String choice = isRow ? X : Y_DOWN;
-        SingleChoiceParameterType.setChoice(perLayerDirectionParameter, choice);
-    }
-
-    private void disableArrange2dOptions() {
-        final boolean enable = arrange2DParam.getBooleanValue();
-
-        perLayerDirectionParameter.setEnabled(enable);
-        numRowsOrColsParam.setEnabled(enable);
-        rowOrColParam.setEnabled(enable);
-        inLayerDirectionParameter.setEnabled(enable);
-        distanceBetweenLayers.setEnabled(enable);
-        distanceBetweenRowsOrCols.setEnabled(enable);
-    }
-
     @Override
     public void updateParameters(final Graph graph, final PluginParameters parameters) {
 
         final List<String> dateTimeAttributes = new ArrayList<>();
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int attributeCount = rg.getAttributeCount(GraphElementType.TRANSACTION);
+            System.out.println("attributeCount " + attributeCount);
             for (int i = 0; i < attributeCount; i++) {
                 final int attrId = rg.getAttribute(GraphElementType.TRANSACTION, i);
                 final Attribute attr = new GraphAttribute(rg, attrId);
@@ -405,7 +382,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 }
             }
         }
-
+        System.out.println("dateTimeAttributes " + dateTimeAttributes);
         SingleChoiceParameterType.setOptions(dtAttrParam, dateTimeAttributes);
         parameters.addController(DATETIME_ATTRIBUTE_PARAMETER_ID, (masterId, paramMap, change) -> {
 
@@ -454,6 +431,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     @Override
     public void read(final GraphReadMethods rg, final PluginInteraction interaction, final PluginParameters parameters) throws PluginException, InterruptedException {
+        System.out.println("a");
         // We have the dtAttr from the original wg: we should have been passed the label, but never mind.
         // We need to get the label from the original, so we can get the dtAttr for the copy.
         final String dtAttrOrig = parameters.getParameters().get(DATETIME_ATTRIBUTE_PARAMETER_ID).getStringValue();
@@ -462,14 +440,15 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             LOGGER.log(Level.SEVERE, "A date-time attribute must be specified.");
             return;
         }
-
+        System.out.println("b " + dtAttrOrig);
         final int dtAttrOrigId = rg.getAttribute(GraphElementType.TRANSACTION, dtAttrOrig);
+        System.out.println("dtAttrOrigId " + dtAttrOrigId);
         if (dtAttrOrigId == Graph.NOT_FOUND) {
             interaction.notify(PluginNotificationLevel.ERROR, "A valid date-time attribute must be specified.");
             LOGGER.log(Level.SEVERE, "A valid date-time attribute must be specified.");
             return;
         }
-
+        System.out.println("c");
         // Make a copy of the graph
         Graph copy;
         try {
@@ -484,7 +463,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             copy = null;
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
-
+        System.out.println("d");
         if (copy == null) {
             // The copy failed, drop out now.
             return;
@@ -494,6 +473,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
         final WritableGraph wgcopy = copy.getWritableGraph("Layer by time", true);
         try {
+            System.out.println("e");
             final int dtAttr = wgcopy.getAttribute(GraphElementType.TRANSACTION, dt.getName());
 
             // Parameters
@@ -710,6 +690,30 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         } finally {
             wgcopy.commit();
         }
+    }
+
+    private void updatePerLayerDirectionChoices() {
+        // update per layer direction based on if rows or columns is chosen
+        final boolean isRow = ROWS.equals(rowOrColParam.getStringValue());
+
+        final String substring = isRow ? X : Y;
+        final ArrayList<String> directionList = new ArrayList<>(directionsMap.keySet());
+        directionList.removeIf(s -> !s.contains(substring));
+        SingleChoiceParameterType.setOptions(perLayerDirectionParameter, directionList);
+
+        final String choice = isRow ? X : Y_DOWN;
+        SingleChoiceParameterType.setChoice(perLayerDirectionParameter, choice);
+    }
+
+    private void disableArrange2dOptions() {
+        final boolean enable = arrange2DParam.getBooleanValue();
+
+        perLayerDirectionParameter.setEnabled(enable);
+        numRowsOrColsParam.setEnabled(enable);
+        rowOrColParam.setEnabled(enable);
+        inLayerDirectionParameter.setEnabled(enable);
+        distanceBetweenLayers.setEnabled(enable);
+        distanceBetweenRowsOrCols.setEnabled(enable);
     }
 
     private int findMaxLayerSize(final GraphWriteMethods graph) {
