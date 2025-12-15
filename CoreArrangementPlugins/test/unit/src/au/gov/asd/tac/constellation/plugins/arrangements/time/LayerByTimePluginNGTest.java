@@ -125,6 +125,9 @@ public class LayerByTimePluginNGTest {
         // add vertices
         final int vxId0 = graph.addVertex();
         final int vxId1 = graph.addVertex();
+        
+        final int xAttr = VisualConcept.VertexAttribute.X.ensure(graph);
+        final int yAttr = VisualConcept.VertexAttribute.Y.ensure(graph);
 
         // add transactions
         final int txId0 = graph.addTransaction(vxId0, vxId1, false);
