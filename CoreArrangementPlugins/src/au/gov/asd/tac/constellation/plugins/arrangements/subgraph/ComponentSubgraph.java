@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.subgraph;
 
 import au.gov.asd.tac.constellation.graph.GraphAttributeMerger;
+import au.gov.asd.tac.constellation.graph.GraphElementMerger;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
@@ -49,6 +50,7 @@ public class ComponentSubgraph implements GraphWriteMethods {
     protected int[] edgePositions = null;
     protected int[] transactionList = null;
     protected int[] transactionPositions = null;
+    private GraphElementMerger graphElementMerger;
 
     public static SubgraphFactory getSubgraphFactory() {
         return (final GraphWriteMethods wg, final Set<Integer> vertexIDs) -> new ComponentSubgraph(wg, vertexIDs);
@@ -809,4 +811,10 @@ public class ComponentSubgraph implements GraphWriteMethods {
     public Object getAttributeDefaultValue(final int attribute) {
         return proxy.getAttributeDefaultValue(attribute);
     }
+
+    @Override
+    public void setGraphElementMerger(final GraphElementMerger graphElementMerger) {
+        this.graphElementMerger = graphElementMerger;
+    }
+
 }
