@@ -373,7 +373,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         final List<String> dateTimeAttributes = new ArrayList<>();
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int attributeCount = rg.getAttributeCount(GraphElementType.TRANSACTION);
-            System.out.println("attributeCount " + attributeCount);
             for (int i = 0; i < attributeCount; i++) {
                 final int attrId = rg.getAttribute(GraphElementType.TRANSACTION, i);
                 final Attribute attr = new GraphAttribute(rg, attrId);
@@ -382,7 +381,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 }
             }
         }
-        System.out.println("dateTimeAttributes " + dateTimeAttributes);
+
         SingleChoiceParameterType.setOptions(dtAttrParam, dateTimeAttributes);
         parameters.addController(DATETIME_ATTRIBUTE_PARAMETER_ID, (masterId, paramMap, change) -> {
 
@@ -431,7 +430,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     @Override
     public void read(final GraphReadMethods rg, final PluginInteraction interaction, final PluginParameters parameters) throws PluginException, InterruptedException {
-        System.out.println("a");
         // We have the dtAttr from the original wg: we should have been passed the label, but never mind.
         // We need to get the label from the original, so we can get the dtAttr for the copy.
         final String dtAttrOrig = parameters.getParameters().get(DATETIME_ATTRIBUTE_PARAMETER_ID).getStringValue();
@@ -440,29 +438,22 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             LOGGER.log(Level.SEVERE, "A date-time attribute must be specified.");
             return;
         }
-        System.out.println("b " + dtAttrOrig);
+
         final int dtAttrOrigId = rg.getAttribute(GraphElementType.TRANSACTION, dtAttrOrig);
-        System.out.println("dtAttrOrigId " + dtAttrOrigId);
         if (dtAttrOrigId == Graph.NOT_FOUND) {
             interaction.notify(PluginNotificationLevel.ERROR, "A valid date-time attribute must be specified.");
             LOGGER.log(Level.SEVERE, "A valid date-time attribute must be specified.");
             return;
         }
-        System.out.println("c");
 
         // Make a copy of the graph
         final Graph copy = copyGraph(rg);
-        System.out.println("copy " + copy + " rg " + rg);
 
         final Attribute dt = new GraphAttribute(rg, dtAttrOrigId);
 
         final WritableGraph wgcopy = copy.getWritableGraph("Layer by time", true);
-        System.out.println("wgcopy " + wgcopy);
-        System.out.println("Printing all vertex ids of wgcopy in read...");
-        printWritableGraph(wgcopy);
-        
+
         try {
-            System.out.println("e");
             final int dtAttr = wgcopy.getAttribute(GraphElementType.TRANSACTION, dt.getName());
 
             // Parameters
@@ -478,7 +469,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final boolean arrangeIn2d = parameters.getParameters().get(ARRANGE_2D_PARAMETER_ID).getBooleanValue();
 
             final Vector3f perLayerDirection = ((Vector3f) directionsMap.get(parameters.getParameters().get(PER_LAYER_DIRECTION_PARAMETER_ID).getStringValue())).copy();
-            //System.out.println("perLayerDirection " + perLayerDirection);
             final int numRowsOrCols = parameters.getParameters().get(NUM_ROWS_OR_COLS_PARAMETER_ID).getIntegerValue();
             final int layerScale = parameters.getParameters().get(LAYER_DIST_PARAMETER_ID).getIntegerValue();
             final int columnScale = parameters.getParameters().get(ROW_OR_COL_DIST_PARAMETER_ID).getIntegerValue();
@@ -495,28 +485,21 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final int txGuideline = wgcopy.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "layer_guideline", "This transaction is a layer guideline", false, null);
             final ConstellationColor guidelineColor = ConstellationColor.getColorValue(0.25F, 0.25F, 0.25F, 1F);
             wgcopy.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, ORIGINAL_ID_LABEL, "Original Node Id", -1, null);
-            System.out.println("f");
 
             // Create lists of layers
             final List<Float> values = new ArrayList<>();
             final MutableIntObjectMap<MutableFloatList> remappedLayers = new IntObjectHashMap<>();
             final MutableIntObjectMap<String> displayNames = new IntObjectHashMap<>();
             if (useIntervals) {
-                System.out.println("g1");
                 final int intervalUnit = LAYER_INTERVALS.get(parameters.getParameters().get(UNIT_PARAMETER_ID).getStringValue());
                 final int intervalAmount = parameters.getParameters().get(AMOUNT_PARAMETER_ID).getIntegerValue();
-                System.out.println("Printing all vertex ids of wgcopy in read BEFORE buildIntervals...");
-                printWritableGraph(wgcopy);
                 buildIntervals(wgcopy, values, remappedLayers, displayNames, dtAttr, start.toInstant(), end.toInstant(), intervalUnit, intervalAmount);
             } else {
-                System.out.println("g2");
                 final int calendarUnit = BIN_CALENDAR_UNITS.get(parameters.getParameters().get(UNIT_PARAMETER_ID).getStringValue());
                 final int binAmount = parameters.getParameters().get(AMOUNT_PARAMETER_ID).getIntegerValue();
                 buildBins(wgcopy, values, remappedLayers, displayNames, dtAttr, start.toInstant(), end.toInstant(), calendarUnit, binAmount);
             }
 
-            System.out.println("Printing all vertex ids of wgcopy in read AFTER buildIntervals...");
-            printWritableGraph(wgcopy);
             // Modify the copied graph to show our layers.
             float z = 0;
             final float step = getWidth(wgcopy) / values.size();
@@ -544,7 +527,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             layersPerRowOrColRemainder -= 1;
 
             final Object[] transactionLayerKeyValues = transactionLayers.keyValuesView().toArray();
-            System.out.println("transactionLayerKeyValues.length " + transactionLayerKeyValues.length);
+
             // Each layer
             for (int i = 0; i < transactionLayerKeyValues.length; i++) {
                 final FloatObjectPair<MutableIntList> currentLayer = (FloatObjectPair) transactionLayerKeyValues[i];
@@ -584,7 +567,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     }
                 }
 
-                System.out.println("arrangeIn2d " + arrangeIn2d);
                 if (arrangeIn2d) {
                     // For now, arrange the nodes just relative to the current step
                     final int xAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
@@ -602,8 +584,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                         wgcopy.setFloatValue(xAttr, nodeId, nodePosition.getX());
                         wgcopy.setFloatValue(yAttr, nodeId, nodePosition.getY());
                         wgcopy.setFloatValue(zAttr, nodeId, nodePosition.getZ());
-
-                        System.out.println("nodePosition " + nodePosition);
 
                         nodePosition.add(inLayerDirection);
 
@@ -706,39 +686,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         }
     }
 
-    // TODO REMOVE
-    private void printGrpahVerts(final Graph graph) {
-        try (final ReadableGraph rg = graph.getReadableGraph()) {
-            final int xAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-            final int yAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-            final int zAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-
-            for (int i = 0; i < rg.getVertexCount(); i++) {
-                final int vert = rg.getVertex(i);
-                final float x = rg.getFloatValue(xAttr, vert);
-                final float y = rg.getFloatValue(yAttr, vert);
-                final float z = rg.getFloatValue(zAttr, vert);
-
-                System.out.println("Pos: " + i + " id: " + vert + " x " + x + " y " + y + " z " + z);
-            }
-        }
-    }
-
-    private void printWritableGraph(final WritableGraph graph) {
-        final int xAttr = graph.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yAttr = graph.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zAttr = graph.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-
-        for (int i = 0; i < graph.getVertexCount(); i++) {
-            final int vert = graph.getVertex(i);
-            final float x = graph.getFloatValue(xAttr, vert);
-            final float y = graph.getFloatValue(yAttr, vert);
-            final float z = graph.getFloatValue(zAttr, vert);
-
-            System.out.println("Pos: " + i + " id: " + vert + " x " + x + " y " + y + " z " + z);
-        }
-    }
-
     private void updatePerLayerDirectionChoices() {
         // update per layer direction based on if rows or columns is chosen
         final boolean isRow = ROWS.equals(rowOrColParam.getStringValue());
@@ -812,28 +759,22 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * @param amount The number of interval units per layer.
      */
     private void buildIntervals(final GraphWriteMethods wgcopy, final List<Float> values, final MutableIntObjectMap<MutableFloatList> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Instant d1, final Instant d2, final int unit, final int amount) {
-        System.out.println("buildIntervals");
         // Convert to milliseconds.
         final long intervalLength = unit * amount * 1000L;
         final long d1t = d1.toEpochMilli();
         final long d2t = d2.toEpochMilli();
 
         final BitSet txUnused = new BitSet();
-        System.out.println(wgcopy.getTransactionCount()); // I think becasue the nodes havent been added yet
         for (int position = 0; position < wgcopy.getTransactionCount(); position++) {
-            System.out.println("position " + position);
             final int txId = wgcopy.getTransaction(position);
 
             // Only use transactions that have a datetime value set.
             final long date = wgcopy.getLongValue(dtAttr, txId);
 
-            System.out.println("date: " + date + " d1t: " + d1t + " d2t: " + d2t);
-            if (d1t <= date && date <= d2t) { // FIXED
+            if (d1t <= date && date <= d2t) {
 
                 final float layer = (float) (date - d1t) / intervalLength;
-                System.out.println("layer " + layer);
                 if (!transactionLayers.containsKey(layer)) {
-                    System.out.println("putting...");
                     transactionLayers.put(layer, new IntArrayList());
                 }
 
@@ -985,10 +926,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * id
      */
     private int getDuplicateNode(final GraphWriteMethods graph, final MutableObjectIntMap<String> nodeDups, final int nodeId, final int layer) {
-        System.out.println("getDuplicateNode");
         final String key = String.format("%d/%d", nodeId, layer);
+
         if (!nodeDups.containsKey(key)) {
-            System.out.println("There isn't a duplicate for this node in this layer, so let's create one.");
             // There isn't a duplicate for this node in this layer, so let's create one.
             final int dupNodeId = graph.addVertex();
             nodeDups.put(key, dupNodeId);
@@ -1059,10 +999,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         // If this transaction belongs in a different layer, move it there by creating two duplicate nodes
         // in this layer and duplicating the transaction.
         if (layer > 0) {
-            System.out.println("Printing all vertex ids in nodesAsLayers BEFORE getDuplicate...");
-            for (int i = 0; i < graph.getVertexCount(); i++) {
-                System.out.println("Pos " + i + " id: " + graph.getVertex(i));
-            }
             // To move this transaction to the correct layer, we need two new nodes.
             // Do they already exist?
             // Create (or fetch the already created) two duplicate nodes
@@ -1074,11 +1010,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
             final int edgeId = graph.getTransactionEdge(txId);
             final boolean isDirected = graph.getEdgeDirection(edgeId) != Graph.FLAT;
-            System.out.println("Printing all vertex ids in nodesAsLayers AFTER getDuplicate...");
-            for (int i = 0; i < graph.getVertexCount(); i++) {
-                System.out.println("Pos " + i + " id: " + graph.getVertex(i));
-            }
-            System.out.println("dupSNodeId " + dupSNodeId + " sNodeId " + sNodeId);
             final int dupTxId = graph.addTransaction(dupSNodeId, dupDNodeId, isDirected);
 
             // For each new node, remember which layer it was duplicated to.

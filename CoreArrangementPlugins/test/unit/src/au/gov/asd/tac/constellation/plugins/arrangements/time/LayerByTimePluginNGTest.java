@@ -52,23 +52,24 @@ import org.testng.annotations.Test;
  */
 public class LayerByTimePluginNGTest {
 
-    public LayerByTimePluginNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Left intentionally blank
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Left intentionally blank
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Left intentionally blank
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Left intentionally blank
     }
 
     /**
@@ -106,19 +107,6 @@ public class LayerByTimePluginNGTest {
         }
     }
 
-//    /**
-//     * Test of updateParameters method, of class LayerByTimePlugin.
-//     */
-//    @Test
-//    public void testUpdateParameters() {
-//        System.out.println("updateParameters");
-//        Graph graph = null;
-//        PluginParameters parameters = null;
-//        LayerByTimePlugin instance = new LayerByTimePlugin();
-//        instance.updateParameters(graph, parameters);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of read method, of class LayerByTimePlugin.
      *
@@ -145,21 +133,12 @@ public class LayerByTimePluginNGTest {
         final int vxId3 = storeGraph.addVertex();
         final int[] vertArray = {vxId0, vxId1, vxId2, vxId3};
 
-        // Set all vertices' postion to 0
+        // Set all vertices' postion to a default value
         for (final int vert : vertArray) {
             storeGraph.setFloatValue(xAttr, vert, 1F);
             storeGraph.setFloatValue(yAttr, vert, 2F);
             storeGraph.setFloatValue(zAttr, vert, 3F);
         }
-
-//        System.out.println("Printing initial storeGraph setup...");
-//        for (final int vert : vertArray) {
-//            final float x = storeGraph.getFloatValue(xAttr, vert);
-//            final float y = storeGraph.getFloatValue(yAttr, vert);
-//            final float z = storeGraph.getFloatValue(zAttr, vert);
-//
-//            System.out.println("x " + x + " y " + y + " z " + z);
-//        }
 
         // add transactions
         final int txId0 = storeGraph.addTransaction(vxId0, vxId1, false);
@@ -170,9 +149,10 @@ public class LayerByTimePluginNGTest {
 
         // Need to initalise dualGraph here, and to commit nothing to have storeGraph's vertices actually be reflected
         final DualGraph dualGraph = spy(new DualGraph(schema, storeGraph));
-        // This might eb a bug currently
+        // This might be a bug currently
         final WritableGraph wg = dualGraph.getWritableGraph("Initial Setup", true);
         try {
+            // Left intentionally blank
         } finally {
             wg.commit();
         }
