@@ -15,7 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.time;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
@@ -23,11 +26,24 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import static au.gov.asd.tac.constellation.plugins.arrangements.time.LayerByTimePlugin.ARRANGE_2D_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.plugins.arrangements.time.LayerByTimePlugin.DATETIME_ATTRIBUTE_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.plugins.arrangements.time.LayerByTimePlugin.DATE_RANGE_PARAMETER_ID;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Map;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyFloat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -116,46 +132,87 @@ public class LayerByTimePluginNGTest {
     @Test
     public void testRead() throws Exception {
         System.out.println("read");
-        // Setup graph
-
-        // create an analytic graph
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
-        final StoreGraph graph = new StoreGraph(schema);
+        final StoreGraph storeGraph = new StoreGraph(schema);
+
+        final ZonedDateTime now = ZonedDateTime.now();
+
+        final int xAttr = VisualConcept.VertexAttribute.X.ensure(storeGraph);
+        final int yAttr = VisualConcept.VertexAttribute.Y.ensure(storeGraph);
+        final int zAttr = VisualConcept.VertexAttribute.Z.ensure(storeGraph);
+
+        final int txDateTimeAttr = TemporalConcept.TransactionAttribute.DATETIME.ensure(storeGraph);
 
         // add vertices
-        final int vxId0 = graph.addVertex();
-        final int vxId1 = graph.addVertex();
-        
-        final int xAttr = VisualConcept.VertexAttribute.X.ensure(graph);
-        final int yAttr = VisualConcept.VertexAttribute.Y.ensure(graph);
+        final int vxId0 = storeGraph.addVertex();
+        final int vxId1 = storeGraph.addVertex();
+        final int vxId2 = storeGraph.addVertex();
+        final int vxId3 = storeGraph.addVertex();
+        final int[] vertArray = {vxId0, vxId1, vxId2, vxId3};
+
+        // Set all vertices' postion to 0
+        for (final int vert : vertArray) {
+            storeGraph.setFloatValue(xAttr, vert, 1F);
+            storeGraph.setFloatValue(yAttr, vert, 2F);
+            storeGraph.setFloatValue(zAttr, vert, 3F);
+        }
+
+        System.out.println("Printing initial storeGraph setup...");
+        for (final int vert : vertArray) {
+            final float x = storeGraph.getFloatValue(xAttr, vert);
+            final float y = storeGraph.getFloatValue(yAttr, vert);
+            final float z = storeGraph.getFloatValue(zAttr, vert);
+
+            System.out.println("x " + x + " y " + y + " z " + z);
+        }
 
         // add transactions
-        final int txId0 = graph.addTransaction(vxId0, vxId1, false);
+        final int txId0 = storeGraph.addTransaction(vxId0, vxId1, false);
+        final int txId1 = storeGraph.addTransaction(vxId2, vxId3, false);
 
-        final int dateTimeAttr = TemporalConcept.TransactionAttribute.DATETIME.ensure(graph);
+        storeGraph.setLongValue(txDateTimeAttr, txId0, now.plusDays(1).toInstant().toEpochMilli());
+        storeGraph.setLongValue(txDateTimeAttr, txId1, now.plusDays(2).toInstant().toEpochMilli());
+
+        // Need to initalise dualGraph here, and to commit nothing to have storeGraph's vertices actually be reflected
+        final DualGraph dualGraph = spy(new DualGraph(schema, storeGraph));
+        // This might eb a bug currently
+        final WritableGraph wg = dualGraph.getWritableGraph("Initial Setup", true);
+        try {
+        } finally {
+            wg.commit();
+        }
 
         final PluginInteraction interaction = mock(PluginInteraction.class);
 
-        final LayerByTimePlugin instance = new LayerByTimePlugin();
+        final LayerByTimePlugin instance = spy(new LayerByTimePlugin()); // Spy the instance to override copyGraph()
+        doReturn(dualGraph).when(instance).copyGraph(storeGraph);
+
         final PluginParameters parameters = instance.createParameters();
 
-//        final PluginParameters parametersToUpdate = new PluginParameters();
-//
-//        final PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue> dtAttrParam = SingleChoiceParameterType.build(DATETIME_ATTRIBUTE_PARAMETER_ID);
-//        dtAttrParam.setName(DATETIME_PARAMETER_ID_NAME);
-//        dtAttrParam.setDescription(DATETIME_ATTRIBUTE_PARAMETER_ID_DESCRIPTION);
-//        dtAttrParam.setRequired(true);
-//        parametersToUpdate.addParameter(dtAttrParam);
-        // parameters.updateParameterValues(parametersToUpdate);
         parameters.setStringValue(DATETIME_ATTRIBUTE_PARAMETER_ID, "DateTime");
+        parameters.setBooleanValue(ARRANGE_2D_PARAMETER_ID, true);
 
-        instance.read(graph, null, parameters);
-        instance.updateParameters(new DualGraph(null, graph), parameters);
+        parameters.setDateTimeRangeValue(DATE_RANGE_PARAMETER_ID, new DateTimeRange(now, now.plusDays(4)));
+
+        instance.updateParameters(dualGraph, parameters);
         System.out.println(parameters);
-        instance.read(graph, interaction, parameters);
+        instance.read(storeGraph, interaction, parameters);
+
+        System.out.println("dualGraph vert positions after test...");
+        try (final ReadableGraph rg = dualGraph.getReadableGraph()) {
+
+            for (int i = 0; i < rg.getVertexCount(); i++) {
+                final int vert = rg.getVertex(i);
+                final float x = rg.getFloatValue(xAttr, vert);
+                final float y = rg.getFloatValue(yAttr, vert);
+                final float z = rg.getFloatValue(zAttr, vert);
+
+                System.out.println("x " + x + " y " + y + " z " + z);
+            }
+        }
+
+        verify(dualGraph, atLeast(1)).getWritableGraph("Layer by time", true);
+        //verify(wgMock, atLeast(1)).setFloatValue(anyInt(), anyInt(), anyFloat());
     }
 
-//    public static final String DATETIME_ATTRIBUTE_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "date_time_attribute");
-//    private static final String DATETIME_PARAMETER_ID_NAME = "Date-time attribute";
-//    private static final String DATETIME_ATTRIBUTE_PARAMETER_ID_DESCRIPTION = "The date-time attribute to use for the layered graph.";
 }
