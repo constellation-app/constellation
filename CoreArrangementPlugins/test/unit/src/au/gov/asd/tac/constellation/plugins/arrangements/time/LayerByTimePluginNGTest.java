@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.time;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
@@ -32,18 +31,14 @@ import static au.gov.asd.tac.constellation.plugins.arrangements.time.LayerByTime
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
-import java.time.ZoneId;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.time.ZonedDateTime;
 import java.util.Map;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyFloat;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -157,14 +152,14 @@ public class LayerByTimePluginNGTest {
             storeGraph.setFloatValue(zAttr, vert, 3F);
         }
 
-        System.out.println("Printing initial storeGraph setup...");
-        for (final int vert : vertArray) {
-            final float x = storeGraph.getFloatValue(xAttr, vert);
-            final float y = storeGraph.getFloatValue(yAttr, vert);
-            final float z = storeGraph.getFloatValue(zAttr, vert);
-
-            System.out.println("x " + x + " y " + y + " z " + z);
-        }
+//        System.out.println("Printing initial storeGraph setup...");
+//        for (final int vert : vertArray) {
+//            final float x = storeGraph.getFloatValue(xAttr, vert);
+//            final float y = storeGraph.getFloatValue(yAttr, vert);
+//            final float z = storeGraph.getFloatValue(zAttr, vert);
+//
+//            System.out.println("x " + x + " y " + y + " z " + z);
+//        }
 
         // add transactions
         final int txId0 = storeGraph.addTransaction(vxId0, vxId1, false);
@@ -198,21 +193,25 @@ public class LayerByTimePluginNGTest {
         System.out.println(parameters);
         instance.read(storeGraph, interaction, parameters);
 
-        System.out.println("dualGraph vert positions after test...");
+        // Verify nodes are in correct positions
         try (final ReadableGraph rg = dualGraph.getReadableGraph()) {
+            final Vector3f[] vertPosArray = {new Vector3f(0, 0, 0), new Vector3f(10, 0, 0), new Vector3f(10, -10, 0), new Vector3f(0, -10, 0)};
 
             for (int i = 0; i < rg.getVertexCount(); i++) {
                 final int vert = rg.getVertex(i);
+                final Vector3f expectedPos = vertPosArray[i];
+
                 final float x = rg.getFloatValue(xAttr, vert);
                 final float y = rg.getFloatValue(yAttr, vert);
                 final float z = rg.getFloatValue(zAttr, vert);
 
-                System.out.println("x " + x + " y " + y + " z " + z);
+                assertEquals(expectedPos.getX(), x);
+                assertEquals(expectedPos.getY(), y);
+                assertEquals(expectedPos.getZ(), z);
             }
         }
 
         verify(dualGraph, atLeast(1)).getWritableGraph("Layer by time", true);
-        //verify(wgMock, atLeast(1)).setFloatValue(anyInt(), anyInt(), anyFloat());
     }
 
 }
