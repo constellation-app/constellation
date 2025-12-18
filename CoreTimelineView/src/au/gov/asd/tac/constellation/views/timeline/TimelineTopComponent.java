@@ -30,11 +30,13 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.awt.BorderLayout;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -62,6 +64,7 @@ import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -100,7 +103,8 @@ import org.openide.windows.TopComponent;
     "NoGraph=<No Active Graph>",
     "NoTemporal=<No Temporal Data Present On Current Graph>"
 })
-public final class TimelineTopComponent extends TopComponent implements LookupListener, GraphChangeListener, UndoRedo.Provider {
+@ServiceProvider(service = AbstractTopComponent.class)
+public final class TimelineTopComponent extends AbstractTopComponent implements LookupListener, GraphChangeListener, UndoRedo.Provider {
 
     private static final Logger LOGGER = Logger.getLogger(TimelineTopComponent.class.getName());
 
@@ -336,6 +340,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         result.addLookupListener(this);
         // Populate the graph, this ensures that when timeline view is opened after being closed, it will be updated
         populateFromGraphNode(true);
+        setFloating(Bundle.CTL_TimelineTopComponent(), 0, 0, Spawn.BOTTOM);
     }
 
     public void zoomFromOverview(final ScrollEvent se) {
@@ -368,7 +373,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
 
     @Override
-    public void componentClosed() {
+    protected void componentClosed() {
         super.componentClosed();
         result.removeLookupListener(this);
     }
@@ -783,7 +788,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             if (temporalAttrId != Graph.NOT_FOUND) {
                 currentTemporalAttributeModificationCount = rg.getValueModificationCounter(temporalAttrId);
             }
-            
+
             // Detect graph changes to attributes:
             if (currentAttributeModificationCount != oldAttributeModificationCount) {
                 Platform.runLater(() -> {
@@ -808,4 +813,19 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         }
     }
     // </editor-fold>
+
+    @Override
+    protected void initContent() {
+        // Required for AbstractTopComponent, intentionally left blank.
+    }
+
+    @Override
+    protected StackPane createContent() {
+        return root;
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_TimelineTopComponent(), Boolean.FALSE);
+    }
 }
