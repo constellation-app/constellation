@@ -366,7 +366,7 @@ public class Vector3fNGTest {
         v.a[2] = 0F;
         assertTrue(v.isZero());
     }
-    
+
     @Test
     public void testEquals() {
         assertTrue(new Vector3f(F1, F2, F3).equals(new Vector3f(F1, F2, F3)));
@@ -381,5 +381,18 @@ public class Vector3fNGTest {
     @Test
     public void testToString() {
         assertEquals(new Vector3f(F1, F2, F3).toString(), "3f[123.000000,321.000000,456.000000]");
+    }
+
+    /**
+     * Test if copy function works
+     */
+    @Test
+    public void testCopy() {
+        final Vector3f vOriginal = new Vector3f(F1, F2, F3);
+        final Vector3f vCopy = vOriginal.copy();
+
+        assertEquals(vOriginal.a[0], vCopy.a[0]);
+        assertEquals(vOriginal.a[1], vCopy.a[1]);
+        assertEquals(vOriginal.a[2], vCopy.a[2]);
     }
 }
