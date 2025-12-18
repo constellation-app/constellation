@@ -1103,10 +1103,10 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         if (graph.getVertexCount() == 0) {
             return 0;
         }
-        float minx = Float.MAX_VALUE;
-        float miny = Float.MAX_VALUE;
-        float maxx = -Float.MAX_VALUE;
-        float maxy = -Float.MAX_VALUE;
+        float minX = Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE;
+        float maxX = -Float.MAX_VALUE;
+        float maxY = -Float.MAX_VALUE;
         final int xAttr = VisualConcept.VertexAttribute.X.get(graph);
         final int yAttr = VisualConcept.VertexAttribute.Y.get(graph);
         for (int position = 0; position < graph.getVertexCount(); position++) {
@@ -1115,19 +1115,19 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final float x = graph.getFloatValue(xAttr, vxId);
             final float y = graph.getFloatValue(yAttr, vxId);
 
-            if (x < minx) {
-                minx = x;
+            if (x < minX) {
+                minX = x;
             }
-            if (x > maxx) {
-                maxx = x;
+            if (x > maxX) {
+                maxX = x;
             }
-            if (y < miny) {
-                miny = y;
+            if (y < minY) {
+                minY = y;
             }
-            if (y > maxy) {
-                maxy = y;
+            if (y > maxY) {
+                maxY = y;
             }
         }
-        return Math.max(maxx - minx, maxy - miny);
+        return Math.max(maxX - minX, maxY - minY);
     }
 }

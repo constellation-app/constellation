@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.time;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
@@ -193,4 +194,47 @@ public class LayerByTimePluginNGTest {
         verify(dualGraph, atLeast(1)).getWritableGraph("Layer by time", true);
     }
 
+    @Test
+    public void testCopyGraph() throws Exception {
+        System.out.println("copyGraph");
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        final StoreGraph storeGraph = new StoreGraph(schema);
+
+        final int xAttr = VisualConcept.VertexAttribute.X.ensure(storeGraph);
+        final int yAttr = VisualConcept.VertexAttribute.Y.ensure(storeGraph);
+        final int zAttr = VisualConcept.VertexAttribute.Z.ensure(storeGraph);
+
+        // add vertices
+        final int vxId0 = storeGraph.addVertex();
+        final int vxId1 = storeGraph.addVertex();
+        final int vxId2 = storeGraph.addVertex();
+        final int vxId3 = storeGraph.addVertex();
+        final int[] vertArray = {vxId0, vxId1, vxId2, vxId3};
+
+        // Set all vertices' postion to a default value
+        int count = 0;
+        for (final int vert : vertArray) {
+            storeGraph.setFloatValue(xAttr, vert, count);
+            storeGraph.setFloatValue(yAttr, vert, count);
+            storeGraph.setFloatValue(zAttr, vert, count);
+            count++;
+        }
+
+        final LayerByTimePlugin instance = new LayerByTimePlugin();
+        final Graph result = instance.copyGraph(storeGraph);
+
+        try (final ReadableGraph rg = result.getReadableGraph()) {
+            for (int i = 0; i < rg.getVertexCount(); i++) {
+                final int vert = rg.getVertex(i);
+
+                final float x = rg.getFloatValue(xAttr, vert);
+                final float y = rg.getFloatValue(yAttr, vert);
+                final float z = rg.getFloatValue(zAttr, vert);
+
+                assertEquals(storeGraph.getFloatValue(xAttr, vert), x);
+                assertEquals(storeGraph.getFloatValue(yAttr, vert), y);
+                assertEquals(storeGraph.getFloatValue(zAttr, vert), z);
+            }
+        }
+    }
 }
