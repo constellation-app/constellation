@@ -235,11 +235,6 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
         return new RightButton(
                 new Label("Select"), ButtonType.DROPDOWN) {
 
-//            @Override
-//            public EventHandler<? super MouseEvent> action() {
-//                return event -> executeRightButtonAction();
-//            }
-
             @Override
             public void show() {
                 // show our menu instead

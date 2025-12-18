@@ -640,7 +640,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      *
      * @param menu
      */
-    protected final void showDropDown(final ConstellationInputDropDown menu) {
+    public final void showDropDown(final ConstellationInputDropDown menu) {
         menu.show(this, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
         setMenuShown(true);
     }

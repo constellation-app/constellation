@@ -30,6 +30,13 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
@@ -200,6 +207,29 @@ public class SingleChoiceInputNGTest {
         final String spinnerResult = ConstellationInputConstants.NEXT_BUTTON_LABEL;
         final RightButtonSupport.RightButton newResult = spinnerInstance.getRightButton();
         assertEquals(newResult.getValue(), spinnerResult);
+    }
+    
+    /**
+     * Test of executeRightButtonAction method, of class SingleChoiceInput.
+     */
+    @Test
+    public void testExecuteRightButtonAction() {
+        System.out.println("executeRightButtonAction");
+        final SingleChoiceInput singleChoiceInput = spy(new SingleChoiceInput(ChoiceType.SINGLE_DROPDOWN));
+        doNothing().when(singleChoiceInput).showDropDown(Mockito.any());
+        assertThatCode(() -> singleChoiceInput.executeRightButtonAction()).doesNotThrowAnyException();
+        
+        doReturn(false).when(singleChoiceInput).isMenuShown();
+        doNothing().when(singleChoiceInput).showDropDown(Mockito.any());       
+
+        final RightButtonSupport.RightButton rightButton = singleChoiceInput.getRightButton();
+        rightButton.show();
+        verify(singleChoiceInput, times(2)).executeRightButtonAction();
+        
+        doReturn(true).when(singleChoiceInput).isMenuShown();
+        // second consecutive time it is called, setMenuShown(false) is called
+        rightButton.show();
+        verify(singleChoiceInput, times(3)).executeRightButtonAction();
     }
 
     /**
