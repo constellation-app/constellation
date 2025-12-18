@@ -119,6 +119,7 @@ public class LayerByTimePluginNGTest {
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
         final StoreGraph storeGraph = new StoreGraph(schema);
 
+        // Setup storeGraph
         final ZonedDateTime now = ZonedDateTime.now();
 
         final int xAttr = VisualConcept.VertexAttribute.X.ensure(storeGraph);
@@ -158,22 +159,20 @@ public class LayerByTimePluginNGTest {
             wg.commit();
         }
 
-        final PluginInteraction interaction = mock(PluginInteraction.class);
-
+        // Create and setup instance
         final LayerByTimePlugin instance = spy(new LayerByTimePlugin()); // Spy the instance to override copyGraph()
         doReturn(dualGraph).when(instance).copyGraph(storeGraph);
 
         final PluginParameters parameters = instance.createParameters();
-
         parameters.setStringValue(DATETIME_ATTRIBUTE_PARAMETER_ID, "DateTime");
         parameters.setBooleanValue(ARRANGE_2D_PARAMETER_ID, true);
-
         parameters.setDateTimeRangeValue(DATE_RANGE_PARAMETER_ID, new DateTimeRange(now, now.plusDays(4)));
 
+        // Run function
         instance.updateParameters(dualGraph, parameters);
-        instance.read(storeGraph, interaction, parameters);
+        instance.read(storeGraph, mock(PluginInteraction.class), parameters);
 
-        // Verify nodes are in correct positions
+        // Verify nodes are in correct position
         try (final ReadableGraph rg = dualGraph.getReadableGraph()) {
             final Vector3f[] vertPosArray = {new Vector3f(0, 0, 0), new Vector3f(10, 0, 0), new Vector3f(10, -10, 0), new Vector3f(0, -10, 0)};
 
@@ -211,7 +210,7 @@ public class LayerByTimePluginNGTest {
         final int vxId3 = storeGraph.addVertex();
         final int[] vertArray = {vxId0, vxId1, vxId2, vxId3};
 
-        // Set all vertices' postion to a default value
+        // Set all vertices' postion
         int count = 0;
         for (final int vert : vertArray) {
             storeGraph.setFloatValue(xAttr, vert, count);
@@ -220,9 +219,11 @@ public class LayerByTimePluginNGTest {
             count++;
         }
 
+        // Create instance and run function
         final LayerByTimePlugin instance = new LayerByTimePlugin();
         final Graph result = instance.copyGraph(storeGraph);
 
+        // Verify the copied graph has the same vertices
         try (final ReadableGraph rg = result.getReadableGraph()) {
             for (int i = 0; i < rg.getVertexCount(); i++) {
                 final int vert = rg.getVertex(i);
