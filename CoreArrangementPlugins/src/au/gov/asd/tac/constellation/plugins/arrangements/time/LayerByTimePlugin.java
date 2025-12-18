@@ -1088,7 +1088,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         copyAttributes(graph, txId, tlTxId, GraphElementType.TRANSACTION);
         graph.removeTransaction(txId);
 
-        //return new NodePair(tlSrcVxId, tlDstVxId);
         nodesInLayer.add(tlSrcVxId);
         nodesInLayer.add(tlDstVxId);
     }

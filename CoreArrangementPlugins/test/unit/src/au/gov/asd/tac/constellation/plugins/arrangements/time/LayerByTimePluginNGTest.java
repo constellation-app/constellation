@@ -170,7 +170,6 @@ public class LayerByTimePluginNGTest {
         parameters.setDateTimeRangeValue(DATE_RANGE_PARAMETER_ID, new DateTimeRange(now, now.plusDays(4)));
 
         instance.updateParameters(dualGraph, parameters);
-        System.out.println(parameters);
         instance.read(storeGraph, interaction, parameters);
 
         // Verify nodes are in correct positions
