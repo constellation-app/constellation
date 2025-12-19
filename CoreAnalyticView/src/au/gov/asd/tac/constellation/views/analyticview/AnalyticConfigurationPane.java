@@ -481,8 +481,10 @@ public class AnalyticConfigurationPane extends VBox {
         } else if (questionListPane.isExpanded() && currentQuestion != null) {
             final Class<? extends AnalyticAggregator<?>> questionAggregatorType = currentQuestion.getAggregatorType();
             aggregators.add(new AnalyticAggregatorParameterValue(AnalyticUtilities.lookupAnalyticAggregator(questionAggregatorType)));
-            SingleChoiceParameterType.setOptionsData(aggregatorParameter, aggregators);
-            SingleChoiceParameterType.setChoiceData(aggregatorParameter, aggregators.get(0));
+            if (aggregators != null) {
+                SingleChoiceParameterType.setOptionsData(aggregatorParameter, aggregators);
+                SingleChoiceParameterType.setChoiceData(aggregatorParameter, aggregators.get(0));
+            }         
         }
         pluginList.getItems().forEach(selectablePlugin
                 -> selectablePlugin.setUpdatedParameter(aggregatorParameter.getId(), aggregatorParameter.getStringValue()));
