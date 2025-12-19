@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ChoiceInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputButton.ButtonType;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.ChoiceType;
@@ -34,6 +35,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
@@ -66,16 +68,13 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
     @Override
     public EventHandler<KeyEvent> getShortcuts() {
         //Add shortcuts where users can increment and decrement the date using up and down arrows
-        return (event) -> {
-            switch (event.getCode()) {
-                case UP -> {
-                    this.decrementChoice();
-                    event.consume();
-                }
-                case DOWN -> {
-                    this.incrementChoice();
-                    event.consume();
-                }
+        return event -> {
+            if (event.getCode() == KeyCode.UP) {
+                this.decrementChoice();
+                event.consume();
+            } else if (event.getCode() == KeyCode.DOWN) {
+                this.incrementChoice();
+                event.consume();
             }
         };
     }
@@ -171,18 +170,16 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
 
     @Override
     public List<MenuItem> getLocalMenuItems() {
-        final List<MenuItem> items = new ArrayList();
+        final List<MenuItem> items = new ArrayList<>();
         if (type != null) {
-            switch (type) {
-                case SINGLE_SPINNER -> {
-                    final MenuItem next = new MenuItem("Increment");
-                    next.setOnAction(value -> executeRightButtonAction());
-                    items.add(next);
+            if (type == SINGLE_SPINNER) {
+                final MenuItem next = new MenuItem("Increment");
+                next.setOnAction(value -> executeRightButtonAction());
+                items.add(next);
 
-                    final MenuItem prev = new MenuItem("Decrement");
-                    prev.setOnAction(value -> executeLeftButtonAction());
-                    items.add(prev);
-                }
+                final MenuItem prev = new MenuItem("Decrement");
+                prev.setOnAction(value -> executeLeftButtonAction());
+                items.add(prev);
             }
             final MenuItem choose = new MenuItem("Select Choice");
             choose.setOnAction(value -> executeRightButtonAction());
@@ -193,17 +190,14 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
 
     @Override
     public LeftButton getLeftButton() {
-        switch (type) {
-            case SINGLE_SPINNER -> {
-                return new LeftButton(new Label(ConstellationInputConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
-                    public EventHandler<? super MouseEvent> action() {
-                        return event -> executeLeftButtonAction();
-                    }
-                };
-            }
-            default -> {
-                return null;
-            }
+        if (type == SINGLE_SPINNER) {
+            return new LeftButton(new Label(ConstellationInputConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
+                public EventHandler<? super MouseEvent> action() {
+                    return event -> executeLeftButtonAction();
+                }
+            };
+        } else {
+            return null;
         }
     }
 
@@ -249,9 +243,10 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
 
     @Override
     public void executeRightButtonAction() {
-        switch (type) {
-            case SINGLE_SPINNER -> this.incrementChoice();
-            case SINGLE_DROPDOWN -> this.showDropDown(new ChoiceInputDropDown(this));
+        if (type == SINGLE_SPINNER) {
+            this.incrementChoice();
+        } else if (type == SINGLE_DROPDOWN) {
+            this.showDropDown(new ChoiceInputDropDown(this));
         }
     }
 
@@ -301,9 +296,8 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
                     final Labeled item = switch (field.type) {
                         case SINGLE_DROPDOWN -> {
                             final Label label = new Label(choice.toString());
-                            label.setOnMouseClicked(event -> {
-                                field.setChoice(choice);
-                            });
+                            label.setOnMouseClicked(event
+                                    -> field.setChoice(choice));
                             yield label;
                         }
                         case SINGLE_SPINNER -> new Label();
@@ -312,7 +306,6 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
                     if (!icons.isEmpty()) {
                         item.setGraphic(icons.get(i));
                     }
-                //    boxes.add(item);
                     this.registerCustomMenuItem(item);
                 }
             }

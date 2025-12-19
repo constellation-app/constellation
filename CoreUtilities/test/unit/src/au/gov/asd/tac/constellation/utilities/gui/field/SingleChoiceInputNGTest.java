@@ -70,14 +70,6 @@ public class SingleChoiceInputNGTest {
         }
     }
 
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
-
     /**
      * Test of getChoice method, of class SingleChoiceInput.
      */

@@ -58,7 +58,6 @@ public abstract class ConstellationInputButton extends ComboBox<String> {
 
         background.setOnMouseEntered(event -> background.setFill(color.brighter()));
         background.setOnMouseExited(event -> background.setFill(color));
-       // background.setOnMouseClicked(action());
         label.setMouseTransparent(true);
         label.setPrefWidth(END_CELL_PREF_WIDTH);
         label.setAlignment(Pos.CENTER);
@@ -88,8 +87,6 @@ public abstract class ConstellationInputButton extends ComboBox<String> {
             super.layoutChildren();
         }
     }
-    
-   // public abstract EventHandler<? super MouseEvent> action();
     
     public enum ButtonType{
         POPUP,
