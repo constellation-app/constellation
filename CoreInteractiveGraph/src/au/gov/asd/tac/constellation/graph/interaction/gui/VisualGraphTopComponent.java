@@ -547,6 +547,11 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     @Override
+    public void componentActivated() {
+        visualUpdate();
+    }
+    
+    @Override
     public void componentClosed() {
         animationManager.interruptAllAnimations();
         super.componentClosed();
@@ -582,13 +587,14 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
+            
+        final HandleIoProgress ioProgressHandler = new HandleIoProgress(String.format("Graph %s has changed...", getName()));
+        ioProgressHandler.start();
+                  
         long modificationCount;
 
-        ReadableGraph rg = graph.getReadableGraph();
-        try {
-            modificationCount = rg.getGlobalModificationCounter();
-        } finally {
-            rg.release();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            modificationCount = rg.getGlobalModificationCounter();       
         }
 
         if (modificationCount != graphModificationCount && graphModificationCount == graphModificationCountBase) {
@@ -599,12 +605,17 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 requestVisible();
             });
         }
+        SwingUtilities.invokeLater(() -> {
+            visualManager.refreshVisualProcessor();
+            visualManager.getVisualComponent().repaint();
+            visualUpdate();
+            ioProgressHandler.finish();
+        });            
     }
 
     private void visualUpdate() {
 
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int drawFlagsAttribute = VisualConcept.GraphAttribute.DRAW_FLAGS.get(rg);
             final int visibleAboveThresholdAttribute = VisualConcept.GraphAttribute.VISIBLE_ABOVE_THRESHOLD.get(rg);
             final int displayModeIs3DAttribute = VisualConcept.GraphAttribute.DISPLAY_MODE_3D.get(rg);
@@ -659,8 +670,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                         throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
                 }
             }
-        } finally {
-            rg.release();
         }
     }
 
