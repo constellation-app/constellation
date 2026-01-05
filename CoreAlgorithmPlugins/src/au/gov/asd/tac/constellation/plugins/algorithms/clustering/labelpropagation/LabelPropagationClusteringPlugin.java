@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers;
+package au.gov.asd.tac.constellation.plugins.algorithms.clustering.labelpropagation;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -31,12 +31,12 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @PluginInfo(tags = {PluginTags.ANALYTIC})
-@NbBundle.Messages("ChineseWhispersPlugin=Chinese Whispers")
-public class ChineseWhispersPlugin extends SimpleEditPlugin {
+@NbBundle.Messages("LabelPropagationClusteringPlugin=Label Propagation Clustering")
+public class LabelPropagationClusteringPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        final ChineseWhispers cw = new ChineseWhispers(wg);
-        cw.cluster();
+        final LabelPropagationClustering lpc = new LabelPropagationClustering(wg);
+        lpc.cluster();
     }
 }
