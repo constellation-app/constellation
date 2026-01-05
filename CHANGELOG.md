@@ -1,7 +1,7 @@
 # Constellation Changes
 
 ## Changes in January 2026
--   Removed `AlgorithmicError`, `FindSubgraphs`, `SP2Traverse`, and `ShortestPaths2Plugin` which were unused.
+-   Removed `AlgorithmicError`, `KTrussDialogPanel`, `FindSubgraphs`, `SP2Traverse`, and `ShortestPaths2Plugin` which were unused.
 -   Removed all classes in `au.gov.asd.tac.constellation.plugins.arrangements.planar` which were unused.
 -   Removed `CircTreeChoicePanel` and `MDSChoicePanel` which were unused.
 -   Removed `ConsolidatedDialog`, `PackagePanel`, and `ReserveLock` which were unused.
