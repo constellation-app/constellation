@@ -516,7 +516,7 @@ public class WebServer {
                 LOGGER.log(Level.INFO, "Python package was installed!");
             } else {
                 LOGGER.log(Level.INFO, "Could not find python package, copying script to notebook directory...");
-                Platform.runLater(() -> downloadPythonClientNotebookDir());
+                downloadPythonClientNotebookDir();
             }
 
         } catch (final InterruptedException ex) {
