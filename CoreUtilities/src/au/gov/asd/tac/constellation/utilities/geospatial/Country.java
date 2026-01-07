@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public enum Country {
 
     AFGHANISTAN("AF", "AFG", "Afghan", "Afghanistan"),
-    ALAND_ISLANDS("AX", "ALA", null, "Aland Islands"),
+    ALAND_ISLANDS("AX", "ALA", null, "Åland", "Aland Islands"),
     ALBANIA("AL", "ALB", "Albanian", "Albania"),
     ALGERIA("DZ", "DZA", "Algerian", "Algeria"),
     AMERICAN_SAMOA("AS", "ASM", "American Samoan", "American Samoa"),
@@ -223,7 +223,7 @@ public enum Country {
     SAINT_VINCENT_AND_THE_GRENADINES("VC", "VCT", "Saint Vincentian", "Saint Vincent and the Grenadines"),
     SAMOA("WS", "WSM", "Samoan", "Samoa"),
     SAN_MARINO("SM", "SMR", "Sammarinese", "San Marino"),
-    SAO_TOME_AND_PRINCIPE("ST", "STP", "Santomean", "Sao Tome and Principe"),
+    SAO_TOME_AND_PRINCIPE("ST", "STP", "Santomean", "São Tomé and Príncipe", "Sao Tome and Principe"),
     SAUDI_ARABIA("SA", "SAU", "Saudi", "Saudi Arabia"),
     SENEGAL("SN", "SEN", "Senegalese", "Senegal"),
     SERBIA("RS", "SRB", "Serbian", "Serbia"),
