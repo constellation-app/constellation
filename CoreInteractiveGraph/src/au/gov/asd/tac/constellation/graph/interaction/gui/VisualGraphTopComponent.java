@@ -89,6 +89,8 @@ import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
+import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
+import com.jogamp.opengl.awt.GLCanvas;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -606,11 +608,21 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             });
         }
         SwingUtilities.invokeLater(() -> {
-            visualManager.refreshVisualProcessor();
-            visualManager.getVisualComponent().repaint();
-            visualUpdate();
-            ioProgressHandler.finish();
-        });            
+
+            Graphics graphics = getGraphics();
+
+            Component visualComponent = visualManager.getVisualComponent();
+            if (visualComponent instanceof GLCanvas vc) {
+                if (visualManager.getProcessor() instanceof GLVisualProcessor gvp) {
+                    vc.flushGLRunnables();
+                    vc.swapBuffers();
+                    vc.update(graphics);
+                    gvp.performVisualUpdate();
+                    ioProgressHandler.finish();
+                }
+            }
+
+        });          
     }
 
     private void visualUpdate() {
