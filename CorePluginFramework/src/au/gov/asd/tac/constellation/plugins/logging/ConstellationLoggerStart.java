@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.logging;
 
+import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
 import org.openide.windows.OnShowing;
 
 /**
@@ -26,15 +27,9 @@ import org.openide.windows.OnShowing;
 @OnShowing
 public class ConstellationLoggerStart implements Runnable {
 
-    /**
-     * This is the system property that is set to true in order to make the AWT
-     * thread run in headless mode for tests, etc.
-     */
-    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
-
     @Override
     public void run() {
-        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+        if (HeadlessUtilities.isHeadless()) {
             return;
         }
         ConstellationLogger.getDefault().applicationStarted();

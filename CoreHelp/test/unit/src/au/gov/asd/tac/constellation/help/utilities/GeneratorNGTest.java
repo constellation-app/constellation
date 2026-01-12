@@ -71,21 +71,17 @@ public class GeneratorNGTest {
     }
 
     /**
-     * Test of run method, of class Generator.
+     * Test of updateTOCFiles method, of class Generator.
      */
     @Test
-    public void testRun() {
-        System.out.println("run");
+    public void testUpdateTOCFiles() {
+        System.out.println("updateTOCFiles");
 
         final String previousProperty = System.getProperty("constellation.environment");
-        final String previousHeadlessPorperty = System.getProperty("java.awt.headless");
 
         try {
             // Test on IDE Version
             System.setProperty("constellation.environment", "IDE(CORE)");
-            
-            // This particular test needs to NOT be in headless mode
-            System.setProperty("java.awt.headless", "false");
  
             try (final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
                 final List<File> tocXMLFiles = new ArrayList<>();
@@ -104,7 +100,7 @@ public class GeneratorNGTest {
                     tocgeneratorStaticMock.when(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenAnswer((Answer<Void>) invocation -> null);
                     final Generator generator = new Generator();
                     System.out.println("prop : " + System.getProperty("constellation.environment"));
-                    generator.run();
+                    generator.updateTOCFiles();
 
                     // verify that the toc file was called to be created, and that the xml mappings were to be converted
                     tocgeneratorStaticMock.verify(() -> TOCGenerator.createTOCFile(Mockito.anyString()), times(1));
@@ -115,9 +111,6 @@ public class GeneratorNGTest {
             // set back to previous property
             if (previousProperty != null) {
                 System.setProperty("constellation.environment", previousProperty);
-            }
-            if (previousHeadlessPorperty != null) {
-                System.setProperty("java.awt.headless", previousHeadlessPorperty);
             }
         }
     }

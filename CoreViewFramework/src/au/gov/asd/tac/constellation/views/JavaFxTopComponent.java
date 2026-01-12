@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
+import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -120,7 +121,7 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
             // set the font on initialise
             updateFont();
             
-            if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            if (HeadlessUtilities.isHeadless()) {
                 return;
             }
             jfxContainer.setScene(scene);
