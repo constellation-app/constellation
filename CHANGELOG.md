@@ -1,5 +1,9 @@
 # Constellation Changes
 
+## Changes in January 2026
+-   Renamed `Chinese Whispers` to `Label Propagation`.
+-   Added AnalyticSchemav7UpdateProvider for Label Propagation changes.
+
 ## Changes in December 2025
 -   Removed `StyleGenerator` which was unused.
 

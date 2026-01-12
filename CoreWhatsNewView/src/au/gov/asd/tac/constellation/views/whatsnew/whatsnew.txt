@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2026-01-13 Renamed "Chinese Whispers" to "Label Propagation"
+<p> "Chinese Whispers" clustering has been renamed to "Label Propagation".
+<p> A new UpdateProvider (v7) has been added convert the changes.
+
 == 2025-11-11 Add New Experimental Histogram View
 <p>A new version of the histogram view has been added to the Experimental menu. This aligns the look and feel to be closer to that of other views
 <p>Can be found in Experimental->Views->New Histogram
