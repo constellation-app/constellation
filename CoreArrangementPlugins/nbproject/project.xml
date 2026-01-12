@@ -177,7 +177,6 @@
                 </test-type>
             </test-dependencies>
             <public-packages>
-                <package>au.gov.asd.tac.constellation.plugins.arrangements.planar</package>
                 <package>au.gov.asd.tac.constellation.plugins.arrangements</package>
             </public-packages>
         </data>
