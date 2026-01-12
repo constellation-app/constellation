@@ -70,12 +70,12 @@ public class AnalyticSchemaV5UpdateProviderNGTest {
         
         int oldKTrussColorVertexAttribute = graph.addAttribute(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.KTruss.Colour", null, null, null);
         int oldHierarchicalColorVertexAttribute = graph.addAttribute(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Hierarchical.Colour", null, null, null);
-        int oldLabelPropagationColorVertexAttribute = graph.addAttribute(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.LabelPropagation.Colour", null, null, null);
+        int oldChineseWhispersColorVertexAttribute = graph.addAttribute(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.ChineseWhispers.Colour", null, null, null);
         int oldInfomapColorVertexAttribute = graph.addAttribute(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Infomap.Colour", null, null, null);
         
         int oldKTrussColorTransactionAttribute = graph.addAttribute(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.KTruss.Colour", null, null, null);
         int oldHierarchicalColorTransactionAttribute = graph.addAttribute(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Hierarchical.Colour", null, null, null);
-        int oldLabelPropagationColorTransactionAttribute = graph.addAttribute(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.LabelPropagation.Colour", null, null, null);
+        int oldChineseWhispersColorTransactionAttribute = graph.addAttribute(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.ChineseWhispers.Colour", null, null, null);
         int oldInfomapColorTransactionAttribute = graph.addAttribute(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Infomap.Colour", null, null, null);
         
         final int vxId1 = graph.addVertex();
@@ -85,12 +85,12 @@ public class AnalyticSchemaV5UpdateProviderNGTest {
         
         graph.setObjectValue(oldKTrussColorVertexAttribute, vxId1, ConstellationColor.AMETHYST);
         graph.setObjectValue(oldHierarchicalColorVertexAttribute, vxId1, ConstellationColor.AZURE);
-        graph.setObjectValue(oldLabelPropagationColorVertexAttribute, vxId1, ConstellationColor.BANANA);
+        graph.setObjectValue(oldChineseWhispersColorVertexAttribute, vxId1, ConstellationColor.BANANA);
         graph.setObjectValue(oldInfomapColorVertexAttribute, vxId1, ConstellationColor.BLACK);
         
         graph.setObjectValue(oldKTrussColorTransactionAttribute, tId, ConstellationColor.BLUE);
         graph.setObjectValue(oldHierarchicalColorTransactionAttribute, tId, ConstellationColor.BLUEBERRY);
-        graph.setObjectValue(oldLabelPropagationColorTransactionAttribute, tId, ConstellationColor.BLUSH);
+        graph.setObjectValue(oldChineseWhispersColorTransactionAttribute, tId, ConstellationColor.BLUSH);
         graph.setObjectValue(oldInfomapColorTransactionAttribute, tId, ConstellationColor.BROWN);
         
         int kTrussColorVertexAttribute = ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.get(graph);
@@ -105,12 +105,12 @@ public class AnalyticSchemaV5UpdateProviderNGTest {
         
         assertNotEquals(oldKTrussColorVertexAttribute, Graph.NOT_FOUND);
         assertNotEquals(oldHierarchicalColorVertexAttribute, Graph.NOT_FOUND);
-        assertNotEquals(oldLabelPropagationColorVertexAttribute, Graph.NOT_FOUND);
+        assertNotEquals(oldChineseWhispersColorVertexAttribute, Graph.NOT_FOUND);
         assertNotEquals(oldInfomapColorVertexAttribute, Graph.NOT_FOUND);
         
         assertNotEquals(oldKTrussColorTransactionAttribute, Graph.NOT_FOUND);
         assertNotEquals(oldHierarchicalColorTransactionAttribute, Graph.NOT_FOUND);
-        assertNotEquals(oldLabelPropagationColorTransactionAttribute, Graph.NOT_FOUND);
+        assertNotEquals(oldChineseWhispersColorTransactionAttribute, Graph.NOT_FOUND);
         assertNotEquals(oldInfomapColorTransactionAttribute, Graph.NOT_FOUND);
         
         assertEquals(kTrussColorVertexAttribute, Graph.NOT_FOUND);
@@ -128,12 +128,12 @@ public class AnalyticSchemaV5UpdateProviderNGTest {
         
         oldKTrussColorVertexAttribute = graph.getAttribute(GraphElementType.VERTEX, "Cluster.KTruss.Colour");
         oldHierarchicalColorVertexAttribute = graph.getAttribute(GraphElementType.VERTEX, "Cluster.Hierarchical.Colour");
-        oldLabelPropagationColorVertexAttribute = graph.getAttribute(GraphElementType.VERTEX, "Cluster.LabelPropagation.Colour");
+        oldChineseWhispersColorVertexAttribute = graph.getAttribute(GraphElementType.VERTEX, "Cluster.ChineseWhispers.Colour");
         oldInfomapColorVertexAttribute = graph.getAttribute(GraphElementType.VERTEX, "Cluster.Infomap.Colour");
         
         oldKTrussColorTransactionAttribute = graph.getAttribute(GraphElementType.TRANSACTION, "Cluster.KTruss.Colour");
         oldHierarchicalColorTransactionAttribute = graph.getAttribute(GraphElementType.TRANSACTION, "Cluster.Hierarchical.Colour");
-        oldLabelPropagationColorTransactionAttribute = graph.getAttribute(GraphElementType.TRANSACTION, "Cluster.LabelPropagation.Colour");
+        oldChineseWhispersColorTransactionAttribute = graph.getAttribute(GraphElementType.TRANSACTION, "Cluster.ChineseWhispers.Colour");
         oldInfomapColorTransactionAttribute = graph.getAttribute(GraphElementType.TRANSACTION, "Cluster.Infomap.Colour");
         
         kTrussColorVertexAttribute = ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.get(graph);
@@ -148,12 +148,12 @@ public class AnalyticSchemaV5UpdateProviderNGTest {
         
         assertEquals(oldKTrussColorVertexAttribute, Graph.NOT_FOUND);
         assertEquals(oldHierarchicalColorVertexAttribute, Graph.NOT_FOUND);
-        assertEquals(oldLabelPropagationColorVertexAttribute, Graph.NOT_FOUND);
+        assertEquals(oldChineseWhispersColorVertexAttribute, Graph.NOT_FOUND);
         assertEquals(oldInfomapColorVertexAttribute, Graph.NOT_FOUND);
         
         assertEquals(oldKTrussColorTransactionAttribute, Graph.NOT_FOUND);
         assertEquals(oldHierarchicalColorTransactionAttribute, Graph.NOT_FOUND);
-        assertEquals(oldLabelPropagationColorTransactionAttribute, Graph.NOT_FOUND);
+        assertEquals(oldChineseWhispersColorTransactionAttribute, Graph.NOT_FOUND);
         assertEquals(oldInfomapColorTransactionAttribute, Graph.NOT_FOUND);
         
         assertNotEquals(kTrussColorVertexAttribute, Graph.NOT_FOUND);

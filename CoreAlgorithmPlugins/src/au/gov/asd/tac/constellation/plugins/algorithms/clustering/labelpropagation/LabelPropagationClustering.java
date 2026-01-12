@@ -28,7 +28,7 @@ import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
  * Label propagation clustering (previously Chinese whispers clustering) based on
  * BiemannTextGraph06.
  * <p>
- * Label propagation clustering - an Efficient Graph Clustering
+ * Chinese Whispers - an Efficient Graph Clustering
  * Algorithm and its Application to Natural Language processing Problems.
  * Chris Biemann University of Liepzig, NLP Department
  * <p>

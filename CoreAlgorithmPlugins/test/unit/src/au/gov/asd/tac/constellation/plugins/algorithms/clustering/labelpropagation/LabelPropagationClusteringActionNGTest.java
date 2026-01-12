@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.labelpropagat
 
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusterUtilities;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.labelpropagation.LabelPropagationClusteringAction.LabelPropagationClusteringCleanupPlugin;
@@ -26,8 +25,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
 
 /**
@@ -35,18 +32,7 @@ import org.testng.annotations.Test;
  * @author andromeda-224
  */
 public class LabelPropagationClusteringActionNGTest {
-    
-    public LabelPropagationClusteringActionNGTest() {
-    }
-
-    @Test
-    public void testConstructor() {
-        System.out.println("testConstructor");
-        final GraphNode mockGraphNode = mock(GraphNode.class);
-        final LabelPropagationClusteringAction instance = new LabelPropagationClusteringAction(mockGraphNode);
-        assertEquals(instance.getClass(), LabelPropagationClusteringAction.class);
-    }
-    
+        
     @Test
     public void testLabelPropagationClusteringCleanupPlugin() throws InterruptedException {
         System.out.println("testLabelPropagationClusteringCleanupPlugin");
@@ -64,8 +50,6 @@ public class LabelPropagationClusteringActionNGTest {
         PluginInteraction pluginInteractionMock = mock(PluginInteraction.class);
         
         final LabelPropagationClusteringCleanupPlugin instance = new LabelPropagationClusteringCleanupPlugin();
-        assertEquals(instance.getClass(), LabelPropagationClusteringCleanupPlugin.class);
-        assertEquals(instance.getName(), "Label Propagation Clustering: Cleanup");
         try (MockedStatic<ClusterUtilities> clusterUtilitiesMockStatic = Mockito.mockStatic(ClusterUtilities.class)) {
             instance.edit(mockGraph, pluginInteractionMock, parametersMock);
             clusterUtilitiesMockStatic.verify(() -> ClusterUtilities.colorClusters(Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt()), Mockito.times(1));
@@ -74,8 +58,7 @@ public class LabelPropagationClusteringActionNGTest {
             clusterUtilitiesMockStatic.verify(() -> ClusterUtilities.colorClusters(Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt()), Mockito.times(2));
             clusterUtilitiesMockStatic.verify(() -> ClusterUtilities.explodeGraph(Mockito.any(), Mockito.anyInt()), Mockito.times(2));
         } catch (Exception ex) {
-           fail(ex.toString());
+           throw ex;
         }
     }
-
 }

@@ -23,7 +23,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**
@@ -49,12 +48,8 @@ public class LabelPropagationClusteringPluginNGTest {
         PluginInteraction pluginInteractionMock = mock(PluginInteraction.class);
         
         final LabelPropagationClusteringPlugin instance = new LabelPropagationClusteringPlugin();
-        assertEquals(instance.getClass(), LabelPropagationClusteringPlugin.class);
         instance.edit(mockGraph, pluginInteractionMock, parametersMock);
         verify(mockGraph, times(3)).getVertex(anyInt());
         verify(mockGraph, times(1)).setIntValue(anyInt(), anyInt(), anyInt());
-    }
-
-    
-   
+    }   
 }

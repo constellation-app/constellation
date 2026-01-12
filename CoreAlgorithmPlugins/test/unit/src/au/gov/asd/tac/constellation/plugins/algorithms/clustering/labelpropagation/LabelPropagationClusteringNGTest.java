@@ -31,17 +31,6 @@ import org.testng.annotations.Test;
  */
 public class LabelPropagationClusteringNGTest {
     
-    public LabelPropagationClusteringNGTest() {
-    }
-
-    @Test
-    public void testConstructor() {
-        System.out.println("testConstructor");
-        final GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
-        final LabelPropagationClustering instance = new LabelPropagationClustering(mockGraph);
-        assertEquals(instance.getClass(), LabelPropagationClustering.class);
-    }
-    
     @Test
     public void testCluster() {
         System.out.println("testCluster");
@@ -57,11 +46,9 @@ public class LabelPropagationClusteringNGTest {
         when(mockGraph.getLinkTransactionCount(link)).thenReturn(1);
 
         final LabelPropagationClustering instance = new LabelPropagationClustering(mockGraph);
-        assertEquals(instance.getClass(), LabelPropagationClustering.class);
         instance.cluster();
         assertEquals(instance.getCluster(0), 0);
         verify(mockGraph, times(3)).getVertex(anyInt());
         verify(mockGraph, times(1)).setIntValue(anyInt(), anyInt(), anyInt());
     }
-
 }
