@@ -46,12 +46,6 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
     protected ScrollPane scrollPane;
     
     /**
-     * This is the system property that is set to true in order to make the AWT
-     * thread run in headless mode for tests, etc.
-     */
-    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
-    
-    /**
      * A JavaFxTopComponent will have a ScrollPane by default, as it cannot know
      * the expected layout of the given pane. If you wish to remove the
      * horizontal scroll bar, you can override this method to return
