@@ -65,55 +65,55 @@ au.gov.asd.tac.constellation.views.scripting 1.0
     </thead>
     <tbody>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="SAttribute.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SAttribute</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/SAttribute.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SAttribute</a></td>
     <td class="colLast"><div class="block">
     A representation of an attribute for use with scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="SCollection.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SCollection</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/SCollection.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SCollection</a></td>
     <td class="colLast"><div class="block">
     A collection which efficiently stores vertices or transactions for use with scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="SEdge.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SEdge</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/SEdge.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SEdge</a></td>
     <td class="colLast"><div class="block">
     A representation of an edge for use with scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="SGraph.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SGraph</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/SGraph.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SGraph</a></td>
     <td class="colLast"><div class="block">
     A representation of a graph for use with scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="SLink.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SLink</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/SLink.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SLink</a></td>
     <td class="colLast"><div class="block">
     A representation of a link for use with scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="SReadableGraph.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SReadableGraph</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/SReadableGraph.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SReadableGraph</a></td>
     <td class="colLast"><div class="block">
     A representation of a read lock on a graph for use with scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="STransaction.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">STransaction</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/STransaction.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">STransaction</a></td>
     <td class="colLast"><div class="block">
     A representation of a transaction for use with scripting.
     </div></td>
     </tr>
     <tr class="even rowColor">
-    <td class="colFirst"><a href="SVertex.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SVertex</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/SVertex.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SVertex</a></td>
     <td class="colLast"><div class="block">
     A representation of a vertex for use with scripting.
     </div></td>
     </tr>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="SWritableGraph.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SWritableGraph</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/SWritableGraph.md" title="class in au.gov.asd.tac.constellation.views.scripting.graph">SWritableGraph</a></td>
     <td class="colLast"><div class="block">
     A representation of a graph write lock for use with scripting.
     </div></td>
