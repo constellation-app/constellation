@@ -39,7 +39,7 @@ import org.testng.annotations.Test;
 public class LabelPropagationClusteringActionNGTest {
 
     @Test
-    public void testLabelPropagationClusteringCleanupPlugin() throws InterruptedException, Exception {
+    public void testLabelPropagationClusteringCleanupPlugin() throws Exception {
         System.out.println("testLabelPropagationClusteringCleanupPlugin");
         final GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
         final int link = 101;
@@ -66,7 +66,7 @@ public class LabelPropagationClusteringActionNGTest {
     }
 
     @Test
-    public void testLabelPropagationClusteringActionPerformed() throws InterruptedException, Exception {
+    public void testLabelPropagationClusteringActionPerformed() throws Exception {
         System.out.println("testLabelPropagationClusteringActionPerformed");
 
         try (MockedConstruction<LabelPropagationClusteringCleanupPlugin> mockConstruction = Mockito.mockConstruction(LabelPropagationClusteringCleanupPlugin.class)) {
