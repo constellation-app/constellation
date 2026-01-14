@@ -19,11 +19,14 @@ import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
 import au.gov.asd.tac.constellation.utilities.log.ConstellationLogFormatter;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 import javax.swing.Action;
@@ -50,24 +53,19 @@ public class Startup implements Runnable {
     // continous integration scripts use this to update the version dynamically
     private static final String VERSION = "(under development)";
 
-    /**
-     * This is the system property that is set to true in order to make the AWT
-     * thread run in headless mode for tests, etc.
-     */
-    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
-
     private static final Logger LOGGER = Logger.getLogger(Startup.class.getName());
 
     @Override
     public void run() {
-
-        // Setup the logging format
-        if (LOGGER.getUseParentHandlers()) {
-            final Handler[] parentHandlers = LOGGER.getParent().getHandlers();
-            for (final Handler handler : parentHandlers) {
-                handler.setFormatter(new ConstellationLogFormatter());
+        CompletableFuture.runAsync(() -> {
+            // Setup the logging format
+            if (LOGGER.getUseParentHandlers()) {
+                final Handler[] parentHandlers = LOGGER.getParent().getHandlers();
+                for (final Handler handler : parentHandlers) {
+                    handler.setFormatter(new ConstellationLogFormatter());
+                }
             }
-        }
+        }, Executors.newSingleThreadExecutor());
 
         ConstellationSecurityManager.startSecurityLater(null);
         
@@ -92,7 +90,7 @@ public class Startup implements Runnable {
                 : BrandingUtilities.APPLICATION_NAME;
 
         // We only want to run this if headless is NOT set to true
-        if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+        if (!HeadlessUtilities.isHeadless()) {
             ConstellationLAFSettings.applyTabColorSettings();        
             // update the main window title with the version number
             WindowManager.getDefault().invokeWhenUIReady(() -> {

@@ -23,12 +23,15 @@ import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.DialogDisplayer;
@@ -45,8 +48,7 @@ import org.openide.windows.OnShowing;
  */
 @OnShowing(position = 2000)
 public final class AutosaveStartup implements Runnable {
-
-    private static final String AUTOSAVE_THREAD_NAME = "Autosave Startup";
+    
     private static final String GRAPH_LOAD_ERROR = "Error Loading Graph";
     private static final Logger LOGGER = Logger.getLogger(AutosaveStartup.class.getName());
     /**
@@ -54,80 +56,70 @@ public final class AutosaveStartup implements Runnable {
      */
     private static final long PURGE_PERIOD_MS = 28 * 24 * 60 * 60 * 1000L;
 
-    /**
-     * This is the system property that is set to true in order to make the AWT
-     * thread run in headless mode for tests, etc.
-     */
-    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
-
     @Override
     public void run() {
-        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+        if (HeadlessUtilities.isHeadless()) {
             return;
         }
-        synchronized (String.class) {
-            // Look for existing autosaved in-memory graphs.
-            final File[] saveFiles = AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE);
-            final long now = new Date().getTime();
+        CompletableFuture.runAsync(() -> {
+            synchronized (String.class) {
+                // Look for existing autosaved in-memory graphs.
+                final File[] saveFiles = AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE);
+                final long now = new Date().getTime();
 
-            for (final File f : saveFiles) {
-                try {
-                    final Properties props = new Properties();
-                    try (final InputStream in = new FileInputStream(f)) {
-                        props.load(in);
-                    }
+                for (final File f : saveFiles) {
+                    try {
+                        final Properties props = new Properties();
+                        try (final InputStream in = new FileInputStream(f)) {
+                            props.load(in);
+                        }
 
-                    final String dtprop = props.getProperty(AutosaveUtilities.DT);
-                    final String name = props.getProperty(AutosaveUtilities.NAME);
-                    final boolean unsaved = "true".equals(props.getProperty(AutosaveUtilities.UNSAVED));
+                        final String dtprop = props.getProperty(AutosaveUtilities.DT);
+                        final String name = props.getProperty(AutosaveUtilities.NAME);
+                        final boolean unsaved = "true".equals(props.getProperty(AutosaveUtilities.UNSAVED));
 
-                    if (dtprop != null) {
-                        if (unsaved) {
-                            final String msg = String.format("Graph %s (autosaved at %s).%nDo you want to recover it?", name != null ? name : "<unknown>", dtprop);
-                            final NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, "Autosaved graph", NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE);
-                            if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
-                                // Load the autosaved graph away from the EDT.
-                                new Thread() {
-                                    @Override
-                                    public void run() {
-                                        setName(AUTOSAVE_THREAD_NAME);
-                                        final String loading = String.format("Loading autosaved graph %s", name);
-                                        try {
-                                            // Remove the "_auto" from the end and load the matching graph.
-                                            String path = f.getPath();
-                                            path = path.substring(0, path.length() - 5);
-                                            final Graph g = new GraphJsonReader().readGraphZip(new File(path), new HandleIoProgress(loading));
-                                            GraphOpener.getDefault().openGraph(g, name, false);
+                        if (dtprop != null) {
+                            if (unsaved) {
+                                final String msg = String.format("Graph %s (autosaved at %s).%nDo you want to recover it?", name != null ? name : "<unknown>", dtprop);
+                                final NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, "Autosaved graph", NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE);
+                                if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
+                                    // Load the autosaved graph away from the EDT.
+                                    final String loading = String.format("Loading autosaved graph %s", name);
+                                    try {
+                                        // Remove the "_auto" from the end and load the matching graph.
+                                        String path = f.getPath();
+                                        path = path.substring(0, path.length() - 5);
+                                        final Graph g = new GraphJsonReader().readGraphZip(new File(path), new HandleIoProgress(loading));
+                                        GraphOpener.getDefault().openGraph(g, name, false);
 
-                                            AutosaveUtilities.deleteAutosave(f);
-                                        } catch (final GraphParseException | IOException ex) {
-                                            final String errorMessage = NotifyDisplayer.BLOCK_POPUP_FLAG + GRAPH_LOAD_ERROR;
-                                            final Throwable gpioEx = ex instanceof IOException ? new IOException(errorMessage) : new GraphParseException(errorMessage);
-                                            gpioEx.setStackTrace(ex.getStackTrace());
-                                            LOGGER.log(Level.WARNING, GRAPH_LOAD_ERROR, gpioEx);
-                                            NotifyDisplayer.display("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
-                                        }
+                                        AutosaveUtilities.deleteAutosave(f);
+                                    } catch (final GraphParseException | IOException ex) {
+                                        final String errorMessage = NotifyDisplayer.BLOCK_POPUP_FLAG + GRAPH_LOAD_ERROR;
+                                        final Throwable gpioEx = ex instanceof IOException ? new IOException(errorMessage) : new GraphParseException(errorMessage);
+                                        gpioEx.setStackTrace(ex.getStackTrace());
+                                        LOGGER.log(Level.WARNING, GRAPH_LOAD_ERROR, gpioEx);
+                                        NotifyDisplayer.display("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
                                     }
-                                }.start();
-                            } else {
-                                // If the user doesn't want it we get rid of it.
+                                } else {
+                                    // If the user doesn't want it we get rid of it.
+                                    AutosaveUtilities.deleteAutosave(f);
+                                }
+                            } else if (now - f.lastModified() > PURGE_PERIOD_MS) {
+                                // This autosave is old enough to be purged; the user won't remember the details of the graph.
                                 AutosaveUtilities.deleteAutosave(f);
                             }
-                        } else if (now - f.lastModified() > PURGE_PERIOD_MS) {
-                            // This autosave is old enough to be purged; the user won't remember the details of the graph.
+                        } else {
+                            // Some information about this autosave is missing so get rid of it.
                             AutosaveUtilities.deleteAutosave(f);
                         }
-                    } else {
-                        // Some information about this autosave is missing so get rid of it.
-                        AutosaveUtilities.deleteAutosave(f);
+                    } catch (final IOException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     }
-                } catch (final IOException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
-            }
 
-            // Start autosaving in the background.
-            Autosaver.schedule(0);
-        }
+                // Start autosaving in the background.
+                Autosaver.schedule(0);
+            }
+        }, Executors.newSingleThreadExecutor());
     }
 }
