@@ -135,19 +135,6 @@ public class ExecuteListener implements EventHandler<ActionEvent> {
                 );
             }
 
-            // Save the current data access view state
-            PluginExecution.withPlugin(new SimplePlugin(SAVE_STATE_PLUGIN_NAME) {
-                @Override
-                protected void execute(final PluginGraphs graphs,
-                                       final PluginInteraction interaction,
-                                       final PluginParameters parameters) throws InterruptedException, PluginException {
-                    DataAccessUtilities.saveDataAccessState(
-                            dataAccessPane.getDataAccessTabPane().getTabPane(),
-                            GraphNode.getGraph(DataAccessPaneState.getCurrentGraphId())
-                    );
-                }
-            }).executeLater(null);
-
             // Run the plugins from each tab. The barrier is the plugin run futures
             // from the previous tab. When the tab is run, it has the option to
             // wait for the previous tab to complete.
