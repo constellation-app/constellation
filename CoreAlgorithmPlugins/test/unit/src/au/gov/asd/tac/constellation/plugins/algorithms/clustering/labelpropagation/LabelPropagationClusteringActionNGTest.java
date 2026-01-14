@@ -39,7 +39,7 @@ import org.testng.annotations.Test;
 public class LabelPropagationClusteringActionNGTest {
 
     @Test
-    public void testLabelPropagationClusteringCleanupPlugin() throws InterruptedException {
+    public void testLabelPropagationClusteringCleanupPlugin() throws InterruptedException, Exception {
         System.out.println("testLabelPropagationClusteringCleanupPlugin");
         final GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
         final int link = 101;
@@ -62,13 +62,11 @@ public class LabelPropagationClusteringActionNGTest {
             instance.edit(mockGraph, pluginInteractionMock, parametersMock);
             clusterUtilitiesMockStatic.verify(() -> ClusterUtilities.colorClusters(Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt()), Mockito.times(2));
             clusterUtilitiesMockStatic.verify(() -> ClusterUtilities.explodeGraph(Mockito.any(), Mockito.anyInt()), Mockito.times(2));
-        } catch (Exception ex) {
-            throw ex;
-        }
+        } 
     }
 
     @Test
-    public void testLabelPropagationClusteringActionPerformed() throws InterruptedException {
+    public void testLabelPropagationClusteringActionPerformed() throws InterruptedException, Exception {
         System.out.println("testLabelPropagationClusteringActionPerformed");
 
         try (MockedConstruction<LabelPropagationClusteringCleanupPlugin> mockConstruction = Mockito.mockConstruction(LabelPropagationClusteringCleanupPlugin.class)) {
@@ -80,8 +78,6 @@ public class LabelPropagationClusteringActionNGTest {
             // Verify that the constructor was called exactly once
             assertEquals(1, mockConstruction.constructed().size());
             verify(mockContext, times(1)).getGraph();
-        } catch (Exception ex) {
-            throw ex;
         }
     }
 }
