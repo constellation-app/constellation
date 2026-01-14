@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers;
+package au.gov.asd.tac.constellation.plugins.algorithms.clustering.labelpropagation;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -25,11 +25,12 @@ import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
- * Chinese whispers clustering based on BiemannTextGraph06.
+ * Label propagation clustering (previously Chinese whispers clustering) based on
+ * BiemannTextGraph06.
  * <p>
- * Chinese Whispers - an Efficient Graph Clustering Algorithm and its
- * Application to Natural Language processing Problems. Chris Biemann University
- * of Liepzig, NLP Department
+ * Chinese Whispers - an Efficient Graph Clustering
+ * Algorithm and its Application to Natural Language processing Problems.
+ * Chris Biemann University of Liepzig, NLP Department
  * <p>
  * Intuitively, the algorithm works as follows in a bottom-up fashion: First all
  * nodes get different classes. Then the nodes are processed for a small number
@@ -50,7 +51,7 @@ import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
  *
  * @author algol
  */
-public final class ChineseWhispers {
+public final class LabelPropagationClustering {
 
     private final GraphWriteMethods wg;
     private final int clusterId;
@@ -60,9 +61,9 @@ public final class ChineseWhispers {
 
     private final SecureRandom random = new SecureRandom();
 
-    public ChineseWhispers(final GraphWriteMethods wg) {
+    public LabelPropagationClustering(final GraphWriteMethods wg) {
         this.wg = wg;
-        clusterId = ClusteringConcept.VertexAttribute.CHINESE_WHISPERS_CLUSTER.ensure(wg);
+        clusterId = ClusteringConcept.VertexAttribute.LABEL_PROPAGATION_CLUSTER.ensure(wg);
     }
 
     public void cluster() {

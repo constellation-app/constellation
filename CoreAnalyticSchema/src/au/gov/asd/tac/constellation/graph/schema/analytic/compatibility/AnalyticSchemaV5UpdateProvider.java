@@ -88,9 +88,9 @@ public class AnalyticSchemaV5UpdateProvider extends SchemaUpdateProvider {
             
             // Chinese Whispers
             if (oldChineseWhispersColorAttributeIdVertex != Graph.NOT_FOUND) {
-                final int newChineseWhispersColorAttributeId = ClusteringConcept.VertexAttribute.CHINESE_WHISPERS_COLOR.ensure(graph);
+                final int newLabelPropagationColorAttributeId = ClusteringConcept.VertexAttribute.LABEL_PROPAGATION_COLOR.ensure(graph);
                 final ConstellationColor oldChineseWhispers = graph.getObjectValue(oldChineseWhispersColorAttributeIdVertex, vertexId);
-                graph.setObjectValue(newChineseWhispersColorAttributeId, vertexId, oldChineseWhispers);    
+                graph.setObjectValue(newLabelPropagationColorAttributeId, vertexId, oldChineseWhispers);    
             }
 
             // Infomap
@@ -146,7 +146,7 @@ public class AnalyticSchemaV5UpdateProvider extends SchemaUpdateProvider {
 
             // Chinese Whispers
             if (oldChineseWhispersColorAttributeIdTransaction != Graph.NOT_FOUND) {
-                final int newChineseWhispersColorAttributeIdTransaction = ClusteringConcept.TransactionAttribute.CHINESE_WHISPERS_COLOR.ensure(graph);
+                final int newChineseWhispersColorAttributeIdTransaction = ClusteringConcept.TransactionAttribute.LABEL_PROPAGATION_COLOR.ensure(graph);
                 final ConstellationColor oldChineseWhispers = graph.getObjectValue(oldChineseWhispersColorAttributeIdTransaction, transactionId);
                 graph.setObjectValue(newChineseWhispersColorAttributeIdTransaction, transactionId, oldChineseWhispers);
             }

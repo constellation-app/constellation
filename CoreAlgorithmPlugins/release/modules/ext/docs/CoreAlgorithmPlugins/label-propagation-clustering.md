@@ -1,4 +1,4 @@
-# Chinese Whispers
+# Label Propagation Clustering
 
 <table class="table table-striped">
 <colgroup>
@@ -17,15 +17,15 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td>Run Chinese Whispers</td>
+<td>Run Label Propagation Clustering</td>
 <td></td>
-<td>Tools -&gt; Cluster -&gt; Chinese Whispers</td>
-<td style="text-align: center;"><img src="../ext/docs/CoreAlgorithmPlugins/resources/chineseWhispers.png" alt="Chinese Whispers Icon" /></td>
+<td>Tools -&gt; Cluster -&gt; Label Propagation Clustering </td>
+<td style="text-align: center;"><img src="../ext/docs/CoreAlgorithmPlugins/resources/labelPropagationClustering.png" alt="Label Propagation Icon" /></td>
 </tr>
 </tbody>
 </table>
 
-Chinese Whispers is a clustering algorithm which forms clusters around the 
+Label Propagation Clustering (previously named Chinese Whispers) is a clustering algorithm which forms clusters around the 
 strongest classes in the graph.
 
 The algorithm works as follows:
@@ -43,34 +43,34 @@ are iterated through, and which classes are selected in the case of ties).
 
 ## Constellation Display
 
-Chinese Whispers in Constellation makes use of overlay colors. When the
+Label Propagation Clustering in Constellation makes use of overlay colors. When the
 clustering algorithm has been run, each cluster is assigned a unique
 color. Node backgrounds and intra-cluster transactions are colored using
 the cluster's color, while inter-cluster transactions are colored dark
 grey.
 
-Rather than set the color directly, Chinese Whispers in Constellation
-creates a new color attribute "Cluster.ChineseWhispers.Color" and tells 
+Rather than set the color directly, Label Propagation Clustering in Constellation
+creates a new color attribute "Cluster.LabelPropagation.Color" and tells 
 Constellation to display the graph using the new attribute (via the 
 "node\_color\_reference" and "transaction\_color_reference" graph attributes). 
 To switch back to the default color attribute, edit the graph attributes via 
 the Attribute Editor and click on "Restore Default" followed by Ok.
 
-Before Chinese Whispers is run:
+Before Label Propagation Clustering is run:
 <div style="text-align: center">
-<img src="../ext/docs/CoreAlgorithmPlugins/resources/ChineseWhispersBefore.png" alt="Graph before Chinese Whispers clustering applied" />
+<img src="../ext/docs/CoreAlgorithmPlugins/resources/LabelPropagationClusteringBefore.png" alt="Graph before Label Propagation Clustering applied" />
 </div>
 
-After Chinese Whispers is run:
+After Label Propagation Clustering is run:
 <div style="text-align: center">
-<img src="../ext/docs/CoreAlgorithmPlugins/resources/ChineseWhispersAfter.png" alt="Graph after Chinese Whispers clustering applied" />
+<img src="../ext/docs/CoreAlgorithmPlugins/resources/LabelPropagationClusteringAfter.png" alt="Graph after Label Propagation Clustering applied" />
 </div>
 <br />
 
 When the clustering algorithm runs, no arrangement is done, so the graph
 can look confusing.
 
-The clustering algorithms add an integer attribute "Cluster.ChineseWhispers" 
+The clustering algorithms add an integer attribute "Cluster.LabelPropagation" 
 to the nodes. This attribute has a unique per-cluster value to indicate
 which cluster a node belongs to, which other algorithms can later use 
 (e.g. [Arrange by Node Attribute](../ext/docs/CoreArrangementPlugins/node-attribute-arrangement.md)).
