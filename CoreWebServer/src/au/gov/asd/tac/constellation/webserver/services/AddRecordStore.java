@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -51,7 +50,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -201,7 +199,7 @@ public class AddRecordStore extends RestService {
     }
 
     private static void addToGraph(final Graph graph, final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final boolean resetView) {
-        final Plugin p = new ImportFromRestApiPlugin(recordStore, completeWithSchema, arrange);
+        final Plugin p = new ImportFromRestApiPlugin(recordStore, completeWithSchema, arrange, graph);
 
         PluginExecutor pe = PluginExecutor.startWith(p);
 
@@ -227,11 +225,13 @@ public class AddRecordStore extends RestService {
         private final RecordStore recordStore;
         private final boolean completeWithSchema;
         private final String arrange;
+        private final Graph graph;
 
-        public ImportFromRestApiPlugin(final RecordStore recordStore, final boolean completeWithSchema, final String arrange) {
+        public ImportFromRestApiPlugin(final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final Graph graph) {
             this.recordStore = recordStore;
             this.completeWithSchema = completeWithSchema;
             this.arrange = arrange;
+            this.graph = graph;
         }
 
         @Override
@@ -250,20 +250,18 @@ public class AddRecordStore extends RestService {
             // It is still possible to do this (by manually setting x,y,z to 0,0,0 and specifying no arrangement),
             // but then it becomes the malicious user's fault.
             //
-            try {
-                if (arrange == null) {
-                    PluginExecutor
-                            .startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
-                            .followedBy(ArrangementPluginRegistry.PENDANTS)
-                            .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
-                            .executeNow(graph);
-                } else if (arrange.isEmpty() || "None".equalsIgnoreCase(arrange)) {
-                    // Don't do anything.
-                } else {
-                    PluginExecution.withPlugin(arrange).executeNow(graph);
-                }
-            } catch (final PluginException ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            if (arrange == null) {
+                PluginExecutor
+                        .startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
+                        .followedBy(ArrangementPluginRegistry.PENDANTS)
+                        .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
+                        .executeWriteLater(this.graph);
+            } else if (arrange.isEmpty() || "None".equalsIgnoreCase(arrange)) {
+                // Don't do anything.
+            } else {
+                PluginExecutor
+                        .startWith(arrange)
+                        .executeWriteLater(this.graph);
             }
         }
     }
