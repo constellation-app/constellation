@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers;
+package au.gov.asd.tac.constellation.plugins.algorithms.clustering.labelpropagation;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
@@ -39,28 +39,28 @@ import org.openide.util.NbBundle;
  *
  * @author algol
  */
-@ActionID(category = "Cluster", id = "au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispersAction")
-@ActionRegistration(displayName = "#CTL_ChineseWhispersAction",
-        iconBase = "au/gov/asd/tac/constellation/plugins/algorithms/clustering/chinesewhispers/chineseWhispers.png",
+@ActionID(category = "Cluster", id = "au.gov.asd.tac.constellation.plugins.algorithms.clustering.labelpropagation.LabelPropagationClusteringAction")
+@ActionRegistration(displayName = "#CTL_LabelPropagationClusteringAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/algorithms/clustering/labelpropagation/labelPropagationClustering.png",
         surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Tools/Cluster", position = 300)
 })
 @NbBundle.Messages({
-    "CTL_ChineseWhispersAction=Chinese Whispers"
+    "CTL_LabelPropagationClusteringAction=Label Propagation Clustering"
 })
-public class ChineseWhispersAction extends AbstractAction {
+public class LabelPropagationClusteringAction extends AbstractAction {
 
     private final GraphNode context;
 
-    public ChineseWhispersAction(final GraphNode context) {
+    public LabelPropagationClusteringAction(final GraphNode context) {
         this.context = context;
     }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        PluginExecutor.startWith(AlgorithmPluginRegistry.CLUSTER_CHINESE_WHISPERS)
-                .followedBy(new ChineseWhispersCleanupPlugin())
+        PluginExecutor.startWith(AlgorithmPluginRegistry.CLUSTER_LABEL_PROPAGATION)
+                .followedBy(new LabelPropagationClusteringCleanupPlugin())
                 .executeWriteLater(context.getGraph());
     }
 
@@ -68,19 +68,19 @@ public class ChineseWhispersAction extends AbstractAction {
      * Color the clusters and arrange graph after clustering has been performed.
      */
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
-    public static class ChineseWhispersCleanupPlugin extends SimpleEditPlugin {
+    public static class LabelPropagationClusteringCleanupPlugin extends SimpleEditPlugin {
 
         @Override
         public String getName() {
-            return "Chinese Whispers: Cleanup";
+            return "Label Propagation Clustering: Cleanup";
         }
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
             // When the clustering is done, make the graph look nice.
-            final int clusterId = ClusteringConcept.VertexAttribute.CHINESE_WHISPERS_CLUSTER.ensure(graph);
-            final int vxColorId = ClusteringConcept.VertexAttribute.CHINESE_WHISPERS_COLOR.ensure(graph);
-            final int txColorId = ClusteringConcept.TransactionAttribute.CHINESE_WHISPERS_COLOR.ensure(graph);
+            final int clusterId = ClusteringConcept.VertexAttribute.LABEL_PROPAGATION_CLUSTER.ensure(graph);
+            final int vxColorId = ClusteringConcept.VertexAttribute.LABEL_PROPAGATION_COLOR.ensure(graph);
+            final int txColorId = ClusteringConcept.TransactionAttribute.LABEL_PROPAGATION_COLOR.ensure(graph);
             ClusterUtilities.colorClusters(graph, clusterId, vxColorId, txColorId);
             ClusterUtilities.explodeGraph(graph, clusterId);
         }
