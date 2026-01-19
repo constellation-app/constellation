@@ -13,28 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.algorithms.paths;
+package au.gov.asd.tac.constellation.plugins.algorithms.clustering.labelpropagation;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- * This plugin selects nodes with highest betweenness
  *
- * @author canis_majoris
+ * @author algol
  */
-//@ServiceProvider(service = Plugin.class)
-//@NbBundle.Messages("ShortestPaths2Plugin=Shortest Paths 2")
-@PluginInfo(pluginType = PluginType.SEARCH, tags = {PluginTags.ANALYTIC})
-public class ShortestPaths2Plugin extends SimpleEditPlugin {
+@ServiceProvider(service = Plugin.class)
+@PluginInfo(tags = {PluginTags.ANALYTIC})
+@NbBundle.Messages("LabelPropagationClusteringPlugin=Label Propagation Clustering")
+public class LabelPropagationClusteringPlugin extends SimpleEditPlugin {
 
     @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        SP2Traverse.traverse(graph);
+    public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+        final LabelPropagationClustering lpc = new LabelPropagationClustering(wg);
+        lpc.cluster();
     }
 }

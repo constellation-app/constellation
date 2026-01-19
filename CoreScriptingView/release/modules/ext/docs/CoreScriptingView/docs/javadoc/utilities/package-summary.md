@@ -65,7 +65,7 @@ au.gov.asd.tac.constellation.views.scripting 1.0
     </thead>
     <tbody>
     <tr class="odd altColor">
-    <td class="colFirst"><a href="ScriptingUtilities.md" title="class in au.gov.asd.tac.constellation.views.scripting.utilities">ScriptingUtilities</a></td>
+    <td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/utilities/ScriptingUtilities.md" title="class in au.gov.asd.tac.constellation.views.scripting.utilities">ScriptingUtilities</a></td>
     <td class="colLast"><div class="block">
     Core scripting utilities.
     </div></td>

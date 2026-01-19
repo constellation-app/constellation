@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
+import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -43,12 +44,6 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
     protected JFXPanel jfxContainer = new JFXPanel();
     protected Scene scene;
     protected ScrollPane scrollPane;
-    
-    /**
-     * This is the system property that is set to true in order to make the AWT
-     * thread run in headless mode for tests, etc.
-     */
-    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
     
     /**
      * A JavaFxTopComponent will have a ScrollPane by default, as it cannot know
@@ -120,7 +115,7 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
             // set the font on initialise
             updateFont();
             
-            if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            if (HeadlessUtilities.isHeadless()) {
                 return;
             }
             jfxContainer.setScene(scene);
