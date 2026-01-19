@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities;
 
+import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -42,16 +43,10 @@ public class SystemUtilities {
     private static JFrame mainframe = null;
 
     /**
-     * This is the system property that is set to true in order to make the AWT thread run in headless mode for tests,
-     * etc.
-     */
-    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
-
-    /**
      * Store an internal reference to current App window
      */
     private static void captureMainframePosition() {
-        if (mainframe != null || Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+        if (mainframe != null || HeadlessUtilities.isHeadless()) {
             return;
         }
         try {
