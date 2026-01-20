@@ -617,7 +617,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     vc.flushGLRunnables();
                     vc.swapBuffers();
                     vc.update(graphics);
-                    gvp.performVisualUpdate();
                     ioProgressHandler.finish();
                 }
             }
