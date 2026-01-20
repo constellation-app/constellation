@@ -162,7 +162,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final boolean ARRANGE_2D_DEFAULT = false;
 
     public static final String PER_LAYER_DIRECTION_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "per_layer_direction");
-    private static final String PER_LAYER_DIRECTION_NAME = "Direction to arrange new layers in: ";
+    private static final String PER_LAYER_DIRECTION_NAME = "Direction to arrange new rows/columns in: ";
 
     public static final String NUM_ROWS_OR_COLS_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "num_rows_or_cols");
     private static final String NUM_ROWS_OR_COLS_NAME = "Number of: ";
@@ -187,15 +187,13 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final String NLAYERS = "layers";
 
     private static final String ROWS = "Rows";
-    private static final String COLS = "Cols";
+    private static final String COLS = "Columns";
 
     private static final String X = "X";
     private static final String Y = "Y";
-    private static final String Z = "Z";
 
-    private static final String NEG_X = "-X";
-    private static final String NEG_Z = "-Z";
-
+    private static final String X_RIGHT = "X (Right)";
+    private static final String X_LEFT = "-X (Left)";
     private static final String Y_UP = "Y (Up)";
     private static final String Y_DOWN = "-Y (Down)";
 
@@ -219,12 +217,10 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         BIN_CALENDAR_UNITS.put("Year", Calendar.YEAR);
 
         // Populate directions hash map
-        directionsMap.put(X, new Vector3f(1, 0, 0));
-        directionsMap.put(NEG_X, new Vector3f(-1, 0, 0));
+        directionsMap.put(X_RIGHT, new Vector3f(1, 0, 0));
+        directionsMap.put(X_LEFT, new Vector3f(-1, 0, 0));
         directionsMap.put(Y_UP, new Vector3f(0, 1, 0));
         directionsMap.put(Y_DOWN, new Vector3f(0, -1, 0));
-        directionsMap.put(Z, new Vector3f(0, 0, 1));
-        directionsMap.put(NEG_Z, new Vector3f(0, 0, -1));
     }
 
     // Quick and dirty way of mapping existing nodeid + layer number to new nodeid.
@@ -308,46 +304,46 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         parameters.addParameter(arrange2DParam);
         arrange2DParam.addListener((oldValue, newValue) -> disableArrange2dOptions());
 
-        perLayerDirectionParameter = SingleChoiceParameterType.build(PER_LAYER_DIRECTION_PARAMETER_ID);
-        perLayerDirectionParameter.setName(PER_LAYER_DIRECTION_NAME);
-        final ArrayList<String> directionList = new ArrayList<>(directionsMap.keySet());
-        directionList.removeIf(s -> !s.contains(Y));
-        SingleChoiceParameterType.setOptions(perLayerDirectionParameter, directionList);
-        SingleChoiceParameterType.setChoice(perLayerDirectionParameter, Y_DOWN);
-        perLayerDirectionParameter.setEnabled(false);
-        parameters.addParameter(perLayerDirectionParameter);
-
         numRowsOrColsParam = IntegerParameterType.build(NUM_ROWS_OR_COLS_PARAMETER_ID);
         numRowsOrColsParam.setName(NUM_ROWS_OR_COLS_NAME);
         numRowsOrColsParam.setIntegerValue(NUM_ROWS_OR_COLS_DEFAULT);
-        numRowsOrColsParam.setEnabled(false);
+        numRowsOrColsParam.setVisible(false);
         parameters.addParameter(numRowsOrColsParam);
 
         rowOrColParam = SingleChoiceParameterType.build(ROW_OR_COL_PARAMETER_ID);
         rowOrColParam.setName(ROW_OR_COL_NAME);
         SingleChoiceParameterType.setOptions(rowOrColParam, new ArrayList<>(Arrays.asList(ROWS, COLS)));
         SingleChoiceParameterType.setChoice(rowOrColParam, COLS);
-        rowOrColParam.setEnabled(false);
+        rowOrColParam.setVisible(false);
         parameters.addParameter(rowOrColParam);
         rowOrColParam.addListener((oldValue, newValue) -> updatePerLayerDirectionChoices());
+
+        perLayerDirectionParameter = SingleChoiceParameterType.build(PER_LAYER_DIRECTION_PARAMETER_ID);
+        perLayerDirectionParameter.setName(PER_LAYER_DIRECTION_NAME);
+        final ArrayList<String> directionList = new ArrayList<>(directionsMap.keySet());
+        directionList.removeIf(s -> !s.contains(Y));
+        SingleChoiceParameterType.setOptions(perLayerDirectionParameter, directionList);
+        SingleChoiceParameterType.setChoice(perLayerDirectionParameter, Y_DOWN);
+        perLayerDirectionParameter.setVisible(false);
+        parameters.addParameter(perLayerDirectionParameter);
 
         inLayerDirectionParameter = SingleChoiceParameterType.build(IN_LAYER_DIRECTION_PARAMETER_ID);
         inLayerDirectionParameter.setName(IN_LAYER_DIRECTION_NAME);
         SingleChoiceParameterType.setOptions(inLayerDirectionParameter, new ArrayList<>(directionsMap.keySet()));
-        SingleChoiceParameterType.setChoice(inLayerDirectionParameter, X);
-        inLayerDirectionParameter.setEnabled(false);
+        SingleChoiceParameterType.setChoice(inLayerDirectionParameter, X_RIGHT);
+        inLayerDirectionParameter.setVisible(false);
         parameters.addParameter(inLayerDirectionParameter);
 
         distanceBetweenLayers = IntegerParameterType.build(LAYER_DIST_PARAMETER_ID);
         distanceBetweenLayers.setName(LAYER_DIST_NAME);
         distanceBetweenLayers.setIntegerValue(LAYER_DIST_DEFAULT);
-        distanceBetweenLayers.setEnabled(false);
+        distanceBetweenLayers.setVisible(false);
         parameters.addParameter(distanceBetweenLayers);
 
         distanceBetweenRowsOrCols = IntegerParameterType.build(ROW_OR_COL_DIST_PARAMETER_ID);
         distanceBetweenRowsOrCols.setName(ROW_OR_COL_DIST_NAME);
         distanceBetweenRowsOrCols.setIntegerValue(ROW_OR_COL_DIST_DEFAULT);
-        distanceBetweenRowsOrCols.setEnabled(false);
+        distanceBetweenRowsOrCols.setVisible(false);
         parameters.addParameter(distanceBetweenRowsOrCols);
 
         parameters.addController(LAYER_BY_PARAMETER_ID, (masterId, paramMap, change) -> {
@@ -695,19 +691,19 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         directionList.removeIf(s -> !s.contains(substring));
         SingleChoiceParameterType.setOptions(perLayerDirectionParameter, directionList);
 
-        final String choice = isRow ? X : Y_DOWN;
+        final String choice = isRow ? X_RIGHT : Y_DOWN;
         SingleChoiceParameterType.setChoice(perLayerDirectionParameter, choice);
     }
 
     private void disableArrange2dOptions() {
         final boolean enable = arrange2DParam.getBooleanValue();
 
-        perLayerDirectionParameter.setEnabled(enable);
-        numRowsOrColsParam.setEnabled(enable);
-        rowOrColParam.setEnabled(enable);
-        inLayerDirectionParameter.setEnabled(enable);
-        distanceBetweenLayers.setEnabled(enable);
-        distanceBetweenRowsOrCols.setEnabled(enable);
+        perLayerDirectionParameter.setVisible(enable);
+        numRowsOrColsParam.setVisible(enable);
+        rowOrColParam.setVisible(enable);
+        inLayerDirectionParameter.setVisible(enable);
+        distanceBetweenLayers.setVisible(enable);
+        distanceBetweenRowsOrCols.setVisible(enable);
     }
 
     private int findMaxLayerSize(final GraphWriteMethods graph) {
