@@ -524,6 +524,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
             final Object[] transactionLayerKeyValues = transactionLayers.keyValuesView().toArray();
 
+            // Sorting of array only matters for arrangeIn2d option. Has no effect on regular function but sorting is so fast it doesn't matter
+            Arrays.sort(transactionLayerKeyValues);
+
             // Each layer
             for (int i = 0; i < transactionLayerKeyValues.length; i++) {
                 final FloatObjectPair<MutableIntList> currentLayer = (FloatObjectPair) transactionLayerKeyValues[i];
