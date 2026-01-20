@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispersPlugin;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.labelpropagation.LabelPropagationClusteringPlugin;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.InfoMapPlugin;
 import au.gov.asd.tac.constellation.plugins.algorithms.paths.DirectedShortestPathsPlugin;
 import au.gov.asd.tac.constellation.plugins.algorithms.paths.ShortestPathsPlugin;
@@ -65,7 +65,7 @@ public final class AlgorithmPluginRegistry {
     public static final String PAGERANK_CENTRALITY = PagerankCentralityPlugin.class.getName();
 
     // clustering
-    public static final String CLUSTER_CHINESE_WHISPERS = ChineseWhispersPlugin.class.getName();
+    public static final String CLUSTER_LABEL_PROPAGATION = LabelPropagationClusteringPlugin.class.getName();
     public static final String CLUSTER_INFO_MAP = InfoMapPlugin.class.getName();
 
     // global

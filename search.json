@@ -192,9 +192,9 @@
 }
 ,{
     "id": 32,
-    "title": "Chinese Whispers",
+    "title": "Label Propagation Clustering",
     "category": "Cluster",
-    "link": "ext\\docs\\CoreAlgorithmPlugins\\chinese-whispers.html"
+    "link": "ext\\docs\\CoreAlgorithmPlugins\\label-propagation-clustering.html"
 }
 ,{
     "id": 33,

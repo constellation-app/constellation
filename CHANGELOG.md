@@ -1,6 +1,8 @@
 # Constellation Changes
 
 ## Changes in January 2026
+-   Renamed `Chinese Whispers` to `Label Propagation`.
+-   Added AnalyticSchemav7UpdateProvider for Label Propagation changes.
 -   Removed `AlgorithmicError`, `KTrussDialogPanel`, `FindSubgraphs`, `SP2Traverse`, and `ShortestPaths2Plugin` which were unused.
 -   Removed all classes in `au.gov.asd.tac.constellation.plugins.arrangements.planar` which were unused.
 -   Removed `CircTreeChoicePanel` and `MDSChoicePanel` which were unused.

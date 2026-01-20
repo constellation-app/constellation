@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.views.welcome;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
 import java.util.prefs.Preferences;
-import javax.swing.SwingUtilities;
 import org.openide.util.NbPreferences;
 import org.openide.windows.OnShowing;
 import org.openide.windows.TopComponent;
@@ -32,29 +32,21 @@ import org.openide.windows.WindowManager;
 @OnShowing
 public class WelcomeStartup implements Runnable {
 
-    /**
-     * This is the system property that is set to true in order to make the AWT
-     * thread run in headless mode for tests, etc.
-     */
-    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
-
     @Override
     public void run() {
-        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+        if (HeadlessUtilities.isHeadless()) {
             return;
         }
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         if (prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT)) {
-            SwingUtilities.invokeLater(() -> {
-                final TopComponent welcome = WindowManager.getDefault().findTopComponent(WelcomeTopComponent.class.getSimpleName());
-                if (welcome != null) {
-                    if (!welcome.isOpened()) {
-                        welcome.open();
-                    }
-                    welcome.setEnabled(true);
-                    welcome.requestActive();
+            final TopComponent welcome = WindowManager.getDefault().findTopComponent(WelcomeTopComponent.class.getSimpleName());
+            if (welcome != null) {
+                if (!welcome.isOpened()) {
+                    welcome.open();
                 }
-            });
+                welcome.setEnabled(true);
+                welcome.requestActive();
+            }
         }
     }
 }
