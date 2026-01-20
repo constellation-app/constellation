@@ -17,14 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.listeners;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.create.NewDefaultSchemaGraphAction;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginGraphs;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
@@ -32,7 +25,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPan
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.WaitForQueriesToCompleteTask;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
-import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -64,8 +56,6 @@ public class ExecuteListener implements EventHandler<ActionEvent> {
     
     // Status Message on Plugin Run
     private static final String STATUS_MESSAGE_FORMAT = "Data access results will be written to %s";
-    
-    private static final String SAVE_STATE_PLUGIN_NAME = "Data Access View: Save State";
     
     private final DataAccessPane dataAccessPane;
     
