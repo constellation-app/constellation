@@ -100,7 +100,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
         @Override
         protected Node createEditorControls() {
             // get all vertex attributes currently in the graph
-            attributeNames.addAll(AttributeUtilities.getAttributeNames(GraphElementType.TRANSACTION));
+            attributeNames.addAll(AttributeUtilities.getAttributeNames(GraphElementType.VERTEX));
             attributeNames.sort(String::compareTo);
 
             final Label attrLabel = createLabel("Attribute", 150);

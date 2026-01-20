@@ -32,11 +32,11 @@ import au.gov.asd.tac.constellation.graph.versioning.UpdateProviderManager;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultCustomIconProvider;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.stream.ExtendedBuffer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -266,7 +266,7 @@ public final class GraphJsonReader {
         final ImmutableObjectCache immutableObjectCache = new ImmutableObjectCache();
 
         // Use a combination of stream and tree-model parsing.
-        jp = new MappingJsonFactory().createParser(in);
+        jp = JsonFactoryUtilities.getMappingJsonFactory().createParser(in);
 
         final Map<Integer, Integer> vertexMap = new HashMap<>();
         final Map<Integer, Integer> transactionMap = new HashMap<>();

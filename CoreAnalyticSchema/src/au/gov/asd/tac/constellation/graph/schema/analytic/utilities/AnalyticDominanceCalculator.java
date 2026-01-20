@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.analytic.utilities;
 
+import au.gov.asd.tac.constellation.graph.schema.type.VertexDominanceCalculator;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import java.util.ArrayList;

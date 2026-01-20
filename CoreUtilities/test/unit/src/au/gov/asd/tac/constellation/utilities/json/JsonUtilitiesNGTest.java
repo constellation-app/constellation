@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.utilities.json;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +44,7 @@ import org.testng.annotations.Test;
  */
 public class JsonUtilitiesNGTest {
 
-    private static final JsonFactory FACTORY = new MappingJsonFactory();
+    private static final JsonFactory FACTORY = JsonFactoryUtilities.getJsonFactory();
     private final Map<String, String> map = new HashMap<>();
     private final String expectedResult = "{\"key1\":\"value1\",\"key2\":\"value2\",\"key3\":\"value3\"}";
     private final String key1 = "key1";

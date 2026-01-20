@@ -29,11 +29,17 @@
         </dependency> -->
 
         <!-- Geotools -->
-        <dependency org="org.geotools" name="gt-main" rev="32.4" />
+        <dependency org="org.geotools" name="gt-main" rev="32.4">
+            <exclude org="org.geotools" module="gt-http" />
+            <exclude org="com.google.re2j" module="re2j" />
+        </dependency>
         <dependency org="org.geotools" name="gt-api" rev="32.4" /> 
         <dependency org="org.geotools" name="gt-referencing" rev="32.4" />
         <dependency org="org.geotools" name="gt-epsg-hsql" rev="32.4" />
-        <dependency org="org.geotools" name="gt-geopkg" rev="32.4" />
+        <dependency org="org.geotools" name="gt-geopkg" rev="32.4">
+            <exclude org="org.geotools" module="gt-coverage" />
+            <exclude org="org.geotools.xsd" module="gt-xsd-fes" />
+        </dependency>
         <dependency org="org.geotools" name="gt-shapefile" rev="32.4" />
         <dependency org="org.geotools" name="gt-geojson" rev="32.4" />
         <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="32.4" />
@@ -66,6 +72,7 @@
         <dependency org="org.eclipse.jetty.ee10" name="jetty-ee10-servlet" rev="12.1.3" />
         <dependency org="org.ejml" name="ejml-simple" rev="0.44.0" />
         <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.11.6" />
+        <dependency org="org.locationtech.jts" name="jts-core" rev="1.20.0" />
         <dependency org="org.openjdk.nashorn" name="nashorn-core" rev="15.7" />
         <dependency org="org.python" name="jython-standalone" rev="2.7.4" />
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1" />
@@ -74,7 +81,25 @@
         <dependency org="org.languagetool" name="language-en" rev="6.7" />
         <!-- languagetool-core should be getting installed as a dependency of 
              language-en but for some reason isn't. Remove this if it gets fixed -->
-        <dependency org="org.languagetool" name="languagetool-core" rev="6.7"/>
+        <dependency org="org.languagetool" name="languagetool-core" rev="6.7">
+            <exclude org="com.gitlab.dumonts" module="hunspell" />
+            <exclude org="com.google.protobuf" module="protobuf-java" />
+            <exclude org="com.hankcs" module="aho-corasick-double-array-trie" />
+            <exclude org="com.optimaize.languagedetector" module="language-detector" />
+            <exclude org="commons-validator" module="commons-validator" />
+            <exclude org="io.github.resilience4j" module="resilience4j-circuitbreaker" />
+            <exclude org="io.github.resilience4j" module="resilience4j-micrometer" />
+            <exclude org="io.grpc" module="grpc-netty-shaded" />
+            <exclude org="io.grpc" module="grpc-stub" />
+            <exclude org="io.micrometer" module="micrometer-registry-prometheus" />
+            <exclude org="io.opentelemetry" module="opentelemetry-semconv" />
+            <exclude org="io.prometheus" module="simpleclient" />
+            <exclude org="io.prometheus" module="simpleclient_guava" />
+            <exclude org="javax.annotation" module="javax.annotation-api" />
+            <exclude org="org.apache.commons" module="commons-pool2" />
+            <exclude org="org.apache.lucene" module="lucene-backward-codecs" />
+            <exclude org="org.apache.lucene" module="lucene-core" />
+        </dependency>
         <dependency org="tech.units" name="indriya" rev="1.3" conf="languagetoolconf">
             <exclude org="javax.measure" module="unit-api"/>
         </dependency>   
