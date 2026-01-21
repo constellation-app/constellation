@@ -119,11 +119,7 @@ public class DataAccessUtilities {
                                     .forEach(param -> {
                                         final PluginParameter<?> pp = param.getValue();
                                         final String paramvalue = tabState.get(param.getKey());
-                                        if (paramvalue != null) {
-                                            pp.setStringValue(paramvalue);
-                                        } else {
-                                            pp.setStringValue("");
-                                        }
+                                        pp.setStringValue(paramvalue != null ? paramvalue : "");
                                     });
                         } else {
                             DataAccessUtilities.setPluginParametersEmpty(step);
@@ -148,12 +144,7 @@ public class DataAccessUtilities {
                 .getGlobalParametersPane().getParams().getParameters().entrySet().stream()
                 .forEach(param -> {
                     final PluginParameter<?> pp = param.getValue();
-                    if (param.getKey().contains("query_name")) {
-                        // Sets the query name back to the default 
-                        pp.setStringValue(String.format("%s at %s", System.getProperty("user.name"), TIMESTAMP_FORMAT.format(Instant.now())));
-                    } else {
-                        pp.setStringValue("");
-                    }
+                    pp.setStringValue(param.getKey().contains("query_name") ? String.format("%s at %s", System.getProperty("user.name"), TIMESTAMP_FORMAT.format(Instant.now())) : "");
                 });
     }
 
