@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ResetViewPlugin;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.LayerNameAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.LayerName;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -668,6 +669,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         } finally {
             wgcopy.commit();
         }
+        
+        // Reset view so we can see the whole graph
+        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(copy);
     }
 
     protected Graph copyGraph(final GraphReadMethods rg) throws InterruptedException {
