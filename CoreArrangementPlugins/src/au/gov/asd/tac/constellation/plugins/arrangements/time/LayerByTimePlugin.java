@@ -200,7 +200,10 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final Map<String, Integer> LAYER_INTERVALS = new HashMap<>();
     private static final Map<String, Integer> BIN_CALENDAR_UNITS = new HashMap<>();
 
-    private static final HashMap<String, Object> directionsMap = new HashMap<>();
+    private static final HashMap<String, Vector3f> directionsMap = new HashMap<>();
+
+    private static final Vector3f VEC_UP = new Vector3f(0, 1, 0);
+    private static final Vector3f VEC_RIGHT = new Vector3f(1, 0, 0);
 
     static {
         LAYER_INTERVALS.put("Seconds", 1);
@@ -320,7 +323,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
         perLayerDirectionParameter = SingleChoiceParameterType.build(PER_LAYER_DIRECTION_PARAMETER_ID);
         perLayerDirectionParameter.setName(PER_LAYER_DIRECTION_NAME);
-        final ArrayList<String> directionList = new ArrayList<>(directionsMap.keySet());
+        final List<String> directionList = new ArrayList<>(directionsMap.keySet());
         directionList.removeIf(s -> !s.contains(Y));
         SingleChoiceParameterType.setOptions(perLayerDirectionParameter, directionList);
         SingleChoiceParameterType.setChoice(perLayerDirectionParameter, Y_DOWN);
@@ -500,19 +503,24 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             float z = 0;
             final float step = getWidth(wgcopy) / values.size();
 
-            final Vector3f rowColPosition = new Vector3f(0, 0, 0);
-            final Vector3f layerPosition = new Vector3f(0, 0, 0);
+            final Vector3f rowColPosition = Vector3f.createZeroVector();
+            final Vector3f layerPosition = Vector3f.createZeroVector();
             boolean newRowOrColStarted = false;
-            final Vector3f nextRowOrColumnDirection = isRow ? new Vector3f(0, 1, 0) : new Vector3f(1, 0, 0);
+            final Vector3f nextRowOrColumnDirection = isRow ? VEC_UP.copy() : VEC_RIGHT.copy();
 
             // For 2d only right now, if the in-layer and per-layer directions are the same then we'll need to account for that so layers dont overlap
             // They're the same direction if their dot product equals their lenghts multiplied together
-            final boolean isSameDirection = Vector3f.dotProduct(inLayerDirection, perLayerDirection) == inLayerDirection.getLength() * perLayerDirection.getLength();
-            final boolean isOppositeDirection = -Vector3f.dotProduct(inLayerDirection, perLayerDirection) == inLayerDirection.getLength() * perLayerDirection.getLength();
+            final float dotProduct = Vector3f.dotProduct(inLayerDirection, perLayerDirection);
+            final float productOfLengths = inLayerDirection.getLength() * perLayerDirection.getLength();
 
-            // Scale according to the user's decided paramters, MIGHT NOT NEED
+            final boolean isSameDirection = dotProduct == productOfLengths;
+            final boolean isOppositeDirection = -dotProduct == productOfLengths;
+
+            System.out.println("isSameDirection: " + isSameDirection + " isOppositeDirection: " + isOppositeDirection);
+
+            // Scale according to the user's decided paramters
             inLayerDirection.scale(layerScale);
-            perLayerDirection.scale(layerScale); // figure out how to dynamically scale this based on the longest chain
+            perLayerDirection.scale(layerScale);
             final int maxNodesInLayer = findMaxLayerSize(wgcopy);
             nextRowOrColumnDirection.scale(columnScale * maxNodesInLayer);
 
@@ -536,12 +544,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     continue;
                 }
 
-                final int nextLayerSize;
-                if (i + 1 < transactionLayerKeyValues.length) {
-                    nextLayerSize = findLayerSize(wgcopy, (FloatObjectPair) transactionLayerKeyValues[i + 1]);
-                } else {
-                    nextLayerSize = 0;
-                }
+                final int nextLayerSize = (i + 1 < transactionLayerKeyValues.length) ? findLayerSize(wgcopy, (FloatObjectPair) transactionLayerKeyValues[i + 1]) : 0;
 
                 final MutableIntSet nodesInLayer = new IntHashSet();
                 for (int j = 0; j < currentLayer.getTwo().size(); j++) {
@@ -554,8 +557,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
                     if (!keepTxColors) {
                         final Color heatmap = new Color(Color.HSBtoRGB((1 - normLayer) * 2F / 3F, 0.5F, 1));
-                        final ConstellationColor color = ConstellationColor.getColorValue(heatmap.getRed() / 255F, heatmap.getGreen() / 255F, heatmap.getBlue() / 255F, 1F);
-                        wgcopy.setObjectValue(txColorAttr, txId, color);
+                        wgcopy.setObjectValue(txColorAttr, txId, ConstellationColor.fromJavaColor(heatmap));
                     }
 
                     // makes these return a list of nodes that they affected
@@ -690,7 +692,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         final boolean isRow = ROWS.equals(rowOrColParam.getStringValue());
 
         final String substring = isRow ? X : Y;
-        final ArrayList<String> directionList = new ArrayList<>(directionsMap.keySet());
+        final List<String> directionList = new ArrayList<>(directionsMap.keySet());
         directionList.removeIf(s -> !s.contains(substring));
         SingleChoiceParameterType.setOptions(perLayerDirectionParameter, directionList);
 

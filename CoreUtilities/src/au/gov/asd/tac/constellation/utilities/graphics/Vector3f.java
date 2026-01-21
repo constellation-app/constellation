@@ -406,6 +406,10 @@ public final class Vector3f implements Serializable {
         return new Vector3f(a[0], a[1], a[2]);
     }
 
+    public static Vector3f createZeroVector() {
+        return new Vector3f(0, 0, 0);
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;
