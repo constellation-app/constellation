@@ -149,15 +149,7 @@ public class LayerByTimePluginNGTest {
         storeGraph.setLongValue(txDateTimeAttr, txId0, now.plusDays(1).toInstant().toEpochMilli());
         storeGraph.setLongValue(txDateTimeAttr, txId1, now.plusDays(2).toInstant().toEpochMilli());
 
-        // Need to initalise dualGraph here, and to commit nothing to have storeGraph's vertices actually be reflected
         final DualGraph dualGraph = spy(new DualGraph(schema, storeGraph));
-        // This might be a bug currently
-//        final WritableGraph wg = dualGraph.getWritableGraph("Initial Setup", true);
-//        try {
-//            // Left intentionally blank
-//        } finally {
-//            wg.commit();
-//        }
 
         // Create and setup instance
         final LayerByTimePlugin instance = spy(new LayerByTimePlugin()); // Spy the instance to override copyGraph()
