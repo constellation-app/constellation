@@ -552,7 +552,7 @@ public class PluginParameter<V extends ParameterValue> {
         }
 
         synchronized (listeners) {
-            listeners.stream().forEach(listener -> listener.parameterChanged(this, change)); // concurrent modification error
+            listeners.stream().forEach(listener -> listener.parameterChanged(this, change));
         }
         if (enclosingParameter != null && !change.equals(ParameterChange.ERROR)) {
             enclosingParameter.fireChangeEvent(change);
