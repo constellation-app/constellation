@@ -607,18 +607,16 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 requestVisible();
             });
         }
-        SwingUtilities.invokeLater(() -> {
 
-            Graphics graphics = getGraphics();
+        Graphics graphics = getGraphics();
 
-            Component visualComponent = visualManager.getVisualComponent();
-            if (visualComponent instanceof GLCanvas vc) {
-                    vc.flushGLRunnables();
-                    vc.swapBuffers();
-                    vc.update(graphics);
-                    ioProgressHandler.finish();
-            }
-        });          
+        Component visualComponent = visualManager.getVisualComponent();
+        if (visualComponent instanceof GLCanvas vc) {
+                vc.flushGLRunnables();
+                vc.swapBuffers();
+                vc.update(graphics);
+        }
+        ioProgressHandler.finish();
     }
 
     private void visualUpdate() {

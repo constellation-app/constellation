@@ -114,92 +114,89 @@ public final class GraphStatusLine implements StatusLineElementProvider, LookupL
 
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
-        SwingUtilities.invokeLater(() -> {            
-            if (getGraph() != null) {
-                try (final ReadableGraph rg = getGraph().getReadableGraph()) {
-                    final int ndAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
-                    final int txAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
+        if (getGraph() != null) {
+            try (final ReadableGraph rg = getGraph().getReadableGraph()) {
+                final int ndAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+                final int txAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
 
-                    // count number of selected nodes
-                    int vCount = 0;
-                    if (ndAttr != Graph.NOT_FOUND) {
-                        final GraphIndexType vertexSelectedIndexType = rg.getAttributeIndexType(ndAttr);
-                        if (vertexSelectedIndexType == GraphIndexType.NONE) {
-                            for (int i = 0; i < rg.getVertexCount(); i++) {
-                                boolean sel = rg.getBooleanValue(ndAttr, rg.getVertex(i));
-                                if (sel) {
-                                    vCount++;
-                                }
-                            }
-                        } else {
-                            vCount = rg.getElementsWithAttributeValue(ndAttr, Boolean.TRUE).getCount();
-                        }
-                    }
-
-                    // count number of selected transactions
-                    int tCount = 0;
-                    int eCount = 0;
-                    int lCount = 0;
-
-                    if (txAttr != Graph.NOT_FOUND) {
-                        for (int lxPos = 0; lxPos < rg.getLinkCount(); lxPos++) {
-                            boolean linkSelected = false;
-                            final int lxId = rg.getLink(lxPos);
-                            for (int exPos = 0; exPos < rg.getLinkEdgeCount(lxId); exPos++) {
-                                boolean edgeSelected = false;
-                                final int exId = rg.getLinkEdge(lxId, exPos);
-                                for (int txPos = 0; txPos < rg.getEdgeTransactionCount(exId); txPos++) {
-                                    boolean sel = rg.getBooleanValue(txAttr, rg.getEdgeTransaction(exId, txPos));
-                                    edgeSelected |= sel;
-                                    linkSelected |= sel;
-                                    if (sel) {
-                                        tCount++;
-                                    }
-                                }
-                                if (edgeSelected) {
-                                    eCount++;
-                                }
-                            }
-                            if (linkSelected) {
-                                lCount++;
+                // count number of selected nodes
+                int vCount = 0;
+                if (ndAttr != Graph.NOT_FOUND) {
+                    final GraphIndexType vertexSelectedIndexType = rg.getAttributeIndexType(ndAttr);
+                    if (vertexSelectedIndexType == GraphIndexType.NONE) {
+                        for (int i = 0; i < rg.getVertexCount(); i++) {
+                            if (rg.getBooleanValue(ndAttr, rg.getVertex(i))) {
+                                vCount++;
                             }
                         }
-                    }
-
-                    if (vCount > 0) {
-                        VX_BUTTON.setText(String.valueOf(vCount) + "/" + String.valueOf(rg.getVertexCount()));
                     } else {
-                        VX_BUTTON.setText(String.valueOf(rg.getVertexCount()));
+                        vCount = rg.getElementsWithAttributeValue(ndAttr, Boolean.TRUE).getCount();
                     }
-
-                    if (tCount > 0) {
-                        TX_BUTTON.setText(String.valueOf(tCount) + "/" + String.valueOf(rg.getTransactionCount()));
-                    } else {
-                        TX_BUTTON.setText(String.valueOf(rg.getTransactionCount()));
-                    }
-
-                    if (eCount > 0) {
-                        EX_BUTTON.setText(String.valueOf(eCount) + "/" + String.valueOf(rg.getEdgeCount()));
-                    } else {
-                        EX_BUTTON.setText(String.valueOf(rg.getEdgeCount()));
-                    }
-
-                    if (lCount > 0) {
-                        LX_BUTTON.setText(String.valueOf(lCount) + "/" + String.valueOf(rg.getLinkCount()));
-                    } else {
-                        LX_BUTTON.setText(String.valueOf(rg.getLinkCount()));
-                    }
-                    labelUpdate();
-
                 }
-            } else {
-                VX_BUTTON.setText("");
-                LX_BUTTON.setText("");
-                EX_BUTTON.setText("");
-                TX_BUTTON.setText("");
+
+                // count number of selected transactions
+                int tCount = 0;
+                int eCount = 0;
+                int lCount = 0;
+
+                if (txAttr != Graph.NOT_FOUND) {
+                    for (int lxPos = 0; lxPos < rg.getLinkCount(); lxPos++) {
+                        boolean linkSelected = false;
+                        final int lxId = rg.getLink(lxPos);
+                        for (int exPos = 0; exPos < rg.getLinkEdgeCount(lxId); exPos++) {
+                            boolean edgeSelected = false;
+                            final int exId = rg.getLinkEdge(lxId, exPos);
+                            for (int txPos = 0; txPos < rg.getEdgeTransactionCount(exId); txPos++) {
+                                final boolean sel = rg.getBooleanValue(txAttr, rg.getEdgeTransaction(exId, txPos));
+                                edgeSelected |= sel;
+                                linkSelected |= sel;
+                                if (sel) {
+                                    tCount++;
+                                }
+                            }
+                            if (edgeSelected) {
+                                eCount++;
+                            }
+                        }
+                        if (linkSelected) {
+                            lCount++;
+                        }
+                    }
+                }
+
+                if (vCount > 0) {
+                    VX_BUTTON.setText(String.valueOf(vCount) + "/" + String.valueOf(rg.getVertexCount()));
+                } else {
+                    VX_BUTTON.setText(String.valueOf(rg.getVertexCount()));
+                }
+
+                if (tCount > 0) {
+                    TX_BUTTON.setText(String.valueOf(tCount) + "/" + String.valueOf(rg.getTransactionCount()));
+                } else {
+                    TX_BUTTON.setText(String.valueOf(rg.getTransactionCount()));
+                }
+
+                if (eCount > 0) {
+                    EX_BUTTON.setText(String.valueOf(eCount) + "/" + String.valueOf(rg.getEdgeCount()));
+                } else {
+                    EX_BUTTON.setText(String.valueOf(rg.getEdgeCount()));
+                }
+
+                if (lCount > 0) {
+                    LX_BUTTON.setText(String.valueOf(lCount) + "/" + String.valueOf(rg.getLinkCount()));
+                } else {
+                    LX_BUTTON.setText(String.valueOf(rg.getLinkCount()));
+                }
                 labelUpdate();
+
             }
-        });
+        } else {
+            VX_BUTTON.setText("");
+            LX_BUTTON.setText("");
+            EX_BUTTON.setText("");
+            TX_BUTTON.setText("");
+            labelUpdate();
+        }
     }
 
     /**
@@ -216,7 +213,7 @@ public final class GraphStatusLine implements StatusLineElementProvider, LookupL
         VX_BUTTON.updateUI();
         PANEL.updateUI();
     }
-    
+
     /**
      * @return the graph
      */
