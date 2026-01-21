@@ -516,8 +516,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final boolean isSameDirection = dotProduct == productOfLengths;
             final boolean isOppositeDirection = -dotProduct == productOfLengths;
 
-            System.out.println("isSameDirection: " + isSameDirection + " isOppositeDirection: " + isOppositeDirection);
-
             // Scale according to the user's decided paramters
             inLayerDirection.scale(layerScale);
             perLayerDirection.scale(layerScale);
