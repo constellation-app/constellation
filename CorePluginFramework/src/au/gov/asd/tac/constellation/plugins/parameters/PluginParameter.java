@@ -68,7 +68,7 @@ public class PluginParameter<V extends ParameterValue> {
     private boolean enabled = true;
     private String helpID;
     private boolean isSuppressed = false;
-    private String requestBodyExample;    
+    private String requestBodyExample;
     private boolean required = false;
     private boolean isSpellCheckEnabled = false;
 
@@ -388,7 +388,9 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public void addListener(final PluginParameterListener listener) {
         if (listener != null) {
-            listeners.add(listener);
+            synchronized (listeners) {
+                listeners.add(listener);
+            }
         }
     }
 
@@ -398,7 +400,9 @@ public class PluginParameter<V extends ParameterValue> {
      * @param listener The {@link PluginParameterListener} to remove.
      */
     public boolean removeListener(final PluginParameterListener listener) {
-        return listeners.remove(listener);
+        synchronized (listeners) {
+            return listeners.remove(listener);
+        }
     }
 
     /**
@@ -408,7 +412,9 @@ public class PluginParameter<V extends ParameterValue> {
      *
      */
     public List<PluginParameterListener> getListeners() {
-        return listeners;
+        synchronized (listeners) {
+            return listeners;
+        }
     }
 
     /**
@@ -541,11 +547,15 @@ public class PluginParameter<V extends ParameterValue> {
      * @param change The {@link ParameterChange} event to fire. NO_EVENT will not fire an event
      */
     public void fireChangeEvent(final ParameterChange change) {
-        if (!eventIsSuppressed(change)) {
+        if (eventIsSuppressed(change)) {
+            return;
+        }
+
+        synchronized (listeners) {
             listeners.stream().forEach(listener -> listener.parameterChanged(this, change));
-            if (enclosingParameter != null && !change.equals(ParameterChange.ERROR)) {
-                enclosingParameter.fireChangeEvent(change);
-            }
+        }
+        if (enclosingParameter != null && !change.equals(ParameterChange.ERROR)) {
+            enclosingParameter.fireChangeEvent(change);
         }
     }
 
@@ -775,7 +785,7 @@ public class PluginParameter<V extends ParameterValue> {
             this.requestBodyExample = requestBodyExample;
         }
     }
-    
+
     /**
      * Is the parameter required?
      *
@@ -806,8 +816,7 @@ public class PluginParameter<V extends ParameterValue> {
     /**
      * Set whether the parameter requires spell checking.
      *
-     * @param isSpellCheckEnabled A boolean indicating whether the parameter
-     * requires spell checking.
+     * @param isSpellCheckEnabled A boolean indicating whether the parameter requires spell checking.
      */
     public void setSpellCheckEnabled(final boolean isSpellCheckEnabled) {
         this.isSpellCheckEnabled = isSpellCheckEnabled;

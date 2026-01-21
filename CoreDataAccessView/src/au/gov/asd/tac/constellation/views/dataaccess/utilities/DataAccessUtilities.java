@@ -30,6 +30,9 @@ import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessState;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import java.lang.reflect.InvocationTargetException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,6 +55,7 @@ import org.openide.windows.WindowManager;
 public class DataAccessUtilities {
 
     private static final Logger LOGGER = Logger.getLogger(DataAccessUtilities.class.getName());
+    protected static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(ZoneId.systemDefault());
 
     private DataAccessUtilities() {
         throw new IllegalStateException("Utility class");
@@ -93,38 +97,55 @@ public class DataAccessUtilities {
      * @param dataAccessPane the data access pane
      * @param graph the active graph to load the state from
      */
-    public static void loadDataAccessState(final DataAccessPane dataAccessPane,
-            final Graph graph) {
+    public static void loadDataAccessState(final DataAccessPane dataAccessPane, final Graph graph) {
         if (graph != null && dataAccessPane.getDataAccessTabPane().getCurrentTab() != null) {
             final ReadableGraph readableGraph = graph.getReadableGraph();
 
             try {
                 final int dataAccessStateAttribute = DataAccessConcept.MetaAttribute.DATAACCESS_STATE.get(readableGraph);
-                
-                if (dataAccessStateAttribute != Graph.NOT_FOUND) {
-                    final DataAccessState dataAccessState = readableGraph.getObjectValue(dataAccessStateAttribute, 0);
+                if (dataAccessPane.getDataAccessTabPane().getTabPane() != null && dataAccessPane.getDataAccessTabPane().getTabPane().getTabs() != null) {
+                    final Tab step = dataAccessPane.getDataAccessTabPane().getTabPane().getTabs().get(0);
 
-                    if (dataAccessState != null && !dataAccessState.getState().isEmpty()) {
-                        // TODO: support multiple tabs (not just first one in state) and not
-                        //       introduce memory leaks
-                        final Map<String, String> tabState = dataAccessState.getState().get(0);
-                        final Tab step = dataAccessPane.getDataAccessTabPane().getTabPane().getTabs().get(0);
+                    if (dataAccessStateAttribute != Graph.NOT_FOUND) {
+                        final DataAccessState dataAccessState = readableGraph.getObjectValue(dataAccessStateAttribute, 0);
 
-                        DataAccessTabPane.getQueryPhasePane(step)
-                                .getGlobalParametersPane().getParams().getParameters().entrySet().stream()
-                                .forEach(param -> {
-                                    final PluginParameter<?> pp = param.getValue();
-                                    final String paramvalue = tabState.get(param.getKey());
-                                    if (paramvalue != null) {
-                                        pp.setStringValue(paramvalue);
-                                    }
-                                });
+                        if (dataAccessState != null && !dataAccessState.getState().isEmpty()) {
+                            // TODO: support multiple tabs (not just first one in state) and not
+                            //       introduce memory leaks
+                            final Map<String, String> tabState = dataAccessState.getState().get(0);
+
+                            DataAccessTabPane.getQueryPhasePane(step)
+                                    .getGlobalParametersPane().getParams().getParameters().entrySet().stream()
+                                    .forEach(param -> {
+                                        final PluginParameter<?> pp = param.getValue();
+                                        final String paramvalue = tabState.get(param.getKey());
+                                        pp.setStringValue(paramvalue != null ? paramvalue : "");
+                                    });
+                        } else {
+                            DataAccessUtilities.setPluginParametersEmpty(step);
+                        }
+                    } else {
+                        DataAccessUtilities.setPluginParametersEmpty(step);
                     }
                 }
             } finally {
                 readableGraph.release();
             }
         }
+    }
+
+    /**
+     * Set the global parameters in the data access view to be empty when a new graph is created
+     * or a graph is opened that does not have a data access view state 
+     * @param step 
+     */
+    private static void setPluginParametersEmpty(final Tab step) {
+        DataAccessTabPane.getQueryPhasePane(step)
+                .getGlobalParametersPane().getParams().getParameters().entrySet().stream()
+                .forEach(param -> {
+                    final PluginParameter<?> pp = param.getValue();
+                    pp.setStringValue(param.getKey().contains("query_name") ? String.format("%s at %s", System.getProperty("user.name"), TIMESTAMP_FORMAT.format(Instant.now())) : "");
+                });
     }
 
     /**
