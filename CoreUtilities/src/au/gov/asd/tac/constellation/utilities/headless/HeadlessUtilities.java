@@ -22,9 +22,9 @@ package au.gov.asd.tac.constellation.utilities.headless;
 public class HeadlessUtilities {
 
     private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
-
-    // Empty private constructor for utility class
+    
     private HeadlessUtilities() {
+        throw new IllegalStateException("Utility class");
     }
 
     public static boolean isHeadless() {

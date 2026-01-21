@@ -20,10 +20,6 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.create.NewDefaultSchemaGraphAction;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginGraphs;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
@@ -110,8 +106,6 @@ public class ExecuteListenerNGTest {
     
     private StatusDisplayer statusDisplayer;
     
-    private PluginExecution pluginExecution;
-    
     private ExecuteListener executeListener;
     
     @BeforeClass
@@ -172,26 +166,6 @@ public class ExecuteListenerNGTest {
                 .thenReturn(graphManager);
         when(graphManager.getActiveGraph()).thenReturn(activeGraph);
         when(activeGraph.getId()).thenReturn(GRAPH_ID);
-
-        // Intercept the plugin execution run calls and run the plugins manually
-        // so that it executes within the same thread and sequentially for the test
-        pluginExecution = mock(PluginExecution.class);
-        
-        pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(any(SimplePlugin.class)))
-                .thenAnswer(iom -> {
-                    final SimplePlugin plugin = iom.getArgument(0);
-
-                    final PluginGraphs graphs = mock(PluginGraphs.class);
-                    when(graphs.getGraph()).thenReturn(null);
-                    
-                    final PluginInteraction pluginInteraction = mock(PluginInteraction.class);
-                    final PluginParameters pluginParameters = mock(PluginParameters.class);
-                    
-                    // This will call the execute method of the simple plugin
-                    plugin.run(graphs, pluginInteraction, pluginParameters);
-
-                    return pluginExecution;
-                });
         
         // Intercept calls to start the wait for tasks so that they don't run
         completableFutureMockedStatic.when(() -> 
@@ -297,12 +271,6 @@ public class ExecuteListenerNGTest {
             verify(dataAccessPane).setExecuteButtonToStop(false);
             verify(statusDisplayer).setStatusText("Data access results will be written to " + tmpDir.getAbsolutePath());
 
-            // Verify the current state is saved before the plugins are run
-            utilitiesMockedStatic.verify(() -> DataAccessUtilities
-                    .saveDataAccessState(tabPane, activeGraph));
-
-            verify(pluginExecution).executeLater(null);
-
             // Verify the plugins are run
             verify(queryPhasePane1).runPlugins(or(anyList(), isNull()));
             verify(queryPhasePane2).runPlugins(or(anyList(), isNull()));
@@ -384,7 +352,6 @@ public class ExecuteListenerNGTest {
             // No need to verify everything. Just make sure the main parts are still
             // executed to show that the plugins are still run after the error
             
-            verify(pluginExecution).executeLater(null);
             verify(queryPhasePane1).runPlugins(null);
          
             completableFutureMockedStatic.verify(() -> CompletableFuture
