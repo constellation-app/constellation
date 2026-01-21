@@ -88,7 +88,7 @@ public abstract class VisualProcessor {
      * the processor must have cached any required information during its change
      * processing phase.
      */
-    protected abstract void performVisualUpdate();
+    public abstract void performVisualUpdate();
 
     /**
      * Allows the processor to perform any implementation specific
