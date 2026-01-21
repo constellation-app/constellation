@@ -48,14 +48,14 @@ objects for you to make use of in your scripts:
     allows you to take a copy for reading from using "readableGraph()",
     or a copy for writing to using "writableGraph(editName)". For
     information on how to use this object, refer to the
-    [javadoc](docs/javadoc/graph/SGraph.md).
+    [javadoc](../ext/docs/CoreScriptingView/docs/javadoc/graph/SGraph.md).
 -   *utilities* - This object provides various convenience functions
     provided by the core developers (e.g. "openFile(dirKey)" to activate
     a Netbeans file open dialog and return the selected file path as a
     string). If your chosen scripting language is Python, you can use
     its "dir" function to see what else is available, otherwise refer to
     the
-    [javadoc](docs/javadoc/utilities/ScriptingUtilities.md)
+    [javadoc](../ext/docs/CoreScriptingView/docs/javadoc/utilities/ScriptingUtilities.md)
     for more information on how to use this object.
 
 You can add your own custom objects by extending the ScriptingModule
@@ -71,7 +71,7 @@ from and writing to the graph. Under the hood, the graph object is an
 "SGraph", which provides access for interrogation and editing of the
 underlying Constellation graph. The SGraph object, as well as all the
 objects obtainable from an SGraph are documented in the [API
-javadoc](docs/javadoc/index-all.md).
+javadoc](../ext/docs/CoreScriptingView/docs/javadoc/index-all.md).
 
 Using the utilities object, you can access all other open graphs using
 "getOpenGraphs()". This function will return a map or dictionary of

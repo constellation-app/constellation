@@ -30,14 +30,16 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
 import org.eclipse.collections.api.iterator.IntIterator;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
@@ -64,7 +66,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     private boolean expandHeight = false;
     private static final int PREFERRED_HEIGHT = 500;
     private final MutableIntSet selectedRectangles;
-    private Map<Integer, MutableIntList> childMapper;
+    private MutableIntObjectMap<MutableIntList> childMapper;
 
     public NestedKTrussDisplayPanel(final KTrussState state, final Graph graph) {
         this.state = state;
@@ -136,8 +138,8 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     // KTrussState. Note that this method does not calculate actual pixel values, but the relative information stored in the
     // rectangles field. See the declaration for more information
     public void calculateRectangles() {
-        final Map<Integer, Integer> numDescendants = new HashMap<>();
-        childMapper = new HashMap<>();
+        final MutableIntIntMap numDescendants = new IntIntHashMap();
+        childMapper = new IntObjectHashMap<>();
 
         // Calculate the children of each component.
         for (int i = state.getNumComponents() - 1; i >= 0; i--) {
@@ -157,7 +159,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
                 selfChildList.add(i);
                 childMapper.put(i, selfChildList);
 
-                if (numDescendants.get(i) == null) {
+                if (!numDescendants.containsKey(i)) {
                     numDescendants.put(i, 0);
                 }
                 // These components are K-Trusses for K > 3.
@@ -167,16 +169,18 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
                 }
                 childList.add(i);
                 childMapper.put(parent, childList);
-                if (numDescendants.get(i) == null) {
+                if (!numDescendants.containsKey(i)) {
                     numDescendants.put(i, 0);
                 }
-                final int currentDescendants = numDescendants.get(i) + (numDescendants.get(parent) == null ? 0 : numDescendants.get(parent));
+                final int currentDescendants = numDescendants.get(i) + (!numDescendants.containsKey(parent) ? 0 : numDescendants.get(parent));
                 numDescendants.put(parent, currentDescendants + 1);
             }
         }
 
         int totalGaps = 0;
-        for (final int n : numDescendants.values()) {
+        final IntIterator numDescendantsIter = numDescendants.values().intIterator();
+        while (numDescendantsIter.hasNext()) {
+            final int n = numDescendantsIter.next();
             totalGaps += (n == 0) ? 0 : (n - 1);
         }
         totalNeededHeight = state.getTotalVertsInTrusses() + (totalGaps * COMPONENT_VISUAL_GRAP);

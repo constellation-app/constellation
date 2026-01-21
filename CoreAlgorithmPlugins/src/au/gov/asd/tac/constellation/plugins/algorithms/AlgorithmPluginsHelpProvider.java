@@ -41,7 +41,7 @@ public class AlgorithmPluginsHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
 
-        map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispers", MODULE_PATH + "chinese-whispers.md");
+        map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.labelpropagation.LabelPropagationClustering", MODULE_PATH + "label-propagation-clustering.md");
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss", MODULE_PATH + "k-truss.md");
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.paths.ShortestPathsPlugin", MODULE_PATH + "shortest-paths.md");
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.Hierarchical", MODULE_PATH + "hierarchical-clustering.md");

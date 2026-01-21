@@ -1,5 +1,19 @@
 # Constellation Changes
 
+## Changes in January 2026
+-   Renamed `Chinese Whispers` to `Label Propagation`.
+-   Added AnalyticSchemav7UpdateProvider for Label Propagation changes.
+-   Removed `AlgorithmicError`, `KTrussDialogPanel`, `FindSubgraphs`, `SP2Traverse`, and `ShortestPaths2Plugin` which were unused.
+-   Removed all classes in `au.gov.asd.tac.constellation.plugins.arrangements.planar` which were unused.
+-   Removed `CircTreeChoicePanel` and `MDSChoicePanel` which were unused.
+-   Removed `ConsolidatedDialog`, `PackagePanel`, and `ReserveLock` which were unused.
+
+## Changes in December 2025
+-   Removed `StyleGenerator` which was unused.
+
+## Changes in November 2025
+-   Removed `ContentPairwiseSimilarityServices.MutableDouble` which was no longer needed.
+
 ## Changes in October 2025
 -   Removed `areSame()` from `BoundingBox`, `Camera`, `Frame`, `Vector3f` in favour of implementing `equals()`.
 -   Removed `Graphics3DUtilities.clamp()` which is no longer required now that `Math.clamp()` does the same thing.
