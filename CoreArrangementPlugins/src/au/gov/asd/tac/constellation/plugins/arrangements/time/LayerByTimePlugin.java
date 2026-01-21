@@ -162,18 +162,18 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final String ARRANGE_2D_DESCRIPTION = "Arrange the results of layer by time into an organised 2D view";
     private static final boolean ARRANGE_2D_DEFAULT = false;
 
-    public static final String PER_LAYER_DIRECTION_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "per_layer_direction");
-    private static final String PER_LAYER_DIRECTION_NAME = "Direction to arrange new rows/columns in: ";
+    public static final String ROW_OR_COL_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "row_or_col");
+    private static final String ROW_OR_COL_NAME = "Arrange in rows or columns: ";
 
     public static final String NUM_ROWS_OR_COLS_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "num_rows_or_cols");
-    private static final String NUM_ROWS_OR_COLS_NAME = "Number of: ";
+    private static final String NUM_ROWS_OR_COLS_NAME = "Number of rows/columns: ";
     private static final int NUM_ROWS_OR_COLS_DEFAULT = 1;
 
-    public static final String ROW_OR_COL_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "row_or_col");
-    private static final String ROW_OR_COL_NAME = "";
+    public static final String PER_LAYER_DIRECTION_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "per_layer_direction");
+    private static final String PER_LAYER_DIRECTION_NAME = "Direction to arrange new rows/columns: ";
 
     public static final String IN_LAYER_DIRECTION_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "in_layer_direction");
-    private static final String IN_LAYER_DIRECTION_NAME = "Direction to arrange nodes in: ";
+    private static final String IN_LAYER_DIRECTION_NAME = "Direction to arrange nodes: ";
 
     public static final String LAYER_DIST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "layer_dist");
     private static final String LAYER_DIST_NAME = "Distance bewteen layers: ";
@@ -308,12 +308,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         parameters.addParameter(arrange2DParam);
         arrange2DParam.addListener((oldValue, newValue) -> disableArrange2dOptions());
 
-        numRowsOrColsParam = IntegerParameterType.build(NUM_ROWS_OR_COLS_PARAMETER_ID);
-        numRowsOrColsParam.setName(NUM_ROWS_OR_COLS_NAME);
-        numRowsOrColsParam.setIntegerValue(NUM_ROWS_OR_COLS_DEFAULT);
-        numRowsOrColsParam.setVisible(false);
-        parameters.addParameter(numRowsOrColsParam);
-
         rowOrColParam = SingleChoiceParameterType.build(ROW_OR_COL_PARAMETER_ID);
         rowOrColParam.setName(ROW_OR_COL_NAME);
         SingleChoiceParameterType.setOptions(rowOrColParam, new ArrayList<>(Arrays.asList(ROWS, COLS)));
@@ -321,6 +315,12 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         rowOrColParam.setVisible(false);
         parameters.addParameter(rowOrColParam);
         rowOrColParam.addListener((oldValue, newValue) -> updatePerLayerDirectionChoices());
+
+        numRowsOrColsParam = IntegerParameterType.build(NUM_ROWS_OR_COLS_PARAMETER_ID);
+        numRowsOrColsParam.setName(NUM_ROWS_OR_COLS_NAME);
+        numRowsOrColsParam.setIntegerValue(NUM_ROWS_OR_COLS_DEFAULT);
+        numRowsOrColsParam.setVisible(false);
+        parameters.addParameter(numRowsOrColsParam);
 
         perLayerDirectionParameter = SingleChoiceParameterType.build(PER_LAYER_DIRECTION_PARAMETER_ID);
         perLayerDirectionParameter.setName(PER_LAYER_DIRECTION_NAME);
@@ -669,7 +669,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         } finally {
             wgcopy.commit();
         }
-        
+
         // Reset view so we can see the whole graph
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(copy);
     }
