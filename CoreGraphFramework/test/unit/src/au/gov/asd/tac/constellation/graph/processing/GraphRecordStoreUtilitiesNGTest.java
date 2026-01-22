@@ -18,6 +18,9 @@ package au.gov.asd.tac.constellation.graph.processing;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +45,7 @@ public class GraphRecordStoreUtilitiesNGTest {
     private StoreGraph graph;
     private int[] vxs;
     private int[] txs;
+    private Schema schema;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -63,6 +67,7 @@ public class GraphRecordStoreUtilitiesNGTest {
      */
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        schema = SchemaFactoryUtilities.getSchemaFactory(BareSchemaFactory.NAME).createSchema();
         graph = new StoreGraph();
         graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "", false, null);
         graph.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "", false, null);
@@ -234,7 +239,7 @@ public class GraphRecordStoreUtilitiesNGTest {
 
     @Test
     public void addRecordStoreToGraphWithAnEmptyRecordStore() {
-        final StoreGraph newGraph = new StoreGraph();
+        final StoreGraph newGraph = new StoreGraph(schema);
         final RecordStore recordStore = new GraphRecordStore();
         final boolean initializeWithSchema = false;
         final boolean completeWithSchema = false;
@@ -248,7 +253,7 @@ public class GraphRecordStoreUtilitiesNGTest {
 
     @Test
     public void addRecordStoreToGraphWithTransactionsInBothDirections() {
-        final StoreGraph newGraph = new StoreGraph();
+        final StoreGraph newGraph = new StoreGraph(schema);
         final RecordStore recordStore = new GraphRecordStore();
         recordStore.add();
         recordStore.set(GraphRecordStoreUtilities.SOURCE + "Idenfitier", "vx0");

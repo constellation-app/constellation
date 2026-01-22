@@ -104,7 +104,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private final String id;
     private final Schema schema;
     private ElementList[] removedFromKeys = new ElementList[GraphElementType.values().length];
-    private final GraphElementMerger graphElementMerger;
+    private GraphElementMerger graphElementMerger;
     private NativeValue oldValue = new NativeValue();
     private GraphEdit graphEdit;
 
@@ -373,6 +373,11 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
         MemoryManager.newObject(StoreGraph.class);
         cleaner.register(this, cleanupAction);
+    }
+
+    @Override
+    public void setGraphElementMerger(final GraphElementMerger graphElementMerger) {
+        this.graphElementMerger = graphElementMerger;
     }
 
     public void setModificationCounters(final long globalModificationCounter, final long structureModificationCounter, final long attributeModificationCounter) {
