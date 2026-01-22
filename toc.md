@@ -180,6 +180,7 @@
     <a href="../ext\docs\CorePreferences\application-preferences.md">Application</a><br/>
     <a href="../ext\docs\CorePreferences\developer-preferences.md">Developer</a><br/>
     <a href="../ext\docs\CorePreferences\graph-preferences.md">Graph</a><br/>
+    <a href="../ext\docs\CorePreferences\view-preferences.md">View</a><br/>
     <a href="../ext\docs\CoreOpenGLDisplay\label-fonts-preferences.md">Label Fonts</a><br/>
     <a href="../ext\docs\CoreHelp\help-options.md">Online Help</a><br/>
     <a href="../ext\docs\CoreSecurity\proxy-preferences.md">Proxy</a><br/>

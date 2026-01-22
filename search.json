@@ -774,198 +774,204 @@
 }
 ,{
     "id": 129,
+    "title": "View",
+    "category": "Preferences",
+    "link": "ext\\docs\\CorePreferences\\view-preferences.html"
+}
+,{
+    "id": 130,
     "title": "Label Fonts",
     "category": "Preferences",
     "link": "ext\\docs\\CoreOpenGLDisplay\\label-fonts-preferences.html"
 }
 ,{
-    "id": 130,
+    "id": 131,
     "title": "Online Help",
     "category": "Preferences",
     "link": "ext\\docs\\CoreHelp\\help-options.html"
 }
 ,{
-    "id": 131,
+    "id": 132,
     "title": "Proxy",
     "category": "Preferences",
     "link": "ext\\docs\\CoreSecurity\\proxy-preferences.html"
 }
 ,{
-    "id": 132,
+    "id": 133,
     "title": "Grid",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\grid-arrangement.html"
 }
 ,{
-    "id": 133,
+    "id": 134,
     "title": "Line",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\line-arrangement.html"
 }
 ,{
-    "id": 134,
+    "id": 135,
     "title": "Circle",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\circle-arrangement.html"
 }
 ,{
-    "id": 135,
+    "id": 136,
     "title": "Tree",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\tree-arrangement.html"
 }
 ,{
-    "id": 136,
+    "id": 137,
     "title": "Proximity",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\proximity-arrangement.html"
 }
 ,{
-    "id": 137,
+    "id": 138,
     "title": "Hierarchy",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\hierarchy-arrangement.html"
 }
 ,{
-    "id": 138,
+    "id": 139,
     "title": "Node Attribute",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\node-attribute-arrangement.html"
 }
 ,{
-    "id": 139,
+    "id": 140,
     "title": "Scatter 3D",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\scatter3d-arrangement.html"
 }
 ,{
-    "id": 140,
+    "id": 141,
     "title": "Sphere",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\sphere-arrangement.html"
 }
 ,{
-    "id": 141,
+    "id": 142,
     "title": "Bubble Tree 3D",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\bubble-tree-3d-arrangement.html"
 }
 ,{
-    "id": 142,
+    "id": 143,
     "title": "Spectral 3D",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\spectral-arrangement.html"
 }
 ,{
-    "id": 143,
+    "id": 144,
     "title": "HDE 3D",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\hde-arrangement.html"
 }
 ,{
-    "id": 144,
+    "id": 145,
     "title": "Flatten Z-Field",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\flatten-z-field.html"
 }
 ,{
-    "id": 145,
+    "id": 146,
     "title": "Contract Graph",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\contract-graph.html"
 }
 ,{
-    "id": 146,
+    "id": 147,
     "title": "Expand Graph",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\expand-graph.html"
 }
 ,{
-    "id": 147,
+    "id": 148,
     "title": "Uncollide",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\uncollide-arrangement.html"
 }
 ,{
-    "id": 148,
+    "id": 149,
     "title": "Layer by Time",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\layer-by-time.html"
 }
 ,{
-    "id": 149,
+    "id": 150,
     "title": "Pin and Unpin Nodes",
     "category": "Arrangements",
     "link": "ext\\docs\\CoreArrangementPlugins\\pin-unpin-nodes.html"
 }
 ,{
-    "id": 150,
+    "id": 151,
     "title": "Import From File",
     "category": "Import/Export",
     "link": "ext\\docs\\CoreImportExportPlugins\\import-from-file.html"
 }
 ,{
-    "id": 151,
+    "id": 152,
     "title": "Import From Database",
     "category": "Import/Export",
     "link": "ext\\docs\\CoreImportExportPlugins\\import-from-database.html"
 }
 ,{
-    "id": 152,
+    "id": 153,
     "title": "Add Hashmod (Experimental)",
     "category": "Import/Export",
     "link": "ext\\docs\\CoreImportExportPlugins\\add-hashmod.html"
 }
 ,{
-    "id": 153,
+    "id": 154,
     "title": "Export From Constellation",
     "category": "Export",
     "link": "ext\\docs\\CoreImportExportPlugins\\export-from-constellation.html"
 }
 ,{
-    "id": 154,
+    "id": 155,
     "title": "Export to Image",
     "category": "Export",
     "link": "ext\\docs\\CoreImportExportPlugins\\export-to-png.html"
 }
 ,{
-    "id": 155,
+    "id": 156,
     "title": "Export to SVG",
     "category": "Export",
     "link": "ext\\docs\\CoreImportExportPlugins\\export-to-svg.html"
 }
 ,{
-    "id": 156,
+    "id": 157,
     "title": "Export to Shapefile",
     "category": "Export",
     "link": "ext\\docs\\CoreImportExportPlugins\\export-to-shapefile.html"
 }
 ,{
-    "id": 157,
+    "id": 158,
     "title": "Export to KML",
     "category": "Export",
     "link": "ext\\docs\\CoreImportExportPlugins\\export-to-kml.html"
 }
 ,{
-    "id": 158,
+    "id": 159,
     "title": "Export to GeoJson",
     "category": "Export",
     "link": "ext\\docs\\CoreImportExportPlugins\\export-to-geojson.html"
 }
 ,{
-    "id": 159,
+    "id": 160,
     "title": "Export to GeoPackage",
     "category": "Export",
     "link": "ext\\docs\\CoreImportExportPlugins\\export-to-geopackage.html"
 }
 ,{
-    "id": 160,
+    "id": 161,
     "title": "Export to CSV",
     "category": "Export",
     "link": "ext\\docs\\CoreImportExportPlugins\\export-to-csv.html"
 }
 ,{
-    "id": 161,
+    "id": 162,
     "title": "Export to XLSX",
     "category": "Export",
     "link": "ext\\docs\\CoreImportExportPlugins\\export-to-xlsx.html"

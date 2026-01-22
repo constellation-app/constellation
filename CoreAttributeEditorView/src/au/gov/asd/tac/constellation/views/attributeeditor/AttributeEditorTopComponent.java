@@ -23,9 +23,11 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
@@ -37,41 +39,32 @@ import org.openide.awt.ActionReferences;
 import org.openide.awt.UndoRedo;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
- * This is the top component for Constellation's 'attribute editor' view. The
- * attribute editor is a simple user interface which allows users to view and
- * edit the values for any of the graph's attributes. Like many other
- * Constellation views, its display corresponds to the current selection on the
- * active graph. The attribute editor also facilitates the adding/removing and
- * editing of attributes (as opposed to their values).
+ * This is the top component for Constellation's 'attribute editor' view. The attribute editor is a simple user
+ * interface which allows users to view and edit the values for any of the graph's attributes. Like many other
+ * Constellation views, its display corresponds to the current selection on the active graph. The attribute editor also
+ * facilitates the adding/removing and editing of attributes (as opposed to their values).
  * <br>
  * There are four main components to the editor:
  * <ul>
- * <li> The user interface, contained here, in {@link AttributeEditorPanel}, and
- * {@link AttributeTitledPane}.
- * </li><li> The data model, described in {@link AttributeState} and
- * {@link AttributeData}, which is populated from the graph using
- * {@link AttributeReader}.
- * </li><li>
- * {@link au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor}
- * classes that describe how each type of attribute should be displayed and
- * edited.
- * </li><li>
- * {@link au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation}
- * classes that make changes to attributes and their values on the graph,
- * usually through plugins.
+ * <li> The user interface, contained here, in {@link AttributeEditorPanel}, and {@link AttributeTitledPane}.
+ * </li><li> The data model, described in {@link AttributeState} and {@link AttributeData}, which is populated from the
+ * graph using {@link AttributeReader}.
+ * </li><li> {@link au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor}
+ * classes that describe how each type of attribute should be displayed and edited.
+ * </li><li> {@link au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation} classes that
+ * make changes to attributes and their values on the graph, usually through plugins.
  * </li>
  * </ul>
- * Note that whilst the structure is to remain as above, the details of the last
- * two components are to be significantly changed in the future. This will
- * entail disentanglement of the GUI, the graph editing, and the representation
- * of attributes.
+ * Note that whilst the structure is to remain as above, the details of the last two components are to be significantly
+ * changed in the future. This will entail disentanglement of the GUI, the graph editing, and the representation of
+ * attributes.
  *
  * @see AttributeEditorPanel
- * @see
- * au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor
+ * @see au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor
  */
 @ConvertAsProperties(
         dtd = "-//au.gov.asd.tac.constellation.views.attributeeditor//AttributeEditor//EN",
@@ -103,6 +96,7 @@ import org.openide.windows.TopComponent;
     "CTL_AttributeEditorTopComponent=Attribute Editor",
     "HINT_AttributeEditorTopComponent=Attribute Editor"
 })
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class AttributeEditorTopComponent extends JavaFxTopComponent<AttributeEditorPanel> implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider, PreferenceChangeListener {
 
     private static final String ATTRIBUTE_EDITOR_GRAPH_CHANGED_THREAD_NAME = "Attribute Editor Graph Changed Updater";
@@ -134,7 +128,6 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
             }
         };
 
-
         GraphManager.getDefault().addGraphManagerListener(AttributeEditorTopComponent.this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
         initContent();
@@ -145,9 +138,8 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     }
 
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
+     * content of this method is always regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -173,12 +165,14 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
 
         PreferenceUtilities.addPreferenceChangeListener(prefs.absolutePath(), this);
-        
+
         // Ensure that all the 'Show Empty' buttons are toggled on when panel
         // is re-displayed
         if (attributePanel != null) {
             attributePanel.refreshShowEmpty();
         }
+
+        setFloating(Bundle.CTL_AttributeEditorTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -265,11 +259,16 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     protected AttributeEditorPanel createContent() {
         return attributePanel;
     }
-    
+
     @Override
     protected void handlePreferenceChange(final PreferenceChangeEvent event) {
         if (reader != null) {
             attributePanel.updateEditorPanel(reader.refreshAttributes(true));
         }
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_AttributeEditorTopComponent(), Boolean.FALSE);
     }
 }

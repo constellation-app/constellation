@@ -24,8 +24,10 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.lang.ref.Cleaner;
 import java.lang.ref.Cleaner.Cleanable;
+import java.util.Map;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -34,7 +36,7 @@ import org.openide.nodes.Node;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
-import org.openide.windows.CloneableTopComponent;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -66,9 +68,10 @@ import org.openide.windows.TopComponent;
     "CTL_SimpleGraphTopComponent=Simple Graph",
     "HINT_SimpleGraphTopComponent=Simple Graph"
 })
-public final class SimpleGraphTopComponent extends CloneableTopComponent implements GraphChangeListener, UndoRedo.Provider {
+@ServiceProvider(service = AbstractTopComponent.class)
+public final class SimpleGraphTopComponent extends AbstractTopComponent implements GraphChangeListener, UndoRedo.Provider {
 
-    private final InstanceContent content;
+    private final InstanceContent instanceContent;
     private final Graph graph;
     private final GraphNode graphNode;
 
@@ -85,12 +88,12 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
         final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
         graph = new DualGraph(null);
         graphNode = new GraphNode(graph, gdo, this, null);
-        content = new InstanceContent();
-        content.add(getActionMap());
-        content.add(graphNode.getDataObject());
-        content.add(graph);
-        content.add(graphNode);
-        associateLookup(new AbstractLookup(content));
+        instanceContent = new InstanceContent();
+        instanceContent.add(getActionMap());
+        instanceContent.add(graphNode.getDataObject());
+        instanceContent.add(graph);
+        instanceContent.add(graphNode);
+        associateLookup(new AbstractLookup(instanceContent));
         setActivatedNodes(new Node[]{
             graphNode
         });
@@ -112,13 +115,13 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
 
         graphNode = new GraphNode(graph, gdo, this, null);
 
-        content = new InstanceContent();
-        content.add(getActionMap());
-        content.add(graphNode.getDataObject());
-        content.add(graph);
-        content.add(graphNode);
+        instanceContent = new InstanceContent();
+        instanceContent.add(getActionMap());
+        instanceContent.add(graphNode.getDataObject());
+        instanceContent.add(graph);
+        instanceContent.add(graphNode);
 
-        associateLookup(new AbstractLookup(content));
+        associateLookup(new AbstractLookup(instanceContent));
 
         setActivatedNodes(new Node[]{
             graphNode
@@ -362,17 +365,38 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void componentClosed() {
+    protected void componentOpened() {
+        super.componentOpened();
+        setFloating(Bundle.CTL_SimpleGraphTopComponent(), 0, 0, Spawn.LEFT);
+    }
+
+    @Override
+    protected void componentClosed() {
         super.componentClosed();
 
         setActivatedNodes(new Node[]{});
 
         graph.removeGraphChangeListener(this);
 
-        content.remove(graphNode.getDataObject());
-        content.remove(graph);
-        content.remove(graphNode);
+        instanceContent.remove(graphNode.getDataObject());
+        instanceContent.remove(graph);
+        instanceContent.remove(graphNode);
 
         graphNode.destroy();
+    }
+
+    @Override
+    protected void initContent() {
+        // Required for AbstractTopComponent, intentionally left blank.
+    }
+
+    @Override
+    protected InstanceContent createContent() {
+        return instanceContent;
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_SimpleGraphTopComponent(), Boolean.FALSE);
     }
 }

@@ -18,10 +18,12 @@ package au.gov.asd.tac.constellation.views.wordcloud.ui;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.List;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
@@ -29,6 +31,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -63,6 +66,7 @@ import org.openide.windows.TopComponent;
     "CTL_WordCloudTopComponent=Word Cloud View",
     "HINT_WordCloudTopComponent=Word Cloud View"
 })
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPane> {
 
     private final JFXPanel panel = new JFXPanel();
@@ -92,8 +96,8 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
         panel.setScene(scene);
 
         // Update word cloud pane's size when window size changes
-        scene.heightProperty().addListener((obv, oldVal, newVal) -> 
-            wordCloudPane.setContentHeight(newVal.intValue()));
+        scene.heightProperty().addListener((obv, oldVal, newVal)
+                -> wordCloudPane.setContentHeight(newVal.intValue()));
     }
 
     @Override
@@ -116,7 +120,7 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
             }
 
             if (graph != null) {
-                // Add listener to new graph 
+                // Add listener to new graph
                 this.graph = graph;
                 this.graph.addGraphChangeListener(this);
 
@@ -152,12 +156,13 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
         }
         setPaneStatus();
     }
-    
+
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
         controller.updateGraph();
         setPaneStatus();
+        setFloating(Bundle.CTL_WordCloudTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -166,13 +171,18 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
         controller.updateGraph();
         setPaneStatus();
     }
-        
+
     /**
-     * Sets the status of the pane dependent on if a graph is currently active.
-     * The status is used to enable or disable the view when a graph exists.
+     * Sets the status of the pane dependent on if a graph is currently active. The status is used to enable or disable
+     * the view when a graph exists.
      */
-    protected void setPaneStatus(){
+    protected void setPaneStatus() {
         createContent().setEnabled(GraphManager.getDefault().getActiveGraph() != null);
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_WordCloudTopComponent(), Boolean.FALSE);
     }
 
     /**
