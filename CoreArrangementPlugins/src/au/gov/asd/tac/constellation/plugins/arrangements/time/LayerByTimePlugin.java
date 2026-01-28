@@ -29,7 +29,6 @@ import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ResetViewPlugin;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.LayerNameAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.LayerName;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -113,6 +112,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(LayerByTimePlugin.class.getName());
 
+    private static final int GUIDELINE_LAYER = 1107;
+
     public static final String DATETIME_ATTRIBUTE_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "date_time_attribute");
     private static final String DATETIME_PARAMETER_ID_NAME = "Date-time attribute";
     private static final String DATETIME_ATTRIBUTE_PARAMETER_ID_DESCRIPTION = "The date-time attribute to use for the layered graph.";
@@ -157,31 +158,35 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final String DRAW_TX_GUIDES_DESCRIPTION = "Show indicator lines connecting the same node across different layers";
     private static final boolean DRAW_TX_GUIDES_DEFAULT = false;
 
-    public static final String ARRANGE_2D_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "arrange_in_2d");
+    protected static final String ARRANGE_2D_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "arrange_in_2d");
     private static final String ARRANGE_2D_NAME = "Arrange result in 2D";
     private static final String ARRANGE_2D_DESCRIPTION = "Arrange the results of layer by time into an organised 2D view";
     private static final boolean ARRANGE_2D_DEFAULT = false;
 
-    public static final String ROW_OR_COL_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "row_or_col");
-    private static final String ROW_OR_COL_NAME = "Arrange in rows or columns: ";
+    private static final String ROW_OR_COL_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "row_or_col");
+    private static final String ROW_OR_COL_NAME = "Limit rows or columns: ";
 
-    public static final String NUM_ROWS_OR_COLS_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "num_rows_or_cols");
+    private static final String NUM_ROWS_OR_COLS_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "num_rows_or_cols");
     private static final String NUM_ROWS_OR_COLS_NAME = "Number of rows/columns: ";
     private static final int NUM_ROWS_OR_COLS_DEFAULT = 1;
 
-    public static final String PER_LAYER_DIRECTION_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "per_layer_direction");
-    private static final String PER_LAYER_DIRECTION_NAME = "Direction to arrange new rows/columns: ";
+    private static final String ROW_DIST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "row_dist");
+    private static final String ROW_DIST_NAME = "Distance bewteen rows:";
+    private static final int ROW_DIST_DEFAULT = 10;
 
-    public static final String IN_LAYER_DIRECTION_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "in_layer_direction");
-    private static final String IN_LAYER_DIRECTION_NAME = "Direction to arrange nodes: ";
+    private static final String COL_DIST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "col_dist");
+    private static final String COL_DIST_NAME = "Distance between columns:";
+    private static final int COL_DIST_DEFAULT = 10;
 
-    public static final String LAYER_DIST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "layer_dist");
-    private static final String LAYER_DIST_NAME = "Distance bewteen layers: ";
-    private static final int LAYER_DIST_DEFAULT = 10;
+    private static final String NODE_DIST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "node_dist");
+    private static final String NODE_DIST_NAME = "Distance bewteen nodes in layer:";
+    private static final int NODE_DIST_DEFAULT = 10;
 
-    public static final String ROW_OR_COL_DIST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "row_col_dist");
-    private static final String ROW_OR_COL_DIST_NAME = "Distance between rows/columns: ";
-    private static final int ROW_OR_COL_DIST_DEFAULT = 10;
+    private static final String HOW_TO_ARRANGE_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "how_to_arrange");
+    private static final String HOW_TO_ARRANGE_NAME = "Direction to arrange:";
+
+    private static final String OLDEST_OR_NEWEST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "oldest_or_newest");
+    private static final String OLDEST_OR_NEWEST_NAME = "Oldest or newest time first:";
 
     private static final String ORIGINAL_ID_LABEL = "layer_original_id";
     private static final String LAYER_NAME = "layer";
@@ -190,21 +195,16 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final String ROWS = "Rows";
     private static final String COLS = "Columns";
 
-    private static final String X = "X";
-    private static final String Y = "Y";
-
-    private static final String X_RIGHT = "X (Right)";
-    private static final String X_LEFT = "-X (Left)";
-    private static final String Y_UP = "Y (Up)";
-    private static final String Y_DOWN = "-Y (Down)";
-
     private static final Map<String, Integer> LAYER_INTERVALS = new HashMap<>();
     private static final Map<String, Integer> BIN_CALENDAR_UNITS = new HashMap<>();
 
-    private static final HashMap<String, Vector3f> directionsMap = new HashMap<>();
-
-    private static final Vector3f VEC_UP = new Vector3f(0, 1, 0);
     private static final Vector3f VEC_RIGHT = new Vector3f(1, 0, 0);
+    private static final Vector3f VEC_DOWN = new Vector3f(0, -1, 0);
+
+    public static final String LEFT_TO_RIGHT = "Left to Right, go to new row";
+    public static final String TOP_TO_BOTTOM = "Top to Bottom, go to new column";
+    public static final String OLDEST_FIRST = "Oldest first";
+    public static final String NEWEST_FIRST = "Newest first";
 
     static {
         LAYER_INTERVALS.put("Seconds", 1);
@@ -219,12 +219,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         BIN_CALENDAR_UNITS.put("Week", Calendar.WEEK_OF_YEAR);
         BIN_CALENDAR_UNITS.put("Month", Calendar.MONTH);
         BIN_CALENDAR_UNITS.put("Year", Calendar.YEAR);
-
-        // Populate directions hash map
-        directionsMap.put(X_RIGHT, new Vector3f(1, 0, 0));
-        directionsMap.put(X_LEFT, new Vector3f(-1, 0, 0));
-        directionsMap.put(Y_UP, new Vector3f(0, 1, 0));
-        directionsMap.put(Y_DOWN, new Vector3f(0, -1, 0));
     }
 
     // Quick and dirty way of mapping existing nodeid + layer number to new nodeid.
@@ -240,12 +234,13 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private PluginParameter<DateTimeRangeParameterValue> dateRangeParam;
 
     private PluginParameter<BooleanParameterValue> arrange2DParam;
-    private PluginParameter<SingleChoiceParameterValue> perLayerDirectionParameter;
     private PluginParameter<IntegerParameterValue> numRowsOrColsParam;
     private PluginParameter<SingleChoiceParameterValue> rowOrColParam;
-    private PluginParameter<SingleChoiceParameterValue> inLayerDirectionParameter;
-    private PluginParameter<IntegerParameterValue> distanceBetweenLayers;
-    private PluginParameter<IntegerParameterValue> distanceBetweenRowsOrCols;
+    private PluginParameter<IntegerParameterValue> distanceBetweenNodes;
+    private PluginParameter<SingleChoiceParameterValue> howToArrangeParameter;
+    private PluginParameter<SingleChoiceParameterValue> oldestOrNewestParameter;
+    private PluginParameter<IntegerParameterValue> distanceBetweenRows;
+    private PluginParameter<IntegerParameterValue> distanceBetweenCols;
 
     @Override
     public PluginParameters createParameters() {
@@ -306,7 +301,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         arrange2DParam.setDescription(ARRANGE_2D_DESCRIPTION);
         arrange2DParam.setBooleanValue(ARRANGE_2D_DEFAULT);
         parameters.addParameter(arrange2DParam);
-        arrange2DParam.addListener((oldValue, newValue) -> disableArrange2dOptions());
+        arrange2DParam.addListener((oldValue, newValue) -> disableArrange2dOptions(arrange2DParam.getBooleanValue()));
 
         rowOrColParam = SingleChoiceParameterType.build(ROW_OR_COL_PARAMETER_ID);
         rowOrColParam.setName(ROW_OR_COL_NAME);
@@ -314,7 +309,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         SingleChoiceParameterType.setChoice(rowOrColParam, COLS);
         rowOrColParam.setVisible(false);
         parameters.addParameter(rowOrColParam);
-        rowOrColParam.addListener((oldValue, newValue) -> updatePerLayerDirectionChoices());
 
         numRowsOrColsParam = IntegerParameterType.build(NUM_ROWS_OR_COLS_PARAMETER_ID);
         numRowsOrColsParam.setName(NUM_ROWS_OR_COLS_NAME);
@@ -322,33 +316,37 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         numRowsOrColsParam.setVisible(false);
         parameters.addParameter(numRowsOrColsParam);
 
-        perLayerDirectionParameter = SingleChoiceParameterType.build(PER_LAYER_DIRECTION_PARAMETER_ID);
-        perLayerDirectionParameter.setName(PER_LAYER_DIRECTION_NAME);
-        final List<String> directionList = new ArrayList<>(directionsMap.keySet());
-        directionList.removeIf(s -> !s.contains(Y));
-        SingleChoiceParameterType.setOptions(perLayerDirectionParameter, directionList);
-        SingleChoiceParameterType.setChoice(perLayerDirectionParameter, Y_DOWN);
-        perLayerDirectionParameter.setVisible(false);
-        parameters.addParameter(perLayerDirectionParameter);
+        distanceBetweenRows = IntegerParameterType.build(ROW_DIST_PARAMETER_ID);
+        distanceBetweenRows.setName(ROW_DIST_NAME);
+        distanceBetweenRows.setIntegerValue(ROW_DIST_DEFAULT);
+        distanceBetweenRows.setVisible(false);
+        parameters.addParameter(distanceBetweenRows);
 
-        inLayerDirectionParameter = SingleChoiceParameterType.build(IN_LAYER_DIRECTION_PARAMETER_ID);
-        inLayerDirectionParameter.setName(IN_LAYER_DIRECTION_NAME);
-        SingleChoiceParameterType.setOptions(inLayerDirectionParameter, new ArrayList<>(directionsMap.keySet()));
-        SingleChoiceParameterType.setChoice(inLayerDirectionParameter, X_RIGHT);
-        inLayerDirectionParameter.setVisible(false);
-        parameters.addParameter(inLayerDirectionParameter);
+        distanceBetweenCols = IntegerParameterType.build(COL_DIST_PARAMETER_ID);
+        distanceBetweenCols.setName(COL_DIST_NAME);
+        distanceBetweenCols.setIntegerValue(COL_DIST_DEFAULT);
+        distanceBetweenCols.setVisible(false);
+        parameters.addParameter(distanceBetweenCols);
 
-        distanceBetweenLayers = IntegerParameterType.build(LAYER_DIST_PARAMETER_ID);
-        distanceBetweenLayers.setName(LAYER_DIST_NAME);
-        distanceBetweenLayers.setIntegerValue(LAYER_DIST_DEFAULT);
-        distanceBetweenLayers.setVisible(false);
-        parameters.addParameter(distanceBetweenLayers);
+        distanceBetweenNodes = IntegerParameterType.build(NODE_DIST_PARAMETER_ID);
+        distanceBetweenNodes.setName(NODE_DIST_NAME);
+        distanceBetweenNodes.setIntegerValue(NODE_DIST_DEFAULT);
+        distanceBetweenNodes.setVisible(false);
+        parameters.addParameter(distanceBetweenNodes);
 
-        distanceBetweenRowsOrCols = IntegerParameterType.build(ROW_OR_COL_DIST_PARAMETER_ID);
-        distanceBetweenRowsOrCols.setName(ROW_OR_COL_DIST_NAME);
-        distanceBetweenRowsOrCols.setIntegerValue(ROW_OR_COL_DIST_DEFAULT);
-        distanceBetweenRowsOrCols.setVisible(false);
-        parameters.addParameter(distanceBetweenRowsOrCols);
+        howToArrangeParameter = SingleChoiceParameterType.build(HOW_TO_ARRANGE_PARAMETER_ID);
+        howToArrangeParameter.setName(HOW_TO_ARRANGE_NAME);
+        SingleChoiceParameterType.setOptions(howToArrangeParameter, Arrays.asList(LEFT_TO_RIGHT, TOP_TO_BOTTOM));
+        SingleChoiceParameterType.setChoice(howToArrangeParameter, LEFT_TO_RIGHT);
+        howToArrangeParameter.setVisible(false);
+        parameters.addParameter(howToArrangeParameter);
+
+        oldestOrNewestParameter = SingleChoiceParameterType.build(OLDEST_OR_NEWEST_PARAMETER_ID);
+        oldestOrNewestParameter.setName(OLDEST_OR_NEWEST_NAME);
+        SingleChoiceParameterType.setOptions(oldestOrNewestParameter, Arrays.asList(OLDEST_FIRST, NEWEST_FIRST));
+        SingleChoiceParameterType.setChoice(oldestOrNewestParameter, OLDEST_FIRST);
+        oldestOrNewestParameter.setVisible(false);
+        parameters.addParameter(oldestOrNewestParameter);
 
         parameters.addController(LAYER_BY_PARAMETER_ID, (masterId, paramMap, change) -> {
             if (change == ParameterChange.VALUE) {
@@ -467,14 +465,15 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
             // new arrange in 2d params
             final boolean arrangeIn2d = parameters.getParameters().get(ARRANGE_2D_PARAMETER_ID).getBooleanValue();
-
-            final Vector3f perLayerDirection = ((Vector3f) directionsMap.get(parameters.getParameters().get(PER_LAYER_DIRECTION_PARAMETER_ID).getStringValue())).copy();
             final int numRowsOrCols = parameters.getParameters().get(NUM_ROWS_OR_COLS_PARAMETER_ID).getIntegerValue();
-            final int layerScale = parameters.getParameters().get(LAYER_DIST_PARAMETER_ID).getIntegerValue();
-            final int columnScale = parameters.getParameters().get(ROW_OR_COL_DIST_PARAMETER_ID).getIntegerValue();
 
             final boolean isRow = ROWS.equals(parameters.getParameters().get(ROW_OR_COL_PARAMETER_ID).getStringValue());
-            final Vector3f inLayerDirection = ((Vector3f) directionsMap.get(parameters.getParameters().get(IN_LAYER_DIRECTION_PARAMETER_ID).getStringValue())).copy();
+
+            final int nodeDist = parameters.getParameters().get(NODE_DIST_PARAMETER_ID).getIntegerValue();
+            final int rowDist = parameters.getParameters().get(ROW_DIST_PARAMETER_ID).getIntegerValue();
+            final int colDist = parameters.getParameters().get(COL_DIST_PARAMETER_ID).getIntegerValue();
+            final boolean isLeftToRight = LEFT_TO_RIGHT.equals(parameters.getParameters().get(HOW_TO_ARRANGE_PARAMETER_ID).getStringValue());
+            final boolean OldestFirst = OLDEST_FIRST.equals(parameters.getParameters().get(OLDEST_OR_NEWEST_PARAMETER_ID).getStringValue());
 
             //Establish new attributes.
             //Create and store graph attributes.
@@ -504,46 +503,44 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             float z = 0;
             final float step = getWidth(wgcopy) / values.size();
 
-            final Vector3f rowColPosition = Vector3f.createZeroVector();
-            final Vector3f layerPosition = Vector3f.createZeroVector();
-            boolean newRowOrColStarted = false;
-            final Vector3f nextRowOrColumnDirection = isRow ? VEC_UP.copy() : VEC_RIGHT.copy();
-
-            // For 2d only right now, if the in-layer and per-layer directions are the same then we'll need to account for that so layers dont overlap
-            // They're the same direction if their dot product equals their lenghts multiplied together
-            final float dotProduct = Vector3f.dotProduct(inLayerDirection, perLayerDirection);
-            final float productOfLengths = inLayerDirection.getLength() * perLayerDirection.getLength();
-
-            final boolean isSameDirection = dotProduct == productOfLengths;
-            final boolean isOppositeDirection = -dotProduct == productOfLengths;
+            // final Vector3f layerPosition = Vector3f.createZeroVector();
+            final Vector3f rowPosition = Vector3f.createZeroVector();
+            final Vector3f rowDirection = VEC_DOWN.copy();
+            final Vector3f colPosition = Vector3f.createZeroVector();
+            final Vector3f colDirection = VEC_RIGHT.copy();
 
             // Scale according to the user's decided paramters
-            inLayerDirection.scale(layerScale);
-            perLayerDirection.scale(layerScale);
+            final Vector3f inLayerDirection = VEC_RIGHT.copy(); // TODO implement different directions again
+            inLayerDirection.scale(nodeDist);
+
             final int maxNodesInLayer = findMaxLayerSize(wgcopy);
-            nextRowOrColumnDirection.scale(columnScale * maxNodesInLayer);
-
-            final int layersPerRowOrCol = (int) Math.floor((float) remappedLayers.keyValuesView().size() / numRowsOrCols);
-            int layersPerRowOrColRemainder = remappedLayers.keyValuesView().size() % numRowsOrCols;
-
-            int remainingLayers = layersPerRowOrColRemainder > 0 ? layersPerRowOrCol + 1 : layersPerRowOrCol;
-            layersPerRowOrColRemainder -= 1;
+            rowDirection.scale(rowDist);
+            colDirection.scale(colDist + nodeDist * (maxNodesInLayer - 1)); // Scale extra to account for largest chain of times
 
             final Object[] transactionLayerKeyValues = transactionLayers.keyValuesView().toArray();
 
-            // Sorting of array only matters for arrangeIn2d option. Has no effect on regular function but sorting is so fast it doesn't matter
-            Arrays.sort(transactionLayerKeyValues);
+            // Sorting of array only relevant for arrangeIn2d option
+            // Has no effect on regular function but sorting is so fast it doesn't matter
+            if (OldestFirst) {
+                Arrays.sort(transactionLayerKeyValues);
+            } else {
+                // If we want the newest first, reverse order
+                Arrays.sort(transactionLayerKeyValues, Collections.reverseOrder());
+            }
 
-            // Each layer
-            for (int i = 0; i < transactionLayerKeyValues.length; i++) {
-                final FloatObjectPair<MutableIntList> currentLayer = (FloatObjectPair) transactionLayerKeyValues[i];
+            final int numRows = isRow ? numRowsOrCols : (int) Math.ceil(transactionLayerKeyValues.length / numRowsOrCols);
+            final int numCols = !isRow ? numRowsOrCols : (int) Math.ceil(transactionLayerKeyValues.length / numRowsOrCols);
+
+            // remaining layers in column/row
+            int remainingLayers = isLeftToRight ? numCols : numRows;
+
+            // For each layer
+            for (final Object transactionLayerKeyValue : transactionLayerKeyValues) {
+                final FloatObjectPair<MutableIntList> currentLayer = (FloatObjectPair) transactionLayerKeyValue;
                 final IntObjectPair<MutableFloatList> remappedLayersKeyValue = findMatchingKeyValue(remappedLayers, currentLayer.getOne());
-
                 if (remappedLayersKeyValue == null) {
                     continue;
                 }
-
-                final int nextLayerSize = (i + 1 < transactionLayerKeyValues.length) ? findLayerSize(wgcopy, (FloatObjectPair) transactionLayerKeyValues[i + 1]) : 0;
 
                 final MutableIntSet nodesInLayer = new IntHashSet();
                 for (int j = 0; j < currentLayer.getTwo().size(); j++) {
@@ -573,8 +570,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     final int yAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
                     final int zAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
 
-                    // Calc the position the next node group should be
-                    final Vector3f nodePosition = layerPosition.copy();
+                    // Node Position is just the current row and column's position
+                    final Vector3f nodePosition = rowPosition.copy();
+                    nodePosition.add(colPosition);
 
                     final MutableIntIterator iterator = nodesInLayer.intIterator();
                     while (iterator.hasNext()) {
@@ -586,40 +584,37 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                         wgcopy.setFloatValue(zAttr, nodeId, nodePosition.getZ());
 
                         nodePosition.add(inLayerDirection);
-
                     }
 
-                    if (isSameDirection || isOppositeDirection) {
-                        final Vector3f toAdd = perLayerDirection.copy();
-                        final int scaleAmount = isSameDirection ? nodesInLayer.size() : nextLayerSize; // If isSameDirection is FALSE, isOppositeDirection must be TRUE
-                        if (scaleAmount - 1 > 1) {
-                            toAdd.scale(scaleAmount - 1);
-                        }
-                        layerPosition.add(toAdd);
+                    // Update position of next layer
+                    if (isLeftToRight) {
+                        // go right
+                        colPosition.add(colDirection);
+                    } else {
+                        // go down
+                        rowPosition.add(rowDirection);
                     }
 
                     remainingLayers -= 1;
-
-                    // Start new row or column
-                    newRowOrColStarted = false;
+                    // Start new row or column, if required
                     if (remainingLayers <= 0) {
-                        newRowOrColStarted = true;
-                        remainingLayers = layersPerRowOrColRemainder > 0 ? layersPerRowOrCol + 1 : layersPerRowOrCol;
+                        remainingLayers = isLeftToRight ? numCols : numRows;
 
-                        rowColPosition.add(nextRowOrColumnDirection);
-                        layerPosition.set(rowColPosition);
-
-                        layersPerRowOrColRemainder -= 1;
+                        if (isLeftToRight) {
+                            // go to next row
+                            rowPosition.add(rowDirection);
+                            colPosition.set(Vector3f.createZeroVector());
+                        } else {
+                            // go to next column
+                            colPosition.add(colDirection);
+                            rowPosition.set(Vector3f.createZeroVector());
+                        }
                     }
                 }
-
                 if (isTransactionLayers) {
                     srcVxMap = dstVxMap;
                     dstVxMap = new IntIntHashMap();
                     z += step;
-                }
-                if (!newRowOrColStarted) {
-                    layerPosition.add(perLayerDirection);
                 }
             }
 
@@ -658,7 +653,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                                 final int sTxId = wgcopy.addTransaction(prevNodeId, nodeId, false);
                                 wgcopy.setBooleanValue(txGuideline, sTxId, true);
                                 wgcopy.setObjectValue(txColorAttr, sTxId, guidelineColor);
-                                final LayerName dn = new LayerName(1107, "Guideline"); // MAGIC NUMBER
+                                final LayerName dn = new LayerName(GUIDELINE_LAYER, "Guideline");
                                 wgcopy.setObjectValue(timeLayerAttr, sTxId, dn);
                             }
                             prevNodeId = nodeId;
@@ -689,28 +684,14 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         }
     }
 
-    private void updatePerLayerDirectionChoices() {
-        // update per layer direction based on if rows or columns is chosen
-        final boolean isRow = ROWS.equals(rowOrColParam.getStringValue());
-
-        final String substring = isRow ? X : Y;
-        final List<String> directionList = new ArrayList<>(directionsMap.keySet());
-        directionList.removeIf(s -> !s.contains(substring));
-        SingleChoiceParameterType.setOptions(perLayerDirectionParameter, directionList);
-
-        final String choice = isRow ? X_RIGHT : Y_DOWN;
-        SingleChoiceParameterType.setChoice(perLayerDirectionParameter, choice);
-    }
-
-    private void disableArrange2dOptions() {
-        final boolean enable = arrange2DParam.getBooleanValue();
-
-        perLayerDirectionParameter.setVisible(enable);
+    private void disableArrange2dOptions(final boolean enable) {
         numRowsOrColsParam.setVisible(enable);
         rowOrColParam.setVisible(enable);
-        inLayerDirectionParameter.setVisible(enable);
-        distanceBetweenLayers.setVisible(enable);
-        distanceBetweenRowsOrCols.setVisible(enable);
+        distanceBetweenNodes.setVisible(enable);
+        howToArrangeParameter.setVisible(enable);
+        oldestOrNewestParameter.setVisible(enable);
+        distanceBetweenRows.setVisible(enable);
+        distanceBetweenCols.setVisible(enable);
     }
 
     private int findMaxLayerSize(final GraphWriteMethods graph) {
