@@ -233,7 +233,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private PluginParameter<SingleChoiceParameterValue> dtAttrParam;
     private PluginParameter<DateTimeRangeParameterValue> dateRangeParam;
 
-    private PluginParameter<BooleanParameterValue> arrange2DParam;
     private PluginParameter<IntegerParameterValue> numRowsOrColsParam;
     private PluginParameter<SingleChoiceParameterValue> rowOrColParam;
     private PluginParameter<IntegerParameterValue> distanceBetweenNodes;
@@ -296,7 +295,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         drawTxGuidesParam.setBooleanValue(DRAW_TX_GUIDES_DEFAULT);
         parameters.addParameter(drawTxGuidesParam);
 
-        arrange2DParam = BooleanParameterType.build(ARRANGE_2D_PARAMETER_ID);
+        final PluginParameter<BooleanParameterValue> arrange2DParam = BooleanParameterType.build(ARRANGE_2D_PARAMETER_ID);
         arrange2DParam.setName(ARRANGE_2D_NAME);
         arrange2DParam.setDescription(ARRANGE_2D_DESCRIPTION);
         arrange2DParam.setBooleanValue(ARRANGE_2D_DEFAULT);
@@ -503,14 +502,13 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             float z = 0;
             final float step = getWidth(wgcopy) / values.size();
 
-            // final Vector3f layerPosition = Vector3f.createZeroVector();
             final Vector3f rowPosition = Vector3f.createZeroVector();
             final Vector3f rowDirection = VEC_DOWN.copy();
             final Vector3f colPosition = Vector3f.createZeroVector();
             final Vector3f colDirection = VEC_RIGHT.copy();
 
             // Scale according to the user's decided paramters
-            final Vector3f inLayerDirection = VEC_RIGHT.copy(); // TODO implement different directions again
+            final Vector3f inLayerDirection = VEC_RIGHT.copy();
             inLayerDirection.scale(nodeDist);
 
             final int maxNodesInLayer = findMaxLayerSize(wgcopy);
@@ -528,8 +526,13 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 Arrays.sort(transactionLayerKeyValues, Collections.reverseOrder());
             }
 
-            final int numRows = isRow ? numRowsOrCols : (int) Math.ceil(transactionLayerKeyValues.length / numRowsOrCols);
-            final int numCols = !isRow ? numRowsOrCols : (int) Math.ceil(transactionLayerKeyValues.length / numRowsOrCols);
+            final int numRows = isRow ? numRowsOrCols : (int) Math.ceil((float) transactionLayerKeyValues.length / numRowsOrCols);
+            final int numCols = !isRow ? numRowsOrCols : (int) Math.ceil((float) transactionLayerKeyValues.length / numRowsOrCols);
+
+            // This only matters if arranging top to bottom and limiting columns OR left to right and limiting rows
+            final boolean doesRemainderMatter = (isRow && isLeftToRight) || (!isRow && !isLeftToRight);
+            // If remainder is 0, then the layers will evenly fit in each row and column
+            int remainder = doesRemainderMatter ? transactionLayerKeyValues.length % numRowsOrCols : 0;
 
             // remaining layers in column/row
             int remainingLayers = isLeftToRight ? numCols : numRows;
@@ -598,7 +601,14 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     remainingLayers -= 1;
                     // Start new row or column, if required
                     if (remainingLayers <= 0) {
+
                         remainingLayers = isLeftToRight ? numCols : numRows;
+                        remainder--;
+
+                        if (doesRemainderMatter && remainder <= 0) {
+                            remainingLayers--;
+                            remainder = 0; //Prevent underflow in extreme edge case
+                        }
 
                         if (isLeftToRight) {
                             // go to next row
