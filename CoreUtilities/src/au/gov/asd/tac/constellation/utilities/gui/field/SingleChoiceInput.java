@@ -264,16 +264,18 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
         
         // If the text matches a suggestion, show all suggestions 
         // The currently selected option will show at the top of the suggestions list 
-        final String match = suggestions.get(0).getText();
-        if (suggestions.size() == 1 && match.toUpperCase().equals(getText().toUpperCase())) {
-            this.getOptions().stream().map(value -> value)
-                    .forEach(value -> {
-                        if (!match.equals(value.toString())) {
-                            final MenuItem item = new MenuItem(value.toString());
-                            item.setOnAction(event -> this.setChoice(value));
-                            suggestions.add(item);
-                        }
-                    });
+        if (suggestions.size() > 0) {
+            final String match = suggestions.get(0).getText();
+            if (suggestions.size() == 1 && match.toUpperCase().equals(getText().toUpperCase())) {
+                this.getOptions().stream().map(value -> value)
+                        .forEach(value -> {
+                            if (!match.equals(value.toString())) {
+                                final MenuItem item = new MenuItem(value.toString());
+                                item.setOnAction(event -> this.setChoice(value));
+                                suggestions.add(item);
+                            }
+                        });
+            }
         }
         return suggestions;
     }
