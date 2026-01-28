@@ -93,14 +93,15 @@ public class LayerByTimePluginNGTest {
             "LayerByTimePlugin.keep_tx_colors",
             "LayerByTimePlugin.draw_tx_guides",
             "LayerByTimePlugin.arrange_in_2d",
-            "LayerByTimePlugin.per_layer_direction",
-            "LayerByTimePlugin.num_rows_or_cols",
             "LayerByTimePlugin.row_or_col",
-            "LayerByTimePlugin.in_layer_direction",
-            "LayerByTimePlugin.layer_dist",
-            "LayerByTimePlugin.row_col_dist"
+            "LayerByTimePlugin.num_rows_or_cols",
+            "LayerByTimePlugin.row_dist",
+            "LayerByTimePlugin.col_dist",
+            "LayerByTimePlugin.node_dist",
+            "LayerByTimePlugin.how_to_arrange",
+            "LayerByTimePlugin.oldest_or_newest"
         };
-
+        
         assertEquals(params.size(), parameterKeyArray.length);
 
         for (final String key : parameterKeyArray) {
