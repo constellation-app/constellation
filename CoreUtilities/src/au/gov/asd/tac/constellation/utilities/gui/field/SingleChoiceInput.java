@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,11 +81,7 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
 
     public C getChoice() {
         final List<C> matches = getOptions().stream().filter(choice -> choice.toString().equals(getText())).toList();
-        if (matches.isEmpty()) {
-            return null;
-        } else {
-            return matches.getFirst();
-        }
+        return matches.isEmpty() ? null : matches.getFirst();
     }
 
     /**
@@ -161,11 +157,7 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
 
     @Override
     public boolean isValidContent() {
-        if (getText().isBlank()) {
-            return true;
-        } else {
-            return getChoice() != null;
-        }
+        return getText().isBlank() || getChoice() != null;
     }
 
     @Override

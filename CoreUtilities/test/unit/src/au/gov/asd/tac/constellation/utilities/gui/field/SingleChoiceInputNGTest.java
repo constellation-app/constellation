@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,16 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputButton.ButtonType;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.ChoiceType;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport.LeftButton;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.event.EventHandler;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseEvent;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doNothing;
@@ -40,9 +35,7 @@ import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -127,7 +120,7 @@ public class SingleChoiceInputNGTest {
         
         // Test with a value
         final Object choice = "choice";
-        final List options = new ArrayList<>();
+        final List<Object> options = new ArrayList<>();
         options.add(choice);
         instance.setOptions(options);
         instance.setChoice(choice);
@@ -148,12 +141,12 @@ public class SingleChoiceInputNGTest {
         final MenuItem choose = new MenuItem("Select Choice");
         expResult.add(choose);
         
-        List result = instance.getLocalMenuItems();
+        List<MenuItem> result = instance.getLocalMenuItems();
         assertEquals(result.size(), expResult.size());
         
         // Test single spinner
         final SingleChoiceInput spinnerInstance = new SingleChoiceInput(ChoiceType.SINGLE_SPINNER);
-        final List biggerResult = new ArrayList<>();
+        final List<MenuItem> biggerResult = new ArrayList<>();
         final MenuItem next = new MenuItem("Increment");
         final MenuItem prev = new MenuItem("Decrement");
         biggerResult.add(next);
@@ -232,12 +225,12 @@ public class SingleChoiceInputNGTest {
         System.out.println("getAutoCompleteSuggestions");
         final SingleChoiceInput instance = new SingleChoiceInput(ChoiceType.SINGLE_DROPDOWN);
         final Object choice = "choice";
-        final List options = new ArrayList<>();
+        final List<Object> options = new ArrayList<>();
         options.add(choice);
         instance.setOptions(options);
         instance.setChoice(choice);
         instance.setText("choice");
-        final List result = instance.getAutoCompleteSuggestions();
+        final List<Object> result = instance.getAutoCompleteSuggestions();
         assertEquals(result.size(), options.size());
     }
     
