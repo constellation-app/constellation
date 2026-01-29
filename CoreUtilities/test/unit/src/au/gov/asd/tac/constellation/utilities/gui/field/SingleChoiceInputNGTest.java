@@ -137,7 +137,7 @@ public class SingleChoiceInputNGTest {
         
         // Test single dropdown
         final SingleChoiceInput instance = new SingleChoiceInput(ChoiceType.SINGLE_DROPDOWN);
-        final List expResult = new ArrayList<>();
+        final List<MenuItem> expResult = new ArrayList<>();
         final MenuItem choose = new MenuItem("Select Choice");
         expResult.add(choose);
         
