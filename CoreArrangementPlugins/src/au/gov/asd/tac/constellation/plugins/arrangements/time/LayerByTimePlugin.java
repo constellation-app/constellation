@@ -206,6 +206,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     public static final String OLDEST_FIRST = "Oldest first";
     public static final String NEWEST_FIRST = "Newest first";
 
+    public static final int MIN_INT_PARAM_VALUE = 1;
+
     static {
         LAYER_INTERVALS.put("Seconds", 1);
         LAYER_INTERVALS.put("Minutes", 60);
@@ -312,24 +314,28 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         numRowsOrColsParam = IntegerParameterType.build(NUM_ROWS_OR_COLS_PARAMETER_ID);
         numRowsOrColsParam.setName(NUM_ROWS_OR_COLS_NAME);
         numRowsOrColsParam.setIntegerValue(NUM_ROWS_OR_COLS_DEFAULT);
+        IntegerParameterType.setMinimum(numRowsOrColsParam, MIN_INT_PARAM_VALUE);
         numRowsOrColsParam.setVisible(false);
         parameters.addParameter(numRowsOrColsParam);
 
         distanceBetweenRows = IntegerParameterType.build(ROW_DIST_PARAMETER_ID);
         distanceBetweenRows.setName(ROW_DIST_NAME);
         distanceBetweenRows.setIntegerValue(ROW_DIST_DEFAULT);
+        IntegerParameterType.setMinimum(distanceBetweenRows, MIN_INT_PARAM_VALUE);
         distanceBetweenRows.setVisible(false);
         parameters.addParameter(distanceBetweenRows);
 
         distanceBetweenCols = IntegerParameterType.build(COL_DIST_PARAMETER_ID);
         distanceBetweenCols.setName(COL_DIST_NAME);
         distanceBetweenCols.setIntegerValue(COL_DIST_DEFAULT);
+        IntegerParameterType.setMinimum(distanceBetweenCols, MIN_INT_PARAM_VALUE);
         distanceBetweenCols.setVisible(false);
         parameters.addParameter(distanceBetweenCols);
 
         distanceBetweenNodes = IntegerParameterType.build(NODE_DIST_PARAMETER_ID);
         distanceBetweenNodes.setName(NODE_DIST_NAME);
         distanceBetweenNodes.setIntegerValue(NODE_DIST_DEFAULT);
+        IntegerParameterType.setMinimum(distanceBetweenNodes, MIN_INT_PARAM_VALUE);
         distanceBetweenNodes.setVisible(false);
         parameters.addParameter(distanceBetweenNodes);
 
