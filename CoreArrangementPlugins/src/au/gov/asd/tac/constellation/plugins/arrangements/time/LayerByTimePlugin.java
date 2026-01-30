@@ -201,8 +201,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final Vector3f VEC_RIGHT = new Vector3f(1, 0, 0);
     private static final Vector3f VEC_DOWN = new Vector3f(0, -1, 0);
 
-    public static final String LEFT_TO_RIGHT = "Left to Right, go to new row";
-    public static final String TOP_TO_BOTTOM = "Top to Bottom, go to new column";
+    public static final String LEFT_TO_RIGHT = "Left to Right";
+    public static final String TOP_TO_BOTTOM = "Top to Bottom";
     public static final String OLDEST_FIRST = "Oldest first";
     public static final String NEWEST_FIRST = "Newest first";
 
