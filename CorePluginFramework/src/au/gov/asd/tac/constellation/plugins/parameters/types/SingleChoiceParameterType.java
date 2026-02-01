@@ -365,7 +365,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         }
         
         /**
-         * Set the collection of icons from a list of InageIcons.
+         * Set the collection of icons from a list of ImageIcons.
          *
          * @param icons A list of ImageIcons to set the collection of icons
          * from.

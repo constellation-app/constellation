@@ -249,20 +249,28 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
         this.getOptions().stream().map(value -> value)
                 .filter(value -> value.toString().toUpperCase().contains(getText().toUpperCase()))
                 .forEach(value -> {
+                    final int index = this.getOptions().indexOf(value);
                     final MenuItem item = new MenuItem(value.toString());
+                    if (!this.icons.isEmpty()) {
+                        item.setGraphic(this.icons.get(index));
+                    }
                     item.setOnAction(event -> this.setChoice(value));
                     suggestions.add(item);
                 });
         
         // If the text matches a suggestion, show all suggestions 
         // The currently selected option will show at the top of the suggestions list 
-        if (suggestions.size() > 0) {
+        if (!suggestions.isEmpty()) {
             final String match = suggestions.get(0).getText();
             if (suggestions.size() == 1 && match.toUpperCase().equals(getText().toUpperCase())) {
                 this.getOptions().stream().map(value -> value)
                         .forEach(value -> {
                             if (!match.equals(value.toString())) {
+                                final int index = this.getOptions().indexOf(value);
                                 final MenuItem item = new MenuItem(value.toString());
+                                if (!this.icons.isEmpty()) {
+                                    item.setGraphic(this.icons.get(index));
+                                }
                                 item.setOnAction(event -> this.setChoice(value));
                                 suggestions.add(item);
                             }
