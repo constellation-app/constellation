@@ -206,7 +206,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     public static final String OLDEST_FIRST = "Oldest first";
     public static final String NEWEST_FIRST = "Newest first";
 
-    public static final int MIN_INT_PARAM_VALUE = 1;
+    public static final int MIN_INT_PARAM_VALUE = 0;
 
     static {
         LAYER_INTERVALS.put("Seconds", 1);
