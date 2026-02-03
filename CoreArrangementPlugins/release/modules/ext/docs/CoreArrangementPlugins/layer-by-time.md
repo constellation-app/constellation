@@ -63,7 +63,7 @@ options to see which one works best for you.
 - Direction to arrange: Options are "Left to Right" and "Top to Bottom". "Left to right" will place newer layers (by default) **to the right** of previous layers, then start a new row if the column limit is reached. "Top to bottom" will place newer layers (by default) **below** previous layers, then start a new column when the row limit is reached.
 - Oldest or newest time first: "Oldest" will place layers in chronological order, "Newest" will place layers in reverse-chronological order
 
-
+<br />
 <div style="text-align: center">
     <img height=600 src="../ext/docs/CoreArrangementPlugins/resources/layer_by_time_parameters_gui_screenshot.png" alt="Layer by Time Interface" />
 </div>
