@@ -186,7 +186,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final String HOW_TO_ARRANGE_NAME = "Direction to arrange:";
 
     private static final String OLDEST_OR_NEWEST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "oldest_or_newest");
-    private static final String OLDEST_OR_NEWEST_NAME = "Oldest or newest time first:";
+    private static final String OLDEST_OR_NEWEST_NAME = "Chronological ordering:";
 
     private static final String ORIGINAL_ID_LABEL = "layer_original_id";
     private static final String LAYER_NAME = "layer";
@@ -203,8 +203,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     public static final String LEFT_TO_RIGHT = "Left to Right";
     public static final String TOP_TO_BOTTOM = "Top to Bottom";
-    public static final String OLDEST_FIRST = "Oldest first";
-    public static final String NEWEST_FIRST = "Newest first";
+    public static final String OLDEST_FIRST = "Chronological order (Oldest first)";
+    public static final String NEWEST_FIRST = "Reverse Chronological order (Newest first)";
 
     public static final int MIN_INT_PARAM_VALUE = 0;
 

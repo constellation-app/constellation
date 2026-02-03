@@ -31,9 +31,7 @@ the data in the graph into a series of time bins. Select a range using
 the First Datetime and Last Datetime selection boxes, or use the default
 values of the earliest and latest timestamps in the current graph data.
 
-**WARNING: Using the "Layer by Time" feature will add information
-(duplicate nodes and transactions) to your graph. To preserve your
-original data, make a copy of your graph before running the plugin.**
+After running the arrangement, a new graph is created containing the results of Layer by Time.
 
 There are two options for defining the layers: "Nodes as Layers" and
 "Transactions as Layers". The default option of "Nodes as Layers" (i.e.
@@ -45,13 +43,34 @@ the data in the same way, but puts transactions on a separate layer
 (between their source and destination nodes). Experiment with both
 options to see which one works best for you.
 
+**Options:**
+- Date-time Attribute: The attribute from the graph's tranactions that will used to order the results
+- Date Range: The range of time to include in layering
+- Layer date-times by: The method by which to layer the graph into. Choices are "intervals" or "bins"
+- Intervals: The number of intervals to layer the graph int. This option is disabled if "bins" is chosen for the "Layer date-times by" paramter
+- Unit: The unit of time in which to layer the graph by
+- Transactions as layers: Whether to use transactions as layers. Uses nodes if left unticked
+- Keep transaction colors: If ticked, transactions will retain their color. If unticked, color will be determined by a gradient across all layers
+- Draw transaction guide layers: If ticked indicator lines will connect nodes that appear across mutliple layers
+- Arrange result in 2D: If ticked, the results of Layer by Time will be arranged in a compact, 2-dimensional arrangement
+
+**Options (only available if "Arrange results in 2D" is ticked):**
+- Limit rows or columns: A fixed number of rows or columns can be chosen
+- Number of rows/columns: The desired number of rows or columns to display the results in
+- Distance between rows: The distance between rows of layers. Minimum of 0 units
+- Distance between columns: The distance between columns of layers. Minimum of 0 units.
+- Distance between nodes in layer: The distance between each node inside a layer. Minimum of 0 units.
+- Direction to arrange: Options are "Left to Right" and "Top to Bottom". "Left to right" will place newer layers (by default) **to the right** of previous layers, then start a new row if the column limit is reached. "Top to bottom" will place newer layers (by default) **below** previous layers, then start a new column when the row limit is reached.
+- Oldest or newest time first: "Oldest" will place layers in chronological order, "Newest" will place layers in reverse-chronological order
+
+
 <div style="text-align: center">
     <img height=600 src="../ext/docs/CoreArrangementPlugins/resources/layer_by_time_parameters_gui_screenshot.png" alt="Layer by Time Interface" />
 </div>
 <br />
 <br />
 
-Example:
+**Example:**
 
 <div style="text-align: center">
     <figure style = "display: inline-block">
@@ -61,5 +80,9 @@ Example:
     <figure style = "display: inline-block">
         <img height=400 src="../ext/docs/CoreArrangementPlugins/resources/AfterLayer.png" alt="After" />
         <figcaption>After</figcaption>
+    </figure>
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/resources/AfterLayer2D.png" alt="After (2D Option)" />
+        <figcaption>After (2D Option)</figcaption>
     </figure>
 </div>
