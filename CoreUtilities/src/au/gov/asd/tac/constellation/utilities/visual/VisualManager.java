@@ -202,7 +202,7 @@ public final class VisualManager {
         return operationQueue;
     }
 
-    protected VisualProcessor getProcessor() {
+    public VisualProcessor getProcessor() {
         return processor;
     }
 
