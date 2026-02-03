@@ -355,7 +355,7 @@ public class GraphNode extends AbstractNode {
                 "hashCode",
                 Integer.class,
                 "Hash Code",
-                "hash Code of the graph"
+                "Hash code of the graph"
         ) {
             @Override
             public Integer getValue() {
