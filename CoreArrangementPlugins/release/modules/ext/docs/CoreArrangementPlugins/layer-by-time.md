@@ -47,7 +47,7 @@ options to see which one works best for you.
 - Date-time Attribute: The attribute from the graph's tranactions that will used to order the results
 - Date Range: The range of time to include in layering
 - Layer date-times by: The method by which to layer the graph into. Choices are "intervals" or "bins"
-- Intervals: The number of intervals to layer the graph int. This option is disabled if "bins" is chosen for the "Layer date-times by" paramter
+- Intervals: The number of intervals to layer the graph in. This option is disabled if "bins" is chosen for the "Layer date-times by" paramter
 - Unit: The unit of time in which to layer the graph by
 - Transactions as layers: Whether to use transactions as layers. Uses nodes if left unticked
 - Keep transaction colors: If ticked, transactions will retain their color. If unticked, color will be determined by a gradient across all layers

@@ -540,6 +540,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             // If remainder is 0, then the layers will evenly fit in each row and column
             int remainder = doesRemainderMatter ? transactionLayerKeyValues.length % numRowsOrCols : 0;
 
+            final boolean ignoreRemainder = remainder > 0;
+
             // remaining layers in column/row
             int remainingLayers = isLeftToRight ? numCols : numRows;
 
@@ -605,15 +607,15 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     }
 
                     remainingLayers -= 1;
+
                     // Start new row or column, if required
                     if (remainingLayers <= 0) {
-
                         remainingLayers = isLeftToRight ? numCols : numRows;
                         remainder--;
 
-                        if (doesRemainderMatter && remainder <= 0) {
+                        if (ignoreRemainder && remainder <= 0) {
                             remainingLayers--;
-                            remainder = 0; //Prevent underflow in extreme edge case
+                            remainder = 0; // Prevent rare underflow edge case
                         }
 
                         if (isLeftToRight) {
