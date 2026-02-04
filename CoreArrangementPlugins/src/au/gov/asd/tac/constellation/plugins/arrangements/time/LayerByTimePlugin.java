@@ -207,6 +207,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     public static final String NEWEST_FIRST = "Reverse Chronological order (Newest first)";
 
     public static final int MIN_INT_PARAM_VALUE = 0;
+    public static final int MIN_NUM_ROWS_OR_COLS = 1;
 
     static {
         LAYER_INTERVALS.put("Seconds", 1);
@@ -314,7 +315,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         numRowsOrColsParam = IntegerParameterType.build(NUM_ROWS_OR_COLS_PARAMETER_ID);
         numRowsOrColsParam.setName(NUM_ROWS_OR_COLS_NAME);
         numRowsOrColsParam.setIntegerValue(NUM_ROWS_OR_COLS_DEFAULT);
-        IntegerParameterType.setMinimum(numRowsOrColsParam, MIN_INT_PARAM_VALUE);
+        IntegerParameterType.setMinimum(numRowsOrColsParam, MIN_NUM_ROWS_OR_COLS);
         numRowsOrColsParam.setVisible(false);
         parameters.addParameter(numRowsOrColsParam);
 
