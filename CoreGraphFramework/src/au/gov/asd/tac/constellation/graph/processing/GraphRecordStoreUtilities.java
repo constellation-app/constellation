@@ -18,9 +18,12 @@ package au.gov.asd.tac.constellation.graph.processing;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
+import au.gov.asd.tac.constellation.graph.GraphElementMerger;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.mergers.PrioritySurvivingGraphElementMerger;
+import au.gov.asd.tac.constellation.graph.processing.Record;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
@@ -90,6 +93,7 @@ public class GraphRecordStoreUtilities {
             "destination.Type"
     );
     private static final List<String> ApprovedTypes = SchemaVertexTypeUtilities.getTypes().stream().map(i -> i.getName()).collect(Collectors.toList());
+    private static final GraphElementMerger mergerAfterTransactions = new PrioritySurvivingGraphElementMerger();
 
     private static int addVertex(final GraphWriteMethods graph, final Map<String, String> values,
             final Map<String, Integer> vertexMap, final boolean initializeWithSchema, boolean completeWithSchema,
@@ -398,6 +402,7 @@ public class GraphRecordStoreUtilities {
             Map<String, Integer> vertexMap, Map<String, Integer> transactionMap) {
         final List<Integer> newVertices = new ArrayList<>();
         final Set<Integer> ghostVertices = new HashSet<>();
+        boolean transactionsAdded = false;
 
         recordStore.reset();
         final List<String> keys = recordStore instanceof GraphRecordStore graphRecordStore
@@ -443,7 +448,6 @@ public class GraphRecordStoreUtilities {
                     }
                 }
             }
-
             if (sourceValues.isEmpty() && destinationValues.isEmpty() && transactionValues.containsKey(ID)) {
                 // This will not add a new transaction to the graph (as source and destination are both -1), but if the transaction exists already it will be returned allowing it to be selected.
                 addTransaction(graph, NO_ELEMENT, NO_ELEMENT, transactionValues, transactionMap, initializeWithSchema, completeWithSchema);
@@ -451,6 +455,7 @@ public class GraphRecordStoreUtilities {
                 final int source = addVertex(graph, sourceValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
                 final int destination = addVertex(graph, destinationValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
                 addTransaction(graph, source, destination, transactionValues, transactionMap, initializeWithSchema, completeWithSchema);
+                transactionsAdded = true;
             } else if (!sourceValues.isEmpty()) {
                 addVertex(graph, sourceValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
             } else if (!destinationValues.isEmpty()) {
@@ -469,6 +474,8 @@ public class GraphRecordStoreUtilities {
             }
         }
 
+        //mergerAfterTransactions prevents dummy vertices overwriting the attributes of the existing vertices, if any.
+        graph.setGraphElementMerger(transactionsAdded ? mergerAfterTransactions : graph.getSchema().getFactory().getGraphElementMerger());
         return newVertices;
     }
 

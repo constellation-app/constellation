@@ -89,6 +89,8 @@ import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
+import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
+import com.jogamp.opengl.awt.GLCanvas;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -547,6 +549,11 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     @Override
+    public void componentActivated() {
+        visualUpdate();
+    }
+    
+    @Override
     public void componentClosed() {
         animationManager.interruptAllAnimations();
         super.componentClosed();
@@ -582,13 +589,14 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
+            
+        final HandleIoProgress ioProgressHandler = new HandleIoProgress(String.format("Graph %s has changed...", getName()));
+        ioProgressHandler.start();
+                  
         long modificationCount;
 
-        ReadableGraph rg = graph.getReadableGraph();
-        try {
-            modificationCount = rg.getGlobalModificationCounter();
-        } finally {
-            rg.release();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            modificationCount = rg.getGlobalModificationCounter();       
         }
 
         if (modificationCount != graphModificationCount && graphModificationCount == graphModificationCountBase) {
@@ -599,12 +607,21 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 requestVisible();
             });
         }
+
+        final Graphics graphics = getGraphics();
+
+        final Component visualComponent = visualManager.getVisualComponent();
+        if (visualComponent instanceof GLCanvas vc) {
+                vc.flushGLRunnables();
+                vc.swapBuffers();
+                vc.update(graphics);
+        }
+        ioProgressHandler.finish();
     }
 
     private void visualUpdate() {
 
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int drawFlagsAttribute = VisualConcept.GraphAttribute.DRAW_FLAGS.get(rg);
             final int visibleAboveThresholdAttribute = VisualConcept.GraphAttribute.VISIBLE_ABOVE_THRESHOLD.get(rg);
             final int displayModeIs3DAttribute = VisualConcept.GraphAttribute.DISPLAY_MODE_3D.get(rg);
@@ -659,8 +676,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                         throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
                 }
             }
-        } finally {
-            rg.release();
         }
     }
 
