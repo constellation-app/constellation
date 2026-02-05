@@ -1025,7 +1025,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             // Copy transactionAttributes.
             copyAttributes(graph, txId, dupTxId, GraphElementType.TRANSACTION);
 
-            //return new NodePair(dupSNodeId, dupDNodeId); // no clue if this is right
             nodesInLayer.add(dupSNodeId);
             nodesInLayer.add(dupDNodeId);
         } else {
@@ -1033,7 +1032,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             graph.setFloatValue(zAttr, sNodeId, 0);
             graph.setFloatValue(zAttr, dNodeId, 0);
 
-            // return new NodePair(sNodeId, dNodeId); // no clue if this is right
             nodesInLayer.add(sNodeId);
             nodesInLayer.add(dNodeId);
         }
