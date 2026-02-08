@@ -164,29 +164,29 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final boolean ARRANGE_2D_DEFAULT = false;
 
     private static final String ROW_OR_COL_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "row_or_col");
-    private static final String ROW_OR_COL_NAME = "Limit rows or columns: ";
+    private static final String ROW_OR_COL_NAME = "Limit rows or columns";
 
     private static final String NUM_ROWS_OR_COLS_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "num_rows_or_cols");
-    private static final String NUM_ROWS_OR_COLS_NAME = "Number of rows/columns: ";
+    private static final String NUM_ROWS_OR_COLS_NAME = "Number of rows/columns";
     private static final int NUM_ROWS_OR_COLS_DEFAULT = 1;
 
     private static final String ROW_DIST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "row_dist");
-    private static final String ROW_DIST_NAME = "Distance bewteen rows:";
+    private static final String ROW_DIST_NAME = "Distance bewteen rows";
     private static final int ROW_DIST_DEFAULT = 10;
 
     private static final String COL_DIST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "col_dist");
-    private static final String COL_DIST_NAME = "Distance between columns:";
+    private static final String COL_DIST_NAME = "Distance between columns";
     private static final int COL_DIST_DEFAULT = 10;
 
     private static final String NODE_DIST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "node_dist");
-    private static final String NODE_DIST_NAME = "Distance bewteen nodes in layer:";
+    private static final String NODE_DIST_NAME = "Distance bewteen nodes in layer";
     private static final int NODE_DIST_DEFAULT = 10;
 
     private static final String HOW_TO_ARRANGE_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "how_to_arrange");
-    private static final String HOW_TO_ARRANGE_NAME = "Direction to arrange:";
+    private static final String HOW_TO_ARRANGE_NAME = "Direction to arrange";
 
     private static final String OLDEST_OR_NEWEST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "oldest_or_newest");
-    private static final String OLDEST_OR_NEWEST_NAME = "Chronological ordering:";
+    private static final String OLDEST_OR_NEWEST_NAME = "Chronological ordering";
 
     private static final String ORIGINAL_ID_LABEL = "layer_original_id";
     private static final String LAYER_NAME = "layer";
@@ -307,7 +307,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
         rowOrColParam = SingleChoiceParameterType.build(ROW_OR_COL_PARAMETER_ID);
         rowOrColParam.setName(ROW_OR_COL_NAME);
-        SingleChoiceParameterType.setOptions(rowOrColParam, new ArrayList<>(Arrays.asList(ROWS, COLS)));
+        SingleChoiceParameterType.setOptions(rowOrColParam, Arrays.asList(ROWS, COLS));
         SingleChoiceParameterType.setChoice(rowOrColParam, COLS);
         rowOrColParam.setVisible(false);
         parameters.addParameter(rowOrColParam);
@@ -522,7 +522,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             rowDirection.scale(rowDist);
             colDirection.scale(colDist + nodeDist * (maxNodesInLayer - 1)); // Scale extra to account for largest chain of times
 
-            final Object[] transactionLayerKeyValues = transactionLayers.keyValuesView().toArray();
+            final FloatObjectPair<MutableIntList>[] transactionLayerKeyValues = transactionLayers.keyValuesView().toArray(new FloatObjectPair[0]);
 
             // Sorting of array only relevant for arrangeIn2d option
             // Has no effect on regular function but sorting is so fast it doesn't matter
@@ -547,8 +547,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             int remainingLayers = isLeftToRight ? numCols : numRows;
 
             // For each layer
-            for (final Object transactionLayerKeyValue : transactionLayerKeyValues) {
-                final FloatObjectPair<MutableIntList> currentLayer = (FloatObjectPair) transactionLayerKeyValue;
+//            for (final Object transactionLayerKeyValue : transactionLayerKeyValues) {
+//                final FloatObjectPair<MutableIntList> currentLayer = (FloatObjectPair) transactionLayerKeyValue;
+            for (final FloatObjectPair<MutableIntList> currentLayer : transactionLayerKeyValues) {
                 final IntObjectPair<MutableFloatList> remappedLayersKeyValue = findMatchingKeyValue(remappedLayers, currentLayer.getOne());
                 if (remappedLayersKeyValue == null) {
                     continue;
@@ -726,7 +727,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     }
 
     private int findLayerSize(final GraphWriteMethods graph, final FloatObjectPair<MutableIntList> currentLayer) {
-
         final MutableIntSet nodesInLayer = new IntHashSet();
         for (int i = 0; i < currentLayer.getTwo().size(); i++) {
             final int txId = currentLayer.getTwo().get(i);
