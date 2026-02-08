@@ -510,12 +510,12 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final float step = getWidth(wgcopy) / values.size();
 
             final Vector3f rowPosition = Vector3f.createZeroVector();
-            final Vector3f rowDirection = VEC_DOWN.copy();
+            final Vector3f rowDirection = new Vector3f(VEC_DOWN);
             final Vector3f colPosition = Vector3f.createZeroVector();
-            final Vector3f colDirection = VEC_RIGHT.copy();
+            final Vector3f colDirection = new Vector3f(VEC_RIGHT);
 
             // Scale according to the user's decided paramters
-            final Vector3f inLayerDirection = VEC_RIGHT.copy();
+            final Vector3f inLayerDirection = new Vector3f(VEC_RIGHT);
             inLayerDirection.scale(nodeDist);
 
             final int maxNodesInLayer = findMaxLayerSize(wgcopy);
@@ -584,7 +584,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     final int zAttr = wgcopy.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
 
                     // Node Position is just the current row and column's position
-                    final Vector3f nodePosition = rowPosition.copy();
+                    final Vector3f nodePosition = new Vector3f(rowPosition);
                     nodePosition.add(colPosition);
 
                     final MutableIntIterator iterator = nodesInLayer.intIterator();

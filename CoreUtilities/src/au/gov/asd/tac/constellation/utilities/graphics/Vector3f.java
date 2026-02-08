@@ -397,15 +397,6 @@ public final class Vector3f implements Serializable {
         return a[0] == vec.a[0] && a[1] == vec.a[1] && a[2] == vec.a[2];
     }
 
-    /**
-     * Method to create a copy of this Vector3f
-     *
-     * @return new Vector3f with same data as this one
-     */
-    public Vector3f copy() {
-        return new Vector3f(a[0], a[1], a[2]);
-    }
-
     public static Vector3f createZeroVector() {
         return new Vector3f(0, 0, 0);
     }
