@@ -547,8 +547,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             int remainingLayers = isLeftToRight ? numCols : numRows;
 
             // For each layer
-//            for (final Object transactionLayerKeyValue : transactionLayerKeyValues) {
-//                final FloatObjectPair<MutableIntList> currentLayer = (FloatObjectPair) transactionLayerKeyValue;
             for (final FloatObjectPair<MutableIntList> currentLayer : transactionLayerKeyValues) {
                 final IntObjectPair<MutableFloatList> remappedLayersKeyValue = findMatchingKeyValue(remappedLayers, currentLayer.getOne());
                 if (remappedLayersKeyValue == null) {
