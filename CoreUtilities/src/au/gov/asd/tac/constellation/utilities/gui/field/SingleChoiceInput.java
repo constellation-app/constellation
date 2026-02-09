@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.MenuItem;
@@ -59,7 +60,7 @@ import javafx.scene.input.MouseEvent;
 public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> implements RightButtonSupport, LeftButtonSupport, AutoCompleteSupport, ShortcutSupport {
 
     private final ChoiceType type;
-
+    
     public SingleChoiceInput(final ChoiceType type) {
         this.type = type;
         initialiseDependantComponents();
@@ -159,7 +160,7 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
     public boolean isValidContent() {
         return getText().isBlank() || getChoice() != null;
     }
-
+    
     @Override
     public List<MenuItem> getLocalMenuItems() {
         final List<MenuItem> items = new ArrayList<>();
@@ -245,38 +246,43 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
     @Override
     public List<MenuItem> getAutoCompleteSuggestions() {
         final List<MenuItem> suggestions = new ArrayList<>();
-        // Get suggestions based on the text showing 
-        this.getOptions().stream().map(value -> value)
-                .filter(value -> value.toString().toUpperCase().contains(getText().toUpperCase()))
-                .forEach(value -> {
-                    final int index = this.getOptions().indexOf(value);
-                    final MenuItem item = new MenuItem(value.toString());
-                    if (!this.icons.isEmpty()) {
-                        item.setGraphic(this.icons.get(index));
-                    }
-                    item.setOnAction(event -> this.setChoice(value));
-                    suggestions.add(item);
-                });
-        
-        // If the text matches a suggestion, show all suggestions 
-        // The currently selected option will show at the top of the suggestions list 
-        if (!suggestions.isEmpty()) {
-            final String match = suggestions.get(0).getText();
-            if (suggestions.size() == 1 && match.toUpperCase().equals(getText().toUpperCase())) {
-                this.getOptions().stream().map(value -> value)
-                        .forEach(value -> {
-                            if (!match.equals(value.toString())) {
-                                final int index = this.getOptions().indexOf(value);
-                                final MenuItem item = new MenuItem(value.toString());
-                                if (!this.icons.isEmpty()) {
-                                    item.setGraphic(this.icons.get(index));
-                                }
-                                item.setOnAction(event -> this.setChoice(value));
-                                suggestions.add(item);
-                            }
+            // Get suggestions based on the text showing 
+            this.getOptions().stream().map(value -> value)
+                    .filter(value -> value.toString().toUpperCase().contains(getText().toUpperCase()))
+                    .forEach(value -> {
+                        final int index = this.getOptions().indexOf(value);
+                        final MenuItem item = new MenuItem(value.toString());
+                        if (!this.icons.isEmpty()) {
+                            item.setGraphic(this.icons.get(index));
+                        }
+                        item.setOnAction(event -> {
+                            this.setChoice(value);
+                            this.setMenuShown(false);
                         });
-            }
-        }
+                        suggestions.add(item);
+                    });
+
+            // If the text matches a suggestion, show all suggestions 
+            // The currently selected option will show at the top of the suggestions list 
+//            if (!suggestions.isEmpty()) {
+//               // setUpdatedFromSuggestions(true);
+//                final String match = suggestions.get(0).getText();
+//                if (suggestions.size() == 1 && match.toUpperCase().equals(getText().toUpperCase())) {
+//                    this.getOptions().stream().map(value -> value).forEach(value -> {
+//                        if (!match.equals(value.toString())) {
+//                            final int index = this.getOptions().indexOf(value);
+//                            final MenuItem item = new MenuItem(value.toString());
+//                            if (!this.icons.isEmpty()) {
+//                                item.setGraphic(this.icons.get(index));
+//                            }
+//                            item.setOnAction(event -> {
+//                                this.setChoice(value);
+//                                this.setMenuShown(false);
+//                            });
+//                            suggestions.add(item);
+//                        }
+//                    });
+//                }
         return suggestions;
     }
 
@@ -298,8 +304,7 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
                     final Labeled item = switch (field.type) {
                         case SINGLE_DROPDOWN -> {
                             final Label label = new Label(choice.toString());
-                            label.setOnMouseClicked(event
-                                    -> field.setChoice(choice));
+                            label.setOnMouseClicked(event -> field.setChoice(choice));
                             yield label;
                         }
                         case SINGLE_SPINNER -> new Label();
@@ -308,7 +313,8 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
                     if (!icons.isEmpty()) {
                         item.setGraphic(icons.get(i));
                     }
-                    this.registerCustomMenuItem(item);
+                    final CustomMenuItem menuItem = registerCustomMenuItem(item);
+                    menuItem.setHideOnClick(true);
                 }
             }
 
