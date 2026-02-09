@@ -286,7 +286,7 @@ public class GraphNode extends AbstractNode {
         final Sheet sheet = Sheet.createDefault();
 
         // General
-        Sheet.Set general = Sheet.createPropertiesSet();
+        final Sheet.Set general = Sheet.createPropertiesSet();
         general.setName("general");
         general.setDisplayName("General");
         general.setShortDescription("General properties of this graph");
@@ -299,7 +299,6 @@ public class GraphNode extends AbstractNode {
         ) {
             @Override
             public String getValue() {
-
                 return tc.getDisplayName();
             }
         };
@@ -312,7 +311,7 @@ public class GraphNode extends AbstractNode {
         ) {
             @Override
             public String getValue() {
-                return graph.getId(); //tc.getDisplayName();
+                return graph.getId();
             }
         };
 
@@ -347,7 +346,7 @@ public class GraphNode extends AbstractNode {
         sheet.put(general);
 
         // Advanced
-        Sheet.Set advanced = Sheet.createPropertiesSet();
+        final Sheet.Set advanced = Sheet.createPropertiesSet();
         advanced.setName("advanced");
         advanced.setDisplayName("Advanced");
 
