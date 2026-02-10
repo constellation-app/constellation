@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.stubbing.Answer;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -41,23 +44,24 @@ import org.testng.annotations.Test;
  */
 public class TooltipPaneNGTest {
     
-    public TooltipPaneNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -95,7 +99,7 @@ public class TooltipPaneNGTest {
         when(p2d.getX()).thenReturn(p2dL);
         when(p2d.getY()).thenReturn(p2dT);
         
-        when(instance.sceneToLocal(Mockito.eq(x),Mockito.eq(y))).thenReturn(p2d);
+        when(instance.sceneToLocal(x, y)).thenReturn(p2d);
         
         try(final MockedStatic<AnchorPane> apStatic = mockStatic(AnchorPane.class)){
             apStatic.when(() -> AnchorPane.setLeftAnchor(Mockito.eq(node), Mockito.eq(p2dL)))
@@ -113,7 +117,7 @@ public class TooltipPaneNGTest {
 
             // assert that instance is now using the new node as the tooltipNode
             assertEquals(instance.getTooltipNode(), node);
-            verify(node,times(1)).setManaged(Mockito.eq(false));
+            verify(node,times(1)).setManaged(false);
             
             // assert and verify that the instance now has the child node.
             verify(instance, times(1)).getChildren();
@@ -129,10 +133,10 @@ public class TooltipPaneNGTest {
     public void testShowTooltip2() {
         System.out.println("showTooltip2");
         final Pane toolTipNode = spy(new Pane());
-        doNothing().when(toolTipNode).setManaged(Mockito.eq(true));
+        doNothing().when(toolTipNode).setManaged(true);
         
         final Pane node = spy(new Pane());
-        doNothing().when(node).setManaged(Mockito.eq(false));
+        doNothing().when(node).setManaged(false);
         
         final double x = 1.1;
         final double y = 2.2;
@@ -146,7 +150,7 @@ public class TooltipPaneNGTest {
         when(p2d.getX()).thenReturn(p2dL);
         when(p2d.getY()).thenReturn(p2dT);
         
-        when(instance.sceneToLocal(Mockito.eq(x),Mockito.eq(y))).thenReturn(p2d);
+        when(instance.sceneToLocal(x, y)).thenReturn(p2d);
         
         try(final MockedStatic<AnchorPane> apStatic = mockStatic(AnchorPane.class)){
             apStatic.when(() -> AnchorPane.setLeftAnchor(Mockito.eq(node), Mockito.eq(p2dL)))
@@ -165,8 +169,8 @@ public class TooltipPaneNGTest {
 
             // assert that instance is now using the new node as the tooltipNode
             assertEquals(instance.getTooltipNode(), node);
-            verify(node,times(1)).setManaged(Mockito.eq(false));
-            verify(toolTipNode,times(1)).setManaged(Mockito.eq(true));
+            verify(node,times(1)).setManaged(false);
+            verify(toolTipNode,times(1)).setManaged(true);
             
             // assert and verify that the instance now has the child node.
             verify(instance, times(2)).getChildren();
@@ -198,7 +202,7 @@ public class TooltipPaneNGTest {
         when(p2d.getX()).thenReturn(p2dL);
         when(p2d.getY()).thenReturn(p2dT);
         
-        when(instance.sceneToLocal(Mockito.eq(x),Mockito.eq(y))).thenReturn(p2d);
+        when(instance.sceneToLocal(x, y)).thenReturn(p2d);
         
         try(final MockedStatic<AnchorPane> apStatic = mockStatic(AnchorPane.class)){
             apStatic.when(() -> AnchorPane.setLeftAnchor(Mockito.eq(node), Mockito.eq(p2dL)))
@@ -239,14 +243,14 @@ public class TooltipPaneNGTest {
         
         // set up for a not null node
         final Pane node = mock(Pane.class);
-        doNothing().when(node).setManaged(Mockito.eq(true));
+        doNothing().when(node).setManaged(true);
         instance.setTooltipNode(node);
         
         instance.hideTooltip();
         // Verify that node is managed, current node is reset and does not exist in 
         // the current children.
         verify(instance, times(1)).getChildren();
-        verify(node,times(1)).setManaged(Mockito.eq(true));
+        verify(node,times(1)).setManaged(true);
         assertNull(instance.getTooltipNode());
         assertFalse(instance.getChildren().contains(node));
     }
@@ -317,9 +321,9 @@ public class TooltipPaneNGTest {
             
             instance.layoutChildren();
             
-            verify(node, times(1)).resize(Mockito.eq(15.0d), Mockito.eq(35.0d));
-            verify(node, times(1)).setLayoutX(Mockito.eq(5.0d));
-            verify(node, times(1)).setLayoutY(Mockito.eq(0.0d));
+            verify(node, times(1)).resize(15.0d, 35.0d);
+            verify(node, times(1)).setLayoutX(5.0d);
+            verify(node, times(1)).setLayoutY(0.0d);
             
             apStatic.verify(() -> AnchorPane.getLeftAnchor(Mockito.eq(node)), times(1));
             apStatic.verify(() -> AnchorPane.getTopAnchor(Mockito.eq(node)), times(1));
@@ -365,9 +369,9 @@ public class TooltipPaneNGTest {
             
             instance.layoutChildren();
             
-            verify(node, times(1)).resize(Mockito.eq(10.0d), Mockito.eq(20.0d));
-            verify(node, times(1)).setLayoutX(Mockito.eq(10.0d));
-            verify(node, times(1)).setLayoutY(Mockito.eq(20.0d));
+            verify(node, times(1)).resize(10.0d, 20.0d);
+            verify(node, times(1)).setLayoutX(10.0d);
+            verify(node, times(1)).setLayoutY(20.0d);
             
             apStatic.verify(() -> AnchorPane.getLeftAnchor(Mockito.eq(node)), times(1));
             apStatic.verify(() -> AnchorPane.getTopAnchor(Mockito.eq(node)), times(1));

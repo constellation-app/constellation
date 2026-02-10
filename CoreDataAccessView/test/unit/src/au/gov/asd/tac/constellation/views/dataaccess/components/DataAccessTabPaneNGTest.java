@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ import org.testng.annotations.Test;
 public class DataAccessTabPaneNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(DataAccessTabPaneNGTest.class.getName());
-    private static final String newStepCaption = "New Caption - Step 1";
+    private static final String NEW_STEP_CAPTION = "New Caption - Step 1";
 
     private DataAccessViewTopComponent topComponent;
     private DataAccessPane dataAccessPane;
@@ -342,9 +342,9 @@ public class DataAccessTabPaneNGTest {
 
         doCallRealMethod().when(queryPhasePane).storeParameterValues();
 
-        final PluginParameter pluginParameter1 = mock(PluginParameter.class);
-        final PluginParameter pluginParameter2 = mock(PluginParameter.class);
-        final PluginParameter pluginParameter3 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter1 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter2 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter3 = mock(PluginParameter.class);
 
         // Set up our fake tab pane
         doReturn(tabPane).when(dataAccessTabPane).getTabPane();
@@ -430,7 +430,7 @@ public class DataAccessTabPaneNGTest {
         when(dataSourceTitledPane3.getParameters()).thenReturn(pane3PluginParameters);
 
         // Stub out the individual parameters 
-        final PluginParameter pluginParameter1 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter1 = mock(PluginParameter.class);
         final PluginParameter pluginParameter2 = mock(PluginParameter.class);
         final PluginParameter pluginParameter3 = mock(PluginParameter.class);
 
@@ -641,8 +641,8 @@ public class DataAccessTabPaneNGTest {
         final PluginParameters pane3PluginParameters = mock(PluginParameters.class);
         final PluginParameters pane4PluginParameters = mock(PluginParameters.class);
 
-        final PluginParameter pluginParameter1 = mock(PluginParameter.class);
-        final PluginParameter pluginParameter2 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter1 = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter2 = mock(PluginParameter.class);
 
         final Tab tab = mock(Tab.class);
         final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
@@ -953,7 +953,7 @@ public class DataAccessTabPaneNGTest {
                     .thenReturn(tabHasEnabledPlugins);
             when(executeButton.isDisabled()).thenReturn(isExecuteButtonDisabled);
 
-            dataAccessTabPane.newTab(queryPhasePane, newStepCaption);
+            dataAccessTabPane.newTab(queryPhasePane, NEW_STEP_CAPTION);
 
             // Verify the tab and context menus were created
             assertEquals(mockedTab.constructed().size(), 1);

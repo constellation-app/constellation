@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import au.gov.asd.tac.constellation.utilities.graphics.Frame;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix33f;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * Given a vertex with neighbours of degree 1, arrange those neighbours in a
@@ -99,7 +99,7 @@ public final class BroccoliArranger implements Arranger {
      */
     private void arrangeVertex(final int vxId) {
         float maxRadius = 0;
-        final List<Integer> deg1 = new ArrayList<>();
+        final MutableIntList deg1 = new IntArrayList();
         final int vncount = wg.getVertexNeighbourCount(vxId);
         for (int i = 0; i < vncount; i++) {
             final int vnId = wg.getVertexNeighbour(vxId, i);

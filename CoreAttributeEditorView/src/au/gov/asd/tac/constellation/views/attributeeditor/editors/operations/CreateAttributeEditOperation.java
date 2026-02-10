@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,6 @@ public class CreateAttributeEditOperation implements EditOperation {
 
     private AttributePrototype attrNew;
 
-    public CreateAttributeEditOperation() {
-        // Method intentionally left blank
-    }
-
     @Override
     public void performEdit(final Object value) {
         this.attrNew = (AttributePrototype) value;
@@ -58,5 +54,4 @@ public class CreateAttributeEditOperation implements EditOperation {
             graph.addAttribute(attrNew.getElementType(), attrNew.getDataType(), attrNew.getAttributeName(), attrNew.getAttributeDescription(), attrNew.getDefaultValue(), null);
         }
     }
-
 }

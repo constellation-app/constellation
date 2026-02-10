@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 
 /**
  * A drop-down combo box allowing multiple selections, which is the GUI element
@@ -46,24 +44,20 @@ import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListen
  */
 public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoiceParameterValue, List<ParameterValue>> {
 
-    private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputPane.class.getName());
-    //could get rid f this local variable?
-    private final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
+    private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputPane.class.getName());   
 
     
     public MultiChoiceInputPane(final PluginParameter<MultiChoiceParameterValue> parameter) {
-        super(new MultiChoiceInput<ParameterValue>(), parameter);
+        super(new MultiChoiceInput<>(), parameter);
         final MultiChoiceParameterValue pv = parameter.getParameterValue();
-        options.addAll(pv.getOptionsData());
-
-        ((MultiChoiceInput) input).setOptions(options);
+        ((MultiChoiceInput) input).setOptions(pv.getOptionsData());
         setFieldValue(pv.getChoicesData());
 
     }
 
     @Override
-    public ConstellationInputListener getFieldChangeListener(PluginParameter<MultiChoiceParameterValue> parameter) {
-        return (ConstellationInputListener<List<ParameterValue>>) (List<ParameterValue> newValue) -> {
+    public ConstellationInputListener getFieldChangeListener(final PluginParameter<MultiChoiceParameterValue> parameter) {
+        return (ConstellationInputListener<List<ParameterValue>>) (final List<ParameterValue> newValue) -> {
             if (newValue != null) {
                 MultiChoiceParameterType.setChoicesData(parameter, newValue);
             }
@@ -72,37 +66,45 @@ public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoicePa
 
     @Override
     public PluginParameterListener getPluginParameterListener() {
-        return (PluginParameter<?> parameter, ParameterChange change) -> Platform.runLater(() -> {
+        return (final PluginParameter<?> param, final ParameterChange change) -> Platform.runLater(() -> {
             @SuppressWarnings("unchecked") //mcPluginParameter is a MultiChoiceParameter
-            final PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) parameter;
+            final PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) param;
             switch (change) {
-                
                 case VALUE -> {
-                    // Don't change the value if it isn't necessary.
-                    List<ParameterValue> selection = getFieldValue();
-                    if (!selection.equals(MultiChoiceParameterType.getChoicesData(mcPluginParameter))){
-                        setFieldValue(selection);
+                    final List<ParameterValue> paramOptions = MultiChoiceParameterType.getOptionsData(mcPluginParameter);
+                    if (!((MultiChoiceInput) input).getOptions().equals(paramOptions)) {
+                        ((MultiChoiceInput) input).setOptions(paramOptions);
+                        final List<ParameterValue> choicesData = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter);
+                        // Only keep the value if it's in the new choices.
+                        if (paramOptions.stream().anyMatch(choicesData::contains)) {
+                            setFieldValue((List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter));
+                        } else {
+                            setFieldValue(null);
+                        }
+                    } else {
+                        // Don't change the value if it isn't necessary.
+                        final List<ParameterValue> selection = getFieldValue();
+                        if (!selection.equals(MultiChoiceParameterType.getChoicesData(mcPluginParameter))){
+                            setFieldValue(selection);
+                        }
                     }
                 }
-                
                 case PROPERTY -> {
-                    
                     // Update the Pane if the Optons have changed
-                    List<ParameterValue> paramOptions = MultiChoiceParameterType.getOptionsData(mcPluginParameter);
-                    if (!((MultiChoiceInput) input).getOptions().equals(paramOptions)){
+                    final List<ParameterValue> paramOptions = MultiChoiceParameterType.getOptionsData(mcPluginParameter);
+                    if (!((MultiChoiceInput) input).getOptions().equals(paramOptions)) {
                         ((MultiChoiceInput) input).setOptions(paramOptions);
-                        
+                        final List<ParameterValue> choicesData = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter);
                         // Only keep the value if it's in the new choices.
-                        if (paramOptions.contains(MultiChoiceParameterType.getChoicesData(mcPluginParameter))) {
-                            setFieldValue(MultiChoiceParameterType.getChoicesData(mcPluginParameter));
+                        if (paramOptions.stream().anyMatch(choicesData::contains)) {
+                            setFieldValue((List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter));
                         } else {
                             setFieldValue(null);
                         }
                     }
                 }
-                
                 case ENABLED -> updateFieldEnablement();
-                case VISIBLE -> updateFieldVisability();
+                case VISIBLE -> updateFieldVisibility();
                 default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
             }
         });

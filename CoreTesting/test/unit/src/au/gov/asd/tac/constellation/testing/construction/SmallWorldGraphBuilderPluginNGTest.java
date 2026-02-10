@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,15 +48,14 @@ public class SmallWorldGraphBuilderPluginNGTest {
     
     private StoreGraph graph;
     
-    public SmallWorldGraphBuilderPluginNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -67,6 +66,7 @@ public class SmallWorldGraphBuilderPluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -100,7 +100,9 @@ public class SmallWorldGraphBuilderPluginNGTest {
         final SmallWorldGraphBuilderPlugin instance = new SmallWorldGraphBuilderPlugin();
         
         final PluginParameters params = instance.createParameters();
+        @SuppressWarnings("unchecked") // NODE_TYPES_PARAMETER will always be of type MultiChoiceParameter
         final PluginParameter<MultiChoiceParameterValue> nAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(NODE_TYPES_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // TRANSACTION_TYPES_PARAMETER will always be of type MultiChoiceParameter
         final PluginParameter<MultiChoiceParameterValue> tAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
         
         assertTrue(MultiChoiceParameterType.getOptions(nAttribute).isEmpty());
@@ -122,7 +124,9 @@ public class SmallWorldGraphBuilderPluginNGTest {
         final SmallWorldGraphBuilderPlugin instance = new SmallWorldGraphBuilderPlugin();
         
         final PluginParameters params = instance.createParameters();
+        @SuppressWarnings("unchecked") // NODE_TYPES_PARAMETER will always be of type MultiChoiceParameter
         final PluginParameter<MultiChoiceParameterValue> nAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(NODE_TYPES_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // TRANSACTION_TYPES_PARAMETER will always be of type MultiChoiceParameter
         final PluginParameter<MultiChoiceParameterValue> tAttribute = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
         
         assertTrue(MultiChoiceParameterType.getOptions(nAttribute).isEmpty());

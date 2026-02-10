@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPrefere
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TitledPane;
@@ -92,9 +91,8 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
             sources.getChildren().add(dataSourcePane);
         }
 
-        expandedProperty().addListener(
-                (final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue)
-                        -> DataAccessPreferenceUtilities.setExpanded(headingText, newValue));
+        expandedProperty().addListener((observable, oldValue, newValue) 
+                -> DataAccessPreferenceUtilities.setExpanded(headingText, newValue));
     }
 
     public List<DataSourceTitledPane> getDataSources() {

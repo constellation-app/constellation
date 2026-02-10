@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,13 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.M
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  *
@@ -45,7 +46,7 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     protected FlowBase[] moduleFlowData;
     protected int[] moduleMembers;
-    protected ArrayList<Integer> emptyModules;
+    protected MutableIntList emptyModules;
 
     protected double nodeFlowLogNodeFlow; // Constant while the leaf network is the same.
     protected double flowLogFlow; // node.(flow + exitFlow)
@@ -101,7 +102,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         moduleFlowData = Resizer.resizeFlowBase(moduleFlowData, numNodes, treeData.getNodeFactory());
         moduleMembers = new int[numNodes];
         Arrays.fill(moduleMembers, 1);
-        emptyModules = new ArrayList<>(numNodes);
+        emptyModules = new IntArrayList(numNodes);
 
         int i = 0;
         for (final NodeBase nodeBase : activeNetwork) {
@@ -236,9 +237,8 @@ public abstract class InfomapGreedy extends InfomapBase {
     }
 
     /**
-     * Update the codelength to reflect the move of node current in
-     * oldModuleDelta to newModuleDelta (Specialized for undirected flow and
-     * when exitFlow == enterFlow
+     * Update the codelength to reflect the move of node current in oldModuleDelta to newModuleDelta (Specialized for
+     * undirected flow and when exitFlow == enterFlow
      *
      * @param current the current node.
      * @param oldModuleDelta the old module delta flow.
@@ -454,7 +454,7 @@ public abstract class InfomapGreedy extends InfomapBase {
                 // Update empty module vector.
                 if (moduleMembers[newM] == 0) {
                     // Remove last element.
-                    emptyModules.remove(emptyModules.size() - 1);
+                    emptyModules.removeAtIndex(emptyModules.size() - 1);
                 }
 
                 if (moduleMembers[oldM] == 1) {
@@ -479,17 +479,13 @@ public abstract class InfomapGreedy extends InfomapBase {
     }
 
     /**
-     * Try to minimize the codelength by trying to move nodes into the same
-     * modules as neighbouring nodes.
+     * Try to minimize the codelength by trying to move nodes into the same modules as neighbouring nodes.
      *
-     * For each node: 1. Calculate the change in codelength for a move to each
-     * of its neighbouring modules or to an empty module 2. Move to the one that
-     * reduces the codelength the most, if any.
+     * For each node: 1. Calculate the change in codelength for a move to each of its neighbouring modules or to an
+     * empty module 2. Move to the one that reduces the codelength the most, if any.
      *
-     * The first step would require O(d^2), where d is the degree, if
-     * calculating the full change at each neighbour, but a special data
-     * structure is used to accumulate the marginal effect of each link on its
-     * target, giving O(d).
+     * The first step would require O(d^2), where d is the degree, if calculating the full change at each neighbour, but
+     * a special data structure is used to accumulate the marginal effect of each link on its target, giving O(d).
      *
      * @return The number of nodes moved.
      */
@@ -499,7 +495,9 @@ public abstract class InfomapGreedy extends InfomapBase {
         }
 
         final int numNodes = activeNetwork.size();
-        dumpActiveNetwork("in");
+        if (DEBUG) {
+            dumpActiveNetwork("in");
+        }
 
         // Get random enumeration of nodes.
         final int[] randomOrder = new int[numNodes];
@@ -531,7 +529,9 @@ public abstract class InfomapGreedy extends InfomapBase {
                     || (config.isIncludeSelfLinks()
                     && (current.getOutDegree() == 1 && current.getInDegree() == 1)
                     && current.getOutEdges().get(0).getTarget().equals(current))) {
-                LOGGER.log(Level.INFO, "SKIPPING isolated node {0}", current);
+                if (DEBUG) {
+                    LOGGER.log(Level.INFO, "SKIPPING isolated node {0}", current);
+                }
                 //TODO: if not skipping self-links, this yields different results from moveNodesToPredefinedModules!!
                 assert !config.isIncludeSelfLinks();
                 continue;
@@ -646,7 +646,7 @@ public abstract class InfomapGreedy extends InfomapBase {
                 final int bestModuleIndex = bestDeltaModule.getModule();
                 // Update empty module vector.
                 if (moduleMembers[bestModuleIndex] == 0) {
-                    emptyModules.remove(emptyModules.size() - 1);
+                    emptyModules.removeAtIndex(emptyModules.size() - 1);
                 }
                 if (moduleMembers[current.getIndex()] == 1) {
                     emptyModules.add(current.getIndex());
@@ -663,8 +663,9 @@ public abstract class InfomapGreedy extends InfomapBase {
 
             offset += numNodes;
         }
-
-        dumpActiveNetwork("");
+        if (DEBUG) {
+            dumpActiveNetwork("");
+        }
         return numMoved;
     }
 

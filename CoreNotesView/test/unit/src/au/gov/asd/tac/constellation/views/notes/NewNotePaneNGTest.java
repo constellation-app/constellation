@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,16 @@
  */
 package au.gov.asd.tac.constellation.views.notes;
 
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import au.gov.asd.tac.constellation.views.notes.utilities.NewNotePane;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -37,17 +38,16 @@ import org.testng.annotations.Test;
 public class NewNotePaneNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(NewNotePaneNGTest.class.getName());
-
-    public NewNotePaneNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
 
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -73,7 +73,7 @@ public class NewNotePaneNGTest {
     public void testGetTitleField() {
         System.out.println("getTitleField");
         final NewNotePane instance = new NewNotePane("#000000");
-        assertEquals(instance.getTitleField() instanceof TextField, true);
+        assertTrue(instance.getTitleField() instanceof TextField);
     }
 
     /**
@@ -83,7 +83,7 @@ public class NewNotePaneNGTest {
     public void testGetContentField() {
         System.out.println("getContentField");
         final NewNotePane instance = new NewNotePane("#000000");
-        assertEquals(instance.getContentField() instanceof TextArea, true);
+        assertTrue(instance.getContentField() instanceof SpellCheckingTextArea);
     }
 
     /**
@@ -94,7 +94,7 @@ public class NewNotePaneNGTest {
         System.out.println("getAddButtion");
         final NewNotePane instance = new NewNotePane("#000000");
 
-        assertEquals(instance.getAddButtion() instanceof Button, true);
+        assertTrue(instance.getAddButtion() instanceof Button);
     }
 
     /**
@@ -115,7 +115,7 @@ public class NewNotePaneNGTest {
     public void testIsApplySelected() {
         System.out.println("isApplySelected");
         final NewNotePane instance = new NewNotePane("#000000");
-        assertEquals(instance.isApplySelected(), true);
+        assertTrue(instance.isApplySelected());
     }
 
 
@@ -130,12 +130,10 @@ public class NewNotePaneNGTest {
         instance.getTitleField().setText("Random Text");
         instance.getContentField().setText("Random text");
 
-        assertEquals(!instance.getTitleField().getText().isBlank() && !instance.getContentField().getText().isBlank(), true);
+        assertTrue(!instance.getTitleField().getText().isBlank() && !instance.getContentField().getText().isBlank());
 
         instance.clearTextFields();
 
-        assertEquals(instance.getTitleField().getText().isBlank() && instance.getContentField().getText().isBlank(), true);
-
+        assertTrue(instance.getTitleField().getText().isBlank() && instance.getContentField().getText().isBlank());
     }
-
 }

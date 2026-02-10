@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,12 @@ package au.gov.asd.tac.constellation.graph.processing;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
+import au.gov.asd.tac.constellation.graph.GraphElementMerger;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.mergers.PrioritySurvivingGraphElementMerger;
+import au.gov.asd.tac.constellation.graph.processing.Record;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
@@ -68,6 +71,7 @@ public class GraphRecordStoreUtilities {
     public static final String ID = "[id]<string>";
     public static final String GHOST = "[ghost]<string>";
     public static final String DIRECTED_KEY = "[directed]<string>";
+    public static final String DIRECTED_VALUE_KEY = "directed<string>";
     public static final String COMPLETE_WITH_SCHEMA_KEY = "[complete_with_schema]<string>";
     public static final String DELETE_KEY = "[delete]<string>";
 
@@ -89,6 +93,7 @@ public class GraphRecordStoreUtilities {
             "destination.Type"
     );
     private static final List<String> ApprovedTypes = SchemaVertexTypeUtilities.getTypes().stream().map(i -> i.getName()).collect(Collectors.toList());
+    private static final GraphElementMerger mergerAfterTransactions = new PrioritySurvivingGraphElementMerger();
 
     private static int addVertex(final GraphWriteMethods graph, final Map<String, String> values,
             final Map<String, Integer> vertexMap, final boolean initializeWithSchema, boolean completeWithSchema,
@@ -138,7 +143,7 @@ public class GraphRecordStoreUtilities {
                 }
             }
 
-            idValue = idBuilder.length() == 0 ? "***" : idBuilder.toString();
+            idValue = idBuilder.isEmpty() ? "***" : idBuilder.toString();
         }
 
         final int vertex = getVertex(graph, idValue, vertexMap, initializeWithSchema, newVertices);
@@ -219,8 +224,14 @@ public class GraphRecordStoreUtilities {
             directed = !"False".equalsIgnoreCase(directedValue);
         } else {
             final SchemaTransactionType transactionType = SchemaTransactionTypeUtilities.getType(type);
-            if (transactionType != null) {
+            if (transactionType != null && !"Unknown".equalsIgnoreCase(transactionType.getName())) {
                 directed = transactionType.isDirected();
+            } else {
+                // When its an Unknown transaction type we should use the current directed setting if available.
+                final String directedCurrentValue = values.get(DIRECTED_VALUE_KEY);
+                if (directedCurrentValue != null) {
+                    directed = !"False".equalsIgnoreCase(directedCurrentValue);
+                }
             }
         }
 
@@ -332,7 +343,7 @@ public class GraphRecordStoreUtilities {
                 }
             }
 
-            // TODO: look at ensure(true/fale)
+            // TODO: look at ensure(true/false)
             int attribute = graph.getAttribute(elementType, key);
             if (attribute == Graph.NOT_FOUND) {
                 attribute = graph.getSchema() != null ? graph.getSchema().getFactory().ensureAttribute(graph, elementType, key) : Graph.NOT_FOUND;
@@ -391,6 +402,7 @@ public class GraphRecordStoreUtilities {
             Map<String, Integer> vertexMap, Map<String, Integer> transactionMap) {
         final List<Integer> newVertices = new ArrayList<>();
         final Set<Integer> ghostVertices = new HashSet<>();
+        boolean transactionsAdded = false;
 
         recordStore.reset();
         final List<String> keys = recordStore instanceof GraphRecordStore graphRecordStore
@@ -436,7 +448,6 @@ public class GraphRecordStoreUtilities {
                     }
                 }
             }
-
             if (sourceValues.isEmpty() && destinationValues.isEmpty() && transactionValues.containsKey(ID)) {
                 // This will not add a new transaction to the graph (as source and destination are both -1), but if the transaction exists already it will be returned allowing it to be selected.
                 addTransaction(graph, NO_ELEMENT, NO_ELEMENT, transactionValues, transactionMap, initializeWithSchema, completeWithSchema);
@@ -444,6 +455,7 @@ public class GraphRecordStoreUtilities {
                 final int source = addVertex(graph, sourceValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
                 final int destination = addVertex(graph, destinationValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
                 addTransaction(graph, source, destination, transactionValues, transactionMap, initializeWithSchema, completeWithSchema);
+                transactionsAdded = true;
             } else if (!sourceValues.isEmpty()) {
                 addVertex(graph, sourceValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
             } else if (!destinationValues.isEmpty()) {
@@ -462,6 +474,8 @@ public class GraphRecordStoreUtilities {
             }
         }
 
+        //mergerAfterTransactions prevents dummy vertices overwriting the attributes of the existing vertices, if any.
+        graph.setGraphElementMerger(transactionsAdded ? mergerAfterTransactions : graph.getSchema().getFactory().getGraphElementMerger());
         return newVertices;
     }
 

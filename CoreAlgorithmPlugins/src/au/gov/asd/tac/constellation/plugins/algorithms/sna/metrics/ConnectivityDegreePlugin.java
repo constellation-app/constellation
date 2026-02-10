@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,9 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.BitSet;
-import java.util.HashMap;
 import java.util.HashSet;
+import org.eclipse.collections.api.map.primitive.MutableObjectFloatMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectFloatHashMap;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -106,13 +107,13 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
 
         // calculate the number of connected components
         float maxEccentricity = 0;
-        final HashMap<BitSet, Float> maxEccentricityConnectedComponents = new HashMap<>();
+        final MutableObjectFloatMap<BitSet> maxEccentricityConnectedComponents = new ObjectFloatHashMap<>();
         final int vertexCount = graph.getVertexCount();
         int numComponents = 0;
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final float eccentricity = eccentricities[vertexPosition];
             final BitSet subgraph = subgraphs[vertexPosition];
-            if (subgraph.cardinality() <= 1) {
+            if (subgraph == null || subgraph.cardinality() <= 1) {
                 if (!ignoreSingletons) {
                     numComponents += 1;
                 }
@@ -135,9 +136,10 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
             final int vertexId = graph.getVertex(vertexPosition);
             final float eccentricity = eccentricities[vertexPosition];
             final BitSet subgraph = subgraphs[vertexPosition];
-            graph.setFloatValue(cSizeAttribute, vertexId, subgraph.cardinality());
+            final int cardinality = subgraph != null ? subgraph.cardinality() : 0;
+            graph.setFloatValue(cSizeAttribute, vertexId, cardinality);
             // singleton or singleton with a loop
-            if (subgraph.cardinality() <= 1) {
+            if (cardinality <= 1) {
                 if (normalise && ignoreSingletons) {
                     graph.setFloatValue(ccAttribute, vertexId, numComponents);
                 } else if (normalise && !ignoreSingletons) {
@@ -145,7 +147,7 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
                 } else {
                     graph.setFloatValue(ccAttribute, vertexId, 0);
                 }
-            } else if (subgraph.cardinality() == 2) {
+            } else if (cardinality == 2) {
                 // subgraph just two connected nodes
                 if (normalise && ignoreSingletons) {
                     graph.setFloatValue(ccAttribute, vertexId, numComponents - 1);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,18 +96,15 @@ public final class Autosaver implements Runnable {
             public void run() {
                 setName(AUTOSAVE_THREAD_NAME);
                 final List<String> graphIds = GraphNode.getGraphIDs();
-                for (String id : graphIds) {
+                for (final String id : graphIds) {
                     final Graph graph = GraphNode.getGraph(id);
 
                     // Get the modification count
-                    Long lastAutosaveModificationCounter = LAST_AUTOSAVE.get(id);
+                    final Long lastAutosaveModificationCounter = LAST_AUTOSAVE.get(id);
 
-                    long newAutosaveModificationCounter;
-                    final ReadableGraph rg = graph.getReadableGraph();
-                    try {
+                    final long newAutosaveModificationCounter;
+                    try (final ReadableGraph rg = graph.getReadableGraph()) {
                         newAutosaveModificationCounter = rg.getGlobalModificationCounter();
-                    } finally {
-                        rg.release();
                     }
 
                     if (lastAutosaveModificationCounter == null || lastAutosaveModificationCounter != newAutosaveModificationCounter) {

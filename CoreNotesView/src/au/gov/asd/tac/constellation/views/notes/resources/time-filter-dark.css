@@ -29,7 +29,7 @@
 }
 
 .contentField {
-    -fx-control-inner-background:#000000;
+    -fx-control-inner-background: #000000;
     -fx-text-fill: white;
 }
 
@@ -75,7 +75,7 @@
 }
 
 .menu-button {
-    -fx-background-color: 111111;
+    -fx-background-color: #111111;
     -fx-border-radius: 2px; 
     -fx-border-color: #444444;
     -fx-arrow-color: white;

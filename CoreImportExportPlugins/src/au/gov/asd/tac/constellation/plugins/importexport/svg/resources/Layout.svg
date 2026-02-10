@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg id="graph" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%">
+    <defs id="definitions" />
     <rect id="background" width="100%" height="100%" stroke-width="0"/>
     <svg id="content" y="5%" width="100%" height="95%"/>
     <svg id="header" width="100%" height="5%">

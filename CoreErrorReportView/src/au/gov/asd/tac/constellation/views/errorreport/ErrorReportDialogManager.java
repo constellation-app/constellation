@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.application.Platform;
+import org.eclipse.collections.api.list.primitive.MutableDoubleList;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.testfx.api.FxToolkit;
 
 /**
@@ -31,7 +33,7 @@ import org.testfx.api.FxToolkit;
 public class ErrorReportDialogManager {
 
     private int popupDisplayMode = 2;
-    private final List<Double> activePopupIds = new ArrayList<>();
+    private final MutableDoubleList activePopupIds = new DoubleArrayList();
     private Date latestPopupDismissDate = null;
     private final List<String> popupTypeFilters = new ArrayList<>();
     private boolean isErrorReportRunning = false;
@@ -81,7 +83,7 @@ public class ErrorReportDialogManager {
             }
         };
         final Timer refreshTimer = new Timer();
-        refreshTimer.schedule(refreshAction, 175, 475);        
+        refreshTimer.schedule(refreshAction, 745, 1475);        
     }
     
     public void updatePopupSettings(final int popupMode, final Iterable<String> popupFilters) {
@@ -158,7 +160,7 @@ public class ErrorReportDialogManager {
      * Remove entry from active popup list
      * @param id 
      */
-    public void removeActivePopupId(final Double id) {
+    public void removeActivePopupId(final double id) {
         activePopupIds.remove(id);
     }
 
@@ -192,10 +194,10 @@ public class ErrorReportDialogManager {
 
     public List<String> getActivePopupErrorLevels(){
         final List<String> resultList = new ArrayList<>();
-        for (final Double id : activePopupIds) {
+        activePopupIds.forEach(id -> {
             final String errorLevel = ErrorReportSessionData.getInstance().findDisplayedEntryWithId(id).getErrorLevel().getName();
             resultList.add(errorLevel);
-        }
+        });
         return resultList;
     }
 }

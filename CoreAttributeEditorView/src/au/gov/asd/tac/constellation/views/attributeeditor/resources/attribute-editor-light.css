@@ -30,3 +30,10 @@
 .hidden#custom {
     -fx-base:#D3DCF1;
 }
+
+#options-menu {
+    -fx-padding: 3;
+    -fx-color: white;
+    -fx-border-color: none;
+}
+

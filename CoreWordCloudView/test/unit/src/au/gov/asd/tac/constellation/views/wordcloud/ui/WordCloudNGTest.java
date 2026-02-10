@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,18 +54,22 @@ public class WordCloudNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -74,6 +78,7 @@ public class WordCloudNGTest {
     @Test
     public void testSetModCount() {
         System.out.println("setModCount");
+        
         final long newModCount = 2L;
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
         instance.setModCount(newModCount);
@@ -87,6 +92,7 @@ public class WordCloudNGTest {
     @Test
     public void testTTestPhraseAgainstWords() {
         System.out.println("tTestPhraseAgainstWords");
+        
         final PhraseTokenHandler handler = new PhraseTokenHandler();
         final PhraseTokenHandler bgHandler = new PhraseTokenHandler();
         final int key = 1;
@@ -106,6 +112,7 @@ public class WordCloudNGTest {
     @Test
     public void testSetQueryInfo() {
         System.out.println("setQueryInfo");
+        
         final int phraseLength = 2;
         final int proximity = 3;
         final String attrName = "Label";
@@ -122,6 +129,7 @@ public class WordCloudNGTest {
     @Test
     public void testGetHasSignificances() {
         System.out.println("getHasSignificances");
+        
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
         final boolean expResult = false;
         final boolean result = instance.hasSignificances();
@@ -134,11 +142,12 @@ public class WordCloudNGTest {
     @Test
     public void testGetHashedWordSets() {
         System.out.println("getHashedWordSets");
+        
         hashedWordSets.put(2, new HashSet<>());
         hashedWordSets.put(8, new HashSet<>());
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
-        final Map expResult = hashedWordSets;
-        final Map result = instance.getHashedWordSets();
+        final Map<Integer, Set<Integer>> expResult = hashedWordSets;
+        final Map<Integer, Set<Integer>> result = instance.getHashedWordSets();
         assertEquals(result, expResult);
     }
 
@@ -148,11 +157,12 @@ public class WordCloudNGTest {
     @Test
     public void testGetWordToHashes() {
         System.out.println("getWordToHashes");
+        
         wordsToHashes.put("Query1", 2);
         wordsToHashes.put("Query2", 8);
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
-        final Map expResult = wordsToHashes;
-        final Map result = instance.getWordToHashes();
+        final Map<String, Integer> expResult = wordsToHashes;
+        final Map<String, Integer> result = instance.getWordToHashes();
         assertEquals(result, expResult);
     }
 
@@ -162,6 +172,7 @@ public class WordCloudNGTest {
     @Test
     public void testSetIsUnionSelect() {
         System.out.println("setIsUnionSelect");
+        
         final boolean val = false;
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
         instance.setIsUnionSelect(val);
@@ -175,6 +186,7 @@ public class WordCloudNGTest {
     @Test
     public void testSetIsSizeSorted() {
         System.out.println("setIsSizeSorted");
+        
         final boolean val = false;
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
         instance.setIsSizeSorted(val);
@@ -188,6 +200,7 @@ public class WordCloudNGTest {
     @Test
     public void testSetCurrentSignificance() {
         System.out.println("setCurrentSignificance");
+        
         final double val = 2.1;
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
         instance.setCurrentSignificance(val);
@@ -204,14 +217,14 @@ public class WordCloudNGTest {
         
         wordsToHashes.put("Query", 3);
         wordsToHashes.put("Query", 1);
-        final Set integerSet = new HashSet<>();
+        final Set<Integer> integerSet = new HashSet<>();
         integerSet.add(0);
         integerSet.add(1);
         hashedWordSets.put(1, integerSet);
         hashedWordSets.put(2, integerSet);
         WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
         instance.addWordToSelection("Query");
-        Set result = instance.getElementsCorrespondingToSelection();
+        Set<Integer> result = instance.getElementsCorrespondingToSelection();
         // IsUnionSelect false
         assertEquals(result, integerSet);
         
@@ -229,6 +242,7 @@ public class WordCloudNGTest {
     @Test
     public void testRemoveWordFromSelection() {
         System.out.println("removeWordFromSelection");
+        
         final String word1 = "Query";
         final String word2 = "Vertex";
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
@@ -247,6 +261,7 @@ public class WordCloudNGTest {
     @Test
     public void testSingleWordSelection() {
         System.out.println("singleWordSelection");
+        
         final String word1 = "Query";
         final String word2 = "Vertex";
         final String word3 = "New";
@@ -266,6 +281,7 @@ public class WordCloudNGTest {
     @Test
     public void testGetElementType() {
         System.out.println("getElementType");
+        
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
         final GraphElementType result = instance.getElementType();
         assertEquals(result, elementType);
@@ -277,8 +293,9 @@ public class WordCloudNGTest {
     @Test
     public void testGetWordSignificances() {
         System.out.println("getWordSignificances");
+        
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
-        final SortedMap result = instance.getWordSignificances();
+        final SortedMap<Double, Set<String>> result = instance.getWordSignificances();
         assertEquals(result, wordSignificances);
     }
 
@@ -288,9 +305,9 @@ public class WordCloudNGTest {
     @Test
     public void testGetWordListWithSizes() {
         System.out.println("getWordListWithSizes");
+        
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
-        final SortedMap result = instance.getWordListWithSizes();
+        final SortedMap<String, Float> result = instance.getWordListWithSizes();
         assertEquals(result, wordListWithSizes);
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class WaitForQueriesToCompleteTaskNGTest {
+    
     private static final String GRAPH_ID = "graphId";
     
     private static MockedStatic<DataAccessPaneState> paneStateMockedStatic;
@@ -56,7 +57,7 @@ public class WaitForQueriesToCompleteTaskNGTest {
     private WaitForQueriesToCompleteTask waitForQueriesToCompleteTask;
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         paneStateMockedStatic = Mockito.mockStatic(DataAccessPaneState.class);
         platformMockedStatic = Mockito.mockStatic(Platform.class);
         notificationDisplayerMockedStatic = Mockito.mockStatic(NotificationDisplayer.class);

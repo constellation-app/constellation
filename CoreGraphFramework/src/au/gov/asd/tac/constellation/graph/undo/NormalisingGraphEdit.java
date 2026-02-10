@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
-import java.util.HashMap;
-import java.util.Map;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 /**
  *
@@ -277,7 +277,7 @@ public class NormalisingGraphEdit implements GraphEdit {
         }
     }
 
-    private final Map<Integer, Vertex> vertices = new HashMap<>();
+    private final MutableIntObjectMap<Vertex> vertices = new IntObjectHashMap<>();
 
     private class Transaction extends Element<Transaction> {
 
@@ -286,5 +286,5 @@ public class NormalisingGraphEdit implements GraphEdit {
         }
     }
 
-    private final Map<Integer, Transaction> transactions = new HashMap<>();
+    private final MutableIntObjectMap<Transaction> transactions = new IntObjectHashMap<>();
 }

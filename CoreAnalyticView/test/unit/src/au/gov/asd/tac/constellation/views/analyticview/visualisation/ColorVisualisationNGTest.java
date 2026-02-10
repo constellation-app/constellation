@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
+import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractColorTranslator;
-import au.gov.asd.tac.constellation.views.analyticview.translators.AnalyticTranslator;
 import au.gov.asd.tac.constellation.views.analyticview.translators.ScoreToColorTranslator;
 import java.util.Arrays;
 import java.util.List;
@@ -47,9 +48,6 @@ public class ColorVisualisationNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(ColorVisualisationNGTest.class.getName());
     
-    public ColorVisualisationNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -68,10 +66,12 @@ public class ColorVisualisationNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -80,12 +80,13 @@ public class ColorVisualisationNGTest {
     @Test
     public void testDeactivate() {
         System.out.println("deactivate");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
             final boolean reset = true;
-            final AbstractColorTranslator translator = new ScoreToColorTranslator();
-            final ColorVisualisation instance = new ColorVisualisation(translator);
+            final ScoreToColorTranslator translator = new ScoreToColorTranslator();
+            final ColorVisualisation<ElementScore> instance = new ColorVisualisation<>(translator);
             instance.deactivate(reset);
             
             final boolean isActive = instance.isActive();
@@ -100,8 +101,9 @@ public class ColorVisualisationNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        final AbstractColorTranslator translator = new ScoreToColorTranslator();
-        final ColorVisualisation instance = new ColorVisualisation(translator);
+        
+        final ScoreToColorTranslator translator = new ScoreToColorTranslator();
+        final ColorVisualisation<ElementScore> instance = new ColorVisualisation<>(translator);
         final String expResult = "Color Elements";
         final String result = instance.getName();
         assertEquals(result, expResult);
@@ -113,9 +115,10 @@ public class ColorVisualisationNGTest {
     @Test
     public void testGetTranslator() {
         System.out.println("getTranslator");
-        final AbstractColorTranslator translator = new ScoreToColorTranslator();
-        final ColorVisualisation instance = new ColorVisualisation(translator);
-        final AnalyticTranslator result = instance.getTranslator();
+        
+        final ScoreToColorTranslator translator = new ScoreToColorTranslator();
+        final ColorVisualisation<ElementScore> instance = new ColorVisualisation<>(translator);
+        final ScoreToColorTranslator result = (ScoreToColorTranslator) instance.getTranslator();
         assertEquals(result, translator);
     }
 
@@ -125,14 +128,15 @@ public class ColorVisualisationNGTest {
     @Test
     public void testGetAffectedAttributes() {
         System.out.println("getAffectedAttributes");
-        final AbstractColorTranslator translator = new ScoreToColorTranslator();
-        final ColorVisualisation instance = new ColorVisualisation(translator);
-        final List expResult = Arrays.asList(
+        
+        final ScoreToColorTranslator translator = new ScoreToColorTranslator();
+        final ColorVisualisation<ElementScore> instance = new ColorVisualisation<>(translator);
+        final List<SchemaAttribute> expResult = Arrays.asList(
                 VisualConcept.VertexAttribute.OVERLAY_COLOR,
                 VisualConcept.TransactionAttribute.OVERLAY_COLOR,
                 VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE,
                 VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE);
-        final List result = instance.getAffectedAttributes();
+        final List<SchemaAttribute> result = instance.getAffectedAttributes();
         assertEquals(result, expResult);
     }
 
@@ -142,8 +146,9 @@ public class ColorVisualisationNGTest {
     @Test
     public void testIsActive() {
         System.out.println("isActive");
-        final AbstractColorTranslator translator = new ScoreToColorTranslator();
-        final ColorVisualisation instance = new ColorVisualisation(translator);
+        
+        final ScoreToColorTranslator translator = new ScoreToColorTranslator();
+        final ColorVisualisation<ElementScore> instance = new ColorVisualisation<>(translator);
         final boolean expResult = false;
         final boolean result = instance.isActive();
         assertEquals(result, expResult);
@@ -155,12 +160,12 @@ public class ColorVisualisationNGTest {
     @Test
     public void testSetSelected() {
         System.out.println("setSelected");
+        
         final boolean selected = false;
-        final AbstractColorTranslator translator = new ScoreToColorTranslator();
-        final ColorVisualisation instance = new ColorVisualisation(translator);
+        final ScoreToColorTranslator translator = new ScoreToColorTranslator();
+        final ColorVisualisation<ElementScore> instance = new ColorVisualisation<>(translator);
         instance.setSelected(selected);
         final boolean result = instance.isActive();
         assertEquals(result, selected);
-    }
-    
+    }    
 }

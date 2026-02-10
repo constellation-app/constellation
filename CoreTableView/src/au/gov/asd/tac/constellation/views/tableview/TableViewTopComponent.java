@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,7 +83,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
     public static final Object TABLE_LOCK = new Object();
 
-    private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
+    private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("Table-Thread", 1);
 
     private final TablePane pane;
     private final Set<AttributeValueMonitor> columnAttributeMonitors;

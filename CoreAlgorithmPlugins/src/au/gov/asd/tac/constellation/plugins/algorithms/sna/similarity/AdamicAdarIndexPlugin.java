@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -169,12 +169,12 @@ public class AdamicAdarIndexPlugin extends SimpleEditPlugin {
 
                     final int vertexOneId = graph.getVertex(vertexOnePosition);
                     final int vertexTwoId = graph.getVertex(vertexTwoPosition);
-                    float sum = 0F;
+                    double sum = 0F;
                     for (int commonNeighbour = intersection.nextSetBit(0); commonNeighbour >= 0; commonNeighbour = intersection.nextSetBit(commonNeighbour + 1)) {
-                        sum += (1F / Math.log(graph.getVertexNeighbourCount(graph.getVertex(commonNeighbour))));
+                        sum += (1 / Math.log(graph.getVertexNeighbourCount(graph.getVertex(commonNeighbour))));
                     }
 
-                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, sum);
+                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, (float) sum);
                 }
             }
         }

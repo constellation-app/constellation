@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.api;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
+import com.google.common.base.Stopwatch;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -29,7 +30,6 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.openide.util.NbPreferences;
-import org.python.google.common.base.Stopwatch;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -180,7 +180,7 @@ public class DataAccessPaneStateNGTest {
         // initial state
         assertTrue(DataAccessPaneState.getRunningPlugins().isEmpty());
 
-        final CompletableFuture runningPluginFuture = CompletableFuture.completedFuture(null);
+        final CompletableFuture<?> runningPluginFuture = CompletableFuture.completedFuture(null);
 
         // add a running plugin
         DataAccessPaneState.addRunningPlugin(
@@ -218,7 +218,7 @@ public class DataAccessPaneStateNGTest {
         // initial state
         assertTrue(DataAccessPaneState.getRunningPlugins(GRAPH_ID).isEmpty());
 
-        final CompletableFuture runningPluginFuture = CompletableFuture.completedFuture(null);
+        final CompletableFuture<?> runningPluginFuture = CompletableFuture.completedFuture(null);
 
         // add a running plugin
         DataAccessPaneState.addRunningPlugin(
@@ -289,5 +289,4 @@ public class DataAccessPaneStateNGTest {
             assertTrue(comparator.compare(plugin1, plugin2) > 0);
         }
     }
-
 }

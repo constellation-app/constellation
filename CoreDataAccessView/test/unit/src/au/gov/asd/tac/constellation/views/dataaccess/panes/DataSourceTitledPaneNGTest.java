@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,10 +64,7 @@ public class DataSourceTitledPaneNGTest {
     private final ExecutorService executorService = mock(ExecutorService.class);
 
     private DataSourceTitledPane dataSourceTitledPane;
-
-    public DataSourceTitledPaneNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         // This prevents the runnable at the bottom of create params to run!!
@@ -168,7 +165,7 @@ public class DataSourceTitledPaneNGTest {
         while ((pluginParameters = dataSourceTitledPane.getParameters()) == null && counter < 3) {
             Thread.yield();
             counter++;
-        };
+        }
 
         assertSame(pluginParameters, dataSourceParameters);
 
@@ -187,7 +184,7 @@ public class DataSourceTitledPaneNGTest {
         while ((pluginParameters = dataSourceTitledPane.getParameters()) == null && counter < 3) {
             Thread.yield();
             counter++;
-        };
+        }
 
         assertSame(pluginParameters, dataSourceParameters);
 

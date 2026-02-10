@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
@@ -45,62 +47,64 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class GeneratorNGTest {
-
-    public GeneratorNGTest() {
-    }
-
+    
+    private static final String SEP = File.separator;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
-     * Test of run method, of class Generator.
+     * Test of updateTOCFiles method, of class Generator.
      */
     @Test
-    public void testRun() {
-        System.out.println("testing run");
+    public void testUpdateTOCFiles() {
+        System.out.println("updateTOCFiles");
 
         final String previousProperty = System.getProperty("constellation.environment");
 
         try {
             // Test on IDE Version
             System.setProperty("constellation.environment", "IDE(CORE)");
-
-            try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
+ 
+            try (final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
                 final List<File> tocXMLFiles = new ArrayList<>();
-                final String layersTOC = "../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/layers-view-toc.xml";
-                final String notesTOC  = "../ext/docs/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/notes-view-toc.xml";
+                final String layersTOC = "ext/docs/CoreLayersView/layers-view-toc.xml";
+                final String notesTOC  = "ext/docs/CoreNotesView/notes-view-toc.xml";
 
                 tocXMLFiles.add(new File(System.getProperty("user.dir") + layersTOC));
                 tocXMLFiles.add(new File(System.getProperty("user.dir") + notesTOC));
-                generatorStaticMock.when(() -> Generator.getXMLFiles(Mockito.any())).thenReturn(tocXMLFiles);
+                tocXMLFiles.add(new File("/non_consty_path/missing_file.md"));
+                generatorStaticMock.when(() -> Generator.getXMLFiles()).thenReturn(tocXMLFiles);
                 generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenCallRealMethod();
                 generatorStaticMock.when(() -> Generator.getResource()).thenCallRealMethod();
 
-                try (MockedStatic<TOCGenerator> tocgeneratorStaticMock = Mockito.mockStatic(TOCGenerator.class)) {
+                try (final MockedStatic<TOCGenerator> tocgeneratorStaticMock = Mockito.mockStatic(TOCGenerator.class)) {
                     tocgeneratorStaticMock.when(() -> TOCGenerator.createTOCFile(Mockito.anyString())).thenReturn(true);
-                    tocgeneratorStaticMock.when(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
-                    Generator generator = new Generator();
+                    tocgeneratorStaticMock.when(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenAnswer((Answer<Void>) invocation -> null);
+                    final Generator generator = new Generator();
                     System.out.println("prop : " + System.getProperty("constellation.environment"));
-                    generator.run();
+                    generator.updateTOCFiles();
 
                     // verify that the toc file was called to be created, and that the xml mappings were to be converted
-                    tocgeneratorStaticMock.verify(() -> TOCGenerator.createTOCFile(Mockito.anyString()));
-                    tocgeneratorStaticMock.verify(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any()));
-
-                    generatorStaticMock.verify(() -> Generator.getBaseDirectory(), times(2));
+                    tocgeneratorStaticMock.verify(() -> TOCGenerator.createTOCFile(Mockito.anyString()), times(1));
+                    tocgeneratorStaticMock.verify(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any(), Mockito.anyBoolean()), times(1));
                 }
             }
         } finally {
@@ -109,28 +113,26 @@ public class GeneratorNGTest {
                 System.setProperty("constellation.environment", previousProperty);
             }
         }
-
     }
     
     /**
-     * Test of run method, of class Generator.
+     * Test of getXMLFiles method, of class Generator.
      */
     @Test
     public void testGetXMLFiles() {
-        System.out.println("testGetXMLFiles");
+        System.out.println("getXMLFiles");
 
-        try (MockedStatic<Lookup> lookupStaticMock = Mockito.mockStatic(Lookup.class)) {
+        try (final MockedStatic<Lookup> lookupStaticMock = Mockito.mockStatic(Lookup.class);
+                final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
             final Lookup lookup = mock(Lookup.class);
 
             final HelpPageProvider layersProvider = mock(HelpPageProvider.class);
             final HelpPageProvider notesProvider = mock(HelpPageProvider.class);
-            String sep = File.separator;
+            final String sep = File.separator;
 
             final String baseDirectory = "c:" + sep + "baseDir" + sep;
-            final String layersTOC = ".." + sep + "ext" + sep + "docs" + sep + "CoreLayersVie" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                    + "tac" + sep + "constellation" + sep + "views" + sep + "layers" + sep + "layers-view-toc.xml";
-            final String notesTOC = ".." + sep + "ext" + sep + "docs" + sep + "CoreNotesVie" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                    + "tac" + sep + "constellation" + sep + "views" + sep + "notes" + sep + "notes-view-toc.xml";
+            final String layersTOC = "ext" + sep + "docs" + sep + "CoreLayersView" + sep + "layers-view-toc.xml";
+            final String notesTOC = "ext" + sep + "docs" + sep + "CoreNotesView" + sep + "notes-view-toc.xml";
 
             when(layersProvider.getHelpTOC())
                     .thenReturn(layersTOC);
@@ -143,8 +145,10 @@ public class GeneratorNGTest {
                     notesProvider
             ))
                     .when(lookup).lookupAll(HelpPageProvider.class);
+            
+            generatorStaticMock.when(Generator::getBaseDirectory).thenReturn(baseDirectory);
 
-            final List<File> tocXMLFiles = Generator.getXMLFiles(baseDirectory);
+            final List<File> tocXMLFiles = Generator.getXMLFiles();
             assertEquals(tocXMLFiles.size(), 2);
             assertEquals(tocXMLFiles.get(0).getPath(), baseDirectory + layersTOC);
             assertEquals(tocXMLFiles.get(1).getPath(), baseDirectory + notesTOC);
@@ -154,20 +158,22 @@ public class GeneratorNGTest {
     /**
      * Test of getBaseDirectory method, of class Generator. Tests all available
      * file system roots, with module and class specific locations.
+     * @throws java.net.URISyntaxException
+     * @throws java.net.MalformedURLException
      */
     @Test
     public void testGetBaseDirectory() throws URISyntaxException, MalformedURLException {
-        System.out.println("testGetBaseDirectory");
+        System.out.println("getBaseDirectory");
 
-        String sep = File.separator;
-
-        try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS);
-                MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class, Mockito.CALLS_REAL_METHODS)) {
+        try (final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS);
+                final MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class, Mockito.CALLS_REAL_METHODS);
+                final MockedStatic<StringUtils> stringUtilsStaticMock = Mockito.mockStatic(StringUtils.class)) {
+            stringUtilsStaticMock.when(() -> StringUtils.isNotBlank(anyString())).thenReturn(false);
+            
             // loop over all possible file roots on the file system
             for (final File file : File.listRoots()) {
-
                 // try within base level of help module
-                final String userDir = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep + "ext" + sep + "CoreHelp";
+                final String userDir = file.getPath() + "Users" + SEP + "Username" + SEP + "Constellation" + SEP + "ext" + SEP + "CoreHelp";
 
                 // mock paths.get to return a path which is a mock - then return the user dir on call to toString()
                 final Path pathUserDir = mock(Path.class);
@@ -180,12 +186,12 @@ public class GeneratorNGTest {
                 when(urlUserDir.toURI()).thenReturn(urIUserDir);
                 generatorStaticMock.when(() -> Generator.getResource()).thenReturn(userDir);
 
-                final String expectedBaseDir = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep;
+                final String expectedBaseDir = file.getPath() + "Users" + SEP + "Username" + SEP + "Constellation" + SEP;
                 assertEquals(Generator.getBaseDirectory(), expectedBaseDir);
 
                 // try within help module package at a deeper level
-                final String userDir2 = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep + "ext" + sep + "CoreHelp"
-                        + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac";
+                final String userDir2 = file.getPath() + "Users" + SEP + "Username" + SEP + "Constellation" + SEP + "ext" + SEP + "CoreHelp"
+                        + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac";
 
                 // mock paths.get to return a path which is a mock - then return the user dir on call to toString()
                 final Path pathUserDir2 = mock(Path.class);
@@ -198,12 +204,12 @@ public class GeneratorNGTest {
                 when(urlUserDir2.toURI()).thenReturn(urIUserDir2);
                 generatorStaticMock.when(() -> Generator.getResource()).thenReturn(userDir2);
 
-                final String expectedBaseDir2 = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep;
+                final String expectedBaseDir2 = file.getPath() + "Users" + SEP + "Username" + SEP + "Constellation" + SEP;
                 assertEquals(Generator.getBaseDirectory(), expectedBaseDir2);
 
                 // try with file struct containing constellation
-                final String userDir3 = file.getPath() + "Users" + sep + "Username" + sep + "constellation" + sep + "Constellation" + sep + "ext" + sep + "CoreHelp"
-                        + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac";
+                final String userDir3 = file.getPath() + "Users" + SEP + "Username" + SEP + "constellation" + SEP + "Constellation" + SEP + "ext" + SEP + "CoreHelp"
+                        + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac";
 
                 // mock paths.get to return a path which is a mock - then return the user dir on call to toString()
                 final Path pathUserDir3 = mock(Path.class);
@@ -216,9 +222,26 @@ public class GeneratorNGTest {
                 when(urlUserDir3.toURI()).thenReturn(urIUserDir3);
                 generatorStaticMock.when(() -> Generator.getResource()).thenReturn(userDir3);
 
-                final String expectedBaseDir3 = file.getPath() + "Users" + sep + "Username" + sep + "constellation" + sep + "Constellation" + sep;
+                final String expectedBaseDir3 = file.getPath() + "Users" + SEP + "Username" + SEP + "constellation" + SEP + "Constellation" + SEP;
                 assertEquals(Generator.getBaseDirectory(), expectedBaseDir3);
             }
+        }
+    }
+    
+    /**
+     * Test of getOnlineHelpTOCDirectory method, of class Generator.
+     */
+    @Test
+    public void testGetOnlineHelpTOCDirectory() {
+        System.out.println("getOnlineHelpTOCDirectory");
+        
+        final String baseDirectory = "c:" + SEP + "baseDir" + SEP + "constellation" + SEP + "someOtherFolder" + SEP;
+        final String expResult = "c:" + SEP + "baseDir" + SEP + "constellation" + SEP;
+        
+        try (final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
+            generatorStaticMock.when(Generator::getBaseDirectory).thenReturn(baseDirectory);
+            
+            assertEquals(Generator.getOnlineHelpTOCDirectory(), expResult);
         }
     }
 }

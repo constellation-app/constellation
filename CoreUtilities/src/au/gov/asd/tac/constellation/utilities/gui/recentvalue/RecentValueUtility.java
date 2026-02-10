@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.recentvalue;
 
-import com.fasterxml.jackson.core.JsonFactory;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -35,40 +34,30 @@ import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 
 /**
- * A Utility for managing recent values for inputs.
- * This class was initially created for Plugin Parameters exclusively.
- * it has been refactored to serve as a utility for {@link ConstellationInputFields}
- * 
- * Some further review of the functionality may be required.
- * the intention of this calss is toenable inputs to be able to display rcent values. 
- * Inputs are identifyable by an ID and recent values will be suplied based on that id. 
- * for this reason, should a pluign be interacted with from two different Interfaces, 
- * i.e. the data access voew or a interactive dialog. the recent values can be maintaned between interfaces if the 
- * input fields hae the same id. 
- * 
- * These recent values persist between aplication shutdowns and startups.
+ * RecentParameterValues stores the most recent value associated with each PluginParameter. This allows new UIs that
+ * allow users to edit PluginParameters can show a display with parameter values identical to how the user left them
+ * last time they edited the values.
  *
  * @author sirius
  */
-public class RecentValueUtility {
-    
-    private static final Logger LOGGER = Logger.getLogger(RecentValueUtility.class.getName());
+public class RecentParameterValues {
+
+    private static final Logger LOGGER = Logger.getLogger(RecentParameterValues.class.getName());
 
     private static final Map<String, List<String>> RECENT_VALUES = new HashMap<>();
     private static final List<RecentValuesListener> LISTENERS = new ArrayList<>();
     private static final Preferences PREFERENCES = NbPreferences.forModule(RecentValuesKey.class);
     private static final int SAVE_LIMIT = 5;
-    private static final JsonFactory FACTORY = new MappingJsonFactory();
 
     /**
      * Stores a string value representing a new recent value associated with an identifiable input
      * Although recent values are expressed through interaction want a {@link ConstelationInputField}
      * it is imortant to note that the id that these fields use is comonly a parameter id.
      * 
-     * @param id the id value of the input.
-     * @param value 
+     * @param parameterId the id value of the input.
+     * @param parameterValue 
      */
-    public static void storeRecentValue(String id, String value) {
+    public static void storeRecentValue(final String parameterId, final String parameterValue) {
         synchronized (RECENT_VALUES) {
             List<String> values = RECENT_VALUES.get(id);
             if (values == null) {
@@ -83,8 +72,8 @@ public class RecentValueUtility {
         }
     }
 
-    public static List<String> getRecentValues(String id) {
-        synchronized(RECENT_VALUES) {
+    public static List<String> getRecentValues(final String parameterId) {
+        synchronized (RECENT_VALUES) {
             if (RECENT_VALUES.isEmpty()) {
                 loadFromPreference();
             }
@@ -97,7 +86,7 @@ public class RecentValueUtility {
      *
      * @param listener the listener to be added.
      */
-    public static void addListener(RecentValuesListener listener) {
+    public static void addListener(final RecentValuesListener listener) {
         if (listener != null) {
             synchronized (LISTENERS) {
                 LISTENERS.add(listener);
@@ -110,7 +99,7 @@ public class RecentValueUtility {
      *
      * @param listener the listener to be removed.
      */
-    public static void removeListener(RecentValuesListener listener) {
+    public static void removeListener(final RecentValuesListener listener) {
         synchronized (LISTENERS) {
             LISTENERS.remove(listener);
         }
@@ -121,18 +110,18 @@ public class RecentValueUtility {
      *
      * @param e the change event to be sent to all listeners.
      */
-    public static void fireChangeEvent(RecentValuesChangeEvent e) {
+    public static void fireChangeEvent(final RecentValuesChangeEvent e) {
         synchronized (LISTENERS) {
             for (RecentValuesListener listener : LISTENERS) {
                 listener.recentValuesChanged(e);
-            }               
+            }
         }
     }
 
     public static void saveToPreferences() {
         synchronized (RECENT_VALUES) {
             final ByteArrayOutputStream json = new ByteArrayOutputStream();
-            try (final JsonGenerator jg = FACTORY.createGenerator(json)) {
+            try (final JsonGenerator jg = JsonFactoryUtilities.getJsonFactory().createGenerator(json)) {
                 jg.writeStartObject();
                 for (Entry<String, List<String>> entry : RECENT_VALUES.entrySet()) {
                     List<String> recentVals = entry.getValue();
@@ -162,24 +151,29 @@ public class RecentValueUtility {
 
     public static void loadFromPreference() {
         synchronized (RECENT_VALUES) {
-            final String recentValuesJSON = PREFERENCES.get(RecentValuesKey.RECENT_VALUES, "");
-            if (!recentValuesJSON.isEmpty()) {
-                try (final JsonParser jp = FACTORY.createParser(recentValuesJSON)) {
-                    if (jp.nextToken() == JsonToken.START_OBJECT) {
-                        while (jp.nextToken() != JsonToken.END_OBJECT) {
-                            if (jp.getCurrentToken() == JsonToken.START_ARRAY) {
-                                List<String> recentVals = new ArrayList<>();
-                                String fieldName = jp.getCurrentName();
-                                while (jp.nextToken() != JsonToken.END_ARRAY) {
-                                    recentVals.add(jp.getValueAsString());
-                                }
-                                RECENT_VALUES.put(fieldName, recentVals);
-                            }
-                        }
-                    }
-                } catch (final IOException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            final String recentValuesJSON = PREFERENCES.get(RecentParameterValuesKey.RECENT_VALUES, "");
+            if (recentValuesJSON.isEmpty()) {
+                return;
+            }
+            
+            try (final JsonParser jp = JsonFactoryUtilities.getJsonFactory().createParser(recentValuesJSON)) {
+                if (jp.nextToken() != JsonToken.START_OBJECT) {
+                    return;
                 }
+                
+                while (jp.nextToken() != JsonToken.END_OBJECT) {
+                    if (jp.getCurrentToken() != JsonToken.START_ARRAY) {
+                        continue;
+                    }
+                    final List<String> recentVals = new ArrayList<>();
+                    final String fieldName = jp.currentName();
+                    while (jp.nextToken() != JsonToken.END_ARRAY) {
+                        recentVals.add(jp.getValueAsString());
+                    }
+                    RECENT_VALUES.put(fieldName, recentVals);
+                }
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }

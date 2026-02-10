@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,6 @@ import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
-import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -137,9 +136,9 @@ public class DataAccessTabPane implements PreferenceChangeListener {
         if (pluginsRetrieved != null && pluginsRetrieved.equals(plugins)) {
             return;
         }
-        
+
         setPlugins(pluginsRetrieved);
-        
+
         for (final Tab tab : tabPane.getTabs()) {
             getQueryPhasePane(tab).updatePlugins(this.plugins, getDataAccessPane());
         }
@@ -285,8 +284,7 @@ public class DataAccessTabPane implements PreferenceChangeListener {
                 tab.setGraphic(label);
             });
 
-            field.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                    Boolean newValue) -> {
+            field.focusedProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue) {
                     final String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().indexOf(tab) + 1);
                     label.setText(field.getText().trim());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.notes.utilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +33,6 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -51,8 +51,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.stage.Screen;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
@@ -76,8 +76,9 @@ public class NewNotePane {
 
     private int currentlyEditedNoteId = 0;
 
-    private final TextArea contentField;
+    private final SpellCheckingTextArea contentField;
     private final TextField titleField = new TextField();
+    
     private final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
     private final CheckBox enableMarkdown = new CheckBox("Markdown");
 
@@ -101,7 +102,7 @@ public class NewNotePane {
     private Window parent = null;
 
     public NewNotePane(final String userChosenColour) {
-        this.userChosenColour = userChosenColour;
+        NewNotePane.userChosenColour = userChosenColour;
 
         dialogPane = new BorderPane();
         dialogPane.setPrefHeight(HEIGHT);
@@ -117,13 +118,12 @@ public class NewNotePane {
         applyToSelection.selectedProperty().addListener((ov, oldVal, newVal) -> applySelected = applyToSelection.isSelected());
 
         // TextArea to enter new note content.
-        contentField = new TextArea();
+        contentField = new SpellCheckingTextArea(true);
         contentField.setMinWidth(WIDTH - 10);
         contentField.setPromptText("Type a note...");
         contentField.setStyle(fontStyle);
-
         contentField.setWrapText(true);
-
+        
         tabPane = new TabPane();
         previewTextFlow = new TextFlow();
 
@@ -135,8 +135,7 @@ public class NewNotePane {
 
         final ScrollPane previewTabScrollPane = new ScrollPane();
         previewTabScrollPane.setContent(previewTabPane);
-        previewTabScrollPane.setMaxWidth(WIDTH);
-        previewTabScrollPane.setMaxHeight(202);
+        previewTabScrollPane.setPrefWidth(WIDTH);
         previewTabScrollPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         final VBox editVBox = new VBox(5, titleField, contentField);
@@ -158,11 +157,13 @@ public class NewNotePane {
                 mdTree.setMarkdownEnabled(markdownSelected);
                 mdTree.parse();
                 previewTextFlow = mdTree.getRenderedText();
-                previewTextFlow.setMinWidth(495);
-                previewTextFlow.setPrefWidth(495);
-                previewTextFlow.setMaxWidth(495);
-
-                resizeTextFlows(previewTextFlow, 2.0);
+                previewTextFlow.setPrefWidth(WIDTH - 10);
+                previewTextFlow.setPrefHeight(HEIGHT);
+                previewTextFlow.autosize();
+                previewTabPane.setPrefSize(previewTextFlow.getWidth() - 10, previewTextFlow.getHeight());
+                previewTabScrollPane.setPrefViewportWidth(WIDTH);
+                previewTabScrollPane.setPrefViewportHeight(HEIGHT);
+                                
                 previewTabPane.getChildren().add(previewTextFlow);
             }
         });
@@ -217,15 +218,6 @@ public class NewNotePane {
 
     }
 
-    private void resizeTextFlows(final TextFlow textFlow, final double scale) {
-        for (int i = 0; i < textFlow.getChildren().size(); ++i) {
-            if (textFlow.getChildren().get(i) instanceof TextFlow textFlowChild) {
-                resizeTextFlows(textFlowChild, scale + 0.5);
-            }
-        }
-        textFlow.setMaxHeight(textFlow.getMaxHeight() / scale);
-        textFlow.setMinWidth(495);
-    }
 
     /**
      * Instantiate stage for the pop up and set event handler to close it when
@@ -286,7 +278,7 @@ public class NewNotePane {
         return titleField;
     }
 
-    public TextArea getContentField() {
+    public SpellCheckingTextArea getContentField() {
         return contentField;
     }
 

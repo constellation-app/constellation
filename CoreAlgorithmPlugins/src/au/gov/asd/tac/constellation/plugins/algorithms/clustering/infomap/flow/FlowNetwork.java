@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.flow;
 
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * Flow Network
@@ -130,8 +131,8 @@ public class FlowNetwork {
             if (config.isOutdirdir()) {
                 LOGGER.log(Level.INFO, "counting only ingoing links... done!");
             } else {
-                LOGGER.log(Level.INFO, "using undirected links%s\n", config.isUndirdir() ? ", switching to directed after steady state... done!"
-                        : "... done!");
+                LOGGER.log(Level.INFO, String.format("using undirected links%s\n", config.isUndirdir() ? ", switching to directed after steady state... done!"
+                        : "... done!"));
             }
 
             return;
@@ -160,7 +161,7 @@ public class FlowNetwork {
         }
 
         // Collect dangling nodes.
-        final ArrayList<Integer> danglings = new ArrayList<>();
+        final MutableIntList danglings = new IntArrayList();
         for (int i = 0; i < numNodes; ++i) {
             if (nodeOutDegree[i] == 0) {
                 danglings.add(i);
@@ -178,8 +179,8 @@ public class FlowNetwork {
         do {
             // Calculate dangling rank.
             danglingRank = 0;
-            for (final int dangling : danglings) {
-                danglingRank += nodeFlow[dangling];
+            for (int i = 0; i < danglings.size(); i++) {
+                danglingRank += nodeFlow[danglings.get(i)];
             }
 
             // Flow from teleportation.
@@ -203,7 +204,7 @@ public class FlowNetwork {
             }
 
             // Normalize if needed.
-            final double adjustedSum =  sum - 1.0;
+            final double adjustedSum = sum - 1.0;
             if (sum != 0 && Math.abs(adjustedSum) > 1.0e-10) {
                 final String logMsg = String.format("Normalizing ranks after %d power iterations with error %e ", numIterations, adjustedSum);
                 LOGGER.log(Level.INFO, logMsg);

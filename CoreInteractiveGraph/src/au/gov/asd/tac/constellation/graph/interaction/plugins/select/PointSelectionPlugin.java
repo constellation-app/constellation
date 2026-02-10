@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,13 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 
 /**
  *
  * @author twilight_sparkle
  */
-@NbBundle.Messages("PointSelectionPlugin=Select Graph Element")
+@Messages("PointSelectionPlugin=Select Graph Element")
 @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
 public final class PointSelectionPlugin extends SimpleEditPlugin {
 

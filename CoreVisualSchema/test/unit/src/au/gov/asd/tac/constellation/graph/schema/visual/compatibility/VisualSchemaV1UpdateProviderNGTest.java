@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
@@ -45,33 +44,31 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
+@SuppressWarnings("deprecation") // refers to deprecated classes for backwards compatibility
 public class VisualSchemaV1UpdateProviderNGTest {
     
     StoreGraph mockStoreGraph;
-    SchemaFactoryUtilities mockSchemaFactory;
     VisualSchemaV1UpdateProvider instance;
      
     // Captors
     ArgumentCaptor<Integer> attributeCaptor = ArgumentCaptor.forClass(Integer.class);
     ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
     ArgumentCaptor<Object> listCaptor = ArgumentCaptor.forClass(Object.class);
-        
-    public VisualSchemaV1UpdateProviderNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
         instance = new VisualSchemaV1UpdateProvider();
         mockStoreGraph = mock(StoreGraph.class);
-        mockSchemaFactory = mock(SchemaFactoryUtilities.class);
         attributeCaptor = ArgumentCaptor.forClass(Integer.class);
         idCaptor = ArgumentCaptor.forClass(Integer.class);
         listCaptor = ArgumentCaptor.forClass(Object.class);
@@ -79,6 +76,7 @@ public class VisualSchemaV1UpdateProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -148,7 +146,7 @@ public class VisualSchemaV1UpdateProviderNGTest {
         GraphLabelsAndDecoratorsV0 labelsAndDecorators = new GraphLabelsAndDecoratorsV0();
         labelsAndDecorators.addBottomLabel(new GraphLabelV0("bottom;red;1"));
         labelsAndDecorators.addTopLabel(new GraphLabelV0("top;red;1"));
-        labelsAndDecorators.addTopLabel(new GraphLabelV0("top;red;2"));;
+        labelsAndDecorators.addTopLabel(new GraphLabelV0("top;red;2"));
         labelsAndDecorators.addConnectionLabel(new GraphLabelV0("connection;red;1"));
         labelsAndDecorators.addConnectionLabel(new GraphLabelV0("connection;red;2"));
         labelsAndDecorators.addConnectionLabel(new GraphLabelV0("connection;red;3"));

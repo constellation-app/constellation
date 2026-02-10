@@ -7,6 +7,8 @@ enabling data access, federation and manipulation capabilities across large and
 complex data sets.
 <br>
 <br>
-Constellation was originally developed at the Australian Signals Directorate in
-2012 and transitioned to CSIRO's Data61 in May 2018 as open source software 
-under the Apache 2 copyright license model.
+Constellation was originally developed at the Australian Signals Directorate in 
+2012 and transitioned to CSIRO's Data61 in May 2019 as open source software 
+under the Apache 2 copyright license model for a 2 year period. In 2020 ASD 
+once again took over the primary responsibility to maintain Constellation taking 
+into account the contributions from the growing open source community. 

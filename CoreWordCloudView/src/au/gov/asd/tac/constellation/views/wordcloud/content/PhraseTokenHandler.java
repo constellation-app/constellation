@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.util.Set;
 public class PhraseTokenHandler implements TokenHandler {
 
     @SuppressWarnings("unchecked") // type of SparseMatrix is integer
-    private final SparseMatrix<Integer> tokenElementMatrix = TaggedSparseMatrix.constructMatrix(0);
+    private final SparseMatrix<Integer> tokenElementMatrix = (SparseMatrix<Integer>) TaggedSparseMatrix.constructMatrix(0);
     private final Map<String, Integer> tokenHashes = new HashMap<>();
     private final Map<Integer, Set<Integer>> constituentHashes = new HashMap<>();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,14 +28,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 import javax.swing.filechooser.FileFilter;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -169,7 +170,7 @@ public class JSONImportFileParser extends ImportFileParser {
             }
         } else if (node.size() > 0) {
             // Top level node is not an array, go searching
-            for (Iterator<Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
+            for (final Iterator<Entry<String, JsonNode>> it = node.properties().iterator(); it.hasNext();) {
                 final Map.Entry<String, JsonNode> entry = it.next();
 
                 // We are only interested in arrays that contain at least one
@@ -187,12 +188,8 @@ public class JSONImportFileParser extends ImportFileParser {
                     // The node is not an array buy is another container, dive into
                     // it and see if there is any list
                     lookForChildArrays(entry.getValue(), path + "/" + entry.getKey(), (depth + 1));
-                } else {
-                    // Do nothing
-                }
+                } 
             }
-        } else {
-            // Do nothing
         }
     }
 
@@ -212,7 +209,7 @@ public class JSONImportFileParser extends ImportFileParser {
     private ArrayList<String> extractColNamesFromFields(final JsonNode node, final ArrayList<String> existingColumns, final String prefix) {
         if (node.isObject()) {
             // Iterate over each field in object and add its name if it doesnt already exist in results
-            for (Iterator<Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
+            for (final Iterator<Entry<String, JsonNode>> it = node.properties().iterator(); it.hasNext();) {
                 final Map.Entry<String, JsonNode> entry = it.next();
 
                 if (entry.getValue().isObject()) {
@@ -226,8 +223,6 @@ public class JSONImportFileParser extends ImportFileParser {
                     // potential column title, with nested lists ultimately
                     // representing their data as a merged value string.
                     existingColumns.add(prefix + entry.getKey());
-                } else {
-                    // Do nothing
                 }
             }
         }
@@ -298,7 +293,7 @@ public class JSONImportFileParser extends ImportFileParser {
      * @return line of data. This is effectively an array of strings, one per
      * column.
      */
-    private String[] getLineContent(final JsonNode node, final Map<String, Integer> columnMap, final String prefix, String[] line) {
+    private String[] getLineContent(final JsonNode node, final MutableObjectIntMap<String> columnMap, final String prefix, String[] line) {
         // Ensure the line is created if it wasn't already.
         if (line == null) {
             line = new String[columnMap.size()];
@@ -317,7 +312,7 @@ public class JSONImportFileParser extends ImportFileParser {
             // to extract its values, if not, extract the value. Note that nested
             // lists will be converted to text, so if a list contains another list,
             // that second list is treated as a single object.
-            for (final Iterator<Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
+            for (final Iterator<Entry<String, JsonNode>> it = node.properties().iterator(); it.hasNext();) {
                 final Map.Entry<String, JsonNode> entry = it.next();
 
                 if (entry.getValue().isObject()) {
@@ -326,8 +321,6 @@ public class JSONImportFileParser extends ImportFileParser {
                     line[columnMap.get(prefix + entry.getKey())] = START_END_QUOTES_REGEX.matcher(entry.getValue().toString()).replaceAll("");
                 }
             }
-        } else {
-            // Do nothing
         }
         return line;
     }
@@ -424,7 +417,7 @@ public class JSONImportFileParser extends ImportFileParser {
                 // names and store them in a dictionary mapping them to column
                 // number.
                 ArrayList<String> columns = extractAllColNames(selectedList, null, "");
-                Map<String, Integer> columnMap = new HashMap<>();
+                final MutableObjectIntMap<String> columnMap = new ObjectIntHashMap<>();
                 columns.forEach(column -> columnMap.put(column, columnMap.size()));
 
                 // Add a heading row to the return data
@@ -439,7 +432,7 @@ public class JSONImportFileParser extends ImportFileParser {
 
                         // If we are dealing with a list of lists, the first row is used
                         // as column headings, so skip over it.
-                        String[] line = getLineContent(listNode, columnMap, "", null);
+                        final String[] line = getLineContent(listNode, columnMap, "", null);
                         results.add(line);
 
                         if (results.size() > limit && limit > 0) {
@@ -503,7 +496,7 @@ public class JSONImportFileParser extends ImportFileParser {
             @Override
             public boolean accept(final File file) {
                 final String name = file.getName();
-                return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON)) || file.isDirectory();
+                return (file.isFile() && Strings.CI.endsWith(name, FileExtensionConstants.JSON)) || file.isDirectory();
             }
 
             @Override

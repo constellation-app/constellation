@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
@@ -63,7 +64,7 @@ public final class ZoomToVerticesPlugin extends SimpleEditPlugin {
         verticesParameter.setDescription("An array or list of vertex ids to zoom onto");
         parameters.addParameter(verticesParameter);
 
-        final PluginParameter<IntegerParameterType.IntegerParameterValue> vxParameter = IntegerParameterType.build(VERTEX_PARAMETER_ID);
+        final PluginParameter<IntegerParameterValue> vxParameter = IntegerParameterType.build(VERTEX_PARAMETER_ID);
         vxParameter.setName("Vertex Id");
         vxParameter.setDescription("A vertex id to zoom to");
         vxParameter.setObjectValue(Graph.NOT_FOUND);
@@ -72,6 +73,24 @@ public final class ZoomToVerticesPlugin extends SimpleEditPlugin {
         return parameters;
     }
 
+    @Override
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        final int[] vertices = verticesParam(parameters);
+        final Camera oldCamera = VisualGraphUtilities.getCamera(graph);
+        final BoundingBox box = new BoundingBox();
+        final Camera camera = new Camera(oldCamera);
+        BoundingBoxUtilities.encompassSpecifiedElements(box, graph, vertices);
+        CameraUtilities.zoomToBoundingBox(camera, box);        
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null && activeGraph.getId().equals(graph.getId())) {
+            // Only do the camera animation if the edited graph is currently active
+            AnimationUtilities.startAnimation(new PanAnimation("Zoom to Vertices", oldCamera, camera, true), activeGraph.getId());
+        } else {
+            // Skip the animation, just set the new camera position
+            VisualGraphUtilities.setCamera(graph, camera);
+        }                
+    }
+    
     private static int[] verticesParam(final PluginParameters parameters) {
         final int vxId = parameters.getIntegerValue(VERTEX_PARAMETER_ID);
         if (vxId != Graph.NOT_FOUND) {
@@ -90,23 +109,5 @@ public final class ZoomToVerticesPlugin extends SimpleEditPlugin {
 
             return vertices;
         }
-    }
-
-    @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        final int[] vertices = verticesParam(parameters);
-        final Camera oldCamera = VisualGraphUtilities.getCamera(graph);
-        final BoundingBox box = new BoundingBox();
-        final Camera camera = new Camera(oldCamera);
-        BoundingBoxUtilities.encompassSpecifiedElements(box, graph, vertices);
-        CameraUtilities.zoomToBoundingBox(camera, box);        
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        if (activeGraph != null && activeGraph.getId().equals(graph.getId())) {
-            // Only do the camera animation if the edited graph is currently active
-            Animation.startAnimation(new PanAnimation("Zoom to Vertices", oldCamera, camera, true));
-        } else {
-            // Skip the animation, just set the new camera position
-            VisualGraphUtilities.setCamera(graph, camera);
-        }                
     }
 }

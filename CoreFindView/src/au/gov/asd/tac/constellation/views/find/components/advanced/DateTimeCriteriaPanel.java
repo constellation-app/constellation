@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.views.find.components.advanced.criteriavalue
 import au.gov.asd.tac.constellation.views.find.components.advanced.utilities.DateTimeSelector;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -95,11 +94,11 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
                 -> displayDateTimePicker(dateTimeSelectorTwo)
         );
 
-        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
+        getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement)
                 -> betweenSeletionAction(newElement)
         );
 
-        timeFrameChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
+        timeFrameChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement)
                 -> timeFrameSelectionAction(newElement)
         );
     }

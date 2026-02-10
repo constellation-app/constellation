@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -522,7 +522,7 @@ public final class FloatArray implements Iterable<Float> {
     public String toString() {
         final StringBuilder b = new StringBuilder();
         for (int i = 0; i < size; i++) {
-            if (b.length() > 0) {
+            if (!b.isEmpty()) {
                 b.append(',');
             }
             b.append(String.valueOf(elementData[i]));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,34 +17,25 @@ package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateReaderPlugin;
-import java.awt.EventQueue;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Platform;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
  * The Analytic View Top Component.
@@ -76,13 +67,17 @@ import org.openide.windows.WindowManager;
     "HINT_AnalyticViewTopComponent=Analytic View"
 })
 public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticViewPane> {
-
-    private static final Logger LOGGER = Logger.getLogger(AnalyticViewTopComponent.class.getName());
     
+    private static final String ANALYTIC_VIEW_GRAPH_CHANGED_THREAD_NAME = "Analytic View Graph Changed Updater";
     private final AnalyticViewPane analyticViewPane;
     private final AnalyticViewController analyticController;
     private boolean suppressed = false;
     private String currentGraphId = StringUtils.EMPTY;
+    private LinkedBlockingQueue<Object> queue = new LinkedBlockingQueue<>();
+    private Thread refreshThread;
+    private final Runnable refreshRunnable;
+    private long latestGraphChangeID = 0;
+    private Graph activeGraph;
 
     public AnalyticViewTopComponent() {
         super();
@@ -132,6 +127,16 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                 analyticViewPane.getConfigurationPane().updateSelectablePluginsParameters();
             }
         }));
+        
+        refreshRunnable = () -> {
+            final List<Object> devNull = new ArrayList<>();
+            while (!queue.isEmpty()) {
+                queue.drainTo(devNull);
+            }
+
+            // update analytic view pane
+            analyticController.readState();
+        };
     }
 
     /**
@@ -168,28 +173,31 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        if (!needsUpdate()) {
-            return;
-        }
-        if (graph != null) {
+        if (needsUpdate() && graph != null) {
             currentGraphId = graph.getId();
-        }
-        if (analyticViewPane != null) {
-            analyticViewPane.reset();
-            analyticViewPane.setIsRunnable(graph != null);
-            analyticController.readState();
-            if (GraphManager.getDefault().getActiveGraph() == null) {
+            activeGraph = graph;
+
+            if (analyticViewPane != null) {
                 analyticViewPane.reset();
+                analyticViewPane.setIsRunnable(true);
+                analyticController.readState();
+                if (GraphManager.getDefault().getActiveGraph() == null) {
+                    analyticViewPane.reset();
+                }
             }
         }
     }
 
     @Override
     protected void handleGraphOpened(final Graph graph) {
+        if (graph != null) {
+            currentGraphId = graph.getId();
+        }
         if (analyticViewPane != null) {
             analyticViewPane.reset();
             analyticController.readState();
-            if (GraphManager.getDefault().getActiveGraph() == null) {
+            activeGraph = GraphManager.getDefault().getActiveGraph();
+            if (activeGraph == null) {
                 analyticViewPane.reset();
             }
         }
@@ -198,13 +206,13 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        final Graph current = GraphManager.getDefault().getActiveGraph();
-        if (current != null) {
-            currentGraphId = current.getId();
+        activeGraph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null) {
+            currentGraphId = activeGraph.getId();
         }
         analyticController.readState();
 
-        if (current == null) {
+        if (activeGraph == null) {
             analyticViewPane.reset();
         }
     }
@@ -212,54 +220,41 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        final Graph current = GraphManager.getDefault().getActiveGraph();
-        if (current != null && !current.getId().equals(currentGraphId)) {
+        activeGraph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null && !activeGraph.getId().equals(currentGraphId)) {
             analyticViewPane.reset();
         }
         analyticController.readState();
+        handleNewGraph(activeGraph);
+    }
+    
+    @Override
+    protected void handleGraphChange(final GraphChangeEvent event) {
+        if (event == null) { // can be null at this point in time
+            return;
+        }
+        final GraphChangeEvent newEvent = event.getLatest();
+        // Don't trigger the refresh when the graph event is the hide slider being updated
+        final String hideElementsDescription = "Analytic View: Hide Elements";
+        if (newEvent == null || newEvent.getDescription() == hideElementsDescription) { // latest event may be null - defensive check
+            return;
+        }
+        if (newEvent.getId() > latestGraphChangeID) {
+            latestGraphChangeID = newEvent.getId();
+            if (activeGraph != null) {
+                queue.add(newEvent);
+                if (refreshThread == null || !refreshThread.isAlive()) {
+                    refreshThread = new Thread(refreshRunnable);
+                    refreshThread.setName(ANALYTIC_VIEW_GRAPH_CHANGED_THREAD_NAME);
+                    refreshThread.start();
+                }
+            }
+        }
     }
 
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        final Map<String, Graph> allGraphs = GraphManager.getDefault().getAllGraphs();
-        final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
-
-        Platform.runLater(() -> {
-            if (topComponents != null) {
-                topComponents.forEach(component -> 
-                    allGraphs.values().forEach(graph -> {
-                            if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
-                                try {
-                                    // Update each graph and revert any changes made by the analytic view visualisations
-                                    EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
-                                    PluginExecution.withPlugin(new AnalyticStateReaderPlugin(analyticViewPane)).executeLater(graph).get();
-                                    analyticController.deactivateResultUpdates(graph);
-                                } catch (final InterruptedException ex) {
-                                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                                    Thread.currentThread().interrupt();
-                                } catch (final InvocationTargetException | ExecutionException ex) {
-                                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                                }
-                            }
-                        }));
-
-                // Make the originally active graph the active graph again.
-                topComponents.forEach(component -> {
-                    if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(activeGraph.getId())) {
-                        try {
-                            EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
-                        } catch (final InterruptedException ex) {
-                            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                            Thread.currentThread().interrupt();
-                        } catch (final InvocationTargetException ex) {
-                            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                        }
-                    }
-                });
-            }
-        });
         analyticViewPane.reset();
     }
 }

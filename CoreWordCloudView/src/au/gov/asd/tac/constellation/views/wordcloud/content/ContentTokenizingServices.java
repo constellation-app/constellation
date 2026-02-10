@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -942,7 +942,7 @@ public class ContentTokenizingServices {
             String newStr = str;
             int i = 0;
             while (i < str.length()) {
-                if (toFilter.contains(str.charAt(i)) && replacement.length() > 0) {
+                if (toFilter.contains(str.charAt(i)) && !replacement.isEmpty()) {
                     newStr = str.substring(0, i) + replacement + str.substring(i + 1, str.length());
                     i += (replacement.length() - 1);
                 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -52,7 +52,7 @@ public class SelectOneHopInducedSubgraphPlugin extends SimpleEditPlugin {
         PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_TRANSACTIONS).executeNow(graph);
 
         // identify all selected nodes
-        final List<Integer> selectedNodes = new ArrayList<>();
+        final MutableIntList selectedNodes = new IntArrayList();
         final int vertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final int vertexId = graph.getVertex(vertexPosition);
@@ -79,8 +79,6 @@ public class SelectOneHopInducedSubgraphPlugin extends SimpleEditPlugin {
                     }
                 } else if (selectedNodes.contains(destinationVertexId) && hasSelectedNeighbour(graph, sourceVertexId, destinationVertexId, vertexSelectedAttributeId)) {
                     selectLink = true;
-                } else {
-                    // Do nothing
                 }
             }
             if (selectLink) {

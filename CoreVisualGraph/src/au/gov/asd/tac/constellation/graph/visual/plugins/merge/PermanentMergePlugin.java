@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,10 +33,12 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
@@ -96,7 +98,6 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
         final PluginParameter<BooleanParameterValue> keepSimpleParam = BooleanParameterType.build(KEEP_SIMPLE_PARAMETER_ID);
         keepSimpleParam.setName("Keep Simple");
         keepSimpleParam.setDescription("If True, only include directed transactions. The default is False.");
-        keepSimpleParam.setBooleanValue(false);
         parameters.addParameter(keepSimpleParam);
 
         return parameters;
@@ -123,8 +124,6 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
                 selectedNode = this.createVertex(graph, attributes);
             } else if (selections.contains(selectedNode)) {
                 selections.remove((Integer) selectedNode);
-            } else {
-                // Do nothing
             }
 
             this.processTransactions(graph, selections, selectedNode, createLoops, keepSimple);
@@ -160,12 +159,12 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
      * @param newVxId id of the new vertex
      */
     private void processTransactions(final GraphWriteMethods wg, final List<Integer> selections, final int newVxId, final boolean createLoops, final boolean keepSimple) {
-        final ArrayList<Integer> transactionAttributes = new ArrayList<>();
+        final MutableIntList transactionAttributes = new IntArrayList();
         for (int i = 0; i < wg.getAttributeCount(GraphElementType.TRANSACTION); i++) {
             transactionAttributes.add(wg.getAttribute(GraphElementType.TRANSACTION, i));
         }
 
-        final HashSet<Integer> usedNodes = new HashSet<>();
+        final MutableIntSet usedNodes = new IntHashSet();
         for (final Integer selectedVxId : selections) {
             if (!wg.vertexExists(selectedVxId)) {
                 continue;
@@ -209,9 +208,7 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
 
                 try {
                     // Copy attributes from old to new transaction.
-                    for (final Integer attrId : transactionAttributes) {
-                        wg.setObjectValue(attrId, newTxId, wg.getObjectValue(attrId, txId));
-                    }
+                    transactionAttributes.forEach(attrId -> wg.setObjectValue(attrId, newTxId, wg.getObjectValue(attrId, txId)));
 
                     // Don't validate the transaction key here.
                     // The transaction key includes the src+dst vertex keys. The new merged vertex probably has the same keys as

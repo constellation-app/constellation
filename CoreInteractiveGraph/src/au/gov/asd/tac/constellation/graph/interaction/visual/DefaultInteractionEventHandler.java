@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,13 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationManager;
 import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
 import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
 import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEventHandler;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
+import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateTransactionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateVertexPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectionPlugin;
@@ -36,7 +38,7 @@ import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.SceneAct
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionFreeformModel;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -144,7 +146,6 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     private final SelectionFreeformModel freeformModel = new SelectionFreeformModel();
 
-    private boolean announceNextFlush = false;
     private boolean handleEvents;
 
     private static final Logger LOGGER = Logger.getLogger(DefaultInteractionEventHandler.class.getName());
@@ -226,18 +227,16 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         if (interactionGraph != null) {
                             nextWaitTime = Math.max(0, beforeProcessing + handler.processEvent(interactionGraph) - System.currentTimeMillis());
                         } else {
-                            LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph");
+                            logNullInteractionGraph();                           
                         }
                         // Add any visual operations that need to occur after a graph flush.
                         final List<VisualOperation> operations = new LinkedList<>();
                         operationQueue.drainTo(operations);
-                        if (!operations.isEmpty()) {
-                            if (interactionGraph != null) {
-                                interactionGraph = interactionGraph.flush(announceNextFlush);
-                            }
-                            operations.forEach(op -> manager.addOperation(op));
+                        operations.forEach(op -> manager.addOperation(op));
+                        if (!operations.isEmpty() && interactionGraph != null) {
+                            interactionGraph = interactionGraph.flush(false);
                         }
-                        final boolean waitForever = eventState.isMousePressed() || (eventState.getCurrentAction().equals(SceneAction.CREATING) && eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION));
+                        final boolean waitForever = eventState.isMousePressed() || (eventState.getCurrentAction() == SceneAction.CREATING && eventState.getCurrentCreationMode() == CreationMode.CREATING_TRANSACTION);
                         waitTime = Math.max(nextWaitTime, time + waitTime - System.currentTimeMillis());
                         time = System.currentTimeMillis();
 
@@ -266,6 +265,18 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         handleEvents = true;
         eventHandlingThread.setName("Default Interaction Event Handler");
         eventHandlingThread.start();
+    }
+
+    private void logNullInteractionGraph() {
+        // info log for race condition when running animations
+        final GraphNode gn = GraphNode.getGraphNode(graph.getId());
+        final AnimationManager animationManager = ((VisualGraphTopComponent) gn.getTopComponent()).getAnimationManager();
+        
+        if (!animationManager.isAnimating()) {
+            LOGGER.log(Level.WARNING, "Unable to obtain lock on interactionGraph, event is queued");
+        } else {
+            LOGGER.log(Level.INFO, "Unable to obtain lock on interactionGraph during animation, event is queued");
+        }
     }
 
     @Override
@@ -420,9 +431,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             to = point;
                             performDrag(wg, camera, from, to);
                         }
-                        case SELECTING -> {
-                            updateSelectionBoxModel(new SelectionBoxModel(eventState.getPoint(EventState.PRESSED_POINT), point));
-                        }
+                        case SELECTING -> updateSelectionBoxModel(new SelectionBoxModel(eventState.getPoint(EventState.PRESSED_POINT), point));
                         case FREEFORM_SELECTING -> {
                             freeformModel.addPoint(point);
                             updateSelectionFreeformModel(freeformModel);
@@ -581,7 +590,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     }
                 }
 
-                if (!(eventState.getCurrentAction().equals(SceneAction.CREATING) && eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION))) {
+                if (!(eventState.getCurrentAction() == SceneAction.CREATING && eventState.getCurrentCreationMode() == CreationMode.CREATING_TRANSACTION)) {
                     eventState.setCurrentAction(SceneAction.NONE);
                 }
 
@@ -701,10 +710,10 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      * @param point
      */
     private void updateHitTestAndNewLine(final GraphReadMethods rg, final Point point) {
-        final boolean newLine = eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION);
+        final boolean newLine = eventState.getCurrentCreationMode() == CreationMode.CREATING_TRANSACTION;
         // We need to wait for the results of the hit test if we are creating a transaction
         if (newLine) {
-            orderHitTest(point, HitTestMode.HANDLE_ASYNCHRONOUSLY, eventState -> scheduleNewLineChangeOperation(rg, point, VisualGraphUtilities.getCamera(rg), false, eventState));
+            orderHitTest(point, HitTestMode.HANDLE_ASYNCHRONOUSLY, evtState -> scheduleNewLineChangeOperation(rg, point, VisualGraphUtilities.getCamera(rg), false, evtState));
         } else {
             orderHitTest(point, HitTestMode.REQUEST_ONLY);
         }
@@ -727,12 +736,10 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             VisualGraphUtilities.setCamera(wg, camera);
         }
 
-        if (eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION)) {
+        if (eventState.getCurrentCreationMode() == CreationMode.CREATING_TRANSACTION) {
             scheduleNewLineChangeOperation(wg, point, camera, cameraChange);
         } else if (cameraChange) {
             scheduleCameraChangeOperation();
-        } else {
-            // Do nothing
         }
     }
 
@@ -896,7 +903,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      * Flag in the event state that a new vertex is in the process of being created.
      */
     private void beginCreateVertex() {
-        if (!eventState.getCurrentCreationMode().equals(CreationMode.NONE)) {
+        if (eventState.getCurrentCreationMode() != CreationMode.NONE) {
             eventState.setCurrentCreationMode(CreationMode.NONE);
         } else {
             eventState.setCurrentCreationMode(CreationMode.CREATING_VERTEX);
@@ -970,7 +977,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      * @return array of node IDs
      */
     public List<Integer> gatherSelectedNodes(final GraphReadMethods rg) {
-        List<Integer> selectedIds = VisualGraphUtilities.getSelectedElements(rg);
+        List<Integer> selectedIds = VisualGraphUtilities.getSelectedVertices(rg);
 
         final int hitId = eventState.getCurrentHitId();
         if (eventState.getCurrentHitType().equals(HitType.VERTEX) && !selectedIds.contains(hitId)) {
@@ -1000,18 +1007,10 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
         final Vector3f delta = visualInteraction.convertTranslationToDrag(camera, position, from, to);
 
-        final int xAttribute = VisualConcept.VertexAttribute.X.get(wg);
-        final int yAttribute = VisualConcept.VertexAttribute.Y.get(wg);
-        final int zAttribute = VisualConcept.VertexAttribute.Z.get(wg);
-        final int x2Attribute = VisualConcept.VertexAttribute.X2.get(wg);
-        final int y2Attribute = VisualConcept.VertexAttribute.Y2.get(wg);
-        final int z2Attribute = VisualConcept.VertexAttribute.Z2.get(wg);
-        final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
-
         draggedNodes.forEach(vertexId -> {
-            final Vector3f currentPos = VisualGraphUtilities.getMixedVertexCoordinates(wg, vertexId, xAttribute, x2Attribute, yAttribute, y2Attribute, zAttribute, z2Attribute, cameraAttribute);
+            final Vector3f currentPos = VisualGraphUtilities.getMixedVertexCoordinates(wg, vertexId);
             currentPos.add(delta);
-            VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId, xAttribute, yAttribute, zAttribute);
+            VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId);
         });
 
         draggedNodes.replaceAll(id -> wg.getVertexPosition(id)); // Replade the Id's with positions, as required by scheduleXYZCHangeOperation.

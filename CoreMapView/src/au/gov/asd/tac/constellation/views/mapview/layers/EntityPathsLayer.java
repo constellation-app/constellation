@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,11 @@ import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.mapview.utilities.GraphElement;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.set.primitive.MutableLongSet;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.set.mutable.primitive.LongHashSet;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -57,7 +59,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
                     final int neighbourId = graph.getVertexNeighbour(element.getId(), neighbourPosition);
                     final SchemaVertexType neighbourType = graph.getObjectValue(vertexTypeAttributeId, neighbourId);
                     if (neighbourType != null && !neighbourType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)) {
-                        final Set<Long> locationDateTimes = new HashSet<>();
+                        final MutableLongSet locationDateTimes = new LongHashSet();
                         final int neighbourLinkId = graph.getLink(element.getId(), neighbourId);
                         final int neighbourLinkTransactionCount = graph.getLinkTransactionCount(neighbourLinkId);
                         for (int neighbourLinkTransactionPosition = 0; neighbourLinkTransactionPosition < neighbourLinkTransactionCount; neighbourLinkTransactionPosition++) {
@@ -66,7 +68,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
                             locationDateTimes.add(neighbourLinkTransactionDateTime);
                         }
 
-                        final List<Integer> validNeighbourNeighbours = new ArrayList<>();
+                        final MutableIntList validNeighbourNeighbours = new IntArrayList();
                         final int neighbourNeighbourCount = graph.getVertexNeighbourCount(neighbourId);
                         for (int neighbourNeighbourPosition = 0; neighbourNeighbourPosition < neighbourNeighbourCount; neighbourNeighbourPosition++) {
                             final int neighbourNeighbourId = graph.getVertexNeighbour(neighbourId, neighbourNeighbourPosition);
@@ -79,7 +81,8 @@ public class EntityPathsLayer extends AbstractPathsLayer {
                         locationDateTimes.forEach(locationDateTime -> {
                             int pathNeighbourNeighbour = GraphConstants.NOT_FOUND;
                             long closestTimeDifference = Long.MAX_VALUE;
-                            for (final int neighbourNeighbourId : validNeighbourNeighbours) {
+                            for (int i = 0; i < validNeighbourNeighbours.size(); i++) {
+                                final int neighbourNeighbourId = validNeighbourNeighbours.get(i);
                                 final int neighbourNeighbourLinkId = graph.getLink(neighbourId, neighbourNeighbourId);
                                 final int neighbourNeighbourLinkTransactionCount = graph.getLinkTransactionCount(neighbourNeighbourLinkId);
                                 for (int neighbourNeighbourLinkTransactionPosition = 0; neighbourNeighbourLinkTransactionPosition < neighbourNeighbourLinkTransactionCount; neighbourNeighbourLinkTransactionPosition++) {

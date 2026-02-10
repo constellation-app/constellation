@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2024 Australian Signals Directorate
+* Copyright 2010-2025 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -33,23 +33,24 @@ import org.testng.annotations.Test;
  */
 public class SVGObjectConstantNGTest {
     
-    public SVGObjectConstantNGTest() {
-    }
-    
     @BeforeClass
     public static void setUpClass() {
+        // Not currently required
     }
     
     @AfterClass
     public static void tearDownClass() {
+        // Not currently required
     }
     
     @BeforeMethod
-    public void setUp() {
+    public void setUpMethod() {
+        // Not currently required
     }
     
     @AfterMethod
-    public void tearDown() {
+    public void tearDownMethod() {
+        // Not currently required
     }
 
     /**

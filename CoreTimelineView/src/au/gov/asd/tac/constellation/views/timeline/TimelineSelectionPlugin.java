@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,10 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.openide.util.NbBundle.Messages;
 
 /**
@@ -53,15 +55,6 @@ public class TimelineSelectionPlugin extends SimpleEditPlugin {
         final int selectedVertexAttrID = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         final int selectedTransactionAttrID = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
-        for (final int vxID : vertices) {
-            graph.setBooleanValue(selectedVertexAttrID, vxID, true);
-            vertices.remove(vxID);
-        }
-        for (final int txID : transactions) {
-            graph.setBooleanValue(selectedTransactionAttrID, txID, true);
-            transactions.remove(txID);
-        }
-
         if (isClearingSelection) {
             for (int pos = 0; pos < graph.getVertexCount(); pos++) {
                 final int vxID = graph.getVertex(pos);
@@ -79,20 +72,24 @@ public class TimelineSelectionPlugin extends SimpleEditPlugin {
                 graph.setBooleanValue(selectedVertexAttrID, vxID, true);
             }
         } else {
-            final Set<Integer> toSelectVerts = new HashSet<>();
-            final Set<Integer> toDeselectVerts = new HashSet<>();
+            final MutableIntSet toSelectVerts = new IntHashSet();
+            final MutableIntSet toDeselectVerts = new IntHashSet();
             for (final int txID : transactions) {
                 final boolean shouldSelect = !graph.getBooleanValue(selectedTransactionAttrID, txID);
-                final Set<Integer> set = shouldSelect ? toSelectVerts : toDeselectVerts;
+                final MutableIntSet set = shouldSelect ? toSelectVerts : toDeselectVerts;
                 graph.setBooleanValue(selectedTransactionAttrID, txID, shouldSelect);
                 set.add(graph.getTransactionSourceVertex(txID));
                 set.add(graph.getTransactionDestinationVertex(txID));
             }
-            for (final int vxID : toSelectVerts) {
+            final IntIterator selectIter = toSelectVerts.intIterator();
+            while (selectIter.hasNext()) {
+                final int vxID = selectIter.next();
                 graph.setBooleanValue(selectedVertexAttrID, vxID, true);
                 toDeselectVerts.remove(vxID);
             }
-            for (final int vxID : toDeselectVerts) {
+            final IntIterator deselectIter = toDeselectVerts.intIterator();
+            while (deselectIter.hasNext()) {
+                final int vxID = deselectIter.next();
                 boolean shouldDeselect = true;
                 for (int i = 0; i < graph.getVertexTransactionCount(vxID); i++) {
                     final int txID = graph.getVertexTransaction(vxID, i);

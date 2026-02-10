@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,16 +38,15 @@ import org.testng.annotations.Test;
 public class StringAttributeDescriptionNGTest {
 
     StringAttributeDescription instance;
-
-    public StringAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -58,6 +57,7 @@ public class StringAttributeDescriptionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -79,9 +79,8 @@ public class StringAttributeDescriptionNGTest {
     public void testGetNativeClass() {
         System.out.println("getNativeClass");
         
-        Class expResult = String.class;
-        Class result = instance.getNativeClass();
-        assertEquals(result, expResult);
+        Class<?> result = instance.getNativeClass();
+        assertEquals(result, String.class);
     }
 
     /**
@@ -123,7 +122,6 @@ public class StringAttributeDescriptionNGTest {
     public void testSetDefaultCantConvert() {
         System.out.println("setDefaultCantConvert");
         
-        int id = 0;
         instance.setDefault(LocalDate.of(1999, 12, 31));
     }
 

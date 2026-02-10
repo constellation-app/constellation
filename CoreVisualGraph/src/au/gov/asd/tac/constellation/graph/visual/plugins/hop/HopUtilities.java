@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,8 +83,6 @@ final class HopUtilities {
                     if (!dstsel) {
                         vxToSelect.set(txDestId);
                     }
-                } else {
-                    // Do nothing
                 }
             } else {
                 final boolean txSourceIsSelected = graph.getBooleanValue(vxSelectedAttr, txSourceId);
@@ -93,10 +91,8 @@ final class HopUtilities {
                     if ((outgoing && txSourceIsSelected) || (incoming && txDestIsSelected)) {
                         txToSelect.set(txId);
                     }
-                } else {
-                    if (undirected && (txSourceIsSelected || txDestIsSelected)) {
-                        txToSelect.set(txId);
-                    }
+                } else if (undirected && (txSourceIsSelected || txDestIsSelected)) {
+                    txToSelect.set(txId);
                 }
             }
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,9 +44,6 @@ public class AnalyticViewPaneNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticViewPaneNGTest.class.getName());
     
-    public AnalyticViewPaneNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -65,10 +62,12 @@ public class AnalyticViewPaneNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -84,7 +83,7 @@ public class AnalyticViewPaneNGTest {
             final AnalyticViewPane instance = new AnalyticViewPane(controller);
 
             final Map<GraphVisualisation, Boolean> newVisualisations = new HashMap<>();
-            final SizeVisualisation sizeVisualisation = mock(SizeVisualisation.class);
+            final SizeVisualisation<?> sizeVisualisation = mock(SizeVisualisation.class);
             newVisualisations.put(sizeVisualisation, true);
             when(controller.getGraphVisualisations()).thenReturn(newVisualisations);
 

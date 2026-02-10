@@ -53,8 +53,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -106,12 +104,11 @@ public class LogViewerSupport implements Runnable {
         // displaying everything
         try {
             while ((line = ins.readLine()) != null) {
-                final String time = "[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")) + "] ";
-                ring.add(time + line);
-            } // end of while ((line = ins.readLine()) != null)
+                ring.add(line);
+            }
         } catch (final IOException ex) {
             LOGGER.log(Level.INFO, null, ex);
-        } // end of try-catch // end of try-catch
+        }
 
         // Now show the last OLD_LINES
         lines = ring.output();
@@ -129,14 +126,13 @@ public class LogViewerSupport implements Runnable {
                 if (lines >= MAX_LINES) {
                     io.getOut().reset();
                     lines = ring.output();
-                } // end of if (lines >= MAX_LINES)
+                }
 
                 while ((line = ins.readLine()) != null) {
                     if ((line = ring.add(line)) != null) {
-                        final String time = "[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")) + "] ";
-                        io.getOut().println(time + line);
+                        io.getOut().println(line);
                         lines++;
-                    } // end of if ((line = ring.add(line)) != null)
+                    }
                 }
 
             } catch (final IOException ex) {
@@ -193,12 +189,12 @@ public class LogViewerSupport implements Runnable {
         public String add(final String line) {
             if (StringUtils.isBlank(line)) { // NOI18N
                 return null;
-            } // end of if (line == null || line.equals(""))
+            }
 
             while (count >= maxCount) {
                 anchor.removeFirst();
                 count--;
-            } // end of while (count >= maxCount)
+            }
 
             anchor.addLast(line);
             count++;

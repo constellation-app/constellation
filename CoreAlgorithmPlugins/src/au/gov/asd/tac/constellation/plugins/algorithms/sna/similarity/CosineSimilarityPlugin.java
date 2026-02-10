@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,9 +36,10 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -186,21 +187,21 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
     private class VertexWithNeighbours {
 
         private final int vertexId;
-        private final Map<Integer, Integer> neighbourWeightsMap;
+        private final MutableIntIntMap neighbourWeightsMap;
         private BitSet neighbours;
         private final boolean selected;
         private float magnitude;
         private boolean recalculateMagnitude = true;
 
         public VertexWithNeighbours(final int vertexId, final int vertexCount, final boolean selected) {
-            this.neighbourWeightsMap = new HashMap<>();
+            this.neighbourWeightsMap = new IntIntHashMap();
             this.vertexId = vertexId;
             this.selected = selected;
             this.neighbours = new BitSet(vertexCount);
         }
 
         private void addNeighbour(final int neighbourPosition, final int additionalWeight) {
-            final int currentWeight = neighbourWeightsMap.getOrDefault(neighbourPosition, 0);
+            final int currentWeight = neighbourWeightsMap.getIfAbsent(neighbourPosition, 0);
             neighbourWeightsMap.put(neighbourPosition, currentWeight + additionalWeight);
             neighbours.set(neighbourPosition, true);
             recalculateMagnitude = true;
@@ -214,9 +215,10 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
         }
 
         private float calculateMagnitude() {
-            float mag = 0;
-            for (final int neighbourWeight : neighbourWeightsMap.values()) {
-                mag += Math.pow(neighbourWeight, 2);
+            double mag = 0;
+            final IntIterator neighbourWeightsIter = neighbourWeightsMap.values().intIterator();
+            while (neighbourWeightsIter.hasNext()) {
+                mag += Math.pow(neighbourWeightsIter.next(), 2);
             }
             recalculateMagnitude = false;
             return (float) Math.sqrt(mag);

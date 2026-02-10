@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import java.io.IOException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -49,15 +50,14 @@ public class LayerNameIOProviderNGTest {
     int elementId = 41;
     GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
     
-    public LayerNameIOProviderNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -67,6 +67,7 @@ public class LayerNameIOProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -90,9 +91,10 @@ public class LayerNameIOProviderNGTest {
 
     /**
      * Test of readObject method, of class LayerNameIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testReadObject() throws Exception {
+    public void testReadObject() throws IOException {
         System.out.println("LayerNameIOProviderNGTest.testReadObject");
 
         // Call method under test with JsonNode.isNull=true, name and layer tags found
@@ -164,9 +166,10 @@ public class LayerNameIOProviderNGTest {
 
     /**
      * Test of writeObject method, of class LayerNameIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteObject() throws Exception {
+    public void testWriteObject() throws IOException {
         System.out.println("LayerNameIOProviderNGTest.testWriteObject");
 
         // Test not verbose and graph.IsDefaultValue is true skips all processing

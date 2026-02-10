@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,6 @@ import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -65,16 +64,11 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataAccessUtilitiesNGTest {
-    private static final Logger LOGGER = Logger.getLogger(DataAccessUtilitiesNGTest.class.getName());
 
-    private static MockedStatic<SwingUtilities> swingUtilitiesStaticMock;
-    private static MockedStatic<WindowManager> windowManagerStaticMock;
+    private static final Logger LOGGER = Logger.getLogger(DataAccessUtilitiesNGTest.class.getName());
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class);
-        windowManagerStaticMock = Mockito.mockStatic(WindowManager.class);
-        
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
@@ -82,9 +76,6 @@ public class DataAccessUtilitiesNGTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        swingUtilitiesStaticMock.close();
-        windowManagerStaticMock.close();
-        
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
@@ -92,97 +83,113 @@ public class DataAccessUtilitiesNGTest {
         }
     }
 
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        swingUtilitiesStaticMock.reset();
-        windowManagerStaticMock.reset();
-    }
-
     @Test
     public void testGetDataAccessPaneCalledByEventDispatchThread() {
+        System.out.println("testGetDataAccessPaneCalledByEventDispatchThread");
+
         final WindowManager windowManager = mock(WindowManager.class);
         final DataAccessViewTopComponent topComponent = mock(DataAccessViewTopComponent.class);
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
 
-        swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
+        try (final MockedStatic<SwingUtilities> swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class); final MockedStatic<WindowManager> windowManagerStaticMock = Mockito.mockStatic(WindowManager.class)) {
+            swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
 
-        windowManagerStaticMock.when(WindowManager::getDefault).thenReturn(windowManager);
+            windowManagerStaticMock.when(WindowManager::getDefault).thenReturn(windowManager);
 
-        when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(topComponent);
-        when(topComponent.isOpened()).thenReturn(false);
-        when(topComponent.getDataAccessPane()).thenReturn(dataAccessPane);
+            when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(topComponent);
+            when(topComponent.isOpened()).thenReturn(false);
+            when(topComponent.getDataAccessPane()).thenReturn(dataAccessPane);
 
-        DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+            DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
 
-        verify(topComponent, times(1)).open();
-        verify(topComponent, times(1)).requestVisible();
+            verify(topComponent, times(1)).open();
+            verify(topComponent, times(1)).requestVisible();
 
-        assertSame(actual, dataAccessPane);
+            assertSame(actual, dataAccessPane);
+        }
     }
 
     @Test
     public void testGetDataAccessPaneCalledByEventDispatchThreadTopComponentNull() {
+        System.out.println("testGetDataAccessPaneCalledByEventDispatchThreadTopComponentNull");
+
         final WindowManager windowManager = mock(WindowManager.class);
 
-        swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
+        try (final MockedStatic<SwingUtilities> swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class); final MockedStatic<WindowManager> windowManagerStaticMock = Mockito.mockStatic(WindowManager.class)) {
+            swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(true);
 
-        windowManagerStaticMock.when(WindowManager::getDefault).thenReturn(windowManager);
+            windowManagerStaticMock.when(WindowManager::getDefault).thenReturn(windowManager);
 
-        when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(null);
+            when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(null);
 
-        DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+            DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
 
-        assertNull(actual);
+            assertNull(actual);
+        }
     }
 
     @Test
     public void testGetDataAccessPaneNotCalledByEventDispatchThread() {
+        System.out.println("testGetDataAccessPaneNotCalledByEventDispatchThread");
+
         final WindowManager windowManager = mock(WindowManager.class);
         final DataAccessViewTopComponent topComponent = mock(DataAccessViewTopComponent.class);
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
 
-        swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
+        try (final MockedStatic<SwingUtilities> swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class); final MockedStatic<WindowManager> windowManagerStaticMock = Mockito.mockStatic(WindowManager.class)) {
 
-        swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
-                .thenAnswer(invocation -> {
-                    final Runnable r = invocation.getArgument(0);
-                    r.run();
-                    return null;
-                });
+            swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
 
-        windowManagerStaticMock.when(WindowManager::getDefault).thenReturn(windowManager);
+            swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
+                    .thenAnswer(invocation -> {
+                        final Runnable r = invocation.getArgument(0);
+                        r.run();
+                        return null;
+                    });
 
-        when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(topComponent);
-        when(topComponent.isOpened()).thenReturn(false);
-        when(topComponent.getDataAccessPane()).thenReturn(dataAccessPane);
+            windowManagerStaticMock.when(WindowManager::getDefault).thenReturn(windowManager);
 
-        DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+            when(windowManager.findTopComponent(DataAccessViewTopComponent.class.getSimpleName())).thenReturn(topComponent);
+            when(topComponent.isOpened()).thenReturn(false);
+            when(topComponent.getDataAccessPane()).thenReturn(dataAccessPane);
 
-        assertSame(actual, dataAccessPane);
+            DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+
+            assertSame(actual, dataAccessPane);
+        }
     }
 
     @Test
     public void testGetDataAccessPaneNotCalledByEventDispatchThreadError() {
-        swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
-        swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
-                .thenThrow(new InvocationTargetException(new RuntimeException("Something Bad")));
+        System.out.println("testGetDataAccessPaneNotCalledByEventDispatchThreadError");
 
-        final DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+        try (final MockedStatic<SwingUtilities> swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class)) {
 
-        assertNull(actual);
+            swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
+            swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
+                    .thenThrow(new InvocationTargetException(new RuntimeException("Something Bad")));
+
+            final DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+
+            assertNull(actual);
+        }
     }
 
     @Test
     public void testGetDataAccessPaneNotCalledByEventDispatchThreadInterruptError() {
-        swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
-        swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
-                .thenThrow(new InterruptedException());
+        System.out.println("testGetDataAccessPaneNotCalledByEventDispatchThreadInterruptError");
+        try (final MockedStatic<SwingUtilities> swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class)) {
 
-        final DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+            swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
+            swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
+                    .thenThrow(new InterruptedException());
 
-        assertTrue(Thread.interrupted());
+            DataAccessUtilities.getDataAccessPane();
+
+            assertTrue(Thread.interrupted());
+        }
     }
-    
+
     @Test
     public void testsaveDataAccessState() throws Exception {
         System.out.println("testsaveDataAccessState");
@@ -201,7 +208,7 @@ public class DataAccessUtilitiesNGTest {
         final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
         final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
         final PluginParameters pluginParameters = mock(PluginParameters.class);
-        final PluginParameter pluginParameter = mock(PluginParameter.class);
+        final PluginParameter<?> pluginParameter = mock(PluginParameter.class);
 
         when(tab.getContent()).thenReturn(scrollPane);
         when(scrollPane.getContent()).thenReturn(queryPhasePane);
@@ -227,9 +234,11 @@ public class DataAccessUtilitiesNGTest {
         assertEquals(expectedTab.getState().size(), 1);
         verify(wGraph).setObjectValue(0, 0, expectedTab);
     }
-    
+
     @Test
     public void loadDataAccessState() {
+        System.out.println("loadDataAccessState");
+
         // Create current data access view state and set some parameters
         // The code currenly only looks at the first tab so parameter2
         // value will be ignored
@@ -238,16 +247,16 @@ public class DataAccessUtilitiesNGTest {
         currentState.add("parameter1", "parameter1_new_value");
         currentState.newTab();
         currentState.add("parameter2", "parameter2_new_value");
-        
+
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
         when(graph.getReadableGraph()).thenReturn(rGraph);
-        
+
         // mock data access state attribute in graph
         when(rGraph.getAttribute(GraphElementType.META, "dataaccess_state")).thenReturn(2);
         when(rGraph.getObjectValue(2, 0)).thenReturn(currentState);
-        
+
         // mock tab pane
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
@@ -257,139 +266,146 @@ public class DataAccessUtilitiesNGTest {
         when(dataAccessTabPane.getCurrentTab()).thenReturn(currentTab);
         when(dataAccessTabPane.getTabPane()).thenReturn(tabPane);
         when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(currentTab, mock(Tab.class)));
-        
+
         try (
                 final MockedStatic<DataAccessTabPane> daTabPaneMockedStatic
-                        = Mockito.mockStatic(DataAccessTabPane.class);
-        ) {
+                = Mockito.mockStatic(DataAccessTabPane.class);) {
             final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
-            
+
             daTabPaneMockedStatic.when(() -> DataAccessTabPane.getQueryPhasePane(currentTab))
                     .thenReturn(queryPhasePane);
-            
+
             final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
             final PluginParameters globalPluginParameters = mock(PluginParameters.class);
-            
-            final PluginParameter pluginParameter1 = mock(PluginParameter.class);
-            final PluginParameter pluginParameter2 = mock(PluginParameter.class);
-            
+
+            final PluginParameter<?> pluginParameter1 = mock(PluginParameter.class);
+            final PluginParameter<?> pluginParameter2 = mock(PluginParameter.class);
+
             when(queryPhasePane.getGlobalParametersPane()).thenReturn(globalParametersPane);
             when(globalParametersPane.getParams()).thenReturn(globalPluginParameters);
             when(globalPluginParameters.getParameters()).thenReturn(Map.of(
                     "parameter1", pluginParameter1,
                     "parameter2", pluginParameter2
             ));
-            
+
             DataAccessUtilities.loadDataAccessState(dataAccessPane, graph);
-            
+
             verify(pluginParameter1).setStringValue("parameter1_new_value");
-            verify(pluginParameter2, never()).setStringValue(anyString());
-            
+            verify(pluginParameter2).setStringValue(anyString());
+
             verify(rGraph).release();
         }
     }
-    
+
     @Test
     public void loadDataAccessState_attribute_not_found() {
+        System.out.println("loadDataAccessState_attribute_not_found");
+
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
         when(graph.getReadableGraph()).thenReturn(rGraph);
-        
+
         // mock data access state attribute in graph
         when(rGraph.getAttribute(GraphElementType.META, "dataaccess_state")).thenReturn(Graph.NOT_FOUND);
-        
+
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
         final Tab currentTab = mock(Tab.class);
         when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
         when(dataAccessTabPane.getCurrentTab()).thenReturn(currentTab);
-        
+
         DataAccessUtilities.loadDataAccessState(dataAccessPane, graph);
-        
+
         verify(rGraph, never()).getObjectValue(anyInt(), anyInt());
-        
+
         verify(rGraph).release();
     }
-    
+
     @Test
     public void loadDataAccessState_graph_is_null() {
+        System.out.println("loadDataAccessState_graph_is_null");
+
         DataAccessUtilities.loadDataAccessState(mock(DataAccessPane.class), null);
         // No exception....pass
     }
-    
+
     @Test
     public void loadDataAccessState_no_tabs() {
+        System.out.println("loadDataAccessState_no_tabs");
+
         // mock graph
         final Graph graph = mock(Graph.class);
-        
+
         // mock tab pane
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
         when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
         when(dataAccessTabPane.getCurrentTab()).thenReturn(null);
-        
+
         DataAccessUtilities.loadDataAccessState(dataAccessPane, graph);
-        
+
         verifyNoInteractions(graph);
     }
-    
+
     @Test
     public void loadDataAccessState_null_state() {
+        System.out.println("loadDataAccessState_null_state");
+
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
         when(graph.getReadableGraph()).thenReturn(rGraph);
-        
+
         // mock data access state attribute in graph
         when(rGraph.getAttribute(GraphElementType.META, "dataaccess_state")).thenReturn(2);
         when(rGraph.getObjectValue(2, 0)).thenReturn(null);
-        
+
         // mock tab pane
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
         final Tab currentTab = mock(Tab.class);
         when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
         when(dataAccessTabPane.getCurrentTab()).thenReturn(currentTab);
-        
+
         try (
                 final MockedStatic<DataAccessTabPane> daTabPaneMockedStatic
-                        = Mockito.mockStatic(DataAccessTabPane.class);
-        ) {
+                = Mockito.mockStatic(DataAccessTabPane.class);) {
             DataAccessUtilities.loadDataAccessState(dataAccessPane, graph);
-            
+
             daTabPaneMockedStatic.verifyNoInteractions();
-            
+
             verify(rGraph).release();
         }
     }
-    
+
     @Test
     public void loadDataAccessState_empty_state() {
+        System.out.println("loadDataAccessState_empty_state");
+
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
         when(graph.getReadableGraph()).thenReturn(rGraph);
-        
+
         // mock data access state attribute in graph
         when(rGraph.getAttribute(GraphElementType.META, "dataaccess_state")).thenReturn(2);
         when(rGraph.getObjectValue(2, 0)).thenReturn(new DataAccessState());
-        
+
         // mock tab pane
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
         final Tab currentTab = mock(Tab.class);
         when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
         when(dataAccessTabPane.getCurrentTab()).thenReturn(currentTab);
-        
+
         try (
                 final MockedStatic<DataAccessTabPane> daTabPaneMockedStatic
-                        = Mockito.mockStatic(DataAccessTabPane.class);
-        ) {
+                = Mockito.mockStatic(DataAccessTabPane.class);) {
             DataAccessUtilities.loadDataAccessState(dataAccessPane, graph);
-            
+
             daTabPaneMockedStatic.verifyNoInteractions();
-            
+
             verify(rGraph).release();
         }
     }

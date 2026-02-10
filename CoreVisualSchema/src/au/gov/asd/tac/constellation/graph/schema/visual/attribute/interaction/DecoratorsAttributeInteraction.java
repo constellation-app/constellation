@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class DecoratorsAttributeInteraction extends AbstractAttributeInteraction
             decoratorsString.append(String.format("SW: %s, ", decoratorsVal.getSouthWestDecoratorAttribute()));
         }
 
-        return decoratorsString.length() > 0 ? decoratorsString.substring(0, decoratorsString.length() - 2) : decoratorsString.toString();
+        return !decoratorsString.isEmpty() ? decoratorsString.substring(0, decoratorsString.length() - 2) : decoratorsString.toString();
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -161,6 +161,8 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
          */
         public IntegerParameterValue() {
             i = 0;
+            setMinimumValue(Integer.MIN_VALUE);
+            setMaximumValue(Integer.MAX_VALUE);
         }
 
         /**
@@ -245,11 +247,10 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
             try {
                 final Number n = CONVERTER.fromString(s);
                 if (n != null) {
-                    final int val = n.intValue();
-                    if (min != null && val < min) {
+                    if (n.longValue() < min) {
                         return "Value too small";
                     }
-                    if (max != null && val > max) {
+                    if (n.longValue() > max) {
                         return "Value too large";
                     }
                 }
@@ -263,7 +264,7 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
         @Override
         public boolean setStringValue(final String s) {
             final Number n = CONVERTER.fromString(s);
-            if (n != null) {
+            if (n != null && n.longValue() >= Integer.MIN_VALUE && n.longValue() <= Integer.MAX_VALUE) {
                 final int newi = n.intValue();
                 
                 return set(newi);

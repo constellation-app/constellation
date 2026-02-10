@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,24 +28,25 @@ import org.testng.annotations.Test;
  * @author aquila
  */
 public class VersionUtilitiesNGTest {
-
-    public VersionUtilitiesNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -53,10 +54,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version2_3_a() {
-        String minimum_version = "3.3";
+        String minimumVersion = "3.3";
         String current = "2.3.a";
         boolean expResult = false;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 
@@ -65,10 +66,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version2_3() {
-        String minimum_version = "3.3";
+        String minimumVersion = "3.3";
         String current = "2.3";
         boolean expResult = false;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 
@@ -77,10 +78,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version2_4() {
-        String minimum_version = "3.3";
+        String minimumVersion = "3.3";
         String current = "2.4";
         boolean expResult = false;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 
@@ -89,10 +90,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version3() {
-        String minimum_version = "3.3";
+        String minimumVersion = "3.3";
         String current = "3";
         boolean expResult = false;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 
@@ -101,10 +102,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version_3_mesa_10_1_3() {
-        String minimum_version = "3.3";
+        String minimumVersion = "3.3";
         String current = "3 (Core Profile) Mesa 10.1.3"; // replaced 3.3 with 3 which should not be supported
         boolean expResult = false;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 
@@ -113,10 +114,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version3_1() {
-        String minimum_version = "3.3";
+        String minimumVersion = "3.3";
         String current = "3.1";
         boolean expResult = false;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 
@@ -125,10 +126,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version3_2() {
-        String minimum_version = "3.3";
+        String minimumVersion = "3.3";
         String current = "3.2";
         boolean expResult = false;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 
@@ -137,10 +138,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version3_2_9() {
-        String minimum_version = "3.3";
+        String minimumVersion = "3.3";
         String current = "3.2.9";
         boolean expResult = false;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 
@@ -149,10 +150,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version3_3() {
-        String minimum_version = "3.3";
+        String minimumVersion = "3.3";
         String current = "3.3";
         boolean expResult = true;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 
@@ -161,10 +162,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version_mesa_10_1_3() {
-        String minimum_version = "3.3";
+        String minimumVersion = "3.3";
         String current = "3.3 (Core Profile) Mesa 10.1.3"; // have seen this on a Linux VM
         boolean expResult = true;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 
@@ -173,10 +174,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version3_3_0() {
-        String minimum_version = "3.3";
+        String minimumVersion = "3.3";
         String current = "3.3.0";
         boolean expResult = true;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 
@@ -185,10 +186,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version4_2() {
-        String minimum_version = "3.3";
+        String minimumVersion = "3.3";
         String current = "4.2";
         boolean expResult = true;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 
@@ -197,10 +198,10 @@ public class VersionUtilitiesNGTest {
      */
     @Test
     public void testMeets_minimum_version4_2_1() {
-        String minimum_version = "3.3";
+        String minimumVersion = "3.3";
         String current = "4.2.1";
         boolean expResult = true;
-        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimum_version);
+        boolean result = VersionUtilities.doesVersionMeetMinimum(current, minimumVersion);
         assertEquals(result, expResult);
     }
 }

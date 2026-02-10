@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,11 +88,11 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
         if (cellValue == null) {
             intensity = 0F;
         } else if (IDENTIFIER_COLUMN_NAME.equals(columnName)) {
-            intensity = Math.max(0F, Math.min(1F, cellValue.getNamedScores().values().stream()
+            intensity = Math.clamp(cellValue.getNamedScores().values().stream()
                     .reduce((x, y) -> x + y).get()
-                    / cellValue.getNamedScores().size()));
+                    / cellValue.getNamedScores().size(), 0F, 1F);
         } else if (cellValue.getNames().contains(columnName)) {
-            intensity = Math.max(0F, Math.min(1F, (float) cellItem));
+            intensity = Math.clamp((float) cellItem, 0F, 1F);
         } else {
             throw new UnrecognisedColumnException(columnName);
         }

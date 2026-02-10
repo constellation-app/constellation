@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,10 +41,7 @@ public class ConstellationSecurityManager {
 
     private static final Logger LOGGER = Logger.getLogger(ConstellationSecurityManager.class.getName());
     private static final Level LEVEL = Level.INFO;
-
-    public static final String PREFERRED_PROVIDER_PROPERTY = "preferred.security.provider";
-    public static final String RUNNABLE_THREAD_NAME = "Runnable Thread";
-    public static final String RUNNABLE_JAVAFX_THREAD_NAME = "Runnable JavaFX Thread";
+    
 
     private static ConstellationSecurityProvider[] securityProviders = null;
     private static ConstellationSecurityContext[][] securityContexts = null;
@@ -69,7 +66,7 @@ public class ConstellationSecurityManager {
             providers.stream().forEach(provider -> LOGGER.log(LEVEL, "  {0}", provider));
 
             // Check for a preferred provider, if the preferred provider is present move it to the top of the list
-            final String preferredProvider = System.getProperty(PREFERRED_PROVIDER_PROPERTY);
+            final String preferredProvider = System.getProperty("preferred.security.provider");
             if (preferredProvider != null) {
                 LOGGER.log(LEVEL, "Searching for preferred security provider: {0}", preferredProvider);
 
@@ -132,7 +129,7 @@ public class ConstellationSecurityManager {
         new Thread() {
             @Override
             public void run() {
-                setName(RUNNABLE_THREAD_NAME);
+                setName("Runnable Thread");
                 startSecurity();
                 if (runAfter != null) {
                     runAfter.run();
@@ -156,7 +153,7 @@ public class ConstellationSecurityManager {
         new Thread() {
             @Override
             public void run() {
-                setName(RUNNABLE_JAVAFX_THREAD_NAME);
+                setName("Runnable JavaFX Thread");
                 startSecurity();
                 Platform.runLater(runAfter);
             }

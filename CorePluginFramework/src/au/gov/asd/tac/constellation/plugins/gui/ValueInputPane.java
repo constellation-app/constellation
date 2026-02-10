@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,11 +34,9 @@ import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListen
  * corresponding to a {@link PluginParameter} of
  * {@link au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType}.
  * <p>
- * Editing the value in the text box will set the string value for the
- * underlying {@link PluginParameter}.
+ * Editing the value in the text box will set the string value for the underlying {@link PluginParameter}.
  *
- * @see
- * au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
+ * @see au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
  *
  * check the is label, i think this feature is just used when a parameter value is uneditable and shown as plan text label, why does this need to be a label....
  * @author ruby_crucis

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.event.Event;
 import javafx.geometry.Point2D;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.Pane;
@@ -42,7 +41,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.stubbing.Answer;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertNotNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -56,10 +57,7 @@ import org.testng.annotations.Test;
 public class TooltipMouseEnteredTextAreaHandlerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(TooltipMouseEnteredTextAreaHandlerNGTest.class.getName());
-
-    public TooltipMouseEnteredTextAreaHandlerNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -78,10 +76,12 @@ public class TooltipMouseEnteredTextAreaHandlerNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -98,12 +98,11 @@ public class TooltipMouseEnteredTextAreaHandlerNGTest {
             when(tooltipPane.isEnabled()).thenReturn(false);
             doNothing().when(inlineCssTextArea).requestFocus();
             final TooltipMouseEnteredTextAreaHandler instance = new TooltipMouseEnteredTextAreaHandler(inlineCssTextArea, tooltipPane);
-            final Event event = mock(Event.class);
+            final MouseOverTextEvent event = mock(MouseOverTextEvent.class);
 
             instance.handle(event);
 
             // verify that the text area was not focused.
-            verify(tooltipPane, times(0)).isEnabled();
             verify(inlineCssTextArea, times(0)).requestFocus();
         }
     }

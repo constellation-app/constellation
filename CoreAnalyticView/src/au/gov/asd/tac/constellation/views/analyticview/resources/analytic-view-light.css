@@ -15,3 +15,7 @@
 .titled-pane > .title > .arrow-button > .arrow {
     -fx-background-color: white;
 }
+
+a {
+    color: black;
+}

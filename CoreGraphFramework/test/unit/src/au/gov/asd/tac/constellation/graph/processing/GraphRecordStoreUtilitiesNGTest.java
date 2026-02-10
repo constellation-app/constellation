@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package au.gov.asd.tac.constellation.graph.processing;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,16 +45,16 @@ public class GraphRecordStoreUtilitiesNGTest {
     private StoreGraph graph;
     private int[] vxs;
     private int[] txs;
-
-    public GraphRecordStoreUtilitiesNGTest() {
-    }
-
+    private Schema schema;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -64,6 +67,7 @@ public class GraphRecordStoreUtilitiesNGTest {
      */
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        schema = SchemaFactoryUtilities.getSchemaFactory(BareSchemaFactory.NAME).createSchema();
         graph = new StoreGraph();
         graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "", false, null);
         graph.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "", false, null);
@@ -235,7 +239,7 @@ public class GraphRecordStoreUtilitiesNGTest {
 
     @Test
     public void addRecordStoreToGraphWithAnEmptyRecordStore() {
-        final StoreGraph graph = new StoreGraph();
+        final StoreGraph newGraph = new StoreGraph(schema);
         final RecordStore recordStore = new GraphRecordStore();
         final boolean initializeWithSchema = false;
         final boolean completeWithSchema = false;
@@ -243,13 +247,13 @@ public class GraphRecordStoreUtilitiesNGTest {
         final Map<String, Integer> vertexMap = new HashMap<>();
         final Map<String, Integer> transactionMap = new HashMap<>();
 
-        final List<Integer> veritices = GraphRecordStoreUtilities.addRecordStoreToGraph(graph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, vertexMap, transactionMap);
+        final List<Integer> veritices = GraphRecordStoreUtilities.addRecordStoreToGraph(newGraph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, vertexMap, transactionMap);
         assertEquals(veritices.size(), 0);
     }
 
     @Test
     public void addRecordStoreToGraphWithTransactionsInBothDirections() {
-        final StoreGraph graph = new StoreGraph();
+        final StoreGraph newGraph = new StoreGraph(schema);
         final RecordStore recordStore = new GraphRecordStore();
         recordStore.add();
         recordStore.set(GraphRecordStoreUtilities.SOURCE + "Idenfitier", "vx0");
@@ -264,18 +268,18 @@ public class GraphRecordStoreUtilitiesNGTest {
         final Map<String, Integer> vertexMap = new HashMap<>();
         final Map<String, Integer> transactionMap = new HashMap<>();
 
-        final List<Integer> veritices = GraphRecordStoreUtilities.addRecordStoreToGraph(graph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, vertexMap, transactionMap);
+        final List<Integer> veritices = GraphRecordStoreUtilities.addRecordStoreToGraph(newGraph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, vertexMap, transactionMap);
         assertEquals(2, veritices.size());
-        assertEquals(2, graph.getVertexCount());
-        assertEquals(2, graph.getTransactionCount());
+        assertEquals(2, newGraph.getVertexCount());
+        assertEquals(2, newGraph.getTransactionCount());
 
-        final int vx0 = graph.getVertex(0);
-        final int vx1 = graph.getVertex(1);
-        final int tx0 = graph.getTransaction(0);
-        final int tx1 = graph.getTransaction(1);
+        final int vx0 = newGraph.getVertex(0);
+        final int vx1 = newGraph.getVertex(1);
+        final int tx0 = newGraph.getTransaction(0);
+        final int tx1 = newGraph.getTransaction(1);
 
-        assertEquals(vx0, graph.getTransactionSourceVertex(tx0));
-        assertEquals(vx1, graph.getTransactionSourceVertex(tx1));
+        assertEquals(vx0, newGraph.getTransactionSourceVertex(tx0));
+        assertEquals(vx1, newGraph.getTransactionSourceVertex(tx1));
     }
 
 }

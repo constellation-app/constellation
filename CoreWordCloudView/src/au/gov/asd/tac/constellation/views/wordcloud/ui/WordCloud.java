@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,6 @@ import java.util.TreeSet;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.Variance;
 import org.apache.commons.math3.stat.inference.TTest;
-import org.python.google.common.primitives.Doubles;
-import org.python.google.common.primitives.Ints;
 
 /**
  * A model of the word cloud generated from specific graph elements and a
@@ -94,7 +92,7 @@ public class WordCloud {
         });
         wordListBySize.putAll(wordListWithSizes);
         hasSignificances = !wordSignificances.isEmpty();
-        currentWords = new TreeSet<>((Comparator<String>) (isSizeSorted ? wordListBySize.comparator() : wordListWithSizes.comparator()));
+        currentWords = new TreeSet<>(isSizeSorted ? wordListBySize.comparator() : wordListWithSizes.comparator());
         currentWords.addAll(wordListWithSizes.keySet());
         updateCurrentWords(1, currentSignificance);
     }
@@ -163,7 +161,7 @@ public class WordCloud {
         });
         wordListBySize.putAll(wordListWithSizes);
         hasSignificances = !wordSignificances.isEmpty();
-        currentWords = new TreeSet<>((Comparator<String>) (isSizeSorted ? wordListBySize.comparator() : wordListWithSizes.comparator()));
+        currentWords = new TreeSet<>(isSizeSorted ? wordListBySize.comparator() : wordListWithSizes.comparator());
         currentWords.addAll(wordListWithSizes.keySet());
         updateCurrentWords(1, currentSignificance);
     }
@@ -202,10 +200,10 @@ public class WordCloud {
 
         // Convert the arrays to their primitive types 
         // Converts graphColumn to an array of primitive ints, which is then converted to array of doubles
-        final double[] graphColumnD = Doubles.toArray(Ints.asList(Arrays.stream(graphColumn).mapToInt(Integer::intValue).toArray()));
+        final double[] graphColumnD = Arrays.stream(graphColumn).mapToInt(Integer::intValue).asDoubleStream().toArray();
 
         // Converts modelColumn to an array of primitive ints, which is then converted to array of doubles
-        final double[] modelColumnD = Doubles.toArray(Ints.asList(Arrays.stream(modelColumn).mapToInt(Integer::intValue).toArray()));
+        final double[] modelColumnD = Arrays.stream(modelColumn).mapToInt(Integer::intValue).asDoubleStream().toArray();
 
 
         // Return default values when both distributions have zero variance to avoid NaNs.

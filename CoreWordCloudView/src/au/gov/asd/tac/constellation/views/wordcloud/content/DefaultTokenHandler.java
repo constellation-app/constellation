@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.wordcloud.content;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 
 /**
  *
@@ -25,8 +25,8 @@ import java.util.Map;
 public class DefaultTokenHandler implements TokenHandler {
 
     @SuppressWarnings("unchecked") // type of SparseMatrix will be integer
-    private final SparseMatrix<Integer> tokenElementMatrix = SparseMatrix.constructMatrix(0);
-    private final Map<String, Integer> tokenHashes = new HashMap<>();
+    private final SparseMatrix<Integer> tokenElementMatrix = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(0);
+    private final MutableObjectIntMap<String> tokenHashes = new ObjectIntHashMap<>();
 
     public SparseMatrix<Integer> getTokenElementMatrix() {
         return tokenElementMatrix;

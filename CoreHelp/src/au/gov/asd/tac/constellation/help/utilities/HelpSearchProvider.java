@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,15 +41,14 @@ public class HelpSearchProvider implements SearchProvider {
      */
     @Override
     public void evaluate(final SearchRequest request, final SearchResponse response) {
-        final QuickSearchUtils qs = new QuickSearchUtils();
         // Check the request is valid
-        final String text;
-        if (request != null && StringUtils.isNotBlank(request.getText())) {
-            text = qs.restoreBrackets(request.getText());
-        } else {
+        if (request == null || StringUtils.isBlank(request.getText())) {
             return;
         }
-        String prevFileName = "";
+        
+        final QuickSearchUtils qs = new QuickSearchUtils();
+        final String text = qs.restoreBrackets(request.getText());
+        String helpFileName = "";
         // Locally defined Recent searches will start with a specific unicode left bracket in the search term
         if (text.startsWith(QuickSearchUtils.LEFT_BRACKET)) {
             final int termEnd = text.length();
@@ -57,7 +56,7 @@ public class HelpSearchProvider implements SearchProvider {
             if (termEnd > 0 && text.startsWith(QuickSearchUtils.CIRCLED_H)) {
                 final int termPos = text.indexOf(" ") + 1;
                 // Convert the search term into a Help file name.
-                prevFileName = text.substring(termPos, termEnd).trim().toLowerCase().replace(" ", "-") + ".md";
+                helpFileName = text.substring(termPos, termEnd).trim().toLowerCase().replace(" ", "-") + ".md";
             } else {
                 // This is a recent search for a different category, so we can end the Help search here
                 return;
@@ -65,7 +64,7 @@ public class HelpSearchProvider implements SearchProvider {
         }
 
         // Get the names of all of the help files
-        List<String> distinctValues = new ArrayList<>(new HashSet<>(HelpMapper.getMappings().values()));
+        final List<String> distinctValues = new ArrayList<>(new HashSet<>(HelpMapper.getMappings().values()));
 
         // Match the search to values in the map
         for (final String value : distinctValues) {
@@ -77,12 +76,12 @@ public class HelpSearchProvider implements SearchProvider {
             final int indexMD = displayName.lastIndexOf(".");
             displayName = QuickSearchUtils.CIRCLED_H + "  " + displayName.substring(0, indexMD);
 
-            if (fileName.contains(text.toLowerCase()) && "".equals(prevFileName)) {
+            if (displayName.contains(text.toLowerCase()) && "".equals(helpFileName)) {
                 // Display the result and add a runnable for when it is clicked on 
                 if (!response.addResult(new HelpSearchProviderTask(fileName), displayName)) {
                     return;
                 }
-            } else if (StringUtils.isNotBlank(prevFileName) && fileName.contains(prevFileName)) {
+            } else if (StringUtils.isNotBlank(helpFileName) && fileName.contains(helpFileName)) {
                 // Found the recent Help search result. Set it and exit immediately
                 response.addResult(new HelpSearchProviderTask(fileName), displayName);
                 break;
@@ -90,14 +89,14 @@ public class HelpSearchProvider implements SearchProvider {
         }
     }
 
-    public class QuickSearchUtils {
-        // Cannot import the QuickSearchUtilities class due to cyclic dependency issues,
+    protected static class QuickSearchUtils {
+        // Cannot import the QuickSearchUtilities class in Utilities due to cyclic dependency issues,
         // so the required functions have been put into this stripped down local version of the class.
 
-        public static final String LEFT_BRACKET = "\u276a"; // bold left parenthesis
-        public static final String RIGHT_BRACKET = "\u276b"; // bold right parenthesis
-        public static final String SMALL_SPACE = "\u2005";
-        public static final String CIRCLED_H = LEFT_BRACKET + "\uff28" + RIGHT_BRACKET + SMALL_SPACE; // (H) - prefix for HELP results
+        protected static final String LEFT_BRACKET = "\u276a"; // bold left parenthesis
+        protected static final String RIGHT_BRACKET = "\u276b"; // bold right parenthesis
+        protected static final String SMALL_SPACE = "\u2005";
+        protected static final String CIRCLED_H = LEFT_BRACKET + "\uff28" + RIGHT_BRACKET + SMALL_SPACE; // (H) - prefix for HELP results
 
         // Substitution characters for angled brackets and round brackets, used to address a Netbeans issue
         private static final String LT_FULL = "\uff1c"; // <
@@ -113,5 +112,4 @@ public class HelpSearchProvider implements SearchProvider {
             return source.replace(LT_FULL, "<").replace(GT_FULL, ">").replace(OB_FULL, "(").replace(CB_FULL, ")");
         }
     }
-
 }

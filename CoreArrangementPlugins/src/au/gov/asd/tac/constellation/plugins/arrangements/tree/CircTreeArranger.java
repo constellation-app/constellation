@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,9 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
-import java.util.HashMap;
 import org.apache.commons.collections4.CollectionUtils;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 /**
  * This class provides the arrangement of a single tree (undirected), drawn
@@ -115,7 +116,7 @@ public final class CircTreeArranger implements Arranger {
             vxsToGo.clear(rootVxId);
 
             // Map vxIds to their ordered children (vxId and nChildren).
-            final HashMap<Integer, ArrayList<VxInfo>> orderedChildren = new HashMap<>();
+            final MutableIntObjectMap<ArrayList<VxInfo>> orderedChildren = new IntObjectHashMap<>();
             final BitSet onlyChildren = new BitSet();
 
             orderChildren(rootVxId, vxsToGo, orderedChildren, onlyChildren);
@@ -167,7 +168,7 @@ public final class CircTreeArranger implements Arranger {
      * Record result an AtomicQueue stored by parent in hash table. Returns
      * number of children for vertex.
      */
-    private int orderChildren(final int vxId, final BitSet vxsToGo, final HashMap<Integer, ArrayList<VxInfo>> orderedChildren, final BitSet onlyChildren) {
+    private int orderChildren(final int vxId, final BitSet vxsToGo, final MutableIntObjectMap<ArrayList<VxInfo>> orderedChildren, final BitSet onlyChildren) {
         final ArrayList<VxInfo> children = new ArrayList<>();
 
         // For the specified vertex, get its children and record how many children they have.
@@ -202,7 +203,7 @@ public final class CircTreeArranger implements Arranger {
         return result;
     }
 
-    private float findSpacingOf(final int vxId, final BitSet vxsToGo, final HashMap<Integer, ArrayList<VxInfo>> orderedChildren,
+    private float findSpacingOf(final int vxId, final BitSet vxsToGo, final MutableIntObjectMap<ArrayList<VxInfo>> orderedChildren,
             final BitSet onlyChildren, final float scale, final boolean strictCircularLayout, final float[] childrenRadii,
             final float[] fullRadii, final AnnulusInfo[] annulusInfo) throws InterruptedException {
         // Get the radius of the starting vertex.
@@ -345,7 +346,7 @@ public final class CircTreeArranger implements Arranger {
         }
     }
 
-    private void positionThis(final int vxId, final BitSet vxsToGo, final HashMap<Integer, ArrayList<VxInfo>> orderedChildren,
+    private void positionThis(final int vxId, final BitSet vxsToGo, final MutableIntObjectMap<ArrayList<VxInfo>> orderedChildren,
             final float ourLocX, final float ourLocY, final float parentOffsetX, final float parentOffsetY,
             final boolean strictCircularLayout, final float[] childrenRadii, final float[] fullRadii,
             final AnnulusInfo[] annulusInfo, final float parentAngle) throws InterruptedException {

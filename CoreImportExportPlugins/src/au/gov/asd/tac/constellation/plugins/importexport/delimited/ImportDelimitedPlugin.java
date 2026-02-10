@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,12 +57,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -159,7 +159,6 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             final List<String> emptyFilenames, final List<String> invalidFilenames,
             final List<String> emptyRunConfigs) {
         Platform.runLater(() -> {
-            final StringBuilder sbHeader = new StringBuilder();
             final StringBuilder sbMessage = new StringBuilder();
 
             if (importedObjects > 0) {
@@ -241,7 +240,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         final List<String> emptyFiles = new ArrayList<>();
         final List<String> invalidFiles = new ArrayList<>();
         final List<String> emptyRunConfigs = new ArrayList<>();
-        Map<String, Integer> results;
+        MutableObjectIntMap<String> results;
         int totalRows = 0;
         int totalImportedRows = 0;
         int totalSkippedRows = 0;
@@ -362,17 +361,17 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         return destAttributeDefinitions.stream().map(attribute -> attribute.getAttribute().getName()).anyMatch(name -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
     }
 
-    private static Map<String, Integer> processSourceVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema,
+    private static MutableObjectIntMap<String> processSourceVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema,
             final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException, PluginException {
         return processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, source);
     }
 
-    private static Map<String, Integer> processDestinationVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema,
+    private static MutableObjectIntMap<String> processDestinationVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema,
             final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException, PluginException {
         return processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, source);
     }
 
-    private static Map<String, Integer> processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType,
+    private static MutableObjectIntMap<String> processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType,
             final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException, PluginException {
         final List<ImportAttributeDefinition> attributeDefinitions = definition.getDefinitions(attributeType);
 
@@ -381,7 +380,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         int currentRow = 0;
         int importedRows = 0;
         int skippedRow = 0;
-        final Map<String, Integer> results = new HashMap<>();
+        final MutableObjectIntMap<String> results = new ObjectIntHashMap<>();
         final int totalRows = data.size() - definition.getFirstRow();
 
         final RowFilter filter = definition.getRowFilter();
@@ -427,7 +426,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         return results;
     }
 
-    private static Map<String, Integer> processTransactions(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException, PluginException {
+    private static MutableObjectIntMap<String> processTransactions(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException, PluginException {
         final List<ImportAttributeDefinition> sourceVertexDefinitions = definition.getDefinitions(AttributeType.SOURCE_VERTEX);
         final List<ImportAttributeDefinition> destinationVertexDefinitions = definition.getDefinitions(AttributeType.DESTINATION_VERTEX);
         final List<ImportAttributeDefinition> transactionDefinitions = definition.getDefinitions(AttributeType.TRANSACTION);
@@ -447,7 +446,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         int currentRow = 0;
         int importedRows = 0;
         int skippedRow = 0;
-        final Map<String, Integer> results = new HashMap<>();
+        final MutableObjectIntMap<String> results = new ObjectIntHashMap<>();
         final int totalRows = data.size() - definition.getFirstRow();
 
         final RowFilter filter = definition.getRowFilter();

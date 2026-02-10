@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,6 +59,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.FileInputKind;
 import au.gov.asd.tac.constellation.utilities.gui.field.TextInput;
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -87,7 +88,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.netbeans.api.annotations.common.StaticResource;
@@ -131,6 +131,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
     public static final String INTERACTION_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "interaction");
     public static final String LEVEL_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "level");
     public static final String SLEEP_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "sleep");
+    public static final String MAX_MIN_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "maxmin");
 
     //Debug Levels
     private static final String NONE = "None";
@@ -193,7 +194,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         final StringParameterValue string2pv = new StringParameterValue();
         string2pv.setGuiInit(control -> {
-            final TextInput field = (TextInput) control;
+            final SpellCheckingTextArea field = (SpellCheckingTextArea) control;
             field.getStylesheets().add(css);
         });
         final PluginParameter<StringParameterValue> string2 = StringParameterType.build(TEST2_PARAMETER_ID, string2pv);
@@ -240,6 +241,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 //                }
 //            });
 //        });
+
         final PluginParameter<SingleChoiceParameterValue> robotOptions = SingleChoiceParameterType.build(ROBOT_PARAMETER_ID, robotpv);
         robotOptions.setName("Robot options");
         robotOptions.setDescription("A list of robots to choose from");
@@ -329,7 +331,14 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         IntegerParameterType.setMaximum(sleepParam, 20);
         sleepParam.setIntegerValue(0);
         params.addParameter(sleepParam);
-
+                
+        final PluginParameter<IntegerParameterValue> maxMinParam = IntegerParameterType.build(MAX_MIN_PARAMETER_ID);
+        maxMinParam.setName("Max Min");
+        maxMinParam.setDescription("Test Integer.MAX_VALUE and Integer.MIN_VALUE");
+        maxMinParam.setIntegerValue(Integer.MAX_VALUE);
+        IntegerParameterType.setMinimum(maxMinParam, Integer.MIN_VALUE);
+        params.addParameter(maxMinParam);
+                
         params.addController(SELECTED_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final boolean masterBoolean = master.getBooleanValue();
@@ -388,7 +397,8 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         // Local process-tracking variables (Process is indeteminate due to the nature of plugin reporting through the logger)
         final int currentProcessStep = 0;
         final int totalProcessSteps = -1;
-        interaction.setProgress(currentProcessStep, totalProcessSteps, "Testing parameters...", true);
+        interaction.setProgressTimestamp(true);
+        interaction.setProgress(currentProcessStep, totalProcessSteps, "Testing parameters...", true, parameters);
 
         //Display parameter information
         LOGGER.log(Level.INFO, "parameters: {0}", parameters);

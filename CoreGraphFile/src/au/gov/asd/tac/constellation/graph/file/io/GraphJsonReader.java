@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,11 @@ import au.gov.asd.tac.constellation.graph.versioning.UpdateProviderManager;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultCustomIconProvider;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.stream.ExtendedBuffer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,17 +44,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.MutableIntLongMap;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
 import org.openide.util.Lookup;
 
 /**
@@ -77,7 +78,7 @@ public final class GraphJsonReader {
     private long globalModCount;
     private long attrModCount;
     private long structModCount;
-    private final Map<Integer, Long> attrValCount = new HashMap<>();
+    private final MutableIntLongMap attrValCount = new IntLongHashMap();
     private GraphByteReader byteReader;
 
     private static final String ATTRIBUTE_MOD_COUNT = "attribute_mod_count";
@@ -202,36 +203,36 @@ public final class GraphJsonReader {
         // read global mod count
         final JsonNode node = jp.readValueAsTree();
         if (!node.has(GLOBAL_MOD_COUNT)) {
-            final String msg = String.format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
+            final String msg = String.format(EXPECTED_LONG_FORMAT, current, jp.currentLocation());
             throw new GraphParseException(msg);
         }
         if (!node.has(STRUCTURE_MOD_COUNT)) {
-            final String msg = String.format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
+            final String msg = String.format(EXPECTED_LONG_FORMAT, current, jp.currentLocation());
             throw new GraphParseException(msg);
         }
         if (!node.has(ATTRIBUTE_MOD_COUNT)) {
-            final String msg = String.format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
+            final String msg = String.format(EXPECTED_LONG_FORMAT, current, jp.currentLocation());
             throw new GraphParseException(msg);
         }
         // global
         if (node.get(GLOBAL_MOD_COUNT).isNumber()) {
             globalModCount = node.get(GLOBAL_MOD_COUNT).asLong();
         } else {
-            final String msg = String.format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT).asText(), jp.getCurrentLocation());
+            final String msg = String.format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT).asText(), jp.currentLocation());
             throw new GraphParseException(msg);
         }
         // structure
         if (node.get(STRUCTURE_MOD_COUNT).isNumber()) {
             globalModCount = node.get(STRUCTURE_MOD_COUNT).asLong();
         } else {
-            final String msg = String.format(EXPECTED_NUMERIC_FORMAT, node.get(STRUCTURE_MOD_COUNT), jp.getCurrentLocation());
+            final String msg = String.format(EXPECTED_NUMERIC_FORMAT, node.get(STRUCTURE_MOD_COUNT), jp.currentLocation());
             throw new GraphParseException(msg);
         }
         // attribute
         if (node.get(ATTRIBUTE_MOD_COUNT).isNumber()) {
             globalModCount = node.get(ATTRIBUTE_MOD_COUNT).asLong();
         } else {
-            final String msg = String.format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT), jp.getCurrentLocation());
+            final String msg = String.format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT), jp.currentLocation());
             throw new GraphParseException(msg);
         }
         return jp.getLastClearedToken();
@@ -251,7 +252,6 @@ public final class GraphJsonReader {
      * {@link au.gov.asd.tac.constellation.graph.io.providers.AbstractGraphIOProvider#readObject}
      * that uses vertex ids.
      *
-     * @param path The name of the file being read.
      * @param in The InputStream to read from.
      * @param entrySize The size of the file being read (-1 if unknown).
      * @param progress A progress indicator.
@@ -266,7 +266,7 @@ public final class GraphJsonReader {
         final ImmutableObjectCache immutableObjectCache = new ImmutableObjectCache();
 
         // Use a combination of stream and tree-model parsing.
-        jp = new MappingJsonFactory().createParser(in);
+        jp = JsonFactoryUtilities.getMappingJsonFactory().createParser(in);
 
         final Map<Integer, Integer> vertexMap = new HashMap<>();
         final Map<Integer, Integer> transactionMap = new HashMap<>();
@@ -287,16 +287,16 @@ public final class GraphJsonReader {
 
         // Read the file format version number.
         current = jp.nextToken();
-        if (current == JsonToken.FIELD_NAME && "version".equals(jp.getCurrentName())) {
+        if (current == JsonToken.FIELD_NAME && "version".equals(jp.currentName())) {
             current = jp.nextToken();
             if (current == JsonToken.VALUE_NUMBER_INT) {
                 version = jp.getIntValue();
             } else {
-                final String msg = String.format("Expected version integer, found '%s' at %s", current, jp.getCurrentLocation());
+                final String msg = String.format("Expected version integer, found '%s' at %s", current, jp.currentLocation());
                 throw new GraphParseException(msg);
             }
         } else {
-            final String msg = String.format("Expected FIELD_NAME 'version', found %s '%s' at %s", current, jp.getCurrentName(), jp.getCurrentLocation());
+            final String msg = String.format("Expected FIELD_NAME 'version', found %s '%s' at %s", current, jp.currentName(), jp.currentLocation());
             throw new GraphParseException(msg);
         }
 
@@ -310,29 +310,29 @@ public final class GraphJsonReader {
         // Get the versions of various items in this graph (if the graph supports it)
         if (version >= 2) {
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && "versionedItems".equals(jp.getCurrentName())) {
+            if (current == JsonToken.FIELD_NAME && "versionedItems".equals(jp.currentName())) {
                 current = jp.nextToken();
                 if (current == JsonToken.START_OBJECT) {
                     while ((current = jp.nextToken()) != JsonToken.END_OBJECT) {
                         if (current != JsonToken.FIELD_NAME) {
-                            final String msg = String.format("Expected versioned item name, found '%s' at %s", current, jp.getCurrentLocation());
+                            final String msg = String.format("Expected versioned item name, found '%s' at %s", current, jp.currentLocation());
                             throw new GraphParseException(msg);
                         }
-                        final String versionedItem = jp.getCurrentName();
+                        final String versionedItem = jp.currentName();
                         current = jp.nextToken();
                         if (current != JsonToken.VALUE_NUMBER_INT) {
-                            final String msg = String.format("Expected version integer, found '%s' at %s", current, jp.getCurrentLocation());
+                            final String msg = String.format("Expected version integer, found '%s' at %s", current, jp.currentLocation());
                             throw new GraphParseException(msg);
                         }
                         final int versionNumber = jp.getIntValue();
                         versionedItems.put(versionedItem, versionNumber);
                     }
                 } else {
-                    final String msg = String.format("Expected start object for 'versionedItems', found '%s' at %s", current, jp.getCurrentLocation());
+                    final String msg = String.format("Expected start object for 'versionedItems', found '%s' at %s", current, jp.currentLocation());
                     throw new GraphParseException(msg);
                 }
             } else {
-                final String msg = String.format("Expected FIELD_NAME 'versionedItems', found '%s' at %s", current, jp.getCurrentLocation());
+                final String msg = String.format("Expected FIELD_NAME 'versionedItems', found '%s' at %s", current, jp.currentLocation());
                 throw new GraphParseException(msg);
             }
         }
@@ -341,12 +341,12 @@ public final class GraphJsonReader {
         // everytime we add something to prevent this.. its too late now.
         String schemaFactoryName = null;
         current = jp.nextToken();
-        if (current == JsonToken.FIELD_NAME && "schema".equals(jp.getCurrentName())) {
+        if (current == JsonToken.FIELD_NAME && "schema".equals(jp.currentName())) {
             current = jp.nextToken();
             if (current == JsonToken.VALUE_STRING) {
                 schemaFactoryName = jp.getValueAsString();
             } else {
-                final String msg = String.format("Expected schema string, found '%s' at %s", current, jp.getCurrentLocation());
+                final String msg = String.format("Expected schema string, found '%s' at %s", current, jp.currentLocation());
                 throw new GraphParseException(msg);
             }
             current = jp.nextToken();
@@ -388,10 +388,10 @@ public final class GraphJsonReader {
             }
 
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && "graph".equals(jp.getCurrentName())) {
+            if (current == JsonToken.FIELD_NAME && "graph".equals(jp.currentName())) {
                 parseElement(storeGraph, GraphElementType.GRAPH, null, null, progress, entrySize, immutableObjectCache);
             } else {
-                final String msg = String.format("Expected FIELD_NAME 'graph', found '%s' at %s", current, jp.getCurrentLocation());
+                final String msg = String.format("Expected FIELD_NAME 'graph', found '%s' at %s", current, jp.currentLocation());
                 throw new GraphParseException(msg);
             }
 
@@ -409,10 +409,10 @@ public final class GraphJsonReader {
             }
 
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && "vertex".equals(jp.getCurrentName())) {
+            if (current == JsonToken.FIELD_NAME && "vertex".equals(jp.currentName())) {
                 parseElement(storeGraph, GraphElementType.VERTEX, vertexMap, null, progress, entrySize, immutableObjectCache);
             } else {
-                final String msg = String.format("Expected FIELD_NAME 'vertex', found '%s' at %s", current, jp.getCurrentLocation());
+                final String msg = String.format("Expected FIELD_NAME 'vertex', found '%s' at %s", current, jp.currentLocation());
                 throw new GraphParseException(msg);
             }
 
@@ -430,10 +430,10 @@ public final class GraphJsonReader {
             }
 
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && "transaction".equals(jp.getCurrentName())) {
+            if (current == JsonToken.FIELD_NAME && "transaction".equals(jp.currentName())) {
                 parseElement(storeGraph, GraphElementType.TRANSACTION, vertexMap, transactionMap, progress, entrySize, immutableObjectCache);
             } else {
-                final String msg = String.format("Expected FIELD_NAME 'transaction', found '%s' at %s", current, jp.getCurrentLocation());
+                final String msg = String.format("Expected FIELD_NAME 'transaction', found '%s' at %s", current, jp.currentLocation());
                 throw new GraphParseException(msg);
             }
 
@@ -451,10 +451,10 @@ public final class GraphJsonReader {
             }
 
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && "meta".equals(jp.getCurrentName())) {
+            if (current == JsonToken.FIELD_NAME && "meta".equals(jp.currentName())) {
                 parseElement(storeGraph, GraphElementType.META, vertexMap, transactionMap, progress, entrySize, immutableObjectCache);
             } else if (current != JsonToken.END_OBJECT) {
-                final String msg = String.format("Error: expected END_OBJECT, found '%s' at %s", current, jp.getCurrentLocation());
+                final String msg = String.format("Error: expected END_OBJECT, found '%s' at %s", current, jp.currentLocation());
                 throw new GraphParseException(msg);
             }
 
@@ -469,7 +469,7 @@ public final class GraphJsonReader {
                 throw new GraphParseException(String.format("Expected END_ARRAY, found '%s'.", current));
             }
 
-        } catch (final Exception ex) {
+        } catch (final GraphParseException | IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } finally {
             jp.close();
@@ -478,9 +478,7 @@ public final class GraphJsonReader {
         //set mod count vals
         if (version >= 1) {
             storeGraph.setModificationCounters(globalModCount, structModCount, attrModCount);
-            for (final Entry<Integer, Long> e : attrValCount.entrySet()) {
-                storeGraph.setValueModificationCounter(e.getKey(), e.getValue());
-            }
+            attrValCount.forEachKeyValue((key, value) -> storeGraph.setValueModificationCounter(key, value));
         }
 
         try {
@@ -516,17 +514,18 @@ public final class GraphJsonReader {
     /**
      * Parse an element type's attributes and data from a JSON file.
      *
-     * @param elementType The element type of the attributes and data being
-     * read.
-     * @param vertexPositions The mapping of Constants.ID to vertex id; written
-     * when vertices are parsed, read when transactions are parsed.
+     * @param graph The graph being parsed
+     * @param elementType The element type of the attributes and data being read.
+     * @param vertexPositions The mapping of Constants.ID to vertex id; written when vertices are parsed, read when transactions are parsed.
+     * @param transactionPositions The mapping of Constants.ID to transaction id; written when transactions are parsed.
      * @param ph Progress handle.
      * @param entrySize The size of the file being read; -1 if unknown.
+     * @param immutableObjectCache The object cache
      *
-     * @throws IOException If there is an IOException.
-     * @throws GraphParseException If there is a GraphParseException.
+     * @throws IOException
+     * @throws GraphParseException
      */
-    private void parseElement(final GraphWriteMethods graph, final GraphElementType elementType, final Map<Integer, Integer> vertexPositions, final Map<Integer, Integer> transactionPositions, final IoProgress ph, final long entrySize, ImmutableObjectCache immutableObjectCache) throws GraphParseException, Exception {
+    private void parseElement(final GraphWriteMethods graph, final GraphElementType elementType, final Map<Integer, Integer> vertexPositions, final Map<Integer, Integer> transactionPositions, final IoProgress ph, final long entrySize, ImmutableObjectCache immutableObjectCache) throws GraphParseException, IOException {
         final String elementTypeLabel = IoUtilities.getGraphElementTypeString(elementType);
 
         JsonToken current;
@@ -547,7 +546,7 @@ public final class GraphJsonReader {
         }
 
         current = jp.nextToken();
-        if (current != JsonToken.FIELD_NAME || !"attrs".equals(jp.getCurrentName())) {
+        if (current != JsonToken.FIELD_NAME || !"attrs".equals(jp.currentName())) {
             final String msg = String.format("Expected name 'attrs', found '%s'", current);
             throw new GraphParseException(msg);
         }
@@ -561,12 +560,12 @@ public final class GraphJsonReader {
             // Read the next attribute object into a tree node for easier parsing.
             final JsonNode node = jp.readValueAsTree();
             if (!node.has("label")) {
-                final String msg = String.format("Did not find '%s' attribute 'label' at '%s'", elementTypeLabel, jp.getCurrentLocation());
+                final String msg = String.format("Did not find '%s' attribute 'label' at '%s'", elementTypeLabel, jp.currentLocation());
                 throw new GraphParseException(msg);
             }
 
             if (!node.has("type")) {
-                final String msg = String.format("Did not find '%s' attribute 'type' at '%s'", elementTypeLabel, jp.getCurrentLocation());
+                final String msg = String.format("Did not find '%s' attribute 'type' at '%s'", elementTypeLabel, jp.currentLocation());
                 throw new GraphParseException(msg);
             }
 
@@ -597,7 +596,7 @@ public final class GraphJsonReader {
 
                 if (version >= 1) {
                     //get mod count for attribute
-                    final Long modCount = node.get("mod_count").longValue();
+                    final long modCount = node.get("mod_count").longValue();
                     attrValCount.put(attrId, modCount);
                 }
             } catch (final IllegalArgumentException ex) {
@@ -616,7 +615,7 @@ public final class GraphJsonReader {
 
         // Check for optional key definition.
         current = jp.nextToken();
-        final String name = jp.getCurrentName();
+        final String name = jp.currentName();
         if (current == JsonToken.FIELD_NAME && "key".equals(name)) {
             if (elementType != GraphElementType.VERTEX && elementType != GraphElementType.TRANSACTION) {
                 final String msg = String.format("Graph keys only allowed for %s and %s, not %s", GraphElementType.VERTEX, GraphElementType.TRANSACTION, elementType);
@@ -630,7 +629,7 @@ public final class GraphJsonReader {
             }
 
             // Gather the key labels.
-            final List<Integer> keyAttrIds = new ArrayList<>();
+            final MutableIntList keyAttributes = new IntArrayList();
             while (jp.nextToken() != JsonToken.END_ARRAY) {
                 // Read the key attributes from the array and create the graph key.
                 final String keyLabel = jp.readValueAs(String.class);
@@ -639,16 +638,10 @@ public final class GraphJsonReader {
                     throw new GraphParseException(msg);
                 }
 
-                keyAttrIds.add(attributes.get(keyLabel).attrId);
+                keyAttributes.add(attributes.get(keyLabel).attrId);
             }
 
-            // Create the primary key.
-            final int[] keyAttributes = new int[keyAttrIds.size()];
-            for (int i = 0; i < keyAttrIds.size(); i++) {
-                keyAttributes[i] = keyAttrIds.get(i);
-            }
-
-            graph.setPrimaryKey(elementType, keyAttributes);
+            graph.setPrimaryKey(elementType, keyAttributes.toArray());
 
             current = jp.nextToken();
         }
@@ -665,7 +658,7 @@ public final class GraphJsonReader {
         }
 
         current = jp.nextToken();
-        final String inData = jp.getCurrentName();
+        final String inData = jp.currentName();
         if (current != JsonToken.FIELD_NAME || !"data".equals(inData)) {
             final String msg = String.format("Expected 'data', found '%s'", current);
             throw new GraphParseException(msg);
@@ -685,9 +678,10 @@ public final class GraphJsonReader {
                 case VERTEX -> {
                     final JsonNode idNode = node.get(GraphFileConstants.VX_ID);
                     if (idNode == null) {
-                        final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.VX_ID, jp.getCurrentLocation());
+                        final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.VX_ID, jp.currentLocation());
                         throw new GraphParseException(msg);
-                    }       final int jsonId = idNode.intValue();
+                    }
+                    final int jsonId = idNode.intValue();
                     id = graph.addVertex();
                     vertexPositions.put(jsonId, id);
                 }
@@ -697,17 +691,17 @@ public final class GraphJsonReader {
                     // so lots of existing graphs won't have it.
                     final JsonNode srcNode = node.get(GraphFileConstants.SRC);
                     if (srcNode == null) {
-                        final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.SRC, jp.getCurrentLocation());
+                        final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.SRC, jp.currentLocation());
                         throw new GraphParseException(msg);
                     }       
                     final JsonNode dstNode = node.get(GraphFileConstants.DST);
                     if (dstNode == null) {
-                        final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.DST, jp.getCurrentLocation());
+                        final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.DST, jp.currentLocation());
                         throw new GraphParseException(msg);
                     }       
                     final JsonNode dirNode = node.get(GraphFileConstants.DIR);
                     if (dirNode == null) {
-                        final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.DIR, jp.getCurrentLocation());
+                        final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.DIR, jp.currentLocation());
                         throw new GraphParseException(msg);
                     }       
                     // Map the ids in the JSON file to the vertex ids in the graph.
@@ -727,7 +721,7 @@ public final class GraphJsonReader {
                 default -> id = Graph.NOT_FOUND;
             }
 
-            for (final Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
+            for (final Iterator<Map.Entry<String, JsonNode>> it = node.properties().iterator(); it.hasNext();) {
                 final Map.Entry<String, JsonNode> entry = it.next();
                 final String label = entry.getKey();
                 final JsonNode jnode = entry.getValue();
@@ -736,13 +730,13 @@ public final class GraphJsonReader {
                     final AbstractGraphIOProvider ioProvider = providers.get(ai.attrType);
                     ioProvider.readObject(ai.attrId, id, jnode, graph, vertexPositions, transactionPositions, byteReader, immutableObjectCache);
                 } else if (ai != null) {
-                    throw new Exception("No IO provider found for attribute type: " + ai.attrType);
+                    throw new IOException("No IO provider found for attribute type: " + ai.attrType);
                 }
             }
 
             if (++counter % REPORT_INTERVAL == 0) {
                 final String msg = String.format("Vertices: %d; Transactions %d", graph.getVertexCount(), graph.getTransactionCount());
-                final long charOffset = jp.getCurrentLocation().getByteOffset();
+                final long charOffset = jp.currentLocation().getByteOffset();
                 if (entrySize != -1 && charOffset != -1 && ph != null) {
                     final int workunit = (int) (100 * (charOffset / (double) entrySize));
                     ph.progress(msg, workunit);

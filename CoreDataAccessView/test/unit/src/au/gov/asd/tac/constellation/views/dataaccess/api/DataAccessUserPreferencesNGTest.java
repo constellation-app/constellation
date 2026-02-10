@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.GlobalParametersPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
@@ -43,6 +45,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataAccessUserPreferencesNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(DataAccessUserPreferencesNGTest.class.getName());
 
     @BeforeClass
@@ -86,10 +89,10 @@ public class DataAccessUserPreferencesNGTest {
         
         when(tab.getDataAccessPanes()).thenReturn(List.of(dataSourceTitledPane1, dataSourceTitledPane2));
         
-        final PluginParameterType passwordType = mock(PluginParameterType.class);
+        final PluginParameterType<PasswordParameterValue> passwordType = mock(PluginParameterType.class);
         when(passwordType.getId()).thenReturn("password");
 
-        final PluginParameterType stringType = mock(PluginParameterType.class);
+        final PluginParameterType<StringParameterValue> stringType = mock(PluginParameterType.class);
         when(stringType.getId()).thenReturn("string");
 
         // Plugin params will be in global and plugin but because it is in global

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,6 @@ import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -53,6 +52,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TabContextMenuNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(TabContextMenuNGTest.class.getName());
     
     private DataAccessTabPane dataAccessTabPane;
@@ -88,7 +88,6 @@ public class TabContextMenuNGTest {
     
     @Test
     public void init() {
-
         tabContextMenu.init();
 
         
@@ -202,14 +201,13 @@ public class TabContextMenuNGTest {
                         
                         // The code constructs a plugin finder and then calls find. Need to inject
                         // a mock into that construction
-                        final MockedConstruction<PluginFinder> mockedPluginFinders =
-                                Mockito.mockConstruction(PluginFinder.class);
-                        
-                        action.run();
-                        
-                        // Verify the plugin finder was created and used as expected
-                        assertEquals(mockedPluginFinders.constructed().size(), 1);
-                        verify(mockedPluginFinders.constructed().get(0)).find(queryPhasePane);
+                        try (final MockedConstruction<PluginFinder> mockedPluginFinders = Mockito.mockConstruction(PluginFinder.class)) {
+                            action.run();
+
+                            // Verify the plugin finder was created and used as expected
+                            assertEquals(mockedPluginFinders.constructed().size(), 1);
+                            verify(mockedPluginFinders.constructed().get(0)).find(queryPhasePane);
+                        }
                         
                         return null;
                     });

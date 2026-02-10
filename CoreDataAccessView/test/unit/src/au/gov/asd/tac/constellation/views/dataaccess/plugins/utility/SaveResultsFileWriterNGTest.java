@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,8 @@ import org.testng.annotations.Test;
 /**
  * Save Results File Writer Test.
  *
- * @author arcturus, serpens24
+ * @author arcturus
+ * @author serpens24
  */
 public class SaveResultsFileWriterNGTest {
 
@@ -61,7 +62,7 @@ public class SaveResultsFileWriterNGTest {
     private boolean dataValid = true;  // Does the contents of the saved file match the expected contents.
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         mockedDataAccessPreferenceKeys = mockStatic(DataAccessPreferenceUtilities.class);
         mockedRecordStoreUtilities = mockStatic(RecordStoreUtilities.class);
         mockedConstellationLoggerHelper = mockStatic(ConstellationLoggerHelper.class);
@@ -80,6 +81,7 @@ public class SaveResultsFileWriterNGTest {
     @Test
     public void testGenerateFilename() {
         System.out.println("testGenerateFilename");
+        
         Plugin plugin = new ExampleClass();
         String filename = SaveResultsFileWriter.generateFilename(plugin, "xml");
         Pattern pattern = Pattern.compile("[0-9]{8}T[0-9]{9}-ExampleClass.xml");
@@ -92,11 +94,12 @@ public class SaveResultsFileWriterNGTest {
      * The expectation is that no attempted writes are made. This test executes a code path through
      * SaveResultsFileWriter.writeRecordStore that does not throw an exception.
      *
-     * @throws java.lang.Exception
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testWriteRecordStoreNoDataAccessResultsDir() throws Exception {
+    public void testWriteRecordStoreNoDataAccessResultsDir() throws PluginException {
         System.out.println("testWriteRecordStoreNoDataAccessResultsDir");
+        
         Plugin plugin = new ExampleClass();
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
 
@@ -113,6 +116,7 @@ public class SaveResultsFileWriterNGTest {
     @Test
     public void testWriteRecordStoreInvalidDataAccessResultsDir() {
         System.out.println("testWriteRecordStoreInvalidDataAccessResultsDir");
+        
         Plugin plugin = new ExampleClass();
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
 
@@ -129,8 +133,7 @@ public class SaveResultsFileWriterNGTest {
             }
 
             // Return properties (which are ignored)
-            Properties properties = new Properties();
-            return properties;
+            return new Properties();
         });
         try {
             SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
@@ -152,11 +155,12 @@ public class SaveResultsFileWriterNGTest {
      * ConstellationLoggerHelper.exportPropertyBuilder called with appropriate SUCCESS status. This test executes a code
      * path through SaveResultsFileWriter.writeRecordStore that does not throw an exception.
      *
-     * @throws java.lang.Exception
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testWriteRecordStore() throws Exception {
+    public void testWriteRecordStore() throws PluginException {
         System.out.println("testWriteRecordStore");
+        
         Plugin plugin = new ExampleClass();
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
         String key = "TEST1KEY";
@@ -199,8 +203,7 @@ public class SaveResultsFileWriterNGTest {
             }
 
             // Return properties (which are ignored)
-            Properties properties = new Properties();
-            return properties;
+            return new Properties();
         });
         SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
         mockedRecordStoreUtilities.verify(() -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()), times(1));
@@ -258,6 +261,5 @@ public class SaveResultsFileWriterNGTest {
         public HelpCtx getHelpCtx() {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-
     }
 }

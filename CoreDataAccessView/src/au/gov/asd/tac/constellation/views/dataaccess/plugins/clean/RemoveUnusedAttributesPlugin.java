@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,9 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -73,14 +76,15 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
         int removedAttributeCount = 0;
         int currentProcessStep = 0;
         int totalProcessSteps = graph.getAttributeCount(GraphElementType.VERTEX) + graph.getAttributeCount(GraphElementType.TRANSACTION);
-        interaction.setProgress(currentProcessStep, totalProcessSteps, "Removing unused attributes...", true);      
+        interaction.setProgressTimestamp(true);
+        interaction.setProgress(currentProcessStep, totalProcessSteps, "Removing unused attributes...", true, parameters);      
 
         //Loop through graph element types
         final Set<GraphElementType> graphElements = new HashSet<>();
         graphElements.add(GraphElementType.VERTEX);
         graphElements.add(GraphElementType.TRANSACTION);
         for (final GraphElementType element : graphElements) {
-            final Set<Integer> nullSet = new HashSet<>();
+            final MutableIntSet nullSet = new IntHashSet();
             final int elementCount = (element == GraphElementType.VERTEX) ? graph.getVertexCount() : graph.getTransactionCount();
             final int elementAttributeCount = graph.getAttributeCount(element);
 
@@ -110,10 +114,11 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
             }
 
             // Remove unused attributes found in the curent element
-            for (final int attribute : nullSet) {
+            final IntIterator iter = nullSet.intIterator();
+            while (iter.hasNext()) {
+                final int attribute = iter.next();
                 removedAttributeCount++;
-                interaction.setProgress(
-                        currentProcessStep, 
+                interaction.setProgress(currentProcessStep, 
                         totalProcessSteps, 
                         String.format("Removing %s attribute: %s.", 
                                 element.getShortLabel().toLowerCase(), 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -26,9 +25,8 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 
 /**
  *
@@ -36,27 +34,23 @@ import org.openide.util.NbBundle;
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.zoom.ResetToYAxisAction")
 @ActionRegistration(displayName = "#CTL_ResetToYAxisAction", iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/zoom/resources/axis_y.png", surviveFocusChange = true)
-@ActionReferences({
-    @ActionReference(path = "Menu/Display/Reset View by Axis", position = 300)
-})
-@NbBundle.Messages("CTL_ResetToYAxisAction=Y Axis")
+@ActionReference(path = "Menu/Display/Reset View by Axis", position = 300)
+@Messages("CTL_ResetToYAxisAction=Y Axis")
 public class ResetToYAxisAction extends AbstractAction {
 
     private final GraphNode context;
     private static final Icon AXIS_Y_ICON = UserInterfaceIconProvider.AXIS_Y.buildIcon(16);
 
     public ResetToYAxisAction(final GraphNode context) {
-        putValue(Action.SMALL_ICON, AXIS_Y_ICON);
         this.context = context;
+        putValue(Action.SMALL_ICON, AXIS_Y_ICON);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        final Graph graph = context.getGraph();
-
+    public void actionPerformed(final ActionEvent e) {
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
                 .withParameter(ResetViewPlugin.AXIS_PARAMETER_ID, "y")
                 .withParameter(ResetViewPlugin.SIGNIFICANT_PARAMETER_ID, true)
-                .executeLater(graph);
+                .executeLater(context.getGraph());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,18 @@ import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -44,7 +50,8 @@ public class WelcomeViewPaneNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        System.setProperty("java.awt.headless", "true");
+        final WelcomeStartup ws = new WelcomeStartup();
+        ws.run();
         RecentFiles.init();
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
@@ -57,8 +64,6 @@ public class WelcomeViewPaneNGTest {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-        } finally {
-            System.clearProperty("java.awt.headless");
         }
     }
 
@@ -110,5 +115,24 @@ public class WelcomeViewPaneNGTest {
         verify(button).setStyle("-fx-background-color: transparent;");
         verify(button).setAlignment(Pos.CENTER_LEFT);
     }
-
+    
+    /**
+     * Test of createRecentButtons method, of class WelcomeViewPane.
+     */
+    @Test
+    public void testRefreshRecentFiles() {
+        System.out.println("refreshRecentFiles");
+        final FlowPane flowPaneMock = mock(FlowPane.class);
+        final WelcomeViewPane welcomeViewPaneMock = spy(WelcomeViewPane.class);
+        final ObservableList mockList = mock(ObservableList.class);
+        final HBox bottomHBoxMock = mock(HBox.class);
+                
+        when(welcomeViewPaneMock.getBottomRecentSection()).thenReturn(bottomHBoxMock);
+        when(welcomeViewPaneMock.getBottomRecentSection().getChildren()).thenReturn(mockList);
+        welcomeViewPaneMock.refreshRecentFiles();
+        // getBottomRecentSection.getChildren() called 3x in refreshRecentFiles()
+        verify(welcomeViewPaneMock.getBottomRecentSection(), times(3)).getChildren();        
+        verify(welcomeViewPaneMock.getBottomRecentSection().getChildren(), times(1)).remove(0);
+        verify(welcomeViewPaneMock.getBottomRecentSection().getChildren(), times(1)).add(Mockito.any());
+    }
 }

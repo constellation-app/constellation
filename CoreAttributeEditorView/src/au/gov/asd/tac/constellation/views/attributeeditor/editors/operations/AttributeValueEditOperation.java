@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,6 @@ public class AttributeValueEditOperation extends PluginSequenceEditOperation {
 
         @Override
         protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
             final Object newValue = translator.translate(value);
             final NativeAttributeType nativeType = graph.getNativeAttributeType(attributeData.getAttributeId());
             final NativeAttributeType.NativeValue nativeValue = nativeType.create(newValue);
@@ -93,7 +92,7 @@ public class AttributeValueEditOperation extends PluginSequenceEditOperation {
             // create a string of the previous values separated by a comma
             final StringBuilder sb = new StringBuilder();
             previousValues.stream().forEach(previousValue -> {
-                if (sb.length() > 0) {
+                if (!sb.isEmpty()) {
                     sb.append(",");
                 }
                 sb.append(previousValue);
@@ -104,5 +103,4 @@ public class AttributeValueEditOperation extends PluginSequenceEditOperation {
             ConstellationLoggerHelper.updatePropertyBuilder(this, sb.toString(), newValue == null ? "" : newValue.toString());
         }
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -39,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -87,7 +89,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     // Labels used to mask UI in the event of having no active graph:
 
     private final JLabel lblNoGraph = new JLabel(Bundle.No_Active_Graph());
-    private final JPanel panelNoGraph = new JPanel();
+    private final JPanel panelNoGraph = new JPanel(); 
+    private final int fontsize = UIManager.getFont("controlFont") != null ? UIManager.getFont("controlFont").getSize() : 12;
     /**
      * Uses an overloaded MouseAdapter class to intercept mouse interactions on
      * the <code>lstNamedSelections</code>.
@@ -209,7 +212,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
      * @see NamedSelection
      * @see NamedSelectionTopComponent
      */
-    public void updateState(final ArrayList<NamedSelection> selections) {
+    public void updateState(final List<NamedSelection> selections) {
         if (selections != null) {
             // Clear everything so we can start fresh:
             clearAllNamedSelections();
@@ -460,6 +463,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
 
         scrlContent.setAutoscrolls(true);
 
+        lstNamedSelections.setFixedCellHeight((int) Math.ceil(fontsize * 1.5));
         lstNamedSelections.setInheritsPopupMenu(true);
         scrlContent.setViewportView(lstNamedSelections);
 
@@ -762,7 +766,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
             }
         }
 
-        if (removeSelections.size() > 0) {
+        if (!removeSelections.isEmpty()) {
             NamedSelectionManager.getDefault().clearSelections(removeSelections);
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview.api.Column;
+import au.gov.asd.tac.constellation.views.tableview.api.TableDefaultColumns;
 import au.gov.asd.tac.constellation.views.tableview.api.UpdateMethod;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +48,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.openide.util.Lookup;
 
 /**
  * Creates the column visibility context menu. This menu contains items that
@@ -115,12 +119,18 @@ public class ColumnVisibilityContextMenu {
         });
 
         showDefaultColumnsMenu = createCustomMenu(DEFAULT_COLUMNS, e -> {
+            final TableDefaultColumns tableDefaultColumnsProvider = Lookup.getDefault().lookup(TableDefaultColumns.class);
+            
+            final MutableIntList ids = new IntArrayList(tableDefaultColumnsProvider.getDefaultAttributes(getTableViewTopComponent().getCurrentGraph()).stream()
+                    .mapToInt(GraphAttribute::getId)
+                    .toArray());
+
             getActiveTableReference().updateVisibleColumns(
                     getTableViewTopComponent().getCurrentGraph(),
                     getTableViewTopComponent().getCurrentState(),
                     extractColumnAttributes(table.getColumnIndex().stream()
-                            .filter(column -> Character.isUpperCase(column.getAttribute().getName().charAt(0)))
-                            .toList()),
+                            .filter(column -> ids.contains(column.getAttribute().getId()))
+                            .collect(Collectors.toList())),
                     UpdateMethod.REPLACE
             );
             e.consume();
@@ -139,15 +149,14 @@ public class ColumnVisibilityContextMenu {
                         keyAttributes.add(new GraphAttribute(readableGraph, transactionKey));
                     }
                 }
-                getActiveTableReference().updateVisibleColumns(
-                        getTableViewTopComponent().getCurrentGraph(),
-                        getTableViewTopComponent().getCurrentState(),
-                        extractColumnAttributes(
-                                table.getColumnIndex().stream()
-                                        .filter(column -> keyAttributes.stream()
-                                                .anyMatch(keyAttribute -> keyAttribute.equals(column.getAttribute())))
-                                        .toList()
-                        ),
+                final List<Tuple<String, Attribute>> extractColumnAttributes = extractColumnAttributes(
+                        table.getColumnIndex().stream()
+                                .filter(column -> keyAttributes.stream()
+                                        .anyMatch(keyAttribute -> keyAttribute.equals(column.getAttribute())))
+                                .toList()
+                );
+                getActiveTableReference().updateVisibleColumns(getTableViewTopComponent().getCurrentGraph(),
+                        getTableViewTopComponent().getCurrentState(), extractColumnAttributes,
                         UpdateMethod.REPLACE
                 );
                 e.consume();

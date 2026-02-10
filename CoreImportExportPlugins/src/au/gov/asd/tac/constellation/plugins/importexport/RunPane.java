@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +110,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     // mechanism of blindly multiplying by 12.1 is not the ideal case because
     // it means longer headings get extra padding than they need and smaller
     // headings get just enough.
-    private final static double COLUMN_WIDTH_MULTIPLIER = 12.1;
+    private static final double COLUMN_WIDTH_MULTIPLIER = 12.1;
 
     private ObservableList<TableRow> currentRows = FXCollections.observableArrayList();
     private String[] currentColumnLabels = new String[0];

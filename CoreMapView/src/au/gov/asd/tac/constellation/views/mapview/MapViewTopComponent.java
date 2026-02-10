@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -147,7 +147,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     private Component glComponent;
 
     private final MapProvider defaultProvider;
-    private final List<? extends MapProvider> providers;
+    private final List<MapProvider> providers;
     private final List<? extends MapExporter> exporters;
     private final MarkerState markerState;
     private int cachedWidth;
@@ -181,7 +181,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         this.toolBar = new JToolBar(SwingConstants.HORIZONTAL);
         toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        this.mapProviderMenu = new JSingleChoiceComboBoxMenu(AnalyticIconProvider.MAP.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), providers);
+        this.mapProviderMenu = new JSingleChoiceComboBoxMenu<>(AnalyticIconProvider.MAP.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), providers);
         mapProviderMenu.addSelectionListener(event -> {
             final MapProvider mapProvider = (MapProvider) event.getSource();
             renderer.switchProviders(mapProvider);
@@ -190,8 +190,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         mapProviderMenu.setToolTipText("Select a basemap for the Map View");
         toolBar.add(mapProviderMenu);
 
-        final List<? extends MapLayer> layers = new ArrayList<>(Lookup.getDefault().lookupAll(MapLayer.class));
-        this.layersComboBox = new JMultiChoiceComboBoxMenu(UserInterfaceIconProvider.MENU.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), layers);
+        final List<MapLayer> layers = new ArrayList<>(Lookup.getDefault().lookupAll(MapLayer.class));
+        this.layersComboBox = new JMultiChoiceComboBoxMenu<>(UserInterfaceIconProvider.MENU.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), layers);
         layersComboBox.addSelectedItems(layers.stream().filter(layer -> layer.isEnabled()).toArray(MapLayer[]::new));
         layersComboBox.addSelectionListener(event -> {
             final MapLayer layer = (MapLayer) event.getSource();
@@ -200,8 +200,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         layersComboBox.setToolTipText("Select layers to render over the map in the Map View");
         toolBar.add(layersComboBox);
 
-        final List<? extends MapOverlay> overlays = new ArrayList<>(Lookup.getDefault().lookupAll(MapOverlay.class));
-        this.overlaysComboBox = new JMultiChoiceComboBoxMenu(UserInterfaceIconProvider.TAG.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), overlays);
+        final List<MapOverlay> overlays = new ArrayList<>(Lookup.getDefault().lookupAll(MapOverlay.class));
+        this.overlaysComboBox = new JMultiChoiceComboBoxMenu<>(UserInterfaceIconProvider.TAG.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), overlays);
         overlaysComboBox.addSelectedItems(overlays.stream().filter(overlay -> overlay.isEnabled()).toArray(MapOverlay[]::new));
         overlaysComboBox.addSelectionListener(event -> {
             final MapOverlay overlay = (MapOverlay) event.getSource();

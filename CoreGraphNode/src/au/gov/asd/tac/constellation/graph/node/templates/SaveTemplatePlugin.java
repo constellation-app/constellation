@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ public class SaveTemplatePlugin extends SimplePlugin {
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
 
         final File templateDir = new File(userDir, TEMPLATE_DIR);
-        final File oldTemplate = new File(templateDir, NewSchemaGraphAction.getTemplateNames().get(templateName) + "/" + templateName);
+        final File oldTemplate = new File(templateDir, NewSchemaGraphAction.getTemplateNames().get(templateName) + File.separator + templateName);
         if (oldTemplate.exists()) {
             try {
                 Files.delete(Path.of(oldTemplate.getPath()));

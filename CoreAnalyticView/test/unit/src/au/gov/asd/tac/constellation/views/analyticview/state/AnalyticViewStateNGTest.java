@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestio
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
+import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.GraphVisualisationTranslator;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
@@ -51,9 +52,6 @@ public class AnalyticViewStateNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticViewStateNGTest.class.getName());
     
-    public AnalyticViewStateNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -72,10 +70,12 @@ public class AnalyticViewStateNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -86,7 +86,7 @@ public class AnalyticViewStateNGTest {
         System.out.println("setGraphVisualisations");
         final String translatorName = "Multi-Score -> Size Visualisation";
         final GraphVisualisationTranslator<?, ?> visualisation = AnalyticUtilities.lookupGraphVisualisationTranslator(translatorName); 
-        final SizeVisualisation sizeVisualisation = (SizeVisualisation) visualisation.buildControl();
+        final SizeVisualisation<?> sizeVisualisation = (SizeVisualisation<?>) visualisation.buildControl();
         final Map<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
         graphVisualisations.put(sizeVisualisation, true);
         final AnalyticViewState instance = new AnalyticViewState();
@@ -114,8 +114,8 @@ public class AnalyticViewStateNGTest {
     @Test
     public void testSetQuestion() {
         System.out.println("setQuestion");
-        final AnalyticQuestionDescription<?> currentQuestion = AnalyticUtilities.lookupAnalyticQuestionDescription(BestConnectsNetworkQuestion.class);
-        final AnalyticQuestion question = new AnalyticQuestion(currentQuestion);
+        final BestConnectsNetworkQuestion currentQuestion = (BestConnectsNetworkQuestion) AnalyticUtilities.lookupAnalyticQuestionDescription(BestConnectsNetworkQuestion.class);
+        final AnalyticQuestion<ScoreResult> question = new AnalyticQuestion<>(currentQuestion);
         final AnalyticViewState instance = new AnalyticViewState();
         instance.setQuestion(question);
         final AnalyticQuestion<?> result = instance.getQuestion();

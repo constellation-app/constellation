@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,12 +39,7 @@ import java.time.ZonedDateTime;
  */
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public class UpdateTimeZonePlugin extends SimpleEditPlugin {
-
-    @Override
-    public String getName() {
-        return "Attribute Editor: Update Time Zone";
-    }
-
+    
     private final AttributeData attributeData;
     private final ZoneId zoneId;
 
@@ -52,13 +47,17 @@ public class UpdateTimeZonePlugin extends SimpleEditPlugin {
         this.attributeData = attributeData;
         this.zoneId = zoneId;
     }
+    
+    @Override
+    public String getName() {
+        return "Attribute Editor: Update Time Zone";
+    }
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         final int attrId = attributeData.getAttributeId();
         switch (attributeData.getElementType()) {
-            case VERTEX:
+            case VERTEX -> {
                 final int vxSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
                 if (vxSelectedAttribute != Graph.NOT_FOUND) {
                     for (int j = 0; j < graph.getVertexCount(); j++) {
@@ -69,8 +68,8 @@ public class UpdateTimeZonePlugin extends SimpleEditPlugin {
                         }
                     }
                 }
-                break;
-            case TRANSACTION:
+            }
+            case TRANSACTION -> {
                 final int txSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
                 if (txSelectedAttribute != Graph.NOT_FOUND) {
                     for (int j = 0; j < graph.getTransactionCount(); j++) {
@@ -81,15 +80,16 @@ public class UpdateTimeZonePlugin extends SimpleEditPlugin {
                         }
                     }
                 }
-                break;
-            case GRAPH:
+            }
+            case GRAPH -> {
                 final ZonedDateTime dateTime = (ZonedDateTime) graph.getObjectValue(attrId, 0);
                 if (dateTime != null) {
                     graph.setObjectValue(attrId, 0, ZonedDateTime.ofInstant(dateTime.toInstant(), zoneId));
                 }
-                break;
-            default:
-                break;
+            }
+            default -> {
+                // do nothing
+            }
         }
     }
 }

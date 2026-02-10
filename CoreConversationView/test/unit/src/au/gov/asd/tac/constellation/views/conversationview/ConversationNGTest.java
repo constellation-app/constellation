@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,10 +64,12 @@ public class ConversationNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
 
@@ -77,6 +79,7 @@ public class ConversationNGTest {
     @Test
     public void testSetPageNumber() {
         System.out.println("setPageNumber");
+        
         final int pageNumber = 2;
         final Conversation instance = new Conversation();
         instance.setPageNumber(pageNumber);
@@ -90,6 +93,7 @@ public class ConversationNGTest {
     @Test
     public void testSetTotalMessageCount() {
         System.out.println("setTotalMessageCount");
+        
         final int totalMessageCount = 3000;
         final Conversation instance = new Conversation();
         instance.setTotalMessageCount(totalMessageCount);
@@ -103,6 +107,7 @@ public class ConversationNGTest {
     @Test
     public void testSetTotalPages() {
         System.out.println("setTotalPages");
+        
         final int totalPages = 45;
         final Conversation instance = new Conversation();
         instance.setTotalPages(totalPages);
@@ -116,6 +121,7 @@ public class ConversationNGTest {
     @Test
     public void testSetContentPerPage() {
         System.out.println("setContentPerPage");
+        
         final int contentPerPage = 0;
         final Conversation instance = new Conversation();
         instance.setContentPerPage(contentPerPage);
@@ -129,6 +135,7 @@ public class ConversationNGTest {
     @Test
     public void testUpdateMessages() {
         System.out.println("updateMessages");
+        
         try (MockedStatic<ConversationController> controllerStatic = Mockito.mockStatic(ConversationController.class)) {
             final ConversationController controller = spy(ConversationController.class);
             controllerStatic.when(ConversationController::getDefault).thenReturn(controller);
@@ -138,8 +145,8 @@ public class ConversationNGTest {
             
             final GraphReadMethods graph = mock(GraphReadMethods.class);
             final Conversation instance = new Conversation();
-            final List expResult = new ArrayList();
-            final List result = instance.updateMessages(graph);
+            final List<ConversationMessage> expResult = new ArrayList<>();
+            final List<ConversationMessage> result = instance.updateMessages(graph);
             verify(controller, times(2)).getConversationBox();
             verify(box).setInProgress();
             assertEquals(result, expResult);

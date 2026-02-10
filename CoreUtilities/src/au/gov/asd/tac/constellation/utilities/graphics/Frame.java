@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.graphics;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * The GLFrame (OrthonormalFrame) class. Possibly the most useful little piece
@@ -140,6 +141,12 @@ public final class Frame implements Serializable {
 
     public void getYAxis(final Vector3f vector) {
         getUpVector(vector);
+    }
+    
+    public Vector3f getYAxis() {
+        final Vector3f result = new Vector3f();
+        getUpVector(result);
+        return result;
     }
 
     public void getZAxis(final Vector3f vector) {
@@ -306,11 +313,11 @@ public final class Frame implements Serializable {
         // Apply translation too.
         final Matrix44f trans = new Matrix44f();
         trans.makeTranslationMatrix(-origin.a[0], -origin.a[1], -origin.a[2]);
-        final Matrix44f M = new Matrix44f();
-        M.multiply(m, trans);
+        final Matrix44f mTrans = new Matrix44f();
+        mTrans.multiply(m, trans);
 
         // Copy result back into m.
-        m.set(M);
+        m.set(mTrans);
     }
 
     /**
@@ -547,14 +554,31 @@ public final class Frame implements Serializable {
         return array;
     }
     
-    
-    public boolean areSame(final Frame frame) {
-        return origin.areSame(frame.origin)
-                && forward.areSame(frame.forward)
-                && up.areSame(frame.up)
-                && absm == frame.absm;
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(origin);
+        hash = 97 * hash + Objects.hashCode(forward);
+        hash = 97 * hash + Objects.hashCode(up);
+        hash = 97 * hash + Float.floatToIntBits(absm);
+        return hash;
     }
-
+    
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final Frame other = (Frame) obj;
+        return origin.equals(other.origin)
+                && forward.equals(other.forward)
+                && up.equals(other.up)
+                && absm == other.absm;
+    }
+    
     @Override
     public String toString() {
         return String.format("o=(%s) f=(%s) u=(%s)", origin, forward, up);

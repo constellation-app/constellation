@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.find.FindViewController;
 import au.gov.asd.tac.constellation.views.find.components.advanced.AdvancedCriteriaBorderPane;
 import au.gov.asd.tac.constellation.views.find.components.advanced.BooleanCriteriaPanel;
@@ -40,21 +42,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.openide.util.HelpCtx;
 
 /**
  * This class contains the UI tab for the Advanced Find Tab.
@@ -100,7 +104,7 @@ public class AdvancedFindTab extends Tab {
     private final GridPane bottomGrid = new GridPane();
 
     private boolean firstSearch = true;
-    private final String foundLabelText = "Results Found: ";
+    private static final String FOUND_LABEL_TEXT = "Results Found: ";
     private final Label matchesFoundLabel = new Label("");
     private final Label matchesFoundCountLabel = new Label("");
 
@@ -110,7 +114,10 @@ public class AdvancedFindTab extends Tab {
     private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
     private final Button deleteResultsButton = new Button("Delete Results From Graph(s)");
-
+    private final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
+    private final Button helpButton = new Button("", helpImage);
+    private final CheckBox zoomToSelection = new CheckBox("Zoom to Selection");
+    
     public AdvancedFindTab(final FindViewTabs parentComponent) {
         this.parentComponent = parentComponent;
         setText("Advanced Find");
@@ -118,29 +125,30 @@ public class AdvancedFindTab extends Tab {
         addCriteriaPaneButton.setOnAction(action -> addCriteriaPane(getSelectedGraphElementType()));
 
         // Change the displayed list based on the graph element type selection
-        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> changeDisplayedList(newElement));
+        lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement) -> changeDisplayedList(newElement));
 
-        searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
+        searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement) -> updateSelectionFactors());
 
-        postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
+        postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldElement, newElement) -> updateSelectionFactors());
 
         findAllButton.setOnAction(action -> findAllAction());
         findNextButton.setOnAction(action -> findNextAction());
         findPrevButton.setOnAction(action -> findPreviousAction());
         deleteResultsButton.setOnAction(action -> deleteResultsAction());
+        helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
+        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.find.FindViewTopComponent").display());
 
         matchesFoundPane.add(matchesFoundLabel, 0, 0);
         matchesFoundPane.add(matchesFoundCountLabel, 1, 0);
         
         FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> {
             if (firstSearch) {
-                matchesFoundLabel.setText(foundLabelText);
+                matchesFoundLabel.setText(FOUND_LABEL_TEXT);
                 firstSearch = false;
             }
 
             matchesFoundCountLabel.setText("" + newValue);
         });
-
     }
 
     /**
@@ -208,7 +216,7 @@ public class AdvancedFindTab extends Tab {
     public void updateButtons() {
         //Clears all existing buttons, then adds this panes buttons
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(deleteResultsButton, findAllButton, findPrevButton, findNextButton);
+        buttonsHBox.getChildren().addAll(helpButton, deleteResultsButton, findAllButton, findPrevButton, findNextButton, zoomToSelection);
 
         deleteResultsButton.setDisable(true);
 
@@ -484,8 +492,9 @@ public class AdvancedFindTab extends Tab {
     public void findAllAction() {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
-            FindViewController.getDefault().retrieveAdvancedSearch(true, false);
+            FindViewController.getDefault().retrieveAdvancedSearch(true, true, getZoomToSelection().isSelected());
             getDeleteResultsButton().setDisable(false);
+            
         }
     }
 
@@ -497,7 +506,7 @@ public class AdvancedFindTab extends Tab {
     public void findNextAction() {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
-            FindViewController.getDefault().retrieveAdvancedSearch(false, true);
+            FindViewController.getDefault().retrieveAdvancedSearch(false, true, getZoomToSelection().isSelected());
         }
     }
 
@@ -510,7 +519,7 @@ public class AdvancedFindTab extends Tab {
     public void findPreviousAction() {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
-            FindViewController.getDefault().retrieveAdvancedSearch(false, false);
+            FindViewController.getDefault().retrieveAdvancedSearch(false, false, getZoomToSelection().isSelected());
         }
     }
 
@@ -619,5 +628,11 @@ public class AdvancedFindTab extends Tab {
     public Button getDeleteResultsButton() {
         return deleteResultsButton;
     }
-
+    
+    /**
+     * Get Zoom to Selection checkbox
+     */
+    public CheckBox getZoomToSelection() {
+        return zoomToSelection;
+    }
 }

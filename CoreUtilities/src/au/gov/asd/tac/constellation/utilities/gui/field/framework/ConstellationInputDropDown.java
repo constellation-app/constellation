@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInput;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
@@ -25,43 +25,58 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Region;
 
 /**
- * An extension of a ContextMenu to provide features that enable its use as a drop down menu in ConstellationInputFields.
- * Do not add items using getItems()
- * 
+ * An extension of a ContextMenu to provide features that enable its use as a
+ * drop down menu in ConstellationInputFields. Do not add items using getItems()
+ *
  * @author capricornunicorn123
  */
 public class ConstellationInputDropDown extends ContextMenu {
-        final ConstellationInput parent;
-        public ConstellationInputDropDown(final ConstellationInput field) {
-            parent = field;
-            
-            //Constrain drop down menus to a height of 200
-            this.setMaxHeight(200);
-            this.setPrefHeight(200);
-            addEventHandler(Menu.ON_SHOWING, e -> {
-                Node content = getSkin().getNode();
-                if (content instanceof Region region) {
-                    region.setMaxHeight(getMaxHeight());
+
+    final ConstellationInput parent;
+
+    public ConstellationInputDropDown(final ConstellationInput field) {
+        parent = field;
+
+        //Constrain drop down menus to a height of 200
+        setMaxHeight(200);
+        setPrefHeight(200);
+        addEventHandler(Menu.ON_SHOWING, e -> {
+            final Node content = getSkin().getNode();
+            if (content instanceof Region region) {
+                region.setMaxHeight(getMaxHeight());
+                // set the drop down context menu to parent width
+                region.setMaxWidth(field.getWidth());
+                // set the arrow bar transparent
+                content.lookupAll(".scroll-arrow").forEach(
+                        bar -> bar.setStyle("-fx-background-color: transparent;"));
+                if (JavafxStyleManager.isDarkTheme()) {
+                    final Node up = content.lookup(".menu-up-arrow");
+                    final Node down = content.lookup(".menu-down-arrow");
+                    up.setStyle("-fx-background-color: #e0e0e0;");
+                    down.setStyle("-fx-background-color: #e0e0e0");
                 }
-            });
-        }
-        
-        /**
-         * Takes a {@link Labeled} object and converts it to a {@link MenuItem}.
-         * 
-         * The  {@link MenuItem} is not added to the ConstextMenu. it is returned for
-         * Input field specific modification before being added to the Context menu using
-         *  addMenuItems();
-         * 
-         * This build method is important to correctly bind the width of the context menu to the parnte (but it currently doesnt work as they are bote rea only)....
-         * 
-         * @param text
-         * @return 
-         */
-        public CustomMenuItem registerCustomMenuItem(Labeled text) {
-            text.prefWidthProperty().bind(parent.widthProperty());
-            CustomMenuItem item = new CustomMenuItem(text);
-            getItems().add(item);
-            return item;
-        }
+            }
+        });
     }
+
+    /**
+     * Takes a {@link Labeled} object and converts it to a {@link MenuItem}.
+     *
+     * The {@link MenuItem} is not added to the ConstextMenu. it is returned for
+     * Input field specific modification before being added to the Context menu
+     * using addMenuItems();
+     *
+     * This build method is important to correctly bind the width of the context
+     * menu to the parent (but it currently doesn't work as they are both read
+     * only)....
+     *
+     * @param text
+     * @return
+     */
+    public CustomMenuItem registerCustomMenuItem(final Labeled text) {
+        text.prefWidthProperty().bind(parent.widthProperty());
+        final CustomMenuItem item = new CustomMenuItem(text);
+        getItems().add(item);
+        return item;
+    }
+}

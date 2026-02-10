@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author arcturus
  */
 @ServiceProvider(service = Plugin.class)
-@NbBundle.Messages("ToggleDrawFlagPlugin=Toggle Draw Flag")
+@Messages("ToggleDrawFlagPlugin=Toggle Draw Flag")
 @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.LOW_LEVEL})
 public class ToggleDrawFlagPlugin extends SimpleEditPlugin {
 
@@ -61,7 +61,6 @@ public class ToggleDrawFlagPlugin extends SimpleEditPlugin {
         final int flag = parameters.getIntegerValue(FLAG_PARAMETER_ID);
 
         final int drawFlagsAttribute = VisualConcept.GraphAttribute.DRAW_FLAGS.get(graph);
-
         if (drawFlagsAttribute != Graph.NOT_FOUND) {
             int drawFlags = graph.getIntValue(drawFlagsAttribute, 0);
             drawFlags ^= flag;

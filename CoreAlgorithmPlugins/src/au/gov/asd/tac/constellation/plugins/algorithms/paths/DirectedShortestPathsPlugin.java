@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,9 +50,9 @@ import org.openide.util.lookup.ServiceProvider;
 public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
 
     public static final String SOURCE_NODE_PARAMETER_ID = PluginParameter.buildId(DirectedShortestPathsPlugin.class, "source_node");
-    
-    private static final Integer SOURCE_NODE_NOT_SET = -1;
-    
+
+    private static final int SOURCE_NODE_NOT_SET = -1;
+
     private Map<String, Integer> selectedNodes = null;
 
     @Override
@@ -70,19 +70,17 @@ public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
     @Override
     public void updateParameters(final Graph graph, final PluginParameters parameters) {
         final Map<String, PluginParameter<?>> params = parameters.getParameters();
-        
+
         @SuppressWarnings("unchecked") //SOURCE_NODE_PARAMETER is always of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> sourceNode = (PluginParameter<SingleChoiceParameterValue>) params.get(SOURCE_NODE_PARAMETER_ID);
-        SingleChoiceParameterType.setOptions(sourceNode, Lists.newArrayList(getSelectedNodes(graph).keySet()));        
+        SingleChoiceParameterType.setOptions(sourceNode, Lists.newArrayList(getSelectedNodes(graph).keySet()));
     }
-    
+
     /**
-     * Returns true if the provided <code>Graph</code> has more than one vertex
-     * selected.
+     * Returns true if the provided <code>Graph</code> has more than one vertex selected.
      *
      * @param graph the read lock that will be used to query the graph.
-     * @return true if the provided <code>Graph</code> has more than one vertex
-     * selected.
+     * @return true if the provided <code>Graph</code> has more than one vertex selected.
      */
     public static boolean hasMultipleSelections(final GraphReadMethods graph) {
         int count = 0;
@@ -143,13 +141,12 @@ public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
             }
         }
     }
-    
+
     private Map<String, Integer> getSelectedNodes(final Graph graph) {
         if (selectedNodes == null) {
             final Map<String, Integer> label2VxId = new HashMap<>();
             if (graph != null) {
-                final ReadableGraph rg = graph.getReadableGraph();
-                try {
+                try (final ReadableGraph rg = graph.getReadableGraph()) {
                     final int vxLabelAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.LABEL.getName());
                     final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
 
@@ -163,8 +160,6 @@ public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
                             }
                         }
                     }
-                } finally {
-                    rg.release();
                 }
             }
             selectedNodes = label2VxId;

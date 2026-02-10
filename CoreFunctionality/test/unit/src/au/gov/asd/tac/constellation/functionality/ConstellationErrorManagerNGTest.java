@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,7 @@ import org.testng.annotations.Test;
  * @author OrionsGuardian
  */
 public class ConstellationErrorManagerNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(ConstellationErrorManagerNGTest.class.getName());
     
     @Test
@@ -90,18 +91,21 @@ public class ConstellationErrorManagerNGTest {
     private void simulateException(final Level logLevel, final boolean autoBlockPopup){
         LOGGER.log(Level.INFO, "\n ------- simulating {0} exception", logLevel.getName());
         final Exception e = new Exception((autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG : "") + "Something totally not unexpected happened !");
-        LOGGER.log(logLevel, "Simulating a " + logLevel.getName() + " exception !", e);
+        LOGGER.log(logLevel, e, () ->  "Simulating a " + logLevel.getName() + " exception !");
         LOGGER.info("\n ------- simulated.");
     }
     
     private void delay(final long milliseconds){
         // may need to wait for the error handler to do it's thing
         final Executor delayed = CompletableFuture.delayedExecutor(milliseconds, TimeUnit.MILLISECONDS);
-        final CompletableFuture cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
+        final CompletableFuture<Void> cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
             .thenAccept(LOGGER::info);
         try {
             cf.get();
-        } catch (final InterruptedException | ExecutionException ex) {
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            LOGGER.log(Level.INFO, "\n -------- future was interrupted ? : {0}", ex.toString());
+        } catch (final ExecutionException ex) {
             LOGGER.log(Level.INFO, "\n -------- future was not completed ? : {0}", ex.toString());
         }
     }

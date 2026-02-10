@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,17 +58,12 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -76,7 +71,6 @@ import javax.swing.Action;
 import javax.swing.SwingUtilities;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.filesystems.FileUtil;
@@ -99,28 +93,9 @@ import org.openide.windows.WindowManager;
  *
  */
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.functionality.save.SaveAsAction")
-@ActionRegistration(displayName = "#MSG_SaveAs_SaveAsAction",
-        lazy = false)
-@ActionReferences({
-    @ActionReference(path = "Menu/File", position = 1100)
-})
-@Messages({
-    "MSG_SaveAs_SaveAsAction=Save As...",
-    "# {0} - folder name",
-    "MSG_CannotCreateTargetFolder=Unable to create target folder {0}",
-    "MSG_SaveAsTitle=Save Graph",
-    "# {0} - file name",
-    "# {1} - error msg",
-    "MSG_SaveAsFailed=Unable to save the file {0}, Error Message {1}",
-    "# {0} - file name",
-    "MSG_SaveAs_OverwriteQuestion=The file {0} already exists. Do you want to overwrite it?",
-    "MSG_SaveAs_OverwriteQuestion_Title=Save Graph",
-    "MSG_SaveAs_SameFileSelected=The graph will be saved using the same file",
-    "MSG_SaveAs_SameFileSelected_Title=Save Graph",
-    "# {0} - file name",
-    "MSG_SaveAs_FileInUse=The graph cannot be saved to {0}, since it is already in use by another graph.",
-    "MSG_SaveAs_FileInUse_Title=Save Graph"
-})
+@ActionRegistration(displayName = "#CTL_SaveAsAction", lazy = false)
+@ActionReference(path = "Menu/File", position = 1100)
+@Messages("CTL_SaveAsAction=Save As...")
 public class SaveAsAction extends AbstractAction implements ContextAwareAction {
 
     private static final Logger LOGGER = Logger.getLogger(SaveAsAction.class.getName());
@@ -141,13 +116,14 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     private PropertyChangeListener registryListener;
     private LookupListener lookupListener;
     private boolean isSaved = false;
+    private String savedFilePath = "";
 
     public SaveAsAction() {
         this(Utilities.actionsGlobalContext(), true);
     }
 
     public SaveAsAction(final Lookup context, final boolean isGlobal) {
-        super(Bundle.MSG_SaveAs_SaveAsAction());
+        super(Bundle.CTL_SaveAsAction());
         this.context = context;
         this.isGlobal = isGlobal;
         putValue("noIconInMenu", Boolean.TRUE);
@@ -175,8 +151,12 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         return isSaved;
     }
 
+    public String getSavedFilePath() {
+        return savedFilePath;
+    }
+
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public synchronized void actionPerformed(final ActionEvent e) {
         refreshListeners();
         final Collection<? extends SaveAsCapable> inst = lkpInfo.allInstances();
         if (!inst.isEmpty()) {
@@ -184,43 +164,14 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             FileChooser.openImmediateSaveDialog(getSaveFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
                 try {
                     saveAs.saveAs(FileUtil.toFileObject(file.getParentFile()), file.getName());
-
-                    // take a screenshot in a separate thread in parrallel
-                    new Thread(() -> RecentGraphScreenshotUtilities.takeScreenshot(file.getName()), "Take Graph Screenshot").start();
+                    savedFilePath = file.getAbsolutePath();
                 } catch (final IOException ioE) {
-                    Exceptions.attachLocalizedMessage(ioE,
-                            Bundle.MSG_SaveAsFailed(
-                                    file.getName(),
-                                    ioE.getLocalizedMessage()));
-                    LOGGER.log(Level.SEVERE, null, ioE);
+                    Exceptions.attachLocalizedMessage(ioE, String.format("Unable to save the file %s, Error Message %s", file.getName(), ioE.getLocalizedMessage()));
+                    LOGGER.log(Level.SEVERE, ioE.getLocalizedMessage(), ioE);
                 }
                 isSaved = true;
             }));
         }
-    }
-
-    /**
-     * verify whether any other graph has this file opened
-     *
-     * @param filename the proposed filename
-     * @return boolean
-     */
-    public boolean isFileInUse(final File filename) {
-        boolean fileInUse = false;
-        try {
-            Iterator<Graph> iter = GraphNode.getAllGraphs().values().iterator();
-            while (!fileInUse && iter.hasNext()) {
-                GraphNode node = GraphNode.getGraphNode(iter.next());
-                if (!node.getDataObject().isInMemory()) {
-                    File existingFile = new File(node.getDataObject().getPrimaryFile().getPath());
-
-                    fileInUse = filename.getCanonicalPath().equalsIgnoreCase(existingFile.getCanonicalPath());
-                }
-            }
-        } catch (final IOException ex) {
-            LOGGER.log(Level.WARNING, "Error occurred while attempting to retrieve file path");
-        }
-        return fileInUse;
     }
 
     @Override
@@ -237,8 +188,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     @Override
     public synchronized void removePropertyChangeListener(final PropertyChangeListener listener) {
         super.removePropertyChangeListener(listener);
-        Mutex.EVENT.readAccess(this::refreshListeners // might be called off EQ by WeakListeners
-        );
+        Mutex.EVENT.readAccess(this::refreshListeners); // might be called off EQ by WeakListeners
     }
 
     private PropertyChangeListener createRegistryListener() {
@@ -257,8 +207,8 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             lkpInfo = context.lookup(tpl);
         }
 
-        TopComponent tc = TopComponent.getRegistry().getActivated();
-        boolean isEditorWindowActivated = tc != null && WindowManager.getDefault().isEditorTopComponent(tc);
+        final TopComponent tc = TopComponent.getRegistry().getActivated();
+        final boolean isEditorWindowActivated = tc != null && WindowManager.getDefault().isEditorTopComponent(tc);
         setEnabled(lkpInfo != null && !lkpInfo.allItems().isEmpty() && isEditorWindowActivated);
         isDirty = false;
     }
@@ -296,17 +246,12 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         }
     }
 
-    //for unit testing
-    boolean _isEnabled() {
-        return super.isEnabled();
-    }
-
     /**
      * Creates a new file chooser.
      *
      * @return the created file chooser.
      */
-    public FileChooserBuilder getSaveFileChooser() {
-        return FileChooser.createFileChooserBuilder(TITLE, FileExtensionConstants.STAR, "Constellation Files (" + FileExtensionConstants.STAR + ")");
+    protected FileChooserBuilder getSaveFileChooser() {
+        return FileChooser.createFileChooserBuilder(TITLE, FileExtensionConstants.STAR, "Constellation Files (" + FileExtensionConstants.STAR + ")", true);
     }
 }

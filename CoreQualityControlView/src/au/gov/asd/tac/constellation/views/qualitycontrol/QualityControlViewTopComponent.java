@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,6 +102,11 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
         QualityControlAutoVetter.getInstance().initWithRefresh(true);
     }
 
+    @Override
+    protected void componentActivated() {
+        setVisible(true);
+    }
+            
     @Override
     protected void handleGraphClosed(final Graph graph) {
         qualityControlViewPane.refreshQualityControlView(null);

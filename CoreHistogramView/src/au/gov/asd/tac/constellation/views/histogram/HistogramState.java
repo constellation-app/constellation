@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,14 +78,15 @@ public final class HistogramState {
     }
 
     /**
-     * Stores the state of the choices for attributeType, attribute and
-     * binFormatter for each Graph Element Type respectively.
+     * Stores the state of the choices for attributeType, attribute and binFormatter for each Graph Element Type
+     * respectively.
      */
     public final class GraphElementState {
 
         private AttributeType attributeType = AttributeType.ATTRIBUTE;
         private String attribute = null;
         private BinFormatter binFormatter = BinFormatter.DEFAULT_BIN_FORMATTER;
+        private PluginParameters parameters = null;
 
         private AttributeType getAttributeType() {
             return attributeType;
@@ -109,26 +110,31 @@ public final class HistogramState {
 
         private void setBinFormatter(final BinFormatter binFormatter) {
             this.binFormatter = binFormatter;
+        }
 
+        private PluginParameters getBinFormatterParameters() {
+            return parameters;
+        }
+
+        private void setBinFormatterParameters(final PluginParameters parameters) {
+            this.parameters = parameters;
         }
     }
 
     /**
-     * Sets the attributeType, attribute and binFormatter of the HistogramState
-     * to the values saved in elementStateMap for the currently selected Graph
-     * Element Type.
+     * Sets the attributeType, attribute and binFormatter of the HistogramState to the values saved in elementStateMap
+     * for the currently selected Graph Element Type.
      */
-    protected void setElementState() {
+    public void setElementState() { // Set back to protected after histogram rewrite fully replaces old version
         attributeType = elementStateMap.get(elementType).getAttributeType();
         attribute = elementStateMap.get(elementType).getAttribute();
         binFormatter = elementStateMap.get(elementType).getBinFormatter();
+        binFormatterParameters = elementStateMap.get(elementType).getBinFormatterParameters();
     }
 
     /**
-     * Ensure that this HistogramState is compatible with the current graph. The
-     * HistogramState can become invalid if the Schema has altered the graph as
-     * it is loaded and removed the attribute that the HistogramState is looking
-     * at.
+     * Ensure that this HistogramState is compatible with the current graph. The HistogramState can become invalid if
+     * the Schema has altered the graph as it is loaded and removed the attribute that the HistogramState is looking at.
      *
      * @param graph the graph to be validated.
      */
@@ -183,6 +189,7 @@ public final class HistogramState {
 
     public void setBinFormatterParameters(final PluginParameters parameters) {
         binFormatterParameters = parameters;
+        elementStateMap.get(elementType).setBinFormatterParameters(binFormatterParameters);
     }
 
     public BinComparator getBinComparator() {

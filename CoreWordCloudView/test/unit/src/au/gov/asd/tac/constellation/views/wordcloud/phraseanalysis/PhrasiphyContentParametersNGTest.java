@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,18 +33,22 @@ public class PhrasiphyContentParametersNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -65,7 +69,7 @@ public class PhrasiphyContentParametersNGTest {
     public void testToString() {
         System.out.println("toString");
         final PhrasiphyContentParameters instance = new PhrasiphyContentParameters(1, 1, 5);
-        final String expResult = String.format("PhrasiphyContentParameters[onAttributeID:%d, phraseLength:%d, proximity:%d, threshold:%d]", -1, 1, 1, 5);;
+        final String expResult = String.format("PhrasiphyContentParameters[onAttributeID:%d, phraseLength:%d, proximity:%d, threshold:%d]", -1, 1, 1, 5);
         final String result = instance.toString();
         assertEquals(result, expResult);
     }
@@ -146,6 +150,5 @@ public class PhrasiphyContentParametersNGTest {
         instance.setBackgroundFilter(value);
         final boolean result = instance.hasFilterAllWords();
         assertTrue(result);
-    }
-    
+    }   
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import org.openide.awt.StatusLineElementProvider;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
@@ -80,7 +81,9 @@ public final class GraphStatusLine implements StatusLineElementProvider, LookupL
             b.setBorderPainted(false);
             b.setContentAreaFilled(false);
             final Insets insets = b.getMargin();
-            insets.left = 0;
+            if (insets != null) {
+                insets.left = 0;
+            }
             b.setMargin(insets);
             PANEL.add(b);
         }
@@ -93,15 +96,15 @@ public final class GraphStatusLine implements StatusLineElementProvider, LookupL
 
     @Override
     public void resultChanged(final LookupEvent ev) {
-        if (graph != null) {
-            graph.removeGraphChangeListener(this);
+        if (getGraph() != null) {
+            getGraph().removeGraphChangeListener(this);
         }
 
         final Node[] activatedNodes = TopComponent.getRegistry().getActivatedNodes();
         if (activatedNodes.length > 0 && activatedNodes[0] instanceof GraphNode) {
             final GraphNode gnode = (GraphNode) activatedNodes[0];
             graph = gnode.getGraph();
-            graph.addGraphChangeListener(this);
+            getGraph().addGraphChangeListener(this);
         } else {
             graph = null;
         }
@@ -111,20 +114,18 @@ public final class GraphStatusLine implements StatusLineElementProvider, LookupL
 
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
-        if (graph != null) {
-            ReadableGraph rg = graph.getReadableGraph();
-            try {
+        if (getGraph() != null) {
+            try (final ReadableGraph rg = getGraph().getReadableGraph()) {
                 final int ndAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
                 final int txAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
 
                 // count number of selected nodes
                 int vCount = 0;
                 if (ndAttr != Graph.NOT_FOUND) {
-                    GraphIndexType vertexSelectedIndexType = rg.getAttributeIndexType(ndAttr);
+                    final GraphIndexType vertexSelectedIndexType = rg.getAttributeIndexType(ndAttr);
                     if (vertexSelectedIndexType == GraphIndexType.NONE) {
                         for (int i = 0; i < rg.getVertexCount(); i++) {
-                            boolean sel = rg.getBooleanValue(ndAttr, rg.getVertex(i));
-                            if (sel) {
+                            if (rg.getBooleanValue(ndAttr, rg.getVertex(i))) {
                                 vCount++;
                             }
                         }
@@ -146,7 +147,7 @@ public final class GraphStatusLine implements StatusLineElementProvider, LookupL
                             boolean edgeSelected = false;
                             final int exId = rg.getLinkEdge(lxId, exPos);
                             for (int txPos = 0; txPos < rg.getEdgeTransactionCount(exId); txPos++) {
-                                boolean sel = rg.getBooleanValue(txAttr, rg.getEdgeTransaction(exId, txPos));
+                                final boolean sel = rg.getBooleanValue(txAttr, rg.getEdgeTransaction(exId, txPos));
                                 edgeSelected |= sel;
                                 linkSelected |= sel;
                                 if (sel) {
@@ -186,16 +187,37 @@ public final class GraphStatusLine implements StatusLineElementProvider, LookupL
                 } else {
                     LX_BUTTON.setText(String.valueOf(rg.getLinkCount()));
                 }
+                labelUpdate();
 
-            } finally {
-                rg.release();
             }
-
         } else {
             VX_BUTTON.setText("");
             LX_BUTTON.setText("");
             EX_BUTTON.setText("");
             TX_BUTTON.setText("");
+            labelUpdate();
         }
+    }
+
+    /**
+     * Repaint the graph status labels.
+     */
+    public void labelUpdate() {
+        LX_BUTTON.paintImmediately(LX_BUTTON.getVisibleRect());
+        EX_BUTTON.paintImmediately(EX_BUTTON.getVisibleRect());
+        TX_BUTTON.paintImmediately(TX_BUTTON.getVisibleRect());
+        VX_BUTTON.paintImmediately(VX_BUTTON.getVisibleRect());
+        LX_BUTTON.updateUI();
+        EX_BUTTON.updateUI();
+        TX_BUTTON.updateUI();
+        VX_BUTTON.updateUI();
+        PANEL.updateUI();
+    }
+
+    /**
+     * @return the graph
+     */
+    public Graph getGraph() {
+        return graph;
     }
 }

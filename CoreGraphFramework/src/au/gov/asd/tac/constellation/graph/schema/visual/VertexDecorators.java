@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.schema.visual;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -77,5 +78,30 @@ public class VertexDecorators {
             return new VertexDecorators(decorators.get(0), decorators.get(1), decorators.get(2), decorators.get(3));
         }
         throw new IllegalArgumentException("String for decorators has wrong number of fields: " + decoratorsString);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 37 * hash + Objects.hashCode(this.northWestDecoratorAttribute);
+        hash = 37 * hash + Objects.hashCode(this.southWestDecoratorAttribute);
+        hash = 37 * hash + Objects.hashCode(this.southEastDecoratorAttribute);
+        hash = 37 * hash + Objects.hashCode(this.northEastDecoratorAttribute);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final VertexDecorators other = (VertexDecorators) obj;
+        return Objects.equals(this.northWestDecoratorAttribute, other.northWestDecoratorAttribute)
+                && Objects.equals(this.southWestDecoratorAttribute, other.southWestDecoratorAttribute)
+                && Objects.equals(this.southEastDecoratorAttribute, other.southEastDecoratorAttribute)
+                && Objects.equals(this.northEastDecoratorAttribute, other.northEastDecoratorAttribute);
     }
 }

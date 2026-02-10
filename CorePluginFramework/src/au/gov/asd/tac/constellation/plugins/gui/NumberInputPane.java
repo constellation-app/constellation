@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
+
 
 /**
  * A NumberSpinner allowing numeric entries, which is the GUI element
@@ -68,6 +69,7 @@ public class NumberInputPane<C extends Number> extends ParameterInputPane<Number
             }
         };
     }
+
 
     @Override
     public PluginParameterListener getPluginParameterListener() {

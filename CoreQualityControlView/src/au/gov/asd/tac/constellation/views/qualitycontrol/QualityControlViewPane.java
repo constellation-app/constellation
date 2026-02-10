@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,11 +44,9 @@ import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -70,6 +68,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
@@ -87,6 +86,8 @@ import javafx.util.Pair;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
@@ -112,7 +113,6 @@ public final class QualityControlViewPane extends BorderPane {
     private static Map<QualityControlRule, Boolean> ruleEnabledStatuses = null;
     private static final List<ToggleGroup> toggleGroups = new ArrayList<>();
     private static final Map<QualityControlRule, Button> ruleEnableButtons = new HashMap<>();
-    private static final JsonFactory FACTORY = new MappingJsonFactory();
 
     private final TableColumn<QualityControlEvent, QualityControlEvent> identifierColumn;
     private final TableColumn<QualityControlEvent, QualityControlEvent> typeColumn;
@@ -123,10 +123,15 @@ public final class QualityControlViewPane extends BorderPane {
 
     private static final String DISABLE = "Disable";
     private static final String ENABLE = "Enable";
-    
+
     private static final String BLACK_TEXT_COLOR = "-fx-text-fill: black;";
     private static final String ENABLE_TEXT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : BLACK_TEXT_COLOR;
-    
+
+    // Colours to applyed to row background when row is seleted. Mixes with row's quality colour, as quality colour is slightly transparent
+    private static final String SELECTED_COLOR = JavafxStyleManager.isDarkTheme() ? "#E8E8E8" : "#808080";
+    private static final String SELECTED_UNFOCUSED_COLOR = JavafxStyleManager.isDarkTheme() ? "#808080" : "#BEBEBE";
+
+    private ArrayList<TableRow<QualityControlEvent>> selectedRowList = new ArrayList<>();
 
     /*firstClick is a workaround for currently a existing bug within ControlsFX object, which causes two clicks 
     to be registered upon the user's first click within the view pane when calling value.getClickCount()*/
@@ -137,7 +142,11 @@ public final class QualityControlViewPane extends BorderPane {
         readSerializedRuleEnabledStatuses();
 
         qualityTable = new TableView<>();
-        qualityTable.focusedProperty().addListener((observable, oldValue, newValue) -> firstClick = true);
+        qualityTable.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            firstClick = true;
+            // Update row's highlighting
+            setRowHighlight(newValue);
+        });
 
         identifierColumn = new TableColumn<>("Identifier");
         identifierColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.25));
@@ -175,6 +184,30 @@ public final class QualityControlViewPane extends BorderPane {
         qualityTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         qualityTable.setPlaceholder(wrappedLabel(Bundle.MSG_SelectSomething()));
         setCenter(qualityTable);
+
+        qualityTable.setRowFactory(tv -> {
+            TableRow<QualityControlEvent> row = new TableRow<>();
+            // Track each row's focus
+            row.selectedProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal) {
+                    // If list doesnt already contain this row, add
+                    if (!selectedRowList.contains(row)) {
+                        selectedRowList.add(row);
+                    }
+                    // Update highlighting
+                    setRowHighlight(qualityTable.isFocused());
+                } else {
+                    // Not selected
+                    // Remove from list if it's in there
+                    if (selectedRowList.contains(row)) {
+                        selectedRowList.remove(row);
+                    }
+                    // Remove highlight styling
+                    row.setStyle("");
+                }
+            });
+            return row;
+        });
 
         optionsPane = new FlowPane();
         optionsPane.setId("qualitycontrolview-flow-pane");
@@ -228,6 +261,12 @@ public final class QualityControlViewPane extends BorderPane {
 
         this.setId("qualitycontrolview-border-pane");
         this.setPadding(new Insets(5));
+    }
+
+    private void setRowHighlight(final boolean isFocused) {
+        for (final TableRow<QualityControlEvent> selectedRow : selectedRowList) {
+            selectedRow.setStyle(isFocused ? "-fx-background-color: " + SELECTED_COLOR + ";" : "-fx-background-color: " + SELECTED_UNFOCUSED_COLOR + ";");
+        }
     }
 
     public TableView<QualityControlEvent> getQualityTable() {
@@ -383,7 +422,7 @@ public final class QualityControlViewPane extends BorderPane {
      * @return a javafx style based on the given quality value.
      */
     public static String qualityStyle(final QualityCategory category) {
-        return qualityStyle(category, 1.0F);
+        return qualityStyle(category, 0.75F);
     }
 
     /**
@@ -728,7 +767,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Writes the rulePriorities to the preferences object.
      */
     private static void writeSerializedRulePriorities() {
-        final String mapAsString = JsonUtilities.getMapAsString(FACTORY, getPriorities());
+        final String mapAsString = JsonUtilities.getMapAsString(getPriorities());
         if (!mapAsString.isEmpty()) {
             PREFERENCES.put(ApplicationPreferenceKeys.RULE_PRIORITIES, mapAsString);
             try {
@@ -743,7 +782,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Writes the rule enabled statuses to the preferences object.
      */
     private static void writeSerializedRuleEnabledStatuses() {
-        final String mapAsString = JsonUtilities.getMapAsString(FACTORY, getEnablementStatuses());
+        final String mapAsString = JsonUtilities.getMapAsString(getEnablementStatuses());
         if (!mapAsString.isEmpty()) {
             PREFERENCES.put(ApplicationPreferenceKeys.RULE_ENABLED_STATUSES, mapAsString);
             try {
@@ -759,7 +798,7 @@ public final class QualityControlViewPane extends BorderPane {
      */
     public static void readSerializedRulePriorities() {
         getPriorities().clear();
-        final Map<String, String> priorityStringMap = JsonUtilities.getStringAsMap(FACTORY, PREFERENCES.get(ApplicationPreferenceKeys.RULE_PRIORITIES, ""));
+        final Map<String, String> priorityStringMap = JsonUtilities.getStringAsMap(PREFERENCES.get(ApplicationPreferenceKeys.RULE_PRIORITIES, ""));
         for (final Entry<String, String> entry : priorityStringMap.entrySet()) {
             getPriorities().put(QualityControlEvent.getRuleByString(entry.getKey()), QualityControlEvent.getCategoryFromString(entry.getValue()));
         }
@@ -770,7 +809,7 @@ public final class QualityControlViewPane extends BorderPane {
      */
     public static void readSerializedRuleEnabledStatuses() {
         getEnablementStatuses().clear();
-        final Map<String, String> enableStringMap = JsonUtilities.getStringAsMap(FACTORY, PREFERENCES.get(ApplicationPreferenceKeys.RULE_ENABLED_STATUSES, ""));
+        final Map<String, String> enableStringMap = JsonUtilities.getStringAsMap(PREFERENCES.get(ApplicationPreferenceKeys.RULE_ENABLED_STATUSES, ""));
         for (final Entry<String, String> entry : enableStringMap.entrySet()) {
             final QualityControlRule rule = QualityControlEvent.getRuleByString(entry.getKey());
             final boolean enabled = Boolean.parseBoolean(entry.getValue());
@@ -818,16 +857,14 @@ public final class QualityControlViewPane extends BorderPane {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            final Set<Integer> vertexIds = new HashSet<>();
+            final MutableIntSet vertexIds = new IntHashSet();
             for (final QualityControlEvent qualitycontrolEvent : qualitycontrolEvents) {
                 if (qualitycontrolEvent != null) {
                     vertexIds.add(qualitycontrolEvent.getVertex());
                 }
             }
 
-            for (final int vertexId : vertexIds) {
-                graph.removeVertex(vertexId);
-            }
+            vertexIds.forEach(graph::removeVertex);
         }
 
         @Override
@@ -850,7 +887,7 @@ public final class QualityControlViewPane extends BorderPane {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            final Set<Integer> vertexIds = new HashSet<>();
+            final MutableIntSet vertexIds = new IntHashSet();
             for (final QualityControlEvent qualitycontrolEvent : qualitycontrolEvents) {
                 if (qualitycontrolEvent != null) {
                     vertexIds.add(qualitycontrolEvent.getVertex());
@@ -896,7 +933,7 @@ public final class QualityControlViewPane extends BorderPane {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            final Set<Integer> vertexIds = new HashSet<>();
+            final MutableIntSet vertexIds = new IntHashSet();
             for (final QualityControlEvent qualitycontrolEvent : qualitycontrolEvents) {
                 if (qualitycontrolEvent != null) {
                     vertexIds.add(qualitycontrolEvent.getVertex());

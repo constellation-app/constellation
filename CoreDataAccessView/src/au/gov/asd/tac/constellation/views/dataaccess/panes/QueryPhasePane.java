@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,16 +39,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.Lookup;
 
 /**
@@ -75,6 +79,8 @@ public class QueryPhasePane extends VBox {
     private final Set<MenuItem> pluginDependentMenuItems = new HashSet<>();
 
     private final Map<String, HeadingPane> currentPlugins = new HashMap<>();
+    
+    private CountDownLatch accessControl = null;
 
     /**
      * Creates a new query phase pane.
@@ -90,6 +96,7 @@ public class QueryPhasePane extends VBox {
     }
 
     public final void updatePlugins(final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins, final PluginParametersPaneListener top) {
+        accessControl = new CountDownLatch(1);
         dataSources.clear();
 
         final List<Pair<Integer, HeadingPane>> orderedPlugins = new ArrayList<>();
@@ -137,6 +144,7 @@ public class QueryPhasePane extends VBox {
             }
             getChildren().clear();
             getChildren().addAll(globalParametersPane, dataSourceList);
+            accessControl.countDown();
         });
     }
 
@@ -189,15 +197,33 @@ public class QueryPhasePane extends VBox {
      * @param expandchildren true if the child sections should also be expanded, false otherwise
      */
     public void setHeadingsExpanded(final boolean expand, final boolean expandchildren) {
-        dataSourceList.getChildren().stream().forEach(child -> {
+        waitForAccess();        
+        for (final Node child : dataSourceList.getChildren()) {
             final HeadingPane headingPage = (HeadingPane) child;
             headingPage.setExpanded(expand);
             if (expandchildren) {
                 headingPage.getDataSources().forEach(titledPane -> titledPane.setExpanded(expand));
             }
-        });
+        }
     }
 
+    /**
+     * Wait for class to fully initialise before allowing access to certain functions
+     */
+    private void waitForAccess() {
+        if (accessControl != null) {
+            try {
+                // wait for the class to complete its initialisation "runLater" step
+                if (!accessControl.await(10, TimeUnit.SECONDS)) {
+                    LOGGER.log(Level.WARNING, " >> Timing issue encountered: Class was not initialised in a timely manner.");
+                }
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.WARNING, ex.toString(), ex);
+                Thread.currentThread().interrupt();
+            }
+        }        
+    }
+    
     /**
      * Expand the named plugin (and the section it's in) and scroll it to a visible position.
      * <p/>
@@ -248,7 +274,7 @@ public class QueryPhasePane extends VBox {
 
                 for (final DataSourceTitledPane titledPane : headingPane.getDataSources()) {
                     titledPane.getStyleClass().remove(DataSourceTitledPane.MATCHED_STYLE);
-                    if (StringUtils.isNotBlank(text) && StringUtils.containsIgnoreCase(titledPane.getPlugin().getName(), text)) {
+                    if (StringUtils.isNotBlank(text) && Strings.CI.contains(titledPane.getPlugin().getName(), text)) {
                         titledPane.getStyleClass().add(DataSourceTitledPane.MATCHED_STYLE);
                         shouldExpand = true;
                     }
@@ -349,6 +375,16 @@ public class QueryPhasePane extends VBox {
 
     protected VBox getDataSourceList() {
         return dataSourceList;
+    }
+
+    /**
+     * Get the children of the dataSourceList, ensuring modifications to the list have been complete before returning
+     *
+     * @return the children of the dataSourceList
+     */
+    protected ObservableList<Node> getDataSourceListChildren() {
+        waitForAccess();
+        return dataSourceList.getChildren();
     }
 
     protected Set<MenuItem> getGraphDependentMenuItems() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,20 @@ public interface WritableGraph extends GraphWriteMethods {
      * this WritableGraph was first acquired.
      */
     public void commit(final Object description, final String commitName);
+    
+     /**
+     * Causes the changes made on this writable graph to be committed so that
+     * other processes can see them. This writable graph is now considered
+     * closed and should not be used again.
+     *
+     * @param description the description object that will be passed to all
+     * GraphChangeListeners that are listening to this graph.
+     * @param commitName A new name from the commit to override that given when
+     * this WritableGraph was first acquired.
+     * @param addToUndo flag to allow an undoable commit for animation
+     * 
+     */
+    public void commit(final Object description, final String commitName, final boolean addToUndo);
 
     /**
      * Causes the changes made on this writable graph to be committed so that

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+<toc version="2.0">
+    <tocitem text="Selection" mergetype="javax.help.SortMerge">
+        <tocitem text="Shortest Paths" target="au.gov.asd.tac.constellation.plugins.algorithms.paths.ShortestPathsPlugin"/>
+    </tocitem>
+    <tocitem text="Tools" mergetype="javax.help.SortMerge">
+        <tocitem text="Cluster" mergetype="javax.help.SortMerge">
+            <tocitem text="Label Propagation Clustering" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.labelpropagation.LabelPropagationClustering"/>
+            <tocitem text="K-Truss" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss"/>
+            <tocitem text="Hierarchical" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.Hierarchical"/>
+            <tocitem text="Info Map" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.InfoMap"/>
+        </tocitem>
+    </tocitem>
+</toc>

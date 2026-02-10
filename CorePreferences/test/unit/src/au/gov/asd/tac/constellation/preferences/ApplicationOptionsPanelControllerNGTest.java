@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,24 +43,25 @@ import org.testng.annotations.Test;
  * @author Quasar985
  */
 public class ApplicationOptionsPanelControllerNGTest {
-
-    public ApplicationOptionsPanelControllerNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -115,6 +116,7 @@ public class ApplicationOptionsPanelControllerNGTest {
             verify(constructed.get(0), times(1)).setCurrentFont(anyString());
             verify(constructed.get(0), times(1)).setFontSize(anyString());
             verify(constructed.get(0), times(1)).setColorModeSelection(anyString());
+            verify(constructed.get(0), times(1)).setEnableSpellChecking(anyBoolean());
         }
     }
 
@@ -133,15 +135,19 @@ public class ApplicationOptionsPanelControllerNGTest {
                     when(mockInstance.getUserDirectory()).thenReturn(prefs.get(ApplicationPreferenceKeys.USER_DIR, ApplicationPreferenceKeys.USER_DIR_DEFAULT));
                     when(mockInstance.isAutosaveEnabled()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT));
                     when(mockInstance.getAutosaveFrequency()).thenReturn(prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT));
+                    when(mockInstance.getAutosaveEditorFrequency()).thenReturn(prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT));
                     when(mockInstance.isWelcomeOnStartupSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
                     when(mockInstance.isWhatsNewOnStartupSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT));
                     when(mockInstance.getWebserverPort()).thenReturn(prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT));
+                    when(mockInstance.getWebserverEditorPort()).thenReturn(prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT));
                     when(mockInstance.getNotebookDirectory()).thenReturn(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
                     when(mockInstance.getRestDirectory()).thenReturn(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT));
                     when(mockInstance.isDownloadPythonClientSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
                     when(mockInstance.getCurrentFont()).thenReturn(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT));
                     when(mockInstance.getFontSize()).thenReturn(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
+                    when(mockInstance.getFontEditorSize()).thenReturn(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
                     when(mockInstance.getColorModeSelection()).thenReturn(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT));
+                    when(mockInstance.isEnableSpellCheckingSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
                 }); MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
 
             ApplicationOptionsPanelController instance = new ApplicationOptionsPanelController();
@@ -159,15 +165,19 @@ public class ApplicationOptionsPanelControllerNGTest {
             verify(constructedAP.get(0), times(2)).getUserDirectory();
             verify(constructedAP.get(0), times(1)).isAutosaveEnabled();
             verify(constructedAP.get(0), times(2)).getAutosaveFrequency();
+            verify(constructedAP.get(0), times(2)).getAutosaveEditorFrequency();
             verify(constructedAP.get(0), times(1)).isWelcomeOnStartupSelected();
             verify(constructedAP.get(0), times(1)).isWhatsNewOnStartupSelected();
             verify(constructedAP.get(0), times(2)).getWebserverPort();
+            verify(constructedAP.get(0), times(2)).getWebserverEditorPort();
             verify(constructedAP.get(0), times(2)).getNotebookDirectory();
             verify(constructedAP.get(0), times(2)).getRestDirectory();
             verify(constructedAP.get(0), times(1)).isDownloadPythonClientSelected();
             verify(constructedAP.get(0), times(2)).getCurrentFont();
             verify(constructedAP.get(0), times(2)).getFontSize();
+            verify(constructedAP.get(0), times(2)).getFontEditorSize();
             verify(constructedAP.get(0), times(2)).getColorModeSelection();
+            verify(constructedAP.get(0), times(1)).isEnableSpellCheckingSelected();
         }
     }
 
@@ -198,6 +208,7 @@ public class ApplicationOptionsPanelControllerNGTest {
             verify(constructed.get(0), times(0)).getCurrentFont();
             verify(constructed.get(0), times(0)).getFontSize();
             verify(constructed.get(0), times(0)).getColorModeSelection();
+            verify(constructed.get(0), times(0)).isEnableSpellCheckingSelected();
         }
     }
 
@@ -215,11 +226,14 @@ public class ApplicationOptionsPanelControllerNGTest {
                     //implement method for mock so true is returned from isValid
                     when(mockInstance.getUserDirectory()).thenReturn("");
                     when(mockInstance.getAutosaveFrequency()).thenReturn(1);
+                    when(mockInstance.getAutosaveEditorFrequency()).thenReturn(1);
                     when(mockInstance.getWebserverPort()).thenReturn(1);
+                    when(mockInstance.getWebserverEditorPort()).thenReturn(1);
                     when(mockInstance.getNotebookDirectory()).thenReturn("");
                     when(mockInstance.getRestDirectory()).thenReturn("");
                     when(mockInstance.getCurrentFont()).thenReturn("");
                     when(mockInstance.getFontSize()).thenReturn("");
+                    when(mockInstance.getFontEditorSize()).thenReturn("");
                     when(mockInstance.getColorModeSelection()).thenReturn("");
                 })) {
 
@@ -233,39 +247,48 @@ public class ApplicationOptionsPanelControllerNGTest {
             // Assert that created panel had run the following methods
             verify(constructed.get(0), times(1)).getUserDirectory();
             verify(constructed.get(0), times(1)).getAutosaveFrequency();
+            verify(constructed.get(0), times(1)).getAutosaveEditorFrequency();
             verify(constructed.get(0), times(1)).getWebserverPort();
+            verify(constructed.get(0), times(1)).getWebserverEditorPort();
             verify(constructed.get(0), times(1)).getNotebookDirectory();
             verify(constructed.get(0), times(1)).getRestDirectory();
             verify(constructed.get(0), times(1)).getCurrentFont();
             verify(constructed.get(0), times(1)).getFontSize();
+            verify(constructed.get(0), times(1)).getFontEditorSize();
             verify(constructed.get(0), times(1)).getColorModeSelection();
         }
     }
 
     /**
      * Test of isValid method, of class ApplicationOptionsPanelController.
+     * Call the isValid method x times (according to the number property
+     * conditions to test) and for each iteration, allow one more condition
+     * to return true, so that eventually all get methods are tested.
      */
     @Test
     public void testIsValidManyCombo() {
         System.out.println("isValid Many Combos");
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i <= 11; i++) {
             // To use value of i in lambda, it needs to be final
             final int index = i;
             // Value should be false for all but the last iteration
-            final boolean expResult = (i == 8);
+            final boolean expResult = (i == 11);
 
             try (MockedConstruction<ApplicationOptionsPanel> mockAP = mockConstruction(ApplicationOptionsPanel.class,
                     (mockInstance, context) -> {
                         //implement methods
                         when(mockInstance.getUserDirectory()).thenReturn((index > 0) ? "" : null);
                         when(mockInstance.getAutosaveFrequency()).thenReturn((index > 1) ? 1 : 0);
-                        when(mockInstance.getWebserverPort()).thenReturn((index > 2) ? 1 : 0);
-                        when(mockInstance.getNotebookDirectory()).thenReturn((index > 3) ? "" : null);
-                        when(mockInstance.getRestDirectory()).thenReturn((index > 4) ? "" : null);
-                        when(mockInstance.getCurrentFont()).thenReturn((index > 5) ? "" : null);
-                        when(mockInstance.getFontSize()).thenReturn((index > 6) ? "" : null);
-                        when(mockInstance.getColorModeSelection()).thenReturn((index > 7) ? "" : null);
+                        when(mockInstance.getAutosaveEditorFrequency()).thenReturn((index > 2) ? 1 : 0);//
+                        when(mockInstance.getWebserverPort()).thenReturn((index > 3) ? 1 : 0);
+                        when(mockInstance.getWebserverEditorPort()).thenReturn((index > 4) ? 1 : 0);
+                        when(mockInstance.getNotebookDirectory()).thenReturn((index > 5) ? "" : null);//
+                        when(mockInstance.getRestDirectory()).thenReturn((index > 6) ? "" : null);
+                        when(mockInstance.getCurrentFont()).thenReturn((index > 7) ? "" : null);
+                        when(mockInstance.getFontSize()).thenReturn((index > 8) ? "" : null);
+                        when(mockInstance.getFontEditorSize()).thenReturn((index > 9) ? "" : null);//
+                        when(mockInstance.getColorModeSelection()).thenReturn((index > 10) ? "" : null);
                     })) {
 
                 ApplicationOptionsPanelController instance = new ApplicationOptionsPanelController();
@@ -275,16 +298,19 @@ public class ApplicationOptionsPanelControllerNGTest {
                 // Get a list of all created mocks
                 List<ApplicationOptionsPanel> constructed = mockAP.constructed();
                 assertEquals(constructed.size(), 1);
-
+                
                 // Assert that created panel had run the following methods
                 verify(constructed.get(0), times(1)).getUserDirectory();
                 verify(constructed.get(0), times((index > 0) ? 1 : 0)).getAutosaveFrequency();
-                verify(constructed.get(0), times((index > 1) ? 1 : 0)).getWebserverPort();
-                verify(constructed.get(0), times((index > 2) ? 1 : 0)).getNotebookDirectory();
-                verify(constructed.get(0), times((index > 3) ? 1 : 0)).getRestDirectory();
-                verify(constructed.get(0), times((index > 4) ? 1 : 0)).getCurrentFont();
-                verify(constructed.get(0), times((index > 5) ? 1 : 0)).getFontSize();
-                verify(constructed.get(0), times((index > 6) ? 1 : 0)).getColorModeSelection();
+                verify(constructed.get(0), times((index > 1) ? 1 : 0)).getAutosaveEditorFrequency();
+                verify(constructed.get(0), times((index > 2) ? 1 : 0)).getWebserverPort();
+                verify(constructed.get(0), times((index > 3) ? 1 : 0)).getWebserverEditorPort();
+                verify(constructed.get(0), times((index > 4) ? 1 : 0)).getNotebookDirectory();
+                verify(constructed.get(0), times((index > 5) ? 1 : 0)).getRestDirectory();
+                verify(constructed.get(0), times((index > 6) ? 1 : 0)).getCurrentFont();
+                verify(constructed.get(0), times((index > 7) ? 1 : 0)).getFontSize();
+                verify(constructed.get(0), times((index > 8) ? 1 : 0)).getFontEditorSize();
+                verify(constructed.get(0), times((index > 9) ? 1 : 0)).getColorModeSelection();
             }
         }
     }
@@ -325,6 +351,7 @@ public class ApplicationOptionsPanelControllerNGTest {
             verify(constructed.get(0), times(0)).getCurrentFont();
             verify(constructed.get(0), times(0)).getFontSize();
             verify(constructed.get(0), times(0)).getColorModeSelection();
+            verify(constructed.get(0), times(0)).isEnableSpellCheckingSelected();
         }
     }
 
@@ -345,15 +372,19 @@ public class ApplicationOptionsPanelControllerNGTest {
                     when(mockInstance.getUserDirectory()).thenReturn(prefs.get(ApplicationPreferenceKeys.USER_DIR, ApplicationPreferenceKeys.USER_DIR_DEFAULT));
                     when(mockInstance.isAutosaveEnabled()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT));
                     when(mockInstance.getAutosaveFrequency()).thenReturn(prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT));
+                    when(mockInstance.getAutosaveEditorFrequency()).thenReturn(prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT));
                     when(mockInstance.isWelcomeOnStartupSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
                     when(mockInstance.isWhatsNewOnStartupSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT));
                     when(mockInstance.getWebserverPort()).thenReturn(prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT));
+                    when(mockInstance.getWebserverEditorPort()).thenReturn(prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT));
                     when(mockInstance.getNotebookDirectory()).thenReturn(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
                     when(mockInstance.getRestDirectory()).thenReturn(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT));
                     when(mockInstance.isDownloadPythonClientSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
                     when(mockInstance.getCurrentFont()).thenReturn(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT));
                     when(mockInstance.getFontSize()).thenReturn(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
+                    when(mockInstance.getFontEditorSize()).thenReturn(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
                     when(mockInstance.getColorModeSelection()).thenReturn(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT));
+                    when(mockInstance.isEnableSpellCheckingSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
                 })) {
 
             boolean result = instance.isChanged();
@@ -376,11 +407,15 @@ public class ApplicationOptionsPanelControllerNGTest {
             verify(constructed.get(0), times(1)).getCurrentFont();
             verify(constructed.get(0), times(1)).getFontSize();
             verify(constructed.get(0), times(1)).getColorModeSelection();
+            verify(constructed.get(0), times(1)).isEnableSpellCheckingSelected();
         }
     }
 
     /**
      * Test of isChanged method, of class ApplicationOptionsPanelController.
+     * Call the isChanged method x times (according to the number property
+     * conditions to test) and for each iteration, allow one more condition
+     * to return true, so that eventually all get methods are tested.
      */
     @Test
     public void testIsChangedManyCombo() {
@@ -388,11 +423,11 @@ public class ApplicationOptionsPanelControllerNGTest {
 
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i <= 16; i++) {
             // To use value of i in lambda, it needs to be final
             final int index = i;
             // Expected result should be true for all but the final iteration
-            boolean expResult = (i != 12);
+            boolean expResult = (i != 16);
 
             try (MockedConstruction<ApplicationOptionsPanel> mock = mockConstruction(ApplicationOptionsPanel.class,
                     (mockInstance, context) -> {
@@ -400,17 +435,21 @@ public class ApplicationOptionsPanelControllerNGTest {
                         when(mockInstance.getUserDirectory()).thenReturn((index > 0) ? prefs.get(ApplicationPreferenceKeys.USER_DIR, ApplicationPreferenceKeys.USER_DIR_DEFAULT) : "");
                         when(mockInstance.isAutosaveEnabled()).thenReturn((index > 1) ? prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT) : !prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT));
                         when(mockInstance.getAutosaveFrequency()).thenReturn((index > 2) ? prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT) : prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT) - 1);
-                        when(mockInstance.isWelcomeOnStartupSelected()).thenReturn((index > 3) ? prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT) : !prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
-                        when(mockInstance.isWhatsNewOnStartupSelected()).thenReturn((index > 4) ? prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT) : !prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT));
+                        when(mockInstance.getAutosaveEditorFrequency()).thenReturn((index > 3) ? prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT) : prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT) - 1);
+                        when(mockInstance.isWelcomeOnStartupSelected()).thenReturn((index > 4) ? prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT) : !prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
+                        when(mockInstance.isWhatsNewOnStartupSelected()).thenReturn((index > 5) ? prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT) : !prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT));
 
-                        when(mockInstance.getWebserverPort()).thenReturn((index > 5) ? prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT) : prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT) - 1);
-                        when(mockInstance.getNotebookDirectory()).thenReturn((index > 6) ? prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT) : "");
-                        when(mockInstance.getRestDirectory()).thenReturn((index > 7) ? prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT) : "fail");
-                        when(mockInstance.isDownloadPythonClientSelected()).thenReturn((index > 8) ? prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT) : !prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
-                        when(mockInstance.getCurrentFont()).thenReturn((index > 9) ? prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT) : "");
+                        when(mockInstance.getWebserverPort()).thenReturn((index > 6) ? prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT) : prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT) - 1);
+                        when(mockInstance.getWebserverEditorPort()).thenReturn((index > 7) ? prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT) : prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT) - 1);
+                        when(mockInstance.getNotebookDirectory()).thenReturn((index > 8) ? prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT) : "");
+                        when(mockInstance.getRestDirectory()).thenReturn((index > 9) ? prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT) : "fail");
+                        when(mockInstance.isDownloadPythonClientSelected()).thenReturn((index > 10) ? prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT) : !prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
+                        when(mockInstance.getCurrentFont()).thenReturn((index > 11) ? prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT) : "");
 
-                        when(mockInstance.getFontSize()).thenReturn((index > 10) ? prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT) : "");
-                        when(mockInstance.getColorModeSelection()).thenReturn((index > 11) ? prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT) : "");
+                        when(mockInstance.getFontSize()).thenReturn((index > 12) ? prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT) : "");
+                        when(mockInstance.getFontEditorSize()).thenReturn((index > 13) ? prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT) : "");
+                        when(mockInstance.getColorModeSelection()).thenReturn((index > 14) ? prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT) : "");
+                        when(mockInstance.isEnableSpellCheckingSelected()).thenReturn((index > 15) ? prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT) : !prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
                     })) {
 
                 ApplicationOptionsPanelController instance = new ApplicationOptionsPanelController();
@@ -425,15 +464,19 @@ public class ApplicationOptionsPanelControllerNGTest {
                 verify(constructed.get(0), times(1)).getUserDirectory();
                 verify(constructed.get(0), times((index > 0) ? 1 : 0)).isAutosaveEnabled();
                 verify(constructed.get(0), times((index > 1) ? 1 : 0)).getAutosaveFrequency();
-                verify(constructed.get(0), times((index > 2) ? 1 : 0)).isWelcomeOnStartupSelected();
-                verify(constructed.get(0), times((index > 3) ? 1 : 0)).isWhatsNewOnStartupSelected();
-                verify(constructed.get(0), times((index > 4) ? 1 : 0)).getWebserverPort();
-                verify(constructed.get(0), times((index > 5) ? 1 : 0)).getNotebookDirectory();
-                verify(constructed.get(0), times((index > 6) ? 1 : 0)).getRestDirectory();
-                verify(constructed.get(0), times((index > 7) ? 1 : 0)).isDownloadPythonClientSelected();
-                verify(constructed.get(0), times((index > 8) ? 1 : 0)).getCurrentFont();
-                verify(constructed.get(0), times((index > 9) ? 1 : 0)).getFontSize();
-                verify(constructed.get(0), times((index > 10) ? 1 : 0)).getColorModeSelection();
+                verify(constructed.get(0), times((index > 2) ? 1 : 0)).getAutosaveEditorFrequency();
+                verify(constructed.get(0), times((index > 3) ? 1 : 0)).isWelcomeOnStartupSelected();
+                verify(constructed.get(0), times((index > 4) ? 1 : 0)).isWhatsNewOnStartupSelected();
+                verify(constructed.get(0), times((index > 5) ? 1 : 0)).getWebserverPort();
+                verify(constructed.get(0), times((index > 6) ? 1 : 0)).getWebserverEditorPort();
+                verify(constructed.get(0), times((index > 7) ? 1 : 0)).getNotebookDirectory();
+                verify(constructed.get(0), times((index > 8) ? 1 : 0)).getRestDirectory();
+                verify(constructed.get(0), times((index > 9) ? 1 : 0)).isDownloadPythonClientSelected();
+                verify(constructed.get(0), times((index > 10) ? 1 : 0)).getCurrentFont();
+                verify(constructed.get(0), times((index > 11) ? 1 : 0)).getFontSize();
+                verify(constructed.get(0), times((index > 12) ? 1 : 0)).getFontEditorSize();
+                verify(constructed.get(0), times((index > 13) ? 1 : 0)).getColorModeSelection();
+                verify(constructed.get(0), times((index > 14) ? 1 : 0)).isEnableSpellCheckingSelected();
             }
         }
     }

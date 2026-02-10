@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,10 @@ package au.gov.asd.tac.constellation.views.errorreport;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
 import java.util.Date;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
@@ -156,7 +154,7 @@ public class ErrorReportDialog {
         errorHeadingPane.setCenter(headingSection);
 
         detailsBox.getChildren().add(errorHeadingPane);
-        errorMsgArea = new TextArea(errorEntry.getSummaryHeading() + SeparatorConstants.NEWLINE + errorEntry.getErrorData());
+        errorMsgArea = new TextArea(errorEntry.getSummaryHeading() + errorEntry.getErrorData());
         errorMsgArea.setEditable(false);
 
         fullMessageBox = new VBox();

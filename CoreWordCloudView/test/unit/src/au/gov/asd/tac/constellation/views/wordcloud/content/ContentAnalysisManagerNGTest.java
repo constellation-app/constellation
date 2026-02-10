@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,25 +41,29 @@ public class ContentAnalysisManagerNGTest {
     
     private final Graph graph = mock(Graph.class);
     private final int[] performOnElements = {0, 1, 2, 3, 4};
-    private final Set<Integer> elementsOfInterest = new HashSet();
+    private final Set<Integer> elementsOfInterest = new HashSet<>();
     private final int graphElementCapacity = 1;
     private final GraphElementType elementType = GraphElementType.VERTEX;
     private final int performOnAttributeID = 0;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -68,7 +72,7 @@ public class ContentAnalysisManagerNGTest {
     @Test
     public void testGetStringListAllocator() {
         System.out.println("getStringListAllocator");
-        final List<String> list = new ArrayList();
+        final List<String> list = new ArrayList<>();
         list.add("vertex1");
         list.add("vertex2");
         list.add("vertex3");
@@ -106,6 +110,5 @@ public class ContentAnalysisManagerNGTest {
         assertEquals(adaptor.getCurrentElementID(), 0);
         assertEquals(adaptor.getWorkload(), 5);
         adaptor.disconnect();
-    }
-    
+    } 
 }

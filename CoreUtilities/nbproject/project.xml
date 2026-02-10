@@ -57,6 +57,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.netbeans.modules.options.keymap</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <implementation-version/>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.openide.awt</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -181,6 +189,7 @@
                 <package>au.gov.asd.tac.constellation.utilities.gui.field.framework</package>
                 <package>au.gov.asd.tac.constellation.utilities.gui.filechooser</package>
                 <package>au.gov.asd.tac.constellation.utilities.gui.recentvalue</package>
+                <package>au.gov.asd.tac.constellation.utilities.headless</package>
                 <package>au.gov.asd.tac.constellation.utilities.html</package>
                 <package>au.gov.asd.tac.constellation.utilities.https</package>
                 <package>au.gov.asd.tac.constellation.utilities.icon</package>
@@ -194,7 +203,6 @@
                 <package>au.gov.asd.tac.constellation.utilities.nifi</package>
                 <package>au.gov.asd.tac.constellation.utilities.nifi.rest</package>
                 <package>au.gov.asd.tac.constellation.utilities.qs</package>
-                <package>au.gov.asd.tac.constellation.utilities.query</package>
                 <package>au.gov.asd.tac.constellation.utilities.rest</package>
                 <package>au.gov.asd.tac.constellation.utilities.sql</package>
                 <package>au.gov.asd.tac.constellation.utilities.stream</package>
@@ -206,7 +214,6 @@
                 <package>au.gov.asd.tac.constellation.utilities.timer</package>
                 <package>au.gov.asd.tac.constellation.utilities.tooltip</package>
                 <package>au.gov.asd.tac.constellation.utilities.tooltip.handlers</package>
-                <package>au.gov.asd.tac.constellation.utilities.video</package>
                 <package>au.gov.asd.tac.constellation.utilities.visual</package>
                 <package>au.gov.asd.tac.constellation.utilities.xml</package>
             </public-packages>

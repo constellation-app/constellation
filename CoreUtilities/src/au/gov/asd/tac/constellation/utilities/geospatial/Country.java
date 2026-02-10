@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public enum Country {
 
     AFGHANISTAN("AF", "AFG", "Afghan", "Afghanistan"),
-    ALAND_ISLANDS("AX", "ALA", null, "Aland Islands"),
+    ALAND_ISLANDS("AX", "ALA", null, "Åland", "Aland Islands"),
     ALBANIA("AL", "ALB", "Albanian", "Albania"),
     ALGERIA("DZ", "DZA", "Algerian", "Algeria"),
     AMERICAN_SAMOA("AS", "ASM", "American Samoan", "American Samoa"),
@@ -82,12 +82,12 @@ public enum Country {
     CONGO_DEMOCRATIC_REPUBLIC("CD", "COD", "Congolese", "Congo, the Democratic Republic of the"),
     COOK_ISLANDS("CK", "COK", "Cook Island", "Cook Islands"),
     COSTA_RICA("CR", "CRI", "Costa Rican", "Costa Rica"),
+    COTE_DIVOIRE("CI", "CIV", "Ivorian", "Côte d'Ivoire", "Cote D'Ivoire"),
     CROATIA("HR", "HRV", "Croatian", "Croatia", "Hrvatska"),
     CUBA("CU", "CUB", "Cuban", "Cuba"),
-    CURACAO("CW", "CUW", null, "Curacao"),
+    CURACAO("CW", "CUW", null, "Curaçao", "Curacao"),
     CYPRUS("CY", "CYP", "Cypriot", "Cyprus"),
     CZECH_REPUBLIC("CZ", "CZE", "Czech", "Czechia", "Czech Republic"),
-    COTE_DIVOIRE("CI", "CIV", "Ivorian", "Cote D'Ivoire"),
     DENMARK("DK", "DNK", "Danish", "Denmark"),
     DJIBOUTI("DJ", "DJI", "Djiboutian", "Djibouti"),
     DOMINICA("DM", "DMA", "Dominican", "Dominica"),
@@ -223,7 +223,7 @@ public enum Country {
     SAINT_VINCENT_AND_THE_GRENADINES("VC", "VCT", "Saint Vincentian", "Saint Vincent and the Grenadines"),
     SAMOA("WS", "WSM", "Samoan", "Samoa"),
     SAN_MARINO("SM", "SMR", "Sammarinese", "San Marino"),
-    SAO_TOME_AND_PRINCIPE("ST", "STP", "Santomean", "Sao Tome and Principe"),
+    SAO_TOME_AND_PRINCIPE("ST", "STP", "Santomean", "São Tomé and Príncipe", "Sao Tome and Principe"),
     SAUDI_ARABIA("SA", "SAU", "Saudi", "Saudi Arabia"),
     SENEGAL("SN", "SEN", "Senegalese", "Senegal"),
     SERBIA("RS", "SRB", "Serbian", "Serbia"),
@@ -256,7 +256,7 @@ public enum Country {
     TONGA("TO", "TON", "Tongan", "Tonga"),
     TRINIDAD_AND_TOBAGO("TT", "TTO", "Trinidadian or Tobagonian", "Trinidad and Tobago"),
     TUNISIA("TN", "TUN", "Tunisian", "Tunisia"),
-    TURKEY("TR", "TUR", "Turkish", "Republic of Turkiye", "Turkiye", "Turkey"),
+    TURKEY("TR", "TUR", "Turkish", "Republic of Turkiye", "Türkiye", "Turkiye", "Turkey"),
     TURKMENISTAN("TM", "TKM", "Turkmen", "Turkmenistan"),
     TURKS_AND_CAICOS_ISLANDS("TC", "TCA", "Turks and Caicos Island", "Turks and Caicos Islands"),
     TUVALU("TV", "TUV", "Tuvaluan", "Tuvalu"),

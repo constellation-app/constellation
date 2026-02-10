@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import static au.gov.asd.tac.constellation.views.errorreport.ErrorReportTopComponent.REPORT_SETTINGS_PARAMETER_ID;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +53,7 @@ public class ErrorReportFullSuiteNGTest {
             if (!FxToolkit.isFXApplicationThreadRunning()) {
                 FxToolkit.registerPrimaryStage();
             }
-        } catch (Exception e) {
+        } catch (TimeoutException e) {
             System.out.println("\n**** SETUP ERROR: " + e);
             throw e;
         }
@@ -68,15 +73,13 @@ public class ErrorReportFullSuiteNGTest {
                 throw e;
             }
         }
-    }
+    } 
 
     @Test
     public void runSessionDataTest() {
 
         System.out.println("\n>>>> ERROR REPORT VIEW - TEST SUITE\n");
-
-        System.setProperty("java.awt.headless", "true");
-
+    
         final ErrorReportDialogManager erdm = ErrorReportDialogManager.getInstance();
         erdm.setErrorReportRunning(false);
         erdm.setLatestPopupDismissDate(null);
@@ -113,9 +116,9 @@ public class ErrorReportFullSuiteNGTest {
 
         List<ErrorReportEntry> storedList = session.refreshDisplayedErrors(filters);
 
-        // should contain 2 entries, each having 2 occurences
+        // should contain 3 entries, one of which has 2 occurences
         System.out.println("\n>>>> Check list size");
-        assertEquals(storedList.size(), 2);
+        assertEquals(storedList.size(), 3);
         final ErrorReportEntry storedData = session.findDisplayedEntryWithId(testEntry2.getEntryId());
 
         System.out.println("\n>>>> Check Occurrences");
@@ -125,11 +128,9 @@ public class ErrorReportFullSuiteNGTest {
         System.out.println("\n>>>> Check screen update requested");
         assertTrue(ErrorReportSessionData.isScreenUpdateRequested());
 
-        List<String> activeLevels = erdm.getActivePopupErrorLevels();
-
         System.out.println("\n\n>>>> Waiting for SEVERE dialogs");
         // default popup mode 2 only allows 1 popup
-        storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.SEVERE)), 1);
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.SEVERE)), 1);
         System.out.println("\n\n>>>> Done Waiting");
 
         dismissPopups(storedList);
@@ -137,9 +138,9 @@ public class ErrorReportFullSuiteNGTest {
         session.removeEntry(testEntry.getEntryId());
         storedList = session.refreshDisplayedErrors(filters);
         System.out.println("\n>>>> Check new list size");
-        assertEquals(storedList.size(), 1);
+        assertEquals(storedList.size(), 2);
 
-        activeLevels = erdm.getActivePopupErrorLevels();
+        List<String> activeLevels = erdm.getActivePopupErrorLevels();
 
         System.out.println("\n>>>> Check active levels: " + activeLevels);
         System.out.println("\n>>>> resumption date: " + erdm.getGracePeriodResumptionDate()
@@ -169,7 +170,7 @@ public class ErrorReportFullSuiteNGTest {
         System.out.println("\n>>>> Check active levels: " + activeLevels);
 
         System.out.println("\n\n>>>> Waiting for WARN/INFO/FINE dialogs");
-        storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.WARNING, Level.INFO, Level.FINE)), 3);
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.WARNING, Level.INFO, Level.FINE)), 3);
         System.out.println("\n\n>>>> Done Waiting");
         System.out.println("\n>>>> Check WARN/INFO/FINE list size");
         assertEquals(storedList.size(), 3);
@@ -195,7 +196,7 @@ public class ErrorReportFullSuiteNGTest {
             erdm.showErrorDialog(erEntry, true); // should redisplay dialog in review mode
         }
 
-        storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.SEVERE, Level.WARNING, Level.INFO, Level.FINE)), 4);
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.SEVERE, Level.WARNING, Level.INFO, Level.FINE)), 4);
         dismissPopups(storedList);
 
         final ErrorReportTopComponent ertcInstance = new ErrorReportTopComponent();
@@ -208,20 +209,31 @@ public class ErrorReportFullSuiteNGTest {
 
         final ErrorReportEntry partialEntry5 = new ErrorReportEntry(Level.WARNING, null, "part summary", "part message", ErrorReportSessionData.getNextEntryId());
         session.storeSessionError(partialEntry5);
-
+        
+        // trigger new filter choice of WARNING
+        MultiChoiceParameterType.MultiChoiceParameterValue multiChoiceValue = ertcInstance.getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
+        final List<String> checked = new ArrayList<>();
+        checked.add(ErrorReportTopComponent.SeverityCode.WARNING.getCode());
+        multiChoiceValue.setChoices(checked);
+        @SuppressWarnings("unchecked") // REPORT_SETTINGS_PARAMETER will always be of type MultiChoiceParameter
+        final PluginParameter<MultiChoiceParameterValue> filterTypeParameter = (PluginParameter<MultiChoiceParameterValue>) ertcInstance.getParams().getParameters().get(REPORT_SETTINGS_PARAMETER_ID);
+        filterTypeParameter.fireChangeEvent(ParameterChange.PROPERTY);
+        
         System.out.println("\n\n>>>> Waiting for TC dialogs");
-        storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.WARNING)), 1);
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.WARNING)), 1);
         System.out.println("\n\n>>>> Done Waiting");
 
         System.out.println("\n>>>> Check WARNINGS list size");
         assertEquals(storedList.size(), 1);
-
-//        final boolean isFlashing = ertcInstance.isIconFlashing();
-//        assertTrue(isFlashing);
-// TODO: Fix test for V3 environment. This test is no longer returning the expected result ?
+        System.out.println("\n\n>>>> Waiting 8s for updates to flow through");
+        delay(8000);
+        System.out.println("\n>>>> Check if Error Report Icon is flashing");
+        final boolean isFlashing = ertcInstance.isIconFlashing();
+        // icon should be flashing while there are error popups, and stop flashing when they are all dismissed
+        assertTrue(isFlashing);
 
         ertcInstance.setReportsExpanded(false);
-        ertcInstance.refreshSessionErrors();
+        ertcInstance.refreshSessionErrors(); // sync sessionErrors & SessionErrorsBox
         final ErrorReportEntry checkEntry = ertcInstance.findActiveEntryWithId(storedList.get(0).getEntryId());
         System.out.println("\n>>>> Check ErrorReportEntry : " + checkEntry.toString());
         assertFalse(checkEntry.isExpanded());
@@ -231,7 +243,6 @@ public class ErrorReportFullSuiteNGTest {
         ertcInstance.handleComponentClosed();
         ertcInstance.close();
 
-        System.clearProperty("java.awt.headless");
         System.out.println("\n>>>> PASSED ALL TESTS");
 
     }
@@ -239,7 +250,7 @@ public class ErrorReportFullSuiteNGTest {
     private void delay(final long milliseconds) {
         // may need to wait for timers to trigger and do their thing
         final Executor delayed = CompletableFuture.delayedExecutor(milliseconds, TimeUnit.MILLISECONDS);
-        final CompletableFuture cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
+        final CompletableFuture<Void> cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
                 .thenAccept(LOGGER::info);
         try {
             cf.get();

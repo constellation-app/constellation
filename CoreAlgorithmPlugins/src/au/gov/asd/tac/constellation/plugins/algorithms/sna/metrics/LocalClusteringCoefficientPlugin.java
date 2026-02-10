@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,12 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.math.BigInteger;
 import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
+import org.eclipse.collections.api.map.primitive.MutableIntFloatMap;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.tuple.primitive.IntFloatPair;
+import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
+import org.eclipse.collections.impl.map.mutable.primitive.IntFloatHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -68,7 +72,7 @@ public class LocalClusteringCoefficientPlugin extends SimpleEditPlugin {
         final int localClusteringCoefficientAttribute = LOCAL_CLUSTERING_COEFFICIENT_ATTRIBUTE.ensure(graph);
 
         // map each vertex to its neighbours
-        final Map<Integer, BitSet> neighbourMap = new HashMap<>();
+        final MutableIntObjectMap<BitSet> neighbourMap = new IntObjectHashMap<>();
         final int vertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final int vertexId = graph.getVertex(vertexPosition);
@@ -86,16 +90,16 @@ public class LocalClusteringCoefficientPlugin extends SimpleEditPlugin {
 
         // compute the local clustering coefficient for each vertex
         float maxLocalClusteringCoefficient = 0;
-        final Map<Integer, Float> localClusteringCoefficients = new HashMap<>();
-        for (final Map.Entry<Integer, BitSet> entry : neighbourMap.entrySet()) {
-            final int vertexId = graph.getVertex(entry.getKey());
-            final BitSet vertexNeighbours = entry.getValue();
+        final MutableIntFloatMap localClusteringCoefficients = new IntFloatHashMap();
+        for (final IntObjectPair<BitSet> keyValue : neighbourMap.keyValuesView()) {
+            final int vertexId = graph.getVertex(keyValue.getOne());
+            final BitSet vertexNeighbours = keyValue.getTwo();
 
             // calculate the number of connected neighbours (remembering to divide
             // by two as we will see each pair twice, once from each direction)
             int connectedNeighbourPairs = 0;
             for (int neighbourPosition = vertexNeighbours.nextSetBit(0); neighbourPosition >= 0; neighbourPosition = vertexNeighbours.nextSetBit(neighbourPosition + 1)) {
-                if (neighbourPosition == entry.getKey()) {
+                if (neighbourPosition == keyValue.getOne()) {
                     continue;
                 }
                 final BitSet neighbourNeighbours = neighbourMap.get(neighbourPosition);
@@ -114,11 +118,11 @@ public class LocalClusteringCoefficientPlugin extends SimpleEditPlugin {
         }
 
         // update the graph with degree values
-        for (final Map.Entry<Integer, Float> entry : localClusteringCoefficients.entrySet()) {
+        for (final IntFloatPair keyValue : localClusteringCoefficients.keyValuesView()) {
             if (normaliseByAvailable && maxLocalClusteringCoefficient > 0) {
-                graph.setFloatValue(localClusteringCoefficientAttribute, entry.getKey(), entry.getValue() / maxLocalClusteringCoefficient);
+                graph.setFloatValue(localClusteringCoefficientAttribute, keyValue.getOne(), keyValue.getTwo() / maxLocalClusteringCoefficient);
             } else {
-                graph.setFloatValue(localClusteringCoefficientAttribute, entry.getKey(), entry.getValue());
+                graph.setFloatValue(localClusteringCoefficientAttribute, keyValue.getOne(), keyValue.getTwo());
             }
         }
     }

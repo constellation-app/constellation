@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,79 +15,106 @@
  */
 package au.gov.asd.tac.constellation.views.histogram;
 
-import java.awt.Color;
+import au.gov.asd.tac.constellation.views.histogram.rewrite.HistogramDisplay2;
+import au.gov.asd.tac.constellation.views.histogram.rewrite.HistogramTopComponent2;
+import javafx.scene.paint.Color;
 
 /**
- * A BinSelectionMode represents the different ways the user can select bins in
- * the histogram.
+ * A BinSelectionMode represents the different ways the user can select bins in the histogram.
  *
  * @author sirius
  */
 public enum BinSelectionMode {
 
     /**
-     * The selection on the graph is immediately updated as the user clicks on
-     * bins in the histogram.
+     * The selection on the graph is immediately updated as the user clicks on bins in the histogram.
      */
-    FREE_SELECTION("Free Selection", HistogramDisplay.BAR_COLOR, HistogramDisplay.BAR_COLOR, HistogramDisplay.SELECTED_COLOR, HistogramDisplay.SELECTED_COLOR) {
+    FREE_SELECTION("Free Selection", HistogramDisplay2.getBarColor(), HistogramDisplay2.getBarColor(), HistogramDisplay2.getSelectedColor(), HistogramDisplay2.getSelectedColor()) {
         @Override
-        public void mousePressed(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd) {
+        public void mousePressed(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd) {
 
-            int firstBar = Math.max(0, Math.min(dragStart, dragEnd));
-            int lastBar = Math.min(bins.length - 1, Math.max(dragStart, dragEnd));
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            final int firstBar = Math.clamp(Math.min(dragStart, dragEnd), min, max); // Picks the smallest index
+            final int lastBar = Math.clamp(Math.max(dragStart, dragEnd), min, max); // Picks the largest index
 
             if (firstBar >= bins.length || lastBar < 0) {
                 return;
             }
 
             if (!shiftDown && !controlDown) {
-                for (Bin bin : bins) {
-                    bin.selectedCount = 0;
+                for (final Bin bin : bins) {
+                    bin.setSelectedCount(0);
                 }
             }
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedSelectedCount = bins[i].selectedCount;
-                    bins[i].selectedCount = bins[i].selectedCount == 0 ? bins[i].elementCount : 0;
+                    bins[i].setSavedSelectedCount(bins[i].getSelectedCount());
+                    bins[i].setSelectedCount(bins[i].getSelectedCount() == 0 ? bins[i].getElementCount() : 0);
                 }
             } else {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedSelectedCount = bins[i].selectedCount;
-                    bins[i].selectedCount = bins[i].elementCount;
+                    bins[i].setSavedSelectedCount(bins[i].getSelectedCount());
+                    bins[i].setSelectedCount(bins[i].getElementCount());
                 }
             }
         }
 
         @Override
-        public void mouseDragged(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int oldDragEnd, int newDragEnd) {
-            int firstBar = Math.max(0, Math.min(dragStart, oldDragEnd));
-            int lastBar = Math.min(bins.length - 1, Math.max(dragStart, oldDragEnd));
+        public void mouseDragged(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int oldDragEnd, final int newDragEnd) {
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            int firstBar = Math.clamp(Math.min(dragStart, oldDragEnd), min, max); // Picks the smallest index
+            int lastBar = Math.clamp(Math.max(dragStart, oldDragEnd), min, max); // Picks the largest index
 
             for (int i = firstBar; i <= lastBar; i++) {
-                bins[i].selectedCount = bins[i].savedSelectedCount;
+                bins[i].setSelectedCount(bins[i].getSavedSelectedCount());
             }
 
-            firstBar = Math.max(0, Math.min(dragStart, newDragEnd));
-            lastBar = Math.min(bins.length - 1, Math.max(dragStart, newDragEnd));
+            firstBar = Math.clamp(Math.min(dragStart, newDragEnd), min, max); // Picks the smallest index
+            lastBar = Math.clamp(Math.max(dragStart, newDragEnd), min, max); // Picks the largest index
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedSelectedCount = bins[i].selectedCount;
-                    bins[i].selectedCount = bins[i].selectedCount == 0 ? bins[i].elementCount : 0;
+                    bins[i].setSavedSelectedCount(bins[i].getSelectedCount());
+                    bins[i].setSelectedCount(bins[i].getSelectedCount() == 0 ? bins[i].getElementCount() : 0);
                 }
             } else {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedSelectedCount = bins[i].selectedCount;
-                    bins[i].selectedCount = bins[i].elementCount;
+                    bins[i].setSavedSelectedCount(bins[i].getSelectedCount());
+                    bins[i].setSelectedCount(bins[i].getElementCount());
                 }
             }
         }
 
         @Override
-        public void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent topComponent) {
-            int firstBar = Math.max(0, Math.min(dragStart, dragEnd));
-            int lastBar = Math.min(bins.length - 1, Math.max(dragStart, dragEnd));
+        public void mouseReleased(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd, final HistogramTopComponent topComponent) {
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            final int firstBar = Math.clamp(Math.min(dragStart, dragEnd), min, max); // Picks the smallest index
+            final int lastBar = Math.clamp(Math.max(dragStart, dragEnd), min, max); // Picks the largest index
+
+            if (firstBar >= bins.length || lastBar < 0) {
+                return;
+            }
+
+            if (controlDown) {
+                topComponent.completeBins(firstBar, lastBar);
+            } else if (shiftDown) {
+                topComponent.selectBins(firstBar, lastBar, true);
+            } else {
+                topComponent.selectOnlyBins(firstBar, lastBar);
+            }
+        }
+
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void mouseReleased(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd, final HistogramTopComponent2 topComponent) {
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            final int firstBar = Math.clamp(Math.min(dragStart, dragEnd), min, max); // Picks the smallest index
+            final int lastBar = Math.clamp(Math.max(dragStart, dragEnd), min, max); // Picks the largest index
 
             if (firstBar >= bins.length || lastBar < 0) {
                 return;
@@ -103,151 +130,183 @@ public enum BinSelectionMode {
         }
 
         @Override
-        public void select(HistogramTopComponent topComponent) {
+        public void select(final HistogramTopComponent topComponent) {
+            // Intentionally left blank
+        }
+
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void select(final HistogramTopComponent2 topComponent) {
             // Intentionally left blank
         }
     },
     /**
-     * Selections in the histogram are recorded as the user clicks and drags
-     * over bins but is not reflected on the graph until the user chooses to
-     * apply the selection. At this point the selection of the graph is
-     * represents only those elements that are in the intersection of the
-     * current and new selections.
+     * Selections in the histogram are recorded as the user clicks and drags over bins but is not reflected on the graph
+     * until the user chooses to apply the selection. At this point the selection of the graph is represents only those
+     * elements that are in the intersection of the current and new selections.
      */
-    WITHIN_SELECTION("Within Existing Selection", HistogramDisplay.BAR_COLOR, HistogramDisplay.BAR_COLOR, HistogramDisplay.SELECTED_COLOR, HistogramDisplay.ACTIVE_COLOR) {
+    WITHIN_SELECTION("Within Existing Selection", HistogramDisplay2.getBarColor(), HistogramDisplay2.getBarColor(), HistogramDisplay2.getSelectedColor(), HistogramDisplay2.getActiveColor()) {
         @Override
-        public void mousePressed(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd) {
+        public void mousePressed(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd) {
 
-            int firstBar = Math.min(dragStart, dragEnd);
-            int lastBar = Math.max(dragStart, dragEnd);
+            final int firstBar = Math.min(dragStart, dragEnd);
+            final int lastBar = Math.max(dragStart, dragEnd);
 
             if (firstBar >= bins.length || lastBar < 0) {
                 return;
             }
 
             if (!shiftDown && !controlDown) {
-                for (Bin bin : bins) {
-                    bin.activated = false;
+                for (final Bin bin : bins) {
+                    bin.setIsActivated(false);
                 }
             }
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = !bins[i].activated;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(!bins[i].getIsActivated());
                 }
             } else {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = true;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(true);
                 }
             }
         }
 
         @Override
-        public void mouseDragged(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int oldDragEnd, int newDragEnd) {
-            int firstBar = Math.max(0, Math.min(dragStart, oldDragEnd));
-            int lastBar = Math.min(bins.length - 1, Math.max(dragStart, oldDragEnd));
+        public void mouseDragged(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int oldDragEnd, final int newDragEnd) {
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            int firstBar = Math.clamp(Math.min(dragStart, oldDragEnd), min, max); // Picks the smallest index
+            int lastBar = Math.clamp(Math.max(dragStart, oldDragEnd), min, max); // Picks the largest index
 
             for (int i = firstBar; i <= lastBar; i++) {
-                bins[i].activated = bins[i].savedActivated;
+                bins[i].setIsActivated(bins[i].getSavedActivated());
             }
 
-            firstBar = Math.max(0, Math.min(dragStart, newDragEnd));
-            lastBar = Math.min(bins.length - 1, Math.max(dragStart, newDragEnd));
+            firstBar = Math.clamp(Math.min(dragStart, newDragEnd), min, max); // Picks the smallest index
+            lastBar = Math.clamp(Math.max(dragStart, newDragEnd), min, max); // Picks the largest index
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = !bins[i].activated;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(!bins[i].getIsActivated());
                 }
             } else {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = true;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(true);
                 }
             }
         }
 
         @Override
-        public void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent topComponent) {
+        public void mouseReleased(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd, final HistogramTopComponent topComponent) {
+            // Do nothing
+        }
+
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void mouseReleased(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd, final HistogramTopComponent2 topComponent) {
             // Do nothing
         }
 
         @Override
-        public void select(HistogramTopComponent topComponent) {
+        public void select(final HistogramTopComponent topComponent) {
+            topComponent.filterSelection();
+        }
+
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void select(final HistogramTopComponent2 topComponent) {
             topComponent.filterSelection();
         }
     },
     /**
-     * Selections in the histogram are recorded as the user clicks and drags
-     * over bins but is not reflected on the graph until the user chooses to
-     * apply the selection. At this point the selection of the graph is
-     * represents only those elements that are in the union of the current and
-     * new selections.
+     * Selections in the histogram are recorded as the user clicks and drags over bins but is not reflected on the graph
+     * until the user chooses to apply the selection. At this point the selection of the graph is represents only those
+     * elements that are in the union of the current and new selections.
      */
-    ADD_TO_SELECTION("Add To Existing Selection", HistogramDisplay.BAR_COLOR, HistogramDisplay.ACTIVE_COLOR, HistogramDisplay.SELECTED_COLOR, HistogramDisplay.SELECTED_COLOR) {
+    ADD_TO_SELECTION("Add To Existing Selection", HistogramDisplay2.getBarColor(), HistogramDisplay2.getActiveColor(), HistogramDisplay2.getSelectedColor(), HistogramDisplay2.getSelectedColor()) {
         @Override
-        public void mousePressed(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd) {
+        public void mousePressed(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd) {
 
-            int firstBar = Math.max(0, Math.min(dragStart, dragEnd));
-            int lastBar = Math.min(bins.length - 1, Math.max(dragStart, dragEnd));
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            final int firstBar = Math.clamp(Math.min(dragStart, dragEnd), min, max); // Picks the smallest index
+            final int lastBar = Math.clamp(Math.max(dragStart, dragEnd), min, max); // Picks the largest index
 
             if (firstBar >= bins.length || lastBar < 0) {
                 return;
             }
 
             if (!shiftDown && !controlDown) {
-                for (Bin bin : bins) {
-                    bin.activated = false;
+                for (final Bin bin : bins) {
+                    bin.setIsActivated(false);
                 }
             }
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = !bins[i].activated;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(!bins[i].getIsActivated());
                 }
             } else {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = true;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(true);
                 }
             }
         }
 
         @Override
-        public void mouseDragged(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int oldDragEnd, int newDragEnd) {
-            int firstBar = Math.max(0, Math.min(dragStart, oldDragEnd));
-            int lastBar = Math.min(bins.length - 1, Math.max(dragStart, oldDragEnd));
+        public void mouseDragged(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int oldDragEnd, final int newDragEnd) {
+            final int min = 0;
+            final int max = Math.max(0, bins.length - 1);
+            int firstBar = Math.clamp(Math.min(dragStart, oldDragEnd), min, max); // Picks the smallest index
+            int lastBar = Math.clamp(Math.max(dragStart, oldDragEnd), min, max); // Picks the largest index
 
             for (int i = firstBar; i <= lastBar; i++) {
-                bins[i].activated = bins[i].savedActivated;
+                bins[i].setIsActivated(bins[i].getSavedActivated());
             }
 
-            firstBar = Math.max(0, Math.min(dragStart, newDragEnd));
-            lastBar = Math.min(bins.length - 1, Math.max(dragStart, newDragEnd));
+            firstBar = Math.clamp(Math.min(dragStart, newDragEnd), min, max); // Picks the smallest index
+            lastBar = Math.clamp(Math.max(dragStart, newDragEnd), min, max); // Picks the largest index
 
             if (controlDown) {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = !bins[i].activated;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(!bins[i].getIsActivated());
                 }
             } else {
                 for (int i = firstBar; i <= lastBar; i++) {
-                    bins[i].savedActivated = bins[i].activated;
-                    bins[i].activated = true;
+                    bins[i].setSavedActivated(bins[i].getIsActivated());
+                    bins[i].setIsActivated(true);
                 }
             }
         }
 
         @Override
-        public void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent topComponent) {
+        public void mouseReleased(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd, final HistogramTopComponent topComponent) {
+            // Do nothing
+        }
+
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void mouseReleased(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd, final HistogramTopComponent2 topComponent) {
             // Do nothing
         }
 
         @Override
-        public void select(HistogramTopComponent topComponent) {
+        public void select(final HistogramTopComponent topComponent) {
+            topComponent.expandSelection();
+        }
+
+        // TODO: Remove this function when Histogram rewrite is fully merged
+        @Override
+        public void select(final HistogramTopComponent2 topComponent) {
             topComponent.expandSelection();
         }
     };
@@ -258,7 +317,7 @@ public enum BinSelectionMode {
     private final Color selectedColor;
     private final Color activatedSelectedColor;
 
-    private BinSelectionMode(String label, Color barColor, Color activatedBarColor, Color selectedColor, Color activatedSelectedColor) {
+    private BinSelectionMode(final String label, final Color barColor, final Color activatedBarColor, final Color selectedColor, final Color activatedSelectedColor) {
         this.label = label;
         this.barColor = barColor;
         this.activatedBarColor = activatedBarColor;
@@ -266,13 +325,19 @@ public enum BinSelectionMode {
         this.activatedSelectedColor = activatedSelectedColor;
     }
 
-    public abstract void mousePressed(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int oldDragEnd);
+    public abstract void mousePressed(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int oldDragEnd);
 
-    public abstract void mouseDragged(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int oldDragEnd, int newDragEnd);
+    public abstract void mouseDragged(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int oldDragEnd, final int newDragEnd);
 
-    public abstract void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent topComponent);
+    public abstract void mouseReleased(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd, final HistogramTopComponent topComponent);
 
-    public abstract void select(HistogramTopComponent topComponent);
+    // TODO: Remove this function when Histogram rewrite is fully merged
+    public abstract void mouseReleased(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int dragEnd, final HistogramTopComponent2 topComponent);
+
+    public abstract void select(final HistogramTopComponent topComponent);
+
+    // TODO: Remove this function when Histogram rewrite is fully merged
+    public abstract void select(final HistogramTopComponent2 topComponent);
 
     @Override
     public String toString() {

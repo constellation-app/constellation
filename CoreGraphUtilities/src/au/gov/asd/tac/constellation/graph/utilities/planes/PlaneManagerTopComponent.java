@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,6 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Level;
@@ -53,7 +52,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileFilter;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -168,7 +169,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     }
 
     private void removeSelectedPlanesActionPerformed(final ActionEvent e) {
-        final List<Integer> toRemove = getSelectedPlanes();
+        final MutableIntList toRemove = getSelectedPlanes();
         if (!toRemove.isEmpty()) {
             final MyListModel model = ((DragDropList) planeList).getModel();
             for (int i = toRemove.size() - 1; i >= 0; i--) {
@@ -180,7 +181,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     }
 
     private void moveToSelectedVerticesActionPerformed(final ActionEvent e) {
-        final List<Integer> selectedPlanes = getSelectedPlanes();
+        final MutableIntList selectedPlanes = getSelectedPlanes();
         if (!selectedPlanes.isEmpty()) {
             final PlanePositionPanel ppp = new PlanePositionPanel();
             final DialogDescriptor dd = new DialogDescriptor(ppp, "Plane position");
@@ -192,15 +193,12 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     }
 
     private void scaleSelectedPlanesAction(final ActionEvent e) {
-        final List<Integer> selectedPlanes = getSelectedPlanes();
+        final MutableIntList selectedPlanes = getSelectedPlanes();
         if (!selectedPlanes.isEmpty()) {
             final Plane plane;
-            final ReadableGraph rg = graph.getReadableGraph();
-            try {
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
                 final PlaneState state = (PlaneState) rg.getObjectValue(planesAttr, 0);
                 plane = state.getPlane(selectedPlanes.get(0));
-            } finally {
-                rg.release();
             }
 
             final PlaneScalingPanel psp = new PlaneScalingPanel(plane);
@@ -212,8 +210,8 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         }
     }
 
-    private List<Integer> getSelectedPlanes() {
-        final List<Integer> selected = new ArrayList<>();
+    private MutableIntList getSelectedPlanes() {
+        final MutableIntList selected = new IntArrayList();
         final ListSelectionModel lsm = planeList.getSelectionModel();
         if (lsm.getMinSelectionIndex() != -1) {
             for (int ix = lsm.getMinSelectionIndex(); ix <= lsm.getMaxSelectionIndex(); ix++) {
@@ -335,8 +333,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
         boolean update = false;
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             if (planesAttr == Graph.NOT_FOUND) {
                 final int pa = rg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
                 if (pa != Graph.NOT_FOUND) {
@@ -362,10 +359,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 }
                 isAdjustingList = false;
             }
-        } finally {
-            rg.release();
         }
-
     }
 
     private void setNode(final GraphNode node) {
@@ -378,9 +372,8 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         if (node != null) {
             graphNode = node;
             graph = graphNode.getGraph();
-
-            final ReadableGraph rg = graph.getReadableGraph();
-            try {
+            
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
                 planesAttr = rg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
                 if (planesAttr != Graph.NOT_FOUND) {
                     final PlaneState state = (PlaneState) rg.getObjectValue(planesAttr, 0);
@@ -390,8 +383,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                         ((DragDropList) planeList).setPlanes(planes, visiblePlanes);
                     }
                 }
-            } finally {
-                rg.release();
             }
 
             graph.addGraphChangeListener(this);
@@ -417,8 +408,8 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                     @Override
                     public boolean accept(final File file) {
                         final String name = file.getName();
-                        return (file.isFile() && (StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG)
-                                || StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JPG)))
+                        return (file.isFile() && (Strings.CI.endsWith(name, FileExtensionConstants.PNG)
+                                || Strings.CI.endsWith(name, FileExtensionConstants.JPG)))
                                 || file.isDirectory();
                     }
 
@@ -459,7 +450,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 graph.setObjectValue(planesAttr, 0, state);
             }
         }
-
     }
 
     /**
@@ -511,7 +501,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 }
 
                 // We can't just change the object on the graph, the graph won't recognise it as a change.
-                PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
+                final PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
                 final PlaneState state = oldState != null ? new PlaneState(oldState) : new PlaneState();
                 state.addPlane(plane);
                 wg.setObjectValue(planesAttr, 0, state);
@@ -532,9 +522,9 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.DELETE})
     private static class RemovePlanePlugin extends SimpleEditPlugin {
 
-        final List<Integer> toRemove;
+        final MutableIntList toRemove;
 
-        public RemovePlanePlugin(final List<Integer> toRemove) {
+        public RemovePlanePlugin(final MutableIntList toRemove) {
             this.toRemove = toRemove;
         }
 
@@ -550,14 +540,13 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 planesAttr = wg.addAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, null, null);
             }
 
-            PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
+            final PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
             final PlaneState state = oldState != null ? new PlaneState(oldState) : new PlaneState();
             for (int i = toRemove.size() - 1; i >= 0; i--) {
                 state.removePlane(toRemove.get(i));
             }
             wg.setObjectValue(planesAttr, 0, state);
         }
-
     }
 
     /**
@@ -567,12 +556,11 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     private static class SetPlanePositionPlugin extends SimpleEditPlugin {
 
         final PlanePositionPanel ppp;
-        final List<Integer> selectedPlanes;
+        final MutableIntList selectedPlanes;
 
-        public SetPlanePositionPlugin(final PlanePositionPanel ppp, final List<Integer> selectedPlanes) {
+        public SetPlanePositionPlugin(final PlanePositionPanel ppp, final MutableIntList selectedPlanes) {
             this.ppp = ppp;
             this.selectedPlanes = selectedPlanes;
-
         }
 
         @Override
@@ -619,7 +607,8 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
 
                 final PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
                 final PlaneState state = new PlaneState(oldState);
-                for (int ix : selectedPlanes) {
+                for (int i = 0; i < selectedPlanes.get(i); i++) {
+                    final int ix = selectedPlanes.get(i);
                     final Plane plane = state.getPlane(ix);
                     final float[] xyz = ppp.getPosition(centre[BBoxf.X], centre[BBoxf.Y], centre[BBoxf.Z], nradius, plane.getWidth(), plane.getHeight());
                     plane.setX(xyz[0]);
@@ -636,7 +625,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 );
             }
         }
-
     }
 
     /**
@@ -645,13 +633,12 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.MODIFY})
     private static class ScalePlanesPlugin extends SimpleEditPlugin {
 
-        final List<Integer> selectedPlanes;
+        final MutableIntList selectedPlanes;
         final float newScale;
 
-        public ScalePlanesPlugin(final List<Integer> selectedPlanes, final float newScale) {
+        public ScalePlanesPlugin(final MutableIntList selectedPlanes, final float newScale) {
             this.selectedPlanes = selectedPlanes;
             this.newScale = newScale;
-
         }
 
         @Override
@@ -667,7 +654,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
             }
             final PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
             final PlaneState state = new PlaneState(oldState);
-            for (int ix : selectedPlanes) {
+            selectedPlanes.forEach(ix -> {
                 final Plane plane = state.getPlane(ix);
                 final float centrex = plane.getX() + plane.getWidth() / 2F;
                 final float centrey = plane.getY() + plane.getHeight() / 2F;
@@ -677,7 +664,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 plane.setY(centrey - h / 2F);
                 plane.setWidth(w);
                 plane.setHeight(h);
-            }
+            });
             wg.setObjectValue(planesAttr, 0, state);
         }
     }

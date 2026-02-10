@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,12 +77,12 @@ public class ClusteringConcept extends SchemaConcept {
         public static final SchemaAttribute HIERARCHICAL_COLOR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Hierarchical.Color")
                 .setDescription("The color of the hierarchical cluster this node belongs to")
                 .build();
-        public static final SchemaAttribute CHINESE_WHISPERS_CLUSTER = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.ChineseWhispers")
-                .setDescription("The chinese whispers cluster this node belongs to")
+        public static final SchemaAttribute LABEL_PROPAGATION_CLUSTER = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.LabelPropagation")
+                .setDescription("The label propagation cluster this node belongs to")
                 .setDefaultValue(-1)
                 .build();
-        public static final SchemaAttribute CHINESE_WHISPERS_COLOR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.ChineseWhispers.Color")
-                .setDescription("The chinese whispers cluster color")
+        public static final SchemaAttribute LABEL_PROPAGATION_COLOR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.LabelPropagation.Color")
+                .setDescription("The label propagation cluster color")
                 .build();
         public static final SchemaAttribute INFOMAP_CLUSTER = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.Infomap")
                 .setDescription("The Infomap cluster this node belongs to")
@@ -112,12 +112,12 @@ public class ClusteringConcept extends SchemaConcept {
         public static final SchemaAttribute HIERARCHICAL_COLOR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.Hierarchical.Color")
                 .setDescription("The color of the hierarchical cluster this transaction belongs to")
                 .build();
-        public static final SchemaAttribute CHINESE_WHISPERS_CLUSTER = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.ChineseWhispers")
-                .setDescription("The chinese whispers cluster this transaction belongs to")
+        public static final SchemaAttribute LABEL_PROPAGATION_CLUSTER = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.LabelPropagation")
+                .setDescription("The label propagation cluster this transaction belongs to")
                 .setDefaultValue(-1)
                 .build();
-        public static final SchemaAttribute CHINESE_WHISPERS_COLOR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.ChineseWhispers.Color")
-                .setDescription("The chinese whispers cluster color")
+        public static final SchemaAttribute LABEL_PROPAGATION_COLOR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "Cluster.LabelPropagation.Color")
+                .setDescription("The label propagation cluster color")
                 .build();
         public static final SchemaAttribute INFOMAP_CLUSTER = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "Cluster.Infomap")
                 .setDescription("The Infomap cluster this node belongs to")
@@ -138,8 +138,8 @@ public class ClusteringConcept extends SchemaConcept {
         schemaAttributes.add(VertexAttribute.K_TRUSS_COLOR);
         schemaAttributes.add(VertexAttribute.HIERARCHICAL_CLUSTER);
         schemaAttributes.add(VertexAttribute.HIERARCHICAL_COLOR);
-        schemaAttributes.add(VertexAttribute.CHINESE_WHISPERS_CLUSTER);
-        schemaAttributes.add(VertexAttribute.CHINESE_WHISPERS_COLOR);
+        schemaAttributes.add(VertexAttribute.LABEL_PROPAGATION_CLUSTER);
+        schemaAttributes.add(VertexAttribute.LABEL_PROPAGATION_COLOR);
         schemaAttributes.add(VertexAttribute.INFOMAP_CLUSTER);
         schemaAttributes.add(VertexAttribute.INFOMAP_COLOR);
         schemaAttributes.add(TransactionAttribute.NAMED_CLUSTER);
@@ -147,8 +147,8 @@ public class ClusteringConcept extends SchemaConcept {
         schemaAttributes.add(TransactionAttribute.K_TRUSS_COLOR);
         schemaAttributes.add(TransactionAttribute.HIERARCHICAL_CLUSTER);
         schemaAttributes.add(TransactionAttribute.HIERARCHICAL_COLOR);
-        schemaAttributes.add(TransactionAttribute.CHINESE_WHISPERS_CLUSTER);
-        schemaAttributes.add(TransactionAttribute.CHINESE_WHISPERS_COLOR);
+        schemaAttributes.add(TransactionAttribute.LABEL_PROPAGATION_CLUSTER);
+        schemaAttributes.add(TransactionAttribute.LABEL_PROPAGATION_COLOR);
         schemaAttributes.add(TransactionAttribute.INFOMAP_CLUSTER);
         schemaAttributes.add(TransactionAttribute.INFOMAP_COLOR);
         return Collections.unmodifiableCollection(schemaAttributes);

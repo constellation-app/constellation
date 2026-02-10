@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,24 +33,25 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class BooleanParameterTypeNGTest {
-
-    public BooleanParameterTypeNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -61,7 +62,7 @@ public class BooleanParameterTypeNGTest {
         System.out.println("build_string");
         String id = "booleanParameter";
 
-        PluginParameter result = BooleanParameterType.build(id);
+        PluginParameter<BooleanParameterValue> result = BooleanParameterType.build(id);
         BooleanParameterValue expectedValue = new BooleanParameterValue();
 
         assertEquals(result.getId(), id);
@@ -78,7 +79,7 @@ public class BooleanParameterTypeNGTest {
         String id = "booleanParameter";
         BooleanParameterValue parameterValue = new BooleanParameterValue();
 
-        PluginParameter result = BooleanParameterType.build(id, parameterValue);
+        PluginParameter<BooleanParameterValue> result = BooleanParameterType.build(id, parameterValue);
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof BooleanParameterType);

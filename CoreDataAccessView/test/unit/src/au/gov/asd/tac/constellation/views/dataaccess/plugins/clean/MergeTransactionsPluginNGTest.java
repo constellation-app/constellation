@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.text.TextPluginInteraction;
+import java.util.ArrayList;
+import java.util.List;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeMethod;
@@ -38,9 +40,21 @@ import org.testng.annotations.Test;
  */
 public class MergeTransactionsPluginNGTest {
 
-    private int vertexIdentifierAttribute, vertexTypeAttribute, transactionDateTimeAttribute, transactionTypeAttribute, transactionIdentifierAttribute, transactionSelectedAttribute;
-    private int vxId1, vxId2;
-    private int txId1, txId2, txId3, txId4, txId5;
+    private int vertexIdentifierAttribute;
+    private int transactionDateTimeAttribute;
+    private int transactionTypeAttribute;
+    private int transactionIdentifierAttribute;
+    private int transactionSelectedAttribute;
+    
+    private int vxId1;
+    private int vxId2;
+    
+    private int txId1;
+    private int txId2;
+    private int txId3;
+    private int txId4;
+    private int txId5;
+    
     private StoreGraph graph;
 
     @BeforeMethod
@@ -51,7 +65,6 @@ public class MergeTransactionsPluginNGTest {
 
         // add attributes
         vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
-        vertexTypeAttribute = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
         transactionIdentifierAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
         transactionTypeAttribute = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
         transactionDateTimeAttribute = TemporalConcept.TransactionAttribute.DATETIME.ensure(graph);
@@ -156,10 +169,16 @@ public class MergeTransactionsPluginNGTest {
         instance.edit(graph, interaction, parameters);
 
         // Check that the transactions were merged 
-        assertEquals(graph.getTransactionCount(), 3);
-        assertEquals(graph.getTransaction(txId1), 1);
-        assertEquals(graph.getTransaction(txId3), 2);
-        assertEquals(graph.getTransaction(txId4), 3);
+        final int txnCount = graph.getTransactionCount();
+        assertEquals(txnCount, 3);
+        // Confirm the correct transaction ids are being used.
+        final List<Integer> txnIds = new ArrayList<>();
+        for (int txnPos = 0; txnPos < txnCount; txnPos++) {
+            txnIds.add(graph.getTransaction(txnPos));
+        }
+        assertTrue(txnIds.contains(txId3));
+        assertTrue(txnIds.contains(txId4));
+        assertTrue(txnIds.contains(txId5));
     }
     
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import javafx.scene.input.MouseEvent;
  *
  * @author aldebaran30701
  */
-public class TooltipMouseEnteredHyperlinkHandler implements EventHandler {
+public class TooltipMouseEnteredHyperlinkHandler implements EventHandler<Event> {
     
     private static final double HYPERLINK_TOOLTIP_VERTICAL_GAP = 15.0;
     

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,12 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 
 /**
- * An Interface for {@link ConstellationInput} extensions.
- * Provides required functionality to allow an extension to have a key shortcuts.
- * 
+ * An Interface for {@link ConstellationInput} extensions. Provides required
+ * functionality to allow an extension to have a key shortcuts.
+ *
  * @author capricornunicorn123
  */
 public interface ShortcutSupport {
+
     public EventHandler<KeyEvent> getShortcuts();
 }

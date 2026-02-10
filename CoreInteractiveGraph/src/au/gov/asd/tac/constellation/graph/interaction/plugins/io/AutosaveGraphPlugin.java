@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,17 +71,13 @@ public final class AutosaveGraphPlugin extends SimplePlugin {
 
         // The user might have deleted the graph, so check first.
         if (gnode != null) {
-
-            interaction.setProgress(-1, -1, "Autosaving: " + graphId, true);
+            interaction.setProgress(-1, -1, "Autosaving: " + graphId, true, parameters);
 
             // We don't want to hold the user up while we're reading from a graph they might be using.
             // Make a copy of the graph so that we can release the read lock as soon as possible.
             GraphReadMethods copy;
-            ReadableGraph rg = graph.getReadableGraph();
-            try {
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
                 copy = rg.copy();
-            } finally {
-                rg.release();
             }
 
             interaction.setProgress(1, 0, "Finished", true);
@@ -107,10 +103,10 @@ public final class AutosaveGraphPlugin extends SimplePlugin {
                 p.setProperty(AutosaveUtilities.PATH, gnode.getDataObject().getPrimaryFile().getPath());
                 p.setProperty(AutosaveUtilities.UNSAVED, Boolean.toString(gnode.getDataObject().isInMemory()));
                 p.setProperty(AutosaveUtilities.DT, ZonedDateTime.now().format(TemporalFormatting.ZONED_DATE_TIME_FORMATTER));
-                try (OutputStream s = new FileOutputStream(new File(saveDir, gname + "_auto"))) {
+                try (final OutputStream s = new FileOutputStream(new File(saveDir, gname + "_auto"))) {
                     p.store(s, null);
                 }
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }

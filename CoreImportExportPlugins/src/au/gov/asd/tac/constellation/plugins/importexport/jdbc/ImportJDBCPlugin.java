@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,8 +117,9 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final JDBCConnection connection = (JDBCConnection) parameters.getParameters().get(CONNECTION_PARAMETER_ID).getObjectValue();
         final String query = parameters.getParameters().get(QUERY_PARAMETER_ID).getStringValue();
+        @SuppressWarnings("unchecked") // DEFINITIONS_PARAMETER_ID will always contain a list of ImportDefinition
         final List<ImportDefinition> definitions = (List<ImportDefinition>) parameters.getParameters().get(DEFINITIONS_PARAMETER_ID).getObjectValue();
-        final Boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
+        final boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
         boolean positionalAtrributesExist = false;
         int totalImportedRows = 0;
 

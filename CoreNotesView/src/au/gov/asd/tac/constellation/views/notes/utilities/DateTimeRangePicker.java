@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public class DateTimeRangePicker {
         timeZones.addAll(minusFromGMT);
         timeZones.addAll(plusFromGMT);
 
-        timeZoneChoiceBox = new ComboBox(FXCollections.observableList(timeZones));
+        timeZoneChoiceBox = new ComboBox<>(FXCollections.observableList(timeZones));
 
         final String localTimeString = offSet.format(ZoneId.systemDefault().getRules().getOffset(Instant.now())) + " " + ZoneId.systemDefault().getId();
 

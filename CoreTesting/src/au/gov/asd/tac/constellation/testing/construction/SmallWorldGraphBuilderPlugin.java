@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -257,7 +262,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
 
         for (int s = 1; s <= t; s++) {
             final int[] vxIds = new int[n];
-            final Set<Integer> transactions = new HashSet<>();
+            final MutableIntSet transactions = new IntHashSet();
             int vx = 0;
 
             while (vx < n) {
@@ -281,7 +286,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
             }
 
             for (int j = 1; j < (k / 2) + 1; j++) {
-                final List<Integer> destinations = new ArrayList<>();
+                final MutableIntList destinations = new IntArrayList();
                 for (int i = j; i < n; i++) {
                     destinations.add(vxIds[i]);
                 }
@@ -298,7 +303,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
             }
 
             for (int j = 1; j < (k / 2) + 1; j++) {
-                final List<Integer> destinations = new ArrayList<>();
+                final MutableIntList destinations = new IntArrayList();
                 for (int i = j; i < n; i++) {
                     destinations.add(vxIds[i]);
                 }
@@ -337,7 +342,9 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
                 }
             }
 
-            for (final int txId : transactions) {
+            final IntIterator iter = transactions.intIterator();
+            while (iter.hasNext()) {
+                final int txId = iter.next();
                 final int reciprocity = r.nextInt(3);
                 int numTimes = 1;
                 if (randomWeights) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -168,7 +168,6 @@ public class ProjectUpdater extends Task {
                             extractMatchingPackages(jarFile, packages, publicPackages);
                         }
                     } else {
-//                        throw new IllegalStateException("Not a JAR file: " + jarFile.getAbsolutePath());
                         logMessage("\tWARNING: Not a JAR file: " + jarFile.getAbsolutePath());
                     }
                 }
@@ -233,9 +232,7 @@ public class ProjectUpdater extends Task {
         final DocumentBuilder builder = builderFactory.newDocumentBuilder();
 
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        // Ant's build.xml can not use this
-//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         final Transformer transformer = transformerFactory.newTransformer();
 
         // Create a document to work on
@@ -253,9 +250,7 @@ public class ProjectUpdater extends Task {
 
     private static void saveXMLFile(final Document document, final File xmlFile) throws IOException, TransformerException {
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        // Ant's build.xml can not use this
-//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         final Transformer transformer = transformerFactory.newTransformer();
 
         try (final FileOutputStream out = new FileOutputStream(xmlFile)) {

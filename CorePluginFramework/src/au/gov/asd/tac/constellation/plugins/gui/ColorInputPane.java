@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,11 +70,42 @@ public final class ColorInputPane extends ParameterInputPane<ColorParameterValue
                             }
                         }
                     }
-                    case ENABLED -> updateFieldEnablement();
-                    case VISIBLE -> updateFieldVisability();
+                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
+                    case VISIBLE -> {
+                        field.setManaged(parameter.isVisible());
+                        field.setVisible(parameter.isVisible());
+                        this.setVisible(parameter.isVisible());
+                        this.setManaged(parameter.isVisible());
+                    }
                     default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
-            });
+            }));
+
+        getChildren().add(hbox);
+    }
+
+    private ComboBox<ConstellationColor> makeNamedCombo() {
+        final ObservableList<ConstellationColor> namedColors = FXCollections.observableArrayList();
+        for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
+            namedColors.add(c);
+        }
+        final ComboBox<ConstellationColor> namedComboBox = new ComboBox<>(namedColors);
+        namedComboBox.setValue(ConstellationColor.WHITE);
+        final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
+            @Override
+            protected void updateItem(final ConstellationColor item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    final Rectangle r = new Rectangle(12, 12, item.getJavaFXColor());
+                    r.setStroke(Color.BLACK);
+                    setText(item.getName());
+                    setGraphic(r);
+                }
+            }
         };
+        namedComboBox.setCellFactory(cellFactory);
+        namedComboBox.setButtonCell(cellFactory.call(null));
+
+        return namedComboBox;
     }
 }

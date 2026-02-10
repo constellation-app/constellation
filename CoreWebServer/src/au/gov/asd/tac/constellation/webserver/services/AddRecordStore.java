@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -51,7 +50,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -74,6 +72,7 @@ public class AddRecordStore extends RestService {
     private static final String TX_SOURCE = GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.SOURCE;
 
     private static final String COLUMNS = "columns";
+    private static final String EXAMPLE_RESPONSES_PATH = "addRecordStoreExample";
 
     @Override
     public String getName() {
@@ -124,7 +123,7 @@ public class AddRecordStore extends RestService {
         final PluginParameter<StringParameterValue> dataParam = StringParameterType.build(DATA_PARAMETER_ID);
         dataParam.setName("Data (body)");
         dataParam.setDescription("A JSON representation of the RecordStore data, in the form {\"columns\": [\"COL1\",\"COL2\",\"COL3\"], \"data\": [[r1c1, r1c2, r1c3],[r2c1,r2c2,r2c3]]. This is the same as the output of pandas.DataFrame.to_json(orient='split', date_format='iso').");
-        dataParam.setRequestBodyExampleJson("#/components/examples/addRecordStoreExample");
+        dataParam.setRequestBodyExampleJson("#/components/examples/addRecordStoreExample/request");        
         dataParam.setRequired(true);
         parameters.addParameter(dataParam);
 
@@ -177,7 +176,7 @@ public class AddRecordStore extends RestService {
                 final JsonNode jn = jrow.get(ix);
                 if (!jn.isNull()) {
                     if (jn.getNodeType() == JsonNodeType.ARRAY) {
-                        rs.set(h, RestServiceUtilities.toList((ArrayNode) jn));
+                        rs.set(h, RestServiceUtilities.toList(jn));
                     } else {
                         rs.set(h, jn.asText());
                     }
@@ -193,9 +192,14 @@ public class AddRecordStore extends RestService {
 
         addToGraph(graph, rs, completeWithSchema, arrange, resetView);
     }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
+    }
 
     private static void addToGraph(final Graph graph, final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final boolean resetView) {
-        final Plugin p = new ImportFromRestApiPlugin(recordStore, completeWithSchema, arrange);
+        final Plugin p = new ImportFromRestApiPlugin(recordStore, completeWithSchema, arrange, graph);
 
         PluginExecutor pe = PluginExecutor.startWith(p);
 
@@ -221,11 +225,13 @@ public class AddRecordStore extends RestService {
         private final RecordStore recordStore;
         private final boolean completeWithSchema;
         private final String arrange;
+        private final Graph graph;
 
-        public ImportFromRestApiPlugin(final RecordStore recordStore, final boolean completeWithSchema, final String arrange) {
+        public ImportFromRestApiPlugin(final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final Graph graph) {
             this.recordStore = recordStore;
             this.completeWithSchema = completeWithSchema;
             this.arrange = arrange;
+            this.graph = graph;
         }
 
         @Override
@@ -244,20 +250,18 @@ public class AddRecordStore extends RestService {
             // It is still possible to do this (by manually setting x,y,z to 0,0,0 and specifying no arrangement),
             // but then it becomes the malicious user's fault.
             //
-            try {
-                if (arrange == null) {
-                    PluginExecutor
-                            .startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
-                            .followedBy(ArrangementPluginRegistry.PENDANTS)
-                            .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
-                            .executeNow(graph);
-                } else if (arrange.isEmpty() || "None".equalsIgnoreCase(arrange)) {
-                    // Don't do anything.
-                } else {
-                    PluginExecution.withPlugin(arrange).executeNow(graph);
-                }
-            } catch (final PluginException ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            if (arrange == null) {
+                PluginExecutor
+                        .startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
+                        .followedBy(ArrangementPluginRegistry.PENDANTS)
+                        .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
+                        .executeWriteLater(this.graph);
+            } else if (arrange.isEmpty() || "None".equalsIgnoreCase(arrange)) {
+                // Don't do anything.
+            } else {
+                PluginExecutor
+                        .startWith(arrange)
+                        .executeWriteLater(this.graph);
             }
         }
     }

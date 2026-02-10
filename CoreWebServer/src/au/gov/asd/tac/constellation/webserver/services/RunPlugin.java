@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,7 @@ public class RunPlugin extends RestService {
     private static final String PLUGIN_NAME_PARAMETER_ID = "plugin_name";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
     private static final String ARGS_PARAMETER_ID = "args";
+    private static final String EXAMPLE_RESPONSES_PATH = "runPluginExample";
 
     @Override
     public String getName() {
@@ -88,7 +89,7 @@ public class RunPlugin extends RestService {
         final PluginParameter<StringParameterValue> argsParam = StringParameterType.build(ARGS_PARAMETER_ID);
         argsParam.setName("Plugin arguments (body)");
         argsParam.setDescription("A JSON object containing parameter names and values to be passed to the plugin.");
-        argsParam.setRequestBodyExampleJson("#/components/examples/runPluginExample");
+        argsParam.setRequestBodyExampleJson("#/components/examples/runPluginExample/request");        
         parameters.addParameter(argsParam);
 
         return parameters;
@@ -98,7 +99,7 @@ public class RunPlugin extends RestService {
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String pluginName = parameters.getStringValue(PLUGIN_NAME_PARAMETER_ID);
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
-        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        final Graph graph = (graphId == null || "null".equals(graphId)) ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         if (graph != null) {
             try {
                 final ObjectMapper mapper = new ObjectMapper();
@@ -120,5 +121,10 @@ public class RunPlugin extends RestService {
         } else {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
         }
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,16 +39,15 @@ import org.testng.annotations.Test;
 public class IntegerAttributeDescriptionNGTest {
 
     IntegerAttributeDescription instance;
-
-    public IntegerAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -59,6 +58,7 @@ public class IntegerAttributeDescriptionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -80,9 +80,8 @@ public class IntegerAttributeDescriptionNGTest {
     public void testGetNativeClass() {
         System.out.println("getNativeClass");
         
-        Class expResult = int.class;
-        Class result = instance.getNativeClass();
-        assertEquals(result, expResult);
+        Class<?> result = instance.getNativeClass();
+        assertEquals(result, int.class);
     }
 
     /**
@@ -104,7 +103,7 @@ public class IntegerAttributeDescriptionNGTest {
     public void testGetDefault() {
         System.out.println("getDefault");
         
-        Object expResult = (int) 0;
+        Object expResult = 0;
         Object result = instance.getDefault();
         assertEquals(result, expResult);
     }
@@ -412,7 +411,7 @@ public class IntegerAttributeDescriptionNGTest {
         System.out.println("getObject");
         
         int id = 0;
-        Object expResult = (int) 0;
+        Object expResult = 0;
         Object result = instance.getObject(id);
         assertEquals(result, expResult);
     }

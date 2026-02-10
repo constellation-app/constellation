@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,12 +55,16 @@ public class DefaultMapProvider extends MapProvider {
                 "au.gov.asd.tac.constellation.views.mapview",
                 DefaultMapProvider.class.getProtectionDomain());
         final String connection = String.format("jdbc:sqlite:%s", defaultMap.getAbsolutePath());
-        final int zoom = (int) coordinate.zoom;
-        final float gridSize = PApplet.pow(2, coordinate.zoom);
-        final float negativeRow = gridSize - coordinate.row - 1;
-        final int row = (int) negativeRow;
-        final int column = (int) coordinate.column;
-        return MBTilesLoaderUtils.getMBTile(column, row, zoom, connection);
+
+        final int zoom = ((int) coordinate.zoom < zoomLevels()) ? (int) coordinate.zoom : zoomLevels();
+        final float gridSize = (1 << zoom);
+        final int zoomDiff = (int) coordinate.zoom - zoom;
+
+        final int row = (zoomDiff > 0) ? (int) coordinate.row >> zoomDiff : (int) coordinate.row;
+        final int column = (zoomDiff > 0) ? (int) coordinate.column >> zoomDiff : (int) coordinate.column;
+
+        final float negativeRow = gridSize - row - 1;
+        return MBTilesLoaderUtils.getMBTile(column, (int) negativeRow, zoom, connection);
     }
 
     @Override

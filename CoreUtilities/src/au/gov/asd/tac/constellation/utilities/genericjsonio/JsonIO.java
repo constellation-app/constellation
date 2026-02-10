@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,27 @@
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -38,8 +44,12 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Window;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbPreferences;
@@ -63,6 +73,10 @@ public class JsonIO {
 
     private static final String PREFERENCE_FILE_SAVED_MSG_FORMAT
             = "Preference saved to %s.";
+
+    private static final String FILE_READ_ERROR = "An error occured reading file %s";    
+    
+    private static final String PREFERENCE_FILE_SAVE_ERROR = "Can't save preference file: %s";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -150,7 +164,7 @@ public class JsonIO {
         // Pre-pend filePrefix
         final String prefixedFileName = filePrefix.orElse("").concat(fileName);
 
-        final File preferenceFile = new File(preferenceDirectory, 
+        final File preferenceFile = new File(preferenceDirectory,
                 FilenameEncoder.encode(prefixedFileName + FileExtensionConstants.JSON));
 
         boolean go = true;
@@ -173,13 +187,41 @@ public class JsonIO {
 
                 mapper.writeValue(preferenceFile, rootNode);
 
-                StatusDisplayer.getDefault().setStatusText(String.format(PREFERENCE_FILE_SAVED_MSG_FORMAT, 
+                StatusDisplayer.getDefault().setStatusText(String.format(PREFERENCE_FILE_SAVED_MSG_FORMAT,
                         preferenceFile.getPath()));
             } catch (final IOException ex) {
-                NotifyDisplayer.display(String.format("Can't save preference file: %s", ex.getMessage()), 
+                NotifyDisplayer.display(String.format(PREFERENCE_FILE_SAVE_ERROR, ex.getMessage()),
                         NotifyDescriptor.ERROR_MESSAGE);
+                LOGGER.log(Level.WARNING, String.format(PREFERENCE_FILE_SAVE_ERROR, prefixedFileName), ex);
             }
         }
+    }
+
+    /**
+     * Get default keyboard shortcut. 
+     * They are [Alt+1],[Alt+2],[Alt+3]...[Alt+5] if not already been used within the application.
+     * @param preferenceDirectory
+     * @return 
+     */
+    public static Optional<String> getDefaultKeyboardShortcut(final File preferenceDirectory) {
+        final Map<String, String> shortcuts = SystemUtilities.getCurrentKeyboardShortcuts();
+        
+        for (int index = 1; index <= 5; index++) {
+            final String defaultKeyboardShortcut = "Alt+" + index;
+            
+            if (!shortcuts.keySet().contains(defaultKeyboardShortcut)) {                
+                final String fileNameStartsWith = "[" + Strings.CS.replace(defaultKeyboardShortcut, "+", " ") + "]";
+                final FilenameFilter filenameFilter = (d, s) -> s.startsWith(fileNameStartsWith);
+
+                if (ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
+                    return Optional.of(defaultKeyboardShortcut);
+                }                
+            }
+            
+        }
+        
+
+        return Optional.empty();
     }
 
     /**
@@ -209,6 +251,117 @@ public class JsonIO {
      */
     public static void saveJsonPreferences(final Optional<String> saveDir, final Object rootNode) {
         saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER);
+    }
+
+    public static void saveJsonPreferencesWithKeyboardShortcut(final Optional<String> saveDir, final Object rootNode, final Window parentWindow) {
+        final ObjectMapper mapper = OBJECT_MAPPER;
+        final File preferenceDirectory = getPrefereceFileDirectory(saveDir);
+
+        // If the preference directory cannot be accessed then return
+        if (!preferenceDirectory.isDirectory()) {
+            NotifyDisplayer.display(
+                    String.format("Can't create preference directory '%s'.", preferenceDirectory),
+                    NotifyDescriptor.ERROR_MESSAGE
+            );
+            LOGGER.log(Level.WARNING, "Can't create preference directory {}.", preferenceDirectory);
+            return;
+        }
+
+        //Record keyboard shortcut
+        Optional<String> ks = getDefaultKeyboardShortcut(preferenceDirectory);
+
+        // Ask the user to provide a file name        
+        final Optional<String> userInputWithKs;
+
+        final Optional<KeyboardShortcutSelectionResult> ksResult = JsonIODialog.getPreferenceFileName(ks, preferenceDirectory, Optional.ofNullable(parentWindow));
+        if (ksResult.isPresent()) {
+            if (Objects.isNull(ksResult.get().getFileName())) {
+                return;
+            }
+
+            userInputWithKs = Optional.ofNullable(ksResult.get().getFileName());
+            ks = Optional.of("[" + Strings.CS.replace(ksResult.get().getKeyboardShortcut(), "+", " ") + "]");
+
+        } else {
+            return;
+        }        
+
+        // Cancel was pressed. So stop the save.
+        if (userInputWithKs.isEmpty()) {
+            return;
+        }
+
+        // If the user hit ok but provided an empty string, then generate one
+        final String fileName = StringUtils.isBlank(userInputWithKs.get())
+                ? String.format(
+                        "%s at %s",
+                        System.getProperty("user.name"),
+                        TIMESTAMP_FORMAT.format(Instant.now())
+                )
+                : userInputWithKs.get();
+
+        final String fileNameWithKeyboardShortcut = ks.orElse("").concat(" " + fileName);
+
+        final File preferenceFile = new File(
+                preferenceDirectory,
+                FilenameEncoder.encode(fileNameWithKeyboardShortcut + FileExtensionConstants.JSON)
+        );
+        
+        final FilenameFilter filenameFilter = (d, s) -> s.substring(s.indexOf("]")+1, s.length()).trim().equalsIgnoreCase(FilenameEncoder.encode(fileName + FileExtensionConstants.JSON));        
+        final String[] fileNames = preferenceDirectory.list(filenameFilter);
+        final boolean preferenceFileExists = ArrayUtils.isNotEmpty(fileNames);
+        
+        boolean go = true;
+
+        // If the file exist, ask the user if they want to overwrite
+        if (preferenceFileExists) {
+            final Alert alert = getAlert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText(PREFERENCE_FILE_EXISTS_ALERT_TITLE);
+            alert.setContentText(String.format(
+                    PREFERENCE_FILE_EXISTS_ALERT_ERROR_MSG_FORMAT,
+                    fileName
+            ));
+
+            final Optional<ButtonType> option = alert.showAndWait();
+            go = option.isPresent() && option.get() == ButtonType.OK;            
+        }
+
+        if (go) {
+            try {
+                if (preferenceFileExists) {
+                    //If preferenceFileExists and choose to overwrite existing file with ks
+                    Files.deleteIfExists(new File(preferenceDirectory,FilenameEncoder.encode(fileNames[0])).toPath());
+                } else if (ksResult.isPresent() && ksResult.get().isAlreadyAssigned() && Objects.nonNull(ksResult.get().getExisitngTemplateWithKs())) {
+                    //remove shortcut from existing template to be re-assign to new template
+                    final String rename = FilenameEncoder.decode(ksResult.get().getExisitngTemplateWithKs().getName())
+                            .replaceAll("\\[" + Strings.CS.replace(ksResult.get().getKeyboardShortcut(), "+", StringUtils.SPACE) + "\\]", StringUtils.EMPTY).trim();                    
+                    ksResult.get().getExisitngTemplateWithKs().renameTo(new File(preferenceDirectory, FilenameEncoder.encode(rename.trim())));                    
+                }
+
+                // Configure JSON mapper settings
+                mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+                mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
+                mapper.writeValue(preferenceFile, rootNode);
+               
+                StatusDisplayer.getDefault().setStatusText(
+                        String.format(
+                                PREFERENCE_FILE_SAVED_MSG_FORMAT,
+                                preferenceFile.getPath()
+                        )
+                );
+            } catch (final IOException ex) {
+                NotifyDisplayer.display(
+                        String.format(PREFERENCE_FILE_SAVE_ERROR, ex.getMessage()),
+                        NotifyDescriptor.ERROR_MESSAGE
+                );
+                LOGGER.log(Level.WARNING, String.format(PREFERENCE_FILE_SAVE_ERROR, fileName), ex);
+            }
+        }
+
+    }
+
+    public static Alert getAlert(final AlertType alertType) {
+        return new Alert(alertType);
     }
 
     /**
@@ -250,7 +403,7 @@ public class JsonIO {
             try {
                 return OBJECT_MAPPER.readTree(file);
             } catch (final IOException ioe) {
-                LOGGER.log(Level.WARNING, String.format("An error occured reading file %s", file.getName()), ioe);
+                LOGGER.log(Level.WARNING, String.format(FILE_READ_ERROR, file.getName()), ioe);
             }
             return null;
         });
@@ -295,7 +448,7 @@ public class JsonIO {
             try {
                 return objectMapper.readValue(file, expectedFormat);
             } catch (final IOException ioe) {
-                LOGGER.log(Level.WARNING, String.format("An error occured reading file %s", file.getName()), ioe);
+                LOGGER.log(Level.WARNING, String.format(FILE_READ_ERROR, file.getName()), ioe);
             }
             return null;
         });
@@ -315,6 +468,63 @@ public class JsonIO {
      */
     public static <T> T loadJsonPreferences(final Optional<String> loadDir, final TypeReference<T> expectedFormat) {
         return loadJsonPreferences(loadDir, Optional.empty(), expectedFormat, OBJECT_MAPPER);
+    }
+
+    public static <T> T loadJsonPreferencesWithFilePrefix(final Optional<String> loadDir, final Optional<String> filePrefix,
+            final TypeReference<T> expectedFormat) {
+
+        return loadJsonPreferencesForFile(loadDir, filePrefix, file -> {
+            try {
+                return OBJECT_MAPPER.readValue(file, expectedFormat);
+            } catch (final IOException ioe) {
+                LOGGER.log(Level.WARNING, String.format(FILE_READ_ERROR, file.getName()), ioe);               
+            }
+            return null;
+        });
+
+    }
+
+    protected static <T> T loadJsonPreferencesForFile(final Optional<String> loadDir,
+            final Optional<String> filePrefix,
+            final Function<File, T> deserializationFunction) {
+        final File preferenceDirectory = getPrefereceFileDirectory(loadDir);
+
+        // List the files in the supplied directory that have the required file extension
+        // and if filePrefix was supplied, start with the provided prefix.
+        final String[] names;
+        if (preferenceDirectory.isDirectory()) {
+            names = preferenceDirectory.list((final File dir, final String name)
+                    -> Strings.CI.endsWith(name, FileExtensionConstants.JSON)
+                    && (filePrefix.isEmpty() || Strings.CI.startsWith(name, filePrefix.get()))
+            );
+        } else {
+            // Nothing to select from - return an empty array
+            names = ArrayUtils.EMPTY_STRING_ARRAY;
+        }
+
+        // Remove the prefix and suffix from the names      
+        final int filePrefixLength = filePrefix.orElse("").length();
+
+        final List<String> encodedNames = Arrays.stream(names)
+                        .map(name -> FilenameEncoder.decode(name.substring(0, name.length() - 5)))
+                        .filter(StringUtils::isNotBlank)
+                        .map(name -> name.substring(filePrefixLength))
+                        .collect(Collectors.toList());
+         
+        final Optional<String> selectedFileName = encodedNames.isEmpty() ? Optional.empty() : Optional.of(encodedNames.get(0));
+
+        // Re-add the prefix and suffix, then serialize the preferences to the file
+        if (selectedFileName.isPresent()) {
+            final String prefixedFilename = filePrefix.orElse("")
+                    .concat(selectedFileName.get());
+            return deserializationFunction.apply(new File(
+                    preferenceDirectory,
+                    FilenameEncoder.encode(prefixedFilename) + FileExtensionConstants.JSON
+            )
+            );
+        }
+
+        return null;
     }
 
     /**
@@ -392,8 +602,8 @@ public class JsonIO {
         final String[] names;
         if (preferenceDirectory.isDirectory()) {
             names = preferenceDirectory.list((File dir, String name)
-                    -> StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON)
-                    && (filePrefix.isEmpty() || StringUtils.startsWithIgnoreCase(name, filePrefix.get()))
+                    -> Strings.CI.endsWith(name, FileExtensionConstants.JSON)
+                    && (filePrefix.isEmpty() || Strings.CI.startsWith(name, filePrefix.get()))
             );
         } else {
             // Nothing to select from - return an empty array
@@ -417,9 +627,9 @@ public class JsonIO {
             final String prefixedFilename = filePrefix.orElse("")
                     .concat(selectedFileName.get());
             return deserializationFunction.apply(new File(
-                            preferenceDirectory,
-                            FilenameEncoder.encode(prefixedFilename) + FileExtensionConstants.JSON
-                    )
+                    preferenceDirectory,
+                    FilenameEncoder.encode(prefixedFilename) + FileExtensionConstants.JSON
+            )
             );
         }
         return null;

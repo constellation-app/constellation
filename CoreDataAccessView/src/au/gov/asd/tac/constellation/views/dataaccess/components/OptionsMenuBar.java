@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
@@ -131,9 +132,9 @@ public class OptionsMenuBar {
         // Save Menu
         ////////////////////
         saveMenuItem = new MenuItem(SAVE_MENU_ITEM_TEXT, SAVE_TEMPLATE_ICON);
-        saveMenuItem.setOnAction(event -> {
+        saveMenuItem.setOnAction(event -> {            
             DataAccessParametersIoProvider.saveParameters(
-                    dataAccessPane.getDataAccessTabPane().getTabPane()
+                    dataAccessPane.getDataAccessTabPane().getTabPane(), dataAccessPane.getScene().getWindow()
             );
 
             event.consume();
@@ -185,6 +186,7 @@ public class OptionsMenuBar {
         ////////////////////
         // Menu Setup
         ////////////////////
+        final int applicationFontSize = FontUtilities.getApplicationFontSize();        
         optionsMenu = new Menu(OPTIONS_MENU_TEXT, SETTINGS_ICON);
         optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem,
                 connectionLoggingMenuItem, deselectPluginsOnExecutionMenuItem);
@@ -192,7 +194,7 @@ public class OptionsMenuBar {
         optionsMenu.addEventHandler(Menu.ON_SHOWING, event -> updateMenuEntry());
         menuBar = new MenuBar();
         menuBar.getMenus().add(optionsMenu);
-        menuBar.setMinHeight(36);
+        menuBar.setPrefHeight(applicationFontSize * 2);
         menuBar.setPadding(new Insets(4));
     }
 
@@ -299,9 +301,7 @@ public class OptionsMenuBar {
          * @param newValue the new value of the save results menu checkbox
          */
         @Override
-        public void changed(final ObservableValue<? extends Boolean> observable,
-                final Boolean oldValue,
-                final Boolean newValue) {
+        public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
             if (Boolean.TRUE.equals(newValue)) {
                 lastChange = FileChooser.openOpenDialog(getDataAccessResultsFileChooser()).thenAccept(optionalFolder
                         -> optionalFolder.ifPresentOrElse(
@@ -318,7 +318,7 @@ public class OptionsMenuBar {
          *
          * @return the future work to be completed by the lister after its last call
          */
-        public CompletableFuture getLastChange() {
+        public CompletableFuture<Void> getLastChange() {
             return lastChange;
         }
 

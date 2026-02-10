@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,12 @@ public class LockingStoreGraph extends StoreGraph implements ReadableGraph, Writ
 
     @Override
     public void commit(final Object description, final String commitName) {
-        lockingManager.commit(description, commitName);
+        commit(description, commitName, true); //assume true for non-animations
+    }
+    
+    @Override
+    public void commit(final Object description, final String commitName, final boolean addToUndo) {
+        lockingManager.commit(description, commitName, addToUndo);
 
         if (VERBOSE) {
             LOGGER.log(Level.INFO,"Write lock committed by {0}", Thread.currentThread());

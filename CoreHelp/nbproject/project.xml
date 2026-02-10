@@ -40,6 +40,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.openide.modules</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.71</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.openide.util</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -85,7 +93,6 @@
                 <package>au.gov.asd.tac.constellation.help</package>
                 <package>au.gov.asd.tac.constellation.help.preferences</package>
                 <package>au.gov.asd.tac.constellation.help.utilities</package>
-                <package>au.gov.asd.tac.constellation.help.webserver.api</package>
             </public-packages>
         </data>
     </configuration>

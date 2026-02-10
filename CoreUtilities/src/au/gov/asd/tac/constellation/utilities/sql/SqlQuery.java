@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,15 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.map.primitive.MutableIntDoubleMap;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.tuple.primitive.IntDoublePair;
+import org.eclipse.collections.api.tuple.primitive.IntIntPair;
+import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
+import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 /**
  *
@@ -40,9 +49,9 @@ public class SqlQuery {
     private final StringBuilder query = new StringBuilder();
     private final Connection connection;
     private int currentArgument = 0;
-    private final Map<Integer, String> stringArguments = new HashMap<>();
-    private final Map<Integer, Integer> integerArguments = new HashMap<>();
-    private final Map<Integer, Double> doubleArguments = new HashMap<>();
+    private final MutableIntObjectMap<String> stringArguments = new IntObjectHashMap<>();
+    private final MutableIntIntMap integerArguments = new IntIntHashMap();
+    private final MutableIntDoubleMap doubleArguments = new IntDoubleHashMap();
 
     private static final Logger LOGGER = Logger.getLogger(SqlQuery.class.getName());
 
@@ -93,7 +102,6 @@ public class SqlQuery {
     }
 
     private ResultSet execute(final boolean isQuery) throws SQLException {
-
         // append a semicolon to the query if necessary.
         String s = query.toString();
         if (s.charAt(s.length() - 1) != ';') {
@@ -102,14 +110,14 @@ public class SqlQuery {
 
         // prepare the statement and add the arguments of various types.
         try (final PreparedStatement statement = connection.prepareStatement(s)) {
-            for (final Entry<Integer, String> arg : stringArguments.entrySet()) {
-                statement.setString(arg.getKey(), arg.getValue());
+            for (final IntObjectPair<String> keyValue : stringArguments.keyValuesView()) {
+                statement.setString(keyValue.getOne(), keyValue.getTwo());
             }
-            for (final Entry<Integer, Integer> arg : integerArguments.entrySet()) {
-                statement.setInt(arg.getKey(), arg.getValue());
+            for (final IntIntPair keyValue : integerArguments.keyValuesView()) {
+                statement.setInt(keyValue.getOne(), keyValue.getTwo());
             }
-            for (final Entry<Integer, Double> arg : doubleArguments.entrySet()) {
-                statement.setDouble(arg.getKey(), arg.getValue());
+            for (final IntDoublePair keyValue : doubleArguments.keyValuesView()) {
+                statement.setDouble(keyValue.getOne(), keyValue.getTwo());
             }
 
             LOGGER.log(Level.FINE, "{0}", statement);

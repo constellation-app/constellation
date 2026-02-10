@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package au.gov.asd.tac.constellation.views.mapview.layers;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationAbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview.utilities.GraphElement;
-import java.util.HashSet;
-import java.util.Set;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -40,9 +40,8 @@ public class PopularityHeatmapLayer extends AbstractHeatmapLayer {
         int popularityCount = 0;
 
         if (graph != null) {
-            final ReadableGraph readableGraph = graph.getReadableGraph();
-            try {
-                final Set<Integer> seenLinks = new HashSet<>();
+            try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
+                final MutableIntSet seenLinks = new IntHashSet();
                 for (final GraphElement element : renderer.getMarkerCache().get(marker)) {
                     switch (element.getType()) {
                         case VERTEX -> popularityCount += readableGraph.getVertexNeighbourCount(element.getId());
@@ -58,8 +57,6 @@ public class PopularityHeatmapLayer extends AbstractHeatmapLayer {
                         }
                     }
                 }
-            } finally {
-                readableGraph.release();
             }
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,10 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import java.util.HashMap;
-import java.util.Map;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 /**
  *
@@ -51,7 +53,7 @@ public class ClusterUtilities {
         final int vxCount = wg.getVertexCount();
 
         // How many clusters are there?
-        final Map<Integer, Integer> clusterMap = new HashMap<>();
+        final MutableIntIntMap clusterMap = new IntIntHashMap();
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
 
@@ -116,7 +118,7 @@ public class ClusterUtilities {
      * @param clusterId The cluster attribute to work with.
      */
     public static void explodeGraph(final GraphWriteMethods wg, final int clusterId) {
-        final Map<Integer, BBoxf> boxes = new HashMap<>();
+        final MutableIntObjectMap<BBoxf> boxes = new IntObjectHashMap<>();
 
         final int xId = VisualConcept.VertexAttribute.X.ensure(wg);
         final int yId = VisualConcept.VertexAttribute.Y.ensure(wg);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
+import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
@@ -53,6 +55,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -182,36 +186,38 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         // Local process-tracking varables (Process is indeteminate until quantity of merged nodes is known)
         int currentProcessStep = 0;
         int totalProcessSteps = -1; 
+        
+        final GraphRecordStore allSelectedNodes = GraphRecordStoreUtilities.getSelectedVertices(graph);            
+        interaction.setProgressTimestamp(true);
         interaction.setProgress(
                 currentProcessStep, 
                 totalProcessSteps, 
                 "Splitting nodes...", 
-                true
+                true,
+                parameters,
+                allSelectedNodes.size()
         );
         
         //Determine the positions of the selected nodes
-        final List<Integer> selectedVerticies = new ArrayList<>();    
+        final MutableIntList selectedVertexIds = new IntArrayList();
         final int graphVertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < graphVertexCount; vertexPosition++) {
             final int currentVertexId = graph.getVertex(vertexPosition);
             if (graph.getBooleanValue(vertexSelectedAttributeId, currentVertexId)) {
-                selectedVerticies.add(vertexPosition);
+                selectedVertexIds.add(currentVertexId);
             }
         }
         
-        totalProcessSteps = selectedVerticies.size();
+        totalProcessSteps = selectedVertexIds.size();
         
         // Loop through the selected vertices and determine how many new verticies need to be added to the graph
         final List<Integer> newVertices = new ArrayList<>();
-        for (final int position : selectedVerticies) {
-            interaction.setProgress(
-                    ++currentProcessStep, 
-                    totalProcessSteps, 
-                    true
-            );
+        for (int vertex = 0; vertex < selectedVertexIds.size(); vertex++) {
+            interaction.setProgress(++currentProcessStep, totalProcessSteps, true);
+            
+            final int currentVertexId = selectedVertexIds.get(vertex);
             
             // Check that the current vertex contains the split string being searched for.
-            final int currentVertexId = graph.getVertex(position);
             final String identifier = graph.getStringValue(vertexIdentifierAttributeId, currentVertexId);
             if (identifier != null && identifier.contains(character) && identifier.indexOf(character) <= identifier.length() - character.length()) {
                 int createdNodesCount = 0;
@@ -221,8 +227,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 if (allOccurrences) {
                     final String[] substrings = Arrays.stream(identifier.split(character))
                             .filter(value
-                                    -> value != null && value.length() > 0
-                            )
+                                    -> value != null && !value.isEmpty()                            )
                             .toArray(size -> new String[size]);
                     
                     if (substrings.length <= 0) {
@@ -232,7 +237,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                     leftNodeIdentifier = substrings[0];
 
                     for (int i = 1; i < substrings.length; i++) {
-                        newVertices.add(createNewNode(graph, position, substrings[i], linkType, splitIntoSameLevel));
+                        newVertices.add(createNewNode(graph, currentVertexId, substrings[i], linkType, splitIntoSameLevel));
                         createdNodesCount++;
                     }
 
@@ -243,7 +248,8 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
 
                     // There was text found on the left side of the split so ignore it and set the node for the right side
                     if (StringUtils.isNotBlank(leftNodeIdentifier)) {
-                        leftNodeIdentifier = identifier.substring(0, i);newVertices.add(createNewNode(graph, position, identifier.substring(i + 1), linkType, splitIntoSameLevel));
+                        leftNodeIdentifier = identifier.substring(0, i);
+                        newVertices.add(createNewNode(graph, currentVertexId, identifier.substring(i + 1), linkType, splitIntoSameLevel));
                         createdNodesCount++;
 
                     // There was no text on the left side of the split so set the leftNodeIdentifier to the right side. 
@@ -333,7 +339,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 final int sourceVertex = graph.getTransactionSourceVertex(originalTransactionId);
                 final int destinationVertex = graph.getTransactionDestinationVertex(originalTransactionId);
                 int newTransactionId = 0;
-                final Boolean directed = graph.getBooleanValue(transactionDirectedAttribute, originalTransactionId);
+                final boolean directed = graph.getBooleanValue(transactionDirectedAttribute, originalTransactionId);
 
                 if (sourceVertex == selectedNode && destinationVertex == selectedNode) {
                     newTransactionId = graph.addTransaction(newVertexId, newVertexId, directed);
@@ -341,8 +347,6 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                     newTransactionId = graph.addTransaction(newVertexId, destinationVertex, directed);
                 } else if (destinationVertex == selectedNode) {
                     newTransactionId = graph.addTransaction(sourceVertex, newVertexId, directed);
-                } else {
-                    // Do nothing
                 }
 
                 //Loops through all the transaction attributes and copy them to the new transaction

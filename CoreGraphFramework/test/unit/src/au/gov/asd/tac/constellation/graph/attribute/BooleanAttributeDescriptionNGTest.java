@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,16 +39,15 @@ import org.testng.annotations.Test;
 public class BooleanAttributeDescriptionNGTest {
 
     BooleanAttributeDescription instance;
-
-    public BooleanAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -59,6 +58,7 @@ public class BooleanAttributeDescriptionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -80,9 +80,8 @@ public class BooleanAttributeDescriptionNGTest {
     public void testGetNativeClass() {
         System.out.println("getNativeClass");
         
-        Class expResult = boolean.class;
-        Class result = instance.getNativeClass();
-        assertEquals(result, expResult);
+        Class<?> result = instance.getNativeClass();
+        assertEquals(result, boolean.class);
     }
 
     /**
@@ -304,7 +303,7 @@ public class BooleanAttributeDescriptionNGTest {
         instance.setDouble(id, 0.0);
         assertEquals(instance.getDouble(id), 0.0);
         instance.setDouble(id, 1.0);
-        assertEquals(instance.getDouble(id), 1.0);;
+        assertEquals(instance.getDouble(id), 1.0);
     }
 
     /**
@@ -357,7 +356,7 @@ public class BooleanAttributeDescriptionNGTest {
         instance.setChar(id, (char) 0);
         assertEquals(instance.getChar(id), (char) 0);
         instance.setChar(id, (char) 1);
-        assertEquals(instance.getChar(id), (char) 1);;
+        assertEquals(instance.getChar(id), (char) 1);
     }
 
     /**

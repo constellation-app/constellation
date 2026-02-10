@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.views.whatsnew;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
 import java.util.prefs.Preferences;
-import javax.swing.SwingUtilities;
 import org.openide.util.NbPreferences;
 import org.openide.windows.OnShowing;
 import org.openide.windows.TopComponent;
@@ -31,23 +31,24 @@ import org.openide.windows.WindowManager;
  */
 @OnShowing
 public class WhatsNewStartup implements Runnable {
-
+ 
     @Override
     public void run() {
+        if (HeadlessUtilities.isHeadless()) {
+            return;
+        }
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         if (prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT)) {
-            SwingUtilities.invokeLater(() -> {
-                final TopComponent whatsnew = WindowManager.getDefault().findTopComponent(WhatsNewTopComponent.class.getSimpleName());
-                if (whatsnew != null) {
-                    if (!whatsnew.isOpened()) {
-                        whatsnew.open();
-                    }
-                    whatsnew.setEnabled(true);
-                    if (!prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT)) {
-                        whatsnew.requestActive();
-                    }
+            final TopComponent whatsnew = WindowManager.getDefault().findTopComponent(WhatsNewTopComponent.class.getSimpleName());
+            if (whatsnew != null) {
+                if (!whatsnew.isOpened()) {
+                    whatsnew.open();
                 }
-            });
+                whatsnew.setEnabled(true);
+                if (!prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT)) {
+                    whatsnew.requestActive();
+                }
+            }
         }
     }
 }

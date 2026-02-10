@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,39 +22,37 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
 
 /**
- * An Interface for {@link ConstellationInput} extensions.
- * Provides required functionality to build an info window for insertion to an input extenesion.
- * 
+ * An Interface for {@link ConstellationInput} extensions. Provides required
+ * functionality to build an info window for insertion to an input extension.
+ *
  * @author capricornunicorn123
  */
-public interface InfoWindowSupport{
-    
+public interface InfoWindowSupport {
+
     public abstract InfoWindow getInfoWindow();
-    
+
     public abstract class InfoWindow extends StackPane implements ConstellationInputListener<Serializable> {
+
         public final ConstellationInput parent;
 
-        public InfoWindow(ConstellationInput parent){
+        protected InfoWindow(final ConstellationInput parent) {
             this.parent = parent;
-            setPadding(new Insets(0,6,0,0));
+            setPadding(new Insets(0, 6, 0, 0));
             setAlignment(Pos.CENTER);
-            Platform.runLater(()->{
-                refreshWindow();
-            });
+            Platform.runLater(() -> refreshWindow());            
             parent.addListener(this);
         }
-        
-        public void setWindowContents(Node content){
+
+        public void setWindowContents(final Node content) {
             this.getChildren().add(content);
         }
 
         protected abstract void refreshWindow();
 
         @Override
-        public void changed(Serializable newValue) {
+        public void changed(final Serializable newValue) {
             refreshWindow();
         }
     }

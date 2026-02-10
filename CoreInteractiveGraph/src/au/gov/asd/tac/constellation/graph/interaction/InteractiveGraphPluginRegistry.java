@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,11 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction;
 
-import au.gov.asd.tac.constellation.graph.interaction.plugins.DragElementsPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToClipboardPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CutToClipboardPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.PasteFromClipboardPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.PasteGraphPlugin;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.PasteTextPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.composite.ContractAllCompositesPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.composite.CreateCompositeFromSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.composite.CreateCompositesFromDominantNodesPlugin;
@@ -73,12 +71,10 @@ public class InteractiveGraphPluginRegistry {
     public static final String CUT = CutToClipboardPlugin.class.getName();
     public static final String DELETE_SELECTION = DeleteSelectionPlugin.class.getName();
     public static final String DESTROY_ALL_COMPOSITES = DestroyAllCompositesPlugin.class.getName();
-    public static final String DRAG_ELEMENTS = DragElementsPlugin.class.getName();
     public static final String EXPAND_ALL_COMPOSITES = ExpandAllCompositesPlugin.class.getName();
     public static final String FREEFORM_SELECTION = FreeformSelectionPlugin.class.getName();
     public static final String PASTE = PasteFromClipboardPlugin.class.getName();
     public static final String PASTE_GRAPH = PasteGraphPlugin.class.getName();
-    public static final String PASTE_TEXT = PasteTextPlugin.class.getName();
     public static final String POINT_SELECTION = PointSelectionPlugin.class.getName();
     public static final String PREVIOUS_VIEW = PreviousViewPlugin.class.getName();
     public static final String RESET_VIEW = ResetViewPlugin.class.getName();

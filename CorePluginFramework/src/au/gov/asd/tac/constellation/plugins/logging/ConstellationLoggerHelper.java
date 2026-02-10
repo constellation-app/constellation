@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -279,7 +279,7 @@ public class ConstellationLoggerHelper {
      */
     private static void addFileStatistics(final Properties properties, final Collection<File> files) throws PluginException {
         if (files != null) {
-            Integer counter = files.size();
+            int counter = files.size();
             for (File file : files) {
                 properties.setProperty(String.format(STRING_NUMBER_FORMAT, FILE_NAME, counter), file.getAbsolutePath());
                 properties.setProperty(String.format(STRING_NUMBER_FORMAT, FILE_SIZE, counter), Long.toString(file.length()));
