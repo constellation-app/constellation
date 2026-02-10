@@ -275,9 +275,9 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                     globalWriteLock.unlock();
                 }
                 fireUndoRedoReport(UNDO, (GraphWriteMethods) writeContext.target, getPresentationName());
+                update(null, null);
+                
             }).start();
-
-            update(null, null);
         }
 
         private void fireUndoRedoReport(final String actionType, final GraphWriteMethods target, final String presentationName) {
