@@ -15,11 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.FileInputKind;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.FileInputKind;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputButton.ButtonType;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,14 +27,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 
 /**
@@ -89,7 +87,7 @@ public final class FileInput extends ConstellationInput<List<File>> implements R
             //setWrapText(false);
             setPrefRowCount(suggestedHeight);
         }
-        initialiseDepedantComponents();
+        initialiseDependantComponents();
     }
     
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
@@ -183,11 +181,11 @@ public final class FileInput extends ConstellationInput<List<File>> implements R
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">    
     @Override
     public RightButton getRightButton() {
-        return new RightButton(new Label(fileInputKind.toString()), Button.ButtonType.POPUP) {
-            @Override
-            public EventHandler<? super MouseEvent> action() {
-                return event -> executeRightButtonAction();
-            }
+        return new RightButton(new Label(fileInputKind.toString()), ButtonType.POPUP) {
+//            @Override
+//            public EventHandler<? super MouseEvent> action() {
+//                return event -> executeRightButtonAction();
+//            }
         };
     }
     

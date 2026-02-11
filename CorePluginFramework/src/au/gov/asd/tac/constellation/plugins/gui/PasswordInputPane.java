@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.PasswordInput;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 
 /**
  * A text box allowing entry of passwords corresponding to a {@link PluginParameter} of
@@ -73,7 +73,7 @@ public class PasswordInputPane extends ParameterInputPane<PasswordParameterValue
                     }
                 }
                 case ENABLED -> updateFieldEnablement();
-                case VISIBLE -> updateFieldVisability();
+                case VISIBLE -> updateFieldVisibility();
                 default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
             }
         });

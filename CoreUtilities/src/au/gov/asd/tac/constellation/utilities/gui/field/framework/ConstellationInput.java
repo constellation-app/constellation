@@ -238,7 +238,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      * initializing. If not done this way, we get some ugly errors where methods
      * and objects don't exist...
      */
-    protected void initialiseDepedantComponents() {
+    protected void initialiseDependantComponents() {
         final HBox interactableContent = getInteractableContent();
 
         // Build out the visual Input components on the FX thread.

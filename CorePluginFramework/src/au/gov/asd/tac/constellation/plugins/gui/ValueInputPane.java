@@ -22,12 +22,12 @@ import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VI
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.field.TextInput;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 
 /**
  * A text box allowing entry of single line text, multiple line text
@@ -88,7 +88,7 @@ public class ValueInputPane extends ParameterInputPane<StringParameterValue, Str
                         }
                     }
                     case ENABLED -> updateFieldEnablement();
-                    case VISIBLE -> updateFieldVisability();
+                    case VISIBLE -> updateFieldVisibility();
                     default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
             }

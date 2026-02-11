@@ -15,23 +15,23 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType.SINGLE_DROPDOWN;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType.SINGLE_SPINNER;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.ChoiceType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants;
+import static au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.ChoiceType.SINGLE_DROPDOWN;
+import static au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.ChoiceType.SINGLE_SPINNER;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ChoiceInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputButton.ButtonType;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
@@ -56,7 +56,7 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
 
     public SingleChoiceInput(final ChoiceType type){    
         this.type = type;
-        initialiseDepedantComponents();
+        initialiseDependantComponents();
     }    
     
     // <editor-fold defaultstate="collapsed" desc="Shortcut Support">   
@@ -198,10 +198,10 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
         switch (type) {
             case SINGLE_SPINNER -> {
                 return new LeftButton(new Label(ConstellationInputConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
-                    @Override
-                    public EventHandler<? super MouseEvent> action() {
-                        return event -> executeLeftButtonAction();
-                    }
+//                    @Override
+//                    public EventHandler<? super MouseEvent> action() {
+//                        return event -> executeLeftButtonAction();
+//                    }
                 };
             }
             default -> {
@@ -232,10 +232,10 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
         }
         
         return new RightButton(label, buttonType) {
-                @Override
-                public EventHandler<? super MouseEvent> action() {
-                    return event -> executeRightButtonAction();
-                }
+//                @Override
+//                public EventHandler<? super MouseEvent> action() {
+//                    return event -> executeRightButtonAction();
+//                }
         };
     }
 

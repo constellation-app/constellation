@@ -59,12 +59,12 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     private ChoiceInputDropDown choiceInputDropDown;
 
     public MultiChoiceInput() {
-        initialiseDepedantComponents();
+        initialiseDependantComponents();
     }
 
     public MultiChoiceInput(final ObservableList<C> options) {
         super(options);
-        initialiseDepedantComponents();
+        initialiseDependantComponents();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   

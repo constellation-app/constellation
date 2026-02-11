@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.field.MultiChoiceInput;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
@@ -52,7 +53,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbPreferences;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 
 /**
  * A PluginReporterPane provides a UI where all PluginReports for a single graph are displayed.
@@ -113,7 +114,7 @@ public class PluginReporterPane extends BorderPane implements ConstellationInput
         
         params.addController(REPORT_SETTINGS_PARAMETER_ID, (masterId, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
-                onChanged();
+                changed(availableTags);
            }
         });
         
@@ -179,14 +180,11 @@ public class PluginReporterPane extends BorderPane implements ConstellationInput
         setCenter(reportBoxScroll);
     }
     
-    public void onChanged() {
-        if (params.hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
-            final MultiChoiceParameterValue multiChoiceValue = params.getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
-            final List<String> options = multiChoiceValue.getOptions();
-            final List<String> choices = multiChoiceValue.getChoices();
-            
-            filteredTags.addAll(options);
-            filteredTags.removeAll(choices);            
+    @Override
+    public void changed(final List<String> c) {
+        if (params.hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {            
+            filteredTags.addAll(tagFilterInput.getOptions());
+            filteredTags.removeAll(c);            
         }                
 
         // Save the new filtered tags to preferences

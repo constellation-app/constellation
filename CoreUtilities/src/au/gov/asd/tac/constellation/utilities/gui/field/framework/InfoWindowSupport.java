@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInput;
 import java.io.Serializable;
 import javafx.application.Platform;
 import javafx.geometry.Insets;

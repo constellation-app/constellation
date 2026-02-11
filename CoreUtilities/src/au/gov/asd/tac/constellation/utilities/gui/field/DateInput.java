@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.DateChooserPanel;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
+//import au.gov.asd.tac.constellation.utilities.gui.DateChooserPanel;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputButton.ButtonType;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -30,11 +30,10 @@ import javafx.scene.control.MenuItem;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInput;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 
@@ -69,7 +68,7 @@ public final class DateInput extends ConstellationInput<LocalDate> implements Ri
         };
     
     public DateInput(){
-        initialiseDepedantComponents();
+        initialiseDependantComponents();
     }
     
     // <editor-fold defaultstate="collapsed" desc="Shortcut Support">   
@@ -165,22 +164,22 @@ public final class DateInput extends ConstellationInput<LocalDate> implements Ri
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     @Override
     public RightButton getRightButton() {
-        return new RightButton(new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL), Button.ButtonType.POPUP) {
-                    @Override
-                    public EventHandler<? super MouseEvent> action() {
-                        return event -> executeRightButtonAction();
-                    }
+        return new RightButton(new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL), ButtonType.POPUP) {
+//                    @Override
+//                    public EventHandler<? super MouseEvent> action() {
+//                        return event -> executeRightButtonAction();
+//                    }
                 };
     }
     
     @Override
     public void executeRightButtonAction() {
-        final DateChooserPanel dc = new DateChooserPanel(this.getDate());
-        final DialogDescriptor dialog = new DialogDescriptor(dc, "Select Date", true, null);
-        final Integer result = (Integer) DialogDisplayer.getDefault().notify(dialog);
-        if (result == 0) {
-            setDate(dc.getSelectedDate()); 
-        }       
+    //    final DateChooserPanel dc = new DateChooserPanel(this.getDate());
+     //   final DialogDescriptor dialog = new DialogDescriptor(dc, "Select Date", true, null);
+      //  final Integer result = (Integer) DialogDisplayer.getDefault().notify(dialog);
+        //if (result == 0) {
+          //  setDate(dc.getSelectedDate()); 
+       // }       
     }
     // </editor-fold>  
 }

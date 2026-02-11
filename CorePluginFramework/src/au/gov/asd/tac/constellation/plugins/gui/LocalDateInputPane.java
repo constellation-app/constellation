@@ -24,7 +24,7 @@ import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 
 /**
  * A Date Picker, which is the GUI element corresponding to a
@@ -72,7 +72,7 @@ public final class LocalDateInputPane extends ParameterInputPane<LocalDateParame
                         }
                     }
                     case ENABLED -> updateFieldEnablement();
-                    case VISIBLE -> updateFieldVisability();
+                    case VISIBLE -> updateFieldVisibility();
                     default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
         });

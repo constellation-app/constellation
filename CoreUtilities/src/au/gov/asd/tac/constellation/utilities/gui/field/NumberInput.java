@@ -15,14 +15,15 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputButton.ButtonType;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
@@ -54,7 +55,7 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
         this.step = (C) step;
         
         this.setValue(init);
-        initialiseDepedantComponents();
+        initialiseDependantComponents();
     }
     
     // <editor-fold defaultstate="collapsed" desc="Shortcut Support">   
@@ -259,20 +260,20 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
     @Override
     public LeftButton getLeftButton() {
         return new LeftButton(new Label(ConstellationInputConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
-            @Override
-            public EventHandler<? super MouseEvent> action() {
-                return event -> executeLeftButtonAction();
-            }
+//            @Override
+//            public EventHandler<? super MouseEvent> action() {
+//                return event -> executeLeftButtonAction();
+//            }
         };
     }
 
     @Override
     public RightButton getRightButton() {
         return new RightButton(new Label(ConstellationInputConstants.NEXT_BUTTON_LABEL), ButtonType.CHANGER) {
-            @Override
-            public EventHandler<? super MouseEvent> action() {
-                return event -> executeRightButtonAction();
-            }
+//            @Override
+//            public EventHandler<? super MouseEvent> action() {
+//                return event -> executeRightButtonAction();
+//            }
         };
     }
     

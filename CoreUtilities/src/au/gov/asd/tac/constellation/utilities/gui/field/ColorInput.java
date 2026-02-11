@@ -16,28 +16,27 @@
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ColorMode;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ColorMode.COLOR;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ColorMode.HEX;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ColorMode.RGB;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.ColorMode;
+import static au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.ColorMode.COLOR;
+import static au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.ColorMode.HEX;
+import static au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.ColorMode.RGB;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInput;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputButton.ButtonType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Labeled;
 
 /**
@@ -65,7 +64,7 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
     
     public ColorInput(){
         label.setText(mode.toString());
-        initialiseDepedantComponents();
+        initialiseDependantComponents();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
@@ -233,20 +232,20 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
     @Override
     public LeftButton getLeftButton() {
         return new LeftButton(label, ButtonType.CHANGER) {
-                @Override
-                public EventHandler<? super MouseEvent> action() {
-                    return event -> executeLeftButtonAction();
-                }
+//                @Override
+//                public EventHandler<? super MouseEvent> action() {
+//                    return event -> executeLeftButtonAction();
+//                }
         };        
     }
     
     @Override
     public RightButton getRightButton() {
         return new RightButton(new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL), ButtonType.DROPDOWN) {
-                @Override
-                public EventHandler<? super MouseEvent> action() {
-                    return event -> executeRightButtonAction();
-                }
+//                @Override
+//                public EventHandler<? super MouseEvent> action() {
+//                    return event -> executeRightButtonAction();
+//                }
         };
     }
     
@@ -271,7 +270,7 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
                 final Label label = new Label(mode.toString());
                 
                 label.setOnMouseClicked(event -> {
-                    field.setMode(mode);
+                  //  field.setMode(mode);
                 });
 
                 this.registerCustomMenuItem(label);

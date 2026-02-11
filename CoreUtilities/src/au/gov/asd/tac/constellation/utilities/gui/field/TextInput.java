@@ -17,17 +17,16 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesListener;
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesChangeEvent;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseEvent;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInput;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputButton;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 
@@ -51,7 +50,7 @@ public final class TextInput extends ConstellationInput<String> implements Recen
     public TextInput(final TextType type, final String recentValueListeningId){
         super(type);
         this.recentValueListeningId = recentValueListeningId;
-        initialiseDepedantComponents();
+        initialiseDependantComponents();
     }    
 
     // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
@@ -123,13 +122,13 @@ public final class TextInput extends ConstellationInput<String> implements Recen
     // <editor-fold defaultstate="collapsed" desc="RightButtonSupport Implementation">   
     @Override
     public RightButton getRightButton() {
-        return new RightButton(new Label("Recent"), Button.ButtonType.DROPDOWN) {
-            @Override
-            public EventHandler<? super MouseEvent> action() {
-                return event -> {
-                    executeRightButtonAction();
-                };
-            }
+        return new RightButton(new Label("Recent"), ConstellationInputButton.ButtonType.DROPDOWN) {
+//            @Override
+//            public EventHandler<? super MouseEvent> action() {
+//                return event -> {
+//                    executeRightButtonAction();
+//                };
+//            }
         };
     }
     

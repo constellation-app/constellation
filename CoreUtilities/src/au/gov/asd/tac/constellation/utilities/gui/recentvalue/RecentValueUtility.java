@@ -40,9 +40,9 @@ import org.openide.util.NbPreferences;
  *
  * @author sirius
  */
-public class RecentParameterValues {
+public class RecentValueUtility {
 
-    private static final Logger LOGGER = Logger.getLogger(RecentParameterValues.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RecentValueUtility.class.getName());
 
     private static final Map<String, List<String>> RECENT_VALUES = new HashMap<>();
     private static final List<RecentValuesListener> LISTENERS = new ArrayList<>();
@@ -59,16 +59,16 @@ public class RecentParameterValues {
      */
     public static void storeRecentValue(final String parameterId, final String parameterValue) {
         synchronized (RECENT_VALUES) {
-            List<String> values = RECENT_VALUES.get(id);
+            List<String> values = RECENT_VALUES.get(parameterId);
             if (values == null) {
                 values = new ArrayList<>();
-                RECENT_VALUES.put(id, values);
-                values.add(value);
+                RECENT_VALUES.put(parameterId, values);
+                values.add(parameterValue);
             } else {
-                values.remove(value);
-                values.add(0, value);
+                values.remove(parameterValue);
+                values.add(0, parameterValue);
             }
-            fireChangeEvent(new RecentValuesChangeEvent(id, RECENT_VALUES.get(id)));
+            fireChangeEvent(new RecentValuesChangeEvent(parameterId, RECENT_VALUES.get(parameterId)));
         }
     }
 
@@ -77,7 +77,7 @@ public class RecentParameterValues {
             if (RECENT_VALUES.isEmpty()) {
                 loadFromPreference();
             }
-            return RECENT_VALUES.get(id);
+            return RECENT_VALUES.get(parameterId);
         }
     }
 
@@ -151,7 +151,7 @@ public class RecentParameterValues {
 
     public static void loadFromPreference() {
         synchronized (RECENT_VALUES) {
-            final String recentValuesJSON = PREFERENCES.get(RecentParameterValuesKey.RECENT_VALUES, "");
+            final String recentValuesJSON = PREFERENCES.get(RecentValuesKey.RECENT_VALUES, "");
             if (recentValuesJSON.isEmpty()) {
                 return;
             }

@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.NumberInput;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 
 
 /**
@@ -85,7 +85,7 @@ public class NumberInputPane<C extends Number> extends ParameterInputPane<Number
                     }
                 }                
                 case ENABLED -> updateFieldEnablement();
-                case VISIBLE -> updateFieldVisability();
+                case VISIBLE -> updateFieldVisibility();
                 default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
             }
         });

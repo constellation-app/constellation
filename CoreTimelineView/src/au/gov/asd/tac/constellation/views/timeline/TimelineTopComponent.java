@@ -537,7 +537,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                             splitPane.setDisable(false);
                             // Add the datetime attributes:
                             timelinePanel.setDateTimeAttributes(datetimeAttributes, currentDatetimeAttribute);
-                            timelinePanel.setTimeZone(state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
+                            timelinePanel.setTimeZone(state == null ? TemporalZoneUtilities.UTC : state.getTimeZone());
                             // Add the label attributes:
                             timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
                             final boolean selectedOnly = state != null && state.isShowingSelectedOnly();
@@ -548,7 +548,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                                 timelinePanel.populateFromGraph(rg, currentDatetimeAttribute, state.getNodeLabelsAttr(), selectedOnly, state.getTimeZone());
 
                             } else {
-                                timelinePanel.populateFromGraph(rg, currentDatetimeAttribute, null, selectedOnly, state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
+                                timelinePanel.populateFromGraph(rg, currentDatetimeAttribute, null, selectedOnly, state == null ? TemporalUtilities.UTC : state.getTimeZone());
                             }
                             overviewPanel.populateHistogram(rg, currentDatetimeAttribute, getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(), isFullRefresh, selectedOnly);
 

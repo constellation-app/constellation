@@ -15,14 +15,14 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputButton.ButtonType;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseEvent;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 
 /**
@@ -42,7 +42,7 @@ public final class PasswordInput extends ConstellationInput<String> implements R
     public PasswordInput(){
         super(TextType.SECRET);  
         label.setText(ConstellationInputConstants.SHOW_BUTTON_LABEL);    
-        initialiseDepedantComponents();
+        initialiseDependantComponents();
     }
     
     // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
@@ -78,13 +78,13 @@ public final class PasswordInput extends ConstellationInput<String> implements R
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">
     @Override
     public RightButton getRightButton() {
-        return new RightButton(label, Button.ButtonType.CHANGER) {
-            @Override
-            public EventHandler<? super MouseEvent> action() {
-                return event -> {
-                    executeRightButtonAction();
-                };
-            }
+        return new RightButton(label, ButtonType.CHANGER) {
+//            @Override
+//            public EventHandler<? super MouseEvent> action() {
+//                return event -> {
+//                    executeRightButtonAction();
+//                };
+//            }
         };
     }
     

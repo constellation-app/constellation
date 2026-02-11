@@ -24,7 +24,15 @@ import au.gov.asd.tac.constellation.utilities.gui.field.ColorInput;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Callback;
 
 /**
  * A color picker which is the GUI element corresponding to a
@@ -64,24 +72,27 @@ public final class ColorInputPane extends ParameterInputPane<ColorParameterValue
                     case VALUE -> {
                         // Don't change the value if it isn't necessary.
                         final ConstellationColor param = parameter.getColorValue();
-                        if (getInputReference().isValid()){
+                        if (getInputReference().isValid()) {
                             if (param != null && !param.equals(getInputReference().getValue())) {
                                 getInputReference().setValue(param);
                             }
                         }
                     }
-                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
+                    case ENABLED ->
+                        input.setDisable(!parameter.isEnabled());
                     case VISIBLE -> {
-                        field.setManaged(parameter.isVisible());
-                        field.setVisible(parameter.isVisible());
+                        input.setManaged(parameter.isVisible());
+                        input.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
                     }
-                    default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+                    default ->
+                        LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
-            }));
+            });
 
-        getChildren().add(hbox);
+           // getChildren().add(hbox);
+        };
     }
 
     private ComboBox<ConstellationColor> makeNamedCombo() {

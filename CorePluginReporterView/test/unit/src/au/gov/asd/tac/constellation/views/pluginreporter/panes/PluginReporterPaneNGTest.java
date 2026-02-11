@@ -23,7 +23,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import javafx.collections.ListChangeListener;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -35,7 +34,6 @@ import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
 
 /**
  * Test class for PluginReporterPane

@@ -18,13 +18,13 @@ package au.gov.asd.tac.constellation.plugins.parameters.types;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.FileInputKind;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.FileInputKind;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import static java.util.Locale.filter;
 import java.util.Objects;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.openide.util.lookup.ServiceProvider;
@@ -51,7 +51,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
      * The property of this type referring to the file filters used
      */
     public static final String FILE_FILTER = "islabel";
-    
+
     /**
      * Constructs a new instance of this type.
      * <p>
@@ -195,33 +195,11 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         return v.validateString(stringValue);
     }
 
-    /**
-     * Describes the method of file selection for a parameter of this type.
-     */
-    public enum FileParameterKind {
-
-        /**
-         * Allows selection of multiple files. Displays "Open" on the button.
-         */
-        OPEN_MULTIPLE("Open"),
-        /**
-         * Allows selection of multiple files. Displays "..." on the button.
-         */
-        OPEN_MULTIPLE_OBSCURED("..."),
-        /**
-         * Allows selection of a single file only. Displays "Open" on the button.
-         */
-        OPEN("Open"),
-        /**
-         * Allows selection of a single file only. Displays "..." on the button.
-         */
-        OPEN_OBSCURED("..."),
-
-     
     public static class FileParameterValue extends ParameterValue {
 
         private final List<String> files;
         private FileInputKind kind;
+        private ExtensionFilter filter;
         private boolean acceptAllFileFilterUsed;
         private boolean warnOverwrite;
         private boolean fileChooserSelected;
@@ -349,7 +327,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
 
         /**
          * Set if user should be warning when overwriting file
-         * 
+         *
          * @param b whether the user should be warning when overwriting file
          */
         public void setWarningOverwrite(final boolean b) {
@@ -364,9 +342,10 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         public boolean isWarningOverwriteUsed() {
             return warnOverwrite;
         }
-        
+
         /**
          * Check to see if save button has already been selected.
+         *
          * @return the fileChooserSelected
          */
         public boolean isFileChooserSelected() {
@@ -379,8 +358,6 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         public void setFileChooserSelected(final boolean fileChooserSelected) {
             this.fileChooserSelected = fileChooserSelected;
         }
-
-
 
         @Override
         public String validateString(final String s) {
@@ -395,7 +372,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             final File validationFile = new File(s);
             final String[] names = s.split(SeparatorConstants.SEMICOLON);
             if (names.length > 1) {
-                if ((this.kind == FileParameterKind.OPEN_MULTIPLE && files.size() != names.length)) {
+                if ((this.kind == FileInputKind.OPEN_MULTIPLE && files.size() != names.length)) {
                     return "Wrong number of files";
                 } else {
                     return null;

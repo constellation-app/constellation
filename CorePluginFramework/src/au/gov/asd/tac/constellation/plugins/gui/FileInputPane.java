@@ -15,26 +15,37 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
-import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
+import static au.gov.asd.tac.constellation.plugins.gui.PasswordInputPane.DEFAULT_WIDTH;
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.ENABLED;
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VALUE;
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VISIBLE;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
-import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind.OPEN;
-import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind.OPEN_MULTIPLE;
-import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind.OPEN_MULTIPLE_OBSCURED;
-import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind.OPEN_OBSCURED;
-import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind.SAVE;
-import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind.SAVE_OBSCURED;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import javafx.scene.control.Button;
+import javafx.scene.control.IndexRange;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileFilter;
+import org.apache.commons.lang3.StringUtils;
+import org.openide.filesystems.FileChooserBuilder;
 
 /**
  * A text-box and file chooser that together allows the selection or manual entry of a number files, which is the GUI
@@ -51,8 +62,13 @@ import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListen
  */
 public final class FileInputPane extends ParameterInputPane<FileParameterValue, List<File>> {
 
+    public static final int DEFAULT_WIDTH = 300;
     public static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
     private static final Logger LOGGER = Logger.getLogger(FileInputPane.class.getName());
+    
+    private final Button fileAddButton;
+    private final TextInputControl field;
+    private final boolean required;
 
     public FileInputPane(final PluginParameter<FileParameterValue> parameter) {
         this(parameter, DEFAULT_WIDTH, null, null);
@@ -324,5 +340,15 @@ public final class FileInputPane extends ParameterInputPane<FileParameterValue, 
         }
 
         return fcb;
+    }
+
+    @Override
+    public ConstellationInputListener getFieldChangeListener(PluginParameter<FileParameterValue> parameter) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public PluginParameterListener getPluginParameterListener() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
