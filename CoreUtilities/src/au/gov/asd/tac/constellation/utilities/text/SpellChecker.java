@@ -18,8 +18,10 @@ package au.gov.asd.tac.constellation.utilities.text;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -28,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
@@ -36,20 +39,21 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.NotifyDescriptor;
 
 /**
- * Handles the SpellChecking functions of SpellCheckingTextArea. SpellChecker
- * evaluates incorrect words/phrases and pops up the suggestions when the user
- * prompts
+ * Handles the SpellChecking functions of SpellCheckingTextArea. SpellChecker evaluates incorrect words/phrases and pops
+ * up the suggestions when the user prompts
  *
  * @author Auriga2
  */
 public final class SpellChecker {
+
     private final SpellCheckingTextArea textArea;
     private static final List<String> misspells = new ArrayList<>();
-    private List<Object> matches = new ArrayList<>();
+    private final List<Object> matches = new ArrayList<>();
     private int indexOfMisspelledTextUnderCursor;       // position of the current misspelled text in misspells list
     private final ListView<String> suggestions = new ListView<>(FXCollections.observableArrayList());
     private Object langTool;
@@ -67,7 +71,6 @@ public final class SpellChecker {
     private static Object language = null;
     private static final String NON_WORD_PATTERN = "[\\W]"; //excludes alphanumeric characters including the underscore
     private static final Pattern NON_WORD_MATCHER = Pattern.compile(NON_WORD_PATTERN);
-    
 
     protected static final CompletableFuture<Void> LANGTOOL_LOAD;
 
@@ -86,7 +89,7 @@ public final class SpellChecker {
                         language = LanguagetoolClassLoader.getLanguages().getMethod("getLanguageForShortCode", String.class).invoke(languages, "en-AU");
                         langToolStatic = LanguagetoolClassLoader.getMultiThreadedJLanguageTool().getDeclaredConstructor(LanguagetoolClassLoader.getLanguage()).newInstance(language);
 
-                        //perform a check here to prevent the spell checking being too slow at the first word after loading costy
+                        //perform a check here to prevent the spell checking being too slow at the first word after loading consty
                         final Object initMatches = LanguagetoolClassLoader.getJLanguagetool().getMethod("check", String.class).invoke(langToolStatic, "random text");
 
                     } catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
@@ -136,40 +139,259 @@ public final class SpellChecker {
         }
     }
 
+    Method checkMethod;
+    Method getFromPosMethod;
+    Method getToPosMethod;
+
+    ArrayList<String> prevParts = new ArrayList<>();
+
+    // may need two arrays for caching starts and ends
+    final ArrayList<Integer> prevStarts = new ArrayList<>();
+    final ArrayList<Integer> prevEnds = new ArrayList<>();
+
+    // new 
+    final ArrayList<Pair<Integer, Integer>> prevHighlights = new ArrayList<>();
+
+    final ArrayList<Pair<Integer, Integer>> highlightsToRemove = new ArrayList<>();
+
+    final int tokensPerPart = 20;
+
     /**
-     * Check Spelling of the entire text. This will ensure scenarios like
-     * duplicate words, grammar mistakes etc. are triggered
+     * Check Spelling of the entire text. This will ensure scenarios like duplicate words, grammar mistakes etc. are
+     * triggered
      */
     public void checkSpelling() {
-        textArea.clearStyles();
+        //textArea.clearStyles();
         misspells.clear();
 
-        if (!turnOffSpellChecking && StringUtils.isNotBlank(textArea.getText())) {
-            try {
-                matches = (List<Object>) LanguagetoolClassLoader.getJLanguagetool().getMethod("check", String.class).invoke(langTool, textArea.getText());
-                matches.forEach((var match) -> {
+        if (turnOffSpellChecking || !StringUtils.isNotBlank(textArea.getText())) {
+            return;
+        }
+        try {
 
-                    if (LanguagetoolClassLoader.getRuleMatch().isInstance(match)){
-                        try {
-                            final int start = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getFromPos").invoke(match);
-                            final int end = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos").invoke(match);
-                            final String misspell = textArea.getText().substring(start, end);
-                            misspells.add(misspell);
-                            textArea.highlightText(start, end);
-                        } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
-                            logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
-                        }
-                    }
-                });
-            } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
-                logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
+            if (checkMethod == null) {
+                checkMethod = LanguagetoolClassLoader.getJLanguagetool().getMethod("check", String.class);
             }
+
+            final long startTimeSplit = System.currentTimeMillis();
+
+            final ArrayList<String> parts = new ArrayList<>();
+            final ArrayList<Integer> partsOffsets = new ArrayList<>();
+
+            final ArrayList<Pair<Integer, Integer>> partsSpans = new ArrayList<>();// new
+
+            final String inputText = textArea.getText();
+            int tokensRemaining = tokensPerPart;
+            int subStringStart = 0;
+            for (int i = 0; i < inputText.length(); i++) {
+                final char character = inputText.charAt(i);
+
+                // non word character
+                if (!Character.isLetterOrDigit(character)) {
+                    tokensRemaining--;
+                }
+
+                // If we've counted enough tokens
+                if (tokensRemaining <= 0) {
+                    final String partAsString = inputText.substring(subStringStart, i);
+                    parts.add(partAsString);
+                    partsOffsets.add(subStringStart);
+
+                    partsSpans.add(new Pair(subStringStart, i));
+
+                    subStringStart = i;
+                    tokensRemaining = tokensPerPart;
+                }
+
+                // If end of string, store remaining text in string
+                if (i == inputText.length() - 1) {
+                    final String partAsString = inputText.substring(subStringStart, i);
+                    parts.add(partAsString);
+                    partsOffsets.add(subStringStart);
+
+                    partsSpans.add(new Pair(subStringStart, i));
+
+                    subStringStart = i;
+                    tokensRemaining = tokensPerPart;
+                }
+            }
+
+            final ArrayList<String> diff = new ArrayList<>();
+            final ArrayList<Integer> diffOffsets = new ArrayList<>();
+            final ArrayList<Pair<Integer, Integer>> diffSpans = new ArrayList<>();// new
+
+            // find major differences
+            if (prevParts.isEmpty()) {
+                // All new input will be different to old
+                diff.addAll(parts);
+                diffOffsets.addAll(partsOffsets);
+                diffSpans.addAll(partsSpans);
+            } else {
+                // Iterate through the current input text and the prev input text and find differences
+                for (int i = 0; i < prevParts.size() || i < parts.size(); i++) {
+
+                    // If out of new input
+                    if (i >= parts.size()) {
+                        break;
+                    }
+
+                    // If elem doesnt exist in prev input, add it as it must be new
+                    if (i >= prevParts.size()) {
+                        diff.add(parts.get(i));
+                        diffOffsets.add(partsOffsets.get(i));
+                        diffSpans.add(partsSpans.get(i));
+                        continue;
+                    }
+
+                    // If current elements are different, add to diff list
+                    if (!prevParts.get(i).equals(parts.get(i))) {
+                        diff.add(parts.get(i));
+                        diffOffsets.add(partsOffsets.get(i));
+                        diffSpans.add(partsSpans.get(i));
+                    }
+
+                }
+            }
+
+//            System.out.println("diff");
+//            for (final String value : diff) {
+//                System.out.println(value);
+//            }
+//
+//            System.out.println("diffSpans");
+//            for (final Pair<Integer, Integer> value : diffSpans) {
+//                System.out.println(value);
+//            }
+
+            prevParts = parts;
+
+            final long endTimeSplit = System.currentTimeMillis();
+            System.out.println("Took " + (endTimeSplit - startTimeSplit) + " ms to split and find differences...");
+
+            final long startTimeMatches = System.currentTimeMillis();
+            matches.clear();
+            int totalElements = 0;
+            for (final String d : diff) {
+                final List<Object> list = (List<Object>) checkMethod.invoke(langTool, d);
+                matches.add(list); // treating matches like a list of lists
+                totalElements += list.size();
+            }
+
+            final long endTimeMatches = System.currentTimeMillis();
+            System.out.println("Took " + (endTimeMatches - startTimeMatches) + " ms to get matches...");
+
+            final long startTimeLoop = System.currentTimeMillis();
+
+            int startEndIndex = 0;
+            final int[] starts = new int[totalElements];
+            final int[] ends = new int[totalElements];
+
+            // Delete elements from previous start and ends (which represent previous highlighted text) that will be changed
+//            if (totalElements > 0) {
+//                final int earliestChange = diffOffsets.getFirst();
+//                final int latestChange = diffOffsets.getLast();
+//                System.out.println("!!! earliestChange: " + earliestChange);
+//                System.out.println("!!! latestChange: " + latestChange);
+//
+////                prevStarts.removeIf(n -> n >= earliestChange && n < latestChange);
+////                prevEnds.removeIf(n -> n > earliestChange && n <= latestChange);
+//                prevStarts.removeIf(n -> n >= earliestChange);
+//                prevEnds.removeIf(n -> n > earliestChange);
+//
+//                prevHighlights.removeIf(n -> n.getKey() >= earliestChange);
+//            }
+
+            // for each list of matches
+            for (int i = 0; i < matches.size(); i++) {
+                final List<Object> listOfMatches = (List<Object>) matches.get(i);
+
+                for (final Object match : listOfMatches) {
+                    if (!LanguagetoolClassLoader.getRuleMatch().isInstance(match)) {
+                        continue;
+                    }
+
+                    try {
+                        if (getFromPosMethod == null) {
+                            getFromPosMethod = LanguagetoolClassLoader.getRuleMatch().getMethod("getFromPos");
+                        }
+
+                        if (getToPosMethod == null) {
+                            getToPosMethod = LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos");
+                        }
+
+                        final int start = (int) getFromPosMethod.invoke(match);
+                        final int end = (int) getToPosMethod.invoke(match);
+                        final String misspell = textArea.getText().substring(start, end);
+                        misspells.add(misspell);
+                        // Add offset because start and end value is reletive to the string it's in, not the whole text input
+                        starts[startEndIndex] = start + diffOffsets.get(i);
+                        ends[startEndIndex] = end + diffOffsets.get(i);
+
+                        startEndIndex++;
+                    } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+                        logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
+                    }
+                }
+            }
+            final long endTimeLoop = System.currentTimeMillis();
+            System.out.println("Took " + (endTimeLoop - startTimeLoop) + " ms to loop...");
+            
+            System.out.println("starts.length " + starts.length);
+
+            // Put all new start values in prevStarts list
+            // TODO: find if theres a clean way to do this
+//            for (final int value : starts) {
+//                prevStarts.add(value);
+//            }
+//            Collections.sort(prevStarts);
+//
+//            for (final int value : ends) {
+//                prevEnds.add(value);
+//            }
+//            Collections.sort(prevEnds);
+
+            for (int i = 0; i < totalElements; i++) {
+                prevHighlights.add(new Pair(starts[i], ends[i]));
+            }
+
+            // Convert to arrays
+//            final int[] prevStartsArray = prevStarts.stream().mapToInt(i -> i).toArray();
+//            final int[] prevEndsArray = prevEnds.stream().mapToInt(i -> i).toArray();
+
+///
+//            final int[] prevStartsArray = prevHighlights.stream().mapToInt(i -> i.getKey()).toArray();
+//            final int[] prevEndsArray = prevHighlights.stream().mapToInt(i -> i.getValue()).toArray();
+
+            if (totalElements > 0) {
+                Platform.runLater(() -> {
+                    final long startTimeHighlight = System.currentTimeMillis();
+                    //textArea.clearStyles();
+                    // clear only what needs to change
+//                    if (!diffOffsets.isEmpty()) {
+//                        textArea.clearStyles(diffOffsets.get(0), textArea.getLength()); // clears everything after first found difference, which works out currently
+//                    }
+
+                    // new
+                    for (final Pair<Integer, Integer> span : diffSpans) {
+                        textArea.clearStyle(span.getKey(), span.getValue());
+                    }
+
+                    //textArea.highlightTextMultiple(prevStartsArray, prevEndsArray);
+                    textArea.highlightTextMultiple(starts, ends);
+
+                    final long endTimeHighlight = System.currentTimeMillis();
+                    System.out.println("Took " + (endTimeHighlight - startTimeHighlight) + " ms to clear and highlight...");
+                });
+            }
+            //}
+        } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+            logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
         }
     }
 
     /**
-     * Pop up the suggestions list if the word/phrase under the cursor is
-     * misspelled.
+     * Pop up the suggestions list if the word/phrase under the cursor is misspelled.
+     *
      * @param event
      */
     public void popUpSuggestionsListAction(final MouseEvent event) {
@@ -223,8 +445,8 @@ public final class SpellChecker {
     }
 
     /**
-     * Retrieve the word/phrase under the cursor and check if it is misspelled.
-     * If it is misspelled the index is populated.
+     * Retrieve the word/phrase under the cursor and check if it is misspelled. If it is misspelled the index is
+     * populated.
      */
     private boolean isWordUnderCursorMisspelled() throws InvocationTargetException, NoSuchMethodException, SecurityException, IllegalAccessException {
         final int cursorIndex = textArea.getCaretPosition();
@@ -236,7 +458,7 @@ public final class SpellChecker {
         }
 
         for (final Object match : matches) {
-            if (LanguagetoolClassLoader.getRuleMatch().isInstance(match)){
+            if (LanguagetoolClassLoader.getRuleMatch().isInstance(match)) {
                 final int start = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getFromPos").invoke(match);
                 final int end = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos").invoke(match);
                 if (cursorIndex >= start && cursorIndex <= end) {
@@ -253,13 +475,12 @@ public final class SpellChecker {
     }
 
     /**
-     * Prevents highlighting while still typing. When a highlighted word is
-     * corrected manually it'll be marked as correct, similar to that in
-     * Microsoft Word.
+     * Prevents highlighting while still typing. When a highlighted word is corrected manually it'll be marked as
+     * correct, similar to that in Microsoft Word.
+     *
      * @param newText
      * @return
      */
-
     public boolean canCheckSpelling(final String newText) {
         final int caretPosition = textArea.getCaretPosition();
         if (caretPosition == 0) {

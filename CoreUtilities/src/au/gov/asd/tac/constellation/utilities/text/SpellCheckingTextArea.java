@@ -42,8 +42,8 @@ import org.fxmisc.richtext.util.UndoUtils;
 import org.openide.util.NbPreferences;
 
 /**
- * SpellCheckingTextArea is an InlineCssTextArea from the RichTextFX library
- * with added methods for highlighting spelling errors and some grammar errors.
+ * SpellCheckingTextArea is an InlineCssTextArea from the RichTextFX library with added methods for highlighting
+ * spelling errors and some grammar errors.
  *
  * @author Auriga2
  */
@@ -52,7 +52,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private final SpellChecker spellChecker = new SpellChecker(this);
     private final Insets insets = new Insets(4, 8, 4, 8);
-    public static final double EXTRA_HEIGHT = 3;    
+    public static final double EXTRA_HEIGHT = 3;
 
     private static final String UNDERLINE_AND_HIGHLIGHT_STYLE = "-rtfx-background-color:derive(yellow,-30%);"
             + "-rtfx-underline-color: red; "
@@ -62,6 +62,8 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
 
     private static final String CLEAR_STYLE = "-rtfx-background-color: transparent;"
             + "-rtfx-underline-color: transparent;";
+
+    MyThread t1 = null;
 
     public SpellCheckingTextArea(final boolean isSpellCheckEnabled) {
         final boolean enableSpellChecking = PREFERENCES.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT) && isSpellCheckEnabled;
@@ -81,14 +83,50 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         });
 
         this.setOnKeyReleased((final KeyEvent event) -> {
-            if (spellChecker.canCheckSpelling(this.getText())) {
-                spellChecker.checkSpelling();
+            final long startTime = System.currentTimeMillis();
+            System.out.println("setOnKeyReleased ");
+            final boolean test = spellChecker.canCheckSpelling(this.getText());
+            final long endTimecanCheck = System.currentTimeMillis();
+            System.out.println("Took " + (endTimecanCheck - startTime) + " ms to do can check...");
+            if (test) {
+                // 1
+                spellChecker.checkSpelling(); // runs
+
+//                // 2                
+//                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+//                    spellChecker.checkSpelling(); // runs
+//                });
+//                future.cancel(true); //  doesnt actaully stop it, so gotta find another way
+                // 3 works but is slow
+//                if (t1 != null) {
+//                    t1.interrupt();
+//                }
+//                t1 = new MyThread(spellChecker);
+//                t1.start();
             }
+            final long endTime = System.currentTimeMillis();
+            System.out.println("Took " + (endTime - endTimecanCheck) + " ms to check spelling...");
+            System.out.println("Took " + (endTime - startTime) + " ms to complete!");
         });
 
         // Set the right click context menu
         final ContextMenu contextMenu = addRightClickContextMenu(enableSpellChecking);
         this.setContextMenu(contextMenu);
+    }
+
+    public class MyThread extends Thread {
+
+        private final SpellChecker spellChecker;
+
+        public MyThread(final SpellChecker spellChecker) {
+            this.spellChecker = spellChecker;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("RUNNING THREAD!");
+            spellChecker.checkSpelling();
+        }
     }
 
     public SpellCheckingTextArea(final boolean isSpellCheckEnabled, final String text) {
@@ -104,7 +142,15 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      * underline and highlight the text from start to end.
      */
     public void highlightText(final int start, final int end) {
+        //System.out.println("highlightText " + start + " " + end);
         this.setStyle(start, end, UNDERLINE_AND_HIGHLIGHT_STYLE);
+    }
+
+    public void highlightTextMultiple(final int[] starts, final int[] ends) {
+        System.out.println("highlightTextMultiple starts.length: " + starts.length + " ends.length: " + ends.length);
+        for (int i = 0; i < starts.length; i++) {
+            highlightText(starts[i], ends[i]);
+        }
     }
 
     /**
@@ -114,10 +160,13 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         this.setStyle(0, this.getText().length(), CLEAR_STYLE);
     }
 
+    public void clearStyles(final int from, final int to) {
+        this.setStyle(from, to, CLEAR_STYLE);
+    }
+
     public boolean isWordUnderCursorHighlighted(final int index) {
         return this.getStyleOfChar(index) != null && this.getStyleOfChar(index).equals(UNDERLINE_AND_HIGHLIGHT_STYLE);
     }
-
 
     public final void setTooltip(final Tooltip tooltip) {
         Tooltip.install(this, tooltip);
@@ -126,7 +175,6 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     public final void setPromptText(final String promptText) {
         //TODO
     }
-
 
     private ContextMenu addRightClickContextMenu(final boolean enableSpellChecking) {
         final ContextMenu contextMenu = new ContextMenu();
@@ -182,7 +230,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             return selectionRange == null || selectionRange.getLength() == 0;
         }, this.selectionProperty());
     }
-    
+
     public void autoComplete(final List<String> suggestions) {
         final Popup popup = new Popup();
         popup.setWidth(this.getWidth());
