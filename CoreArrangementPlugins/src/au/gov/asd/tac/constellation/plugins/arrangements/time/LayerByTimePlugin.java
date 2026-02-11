@@ -206,8 +206,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     public static final String OLDEST_FIRST = "Chronological order (Oldest first)";
     public static final String NEWEST_FIRST = "Reverse Chronological order (Newest first)";
 
-    public static final int MIN_INT_PARAM_VALUE = 0;
-    public static final int MIN_NUM_ROWS_OR_COLS = 1;
+    public static final int MIN_INT_PARAM_VALUE = 1;
+    public static final int MAX_INT_PARAM_VALUE = 1000;
 
     static {
         LAYER_INTERVALS.put("Seconds", 1);
@@ -315,7 +315,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         numRowsOrColsParam = IntegerParameterType.build(NUM_ROWS_OR_COLS_PARAMETER_ID);
         numRowsOrColsParam.setName(NUM_ROWS_OR_COLS_NAME);
         numRowsOrColsParam.setIntegerValue(NUM_ROWS_OR_COLS_DEFAULT);
-        IntegerParameterType.setMinimum(numRowsOrColsParam, MIN_NUM_ROWS_OR_COLS);
+        IntegerParameterType.setMinimum(numRowsOrColsParam, MIN_INT_PARAM_VALUE);
         numRowsOrColsParam.setVisible(false);
         parameters.addParameter(numRowsOrColsParam);
 
@@ -323,6 +323,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         distanceBetweenRows.setName(ROW_DIST_NAME);
         distanceBetweenRows.setIntegerValue(ROW_DIST_DEFAULT);
         IntegerParameterType.setMinimum(distanceBetweenRows, MIN_INT_PARAM_VALUE);
+        IntegerParameterType.setMaximum(distanceBetweenRows, MAX_INT_PARAM_VALUE);
         distanceBetweenRows.setVisible(false);
         parameters.addParameter(distanceBetweenRows);
 
@@ -330,6 +331,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         distanceBetweenCols.setName(COL_DIST_NAME);
         distanceBetweenCols.setIntegerValue(COL_DIST_DEFAULT);
         IntegerParameterType.setMinimum(distanceBetweenCols, MIN_INT_PARAM_VALUE);
+        IntegerParameterType.setMaximum(distanceBetweenCols, MAX_INT_PARAM_VALUE);
         distanceBetweenCols.setVisible(false);
         parameters.addParameter(distanceBetweenCols);
 
@@ -337,6 +339,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         distanceBetweenNodes.setName(NODE_DIST_NAME);
         distanceBetweenNodes.setIntegerValue(NODE_DIST_DEFAULT);
         IntegerParameterType.setMinimum(distanceBetweenNodes, MIN_INT_PARAM_VALUE);
+        IntegerParameterType.setMaximum(distanceBetweenNodes, MAX_INT_PARAM_VALUE);
         distanceBetweenNodes.setVisible(false);
         parameters.addParameter(distanceBetweenNodes);
 
