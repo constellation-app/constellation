@@ -60,6 +60,7 @@ import javafx.scene.input.MouseEvent;
 public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> implements RightButtonSupport, LeftButtonSupport, AutoCompleteSupport, ShortcutSupport {
 
     private final ChoiceType type;
+    private boolean showDropDown = true;
     
     public SingleChoiceInput(final ChoiceType type) {
         this.type = type;
@@ -245,6 +246,11 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
 
     @Override
     public List<MenuItem> getAutoCompleteSuggestions() {
+        if (!showDropDown) {
+            showDropDown = true;
+            return null;
+        }
+        
         final List<MenuItem> suggestions = new ArrayList<>();
             // Get suggestions based on the text showing 
             this.getOptions().stream().map(value -> value)
@@ -256,6 +262,7 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
                             item.setGraphic(this.icons.get(index));
                         }
                         item.setOnAction(event -> {
+                            showDropDown = false;
                             this.setChoice(value);
                             this.setMenuShown(false);
                         });
@@ -264,25 +271,26 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
 
             // If the text matches a suggestion, show all suggestions 
             // The currently selected option will show at the top of the suggestions list 
-//            if (!suggestions.isEmpty()) {
-//               // setUpdatedFromSuggestions(true);
-//                final String match = suggestions.get(0).getText();
-//                if (suggestions.size() == 1 && match.toUpperCase().equals(getText().toUpperCase())) {
-//                    this.getOptions().stream().map(value -> value).forEach(value -> {
-//                        if (!match.equals(value.toString())) {
-//                            final int index = this.getOptions().indexOf(value);
-//                            final MenuItem item = new MenuItem(value.toString());
-//                            if (!this.icons.isEmpty()) {
-//                                item.setGraphic(this.icons.get(index));
-//                            }
-//                            item.setOnAction(event -> {
-//                                this.setChoice(value);
-//                                this.setMenuShown(false);
-//                            });
-//                            suggestions.add(item);
-//                        }
-//                    });
-//                }
+            if (!suggestions.isEmpty()) {
+                final String match = suggestions.get(0).getText();
+                if (suggestions.size() == 1 && match.toUpperCase().equals(getText().toUpperCase())) {
+                    this.getOptions().stream().map(value -> value).forEach(value -> {
+                        if (!match.equals(value.toString())) {
+                            final int index = this.getOptions().indexOf(value);
+                            final MenuItem item = new MenuItem(value.toString());
+                            if (!this.icons.isEmpty()) {
+                                item.setGraphic(this.icons.get(index));
+                            }
+                            item.setOnAction(event -> {
+                                showDropDown = false;
+                                this.setChoice(value);
+                                this.setMenuShown(false);
+                            });
+                            suggestions.add(item);
+                        }
+                    });
+                }
+            }
         return suggestions;
     }
 
