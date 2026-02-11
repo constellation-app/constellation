@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2025-11-20 Add preference to set whether views open docked or floating by default
+<p> Views can now be set to open docked or floating by default via Setup -> Options -> CONSTELLATION -> View.
+
 == 2026-01-13 Renamed "Chinese Whispers" to "Label Propagation"
 <p> "Chinese Whispers" clustering has been renamed to "Label Propagation".
 

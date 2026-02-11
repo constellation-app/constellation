@@ -20,12 +20,14 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.DefaultQualityControlAutoButton;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import javafx.application.Platform;
 import javafx.scene.layout.HBox;
@@ -33,6 +35,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -66,6 +69,7 @@ import org.openide.windows.TopComponent;
     "CTL_DataAccessViewTopComponent=Data Access View",
     "HINT_DataAccessViewTopComponent=Data Access View"
 })
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAccessPane> {
 
     private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("DAV-Thread", 1);
@@ -82,7 +86,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
         dataAccessPane = new DataAccessPane(this);
         dataAccessPane.addUIComponents();
-        
+
         // The data access pane that is initialized above is returned in the
         // overridden method getContent() below. That is how the initContent()
         // in the super class can reference it and add the data accees view to
@@ -106,10 +110,10 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
     public DataAccessPane getDataAccessPane() {
         return dataAccessPane;
     }
-    
+
     /**
-     * A fixed single thread pool for execution of jobs in the data access view
-     * that need to happen in an asynchronous manner.
+     * A fixed single thread pool for execution of jobs in the data access view that need to happen in an asynchronous
+     * manner.
      *
      * @return a fixed single thread pool
      */
@@ -124,8 +128,8 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     public String createStyle() {
-        return JavafxStyleManager.isDarkTheme() 
-                ? "resources/data-access-view-dark.css" 
+        return JavafxStyleManager.isDarkTheme()
+                ? "resources/data-access-view-dark.css"
                 : "resources/data-access-view-light.css";
     }
 
@@ -137,6 +141,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         super.handleComponentOpened();
         manageQualityControlListeners(true);
         QualityControlAutoVetter.getInstance().addObserver(getDataAccessPane());
+        setFloating(Bundle.CTL_DataAccessViewTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     /**
@@ -160,23 +165,19 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         System.setProperty("dav.graph.ready", Boolean.FALSE.toString());
         if (needsUpdate() && getDataAccessPane() != null) {
             getDataAccessPane().update(graph);
-            Platform.runLater(() -> 
-                DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph)
-            );
+            Platform.runLater(() -> DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph));
         }
-        Platform.runLater(() ->
-                // nested runLater so it runs after all the other triggered processes for opening a graph have been run
-                Platform.runLater(() -> System.setProperty("dav.graph.ready", Boolean.TRUE.toString()))
-        );
+
+        Platform.runLater(()
+                -> // nested runLater so it runs after all the other triggered processes for opening a graph have been run
+                Platform.runLater(() -> System.setProperty("dav.graph.ready", Boolean.TRUE.toString())));
     }
 
     /**
-     * Add or remove all quality control auto vetter listeners. These listeners
-     * are tied to DefaultQualityControlAutoButton buttons found nested within
-     * the button toolbar.
+     * Add or remove all quality control auto vetter listeners. These listeners are tied to
+     * DefaultQualityControlAutoButton buttons found nested within the button toolbar.
      *
-     * @param add Should quality control auto vetter listeners be added (true)
-     * or removed (false).
+     * @param add Should quality control auto vetter listeners be added (true) or removed (false).
      */
     private void manageQualityControlListeners(final boolean add) {
         // Dig down to the button toolbar and find any quality control auto
@@ -205,10 +206,14 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         }
     }
 
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_DataAccessViewTopComponent(), Boolean.FALSE);
+    }
+
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
+     * content of this method is always regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

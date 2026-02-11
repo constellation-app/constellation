@@ -37,6 +37,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.histogram.AttributeType;
 import au.gov.asd.tac.constellation.views.histogram.BinCollection;
@@ -57,6 +58,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.UndoRedo;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -96,7 +98,7 @@ import org.openide.windows.TopComponent;
     "CTL_HistogramTopComponent2=New Histogram",
     "HINT_HistogramTopComponent2=The histogram view will display attribute values as a bar chart"
 })
-
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPane> {
 
     private static final int MIN_WIDTH = 425;
@@ -876,5 +878,10 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
             }
             histogramPane.updateDisplay();
         }
+    }
+
+    @Override
+    public Map<String, Boolean> getFloatingPreference() {
+        return Map.of(Bundle.CTL_HistogramTopComponent2(), Boolean.FALSE);
     }
 }
