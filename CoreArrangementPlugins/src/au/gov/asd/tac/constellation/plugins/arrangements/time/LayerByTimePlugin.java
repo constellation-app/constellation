@@ -164,7 +164,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final boolean ARRANGE_2D_DEFAULT = false;
 
     private static final String ROW_OR_COL_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "row_or_col");
-    private static final String ROW_OR_COL_NAME = "Limit rows or columns";
+    private static final String ROW_OR_COL_NAME = "Arrange as rows or columns";
 
     private static final String NUM_ROWS_OR_COLS_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "num_rows_or_cols");
     private static final String NUM_ROWS_OR_COLS_NAME = "Number of rows/columns";
@@ -183,7 +183,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final int NODE_DIST_DEFAULT = 10;
 
     private static final String HOW_TO_ARRANGE_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "how_to_arrange");
-    private static final String HOW_TO_ARRANGE_NAME = "Direction to arrange";
+    private static final String HOW_TO_ARRANGE_NAME = "Direction to arrange layers";
 
     private static final String OLDEST_OR_NEWEST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "oldest_or_newest");
     private static final String OLDEST_OR_NEWEST_NAME = "Chronological ordering";
