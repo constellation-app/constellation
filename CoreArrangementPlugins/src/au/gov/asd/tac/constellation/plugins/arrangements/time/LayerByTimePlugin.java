@@ -244,6 +244,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private PluginParameter<IntegerParameterValue> distanceBetweenRows;
     private PluginParameter<IntegerParameterValue> distanceBetweenCols;
 
+    private String prevDtAttrParamValue = null;
+
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
@@ -376,7 +378,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     @Override
     public void updateParameters(final Graph graph, final PluginParameters parameters) {
-
         final List<String> dateTimeAttributes = new ArrayList<>();
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int attributeCount = rg.getAttributeCount(GraphElementType.TRANSACTION);
@@ -390,13 +391,15 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         }
 
         SingleChoiceParameterType.setOptions(dtAttrParam, dateTimeAttributes);
+        // Listener that will set the date time range paramter to be the the min and max time values of the chosen DateTime attribute
         parameters.addController(DATETIME_ATTRIBUTE_PARAMETER_ID, (masterId, paramMap, change) -> {
+            final String attrName = paramMap.get(DATETIME_ATTRIBUTE_PARAMETER_ID).getStringValue();
 
-            if (change != ParameterChange.VALUE) {
+            if (change != ParameterChange.VALUE || (prevDtAttrParamValue != null && prevDtAttrParamValue.equals(attrName))) {
                 return;
             }
 
-            final String attrName = paramMap.get(DATETIME_ATTRIBUTE_PARAMETER_ID).getStringValue();
+            prevDtAttrParamValue = attrName;
             try (final ReadableGraph rg = graph.getReadableGraph()) {
                 final int attrId = rg.getAttribute(GraphElementType.TRANSACTION, attrName);
                 if (attrId == Graph.NOT_FOUND) {
@@ -430,7 +433,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 }
             }
         });
-        if (!dateTimeAttributes.isEmpty()) {
+
+        // Set value if one has not already been set
+        if (!dateTimeAttributes.isEmpty() && SingleChoiceParameterType.getChoice(dtAttrParam) == null) {
             SingleChoiceParameterType.setChoice(dtAttrParam, dateTimeAttributes.get(0));
         }
     }
