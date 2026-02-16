@@ -54,7 +54,7 @@ jobs:
           chmod +x constellation-applications/functions.sh
 
       - name: Build Zips
-        uses: NomicFoundation/docker-run-action@63f044457cfb71a5c63fa589218c89a418565d9c
+        uses: maus007/docker-run-action-fork@v1
         with:
           image: ${{ env.RUNNER_IMAGE }}
           options: |

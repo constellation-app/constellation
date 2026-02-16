@@ -60,7 +60,7 @@ jobs:
         chmod +x constellation/.githubutilities/sonar.sh
 
     - name: Run Tests
-      uses: NomicFoundation/docker-run-action@63f044457cfb71a5c63fa589218c89a418565d9c
+      uses: maus007/docker-run-action-fork@v1
       with:
         image: ${{ env.RUNNER_IMAGE }}
         options: |
@@ -71,7 +71,7 @@ jobs:
           .githubutilities/run-tests.sh ${{ steps.verbosity.outputs.VERBOSITY }}
 
     - name: Run Sonar
-      uses: NomicFoundation/docker-run-action@63f044457cfb71a5c63fa589218c89a418565d9c
+      uses: maus007/docker-run-action-fork@v1
       with:
         image: ${{ env.RUNNER_IMAGE }}
         options: |
