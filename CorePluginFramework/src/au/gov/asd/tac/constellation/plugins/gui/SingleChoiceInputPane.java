@@ -45,8 +45,6 @@ import java.util.logging.Logger;
 public class SingleChoiceInputPane extends ParameterInputPane<SingleChoiceParameterValue, ParameterValue> {
 
     private static final Logger LOGGER = Logger.getLogger(SingleChoiceInputPane.class.getName());
-    private static final String INVALID_ID = "invalid";
-    private static final String INVALID_VALUE = "Invalid value";
 
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
         super(new SingleChoiceInput<ParameterValue>(ChoiceType.SINGLE_DROPDOWN), parameter);
@@ -61,13 +59,6 @@ public class SingleChoiceInputPane extends ParameterInputPane<SingleChoiceParame
         return (ConstellationInputListener<ParameterValue>) (final ParameterValue newValue) -> {
             if (newValue != null) {
                 SingleChoiceParameterType.setChoiceData(parameter, newValue);
-            }
-            if (!((SingleChoiceInput) input).isValid()) {
-                parameter.setError(INVALID_VALUE);
-                ((SingleChoiceInput) input).setId(INVALID_ID);
-            } else {
-                parameter.setError(null);
-                ((SingleChoiceInput) input).setId("");
             }
         };
     }

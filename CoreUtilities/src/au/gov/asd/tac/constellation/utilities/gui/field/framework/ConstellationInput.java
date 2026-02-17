@@ -294,6 +294,8 @@ public abstract class ConstellationInput<T> extends StackPane implements
                         });
                         showDropDown(menu);
                     }
+                } else if (!textArea.isInFocus() && !isValid()) {
+                    textArea.setText("");
                 }
             });
         }
