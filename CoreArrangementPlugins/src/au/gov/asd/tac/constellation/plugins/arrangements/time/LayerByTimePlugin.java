@@ -56,6 +56,8 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
@@ -74,6 +76,8 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.scene.control.Alert.AlertType;
 import org.eclipse.collections.api.iterator.FloatIterator;
 import org.eclipse.collections.api.list.primitive.MutableFloatList;
 import org.eclipse.collections.api.map.primitive.MutableFloatObjectMap;
@@ -208,6 +212,12 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     public static final int MIN_INT_PARAM_VALUE = 1;
     public static final int MAX_INT_PARAM_VALUE = 1000;
+
+    private static final String ALERT_NO_TRANS_HEADER_TEXT = "No transactions!";
+    private static final String ALERT_NO_TRANS_TEXT = "No layers generated. Layer by Time requires at least 1 transaction to be present on the graph!";
+
+    private static final String ALERT_HEADER_TEXT = "No transactions in range!";
+    private static final String ALERT_TEXT = "No layers generated. There were no dateTimes were found in the chosen date range!";
 
     static {
         LAYER_INTERVALS.put("Seconds", 1);
@@ -458,6 +468,23 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             return;
         }
 
+        if (rg.getTransactionCount() == 0) {
+            Platform.runLater(() -> NotifyDisplayer.displayAlert("Attention", ALERT_NO_TRANS_HEADER_TEXT, ALERT_NO_TRANS_TEXT, AlertType.WARNING, ScreenWindowsHelper.getMainWindowCentrePoint()));
+            LOGGER.log(Level.SEVERE, "No transactions found on graph.");
+            return;
+        }
+
+        // Start and end range paramters
+        final ZonedDateTime[] startEnd = parameters.getParameters().get(DATE_RANGE_PARAMETER_ID).getDateTimeRangeValue().getZonedStartEnd();
+        final long start = startEnd[0].toInstant().toEpochMilli();
+        final long end = startEnd[1].toInstant().toEpochMilli();
+
+        if (!checkValuesExistInRange(rg, start, end, dtAttrOrigId)) {
+            Platform.runLater(() -> NotifyDisplayer.displayAlert("Attention", ALERT_HEADER_TEXT, ALERT_TEXT, AlertType.WARNING, ScreenWindowsHelper.getMainWindowCentrePoint()));
+            LOGGER.log(Level.SEVERE, "No date times were found in the chosen range.");
+            return;
+        }
+
         // Make a copy of the graph
         final Graph copy = copyGraph(rg);
 
@@ -470,9 +497,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
             // Parameters
             final boolean useIntervals = parameters.getParameters().get(LAYER_BY_PARAMETER_ID).getStringValue().equals(INTERVAL_METHOD);
-            final ZonedDateTime[] startEnd = parameters.getParameters().get(DATE_RANGE_PARAMETER_ID).getDateTimeRangeValue().getZonedStartEnd();
-            final ZonedDateTime start = startEnd[0];
-            final ZonedDateTime end = startEnd[1];
             final boolean isTransactionLayers = parameters.getParameters().get(TRANSACTION_AS_LAYER_PARAMETER_ID).getBooleanValue();
             final boolean keepTxColors = parameters.getParameters().get(KEEP_TX_COLORS_PARAMETER_ID).getBooleanValue();
             final boolean drawTxGuides = parameters.getParameters().get(DRAW_TX_GUIDES_PARAMETER_ID).getBooleanValue();
@@ -506,11 +530,11 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             if (useIntervals) {
                 final int intervalUnit = LAYER_INTERVALS.get(parameters.getParameters().get(UNIT_PARAMETER_ID).getStringValue());
                 final int intervalAmount = parameters.getParameters().get(AMOUNT_PARAMETER_ID).getIntegerValue();
-                buildIntervals(wgcopy, values, remappedLayers, displayNames, dtAttr, start.toInstant(), end.toInstant(), intervalUnit, intervalAmount);
+                buildIntervals(wgcopy, values, remappedLayers, displayNames, dtAttr, start, end, intervalUnit, intervalAmount);
             } else {
                 final int calendarUnit = BIN_CALENDAR_UNITS.get(parameters.getParameters().get(UNIT_PARAMETER_ID).getStringValue());
                 final int binAmount = parameters.getParameters().get(AMOUNT_PARAMETER_ID).getIntegerValue();
-                buildBins(wgcopy, values, remappedLayers, displayNames, dtAttr, start.toInstant(), end.toInstant(), calendarUnit, binAmount);
+                buildBins(wgcopy, values, remappedLayers, displayNames, dtAttr, start, end, calendarUnit, binAmount);
             }
 
             // Modify the copied graph to show our layers.
@@ -695,6 +719,21 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(copy);
     }
 
+    private boolean checkValuesExistInRange(final GraphReadMethods rg, final long start, final long end, final int dtAttrId) {
+        // Check if theres anything that will actually be on the new graph
+        for (int position = 0; position < rg.getTransactionCount(); position++) {
+            final int txId = rg.getTransaction(position);
+
+            // Only use transactions that have a datetime value set.
+            final long date = rg.getLongValue(dtAttrId, txId);
+            if (start <= date && date <= end) {
+                // found a legititmate value
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected Graph copyGraph(final GraphReadMethods rg) throws InterruptedException {
         try {
             final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
@@ -767,11 +806,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * @param unit The interval unit in seconds.
      * @param amount The number of interval units per layer.
      */
-    private void buildIntervals(final GraphWriteMethods wgcopy, final List<Float> values, final MutableIntObjectMap<MutableFloatList> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Instant d1, final Instant d2, final int unit, final int amount) {
+    private void buildIntervals(final GraphWriteMethods wgcopy, final List<Float> values, final MutableIntObjectMap<MutableFloatList> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Long d1, final Long d2, final int unit, final int amount) {
         // Convert to milliseconds.
         final long intervalLength = unit * amount * 1000L;
-        final long d1t = d1.toEpochMilli();
-        final long d2t = d2.toEpochMilli();
 
         final BitSet txUnused = new BitSet();
         for (int position = 0; position < wgcopy.getTransactionCount(); position++) {
@@ -780,9 +817,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             // Only use transactions that have a datetime value set.
             final long date = wgcopy.getLongValue(dtAttr, txId);
 
-            if (d1t <= date && date <= d2t) {
+            if (d1 <= date && date <= d2) {
 
-                final float layer = (float) (date - d1t) / intervalLength;
+                final float layer = (float) (date - d1) / intervalLength;
                 if (!transactionLayers.containsKey(layer)) {
                     transactionLayers.put(layer, new IntArrayList());
                 }
@@ -815,7 +852,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
         final SimpleDateFormat sdf = new SimpleDateFormat("EE yyyy-MM-dd HH:mm:ss");
         for (int i = 0; i < values.size(); i++) {
-            final long layerBase = values.get(i).longValue() * intervalLength + d1t;
+            final long layerBase = values.get(i).longValue() * intervalLength + d1;
             final long layerEnd = layerBase + intervalLength - 1;
             displayNames.put(i, String.format("%s .. %s", sdf.format(layerBase), sdf.format(layerEnd)));
         }
@@ -834,16 +871,13 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * @param unit
      * @param binAmount
      */
-    private void buildBins(final GraphWriteMethods wgcopy, final List<Float> values, final MutableIntObjectMap<MutableFloatList> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Instant d1, final Instant d2, final int unit, final int binAmount) {
+    private void buildBins(final GraphWriteMethods wgcopy, final List<Float> values, final MutableIntObjectMap<MutableFloatList> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Long d1, final Long d2, final int unit, final int binAmount) {
         final Calendar dtg = Calendar.getInstance();
         final float maxUnit = dtg.getMaximum(unit);
 
         if (binAmount > maxUnit) {
             throw new RuntimeException("The selected bin size, " + binAmount + " exceeds the number of values for the specified bin period, " + (int) maxUnit);
         }
-
-        final long d1t = d1.toEpochMilli();
-        final long d2t = d2.toEpochMilli();
 
         // Put each transaction in a layer corresponding to the bin unit.
         // Build a map (transactionLayers) of layerId -> list of transactions.
@@ -852,7 +886,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
             // Only use transactions that have a datetime value set.
             final long date = wgcopy.getLongValue(dtAttr, txId);
-            if (d1t <= date && date <= d2t) {
+            if (d1 <= date && date <= d2) {
                 dtg.setTimeInMillis(date);
                 dtg.setTimeZone(TimeZone.getTimeZone("UTC"));
 
