@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
-import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.FileInputKind;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooserMode;
@@ -60,9 +60,9 @@ public class FileInputPaneNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(FileInputPaneNGTest.class.getName());
 
-    private static final FileParameterKind OPEN_TYPE = FileParameterType.FileParameterKind.OPEN;
-    private static final FileParameterKind OPEN_MULTIPLE_TYPE = FileParameterType.FileParameterKind.OPEN_MULTIPLE;
-    private static final FileParameterKind SAVE_TYPE = FileParameterType.FileParameterKind.SAVE;
+    private static final FileInputKind OPEN_TYPE = FileInputKind.OPEN;
+    private static final FileInputKind OPEN_MULTIPLE_TYPE = FileInputKind.OPEN_MULTIPLE;
+    private static final FileInputKind SAVE_TYPE = FileInputKind.SAVE;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -94,7 +94,7 @@ public class FileInputPaneNGTest {
     public void testHandleButtonOnAction() {
         System.out.println("testHandleButtonOnAction");
 
-        final FileParameterType.FileParameterKind[] kindArray = {OPEN_TYPE, OPEN_MULTIPLE_TYPE, SAVE_TYPE};
+        final FileInputKind[] kindArray = {OPEN_TYPE, OPEN_MULTIPLE_TYPE, SAVE_TYPE};
         final String[] titleArray = {"title open", "title open_multiple", "title save"};
         final String[] fileExtensionArray = {null, "", "svg"};
 
@@ -108,7 +108,7 @@ public class FileInputPaneNGTest {
 
             for (int i = 0; i < titleArray.length; i++) {
 
-                final FileParameterType.FileParameterKind kind = kindArray[i];
+                final FileInputKind kind = kindArray[i];
                 final String title = titleArray[i];
                 final String fileExtension = fileExtensionArray[i];
 
@@ -150,7 +150,7 @@ public class FileInputPaneNGTest {
             fileChooserStaticMock.when(() -> FileChooser.openMultiDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
             fileChooserStaticMock.when(() -> FileChooser.openSaveDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
 
-            final FileParameterType.FileParameterKind kind = OPEN_TYPE;
+            final FileInputKind kind = OPEN_TYPE;
             final String title = "title open";
             final String fileExtension = "";
 
@@ -191,7 +191,7 @@ public class FileInputPaneNGTest {
             fileChooserStaticMock.when(() -> FileChooser.openMultiDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
             fileChooserStaticMock.when(() -> FileChooser.openSaveDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
 
-            final FileParameterType.FileParameterKind kind = OPEN_TYPE;
+            final FileInputKind kind = OPEN_TYPE;
             final String title = "title open";
             final String fileExtension = "";
 
@@ -267,7 +267,7 @@ public class FileInputPaneNGTest {
 
     }
 
-    private PluginParameter<FileParameterType.FileParameterValue> paramInstanceHelper(final FileParameterKind kind, final String extension) {
+    private PluginParameter<FileParameterType.FileParameterValue> paramInstanceHelper(final FileInputKind kind, final String extension) {
         final PluginParameter<FileParameterType.FileParameterValue> paramInstance = FileParameterType.build("");
         paramInstance.setName("File Location");
         paramInstance.setDescription("File location and name for export");

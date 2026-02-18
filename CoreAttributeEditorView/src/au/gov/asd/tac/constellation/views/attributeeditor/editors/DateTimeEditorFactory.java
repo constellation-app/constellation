@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescri
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -154,7 +153,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
             ZoneId.getAvailableZoneIds().forEach(id -> timeZones.add(ZoneId.of(id)));
             timeZoneComboBox = new ComboBox<>(timeZones.sorted(zoneIdComparator));
-            timeZoneComboBox.getSelectionModel().select(TimeZoneUtilities.UTC);
+            timeZoneComboBox.getSelectionModel().select(TemporalUtilities.UTC);
             timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener(updateTimeFromZone);
             
             final Label timeZoneComboBoxLabel = new Label("Time Zone:");

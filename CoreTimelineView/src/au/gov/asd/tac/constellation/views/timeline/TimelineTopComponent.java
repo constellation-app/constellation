@@ -537,7 +537,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                             splitPane.setDisable(false);
                             // Add the datetime attributes:
                             timelinePanel.setDateTimeAttributes(datetimeAttributes, currentDatetimeAttribute);
-                            timelinePanel.setTimeZone(state == null ? TemporalZoneUtilities.UTC : state.getTimeZone());
+                            timelinePanel.setTimeZone(state == null ? TemporalUtilities.UTC : state.getTimeZone());
                             // Add the label attributes:
                             timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
                             final boolean selectedOnly = state != null && state.isShowingSelectedOnly();

@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
-import static au.gov.asd.tac.constellation.plugins.gui.PasswordInputPane.DEFAULT_WIDTH;
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.ENABLED;
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VALUE;
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VISIBLE;
@@ -23,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.field.FileInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
@@ -69,7 +69,7 @@ public final class FileInputPane extends ParameterInputPane<FileParameterValue, 
     private final Button fileAddButton;
     private final TextInputControl field;
     private final boolean required;
-
+    
     public FileInputPane(final PluginParameter<FileParameterValue> parameter) {
         this(parameter, DEFAULT_WIDTH, null, null);
     }
@@ -97,6 +97,7 @@ public final class FileInputPane extends ParameterInputPane<FileParameterValue, 
      * @param fileExtension the file extension to filter file dialog
      */
     public FileInputPane(final PluginParameter<FileParameterValue> parameter, final int defaultWidth, Integer suggestedHeight, final String fileExtension) {
+        super(new FileInput(), parameter);
         if (suggestedHeight == null) {
             suggestedHeight = 1;
         }

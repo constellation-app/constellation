@@ -51,7 +51,7 @@ import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape.GeometryType;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.FileInputKind;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.FileInputKind;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
