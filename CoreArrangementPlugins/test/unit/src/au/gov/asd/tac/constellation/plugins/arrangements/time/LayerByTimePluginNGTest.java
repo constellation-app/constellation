@@ -40,6 +40,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -101,7 +102,7 @@ public class LayerByTimePluginNGTest {
             "LayerByTimePlugin.how_to_arrange",
             "LayerByTimePlugin.oldest_or_newest"
         };
-        
+
         assertEquals(params.size(), parameterKeyArray.length);
 
         for (final String key : parameterKeyArray) {
@@ -230,5 +231,43 @@ public class LayerByTimePluginNGTest {
                 assertEquals(storeGraph.getFloatValue(zAttr, vert), z);
             }
         }
+    }
+
+    @Test
+    public void testCheckValuesExistInRange() throws Exception {
+        System.out.println("checkValuesExistInRange");
+
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        final StoreGraph storeGraph = new StoreGraph(schema);
+
+        // Setup storeGraph
+        final ZonedDateTime now = ZonedDateTime.now();
+        final long date0 = now.plusDays(1).toInstant().toEpochMilli();
+        final long date1 = now.plusDays(2).toInstant().toEpochMilli();
+        final long date2 = now.plusDays(3).toInstant().toEpochMilli();
+        final long date3 = now.plusDays(4).toInstant().toEpochMilli();
+
+        final int txDateTimeAttr = TemporalConcept.TransactionAttribute.DATETIME.ensure(storeGraph);
+
+        // add vertices
+        final int vxId0 = storeGraph.addVertex();
+        final int vxId1 = storeGraph.addVertex();
+        final int vxId2 = storeGraph.addVertex();
+        final int vxId3 = storeGraph.addVertex();
+
+        // add transactions
+        final int txId0 = storeGraph.addTransaction(vxId0, vxId1, false);
+        final int txId1 = storeGraph.addTransaction(vxId2, vxId3, false);
+
+        storeGraph.setLongValue(txDateTimeAttr, txId0, date0);
+        storeGraph.setLongValue(txDateTimeAttr, txId1, date1);
+
+        final LayerByTimePlugin instance = new LayerByTimePlugin();
+        assertFalse(instance.checkValuesExistInRange(storeGraph, 0, 1, txDateTimeAttr));
+        assertFalse(instance.checkValuesExistInRange(storeGraph, date2, date3, txDateTimeAttr));
+
+        assertTrue(instance.checkValuesExistInRange(storeGraph, date0, date1, txDateTimeAttr));
+        assertTrue(instance.checkValuesExistInRange(storeGraph, 0, date0, txDateTimeAttr));
+        assertTrue(instance.checkValuesExistInRange(storeGraph, date1, date2, txDateTimeAttr));
     }
 }

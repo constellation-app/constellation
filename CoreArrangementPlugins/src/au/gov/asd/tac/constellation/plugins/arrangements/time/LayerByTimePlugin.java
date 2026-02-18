@@ -719,18 +719,18 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(copy);
     }
 
-    private boolean checkValuesExistInRange(final GraphReadMethods rg, final long start, final long end, final int dtAttrId) {
-        // Check if theres anything that will actually be on the new graph
+    // Check if theres anything that will actually be on the new graph
+    protected boolean checkValuesExistInRange(final GraphReadMethods rg, final long start, final long end, final int dtAttrId) {
         for (int position = 0; position < rg.getTransactionCount(); position++) {
             final int txId = rg.getTransaction(position);
-
             // Only use transactions that have a datetime value set.
             final long date = rg.getLongValue(dtAttrId, txId);
             if (start <= date && date <= end) {
-                // found a legititmate value
+                // found a value within range
                 return true;
             }
         }
+        // No value found in range
         return false;
     }
 
