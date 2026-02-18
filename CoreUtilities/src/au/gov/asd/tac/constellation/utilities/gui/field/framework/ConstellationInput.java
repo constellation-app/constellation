@@ -190,7 +190,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
         });
         textArea.setContextMenu(contextMenu);
         textArea.setMinHeight(DEFAULT_CELL_HEIGHT);
-        textArea.setPadding(new Insets(0, 5, 0, 0));
+        textArea.setPadding(new Insets(0, 0, 0, 0));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">
@@ -288,7 +288,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
                         menu.setAutoFix(true);
                         menu.setWidth(textArea.getWidth());
                         //Listen for key events for when arrows are pressed or when to hide the menu
-                        addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+                        addEventFilter(KeyEvent.KEY_PRESSED, (final KeyEvent event) -> {
                             menu.hide();
                             setMenuShown(false);
                         });
@@ -478,6 +478,10 @@ public abstract class ConstellationInput<T> extends StackPane implements
     public final String getText() {
         return textArea.getText();
     }
+    
+    public final ConstellationTextArea getTextArea() {
+        return textArea;
+    }
 
     /**
      * Sets the current string value of the {@link ConstellationTextArea}.
@@ -640,7 +644,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
      *
      * @param menu
      */
-    protected final void showDropDown(final ConstellationInputDropDown menu) {
+    public final void showDropDown(final ConstellationInputDropDown menu) {
         menu.show(this, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
         setMenuShown(true);
     }

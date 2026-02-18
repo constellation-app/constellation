@@ -221,23 +221,6 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         // A single choice list with a subtype of String.
         final SingleChoiceParameterValue robotpv = new SingleChoiceParameterValue(StringParameterValue.class);
-//        robotpv.setGuiInit(control -> {
-//            @SuppressWarnings("unchecked") //control will be of type ComboBox<ParameterValue> which extends from Region
-//            final ComboBox<ParameterValue> field = (ComboBox<ParameterValue>) control;
-//            final Image img = new Image(ALIEN_ICON);
-//            field.setCellFactory((ListView<ParameterValue> param) -> new ListCell<ParameterValue>() {
-//                @Override
-//                protected void updateItem(final ParameterValue item, final boolean empty) {
-//                    super.updateItem(item, empty);
-//                    this.setText(empty ? "" : item.toString());
-//                    final float f = empty ? 0 : item.toString().length() / 11F;
-//                    final Color c = Color.color(1 - f / 2F, 0, 0);
-//                    setTextFill(c);
-//                    setGraphic(new ImageView(img));
-//                }
-//            });
-//        });
-
         final PluginParameter<SingleChoiceParameterValue> robotOptions = SingleChoiceParameterType.build(ROBOT_PARAMETER_ID, robotpv);
         robotOptions.setName("Robot options");
         robotOptions.setDescription("A list of robots to choose from");

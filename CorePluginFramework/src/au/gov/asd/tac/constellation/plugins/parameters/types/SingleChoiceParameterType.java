@@ -28,8 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javax.swing.ImageIcon;
-import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -249,6 +247,14 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
     public static void setEditable(final PluginParameter<?> parameter, boolean editable) {
         parameter.setProperty(EDITABLE, editable);
     }
+    
+    public static void setIcons(final PluginParameter<SingleChoiceParameterValue> parameter, final List<Image> icons) {
+        parameter.getParameterValue().setIcons(icons.stream().map(icon -> new ImageView(icon)).toList());
+    }
+
+    public static List<ImageView> getIcons(final PluginParameter<SingleChoiceParameterValue> parameter) {
+        return parameter.getParameterValue().getIcons();
+    }
 
     public static void setIcons(PluginParameter<SingleChoiceParameterValue> parameter, List<Image> icons) {
         
@@ -368,7 +374,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         }
         
         /**
-         * Set the collection of icons from a list of InageIcons.
+         * Set the collection of icons from a list of ImageIcons.
          *
          * @param icons A list of ImageIcons to set the collection of icons
          * from.
@@ -377,7 +383,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
             this.icons.clear();
             this.icons.addAll(icons);
         }
-        
+
         /**
          * Get the collection of options from a list of Strings.
          *
