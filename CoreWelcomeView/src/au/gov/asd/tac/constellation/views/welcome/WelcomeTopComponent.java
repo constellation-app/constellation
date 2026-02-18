@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.welcome;
 
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.BorderLayout;
 import java.util.Map;
@@ -26,7 +25,6 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -64,7 +62,6 @@ import org.openide.windows.TopComponent;
     "CTL_WelcomeTopComponentTopComponent=Welcome Page",
     "HINT_WelcomeTopComponentTopComponent=Welcome Page"
 })
-@ServiceProvider(service = AbstractTopComponent.class)
 public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPane> {
 
     private final WelcomeViewPane pane;
@@ -173,7 +170,6 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        setFloating(Bundle.CTL_WelcomeTopComponentTopComponent(), 0, 0, Spawn.CENTRE);
     }
 
     @Override

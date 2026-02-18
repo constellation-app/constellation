@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.whatsnew;
 
-import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -26,7 +25,6 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -69,7 +67,6 @@ import org.openide.windows.TopComponent;
     "CTL_TutorialTopComponentTopComponent=What's New",
     "HINT_TutorialTopComponentTopComponent=Whats New Page"
 })
-@ServiceProvider(service = AbstractTopComponent.class)
 public final class WhatsNewTopComponent extends JavaFxTopComponent<WhatsNewViewPane> implements java.awt.event.ActionListener {
 
     private final WhatsNewViewPane pane;
@@ -169,7 +166,6 @@ public final class WhatsNewTopComponent extends JavaFxTopComponent<WhatsNewViewP
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        setFloating(Bundle.CTL_TutorialTopComponentTopComponent(), 0, 0, Spawn.CENTRE);
     }
 
     @Override
