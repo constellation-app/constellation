@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.views.preferences.ViewOptionsPanelController
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Map;
 import java.util.prefs.Preferences;
 import org.openide.util.HelpCtx;
@@ -44,8 +46,9 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     }
 
     protected P content;
-
     private boolean isVisible;
+    private PropertyChangeListener pcl;
+    private final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
 
     /**
      * Checks if the view will need an update when a graph changes based on if the view is visible currently.
@@ -93,6 +96,22 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentOpened() {
+        pcl = (PropertyChangeEvent evt) -> { // Detects when a view is floated or docked manually via the context menu.
+            final WindowManager wm = WindowManager.getDefault();
+            prefs.putBoolean(this.getName(), wm.isTopComponentFloating(this));
+            ViewOptionsPanelController.getPanel().createTableModel();
+
+            System.out.println("[ " + this.getName() + " ]"
+                    + "\nProperty: " + evt.getPropertyName()
+                    + "\nMode: " + wm.findMode(this)
+                    + "\nFloating: " + wm.isTopComponentFloating(this)
+                    + "\nW x H: " + this.getWidth() + " x " + this.getHeight()
+                    + "\nX,Y: " + this.getX() + "," + this.getY()
+                    + "\nConstellation W x H: " + wm.getMainWindow().getWidth() + " x " + wm.getMainWindow().getHeight()
+            );
+        };
+
+        this.addPropertyChangeListener(pcl);
         super.componentOpened();
 
         isVisible = true;
@@ -101,6 +120,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentClosed() {
+        this.removePropertyChangeListener(pcl);
         super.componentClosed();
 
         isVisible = false;
@@ -175,13 +195,12 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     /**
      * Sets whether the view is floating based on the preference selection.
      *
-     * @param name
-     * @param width
-     * @param height
-     * @param spawn
+     * @param name name of the view
+     * @param width width to set the floating view
+     * @param height height to set the floating view
+     * @param spawn location to set for the floating view
      */
     protected final void setFloating(final String name, final int width, final int height, final Spawn spawn) {
-        final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
         final Boolean isFloating = prefs.getBoolean(name, ViewOptionsPanelController.getDefaultFloatingPreferences().getOrDefault(name, false));
         WindowManager.getDefault().setTopComponentFloating(this, isFloating);
 

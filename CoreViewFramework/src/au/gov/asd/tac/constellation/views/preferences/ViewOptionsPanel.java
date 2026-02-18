@@ -30,11 +30,16 @@ import org.openide.util.NbPreferences;
  */
 public class ViewOptionsPanel extends JPanel {
 
-    private final DefaultTableModel tableModel;
     private final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
     private final Map<String, Boolean> defaultPrefs = ViewOptionsPanelController.getDefaultFloatingPreferences();
+    private DefaultTableModel tableModel;
 
     protected ViewOptionsPanel() {
+        initComponents();
+        createTableModel();
+    }
+
+    public final void createTableModel() {
         tableModel = new DefaultTableModel(new Object[]{"View", "Floating"}, 0) {
             @Override
             public Class getColumnClass(final int column) {
@@ -53,7 +58,6 @@ public class ViewOptionsPanel extends JPanel {
             tableModel.addRow(new Object[]{entry.getKey(), entry.getValue()});
         }
 
-        initComponents();
         jTable.setModel(tableModel);
         jTable.getTableHeader().setReorderingAllowed(false);
     }
@@ -62,6 +66,11 @@ public class ViewOptionsPanel extends JPanel {
         tableModel.fireTableDataChanged();
     }
 
+    /**
+     * Returns the view preference selections from the options menu.
+     *
+     * @return a map containing the view preference selections from the options menu.
+     */
     protected final Map<String, Boolean> getOptionsFromUI() {
         final Map<String, Boolean> optionsFromUI = new TreeMap<>();
 
@@ -72,6 +81,11 @@ public class ViewOptionsPanel extends JPanel {
         return Collections.unmodifiableMap(optionsFromUI);
     }
 
+    /**
+     * Returns the view preference selections from the NB Preferences.
+     *
+     * @return a map containing the view preference selections from the NB Preferences.
+     */
     protected final Map<String, Boolean> getOptionsFromPrefs() {
         final Map<String, Boolean> optionsFromPrefs = new TreeMap<>();
 
