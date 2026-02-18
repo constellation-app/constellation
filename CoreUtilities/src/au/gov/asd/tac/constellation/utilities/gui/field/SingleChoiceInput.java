@@ -65,6 +65,12 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
     public SingleChoiceInput(final ChoiceType type) {
         this.type = type;
         initialiseDependantComponents();
+        
+        addListener(newValue -> {
+            if (!getTextArea().isInFocus() && !isValid()) {
+                setText("");
+            }
+        });
     }
 
     @Override
