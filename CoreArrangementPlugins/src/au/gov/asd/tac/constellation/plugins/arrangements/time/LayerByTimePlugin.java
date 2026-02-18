@@ -213,11 +213,12 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     public static final int MIN_INT_PARAM_VALUE = 1;
     public static final int MAX_INT_PARAM_VALUE = 1000;
 
-    private static final String ALERT_NO_TRANS_HEADER_TEXT = "No transactions!";
-    private static final String ALERT_NO_TRANS_TEXT = "No layers generated. Layer by Time requires at least 1 transaction to be present on the graph!";
+    private static final String ALERT_TITLE = "No layers generated!";
+    private static final String ALERT_NO_TRANS_HEADER_TEXT = "No transactions found on the graph.";
+    private static final String ALERT_NO_TRANS_TEXT = "Please run this on a graph containing 1 or more transactions.";
 
-    private static final String ALERT_HEADER_TEXT = "No transactions in range!";
-    private static final String ALERT_TEXT = "No layers generated. There were no dateTimes were found in the chosen date range!";
+    private static final String ALERT_HEADER_TEXT = "No transactions found within the date range.";
+    private static final String ALERT_TEXT = "Please select a date range that includes 1 or more transactions.";
 
     static {
         LAYER_INTERVALS.put("Seconds", 1);
@@ -469,8 +470,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         }
 
         if (rg.getTransactionCount() == 0) {
-            Platform.runLater(() -> NotifyDisplayer.displayAlert("Attention", ALERT_NO_TRANS_HEADER_TEXT, ALERT_NO_TRANS_TEXT, AlertType.WARNING, ScreenWindowsHelper.getMainWindowCentrePoint()));
-            LOGGER.log(Level.SEVERE, "No transactions found on graph.");
+            Platform.runLater(() -> NotifyDisplayer.displayAlert(ALERT_TITLE, ALERT_NO_TRANS_HEADER_TEXT, ALERT_NO_TRANS_TEXT, AlertType.WARNING, ScreenWindowsHelper.getMainWindowCentrePoint()));
+            LOGGER.log(Level.WARNING, "No transactions found on graph.");
             return;
         }
 
@@ -480,8 +481,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         final long end = startEnd[1].toInstant().toEpochMilli();
 
         if (!checkValuesExistInRange(rg, start, end, dtAttrOrigId)) {
-            Platform.runLater(() -> NotifyDisplayer.displayAlert("Attention", ALERT_HEADER_TEXT, ALERT_TEXT, AlertType.WARNING, ScreenWindowsHelper.getMainWindowCentrePoint()));
-            LOGGER.log(Level.SEVERE, "No date times were found in the chosen range.");
+            Platform.runLater(() -> NotifyDisplayer.displayAlert(ALERT_TITLE, ALERT_HEADER_TEXT, ALERT_TEXT, AlertType.WARNING, ScreenWindowsHelper.getMainWindowCentrePoint()));
+            LOGGER.log(Level.WARNING, "No transactions found in the chosen date range.");
             return;
         }
 
