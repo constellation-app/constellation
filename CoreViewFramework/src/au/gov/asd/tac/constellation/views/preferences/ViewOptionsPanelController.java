@@ -45,15 +45,14 @@ import org.openide.util.NbPreferences;
 })
 public class ViewOptionsPanelController extends OptionsPanelController {
 
-    private ViewOptionsPanel panel;
-    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
-    private final Map<String, Boolean> defaultPrefs = getDefaultFloatingPreferences();
+    private final static Map<String, Boolean> defaultPrefs = new TreeMap<>();
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private static ViewOptionsPanel panel;
 
     @Override
     public void update() {
-        final ViewOptionsPanel viewOptionsPanel = getPanel();
-        viewOptionsPanel.fireTableDataChanged();
+        getPanel().fireTableDataChanged();
     }
 
     @Override
@@ -63,10 +62,9 @@ public class ViewOptionsPanelController extends OptionsPanelController {
 
             if (isChanged()) {
                 pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
-                final ViewOptionsPanel viewOptionsPanel = getPanel();
 
                 for (final String view : defaultPrefs.keySet()) {
-                    prefs.putBoolean(view, viewOptionsPanel.getOptionsFromUI().get(view));
+                    prefs.putBoolean(view, getPanel().getOptionsFromUI().get(view));
                 }
             }
         }
@@ -84,8 +82,7 @@ public class ViewOptionsPanelController extends OptionsPanelController {
 
     @Override
     public boolean isChanged() {
-        final ViewOptionsPanel viewOptionsPanel = getPanel();
-        return !viewOptionsPanel.getOptionsFromUI().equals(viewOptionsPanel.getOptionsFromPrefs());
+        return !getPanel().getOptionsFromUI().equals(getPanel().getOptionsFromPrefs());
     }
 
     @Override
@@ -108,7 +105,7 @@ public class ViewOptionsPanelController extends OptionsPanelController {
         pcs.removePropertyChangeListener(pcl);
     }
 
-    public ViewOptionsPanel getPanel() {
+    public static final ViewOptionsPanel getPanel() {
         if (panel == null) {
             panel = new ViewOptionsPanel();
         }
@@ -117,8 +114,10 @@ public class ViewOptionsPanelController extends OptionsPanelController {
     }
 
     public static final Map<String, Boolean> getDefaultFloatingPreferences() {
-        final Map<String, Boolean> defaultPrefs = new TreeMap<>();
-        Lookup.getDefault().lookupAll(AbstractTopComponent.class).forEach(lookup -> defaultPrefs.putAll(lookup.getFloatingPreference()));
+        if (defaultPrefs.isEmpty()) {
+            Lookup.getDefault().lookupAll(AbstractTopComponent.class).forEach(lookup -> defaultPrefs.putAll(lookup.getFloatingPreference()));
+        }
+
         return Collections.unmodifiableMap(defaultPrefs);
     }
 }
