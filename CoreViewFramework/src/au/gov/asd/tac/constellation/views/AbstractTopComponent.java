@@ -41,8 +41,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     public enum Spawn {
         LEFT,
         RIGHT,
-        BOTTOM,
-        CENTRE
+        BOTTOM
     }
 
     protected P content;
@@ -224,10 +223,6 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                             width == 0 ? mainWidth : width,
                             height == 0 ? Math.round(mainHeight * 0.3F) : height);
 
-                    final Dimension centreSize = new Dimension(
-                            width == 0 ? mainWidth : width,
-                            height == 0 ? mainHeight - offsetY : height);
-
                     final Dimension size;
 
                     switch (spawn) {
@@ -239,13 +234,9 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                             size = sidesSize;
                             window.setLocation(mainX + mainWidth - sidesSize.width, mainY + offsetY);
                         }
-                        case BOTTOM -> {
+                        default -> {
                             size = bottomSize;
                             window.setLocation(mainX, mainY + mainHeight - bottomSize.height);
-                        }
-                        default -> {
-                            size = centreSize;
-                            window.setLocation(mainX, mainY + offsetY);
                         }
                     }
 
