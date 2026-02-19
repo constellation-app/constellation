@@ -248,10 +248,8 @@ public final class SpellChecker {
             // for each list of matches
             for (int i = 0; i < matchesLocal.size(); i++) {
                 final List<Object> listOfMatches = (List<Object>) matchesLocal.get(i);
-                //final List<RuleMatch> listOfMatches = (List<RuleMatch>) matchesLocal.get(i);
 
                 for (final Object match : listOfMatches) {
-                    //for (final RuleMatch match : listOfMatches) {
                     if (!LanguagetoolClassLoader.getRuleMatch().isInstance(match)) {
                         continue;
                     }
