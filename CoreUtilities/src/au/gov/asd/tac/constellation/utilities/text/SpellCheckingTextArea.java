@@ -63,7 +63,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     private static final String CLEAR_STYLE = "-rtfx-background-color: transparent;"
             + "-rtfx-underline-color: transparent;";
 
-    MyThread t1 = null;
+    SpellCheckThread spellCheckThread = null;
 
     public SpellCheckingTextArea(final boolean isSpellCheckEnabled) {
         final boolean enableSpellChecking = PREFERENCES.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT) && isSpellCheckEnabled;
@@ -83,30 +83,16 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         });
 
         this.setOnKeyReleased((final KeyEvent event) -> {
-            final long startTime = System.currentTimeMillis();
-            System.out.println("setOnKeyReleased ");
-            final boolean test = spellChecker.canCheckSpelling(this.getText());
-            final long endTimecanCheck = System.currentTimeMillis();
-            System.out.println("Took " + (endTimecanCheck - startTime) + " ms to do can check...");
-            if (test) {
-                // 1
-                spellChecker.checkSpelling(); // runs
-
-//                // 2                
-//                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-//                    spellChecker.checkSpelling(); // runs
-//                });
-//                future.cancel(true); //  doesnt actaully stop it, so gotta find another way
-                // 3 works but is slow
-//                if (t1 != null) {
-//                    t1.interrupt();
-//                }
-//                t1 = new MyThread(spellChecker);
-//                t1.start();
+            if (!spellChecker.canCheckSpelling(this.getText())) {
+                return;
             }
-            final long endTime = System.currentTimeMillis();
-            System.out.println("Took " + (endTime - endTimecanCheck) + " ms to check spelling...");
-            System.out.println("Took " + (endTime - startTime) + " ms to complete!");
+            
+            if (spellCheckThread != null) {
+                spellCheckThread.interrupt();
+            }
+            spellCheckThread = new SpellCheckThread(spellChecker);
+            spellCheckThread.start();
+
         });
 
         // Set the right click context menu
@@ -114,17 +100,16 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         this.setContextMenu(contextMenu);
     }
 
-    public class MyThread extends Thread {
+    public class SpellCheckThread extends Thread {
 
         private final SpellChecker spellChecker;
 
-        public MyThread(final SpellChecker spellChecker) {
+        public SpellCheckThread(final SpellChecker spellChecker) {
             this.spellChecker = spellChecker;
         }
 
         @Override
         public void run() {
-            System.out.println("RUNNING THREAD!");
             spellChecker.checkSpelling();
         }
     }
@@ -140,14 +125,19 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
 
     /**
      * underline and highlight the text from start to end.
+     * @param start the index to start highlighting from
+     * @param end the index to stop highlighting
      */
     public void highlightText(final int start, final int end) {
-        //System.out.println("highlightText " + start + " " + end);
         this.setStyle(start, end, UNDERLINE_AND_HIGHLIGHT_STYLE);
     }
 
+    /**
+     * underline and highlight multiple pieces of text from start to end.
+     * @param starts array of indexes to start highlighting from
+     * @param ends array of indexes to stop highlighting
+     */
     public void highlightTextMultiple(final int[] starts, final int[] ends) {
-        System.out.println("highlightTextMultiple starts.length: " + starts.length + " ends.length: " + ends.length);
         for (int i = 0; i < starts.length; i++) {
             highlightText(starts[i], ends[i]);
         }

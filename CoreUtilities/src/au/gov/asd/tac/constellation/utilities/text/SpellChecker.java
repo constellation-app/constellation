@@ -18,10 +18,8 @@ package au.gov.asd.tac.constellation.utilities.text;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -74,6 +72,9 @@ public final class SpellChecker {
 
     protected static final CompletableFuture<Void> LANGTOOL_LOAD;
 
+    private static final int TOKENS_PER_PART = 20;
+    private ArrayList<String> prevParts = new ArrayList<>();
+
     static {
         // langToolStatic is used to initialize the JLanguageTool at the loading, because
         // the very first initializing of JLanguageTool is slow but after that it is fast.
@@ -81,22 +82,22 @@ public final class SpellChecker {
             @Override
             public Void get() {
                 LanguagetoolClassLoader.loadDependencies();
-                if (LanguagetoolClassLoader.getMultiThreadedJLanguageTool() != null) {
-                    try {
-                        final Constructor<?> constructor = LanguagetoolClassLoader.getLanguages().getDeclaredConstructor();
-                        constructor.setAccessible(true);
-                        final Object languages = constructor.newInstance();
-                        language = LanguagetoolClassLoader.getLanguages().getMethod("getLanguageForShortCode", String.class).invoke(languages, "en-AU");
-                        langToolStatic = LanguagetoolClassLoader.getMultiThreadedJLanguageTool().getDeclaredConstructor(LanguagetoolClassLoader.getLanguage()).newInstance(language);
-
-                        //perform a check here to prevent the spell checking being too slow at the first word after loading consty
-                        final Object initMatches = LanguagetoolClassLoader.getJLanguagetool().getMethod("check", String.class).invoke(langToolStatic, "random text");
-
-                    } catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                        logAndDisplayErrorMessage("Error while initializing spell checking. Spell checking may not be functioning.", ex);
-                    }
-                } else {
+                if (LanguagetoolClassLoader.getMultiThreadedJLanguageTool() == null) {
                     NotifyDisplayer.display("Error while loading spell checker. Spell checking will not be functioning.", NotifyDescriptor.ERROR_MESSAGE);
+                    return null;
+                }
+
+                try {
+                    final Constructor<?> constructor = LanguagetoolClassLoader.getLanguages().getDeclaredConstructor();
+                    constructor.setAccessible(true);
+                    final Object languages = constructor.newInstance();
+                    language = LanguagetoolClassLoader.getLanguages().getMethod("getLanguageForShortCode", String.class).invoke(languages, "en-AU");
+                    langToolStatic = LanguagetoolClassLoader.getMultiThreadedJLanguageTool().getDeclaredConstructor(LanguagetoolClassLoader.getLanguage()).newInstance(language);
+
+                    //perform a check here to prevent the spell checking being too slow at the first word after loading consty
+                    LanguagetoolClassLoader.getJLanguagetool().getMethod("check", String.class).invoke(langToolStatic, "random text");
+                } catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    logAndDisplayErrorMessage("Error while initializing spell checking. Spell checking may not be functioning.", ex);
                 }
                 return null;
             }
@@ -106,9 +107,7 @@ public final class SpellChecker {
     public SpellChecker(final SpellCheckingTextArea spellCheckingTextArea) {
         textArea = spellCheckingTextArea;
 
-        LANGTOOL_LOAD.thenRun(() -> {
-            initializeRules();
-        });
+        LANGTOOL_LOAD.thenRun(() -> initializeRules());
 
         //initialize popup
         suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
@@ -139,49 +138,26 @@ public final class SpellChecker {
         }
     }
 
-    Method checkMethod;
-    Method getFromPosMethod;
-    Method getToPosMethod;
-
-    ArrayList<String> prevParts = new ArrayList<>();
-
-    // may need two arrays for caching starts and ends
-    final ArrayList<Integer> prevStarts = new ArrayList<>();
-    final ArrayList<Integer> prevEnds = new ArrayList<>();
-
-    // new 
-    final ArrayList<Pair<Integer, Integer>> prevHighlights = new ArrayList<>();
-
-    final ArrayList<Pair<Integer, Integer>> highlightsToRemove = new ArrayList<>();
-
-    final int tokensPerPart = 20;
-
     /**
      * Check Spelling of the entire text. This will ensure scenarios like duplicate words, grammar mistakes etc. are
      * triggered
      */
     public void checkSpelling() {
-        //textArea.clearStyles();
         misspells.clear();
 
-        if (turnOffSpellChecking || !StringUtils.isNotBlank(textArea.getText())) {
+        final String inputText = textArea.getText();
+
+        if (turnOffSpellChecking || !StringUtils.isNotBlank(inputText)) {
             return;
         }
+
         try {
-
-            if (checkMethod == null) {
-                checkMethod = LanguagetoolClassLoader.getJLanguagetool().getMethod("check", String.class);
-            }
-
-            final long startTimeSplit = System.currentTimeMillis();
-
             final ArrayList<String> parts = new ArrayList<>();
             final ArrayList<Integer> partsOffsets = new ArrayList<>();
 
             final ArrayList<Pair<Integer, Integer>> partsSpans = new ArrayList<>();// new
 
-            final String inputText = textArea.getText();
-            int tokensRemaining = tokensPerPart;
+            int tokensRemaining = TOKENS_PER_PART;
             int subStringStart = 0;
             for (int i = 0; i < inputText.length(); i++) {
                 final char character = inputText.charAt(i);
@@ -200,7 +176,7 @@ public final class SpellChecker {
                     partsSpans.add(new Pair(subStringStart, i));
 
                     subStringStart = i;
-                    tokensRemaining = tokensPerPart;
+                    tokensRemaining = TOKENS_PER_PART;
                 }
 
                 // If end of string, store remaining text in string
@@ -212,7 +188,7 @@ public final class SpellChecker {
                     partsSpans.add(new Pair(subStringStart, i));
 
                     subStringStart = i;
-                    tokensRemaining = tokensPerPart;
+                    tokensRemaining = TOKENS_PER_PART;
                 }
             }
 
@@ -229,7 +205,6 @@ public final class SpellChecker {
             } else {
                 // Iterate through the current input text and the prev input text and find differences
                 for (int i = 0; i < prevParts.size() || i < parts.size(); i++) {
-
                     // If out of new input
                     if (i >= parts.size()) {
                         break;
@@ -253,139 +228,60 @@ public final class SpellChecker {
                 }
             }
 
-//            System.out.println("diff");
-//            for (final String value : diff) {
-//                System.out.println(value);
-//            }
-//
-//            System.out.println("diffSpans");
-//            for (final Pair<Integer, Integer> value : diffSpans) {
-//                System.out.println(value);
-//            }
+            final List<Object> matchesLocal = new ArrayList<>();
 
-            prevParts = parts;
-
-            final long endTimeSplit = System.currentTimeMillis();
-            System.out.println("Took " + (endTimeSplit - startTimeSplit) + " ms to split and find differences...");
-
-            final long startTimeMatches = System.currentTimeMillis();
-            matches.clear();
             int totalElements = 0;
             for (final String d : diff) {
-                final List<Object> list = (List<Object>) checkMethod.invoke(langTool, d);
-                matches.add(list); // treating matches like a list of lists
+                final List<Object> list = (List<Object>) LanguagetoolClassLoader.getJLanguagetool().getMethod("check", String.class).invoke(langTool, d);
+
+                matchesLocal.add(list); // treating matches like a list of lists
                 totalElements += list.size();
             }
 
-            final long endTimeMatches = System.currentTimeMillis();
-            System.out.println("Took " + (endTimeMatches - startTimeMatches) + " ms to get matches...");
-
-            final long startTimeLoop = System.currentTimeMillis();
+            matches.clear();
+            matches.addAll(matchesLocal);
 
             int startEndIndex = 0;
             final int[] starts = new int[totalElements];
             final int[] ends = new int[totalElements];
 
-            // Delete elements from previous start and ends (which represent previous highlighted text) that will be changed
-//            if (totalElements > 0) {
-//                final int earliestChange = diffOffsets.getFirst();
-//                final int latestChange = diffOffsets.getLast();
-//                System.out.println("!!! earliestChange: " + earliestChange);
-//                System.out.println("!!! latestChange: " + latestChange);
-//
-////                prevStarts.removeIf(n -> n >= earliestChange && n < latestChange);
-////                prevEnds.removeIf(n -> n > earliestChange && n <= latestChange);
-//                prevStarts.removeIf(n -> n >= earliestChange);
-//                prevEnds.removeIf(n -> n > earliestChange);
-//
-//                prevHighlights.removeIf(n -> n.getKey() >= earliestChange);
-//            }
-
             // for each list of matches
-            for (int i = 0; i < matches.size(); i++) {
-                final List<Object> listOfMatches = (List<Object>) matches.get(i);
+            for (int i = 0; i < matchesLocal.size(); i++) {
+                final List<Object> listOfMatches = (List<Object>) matchesLocal.get(i);
+                //final List<RuleMatch> listOfMatches = (List<RuleMatch>) matchesLocal.get(i);
 
                 for (final Object match : listOfMatches) {
+                    //for (final RuleMatch match : listOfMatches) {
                     if (!LanguagetoolClassLoader.getRuleMatch().isInstance(match)) {
                         continue;
                     }
 
-                    try {
-                        if (getFromPosMethod == null) {
-                            getFromPosMethod = LanguagetoolClassLoader.getRuleMatch().getMethod("getFromPos");
-                        }
+                    final int start = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getFromPos").invoke(match);
+                    final int end = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos").invoke(match);
 
-                        if (getToPosMethod == null) {
-                            getToPosMethod = LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos");
-                        }
+                    final String misspell = inputText.substring(start, end);
+                    misspells.add(misspell);
+                    // Add offset because start and end value is reletive to the string it's in, not the whole text input
+                    starts[startEndIndex] = start + diffOffsets.get(i);
+                    ends[startEndIndex] = end + diffOffsets.get(i);
 
-                        final int start = (int) getFromPosMethod.invoke(match);
-                        final int end = (int) getToPosMethod.invoke(match);
-                        final String misspell = textArea.getText().substring(start, end);
-                        misspells.add(misspell);
-                        // Add offset because start and end value is reletive to the string it's in, not the whole text input
-                        starts[startEndIndex] = start + diffOffsets.get(i);
-                        ends[startEndIndex] = end + diffOffsets.get(i);
-
-                        startEndIndex++;
-                    } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
-                        logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
-                    }
+                    startEndIndex++;
                 }
             }
-            final long endTimeLoop = System.currentTimeMillis();
-            System.out.println("Took " + (endTimeLoop - startTimeLoop) + " ms to loop...");
-            
-            System.out.println("starts.length " + starts.length);
-
-            // Put all new start values in prevStarts list
-            // TODO: find if theres a clean way to do this
-//            for (final int value : starts) {
-//                prevStarts.add(value);
-//            }
-//            Collections.sort(prevStarts);
-//
-//            for (final int value : ends) {
-//                prevEnds.add(value);
-//            }
-//            Collections.sort(prevEnds);
-
-            for (int i = 0; i < totalElements; i++) {
-                prevHighlights.add(new Pair(starts[i], ends[i]));
-            }
-
-            // Convert to arrays
-//            final int[] prevStartsArray = prevStarts.stream().mapToInt(i -> i).toArray();
-//            final int[] prevEndsArray = prevEnds.stream().mapToInt(i -> i).toArray();
-
-///
-//            final int[] prevStartsArray = prevHighlights.stream().mapToInt(i -> i.getKey()).toArray();
-//            final int[] prevEndsArray = prevHighlights.stream().mapToInt(i -> i.getValue()).toArray();
 
             if (totalElements > 0) {
                 Platform.runLater(() -> {
-                    final long startTimeHighlight = System.currentTimeMillis();
-                    //textArea.clearStyles();
-                    // clear only what needs to change
-//                    if (!diffOffsets.isEmpty()) {
-//                        textArea.clearStyles(diffOffsets.get(0), textArea.getLength()); // clears everything after first found difference, which works out currently
-//                    }
-
-                    // new
                     for (final Pair<Integer, Integer> span : diffSpans) {
                         textArea.clearStyle(span.getKey(), span.getValue());
                     }
 
-                    //textArea.highlightTextMultiple(prevStartsArray, prevEndsArray);
                     textArea.highlightTextMultiple(starts, ends);
-
-                    final long endTimeHighlight = System.currentTimeMillis();
-                    System.out.println("Took " + (endTimeHighlight - startTimeHighlight) + " ms to clear and highlight...");
                 });
             }
-            //}
-        } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
-            logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
+
+            prevParts = parts;
+        } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
+            //logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
         }
     }
 
@@ -395,52 +291,57 @@ public final class SpellChecker {
      * @param event
      */
     public void popUpSuggestionsListAction(final MouseEvent event) {
-        if (!turnOffSpellChecking) {
-            final ObservableList<String> suggestionsList = FXCollections.observableArrayList();
+        if (turnOffSpellChecking) {
+            return;
+        }
 
-            popup.hide();
-            popup.setAutoFix(true);
-            popup.setAutoHide(true);
-            popup.setHideOnEscape(true);
-            try {
-                if (isWordUnderCursorMisspelled()) {
-                    final Button ignoreButton = new Button("Ignore All");
-                    final VBox popupContent = new VBox(POPUP_PADDING);
-                    popupContent.setStyle(
-                            "-fx-background-color: black;"
-                            + "-fx-text-fill: white;"
-                            + "-fx-padding: " + POPUP_PADDING + ";");
-                    popupContent.getChildren().clear();
-                    suggestionsList.clear();
-                    popup.getContent().clear();
-                    suggestions.getSelectionModel().clearSelection();
+        final ObservableList<String> suggestionsList = FXCollections.observableArrayList();
 
-                    suggestionsList.addAll((List<String>) (LanguagetoolClassLoader.getRuleMatch().getMethod("getSuggestedReplacements").invoke(matches.get(indexOfMisspelledTextUnderCursor))));
-                    if (suggestionsList.isEmpty()) {
-                        labelMessage.setText("No matching suggestions available");
-                        popupContent.getChildren().addAll(labelMessage);
-                    } else {
-                        suggestions.setItems(suggestionsList.size() > 5 ? FXCollections.observableArrayList(suggestionsList.subList(0, 5)) : suggestionsList);
-                        ignoreButton.setOnAction(e -> {
-                            this.addWordsToIgnore();
-                        });
-                        suggestions.setPrefHeight(suggestions.getItems().size() * ITEM_HEIGHT);
-
-                        // Temporary check to remove ignore button on non spelling errors
-                        if (specificRuleId.equals("MORFOLOGIK_RULE_EN_AU")) {
-                            popupContent.getChildren().addAll(suggestions, ignoreButton, labelMessage);
-                        } else {
-                            popupContent.getChildren().addAll(suggestions, labelMessage);
-                        }
-                    }
-
-                    popup.getContent().add(popupContent);
-                    popup.setAutoFix(true);
-                    popup.show(textArea, event.getScreenX(), event.getScreenY() + 10);
-                }
-            } catch (final SecurityException | InvocationTargetException | NoSuchMethodException | IllegalAccessException ex) {
-                logAndDisplayErrorMessage("Error while populating suggestions. Spell checking may not be functioning properly.", ex);
+        popup.hide();
+        popup.setAutoFix(true);
+        popup.setAutoHide(true);
+        popup.setHideOnEscape(true);
+        try {
+            if (!isWordUnderCursorMisspelled()) {
+                return;
             }
+
+            final Button ignoreButton = new Button("Ignore All");
+            final VBox popupContent = new VBox(POPUP_PADDING);
+            popupContent.setStyle(
+                    "-fx-background-color: black;"
+                    + "-fx-text-fill: white;"
+                    + "-fx-padding: " + POPUP_PADDING + ";");
+            popupContent.getChildren().clear();
+            suggestionsList.clear();
+            popup.getContent().clear();
+            suggestions.getSelectionModel().clearSelection();
+
+            suggestionsList.addAll((List<String>) (LanguagetoolClassLoader.getRuleMatch().getMethod("getSuggestedReplacements").invoke(matches.get(indexOfMisspelledTextUnderCursor))));
+            if (suggestionsList.isEmpty()) {
+                labelMessage.setText("No matching suggestions available");
+                popupContent.getChildren().addAll(labelMessage);
+            } else {
+                suggestions.setItems(suggestionsList.size() > 5 ? FXCollections.observableArrayList(suggestionsList.subList(0, 5)) : suggestionsList);
+                ignoreButton.setOnAction(e -> {
+                    this.addWordsToIgnore();
+                });
+                suggestions.setPrefHeight(suggestions.getItems().size() * ITEM_HEIGHT);
+
+                // Temporary check to remove ignore button on non spelling errors
+                if (specificRuleId.equals("MORFOLOGIK_RULE_EN_AU")) {
+                    popupContent.getChildren().addAll(suggestions, ignoreButton, labelMessage);
+                } else {
+                    popupContent.getChildren().addAll(suggestions, labelMessage);
+                }
+            }
+
+            popup.getContent().add(popupContent);
+            popup.setAutoFix(true);
+            popup.show(textArea, event.getScreenX(), event.getScreenY() + 10);
+
+        } catch (final InvocationTargetException | NoSuchMethodException | IllegalAccessException ex) {
+            logAndDisplayErrorMessage("Error while populating suggestions. Spell checking may not be functioning properly.", ex);
         }
     }
 
