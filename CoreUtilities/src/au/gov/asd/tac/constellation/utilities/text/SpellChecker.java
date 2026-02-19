@@ -280,8 +280,10 @@ public final class SpellChecker {
             }
 
             prevParts = parts;
-        } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
-            //logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
+        } catch (final IllegalAccessException | NoSuchMethodException ex) {
+            logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
+        } catch (final InvocationTargetException ex) {
+            // Left intentionally blank, as interrupting this function causes an InvocationTargetException
         }
     }
 
