@@ -184,17 +184,17 @@ public class TableToolbarNGTest {
         assertTrue(separator.isPresent());
 
         assertEquals(FXCollections.observableList(
-                        List.of(
-                                tableToolbar.getColumnVisibilityButton(),
-                                tableToolbar.getSelectedOnlyButton(),
-                                tableToolbar.getElementTypeButton(),
-                                separator.get(),
-                                tableToolbar.getCopyMenu().getCopyButton(),
-                                tableToolbar.getExportMenu().getExportButton(),
-                                tableToolbar.getPreferencesMenu().getPreferencesButton(),
-                                tableToolbar.getHelpButton()
-                        )
-                ), tableToolbar.getToolbar().getItems());
+                List.of(
+                        tableToolbar.getColumnVisibilityButton(),
+                        tableToolbar.getSelectedOnlyButton(),
+                        tableToolbar.getElementTypeButton(),
+                        separator.get(),
+                        tableToolbar.getCopyMenu().getCopyButton(),
+                        tableToolbar.getExportMenu().getExportButton(),
+                        tableToolbar.getPreferencesMenu().getPreferencesButton(),
+                        tableToolbar.getHelpButton()
+                )
+        ), tableToolbar.getToolbar().getItems());
         assertEquals(Orientation.VERTICAL, tableToolbar.getToolbar().getOrientation());
         assertEquals(new Insets(5), tableToolbar.getToolbar().getPadding());
 
@@ -213,7 +213,6 @@ public class TableToolbarNGTest {
         buttonChecks(tableToolbar.getElementTypeButton(), UserInterfaceIconProvider.TRANSACTIONS.buildImage(16), "Element Type");
 
         //elementTypeActionCheck();
-
         elementTypeChangeActionChecks(GraphElementType.VERTEX, GraphElementType.TRANSACTION, new ImageView(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16)).getImage());
         elementTypeChangeActionChecks(GraphElementType.META, GraphElementType.TRANSACTION, new ImageView(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16)).getImage());
         elementTypeChangeActionChecks(GraphElementType.TRANSACTION, GraphElementType.VERTEX, new ImageView(UserInterfaceIconProvider.NODES.buildImage(16)).getImage());
@@ -440,23 +439,23 @@ public class TableToolbarNGTest {
      * @param elementTypeEndState the expected element type in the state after the button is pressed
      * @param expectedNewIcon the expected image to be now on the element type change button
      */
-
-    //private void elementTypeActionCheck() {
-        //final ActionEvent actionEvent = mock(ActionEvent.class);
-
     private void elementTypeChangeActionChecks(final GraphElementType elementTypeInitialState, final GraphElementType elementTypeEndState,
             final Image expectedNewIcon) {
         try (MockedStatic<PluginExecution> pluginExecutionMockedStatic = Mockito.mockStatic(PluginExecution.class)) {
             final PluginExecution pluginExecution = mock(PluginExecution.class);
             final ActionEvent actionEvent = mock(ActionEvent.class);
 
-        tableToolbar.getElementTypeButton().getOnAction().handle(actionEvent);
+            final TableViewState tableViewState = new TableViewState();
+            tableViewState.setElementType(elementTypeInitialState);
+            //tableToolbar.getElementTypeButton().getOnAction().handle(actionEvent);
 
-        System.out.println("contextMenu:");
-        System.out.println(contextMenu.toString());
+            when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
 
-        //verify(contextMenu).show(tableToolbar.getElementTypeButton(), Side.RIGHT, 0, 0);
-        //verify(actionEvent).consume();
+            //System.out.println("contextMenu:");
+            //System.out.println(contextMenu.toString());
+
+            //verify(contextMenu).show(tableToolbar.getElementTypeButton(), Side.RIGHT, 0, 0);
+            //verify(actionEvent).consume();
             final ArgumentCaptor<UpdateStatePlugin> captor = ArgumentCaptor.forClass(UpdateStatePlugin.class);
 
             pluginExecutionMockedStatic.when(() -> PluginExecution
@@ -514,7 +513,7 @@ public class TableToolbarNGTest {
                 || firstImage.getHeight() != secondImage.getHeight()) {
             return false;
         }
-        
+
         // Compare images color
         for (int x = 0; x < firstImage.getWidth(); x++) {
             for (int y = 0; y < firstImage.getHeight(); y++) {

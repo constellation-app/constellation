@@ -54,7 +54,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableCellFactoryNGTest {
-    
+
     private static final Logger LOGGER = Logger.getLogger(TableCellFactoryNGTest.class.getName());
 
     private Table table;
@@ -96,42 +96,42 @@ public class TableCellFactoryNGTest {
         Text t = mock(Text.class);
         t.setText("Hello World");
         doReturn(t).when(tableCellFactory).getWrappingText("Hello World");
-        tableCellFactory.updateItem("Hello World", true);        
+        tableCellFactory.updateItem("Hello World", true);
         verify(tableCellFactory, times(0)).setGraphic(t);
     }
 
     @Test
-    public void updateItemIsNotEmpty() {     
+    public void updateItemIsNotEmpty() {
         final String testValue = "Test Value";
         verifyStyle(testValue, "source.", List.of("element-source"));
         verifyStyle(testValue, "destination.", List.of("element-destination"));
         verifyStyle(testValue, "transaction.", List.of("element-transaction"));
-verifyStyle(testValue, "low.", "Test Value", List.of("element-low"));
-        verifyStyle(testValue, "high.", "Test Value", List.of("element-high"));
+        verifyStyle(testValue, "low.", List.of("element-low"));
+        verifyStyle(testValue, "high.", List.of("element-high"));
 // verifyStyle(null, "transaction.", "<No Value>", List.of("null-value", "element-transaction"));
         verifyStyle(null, "transaction.", List.of("null-value", "element-transaction"));
     }
-    
+
     @Test
     public void getWrappingTextItemIsNotEmpty() {
         final String test_value = "Test Value";
         ReadOnlyDoubleProperty mockWidthProperty = mock(ReadOnlyDoubleProperty.class);
         doReturn(mockWidthProperty).when(cellColumn).widthProperty();
-        
+
         Text testText = tableCellFactory.getWrappingText(test_value);
         verify(tableCellFactory, times(1)).getWrappingText(test_value);
-        assertEquals(testText.getText(), test_value);      
+        assertEquals(testText.getText(), test_value);
     }
-    
+
     @Test
     public void getWrappingTextItemIsEmpty() {
         final String test_value = null;
         ReadOnlyDoubleProperty mockWidthProperty = mock(ReadOnlyDoubleProperty.class);
         doReturn(mockWidthProperty).when(cellColumn).widthProperty();
-        
+
         Text testText = tableCellFactory.getWrappingText(test_value);
         verify(tableCellFactory, times(1)).getWrappingText(test_value);
-        assertEquals(testText.getText(), "");      
+        assertEquals(testText.getText(), "");
     }
 
     @Test
@@ -202,13 +202,12 @@ verifyStyle(testValue, "low.", "Test Value", List.of("element-low"));
     }
 
     /**
-     * Verifies that the cell text is set correctly and the correct style for
-     * the column is added to the style class list.
+     * Verifies that the cell text is set correctly and the correct style for the column is added to the style class
+     * list.
      *
      * @param item the string passed in to be set in the table cell
      * @param columnPrefix the column prefix for this cells column
-     * @param expectedStyles the expected styles that should be present in the
-     * style class list
+     * @param expectedStyles the expected styles that should be present in the style class list
      */
     private void verifyStyle(final String item, final String columnPrefix, final List<String> expectedStyles) {
         clearInvocations(tableCellFactory, table);

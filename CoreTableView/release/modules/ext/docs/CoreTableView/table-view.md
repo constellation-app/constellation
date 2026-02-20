@@ -74,8 +74,8 @@ options to copy data from the clicked cell, row or column.
 
 -   *Element Type* <img src="../ext/docs/CoreTableView/resources/TableElementTypeTransactions.png" alt="Transaction Element Type Button" />
     \<\> <img src="../ext/docs/CoreTableView/resources/TableElementTypeNodes.png" alt="Node Element Type Button" />
-    OR <img src="../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/resources/TableElementTypeEdges.png" alt="Edge Element Type Button" />
-    OR <img src="../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/resources/TableElementTypeLinks.png" alt="Link Element Type Button" />
+    OR <img src="../ext/docs/CoreTableView/resources/TableElementTypeEdges.png" alt="Edge Element Type Button" />
+    OR <img src="../ext/docs/CoreTableView/resources/TableElementTypeLinks.png" alt="Link Element Type Button" />
     - Clicking the element type toolbar button will switch between
     tabular views of transaction data (which includes the nodes at
     either end), or node data.
