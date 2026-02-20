@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,15 +116,7 @@ public class MultiMap<K, V> {
 
     }
 
-    private static final class MapEntry<K, V> implements Map.Entry<K, V> {
-
-        private final K key;
-        private final V value;
-
-        private MapEntry(final K key, final V value) {
-            this.key = key;
-            this.value = value;
-        }
+    private static record MapEntry<K, V>(K key, V value) implements Map.Entry<K, V> {
 
         @Override
         public K getKey() {
@@ -137,7 +129,7 @@ public class MultiMap<K, V> {
         }
 
         @Override
-        public V setValue(V value) {
+        public V setValue(final V value) {
             throw new UnsupportedOperationException("Not supported.");
         }
     }

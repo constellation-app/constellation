@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispersPlugin;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.labelpropagation.LabelPropagationClusteringPlugin;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.InfoMapPlugin;
 import au.gov.asd.tac.constellation.plugins.algorithms.paths.DirectedShortestPathsPlugin;
 import au.gov.asd.tac.constellation.plugins.algorithms.paths.ShortestPathsPlugin;
@@ -65,7 +65,7 @@ public final class AlgorithmPluginRegistry {
     public static final String PAGERANK_CENTRALITY = PagerankCentralityPlugin.class.getName();
 
     // clustering
-    public static final String CLUSTER_CHINESE_WHISPERS = ChineseWhispersPlugin.class.getName();
+    public static final String CLUSTER_LABEL_PROPAGATION = LabelPropagationClusteringPlugin.class.getName();
     public static final String CLUSTER_INFO_MAP = InfoMapPlugin.class.getName();
 
     // global

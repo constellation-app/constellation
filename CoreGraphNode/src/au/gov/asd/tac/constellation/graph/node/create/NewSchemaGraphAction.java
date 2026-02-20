@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -166,7 +166,7 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
     static void createTemplate(final String templateName) {
         final Plugin plugin = PluginRegistry.get(GraphNodePluginRegistry.LOAD_TEMPLATE);
         PluginParameters params = plugin.createParameters();
-        params.setObjectValue(LoadTemplatePlugin.TEMPLATE_FILE_PARAMETER_ID, new File(templateDirectory, templates.get(templateName) + "/" + templateName));
+        params.setObjectValue(LoadTemplatePlugin.TEMPLATE_FILE_PARAMETER_ID, new File(templateDirectory, templates.get(templateName) + File.separator + templateName));
         params.setStringValue(LoadTemplatePlugin.TEMPLATE_NAME_PARAMETER_ID, templateName);
         PluginExecution.withPlugin(plugin).withParameters(params).executeLater(null);
     }

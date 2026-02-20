@@ -256,10 +256,6 @@
     -fx-background-color: #444444;
 }
 
-.titled-pane {
-    -fx-base: #333333;
-}
-
 .list-view {
     -fx-control-inner-background: #444444;
 }
@@ -271,6 +267,10 @@
 
 .separator .line {
     -fx-border-color: #e0e0e0;
+}
+
+.invalid-input {
+    -fx-control-inner-background: #8a1d1d;
 }
 
 #error {
@@ -297,4 +297,9 @@
 
 .errorBoxBG{
     -fx-background: #333333;
+}
+
+.date-picker-popup .spinner .button .left-arrow,
+.date-picker-popup .spinner .button .right-arrow {
+    -fx-background-color: white;
 }

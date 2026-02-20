@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.application.Platform;
+import org.eclipse.collections.api.list.primitive.MutableDoubleList;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
+import org.testfx.api.FxToolkit;
 
 /**
  * Maintain a session variable with active dialogs that are shown
@@ -30,7 +33,7 @@ import javafx.application.Platform;
 public class ErrorReportDialogManager {
 
     private int popupDisplayMode = 2;
-    private final List<Double> activePopupIds = new ArrayList<>();
+    private final MutableDoubleList activePopupIds = new DoubleArrayList();
     private Date latestPopupDismissDate = null;
     private final List<String> popupTypeFilters = new ArrayList<>();
     private boolean isErrorReportRunning = false;
@@ -57,7 +60,7 @@ public class ErrorReportDialogManager {
         final TimerTask refreshAction = new TimerTask() {
             @Override
             public void run() {
-                if (!isErrorReportRunning) {
+                if (!isErrorReportRunning && FxToolkit.isFXApplicationThreadRunning()) {
                     Platform.runLater(() -> {
                         final Date currentDate = new Date();
                         if (gracePeriodResumptionDate != null && currentDate.before(gracePeriodResumptionDate)) {
@@ -80,7 +83,7 @@ public class ErrorReportDialogManager {
             }
         };
         final Timer refreshTimer = new Timer();
-        refreshTimer.schedule(refreshAction, 175, 475);        
+        refreshTimer.schedule(refreshAction, 745, 1475);        
     }
     
     public void updatePopupSettings(final int popupMode, final Iterable<String> popupFilters) {
@@ -102,7 +105,7 @@ public class ErrorReportDialogManager {
         }
         final Date currentDate = new Date();
         if (gracePeriodResumptionDate != null && currentDate.before(gracePeriodResumptionDate)) {
-            // prevent popups for 5 seconds ... just in case of an infinite cycle of popups
+            // prevent popups for 10 seconds ... just in case of an infinite cycle of popups
             // this allows some time to set the popup mode to 0 (disabling any more popups)
             
             // We set the retrieval dates back, then retry them after the grace period.
@@ -125,8 +128,8 @@ public class ErrorReportDialogManager {
                 return;
             }
         } else if (popupDisplayMode == 3) {
-            // only need to check if the entry has already been displayed
-            if (entry.getLastPopupDate() != null) {
+            // check if the entry has already been displayed or it is currently being displayed
+            if (entry.getLastPopupDate() != null || activePopupIds.contains(entry.getEntryId())) {
                 return;
             }
         } else if (popupDisplayMode == 4 && activePopupIds.contains(entry.getEntryId())) {
@@ -157,7 +160,7 @@ public class ErrorReportDialogManager {
      * Remove entry from active popup list
      * @param id 
      */
-    public void removeActivePopupId(final Double id) {
+    public void removeActivePopupId(final double id) {
         activePopupIds.remove(id);
     }
 
@@ -185,16 +188,16 @@ public class ErrorReportDialogManager {
             gracePeriodResumptionDate = null;
         } else {
             latestPopupDismissDate = new Date(latestDismissDate.getTime());
-            gracePeriodResumptionDate = new Date(latestPopupDismissDate.getTime() + 5000);
+            gracePeriodResumptionDate = new Date(latestPopupDismissDate.getTime() + 10000); // 10 seconds grace period
         }
     }
 
     public List<String> getActivePopupErrorLevels(){
         final List<String> resultList = new ArrayList<>();
-        for (final Double id : activePopupIds) {
+        activePopupIds.forEach(id -> {
             final String errorLevel = ErrorReportSessionData.getInstance().findDisplayedEntryWithId(id).getErrorLevel().getName();
             resultList.add(errorLevel);
-        }
+        });
         return resultList;
     }
 }

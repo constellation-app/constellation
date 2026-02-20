@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -34,8 +35,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
-import org.geotools.data.FeatureWriter;
-import org.geotools.data.Transaction;
+import java.util.regex.Pattern;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.geotools.api.data.FeatureWriter;
+import org.geotools.api.data.Transaction;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.operation.MathTransform;
+import org.geotools.api.referencing.operation.TransformException;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 import org.geotools.feature.DefaultFeatureCollection;
@@ -61,11 +70,6 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
 import org.openide.util.Utilities;
 
 /**
@@ -82,6 +86,10 @@ public class Shape {
     private static final String CENTROID_LATITUDE_ATTRIBUTE = "centreLat";
     private static final String CENTROID_LONGITUDE_ATTRIBUTE = "centreLon";
     private static final String RADIUS_ATTRIBUTE = "radius";
+    
+    private static final Pattern SOURCE_PATTERN = Pattern.compile("source");
+    private static final Pattern DESTINATION_PATTERN = Pattern.compile("destination");
+    private static final Pattern TRANSACTION_PATTERN = Pattern.compile("transaction");
 
     private static final List<Class<?>> GEOPACKAGE_ATTRIBUTE_TYPES = new ArrayList<>();
 
@@ -152,7 +160,7 @@ public class Shape {
          * {@code CRS.decode()} is known to have performance issues so we are
          * going to cache the output to reduce delays.
          */
-        private static final Map<Integer, String> cache = new HashMap<>();
+        private static final MutableIntObjectMap<String> cache = new IntObjectHashMap<>();
 
         private SpatialReference(final String name, final int srid) {
             this.name = name;
@@ -521,6 +529,10 @@ public class Shape {
         featureEntry.setBounds(ReferencedEnvelope.EVERYTHING);
         featureEntry.setSrid(spatialReference.getSrid());
 
+        // Remove geopackage file if exists as it stores existing tables/indexes
+        if (output.isFile()) {
+            Files.delete(output.toPath());
+        }
         // write feature collection to geopackage
         try (final GeoPackage geoPackage = new GeoPackage(output)) {
             geoPackage.add(featureEntry, featureCollection);
@@ -707,13 +719,13 @@ public class Shape {
 
         // shorten element prefixes
         if (compatibleHeader.startsWith("source")) {
-            compatibleHeader = compatibleHeader.replaceFirst("source", "s");
+            compatibleHeader = SOURCE_PATTERN.matcher(compatibleHeader).replaceFirst("s");
         }
         if (compatibleHeader.startsWith("destination")) {
-            compatibleHeader = compatibleHeader.replaceFirst("destination", "d");
+            compatibleHeader = DESTINATION_PATTERN.matcher(compatibleHeader).replaceFirst("d");
         }
         if (compatibleHeader.startsWith("transaction")) {
-            compatibleHeader = compatibleHeader.replaceFirst("transaction", "t");
+            compatibleHeader = TRANSACTION_PATTERN.matcher(compatibleHeader).replaceFirst("t");
         }
 
         // ensure header is no more than 10 characters

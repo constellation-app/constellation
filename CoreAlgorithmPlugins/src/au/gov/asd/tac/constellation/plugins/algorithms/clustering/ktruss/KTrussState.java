@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ import java.util.Map;
  */
 public class KTrussState {
 
-    public transient long modificationCounter;
-    public transient long strucModificationCount;
+    public long modificationCounter;
+    public long strucModificationCount;
     // The value of k indidcating which k-trusses are being visualised.
     private int currentK;
     // The highest value of k available to be visualised (is set to one more than the heighest k-truss in the graph)

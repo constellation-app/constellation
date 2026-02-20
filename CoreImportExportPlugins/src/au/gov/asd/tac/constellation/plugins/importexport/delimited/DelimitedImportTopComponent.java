@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,9 +62,9 @@ public final class DelimitedImportTopComponent extends ImportTopComponent {
 
             HINTS:
             * See all supported attributes with 'Options > Show all schema attributes'.
-            * Filter in the Configuration Pane by adding searches of the form <column_name>==\"<search text>\"."
-            * E.g. first_name==\"Nick\"
-            * To filter Attributes, start typing in the Attributes Filter.";
+            * Filter in the Configuration Pane by adding searches of the form <column_name>=="<search text>".
+            * E.g. first_name=="Nick"
+            * To filter Attributes, start typing in the Attributes Filter.;
             """;
 
     final DelimitedImportController controller = new DelimitedImportController();

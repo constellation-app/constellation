@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,11 +37,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
+import org.geotools.api.data.DataStore;
+import org.geotools.api.data.DataStoreFinder;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.referencing.FactoryException;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -67,8 +68,6 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.referencing.FactoryException;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
@@ -104,10 +103,7 @@ public class ShapeNGTest {
             crsMockedStatic.when(() -> CRS.decode(anyString())).thenThrow(FactoryException.class);
             // must be run before any other test that populates the CRS cache
             // see test method comment
-            Shape.generateShape(
-                    "dummy",
-                    POINT,
-                    Arrays.asList(new Tuple<>(0D, 0D)));
+            Shape.generateShape("dummy", POINT, Arrays.asList(new Tuple<>(0D, 0D)));
         }
     }
 
@@ -133,8 +129,7 @@ public class ShapeNGTest {
             crsMockedStatic.when(() -> CRS.decode(anyString())).thenThrow(FactoryException.class);
             // must be run before any other test that populates the CRS cache
             // see test method comment
-            Shape.generateShapeCollection("dummy", Collections.emptyMap(),
-                    Collections.emptyMap());
+            Shape.generateShapeCollection("dummy", Collections.emptyMap(), Collections.emptyMap());
         }
     }
 
@@ -160,8 +155,7 @@ public class ShapeNGTest {
             crsMockedStatic.when(() -> CRS.decode(anyString())).thenThrow(FactoryException.class);
             // must be run before any other test that populates the CRS cache
             // see test method comment
-            Shape.generateKml("dummy", Collections.emptyMap(),
-                    Collections.emptyMap());
+            Shape.generateKml("dummy", Collections.emptyMap(), Collections.emptyMap());
         }
     }
 
@@ -229,20 +223,17 @@ public class ShapeNGTest {
      * After running the tests that rely on an empty CRS cache we can manually
      * populate the cache to speed up test runs and avoid EPSG code from
      * reaching out further than necessary for simple unit tests.
+     * @throws org.opengis.referencing.FactoryException
      */
     @AfterGroups(groups = ("ShapeNGTest.emptyCrsCache"))
-    public void populateCrsCache() {
+    public void populateCrsCache() throws FactoryException {
         try (final MockedStatic<CRS> crsMockedStatic = mockStatic(CRS.class)) {
             crsMockedStatic.when(() -> CRS.toSRS(any()))
                     .thenReturn(EPSG_PREFIX + Shape.SpatialReference.WGS84.getSrid())
                     .thenReturn(EPSG_PREFIX + Shape.SpatialReference.WGS84_WEB_MERCATOR.getSrid());
             // run the code twice to populate the cache
-            try {
-                Shape.SpatialReference.WGS84.getSrs();
-                Shape.SpatialReference.WGS84.getSrs();
-            } catch (FactoryException e) {
-                fail("Mocking error.");
-            }
+            Shape.SpatialReference.WGS84.getSrs();
+            Shape.SpatialReference.WGS84.getSrs();
         }
     }
 
@@ -252,8 +243,7 @@ public class ShapeNGTest {
     @Test
     public void testGeometryTypeGetters() {
         assertEquals(POINT.getGeomertyType(), "Point");
-        assertEquals(MULTI_POINT.getGeomertyClass(),
-                MultiPoint.class);
+        assertEquals(MULTI_POINT.getGeomertyClass(), MultiPoint.class);
     }
 
     /**
@@ -261,10 +251,8 @@ public class ShapeNGTest {
      */
     @Test
     public void testSpatialReferenceGetters() {
-        assertEquals(Shape.SpatialReference.WGS84_WEB_MERCATOR.getName(),
-                "Web Mercator");
-        assertEquals(Shape.SpatialReference.WGS84.getSrid(),
-                4326);
+        assertEquals(Shape.SpatialReference.WGS84_WEB_MERCATOR.getName(), "Web Mercator");
+        assertEquals(Shape.SpatialReference.WGS84.getSrid(), 4326);
     }
 
     private static final String EPSG_PREFIX = "EPSG:";
@@ -357,26 +345,40 @@ public class ShapeNGTest {
     private static final double BOX_LON_MAX = 121.38D;
 
     // test coordinate tuples for shapes
-    private static final List<Tuple<Double, Double>> POINT_COORDS
-            = Arrays.asList(new Tuple<>(POINT_LAT, POINT_LON));
-    private static final List<Tuple<Double, Double>> LINE_COORDS
-            = Arrays.asList(
-                    new Tuple<>(LINE_LAT1, LINE_LON1),
-                    new Tuple<>(LINE_LAT2, LINE_LON2));
-    private static final List<Tuple<Double, Double>> POLY_COORDS
-            = Arrays.asList(
-                    new Tuple<>(POLY_LAT1, POLY_LON1),
-                    new Tuple<>(POLY_LAT2, POLY_LON2),
-                    new Tuple<>(POLY_LAT3, POLY_LON3),
-                    new Tuple<>(POLY_LAT4, POLY_LON4),
-                    new Tuple<>(POLY_LAT5, POLY_LON5),
-                    new Tuple<>(POLY_LAT6, POLY_LON6));
-    private static final List<Tuple<Double, Double>> BOX_COORDS
-            = Arrays.asList(
-                    new Tuple<>(BOX_LAT_MIN, BOX_LON_MIN),
-                    new Tuple<>(BOX_LAT_MIN, BOX_LON_MAX),
-                    new Tuple<>(BOX_LAT_MAX, BOX_LON_MAX),
-                    new Tuple<>(BOX_LAT_MAX, BOX_LON_MIN));
+    private static final List<Tuple<Double, Double>> POINT_COORDS = Arrays.asList(new Tuple<>(POINT_LAT, POINT_LON));
+    private static final List<Tuple<Double, Double>> LINE_COORDS = Arrays.asList(
+            new Tuple<>(LINE_LAT1, LINE_LON1),
+            new Tuple<>(LINE_LAT2, LINE_LON2));
+    private static final List<Tuple<Double, Double>> POLY_COORDS = Arrays.asList(
+            new Tuple<>(POLY_LAT1, POLY_LON1),
+            new Tuple<>(POLY_LAT2, POLY_LON2),
+            new Tuple<>(POLY_LAT3, POLY_LON3),
+            new Tuple<>(POLY_LAT4, POLY_LON4),
+            new Tuple<>(POLY_LAT5, POLY_LON5),
+            new Tuple<>(POLY_LAT6, POLY_LON6));
+    private static final List<Tuple<Double, Double>> BOX_COORDS = Arrays.asList(
+            new Tuple<>(BOX_LAT_MIN, BOX_LON_MIN),
+            new Tuple<>(BOX_LAT_MIN, BOX_LON_MAX),
+            new Tuple<>(BOX_LAT_MAX, BOX_LON_MAX),
+            new Tuple<>(BOX_LAT_MAX, BOX_LON_MIN));
+    
+    // alternate tuples for GeoPackage which enforces XY (i.e. lon/lat) coords
+    private static final List<Tuple<Double, Double>> POINT_XY_COORDS = Arrays.asList(new Tuple<>(POINT_LON, POINT_LAT));
+    private static final List<Tuple<Double, Double>> LINE_XY_COORDS = Arrays.asList(
+            new Tuple<>(LINE_LON1, LINE_LAT1),
+            new Tuple<>(LINE_LON2, LINE_LAT2));
+    private static final List<Tuple<Double, Double>> POLY_XY_COORDS = Arrays.asList(
+            new Tuple<>(POLY_LON1, POLY_LAT1),
+            new Tuple<>(POLY_LON2, POLY_LAT2),
+            new Tuple<>(POLY_LON3, POLY_LAT3),
+            new Tuple<>(POLY_LON4, POLY_LAT4),
+            new Tuple<>(POLY_LON5, POLY_LAT5),
+            new Tuple<>(POLY_LON6, POLY_LAT6));
+    private static final List<Tuple<Double, Double>> BOX_XY_COORDS = Arrays.asList(
+            new Tuple<>(BOX_LON_MIN, BOX_LAT_MIN),
+            new Tuple<>(BOX_LON_MAX, BOX_LAT_MIN),
+            new Tuple<>(BOX_LON_MAX, BOX_LAT_MAX),
+            new Tuple<>(BOX_LON_MIN, BOX_LAT_MAX));
 
     // test common properties for shapes
     private static final String POINT_ID = "pointId";
@@ -397,7 +399,7 @@ public class ShapeNGTest {
     // convenience method to get the bounding box part of GeoJson
     private String getGeoJsonBoundingBox(final List<Double> points) {
         return points.stream()
-                .map(p -> String.valueOf(p))
+                .map(String::valueOf)
                 .collect(Collectors.joining(","));
     }
 
@@ -407,13 +409,13 @@ public class ShapeNGTest {
         final List<String> c = new ArrayList<>();
 
         String first = null;
-        for (Tuple t : coords) {
+        for (final Tuple<Double, Double> t : coords) {
             // convert each coord to [123,456]
             final StringBuilder s = new StringBuilder();
             s.append("[");
             s.append(String.join(",",
-                    String.valueOf((Double) t.getFirst()),
-                    String.valueOf((Double) t.getSecond())));
+                    String.valueOf(t.getFirst()),
+                    String.valueOf(t.getSecond())));
             s.append("]");
             c.add(s.toString());
             // some shapes put the first coord in twice, beginning and end
@@ -531,9 +533,7 @@ public class ShapeNGTest {
                 bboxBox,
                 BOX.getGeomertyType(),
                 getGeoJsonCoords(BOX_COORDS, BOX.getGeomertyType()),
-                getGeoJsonProperties(
-                        BOX_ID, BOX_CENTRE_LAT, BOX_CENTRE_LON, BOX_RADIUS),
-                BOX_ID));
+                getGeoJsonProperties(BOX_ID, BOX_CENTRE_LAT, BOX_CENTRE_LON, BOX_RADIUS), BOX_ID));
     }
 
     /**
@@ -577,20 +577,16 @@ public class ShapeNGTest {
         TEST_SHAPES.put(BOX_ID, Shape.generateShape(BOX_ID, BOX, BOX_COORDS));
 
         // attributes map for this shape is null
-        TEST_SHAPES.put(NULL_ATTR_ID,
-                Shape.generateShape(NULL_ATTR_ID, BOX, BOX_COORDS));
+        TEST_SHAPES.put(NULL_ATTR_ID, Shape.generateShape(NULL_ATTR_ID, BOX, BOX_COORDS));
 
         // attributes map for this shape is empty
-        TEST_SHAPES.put(EMPTY_ATTR_MAP_ID,
-                Shape.generateShape(EMPTY_ATTR_MAP_ID, LINE, LINE_COORDS));
+        TEST_SHAPES.put(EMPTY_ATTR_MAP_ID, Shape.generateShape(EMPTY_ATTR_MAP_ID, LINE, LINE_COORDS));
 
         // attribute has a null value
-        TEST_SHAPES.put(NULL_ATTR_VAL_ID,
-                Shape.generateShape(NULL_ATTR_VAL_ID, POINT, POINT_COORDS));
+        TEST_SHAPES.put(NULL_ATTR_VAL_ID, Shape.generateShape(NULL_ATTR_VAL_ID, POINT, POINT_COORDS));
 
         // id of this shape is not present in attributes
-        TEST_SHAPES.put(ROGUE_SHAPE_ID,
-                Shape.generateShape(ROGUE_SHAPE_ID, POLYGON, POLY_COORDS));
+        TEST_SHAPES.put(ROGUE_SHAPE_ID, Shape.generateShape(ROGUE_SHAPE_ID, POLYGON, POLY_COORDS));
 
         return TEST_SHAPES;
     }
@@ -627,18 +623,14 @@ public class ShapeNGTest {
     private static final String NULL_ATTR_VAL_ATTR_ID = "nullAtVlId";
 
     private static final String POINT_ATTR_VAL1 = "pointAttrVal1";
-    private static final Tuple<String, String> POINT_ATTR_VAL2
-            = new Tuple<>("pointAttrVal2l", "pointAttrVal2r");
+    private static final Tuple<String, String> POINT_ATTR_VAL2 = new Tuple<>("pointAttrVal2l", "pointAttrVal2r");
     private static final Integer LINE_ATTR_VAL = 987;
     private static final Double POLY_ATTR_VAL1 = 654.321D;
-    private static final ConstellationColor POLY_ATTR_VAL2
-            = ConstellationColor.BLUE;
-    private static final Vector3f BOX_ATTR_VAL
-            = new Vector3f(0.123F, -0.456F, 0.00789F);
+    private static final ConstellationColor POLY_ATTR_VAL2 = ConstellationColor.BLUE;
+    private static final Vector3f BOX_ATTR_VAL = new Vector3f(0.123F, -0.456F, 0.00789F);
 
     // attributes used by several tests
-    private static final Map<String, Map<String, Object>> TEST_ATTRIBUTES
-            = new HashMap<>();
+    private static final Map<String, Map<String, Object>> TEST_ATTRIBUTES = new HashMap<>();
 
     // returns a map of many test attribute maps
     private static Map<String, Map<String, Object>> getTestAttributes() {
@@ -684,7 +676,7 @@ public class ShapeNGTest {
         // id of this attribute map is not present in shapes
         final Map<String, Object> rogueAttr = new HashMap<>();
         rogueAttr.put("dummy", "dummy");
-        TEST_ATTRIBUTES.put(ROGUE_ATTR_ID, null);
+        TEST_ATTRIBUTES.put(ROGUE_ATTR_ID, rogueAttr);
 
         return TEST_ATTRIBUTES;
     }
@@ -715,8 +707,7 @@ public class ShapeNGTest {
      * au.gov.asd.tac.constellation.utilities.geospatial.ShapeNGTeset.getTestAttributes}
      * for a list of different cases exercised.
      */
-    private void assertFeatures(final SimpleFeatureIterator it,
-            final EXPORT_TYPE exportType) {
+    private void assertFeatures(final SimpleFeatureIterator it, final EXPORT_TYPE exportType) {
         try (it) {
             while (it.hasNext()) {
                 final SimpleFeature feature = it.next();
@@ -735,15 +726,14 @@ public class ShapeNGTest {
                     // KML extended props are nested further than other export types
                     final Map<Object, Object> userData
                             = (Map<Object, Object>) feature.getUserData().get("UntypedExtendedData");
-                    props.put(CENTRE_LAT, Double.parseDouble((String) userData.get(CENTRE_LAT)));
-                    props.put(CENTRE_LON, Double.parseDouble((String) userData.get(CENTRE_LON)));
-                    props.put(RADIUS, Double.parseDouble((String) userData.get(RADIUS)));
+                    props.put(CENTRE_LAT, Double.valueOf((String) userData.get(CENTRE_LAT)));
+                    props.put(CENTRE_LON, Double.valueOf((String) userData.get(CENTRE_LON)));
+                    props.put(RADIUS, Double.valueOf((String) userData.get(RADIUS)));
                     props.put(POINT_ATTR_ID1, userData.get(POINT_ATTR_ID1));
                     props.put(POINT_ATTR_ID2, userData.get(POINT_ATTR_ID2));
                     props.put(LINE_ATTR_ID, userData.get(LINE_ATTR_ID));
                     props.put(POLY_ATTR_ID1, userData.get(POLY_ATTR_ID1) != null
-                            ? Double.parseDouble((String) userData.get(POLY_ATTR_ID1))
-                            : null);
+                            ? Double.valueOf((String) userData.get(POLY_ATTR_ID1)) : null);
                     props.put(POLY_ATTR_ID2, userData.get(POLY_ATTR_ID2));
                     props.put(BOX_ATTR_ID, userData.get(BOX_ATTR_ID));
                 } else {
@@ -787,52 +777,54 @@ public class ShapeNGTest {
                         assertTrue(geometryLc.startsWith(POLYGON.getGeomertyType().toLowerCase()));
                     }
                 }
+                
+                // GeoPackage forces over to XY coordinate format and so will have a slightly different check to other formats 
+                final boolean isGeoPackageExport = exportType == EXPORT_TYPE.GEOPACKAGE;
 
                 // assert other values
                 if (POINT_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(POINT_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? POINT_XY_COORDS : POINT_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), POINT_LON); // not a typo!
                     assertEquals(props.get(CENTRE_LON), POINT_LAT); // not a typo!
                     assertEquals(props.get(RADIUS), POINT_RADIUS);
                     assertEquals(props.get(POINT_ATTR_ID1), POINT_ATTR_VAL1);
                     assertEquals(props.get(POINT_ATTR_ID2), POINT_ATTR_VAL2.toString());
                 } else if (LINE_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(LINE_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? LINE_XY_COORDS : LINE_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), LINE_CENTRE_LAT);
                     assertEquals(props.get(CENTRE_LON), LINE_CENTRE_LON);
                     assertEquals(props.get(RADIUS), LINE_RADIUS);
                     assertEquals(props.get(LINE_ATTR_ID).toString(), LINE_ATTR_VAL.toString());
                 } else if (POLY_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(POLY_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? POLY_XY_COORDS : POLY_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), POLY_CENTRE_LAT);
                     assertEquals(props.get(CENTRE_LON), POLY_CENTRE_LON);
                     assertEquals(props.get(RADIUS), POLY_RADIUS);
                     assertEquals(props.get(POLY_ATTR_ID1), POLY_ATTR_VAL1);
                     assertEquals(props.get(POLY_ATTR_ID2), POLY_ATTR_VAL2.toString());
                 } else if (BOX_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(BOX_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? BOX_XY_COORDS : BOX_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), BOX_CENTRE_LAT);
                     assertEquals(props.get(CENTRE_LON), BOX_CENTRE_LON);
                     assertEquals(props.get(RADIUS), BOX_RADIUS);
                     assertEquals(props.get(BOX_ATTR_ID), BOX_ATTR_VAL.toString());
                 } else if (NULL_ATTR_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(BOX_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? BOX_XY_COORDS : BOX_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), BOX_CENTRE_LAT);
                     assertEquals(props.get(CENTRE_LON), BOX_CENTRE_LON);
                     assertEquals(props.get(RADIUS), BOX_RADIUS);
                 } else if (EMPTY_ATTR_MAP_ID.equals(props.get(NAME))) {
-                    assertTrue(((Geometry) props.get(GEOMETRY)).toString()
-                            .contains(getFeatureCoords(LINE_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? LINE_XY_COORDS : LINE_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), LINE_CENTRE_LAT);
                     assertEquals(props.get(CENTRE_LON), LINE_CENTRE_LON);
                     assertEquals(props.get(RADIUS), LINE_RADIUS);
                 } else if (NULL_ATTR_VAL_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(POINT_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? POINT_XY_COORDS : POINT_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), POINT_LON); // not a typo!
                     assertEquals(props.get(CENTRE_LON), POINT_LAT); // not a typo!
                     assertEquals(props.get(RADIUS), POINT_RADIUS);
                 } else if (ROGUE_SHAPE_ID.equals(props.get(NAME))) {
-                    assertTrue(geometryLc.contains(getFeatureCoords(POLY_COORDS)));
+                    assertTrue(geometryLc.contains(getFeatureCoords(isGeoPackageExport ? POLY_XY_COORDS : POLY_COORDS)));
                     assertEquals(props.get(CENTRE_LAT), POLY_CENTRE_LAT);
                     assertEquals(props.get(CENTRE_LON), POLY_CENTRE_LON);
                     assertEquals(props.get(RADIUS), POLY_RADIUS);
@@ -880,7 +872,7 @@ public class ShapeNGTest {
         // convert GeoJson string to a list of Features
         final FeatureJSON featureJson = new FeatureJSON(new GeometryJSON());
         featureJson.setFeatureType(featureJson.readFeatureCollectionSchema(s, false));
-        final FeatureCollection featureCollection;
+        final FeatureCollection<?, ?> featureCollection;
         try (final Reader stringReader = new StringReader(s)) {
             featureCollection = featureJson.readFeatureCollection(stringReader);
         }
@@ -902,9 +894,7 @@ public class ShapeNGTest {
 
         // and now verify the rest of the feature data
         assertEquals(featureCollection.size(), TEST_SHAPES.size());
-        assertFeatures(
-                (SimpleFeatureIterator) featureCollection.features(),
-                EXPORT_TYPE.GEOJSON);
+        assertFeatures((SimpleFeatureIterator) featureCollection.features(), EXPORT_TYPE.GEOJSON);
     }
 
     /**
@@ -927,7 +917,7 @@ public class ShapeNGTest {
         shapes.put(POINT_ID, Shape.generateShape(POINT_ID, POINT, POINT_COORDS));
         shapes.put(LINE_ID, Shape.generateShape(LINE_ID, LINE, LINE_COORDS));
 
-        try ( MockedConstruction<FeatureJSON> mockFeatureJson = Mockito.mockConstruction(FeatureJSON.class,
+        try (MockedConstruction<FeatureJSON> mockFeatureJson = Mockito.mockConstruction(FeatureJSON.class,
                 (mock, context) -> {
                     // throw Exception on first call, then call real method on all other calls
                     when(mock.streamFeatureCollection(any()))
@@ -945,18 +935,18 @@ public class ShapeNGTest {
             Shape.generateShapeCollection("dummy", shapes, Collections.emptyMap());
 
             // check that the Feature write was only called once
-            final ArgumentCaptor<FeatureCollection> fcCaptor
+            final ArgumentCaptor<FeatureCollection<?, ?>> fcCaptor
                     = ArgumentCaptor.forClass(FeatureCollection.class);
             verify(mockFeatureJson.constructed().get(0), times(1))
                     .writeFeatureCollection(fcCaptor.capture(), any());
 
             // check that the FeatureCollection to be output has only one Feature
-            final FeatureCollection fc = fcCaptor.getValue();
+            final FeatureCollection<?, ?> fc = fcCaptor.getValue();
             assertEquals(fc.size(), 1);
 
             // check that the written Feature is as expected
             try (final SimpleFeatureIterator it = (SimpleFeatureIterator) fc.features()) {
-                final SimpleFeature feature = (SimpleFeature) it.next();
+                final SimpleFeature feature = it.next();
                 final String featureName = (String) feature.getAttribute(NAME);
                 assertTrue(featureName.equals(POINT_ID) || featureName.equals(LINE_ID));
             }
@@ -976,18 +966,15 @@ public class ShapeNGTest {
     @Test(dependsOnGroups = {"ShapeNGTest.emptyCrsCache"})
     public void testGenerateShapeCollectionParams() throws IOException {
         // empty shape collection
-        final String noShapes = Shape.generateShapeCollection(
-                "dummy", Collections.emptyMap(), getTestAttributes());
+        final String noShapes = Shape.generateShapeCollection("dummy", Collections.emptyMap(), getTestAttributes());
         assertFalse(noShapes.contains(FEATURE_MARKER));
 
-        // emtpy attribute collection
-        final String noAttr = Shape.generateShapeCollection(
-                "dummy", getBasicTestShapes(), Collections.emptyMap());
+        // empty attribute collection
+        final String noAttr = Shape.generateShapeCollection("dummy", getBasicTestShapes(), Collections.emptyMap());
         assertEquals(noAttr.split(FEATURE_MARKER).length - 1, BASIC_TEST_SHAPES.size());
 
         // null attribute collection
-        final String nullAttr = Shape.generateShapeCollection(
-                "dummy", getBasicTestShapes(), null);
+        final String nullAttr = Shape.generateShapeCollection("dummy", getBasicTestShapes(), null);
         assertEquals(nullAttr.split(FEATURE_MARKER).length - 1, BASIC_TEST_SHAPES.size());
     }
 
@@ -1018,10 +1005,7 @@ public class ShapeNGTest {
         assertTrue(kml.contains("Document id=\"" + id));
 
         // get Features from KML String
-        final PullParser parser = new PullParser(
-                new KMLConfiguration(),
-                new ByteArrayInputStream(kml.getBytes()),
-                SimpleFeature.class);
+        final PullParser parser = new PullParser(new KMLConfiguration(), new ByteArrayInputStream(kml.getBytes()), SimpleFeature.class);
 
         final List<SimpleFeature> features = new ArrayList<>();
         SimpleFeature simpleFeature = (SimpleFeature) parser.parse();
@@ -1058,7 +1042,7 @@ public class ShapeNGTest {
         shapes.put(POINT_ID, Shape.generateShape(POINT_ID, POINT, POINT_COORDS));
         shapes.put(LINE_ID, Shape.generateShape(LINE_ID, LINE, LINE_COORDS));
 
-        try ( MockedConstruction<FeatureJSON> mockFeatureJson = Mockito.mockConstruction(FeatureJSON.class,
+        try (MockedConstruction<FeatureJSON> mockFeatureJson = Mockito.mockConstruction(FeatureJSON.class,
                 (mock, context) -> {
                     // throw exception on first call, then call real method on all other calls
                     when(mock.streamFeatureCollection(any())).thenThrow(IOException.class).thenCallRealMethod();
@@ -1089,18 +1073,15 @@ public class ShapeNGTest {
     @Test(dependsOnGroups = {"ShapeNGTest.emptyCrsCache"})
     public void testGenerateKmlParams() throws IOException {
         // empty shape collection
-        final String noShapes = Shape.generateKml(
-                "dummy", Collections.emptyMap(), getTestAttributes());
+        final String noShapes = Shape.generateKml("dummy", Collections.emptyMap(), getTestAttributes());
         assertFalse(noShapes.contains(KML_PLACEMARK));
 
         // emtpy attribute collection
-        final String noAttr = Shape.generateKml(
-                "dummy", getBasicTestShapes(), Collections.emptyMap());
+        final String noAttr = Shape.generateKml("dummy", getBasicTestShapes(), Collections.emptyMap());
         assertEquals(noAttr.split(KML_PLACEMARK).length, 5);
 
         // null attribute collection
-        final String nullAttr = Shape.generateKml(
-                "dummy", getBasicTestShapes(), null);
+        final String nullAttr = Shape.generateKml("dummy", getBasicTestShapes(), null);
         assertEquals(nullAttr.split(KML_PLACEMARK).length, 5);
     }
 
@@ -1132,16 +1113,14 @@ public class ShapeNGTest {
     public void testGenerateGeoPackage() throws IOException {
         final File f = File.createTempFile("tmp", "file");
         final String id = "geoPkgId";
-        Shape.generateGeoPackage(id, getTestShapes(), getTestAttributes(),
-                f, Shape.SpatialReference.WGS84);
+        Shape.generateGeoPackage(id, getTestShapes(), getTestAttributes(), f, Shape.SpatialReference.WGS84);
 
         DataStore store = null;
         try {
             store = getGeoPackageStore(f);
 
             assertEquals(id, store.getTypeNames()[0]);
-            final SimpleFeatureCollection features
-                    = store.getFeatureSource(id).getFeatures();
+            final SimpleFeatureCollection features = store.getFeatureSource(id).getFeatures();
             assertEquals(features.size(), TEST_SHAPES.size());
             assertFeatures(features.features(), EXPORT_TYPE.GEOPACKAGE);
         } finally {
@@ -1149,6 +1128,13 @@ public class ShapeNGTest {
                 store.dispose();
             }
         }
+        // try to generateGeoPackage to the same filename
+        try {
+            Shape.generateGeoPackage(id, getTestShapes(), getTestAttributes(), f, Shape.SpatialReference.WGS84);
+            assertTrue(true);  //successful if no exception 
+        } catch (final IOException ex) {
+            fail(ex.getMessage(), ex);
+        }      
     }
 
     /**
@@ -1183,7 +1169,7 @@ public class ShapeNGTest {
            creating the FeatureCollection, allow GeoPackage to throw an
            Exception, catch the Exception and verify captured arguments from
            constructor mocks. Feel free to re-write later! */
-        try ( MockedConstruction<FeatureJSON> mockFeatureJson = Mockito.mockConstruction(FeatureJSON.class,
+        try (MockedConstruction<FeatureJSON> mockFeatureJson = Mockito.mockConstruction(FeatureJSON.class,
                 (mock, context) -> {
                     // throw exception on first call, then call real method on all other calls
                     when(mock.streamFeatureCollection(any())).thenThrow(IOException.class).thenCallRealMethod();
@@ -1206,7 +1192,7 @@ public class ShapeNGTest {
                 ArgumentCaptor<List<SimpleFeature>> captor
                         = ArgumentCaptor.forClass(List.class);
                 verify(mockFeatures.constructed().get(0)).addAll((Collection<SimpleFeature>) captor.capture());
-                final List<SimpleFeature> features = (List) captor.getValue();
+                final List<SimpleFeature> features = captor.getValue();
                 assertEquals(features.size(), 1);
                 final String featureName = (String) features.get(0).getAttribute(NAME);
                 assertTrue(featureName.equals(POINT_ID) || featureName.equals(LINE_ID));
@@ -1236,8 +1222,7 @@ public class ShapeNGTest {
         DataStore noShapesStore = null;
         try {
             noShapesStore = getGeoPackageStore(noShapesFile);
-            final SimpleFeatureCollection noShapes
-                    = noShapesStore.getFeatureSource(geoPkgId).getFeatures();
+            final SimpleFeatureCollection noShapes = noShapesStore.getFeatureSource(geoPkgId).getFeatures();
             assertTrue(noShapes.size() == 0);
         } finally {
             if (noShapesStore != null) {
@@ -1252,8 +1237,7 @@ public class ShapeNGTest {
         DataStore noAttrStore = null;
         try {
             noAttrStore = getGeoPackageStore(noAttrFile);
-            final SimpleFeatureCollection noAttr
-                    = noAttrStore.getFeatureSource(geoPkgId).getFeatures();
+            final SimpleFeatureCollection noAttr = noAttrStore.getFeatureSource(geoPkgId).getFeatures();
             assertTrue(noAttr.size() == BASIC_TEST_SHAPES.size());
         } finally {
             if (noAttrStore != null) {
@@ -1268,8 +1252,7 @@ public class ShapeNGTest {
         DataStore nullAttrStore = null;
         try {
             nullAttrStore = getGeoPackageStore(nullAttrFile);
-            final SimpleFeatureCollection nullAttr
-                    = nullAttrStore.getFeatureSource(geoPkgId).getFeatures();
+            final SimpleFeatureCollection nullAttr = nullAttrStore.getFeatureSource(geoPkgId).getFeatures();
             assertTrue(nullAttr.size() == BASIC_TEST_SHAPES.size());
         } finally {
             if (nullAttrStore != null) {
@@ -1329,7 +1312,7 @@ public class ShapeNGTest {
     /* Convenience method to get a data store providing access to a test
        Shapefile residing on the filesystem. */
     private DataStore getShapefileStore(final File f) throws IOException {
-        final HashMap<String, Object> map = new HashMap<>();
+        final Map<String, Object> map = new HashMap<>();
         map.put("url", f.toURI().toURL());
         return DataStoreFinder.getDataStore(map);
     }
@@ -1367,8 +1350,7 @@ public class ShapeNGTest {
                     .substring(0, f.getName().lastIndexOf("."));
             assertEquals(expectedId, id);
 
-            assertFeatures(store.getFeatureSource(id).getFeatures().features(),
-                    EXPORT_TYPE.SHAPEFILE);
+            assertFeatures(store.getFeatureSource(id).getFeatures().features(), EXPORT_TYPE.SHAPEFILE);
         } finally {
             if (store != null) {
                 store.dispose();
@@ -1396,30 +1378,26 @@ public class ShapeNGTest {
         shapes.put(POLY_ID, Shape.generateShape(POLY_ID, POLYGON, POLY_COORDS));
         shapes.put(BOX_ID, Shape.generateShape(BOX_ID, POLYGON, BOX_COORDS));
 
-        try ( MockedConstruction<FeatureJSON> mockFeatureJson = Mockito.mockConstruction(FeatureJSON.class,
+        try (MockedConstruction<FeatureJSON> mockFeatureJson = Mockito.mockConstruction(FeatureJSON.class,
                 (mock, context) -> {
                     // throw exception on first call, then call real method on all other calls
                     when(mock.streamFeatureCollection(any())).thenThrow(IOException.class).thenCallRealMethod();
                 })) {
 
             final File f = File.createTempFile("tmp", SHP_EXT);
-            Shape.generateShapefile("dummy", POLYGON,
-                    shapes, Collections.emptyMap(), f,
-                    Shape.SpatialReference.WGS84);
+            Shape.generateShapefile("dummy", POLYGON, shapes, Collections.emptyMap(), f, Shape.SpatialReference.WGS84);
 
             DataStore store = null;
             try {
                 store = getShapefileStore(f);
                 // check that only one expected feature was generated
-                final SimpleFeatureCollection features
-                        = store.getFeatureSource(store.getTypeNames()[0]).getFeatures();
+                final SimpleFeatureCollection features = store.getFeatureSource(store.getTypeNames()[0]).getFeatures();
                 assertEquals(features.size(), 1);
 
                 // check that only one expected feature was generated
                 try ( SimpleFeatureIterator it = features.features()) {
                     final String featureName = (String) it.next().getAttribute(NAME);
-                    assertTrue(featureName.equals(POLY_ID)
-                            || featureName.equals(BOX_ID));
+                    assertTrue(featureName.equals(POLY_ID) || featureName.equals(BOX_ID));
                 }
             } finally {
                 if (store != null) {
@@ -1444,13 +1422,11 @@ public class ShapeNGTest {
 
         // empty shape collection
         final File noShapesFile = File.createTempFile("tmp", SHP_EXT);
-        Shape.generateShapefile(geoPkgId, POLYGON, Collections.emptyMap(),
-                getTestAttributes(), noShapesFile, Shape.SpatialReference.WGS84);
+        Shape.generateShapefile(geoPkgId, POLYGON, Collections.emptyMap(), getTestAttributes(), noShapesFile, Shape.SpatialReference.WGS84);
         DataStore noShapesStore = null;
         try {
             noShapesStore = getShapefileStore(noShapesFile);
-            final SimpleFeatureCollection noShapes
-                    = noShapesStore.getFeatureSource(noShapesStore.getTypeNames()[0]).getFeatures();
+            final SimpleFeatureCollection noShapes = noShapesStore.getFeatureSource(noShapesStore.getTypeNames()[0]).getFeatures();
             assertTrue(noShapes.size() == 0);
         } finally {
             if (noShapesStore != null) {
@@ -1460,13 +1436,11 @@ public class ShapeNGTest {
 
         // emtpy attribute collection
         final File noAttrFile = File.createTempFile("tmp", SHP_EXT);
-        Shape.generateShapefile(geoPkgId, POLYGON, getBasicTestShapes(), Collections.emptyMap(),
-                noAttrFile, Shape.SpatialReference.WGS84);
+        Shape.generateShapefile(geoPkgId, POLYGON, getBasicTestShapes(), Collections.emptyMap(), noAttrFile, Shape.SpatialReference.WGS84);
         DataStore noAttrStore = null;
         try {
             noAttrStore = getShapefileStore(noAttrFile);
-            final SimpleFeatureCollection noAttr
-                    = noAttrStore.getFeatureSource(noAttrStore.getTypeNames()[0]).getFeatures();
+            final SimpleFeatureCollection noAttr = noAttrStore.getFeatureSource(noAttrStore.getTypeNames()[0]).getFeatures();
             assertTrue(noAttr.size() == BASIC_TEST_SHAPES.size());
         } finally {
             if (noAttrStore != null) {
@@ -1476,13 +1450,11 @@ public class ShapeNGTest {
 
         // null attribute collection
         final File nullAttrFile = File.createTempFile("tmp", SHP_EXT);
-        Shape.generateShapefile(geoPkgId, POLYGON, getBasicTestShapes(), null,
-                nullAttrFile, Shape.SpatialReference.WGS84);
+        Shape.generateShapefile(geoPkgId, POLYGON, getBasicTestShapes(), null, nullAttrFile, Shape.SpatialReference.WGS84);
         DataStore nullAttrStore = null;
         try {
             nullAttrStore = getShapefileStore(nullAttrFile);
-            final SimpleFeatureCollection nullAttr
-                    = nullAttrStore.getFeatureSource(nullAttrStore.getTypeNames()[0]).getFeatures();
+            final SimpleFeatureCollection nullAttr = nullAttrStore.getFeatureSource(nullAttrStore.getTypeNames()[0]).getFeatures();
             assertTrue(nullAttr.size() == BASIC_TEST_SHAPES.size());
         } finally {
             if (nullAttrStore != null) {
@@ -1536,14 +1508,12 @@ public class ShapeNGTest {
         attributes.put(POINT_ID, pointAttr);
 
         final File f = File.createTempFile("tmp", SHP_EXT);
-        Shape.generateShapefile("shapefileId", POINT, shapes, attributes,
-                f, Shape.SpatialReference.WGS84_WEB_MERCATOR);
+        Shape.generateShapefile("shapefileId", POINT, shapes, attributes, f, Shape.SpatialReference.WGS84_WEB_MERCATOR);
 
         DataStore store = null;
         try {
             store = getShapefileStore(f);
-            try ( SimpleFeatureIterator it
-                    = store.getFeatureSource(store.getTypeNames()[0]).getFeatures().features()) {
+            try ( SimpleFeatureIterator it = store.getFeatureSource(store.getTypeNames()[0]).getFeatures().features()) {
                 final SimpleFeature feature = it.next();
                 assertEquals(id1, feature.getAttribute(id1));
                 assertEquals(id2, feature.getAttribute(id2compatible));
@@ -1562,5 +1532,4 @@ public class ShapeNGTest {
             }
         }
     }
-
 }

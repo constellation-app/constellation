@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
 import java.util.Map;
 
 /**
- * A BinCreator is the class that actually creates a collection of bins from the
- * elements in the graph. Most of the hard work is passed to the bin itself.
+ * A BinCreator is the class that actually creates a collection of bins from the elements in the graph. Most of the hard
+ * work is passed to the bin itself.
  *
  * @author sirius
  */
@@ -79,18 +79,20 @@ public class BinCreator {
             if (filter == null || filter.contains(graph, element)) {
                 bin.setKey(graph, binnedAttributeId, representative.findRepresentative(graph, elementType, element));
                 Bin currentBin = bins.get(bin);
-                if (currentBin == null) {
+                if (currentBin == null && !bin.isOnlyNullElements()) {
                     currentBin = bin;
                     currentBin.prepareForPresentation();
                     bin = currentBin.create();
                     bins.put(currentBin, currentBin);
                 }
-                currentBin.elementCount++;
-                if (selectedAttributeId != Graph.NOT_FOUND && elementType.isSelected(graph, element, selectedAttributeId)) {
-                    currentBin.selectedCount++;
+                if (currentBin != null) {
+                    currentBin.setElementCount(currentBin.getElementCount() + 1);
+                    if (selectedAttributeId != Graph.NOT_FOUND && elementType.isSelected(graph, element, selectedAttributeId)) {
+                        currentBin.setSelectedCount(currentBin.getSelectedCount() + 1);
+                    }
+                    binElements[position] = currentBin.getFirstElement() < 0 ? -1 : currentBin.getFirstElement();
+                    currentBin.setFirstElement(position);
                 }
-                binElements[position] = currentBin.firstElement < 0 ? -1 : currentBin.firstElement;
-                currentBin.firstElement = position;
             }
         }
     }

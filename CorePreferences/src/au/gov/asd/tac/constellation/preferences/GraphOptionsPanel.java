@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -34,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.LayoutStyle;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -47,7 +49,7 @@ final class GraphOptionsPanel extends JPanel {
 
     private final List<JPanel> colorPanels;
     final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
-    private final static Color DEFAULT_COLOR = new Color(255, 255, 254);
+    private static final Color DEFAULT_COLOR = new Color(255, 255, 254);
     private static final String[] EYE_COLORS = new String[]{"Blue", "Cyan", "Green", "Magenta", "Red", "Yellow"};
 
     public GraphOptionsPanel() {
@@ -135,7 +137,7 @@ final class GraphOptionsPanel extends JPanel {
 
                 for (final JPanel panel : colorPanels) {
                     final String panelColor = getHTMLColor(panel.getBackground());
-                    if (!StringUtils.equals(panelColor, getHTMLColor(DEFAULT_COLOR))) {
+                    if (!Strings.CS.equals(panelColor, getHTMLColor(DEFAULT_COLOR))) {
                         colorStringBuilder.append(panelColor);
                         colorStringBuilder.append(";");
                     } else {
@@ -165,6 +167,14 @@ final class GraphOptionsPanel extends JPanel {
 
     public void setRightColor(final String color) {
         rightEyeColor.setSelectedItem(color);
+    }
+    
+    public boolean isAnimationsEnabled() {
+        return this.enableAnimationsCheckBox.isSelected();
+    }
+    
+    public void setAnimationsEnabled(final boolean selected) {
+        this.enableAnimationsCheckBox.setSelected(selected);
     }
 
     /**
@@ -200,6 +210,8 @@ final class GraphOptionsPanel extends JPanel {
         rightEyeLabel = new JLabel();
         rightEyeColor = new JComboBox<>();
         changeColoursLabel = new JLabel();
+        animationPanel = new JPanel();
+        enableAnimationsCheckBox = new JCheckBox();
 
         blazeSizePanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeSizePanel.border.title"))); // NOI18N
 
@@ -518,6 +530,26 @@ final class GraphOptionsPanel extends JPanel {
                 .addGap(0, 12, Short.MAX_VALUE))
         );
 
+        animationPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.animationPanel.border.title"))); // NOI18N
+
+        enableAnimationsCheckBox.setSelected(true);
+        Mnemonics.setLocalizedText(enableAnimationsCheckBox, NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.enableAnimationsCheckBox.text")); // NOI18N
+
+        GroupLayout animationPanelLayout = new GroupLayout(animationPanel);
+        animationPanel.setLayout(animationPanelLayout);
+        animationPanelLayout.setHorizontalGroup(animationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(animationPanelLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(enableAnimationsCheckBox)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        animationPanelLayout.setVerticalGroup(animationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(animationPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(enableAnimationsCheckBox)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -529,7 +561,8 @@ final class GraphOptionsPanel extends JPanel {
                     .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(warningLabel))
-                    .addComponent(anaglyphicDisplayPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(anaglyphicDisplayPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(animationPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -538,14 +571,18 @@ final class GraphOptionsPanel extends JPanel {
                 .addComponent(warningLabel)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(blazeSizePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(blazeColorPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(anaglyphicDisplayPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(animationPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(93, Short.MAX_VALUE))
         );
 
         blazeSizePanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeSizePanel.AccessibleContext.accessibleName")); // NOI18N
+        animationPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.animationPanel.AccessibleContext.accessibleName")); // NOI18N
+        animationPanel.getAccessibleContext().setAccessibleDescription(NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.animationPanel.AccessibleContext.accessibleDescription")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
     private void colorPanel8MouseClicked(MouseEvent evt) {//GEN-FIRST:event_colorPanel8MouseClicked
@@ -591,6 +628,7 @@ final class GraphOptionsPanel extends JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JPanel anaglyphicDisplayPanel1;
     private JPanel anaglyphicOptionsPanel;
+    private JPanel animationPanel;
     private JLabel blazeColorDescription;
     private JPanel blazeColorPanel;
     private JLabel blazeColours;
@@ -610,6 +648,7 @@ final class GraphOptionsPanel extends JPanel {
     private JPanel colorPanel7;
     private JPanel colorPanel8;
     private JPanel colorPanel9;
+    private JCheckBox enableAnimationsCheckBox;
     private JComboBox<String> leftEyeColor;
     private JLabel leftEyeLabel;
     private JComboBox<String> rightEyeColor;

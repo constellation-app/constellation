@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,24 +33,25 @@ import org.testng.annotations.Test;
  * @author Delphinus8821
  */
 public class HelpMapperNGTest {
-
-    public HelpMapperNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -58,12 +59,13 @@ public class HelpMapperNGTest {
      */
     @Test
     public void testGetHelpAddress() {
+        System.out.println("getHelpAddress");
+        
         testGetMappings();
-        String className = "au.gov.asd.tac.constellation.help.preferences.HelpOptionsPanelController";
+        final String className = "au.gov.asd.tac.constellation.help.preferences.HelpOptionsPanelController";
         final String sep = File.separator;
-        String expResult = ".." + sep + "ext" + sep + "docs" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "help-options.md";
-        String result = HelpMapper.getHelpAddress(className);
+        final String expResult = "ext" + sep + "docs" + sep + "CoreHelp" + sep + "help-options.md";
+        final String result = HelpMapper.getHelpAddress(className);
         assertEquals(result, expResult);
     }
 
@@ -71,12 +73,12 @@ public class HelpMapperNGTest {
      * Test of getMappings method, of class HelpMapper.
      */
     public void testGetMappings() {
-        Map expResult = new HashMap();
+        final Map<String, String> expResult = new HashMap<>();
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
             expResult.putAll(provider.getHelpMap());
         });
 
-        Map result = HelpMapper.getMappings();
+        final Map<String, String> result = HelpMapper.getMappings();
         assertEquals(result, expResult);
     }
 }

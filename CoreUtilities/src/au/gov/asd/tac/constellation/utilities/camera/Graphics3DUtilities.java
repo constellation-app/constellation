@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -275,32 +275,6 @@ public class Graphics3DUtilities {
     public static float mix(final float f1, final float f2, final float a) {
         final float a1 = 1 - a;
         return f1 * a1 + f2 * a;
-    }
-
-    /**
-     * An implementation of the GLSL <tt>clamp()</tt> function.
-     *
-     * @param x the value to clamp.
-     * @param minVal the minimum value.
-     * @param maxVal the maximum value.
-     *
-     * @return min (max (x, minVal), maxVal).
-     */
-    public static int clamp(final int x, final int minVal, final int maxVal) {
-        return Math.min(Math.max(x, minVal), maxVal);
-    }
-
-    /**
-     * An implementation of the GLSL <tt>clamp()</tt> function.
-     *
-     * @param x the value to clamp.
-     * @param minVal the minimum value.
-     * @param maxVal the maximum value.
-     *
-     * @return min (max (x, minVal), maxVal).
-     */
-    public static float clamp(final float x, final float minVal, final float maxVal) {
-        return Math.min(Math.max(x, minVal), maxVal);
     }
 
     /**

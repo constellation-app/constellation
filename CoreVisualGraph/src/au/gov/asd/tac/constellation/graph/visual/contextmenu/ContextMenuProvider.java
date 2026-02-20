@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.ImageIcon;
 
@@ -72,7 +73,7 @@ public interface ContextMenuProvider {
      * items provided by getItems.
      */
     public default List<ImageIcon> getIcons(final GraphReadMethods graph, final GraphElementType elementType, final int elementId) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**

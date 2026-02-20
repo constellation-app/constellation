@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,7 +131,7 @@ public class CameraUtilities {
     }
 
     /**
-     * Sets the camera's previous position to its current position.
+     * Sets the camera's current position to its previous position.
      *
      * @param camera
      */

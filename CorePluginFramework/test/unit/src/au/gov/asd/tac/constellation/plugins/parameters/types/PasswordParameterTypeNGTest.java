@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,24 +31,25 @@ import org.testng.annotations.Test;
  * @author Atlas139mkm
  */
 public class PasswordParameterTypeNGTest {
-
-    public PasswordParameterTypeNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -56,11 +57,10 @@ public class PasswordParameterTypeNGTest {
      */
     @Test
     public void testBuild_String() {
-
         System.out.println("build");
         String id = "password parameter";
 
-        PluginParameter result = PasswordParameterType.build(id);
+        PluginParameter<PasswordParameterValue> result = PasswordParameterType.build(id);
         PasswordParameterValue expResult = new PasswordParameterValue();
         System.out.println(expResult.toString());
 
@@ -74,12 +74,11 @@ public class PasswordParameterTypeNGTest {
      */
     @Test
     public void testBuild_String_PasswordParameterValue() {
-
         System.out.println("build_string_parametertype");
         String id = "stringParameter";
 
         PasswordParameterValue parameterValue = new PasswordParameterValue();
-        PluginParameter result = PasswordParameterType.build(id, parameterValue);
+        PluginParameter<PasswordParameterValue> result = PasswordParameterType.build(id, parameterValue);
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof PasswordParameterType);

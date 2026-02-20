@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableNGTest {
-
+    
     private static final Logger LOGGER = Logger.getLogger(TableNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;
@@ -128,6 +128,7 @@ public class TableNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -237,11 +238,7 @@ public class TableNGTest {
         final ObservableList<String> vertex2 = FXCollections.observableList(List.of("Vertex2Attr1", "Vertex2Attr2"));
         final ObservableList<String> vertex3 = FXCollections.observableList(List.of("Vertex3Attr1", "Vertex3Attr2"));
 
-        when(activeTableReference.getElementIdToRowIndex()).thenReturn(Map.of(
-                100, vertex1,
-                102, vertex2,
-                103, vertex3
-        ));
+        when(activeTableReference.getElementIdToRowIndex()).thenReturn(Map.of(100, vertex1, 102, vertex2, 103, vertex3));
 
         final TableView<ObservableList<String>> tableView = mock(TableView.class);
         when(table.getTableView()).thenReturn(tableView);
@@ -446,7 +443,7 @@ public class TableNGTest {
     @Test
     public void updateColumns() {
         final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
-        final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
+        final ListChangeListener<?> selectedOnlySelectionListener = mock(ListChangeListener.class);
 
         doReturn(tableSelectionListener).when(table).getTableSelectionListener();
         doReturn(selectedOnlySelectionListener).when(table).getSelectedOnlySelectionListener();
@@ -495,16 +492,13 @@ public class TableNGTest {
         );
 
         // Mock out the re-population of the column index from the graph. This excludes column 4.
-        final CopyOnWriteArrayList<Column> sourceColumnIndex
-                = new CopyOnWriteArrayList<>();
+        final CopyOnWriteArrayList<Column> sourceColumnIndex = new CopyOnWriteArrayList<>();
         sourceColumnIndex.add(new Column(columnType1, attribute1, column1));
 
-        final CopyOnWriteArrayList<Column> destinationColumnIndex
-                = new CopyOnWriteArrayList<>();
+        final CopyOnWriteArrayList<Column> destinationColumnIndex = new CopyOnWriteArrayList<>();
         destinationColumnIndex.add(new Column(columnType2, attribute2, column2));
 
-        final CopyOnWriteArrayList<Column> transactionColumnIndex
-                = new CopyOnWriteArrayList<>();
+        final CopyOnWriteArrayList<Column> transactionColumnIndex = new CopyOnWriteArrayList<>();
         transactionColumnIndex.add(new Column(columnType3, attribute3, column3));
 
         doReturn(sourceColumnIndex).when(table)
@@ -539,8 +533,7 @@ public class TableNGTest {
         }
 
         // Verify the new column index
-        final CopyOnWriteArrayList<Column> expectedColumnIndex
-                = new CopyOnWriteArrayList<>();
+        final CopyOnWriteArrayList<Column> expectedColumnIndex = new CopyOnWriteArrayList<>();
         expectedColumnIndex.add(new Column(columnType1, attribute1, column1));
         expectedColumnIndex.add(new Column(columnType3, attribute3, column3));
         expectedColumnIndex.add(new Column(columnType2, attribute2, column2));
@@ -672,7 +665,7 @@ public class TableNGTest {
     @Test
     public void updateColumnsStateColumnsNotSet() {
         final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
-        final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
+        final ListChangeListener<?> selectedOnlySelectionListener = mock(ListChangeListener.class);
 
         doReturn(tableSelectionListener).when(table).getTableSelectionListener();
         doReturn(selectedOnlySelectionListener).when(table).getSelectedOnlySelectionListener();
@@ -694,13 +687,10 @@ public class TableNGTest {
         // This is a reference of the old column index that will be used whilst the new
         // index is being created. Because that creation is mocked this is used only as a
         // vertification that the parameter is being correctly constructed.
-        final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap = Map.of(
-                "source.COLUMN_A", column1
-        );
+        final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap = Map.of("source.COLUMN_A", column1);
 
         // Mock out the re-population of the column index from the graph
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> sourceColumnIndex
-                = new CopyOnWriteArrayList<>();
+        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> sourceColumnIndex = new CopyOnWriteArrayList<>();
         sourceColumnIndex.add(ThreeTuple.create(columnType1, attribute1, column1));
 
         doReturn(sourceColumnIndex).when(table)
@@ -730,8 +720,7 @@ public class TableNGTest {
         }
 
         // Verify the new column index
-        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> expectedColumnIndex
-                = new CopyOnWriteArrayList<>();
+        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> expectedColumnIndex = new CopyOnWriteArrayList<>();
         expectedColumnIndex.add(ThreeTuple.create(columnType1, attribute1, column1));
 
         assertEquals(expectedColumnIndex, columnIndex);
@@ -974,15 +963,13 @@ public class TableNGTest {
 
         when(table.getColumnIndex()).thenReturn(columnIndex);
 
-        try (final MockedStatic<AbstractAttributeInteraction> attrInteractionMockedStatic
-                = Mockito.mockStatic(AbstractAttributeInteraction.class)) {
-            final AbstractAttributeInteraction interaction = mock(AbstractAttributeInteraction.class);
+        try (final MockedStatic<AbstractAttributeInteraction> attrInteractionMockedStatic = Mockito.mockStatic(AbstractAttributeInteraction.class)) {
+            final AbstractAttributeInteraction<?> interaction = mock(AbstractAttributeInteraction.class);
             attrInteractionMockedStatic.when(() -> AbstractAttributeInteraction.getInteraction("string")).thenReturn(interaction);
 
             when(interaction.getDisplayText(objectValue1)).thenReturn("column1Value");
 
-            assertEquals(FXCollections.observableArrayList("column1Value"),
-                    table.getRowDataForVertex(readableGraph, vertexId));
+            assertEquals(FXCollections.observableArrayList("column1Value"), table.getRowDataForVertex(readableGraph, vertexId));
 
             assertEquals(Map.of(vertexId, FXCollections.observableArrayList("column1Value")), elementIdToRowIndex);
             assertEquals(Map.of(FXCollections.observableArrayList("column1Value"), vertexId), rowToElementIdIndex);
@@ -1044,45 +1031,21 @@ public class TableNGTest {
         final Object transactionCoulmnValue = new Object();
         when(readableGraph.getObjectValue(102, transactionId)).thenReturn(transactionCoulmnValue);
 
-        try (final MockedStatic<AbstractAttributeInteraction> attrInteractionMockedStatic
-                = Mockito.mockStatic(AbstractAttributeInteraction.class)) {
-            final AbstractAttributeInteraction interaction = mock(AbstractAttributeInteraction.class);
+        try (final MockedStatic<AbstractAttributeInteraction> attrInteractionMockedStatic = Mockito.mockStatic(AbstractAttributeInteraction.class)) {
+            final AbstractAttributeInteraction<?> interaction = mock(AbstractAttributeInteraction.class);
             attrInteractionMockedStatic.when(() -> AbstractAttributeInteraction.getInteraction("string")).thenReturn(interaction);
 
             when(interaction.getDisplayText(sourceVertexCoulmnValue)).thenReturn("sourceVertex_COLUMN_1_Value");
             when(interaction.getDisplayText(destinationVertexCoulmnValue)).thenReturn("destinationVertext_COLUMN_1_Value");
             when(interaction.getDisplayText(transactionCoulmnValue)).thenReturn("transaction_COLUMN_2_Value");
 
-            assertEquals(
-                    FXCollections.observableArrayList(
-                            "sourceVertex_COLUMN_1_Value",
-                            "destinationVertext_COLUMN_1_Value",
-                            "transaction_COLUMN_2_Value"
-                    ),
-                    table.getRowDataForTransaction(readableGraph, transactionId)
-            );
+            assertEquals(FXCollections.observableArrayList("sourceVertex_COLUMN_1_Value", "destinationVertext_COLUMN_1_Value", "transaction_COLUMN_2_Value"),
+                    table.getRowDataForTransaction(readableGraph, transactionId));
 
-            assertEquals(
-                    Map.of(
-                            transactionId,
-                            FXCollections.observableArrayList(
-                                    "sourceVertex_COLUMN_1_Value",
-                                    "destinationVertext_COLUMN_1_Value",
-                                    "transaction_COLUMN_2_Value"
-                            )
-                    ),
-                    elementIdToRowIndex
-            );
+            assertEquals(Map.of(transactionId, FXCollections.observableArrayList("sourceVertex_COLUMN_1_Value", "destinationVertext_COLUMN_1_Value", "transaction_COLUMN_2_Value")), 
+                    elementIdToRowIndex);
 
-            assertEquals(
-                    Map.of(
-                            FXCollections.observableArrayList(
-                                    "sourceVertex_COLUMN_1_Value",
-                                    "destinationVertext_COLUMN_1_Value",
-                                    "transaction_COLUMN_2_Value"
-                            ),
-                            transactionId
-                    ),
+            assertEquals(Map.of(FXCollections.observableArrayList("sourceVertex_COLUMN_1_Value", "destinationVertext_COLUMN_1_Value", "transaction_COLUMN_2_Value"), transactionId),
                     rowToElementIdIndex);
         }
     }
@@ -1520,6 +1483,7 @@ public class TableNGTest {
      * @param vertexRow2 row 2 that represents a vertex element in the graph
      * @param expectedRows the expected rows that will be added to the table
      */
+
     private void testUpdateData(final GraphElementType stateElementType,
             final boolean isSelectedOnlyMode,
             final ObservableList<String> transactionRow1,
@@ -1624,5 +1588,4 @@ public class TableNGTest {
 
         verify(tablePane).setCenter(progressPane);
     }
-
 }

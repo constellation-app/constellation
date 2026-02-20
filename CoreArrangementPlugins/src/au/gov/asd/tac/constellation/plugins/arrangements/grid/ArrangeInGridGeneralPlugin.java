@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ public class ArrangeInGridGeneralPlugin extends SimpleEditPlugin {
         gridParams.setRowOffsets(pp.get(OFFSET_ROWS_PARAMETER_ID).getBooleanValue());
 
         final GridArranger arranger = new GridArranger(gridParams);
-        final Boolean maintainMean = pp.get(MAINTAIN_MEAN_PARAMETER_ID).getBooleanValue();
+        final boolean maintainMean = pp.get(MAINTAIN_MEAN_PARAMETER_ID).getBooleanValue();
         arranger.setMaintainMean(maintainMean);
 
         final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(graph, SelectedInclusionGraph.Connections.NONE);

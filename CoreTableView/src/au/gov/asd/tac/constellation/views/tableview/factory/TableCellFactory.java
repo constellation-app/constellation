@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.input.MouseButton;
+import javafx.scene.text.Text;
 
 /**
  * A {@link TableCell} that updates the cells text and style classes on change. It also sets up the right click context
@@ -69,9 +70,12 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
         if (!empty) {
             // set text in cell and style if it is null
             this.getStyleClass().remove(NULL_VALUE_CLASS);
-            if (item != null) {
-                this.setText(item);
+            if (item != null) {           
+                final Text text = getWrappingText(item);                
+                this.setGraphic(text);    
+                this.setText("");
             } else {
+                this.setGraphic(null);
                 this.setText(NO_VALUE_TEXT);
                 this.getStyleClass().add(NULL_VALUE_CLASS);
             }
@@ -118,8 +122,20 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
     }
 
     /**
-     * Gets a initialized {@link RightClickContextMenu}. If the context menu has already been initialized it will use
-     * that otherwise it will create and initialize the menu.
+     * Create a new Text object to wrap item in and set text wrapping.
+     * @param item string to set in Text object.
+     * @return Text object
+     */
+    protected final Text getWrappingText(final String item) {
+        final Text text = new Text(item);
+        text.wrappingWidthProperty().bind(cellColumn.widthProperty());
+        return text;
+    }
+
+    /**
+     * Gets a initialized {@link RightClickContextMenu}. If the context menu has
+     * already been initialized it will use that otherwise it will create and
+     * initialize the menu.
      *
      * @return the right click context menu for this cell
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,9 +37,9 @@ public class NotesViewEntry implements PluginReportListener {
     private String noteTitle;
     private String noteContent;
 
-    private String nodeColour = "#942483";
+    private String nodeColour = "#a26fc0";
     private final boolean userCreated;
-    private Boolean graphAttribute;
+    private boolean graphAttribute;
     private List<Integer> nodesSelected;
     private List<Integer> transactionsSelected;
     private List<String> tags = new ArrayList<>();
@@ -102,7 +102,7 @@ public class NotesViewEntry implements PluginReportListener {
         return userCreated;
     }
 
-    public Boolean isGraphAttribute() {
+    public boolean isGraphAttribute() {
         return graphAttribute;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
                         .addCategory(FLAG_CATEGORY)
                         .build();
                 flagIcons.add(countryIcon);
-            } catch (FileSystemNotFoundException e) {
+            } catch (final FileSystemNotFoundException e) {
                 LOGGER.log(Level.WARNING, "Unable to find file: {0}", "modules/ext/icons/flags/" + c.getDisplayName().replaceAll(" ", "_").toLowerCase() + ".png");
             }
         }

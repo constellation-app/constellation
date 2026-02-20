@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -189,7 +189,7 @@ public class WhatsNewViewPane extends BorderPane {
         for (final WhatsNewEntry wne : wnList) {
             // Use a far-future date to indicate an undated fixed position at the top.
             final String dt;
-            if (wne.date.compareTo("3000") == -1) {
+            if (wne.date.compareTo("3000") < 0) {
                 if (!headerDone) {
                     buf.append("<hr>\n<h2>What's New</h2>\n");
                     headerDone = true;

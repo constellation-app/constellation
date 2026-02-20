@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,10 +30,8 @@ public class CameraNGTest {
 
     private static final Vector3f ZERO_VECTOR = new Vector3f(0F, 0F, 0F);
 
-    private static final Vector3f MIN_EXTREME = new Vector3f(Float.MAX_VALUE,
-            Float.MAX_VALUE, Float.MAX_VALUE);
-    private static final Vector3f MAX_EXTREME = new Vector3f(-Float.MAX_VALUE,
-            -Float.MAX_VALUE, -Float.MAX_VALUE);
+    private static final Vector3f MIN_EXTREME = new Vector3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
+    private static final Vector3f MAX_EXTREME = new Vector3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE);
 
     // helper to assert a Camera object with no other initialise
     private void assertNewCamera(final Camera c) {
@@ -57,10 +55,8 @@ public class CameraNGTest {
 
         final Frame objectFrame = c.getObjectFrame();
         assertEquals(objectFrame.getOrigin().toString(), ZERO_VECTOR.toString());
-        assertEquals(objectFrame.getUpVector().toString(),
-                new Vector3f(0F, 1F, 0F).toString());
-        assertEquals(objectFrame.getForwardVector().toString(),
-                new Vector3f(0F, 0F, 1F).toString());
+        assertEquals(objectFrame.getUpVector().toString(), new Vector3f(0F, 1F, 0F).toString());
+        assertEquals(objectFrame.getForwardVector().toString(), new Vector3f(0F, 0F, 1F).toString());
     }
 
     /**
@@ -167,7 +163,7 @@ public class CameraNGTest {
     }
     
     @Test
-    public void testAreSame() {
+    public void testEquals() {
         final Camera c = new Camera();
         c.lookAtCentre.set(V1);
         c.lookAtEye.set(V2);
@@ -198,61 +194,61 @@ public class CameraNGTest {
         c2.setMixRatio(654);
         c2.setObjectFrame(new Frame(V13, V14, V15));
         
-        assertTrue(c.areSame(c2));
+        assertTrue(c.equals(c2));
         
         c2.lookAtCentre.set(V2);
-        assertFalse(c.areSame(c2));
+        assertFalse(c.equals(c2));
         c2.lookAtCentre.set(V1);
         
         c2.lookAtEye.set(V3);
-        assertFalse(c.areSame(c2));
+        assertFalse(c.equals(c2));
         c2.lookAtEye.set(V2);
         
         c2.lookAtUp.set(V4);
-        assertFalse(c.areSame(c2));
+        assertFalse(c.equals(c2));
         c2.lookAtUp.set(V3);
         
         c2.lookAtRotation.set(V5);
-        assertFalse(c.areSame(c2));
+        assertFalse(c.equals(c2));
         c2.lookAtRotation.set(V4);
         
         c2.lookAtPreviousEye.set(V6);
-        assertFalse(c.areSame(c2));
+        assertFalse(c.equals(c2));
         c2.lookAtPreviousEye.set(V5);
         
         c2.lookAtPreviousCentre.set(V7);
-        assertFalse(c.areSame(c2));
+        assertFalse(c.equals(c2));
         c2.lookAtPreviousCentre.set(V6);
         
         c2.lookAtPreviousUp.set(V8);
-        assertFalse(c.areSame(c2));
+        assertFalse(c.equals(c2));
         c2.lookAtPreviousUp.set(V7);
         
         c2.lookAtPreviousRotation.set(V9);
-        assertFalse(c.areSame(c2));
+        assertFalse(c.equals(c2));
         c2.lookAtPreviousRotation.set(V8);
         
         c2.boundingBox.set(V8, V10, V11, V12);
-        assertFalse(c.areSame(c2));
+        assertFalse(c.equals(c2));
         c2.boundingBox.set(V9, V10, V11, V12);
         
         c.setVisibilityLow(444F);
-        assertFalse(c.areSame(c2));
+        assertFalse(c.equals(c2));
         c.setVisibilityLow(999F);
         
         c.setVisibilityHigh(777F);
-        assertFalse(c.areSame(c2));
+        assertFalse(c.equals(c2));
         c.setVisibilityHigh(998F);
         
         c.setMixRatio(235);
-        assertFalse(c.areSame(c2));
+        assertFalse(c.equals(c2));
         c.setMixRatio(654);
         
         c.setObjectFrame(new Frame(V13, V8, V15));
-        assertFalse(c.areSame(c2));
+        assertFalse(c.equals(c2));
         c.setObjectFrame(new Frame(V13, V14, V15));
         
-        assertTrue(c.areSame(c2));
+        assertTrue(c.equals(c2));
     }
 
     /**
@@ -268,5 +264,4 @@ public class CameraNGTest {
                 + "centre: 3f[2.100000,2.200000,2.300000]; "
                 + "up: 3f[3.100000,3.200000,3.300000]]");
     }
-
 }

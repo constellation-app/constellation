@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -758,7 +758,7 @@ public class PluginParameters implements PluginParameterListener {
     public String toString() {
         final StringBuilder buffer = new StringBuilder();
         for (Entry<String, PluginParameter<?>> parameterEntry : parameters.entrySet()) {
-            if (buffer.length() > 0) {
+            if (!buffer.isEmpty()) {
                 buffer.append(", ");
             }
             buffer.append(parameterEntry.getKey());

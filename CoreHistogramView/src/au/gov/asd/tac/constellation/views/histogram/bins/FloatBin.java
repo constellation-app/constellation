@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class FloatBin extends Bin {
     }
 
     @Override
-    public int compareTo(Bin o) {
+    public int compareTo(final Bin o) {
         return Float.compare(key, ((FloatBin) o).key);
     }
 
@@ -44,12 +44,12 @@ public class FloatBin extends Bin {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == null) {
             return false;
         }
         if (this.getClass() == o.getClass()) {
-            FloatBin bin = (FloatBin) o;
+            final FloatBin bin = (FloatBin) o;
             return key == bin.key;
         }
         return false;
@@ -61,7 +61,7 @@ public class FloatBin extends Bin {
     }
 
     @Override
-    public void setKey(GraphReadMethods graph, int attribute, int element) {
+    public void setKey(final GraphReadMethods graph, final int attribute, final int element) {
         key = graph.getFloatValue(attribute, element);
     }
 
@@ -73,5 +73,36 @@ public class FloatBin extends Bin {
     @Override
     public Object getKeyAsObject() {
         return key;
+    }
+
+    public void calculateAggregates(final GraphReadMethods graph, final int attribute, final int element, final Bin.AGGREGATION aggregation, final boolean edgeOnly) {
+        float sum = 0;
+        float min = Float.MAX_VALUE;
+        float max = Float.MIN_VALUE;
+        int nullCount = 0;
+        setOnlyNullElements(false);
+        final int transactionCount = edgeOnly ? graph.getEdgeTransactionCount(element) : graph.getLinkTransactionCount(element);
+        for (int t = 0; t < transactionCount; t++) {
+            final int transaction = edgeOnly ? graph.getEdgeTransaction(element, t) : graph.getLinkTransaction(element, t);
+            if (graph.getObjectValue(attribute, transaction) == null) {
+                nullCount++;
+                continue;
+            }
+            switch (aggregation) {
+                case AVERAGE, SUM -> sum += graph.getFloatValue(attribute, transaction);
+                case MIN -> min = Math.min(graph.getFloatValue(attribute, transaction), min);
+                case MAX -> max = Math.max(graph.getFloatValue(attribute, transaction), max);
+            }
+        }
+        if (nullCount >= transactionCount) {
+            setOnlyNullElements(true);
+            return;
+        }
+        key = switch (aggregation) {
+            case AVERAGE -> sum / (transactionCount - nullCount);
+            case SUM -> sum;
+            case MIN -> min;
+            case MAX -> max;
+        };
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,9 +36,10 @@ import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult.Clu
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticTranslatorUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.ColorVisualisation;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -158,7 +159,7 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
 
             if (!reset) {
                 // find highest and lowest cluster numbers among available cluster data
-                final Set<Integer> clusterNumbers = new HashSet<>();
+                final MutableIntSet clusterNumbers = new IntHashSet();
                 for (final ClusterData clusterData : clusterResults.get()) {
                     final int clusterNumber = clusterData.getClusterNumber();
                     clusterNumbers.add(clusterNumber);
@@ -168,7 +169,9 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
                 int index = 0;
                 final Map<Integer, ConstellationColor> colorMap = new HashMap<>();
                 final ConstellationColor[] colorPalette = ConstellationColor.createPalette(numberOfClusters);
-                for (final int clusterNumber : clusterNumbers) {
+                final IntIterator iter  = clusterNumbers.intIterator();
+                while (iter.hasNext()) {
+                    final int clusterNumber = iter.next();
                     colorMap.put(clusterNumber, colorPalette[index]);
                     index++;
                 }

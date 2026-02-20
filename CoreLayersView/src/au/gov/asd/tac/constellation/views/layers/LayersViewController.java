@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -523,9 +523,9 @@ public class LayersViewController {
             final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
             if (currentState != null) {
                 currentState.getVxQueriesCollection().setActiveQueries(currentBitmask);
-                currentState.getVxQueriesCollection().updateBitMasks(graph, vxbitmaskAttrId, vxbitmaskVisibilityAttrId);
+                currentState.getVxQueriesCollection().updateBitMasks(graph, vxbitmaskAttrId, vxbitmaskVisibilityAttrId, parent.getLayersViewPane().getOptionsLayerMode() == 0);
                 currentState.getTxQueriesCollection().setActiveQueries(currentBitmask);
-                currentState.getTxQueriesCollection().updateBitMasks(graph, txbitmaskAttrId, txbitmaskVisibilityAttrId);
+                currentState.getTxQueriesCollection().updateBitMasks(graph, txbitmaskAttrId, txbitmaskVisibilityAttrId, parent.getLayersViewPane().getOptionsLayerMode() == 0);
                 currentState.extractLayerAttributes(graph);
                 LayersViewController.getDefault().updateListenedAttributes();
             }

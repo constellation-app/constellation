@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ public class PasswordParameterValue extends ParameterValue {
 
     @Override
     public boolean setObjectValue(final Object o) {
-        if (o == null || o instanceof String s) {
+        if (o == null || o instanceof String) {
             return setStringValue((String) o);
         } else {
             throw new IllegalArgumentException(String.format("Unexpected class %s", o.getClass()));

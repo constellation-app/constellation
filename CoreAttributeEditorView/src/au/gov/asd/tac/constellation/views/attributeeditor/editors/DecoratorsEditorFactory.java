@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,24 @@
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DecoratorsAttributeDescription;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
+import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type decorators
  *
  * @author twilight_sparkle
  */
@@ -42,8 +41,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexDecorators> {
 
     @Override
-    public AbstractEditor<VertexDecorators> createEditor(final EditOperation editOperation, final DefaultGetter<VertexDecorators> defaultGetter, final ValueValidator<VertexDecorators> validator, final String editedItemName, final VertexDecorators initialValue) {
-        return new DecoratorsEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<VertexDecorators> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<VertexDecorators> validator, final VertexDecorators defaultValue, final VertexDecorators initialValue) {
+        return new DecoratorsEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -55,13 +54,29 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
 
     public class DecoratorsEditor extends AbstractEditor<VertexDecorators> {
 
-        ComboBox<String> nwCombo;
-        ComboBox<String> neCombo;
-        ComboBox<String> seCombo;
-        ComboBox<String> swCombo;
+        private ComboBox<String> nwCombo;
+        private ComboBox<String> neCombo;
+        private ComboBox<String> seCombo;
+        private ComboBox<String> swCombo;
 
-        protected DecoratorsEditor(final EditOperation editOperation, final DefaultGetter<VertexDecorators> defaultGetter, final ValueValidator<VertexDecorators> validator, final String editedItemName, final VertexDecorators initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected DecoratorsEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<VertexDecorators> validator, final VertexDecorators defaultValue, final VertexDecorators initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
+        }
+        
+        protected String getNWValue() {
+            return nwCombo.getValue();
+        }
+        
+        protected String getNEValue() {
+            return neCombo.getValue();
+        }
+        
+        protected String getSEValue() {
+            return seCombo.getValue();
+        }
+        
+        protected String getSWValue() {
+            return swCombo.getValue();
         }
 
         @Override
@@ -92,45 +107,33 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         @Override
         protected Node createEditorControls() {
             // get all vertex attributes currently in the graph
-            final List<String> attributeNames = new ArrayList<>();
-            final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
-            try {
-                for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
-                    attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.VERTEX, i)));
-                }
-            } finally {
-                rg.release();
-            }
+            final List<String> attributeNames = AttributeUtilities.getAttributeNames(GraphElementType.VERTEX);
             Collections.sort(attributeNames);
             attributeNames.add(0, NO_DECORATOR);
-
+            final ObservableList<String> observableAttributeNames = FXCollections.observableList(attributeNames);
+            
             final Label nwLabel = new Label("NW:");
-            final Label neLabel = new Label("NE:");
-            final Label seLabel = new Label("SE:");
-            final Label swLabel = new Label("SW:");
-            nwCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
+            nwCombo = new ComboBox<>(observableAttributeNames);
             nwCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
-            neCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
+            
+            final Label neLabel = new Label("NE:");
+            neCombo = new ComboBox<>(observableAttributeNames);
             neCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
-            seCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
+            
+            final Label seLabel = new Label("SE:");
+            seCombo = new ComboBox<>(observableAttributeNames);
             seCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
-            swCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
+            
+            final Label swLabel = new Label("SW:");
+            swCombo = new ComboBox<>(observableAttributeNames);
             swCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
 
-            final GridPane controls = new GridPane();
-            controls.getColumnConstraints().add(new ColumnConstraints(50));
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            controls.addRow(0, nwLabel, nwCombo);
-            controls.addRow(3, neLabel, neCombo);
-            controls.addRow(2, seLabel, seCombo);
-            controls.addRow(1, swLabel, swCombo);
-
+            final GridPane controls = new GridPane(CONTROLS_DEFAULT_HORIZONTAL_SPACING, CONTROLS_DEFAULT_VERTICAL_SPACING);
+            controls.setAlignment(Pos.CENTER);
+            
+            controls.addRow(0, nwLabel, nwCombo, neLabel, neCombo);
+            controls.addRow(1, swLabel, swCombo, seLabel, seCombo);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
         }
 
         private void setDecoratorChoice(final ComboBox<String> comboBox, final String choice) {
@@ -138,7 +141,7 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         }
 
         private String getDecoratorChoice(final ComboBox<String> comboBox) {
-            return comboBox.getSelectionModel().getSelectedItem().equals(NO_DECORATOR) ? null : comboBox.getSelectionModel().getSelectedItem();
+            return NO_DECORATOR.equals(comboBox.getSelectionModel().getSelectedItem()) ? null : comboBox.getSelectionModel().getSelectedItem();
         }
     }
 }

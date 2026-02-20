@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
@@ -230,7 +231,7 @@ public final class Plane {
         final String reference = byteWriter.write(new ByteArrayInputStream(bytes));
         jg.writeStringField("plane_ref", reference);
 
-        LOGGER.info(String.format("Write plane '%s', byteLabel '%s', size %d", label, reference, bytes.length));
+        LOGGER.log(Level.INFO, "{0}", String.format("Write plane '%s', byteLabel '%s', size %d", label, reference, bytes.length));
     }
 
     @Override

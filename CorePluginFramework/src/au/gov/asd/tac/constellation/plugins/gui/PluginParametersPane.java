@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -773,6 +773,7 @@ public final class PluginParametersPane extends GridPane {
                         ldb.setVisible(parameter.isVisible());
                     }
                     default -> {
+                        // do nothing
                     }
                 }
             });
@@ -793,6 +794,7 @@ public final class PluginParametersPane extends GridPane {
                     }
                     case VALUE -> Platform.runLater(this::parameterHasChanged);
                     default -> {
+                        // do nothing
                     }
                 }
                 updateTop(parameter);
@@ -805,12 +807,9 @@ public final class PluginParametersPane extends GridPane {
          * @param parameter 
          */
         private void updateTop(final PluginParameter<?> parameter){  
-            if (parameter != null & top != null){
-                if ((parameter.isRequired() && StringUtils.isBlank(parameter.getStringValue())) || parameter.getError() != null){
-                    top.notifyParameterValidityChange(parameter, false);
-                } else {
-                    top.notifyParameterValidityChange(parameter, true);
-                }
+            if (parameter != null & top != null) {
+                final boolean parameterValid = (!parameter.isRequired() || StringUtils.isNotBlank(parameter.getStringValue())) && parameter.getError() == null;
+                top.notifyParameterValidityChange(parameter, parameterValid);
             }
         }
             

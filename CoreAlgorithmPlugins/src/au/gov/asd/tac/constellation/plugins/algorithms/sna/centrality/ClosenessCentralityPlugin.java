@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,14 +31,15 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
+import org.eclipse.collections.api.map.primitive.MutableObjectFloatMap;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectFloatHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Calculates closeness centrality for each vertex. This centrality measure does
- * not include loops.
+ * Calculates closeness centrality for each vertex. This centrality measure does not include loops.
  *
  * @author cygnus_x-1
  */
@@ -110,14 +111,14 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
         selectedOnlyParameter.setName("Selected Only");
         selectedOnlyParameter.setDescription("Calculate using only selected elements");
         parameters.addParameter(selectedOnlyParameter);
-        
+
         parameters.addController(NORMALISE_POSSIBLE_PARAMETER_ID, (master, params, change) -> {
             if (change == ParameterChange.VALUE && master.getBooleanValue()) {
                 // only one of normalise by max possible or max available can be enabled
                 params.get(NORMALISE_AVAILABLE_PARAMETER_ID).setBooleanValue(false);
             }
         });
-        
+
         parameters.addController(NORMALISE_AVAILABLE_PARAMETER_ID, (master, params, change) -> {
             if (change == ParameterChange.VALUE && master.getBooleanValue()) {
                 // only one of normalise by max possible or max available can be enabled
@@ -158,8 +159,8 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
 
         // calculate the maximum closeness
         float maxCloseness = 0F;
-        final Map<BitSet, Float> maxClosenessConnectedComponents = new HashMap<>();
-        final Map<BitSet, Integer> connectedComponentSize = new HashMap<>();
+        final MutableObjectFloatMap<BitSet> maxClosenessConnectedComponents = new ObjectFloatHashMap<>();
+        final MutableObjectIntMap<BitSet> connectedComponentSize = new ObjectIntHashMap<>();
         final int vertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final float closeness = closenesses[vertexPosition];
@@ -176,13 +177,13 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
         // choose the correct closeness attribute
         final int closenessAttribute;
         if (includeConnectionsIn && !includeConnectionsOut) {
-            closenessAttribute = harmonic ? IN_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph) 
+            closenessAttribute = harmonic ? IN_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph)
                     : IN_CLOSENESS_ATTRIBUTE.ensure(graph);
         } else if (!includeConnectionsIn && includeConnectionsOut) {
-            closenessAttribute = harmonic ? OUT_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph) 
+            closenessAttribute = harmonic ? OUT_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph)
                     : OUT_CLOSENESS_ATTRIBUTE.ensure(graph);
         } else {
-            closenessAttribute = harmonic ? HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph) 
+            closenessAttribute = harmonic ? HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph)
                     : CLOSENESS_ATTRIBUTE.ensure(graph);
         }
 

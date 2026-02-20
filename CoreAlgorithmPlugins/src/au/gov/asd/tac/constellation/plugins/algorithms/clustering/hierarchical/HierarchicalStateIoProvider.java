@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -170,6 +170,8 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeEndArray();
 
                 // TODO: groups array is sized for capacity, not max vertex id: this means too much stuff is being written.
+                // Changing the groups array to vertex count will cause an index out of bounds when changing the number 
+                // of vertices on the graph and then undoing the hierarchical clustering 
                 jsonGenerator.writeArrayFieldStart("groups");
                 for (final FastNewman.Group group : state.getGroups()) {
                     if (group != null) {

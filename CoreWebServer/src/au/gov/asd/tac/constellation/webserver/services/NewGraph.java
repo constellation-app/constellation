@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
@@ -60,6 +58,7 @@ public class NewGraph extends RestService {
     private static final String NAME = "new_graph";
     private static final String SCHEMA_PARAMETER_ID = "schema_name";
     private static final String GRAPH_NAME_PARAMETER_ID = "graph_name";
+    private static final String EXAMPLE_RESPONSES_PATH = "newGraphExample";
 
     @Override
     public String getName() {
@@ -138,7 +137,7 @@ public class NewGraph extends RestService {
         String newId = "";
 
         try {
-            newId = RestServiceUtilities.waitForGraphChange(existingId).get(10, TimeUnit.SECONDS);
+            newId = RestServiceUtilities.waitForGraphChange(existingId).get();
             if (!newId.isBlank()) {
                 final ObjectMapper mapper = new ObjectMapper();
                 final ObjectNode root = mapper.createObjectNode();
@@ -150,9 +149,14 @@ public class NewGraph extends RestService {
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             LOGGER.log(Level.SEVERE, "Thread interrupted", ex);
-        } catch (final ExecutionException | TimeoutException ex) {
+        } catch (final ExecutionException ex) {
             throw new RestServiceException(ex);
         }
 
+    }
+    
+    @Override
+    public String getExampleResponsesPath() {
+        return EXAMPLE_RESPONSES_PATH;
     }
 }

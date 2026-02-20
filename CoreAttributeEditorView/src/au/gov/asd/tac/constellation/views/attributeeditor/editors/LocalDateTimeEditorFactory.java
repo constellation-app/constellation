@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,28 +18,26 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.LocalDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.LocalDateStringConverter;
-import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type local_datetime
  *
  * @author twilight_sparkle
  */
@@ -47,8 +45,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<LocalDateTime> {
 
     @Override
-    public AbstractEditor<LocalDateTime> createEditor(final EditOperation editOperation, final DefaultGetter<LocalDateTime> defaultGetter, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
-        return new LocalDateTimeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<LocalDateTime> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<LocalDateTime> validator, final LocalDateTime defaultValue, final LocalDateTime initialValue) {
+        return new LocalDateTimeEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -70,8 +68,28 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         private Spinner<Integer> secSpinner;
         private Spinner<Integer> milliSpinner;
 
-        protected LocalDateTimeEditor(final EditOperation editOperation, final DefaultGetter<LocalDateTime> defaultGetter, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected LocalDateTimeEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<LocalDateTime> validator, final LocalDateTime defaultValue, final LocalDateTime initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
+        }
+        
+        protected LocalDate getDateValue() {
+            return datePicker.getValue();
+        }
+        
+        protected Integer getHourValue() {
+            return hourSpinner.getValue();
+        }
+        
+        protected Integer getMinValue() {
+            return minSpinner.getValue();
+        }
+        
+        protected Integer getSecValue() {
+            return secSpinner.getValue();
+        }
+        
+        protected Integer getMilliValue() {
+            return milliSpinner.getValue();
         }
 
         @Override
@@ -91,17 +109,6 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
                 throw new ControlsInvalidException("Time spinners must have numeric values");
             }
 
-            final String dateString = datePicker.getEditor().getText();
-            //The converter is being used here to try and determine if the entered date is a LocalDate
-            //It will throw an exception and won't convert it if its invalid
-            try {
-                if (!StringUtils.isBlank(dateString)) {
-                    datePicker.setValue(datePicker.getConverter().fromString(dateString));
-                }
-            } catch (final DateTimeParseException ex) {
-                throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
-            }
-
             return LocalDateTime.of(datePicker.getValue(), LocalTime.of(
                     hourSpinner.getValue(),
                     minSpinner.getValue(),
@@ -111,13 +118,11 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
             final HBox timeSpinnerContainer = createTimeSpinners();
-            controls.addRow(0, timeSpinnerContainer);
 
+            final VBox controls = new VBox(timeSpinnerContainer);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
         }
 
@@ -125,75 +130,63 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             datePicker = new DatePicker();
             datePicker.setConverter(new LocalDateStringConverter(
                     TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
-            datePicker.getEditor().textProperty().addListener((v, o, n) -> update());
             datePicker.setValue(LocalDate.now());
             datePicker.valueProperty().addListener((v, o, n) -> update());
+            final Label dateLabel = createLabel("Date:", datePicker);
 
-            hourSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23));
-            minSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59));
-            secSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59));
-            milliSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 999));
-            hourSpinner.getValueFactory().setValue(LocalTime.now(ZoneOffset.UTC).getHour());
-            minSpinner.getValueFactory().setValue(LocalTime.now(ZoneOffset.UTC).getMinute());
-            secSpinner.getValueFactory().setValue(LocalTime.now(ZoneOffset.UTC).getSecond());
-            milliSpinner.getValueFactory().setValue(0);
+            hourSpinner = createTimeSpinner(23, LocalTime.now(ZoneOffset.UTC).getHour(), NUMBER_SPINNER_WIDTH);
+            final Label hourSpinnerLabel = createLabel("Hour:", hourSpinner);
+            
+            minSpinner = createTimeSpinner(59, LocalTime.now(ZoneOffset.UTC).getMinute(), NUMBER_SPINNER_WIDTH);
+            final Label minSpinnerLabel = createLabel("Minute:", minSpinner);
+            
+            secSpinner = createTimeSpinner(59, LocalTime.now(ZoneOffset.UTC).getSecond(), NUMBER_SPINNER_WIDTH);
+            final Label secSpinnerLabel = createLabel("Second:", secSpinner);
+            
+            milliSpinner = createTimeSpinner(999, 0, MILLIS_SPINNER_WIDTH);
+            final Label milliSpinnerLabel = createLabel("Millis:", milliSpinner);          
 
-            final HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
+            final VBox dateLabelNode = new VBox(5, dateLabel, datePicker);
+            final VBox hourLabelNode = new VBox(5, hourSpinnerLabel, hourSpinner);
+            final VBox minLabelNode = new VBox(5, minSpinnerLabel, minSpinner);
+            final VBox secLabelNode = new VBox(5, secSpinnerLabel, secSpinner);
+            final VBox milliLabelNode = new VBox(5, milliSpinnerLabel, milliSpinner);
 
-            final Label dateLabel = new Label("Date:");
-            dateLabel.setId(LABEL_ID);
-            dateLabel.setLabelFor(datePicker);
-
-            final Label hourSpinnerLabel = new Label("Hour:");
-            hourSpinnerLabel.setId(LABEL_ID);
-            hourSpinnerLabel.setLabelFor(hourSpinner);
-
-            final Label minSpinnerLabel = new Label("Minute:");
-            minSpinnerLabel.setId(LABEL_ID);
-            minSpinnerLabel.setLabelFor(minSpinner);
-
-            final Label secSpinnerLabel = new Label("Second:");
-            secSpinnerLabel.setId(LABEL_ID);
-            secSpinnerLabel.setLabelFor(secSpinner);
-
-            final Label milliSpinnerLabel = new Label("Millis:");
-            milliSpinnerLabel.setId(LABEL_ID);
-            milliSpinnerLabel.setLabelFor(milliSpinner);
-
-            hourSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
-            minSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
-            secSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
-            milliSpinner.setPrefWidth(MILLIS_SPINNER_WIDTH);
-
-            hourSpinner.setEditable(true);
-            minSpinner.setEditable(true);
-            secSpinner.setEditable(true);
-            milliSpinner.setEditable(true);
-
-            hourSpinner.valueProperty().addListener((o, n, v) -> update());
-            minSpinner.valueProperty().addListener((o, n, v) -> update());
-            secSpinner.valueProperty().addListener((o, n, v) -> update());
-            milliSpinner.valueProperty().addListener((o, n, v) -> update());
-
-            final VBox dateLabelNode = new VBox(5);
-            dateLabelNode.getChildren().addAll(dateLabel, datePicker);
-            final VBox hourLabelNode = new VBox(5);
-            hourLabelNode.getChildren().addAll(hourSpinnerLabel, hourSpinner);
-            final VBox minLabelNode = new VBox(5);
-            minLabelNode.getChildren().addAll(minSpinnerLabel, minSpinner);
-            final VBox secLabelNode = new VBox(5);
-            secLabelNode.getChildren().addAll(secSpinnerLabel, secSpinner);
-            final VBox milliLabelNode = new VBox(5);
-            milliLabelNode.getChildren().addAll(milliSpinnerLabel, milliSpinner);
-
-            timeSpinnerContainer.getChildren().addAll(dateLabelNode, hourLabelNode, minLabelNode, secLabelNode, milliLabelNode);
-
-            return timeSpinnerContainer;
+            return new HBox(CONTROLS_DEFAULT_HORIZONTAL_SPACING, 
+                    dateLabelNode, hourLabelNode, minLabelNode, secLabelNode, milliLabelNode);
         }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
+        
+        /**
+         * Creates a spinner for a measurement of time, for the editor
+         * 
+         * @param maxValue The maximum value on the spinner
+         * @param initialValue The initial value on the spinner
+         * @param spinnerWidth The preferred width of the spinner
+         * @return The newly created spinner object
+         */
+        private Spinner<Integer> createTimeSpinner(final int maxValue, final int initialValue, final int spinnerWidth) {
+            final Spinner<Integer> timeSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, maxValue));
+            timeSpinner.getValueFactory().setValue(initialValue);
+            timeSpinner.setPrefWidth(spinnerWidth);
+            timeSpinner.setEditable(true);
+            timeSpinner.valueProperty().addListener((o, n, v) -> update());
+            
+            return timeSpinner;
+        }
+        
+        /**
+         * Creates a label associated with the given time spinner
+         * 
+         * @param labelText The label text
+         * @param associatedObject The object to set the label for
+         * @return The newly created label
+         */
+        private Label createLabel(final String labelText, final Control associatedObject) {
+            final Label spinnerLabel = new Label(labelText);
+            spinnerLabel.setId(LABEL_ID);
+            spinnerLabel.setLabelFor(associatedObject);
+            
+            return spinnerLabel;
         }
     }
 }

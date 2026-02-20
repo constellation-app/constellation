@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.ByteObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import static au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor.CONTROLS_DEFAULT_VERTICAL_SPACING;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type byte_or_null
  *
  * @author cygnus_x-1
  */
@@ -34,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
 
     @Override
-    public AbstractEditor<Byte> createEditor(final EditOperation editOperation, final DefaultGetter<Byte> defaultGetter, final ValueValidator<Byte> validator, final String editedItemName, final Byte initialValue) {
-        return new ByteObjectEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<Byte> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Byte> validator, final Byte defaultValue, final Byte initialValue) {
+        return new ByteObjectEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -47,8 +46,12 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
 
         private TextField numberField;
 
-        protected ByteObjectEditor(final EditOperation editOperation, final DefaultGetter<Byte> defaultGetter, final ValueValidator<Byte> validator, final String editedItemName, final Byte initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected ByteObjectEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Byte> validator, final Byte defaultValue, final Byte initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
+        }
+        
+        protected String getNumberText() {
+            return numberField.getText();
         }
 
         @Override
@@ -61,7 +64,7 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
         @Override
         protected Byte getValueFromControls() throws ControlsInvalidException {
             try {
-                return Byte.parseByte(numberField.getText());
+                return Byte.valueOf(numberField.getText());
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a byte.");
             }
@@ -69,18 +72,13 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-            controls.addRow(0, numberField);
+            
+            final VBox controls = new VBox(numberField);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

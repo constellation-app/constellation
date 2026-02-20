@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,7 +102,7 @@ public final class IoUtilities {
             }
         }
 
-        if (t.length() > 0) {
+        if (!t.isEmpty()) {
             t.append(s.substring(begin));
             return t.toString();
         }
@@ -128,7 +128,8 @@ public final class IoUtilities {
         final StringBuilder t = new StringBuilder();
         final int length = s.length();
         int begin = 0;
-        for (int i = 0; i < length; i++) {
+        int i = 0;
+        while (i < length) {
             final char c = s.charAt(i);
             if (c == '\\') {
                 if (i == length - 1) {
@@ -152,9 +153,10 @@ public final class IoUtilities {
                 i++;
                 begin = i + 1;
             }
+            i++;
         }
 
-        if (t.length() > 0) {
+        if (!t.isEmpty()) {
             t.append(s.substring(begin));
             return t.toString();
         }
@@ -398,7 +400,7 @@ public final class IoUtilities {
     public static String join(final Iterable<String> a, final char separator) {
         final StringBuilder buf = new StringBuilder();
         for (final String s : a) {
-            if (buf.length() > 0) {
+            if (!buf.isEmpty()) {
                 buf.append(separator);
             }
             buf.append(s);

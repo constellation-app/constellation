@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,24 +33,25 @@ import org.testng.annotations.Test;
  * @author Atlas139mkm
  */
 public class FloatParameterTypeNGTest {
-
-    public FloatParameterTypeNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -65,7 +66,7 @@ public class FloatParameterTypeNGTest {
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof FloatParameterType);
-        assertEquals(((FloatParameterValue) result.getParameterValue()).get(), 0F);
+        assertEquals(result.getParameterValue().get(), 0F);
     }
 
     /**
@@ -81,7 +82,7 @@ public class FloatParameterTypeNGTest {
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof FloatParameterType);
-        assertEquals(((FloatParameterValue) result.getParameterValue()).get(), 1.2F);
+        assertEquals(result.getParameterValue().get(), 1.2F);
     }
 
     /**

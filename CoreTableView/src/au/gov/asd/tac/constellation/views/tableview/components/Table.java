@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -789,16 +789,17 @@ public class Table {
     }
 
     /**
-     * Gets the context menu describing the columns that make a vertex or transaction unique. In other words the primary
-     * columns. Then manually triggers a click event causing those columns to be made visible.
+     * Gets the context menu describing the columns that make a vertex or
+     * transaction unique. In other words the default columns. Then manually
+     * triggers a click event causing those columns to be made visible.
      *
-     * @see ColumnVisibilityContextMenu#getShowPrimaryColumnsMenu()
+     * @see ColumnVisibilityContextMenu#getShowDefaultColumnsMenu()
      */
     protected void openColumnVisibilityMenu() {
         final ColumnVisibilityContextMenu columnVisibilityContextMenu = new ColumnVisibilityContextMenu(this);
         columnVisibilityContextMenu.init();
 
-        final MenuItem keyColumns = columnVisibilityContextMenu.getShowPrimaryColumnsMenu();
-        keyColumns.fire();
+        final MenuItem defaultColumns = columnVisibilityContextMenu.getShowDefaultColumnsMenu();
+        defaultColumns.fire();
     }
 }

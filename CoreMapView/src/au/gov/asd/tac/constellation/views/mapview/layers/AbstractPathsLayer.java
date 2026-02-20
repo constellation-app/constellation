@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -151,7 +153,7 @@ public abstract class AbstractPathsLayer extends MapLayer {
 
         // deduplicate paths, storing duplicate counts
         int maxWeight = 1;
-        final Map<Tuple<GraphElement, GraphElement>, Integer> dedupedPaths = new HashMap<>();
+        final MutableObjectIntMap<Tuple<GraphElement, GraphElement>> dedupedPaths = new ObjectIntHashMap<>();
         for (final Tuple<GraphElement, GraphElement> path : paths) {
             if (dedupedPaths.containsKey(path)) {
                 final int weight = dedupedPaths.get(path) + 1;
@@ -166,7 +168,7 @@ public abstract class AbstractPathsLayer extends MapLayer {
 
         // draw weighted paths
         final int maxWeightFinal = maxWeight;
-        dedupedPaths.forEach((path, weight) -> {
+        dedupedPaths.forEachKeyValue((path, weight) -> {
             final Marker sourceMarker = elementToMarkerCache.get(path.getFirst());
             final Marker destinationMarker = elementToMarkerCache.get(path.getSecond());
             final boolean validPath = (drawPathsToOffscreenMarkers()

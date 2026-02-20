@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.filechooser.FileFilter;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -265,8 +265,8 @@ public class ExcelImportFileParser extends ImportFileParser {
             @Override
             public boolean accept(final File file) {
                 final String name = file.getName();
-                return (file.isFile() && (StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.XLS)
-                        || StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.XLSX)))
+                return (file.isFile() && (Strings.CI.endsWith(name, FileExtensionConstants.XLS)
+                        || Strings.CI.endsWith(name, FileExtensionConstants.XLSX)))
                         || file.isDirectory();
             }
 

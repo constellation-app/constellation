@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -58,36 +59,60 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
 public class CopyToNewGraphPlugin extends SimpleReadPlugin {
 
+    public static final String NEW_SCHEMA_NAME_PARAMETER_ID = PluginParameter.buildId(CopyToNewGraphPlugin.class, "new_schema");
     public static final String COPY_ALL_PARAMETER_ID = PluginParameter.buildId(CopyToNewGraphPlugin.class, "copy_all");
     public static final String COPY_KEYS_PARAMETER_ID = PluginParameter.buildId(CopyToNewGraphPlugin.class, "copy_keys");
-    public static final String NEW_SCHEMA_NAME_PARAMETER_ID = PluginParameter.buildId(CopyToNewGraphPlugin.class, "new_schema");
     public static final String NEW_GRAPH_OUTPUT_PARAMETER_ID = PluginParameter.buildId(CopyToNewGraphPlugin.class, "new_graph");
+    
+    private static final Pattern DIGITS_REGEX = Pattern.compile("\\d+");
+    
+    @Override
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
 
-    private Graph copy = null;
+        // Specify a new schema.
+        // If null, use the schema of the input graph.
+        final PluginParameter<StringParameterValue> schemaName = StringParameterType.build(NEW_SCHEMA_NAME_PARAMETER_ID);
+        schemaName.setName("New Schema Name");
+        schemaName.setDescription("The new schema name, if null use the input schema. The default is null.");
+        schemaName.setStringValue("");
+        parameters.addParameter(schemaName);
+
+        // If true, copy everything, selected or not.
+        final PluginParameter<BooleanParameterValue> copyAll = BooleanParameterType.build(COPY_ALL_PARAMETER_ID);
+        copyAll.setName("Copy All");
+        copyAll.setDescription("If True, copy everything regardless of selection. The default is False.");
+        parameters.addParameter(copyAll);
+
+        // If true, copy the keys.
+        final PluginParameter<BooleanParameterValue> copyKeys = BooleanParameterType.build(COPY_KEYS_PARAMETER_ID);
+        copyKeys.setName("Copy Keys");
+        copyKeys.setDescription("If True, copy the keys. The default is True.");
+        copyKeys.setBooleanValue(true);
+        parameters.addParameter(copyKeys);
+
+        // Output parameter.
+        final PluginParameter<ObjectParameterValue> newGraph = ObjectParameterType.build(NEW_GRAPH_OUTPUT_PARAMETER_ID);
+        newGraph.setName("New Graph (output)");
+        newGraph.setDescription("This parameter is used to store the copied graph");
+        parameters.addParameter(newGraph);
+
+        return parameters;
+    }
 
     @Override
     protected void read(final GraphReadMethods rg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         final String newSchemaName = parameters.getParameters().get(NEW_SCHEMA_NAME_PARAMETER_ID).getStringValue();
         final boolean copyAll = parameters.getParameters().get(COPY_ALL_PARAMETER_ID).getBooleanValue();
         final boolean copyKeys = parameters.getParameters().get(COPY_KEYS_PARAMETER_ID).getBooleanValue();
 
         final GraphNode gnode = GraphNode.getGraphNode(rg.getId());
-        final String name;
-        if (gnode != null) {
-            name = nameWithoutNumericSuffix(gnode.getDisplayName());
-        } else {
-            name = "";
-        }
+        final String name = gnode != null ? nameWithoutNumericSuffix(gnode.getDisplayName()) : "";
 
-        copy = makeGraph(rg, newSchemaName, copyKeys, copyAll);
+        final Graph copy = makeGraph(rg, newSchemaName, copyKeys, copyAll);
         parameters.getParameters().get(NEW_GRAPH_OUTPUT_PARAMETER_ID).setObjectValue(copy);
 
         GraphOpener.getDefault().openGraph(copy, name);
-    }
-
-    public Graph getCopy() {
-        return copy;
     }
 
     /**
@@ -101,13 +126,12 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
      *
      * @return The name with the numeric suffix removed (if present).
      */
-    private static String nameWithoutNumericSuffix(String name) {
+    private static String nameWithoutNumericSuffix(final String name) {
         final int p = name.lastIndexOf('_');
         if (p != -1) {
             final String suffix = name.substring(p + 1);
-            boolean isDigits = !suffix.isEmpty() && suffix.matches("\\d+");
-            if (isDigits) {
-                name = name.substring(0, p);
+            if (!suffix.isEmpty() && DIGITS_REGEX.matcher(suffix).matches()) {
+                return name.substring(0, p);
             }
         }
 
@@ -130,26 +154,23 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
      * @throws java.lang.InterruptedException if the process is canceled while
      * it is running.
      */
-    public static Graph makeGraph(final GraphReadMethods original, final String newSchemaName, final boolean copyKeys, final boolean copyAll) throws InterruptedException {
+    private static Graph makeGraph(final GraphReadMethods original, final String newSchemaName, final boolean copyKeys, final boolean copyAll) throws InterruptedException {
         final Schema schema = StringUtils.isNotBlank(newSchemaName) ? SchemaFactoryUtilities.getSchemaFactory(newSchemaName).createSchema() : original.getSchema();
         final Graph dualGraph = new DualGraph(schema == null ? null : schema.getFactory().createSchema());
 
         final WritableGraph graph = dualGraph.getWritableGraph("Make Graph", true);
-
         try {
-
-            int vertexSelected = original.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
-            int transactionSelected = original.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
+            final int vertexSelected = original.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+            final int transactionSelected = original.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
 
             int[] attributeTranslation = new int[1024];
 
             // Copy the attributes.
-            for (GraphElementType type : GraphElementType.values()) {
-                int attributeCount = original.getAttributeCount(type);
-                for (int attributePosition = 0; attributePosition < attributeCount; attributePosition++) {
-                    int originalAttributeId = original.getAttribute(type, attributePosition);
-                    Attribute attribute = new GraphAttribute(original, originalAttributeId);
-                    int newAttributeId = graph.addAttribute(type, attribute.getAttributeType(), attribute.getName(), attribute.getDescription(), attribute.getDefaultValue(), null);
+            for (final GraphElementType type : GraphElementType.values()) {
+                for (int attributePosition = 0; attributePosition < original.getAttributeCount(type); attributePosition++) {
+                    final int originalAttributeId = original.getAttribute(type, attributePosition);
+                    final Attribute attribute = new GraphAttribute(original, originalAttributeId);
+                    final int newAttributeId = graph.addAttribute(type, attribute.getAttributeType(), attribute.getName(), attribute.getDescription(), attribute.getDefaultValue(), null);
 
                     if (originalAttributeId >= attributeTranslation.length) {
                         attributeTranslation = Arrays.copyOf(attributeTranslation, originalAttributeId * 2);
@@ -183,18 +204,16 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
             }
 
             // Copy the vertices.
-            int[] vertexTranslation = new int[original.getVertexCapacity()];
+            final int[] vertexTranslation = new int[original.getVertexCapacity()];
             for (int position = 0; position < original.getVertexCount(); position++) {
-                int originalVertex = original.getVertex(position);
-
+                final int originalVertex = original.getVertex(position);
                 if (copyAll || vertexSelected == Graph.NOT_FOUND || original.getBooleanValue(vertexSelected, originalVertex)) {
-
-                    int newVertex = graph.addVertex();
+                    final int newVertex = graph.addVertex();
                     vertexTranslation[originalVertex] = newVertex;
 
                     for (int attributePosition = 0; attributePosition < original.getAttributeCount(GraphElementType.VERTEX); attributePosition++) {
-                        int originalAttributeId = original.getAttribute(GraphElementType.VERTEX, attributePosition);
-                        int newAttributeId = attributeTranslation[originalAttributeId];
+                        final int originalAttributeId = original.getAttribute(GraphElementType.VERTEX, attributePosition);
+                        final int newAttributeId = attributeTranslation[originalAttributeId];
                         graph.setObjectValue(newAttributeId, newVertex, original.getObjectValue(originalAttributeId, originalVertex));
                     }
                 }
@@ -202,7 +221,7 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
 
             // Copy the transactions.
             for (int position = 0; position < original.getTransactionCount(); position++) {
-                int originalTransaction = original.getTransaction(position);
+                final int originalTransaction = original.getTransaction(position);
 
                 if (!copyAll) {
                     if (transactionSelected != Graph.NOT_FOUND && !original.getBooleanValue(transactionSelected, originalTransaction)) {
@@ -218,15 +237,15 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
                     }
                 }
 
-                int sourceVertex = vertexTranslation[original.getTransactionSourceVertex(originalTransaction)];
-                int destinationVertex = vertexTranslation[original.getTransactionDestinationVertex(originalTransaction)];
-                boolean directed = original.getTransactionDirection(originalTransaction) < 2;
+                final int sourceVertex = vertexTranslation[original.getTransactionSourceVertex(originalTransaction)];
+                final int destinationVertex = vertexTranslation[original.getTransactionDestinationVertex(originalTransaction)];
+                final boolean directed = original.getTransactionDirection(originalTransaction) < 2;
 
-                int newTransaction = graph.addTransaction(sourceVertex, destinationVertex, directed);
+                final int newTransaction = graph.addTransaction(sourceVertex, destinationVertex, directed);
 
                 for (int attributePosition = 0; attributePosition < original.getAttributeCount(GraphElementType.TRANSACTION); attributePosition++) {
-                    int originalAttributeId = original.getAttribute(GraphElementType.TRANSACTION, attributePosition);
-                    int newAttributeId = attributeTranslation[originalAttributeId];
+                    final int originalAttributeId = original.getAttribute(GraphElementType.TRANSACTION, attributePosition);
+                    final int newAttributeId = attributeTranslation[originalAttributeId];
                     graph.setObjectValue(newAttributeId, newTransaction, original.getObjectValue(originalAttributeId, originalTransaction));
                 }
             }
@@ -235,40 +254,5 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
         }
 
         return dualGraph;
-    }
-
-    @Override
-    public PluginParameters createParameters() {
-        final PluginParameters parameters = new PluginParameters();
-
-        // Specify a new schema.
-        // If null, use the schema of the input graph.
-        final PluginParameter<StringParameterValue> schemaName = StringParameterType.build(NEW_SCHEMA_NAME_PARAMETER_ID);
-        schemaName.setName("New Schema Name");
-        schemaName.setDescription("The new schema name, if null use the input schema. The default is null.");
-        schemaName.setStringValue("");
-        parameters.addParameter(schemaName);
-
-        // If true, copy everything, selected or not.
-        final PluginParameter<BooleanParameterValue> copyAll = BooleanParameterType.build(COPY_ALL_PARAMETER_ID);
-        copyAll.setName("Copy All");
-        copyAll.setDescription("If True, copy everything regardless of selection. The default is False.");
-        copyAll.setBooleanValue(false);
-        parameters.addParameter(copyAll);
-
-        // If true, copy the keys.
-        final PluginParameter<BooleanParameterValue> copyKeys = BooleanParameterType.build(COPY_KEYS_PARAMETER_ID);
-        copyKeys.setName("Copy Keys");
-        copyKeys.setDescription("If True, copy the keys. The default is True.");
-        copyKeys.setBooleanValue(true);
-        parameters.addParameter(copyKeys);
-
-        // Output parameter.
-        final PluginParameter<ObjectParameterValue> newGraph = ObjectParameterType.build(NEW_GRAPH_OUTPUT_PARAMETER_ID);
-        newGraph.setName("New Graph (output)");
-        newGraph.setDescription("This parameter is used to store the copied graph");
-        parameters.addParameter(newGraph);
-
-        return parameters;
     }
 }

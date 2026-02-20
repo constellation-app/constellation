@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.tableview.panes;
 
-import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview.components.ProgressBar;
@@ -58,6 +57,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TablePaneNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(TablePaneNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;
@@ -83,8 +83,7 @@ public class TablePaneNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tableViewTopComponent = mock(TableViewTopComponent.class);
-        when(tableViewTopComponent.getExecutorService())
-                .thenReturn(Executors.newSingleThreadExecutor());
+        when(tableViewTopComponent.getExecutorService()).thenReturn(Executors.newSingleThreadExecutor());
 
         tablePane = spy(new TablePane(tableViewTopComponent));
     }
@@ -204,8 +203,7 @@ public class TablePaneNGTest {
         tableColumns.add(mock(TableColumn.class));
         tableColumns.add(mock(TableColumn.class));
 
-        final ObservableList<TableColumn<ObservableList<String>, String>> columns
-                = FXCollections.observableList(tableColumns);
+        final ObservableList<TableColumn<ObservableList<String>, String>> columns = FXCollections.observableList(tableColumns);
 
         when(tablePane.getTable()).thenReturn(table);
         when(table.getTableView()).thenReturn(tableView);

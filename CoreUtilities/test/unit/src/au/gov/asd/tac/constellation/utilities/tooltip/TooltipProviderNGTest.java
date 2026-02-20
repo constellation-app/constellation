@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.layout.Pane;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -40,23 +39,24 @@ import org.testng.annotations.Test;
  */
 public class TooltipProviderNGTest {
     
-    public TooltipProviderNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -109,10 +109,10 @@ public class TooltipProviderNGTest {
                 assertTrue(panesList.contains(ttd.getNode()));
             }
             
-            verify(ttp1, times(1)).createTooltip(Mockito.eq(content), Mockito.eq(activePosition));
-            verify(ttp2, times(1)).createTooltip(Mockito.eq(content), Mockito.eq(activePosition));
-            verify(ttp3, times(1)).createTooltip(Mockito.eq(content), Mockito.eq(activePosition));
-            verify(ttp4, times(1)).createTooltip(Mockito.eq(content), Mockito.eq(activePosition));
+            verify(ttp1, times(1)).createTooltip(content, activePosition);
+            verify(ttp2, times(1)).createTooltip(content, activePosition);
+            verify(ttp3, times(1)).createTooltip(content, activePosition);
+            verify(ttp4, times(1)).createTooltip(content, activePosition);
         }
     }
 
@@ -165,10 +165,10 @@ public class TooltipProviderNGTest {
                 assertTrue(panesList.contains(ttd.getNode()));
             }
             
-            verify(ttp1, times(1)).createTooltips(Mockito.eq(content));
-            verify(ttp2, times(1)).createTooltips(Mockito.eq(content));
-            verify(ttp3, times(1)).createTooltips(Mockito.eq(content));
-            verify(ttp4, times(1)).createTooltips(Mockito.eq(content));
+            verify(ttp1, times(1)).createTooltips(content);
+            verify(ttp2, times(1)).createTooltips(content);
+            verify(ttp3, times(1)).createTooltips(content);
+            verify(ttp4, times(1)).createTooltips(content);
         }
     }
 
@@ -192,6 +192,5 @@ public class TooltipProviderNGTest {
         public TooltipDefinition createTooltips(final String content) {
             return new TooltipDefinition(pane);
         }
-    }
-    
+    }    
 }

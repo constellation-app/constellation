@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.translators;
 
-import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
+import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,11 +40,7 @@ import org.testng.annotations.Test;
 public class ScoreToSizeTranslatorNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(ScoreToSizeTranslatorNGTest.class.getName());
-    private Graph graph;
     
-    public ScoreToSizeTranslatorNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -62,10 +59,12 @@ public class ScoreToSizeTranslatorNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -74,6 +73,7 @@ public class ScoreToSizeTranslatorNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
+        
         final ScoreToSizeTranslator instance = new ScoreToSizeTranslator();
         final String expResult = "Multi-Score -> Size Visualisation";
         final String result = instance.getName();
@@ -86,10 +86,10 @@ public class ScoreToSizeTranslatorNGTest {
     @Test
     public void testGetResultType() {
         System.out.println("getResultType");
+        
         final ScoreToSizeTranslator instance = new ScoreToSizeTranslator();
-        final Class expResult = ScoreResult.class;
-        final Class result = instance.getResultType();
-        assertEquals(result, expResult);
+        final Class<? extends AnalyticResult<?>> result = instance.getResultType();
+        assertEquals(result, ScoreResult.class);
     }
 
     /**
@@ -98,9 +98,10 @@ public class ScoreToSizeTranslatorNGTest {
     @Test
     public void testBuildControl() {
         System.out.println("buildControl");
+        
         final ScoreToSizeTranslator instance = new ScoreToSizeTranslator();
-        final SizeVisualisation expResult = new SizeVisualisation(instance);
-        final SizeVisualisation result = instance.buildControl();
+        final SizeVisualisation<ElementScore> expResult = new SizeVisualisation<>(instance);
+        final SizeVisualisation<ElementScore> result = instance.buildControl();
         assertEquals(result, expResult);
     }
 
@@ -110,6 +111,7 @@ public class ScoreToSizeTranslatorNGTest {
     @Test
     public void testSetVertexSizes() {
         System.out.println("setVertexSizes");
+        
         final Map<Integer, Float> sizes = new HashMap<>();
         sizes.put(25, 2.0F);
         final ScoreToSizeTranslator instance = new ScoreToSizeTranslator();
@@ -124,6 +126,7 @@ public class ScoreToSizeTranslatorNGTest {
     @Test
     public void testSetTransactionSizes() {
         System.out.println("setTransactionSizes");
+        
         final Map<Integer, Float> sizes = new HashMap<>();
         sizes.put(25, 2.0F);
         final ScoreToSizeTranslator instance = new ScoreToSizeTranslator();

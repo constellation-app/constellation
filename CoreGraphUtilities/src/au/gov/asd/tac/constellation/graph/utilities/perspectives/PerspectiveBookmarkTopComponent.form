@@ -42,7 +42,7 @@
         <Component class="javax.swing.JButton" name="addButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/au/gov/asd/tac/constellation/functionality/perspectives/add.png"/>
+              <Image iconType="3" name="/au/gov/asd/tac/constellation/graph/utilities/perspectives/resources/add.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/perspectives/Bundle.properties" key="PerspectiveBookmarkTopComponent.addButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -61,7 +61,7 @@
         <Component class="javax.swing.JButton" name="renameButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/au/gov/asd/tac/constellation/functionality/perspectives/rename.png"/>
+              <Image iconType="3" name="/au/gov/asd/tac/constellation/graph/utilities/perspectives/resources/rename.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/perspectives/Bundle.properties" key="PerspectiveBookmarkTopComponent.renameButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -80,7 +80,7 @@
         <Component class="javax.swing.JButton" name="removeButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/au/gov/asd/tac/constellation/functionality/perspectives/remove.png"/>
+              <Image iconType="3" name="/au/gov/asd/tac/constellation/graph/utilities/perspectives/resources/remove.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/perspectives/Bundle.properties" key="PerspectiveBookmarkTopComponent.removeButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -94,6 +94,27 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JToolBar$Separator" name="jSeparator1">
+        </Component>
+        <Component class="javax.swing.JButton" name="helpButton">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="UserInterfaceIconProvider.HELP.buildIcon(16, ConstellationColor.SKY.getJavaColor())" type="code"/>
+            </Property>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/perspectives/Bundle.properties" key="PerspectiveBookmarkTopComponent.helpButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/perspectives/Bundle.properties" key="PerspectiveBookmarkTopComponent.helpButton.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            </Property>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="helpButtonActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

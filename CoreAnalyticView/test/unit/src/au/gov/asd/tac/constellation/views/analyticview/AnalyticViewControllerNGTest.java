@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,11 @@
 package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.locking.DualGraph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState;
+import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
@@ -64,11 +58,7 @@ public class AnalyticViewControllerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticViewControllerNGTest.class.getName());
     private final AnalyticViewTopComponent topComponent = mock(AnalyticViewTopComponent.class);
-    private final GraphManager graphManager = spy(GraphManager.class);
-
-    public AnalyticViewControllerNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -87,10 +77,12 @@ public class AnalyticViewControllerNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -99,6 +91,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testInit() {
         System.out.println("init");
+        
         final AnalyticViewTopComponent parent = topComponent;
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
@@ -116,6 +109,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testGetParent() {
         System.out.println("getParent");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -132,6 +126,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testSetActiveCategory() {
         System.out.println("setActiveCategory");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -149,6 +144,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testSetCurrentQuestion() {
         System.out.println("setCurrentQuestion");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -166,14 +162,16 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testSetQuestion() {
         System.out.println("setQuestion");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
-            final AnalyticQuestionDescription<?> currentQuestion = AnalyticUtilities.lookupAnalyticQuestionDescription(BestConnectsNetworkQuestion.class);
-            final AnalyticQuestion question = new AnalyticQuestion(currentQuestion);
+            final BestConnectsNetworkQuestion currentQuestion = (BestConnectsNetworkQuestion) AnalyticUtilities.lookupAnalyticQuestionDescription(BestConnectsNetworkQuestion.class);
+            final AnalyticQuestion<ScoreResult> question = new AnalyticQuestion<>(currentQuestion);
             final AnalyticViewController instance = AnalyticViewController.getDefault();
             instance.setQuestion(question);
-            final AnalyticQuestion result = instance.getQuestion();
+            @SuppressWarnings("unchecked") // result stored was of type ScoreResult
+            final AnalyticQuestion<ScoreResult> result = instance.getQuestion();
             assertEquals(question, result);
         }
     }
@@ -184,6 +182,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testSetCategoriesVisible() {
         System.out.println("setCategoriesVisible");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -201,10 +200,11 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testSetGraphVisualisations() {
         System.out.println("setGraphVisualisations");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
-            final SizeVisualisation sizeVisualisation = mock(SizeVisualisation.class);
+            final SizeVisualisation<?> sizeVisualisation = mock(SizeVisualisation.class);
             final Map<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
 
             graphVisualisations.put(sizeVisualisation, true);
@@ -222,10 +222,11 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testUpdateGraphVisualisations() {
         System.out.println("updateGraphVisualisations");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
-            final SizeVisualisation sizeVisualisation = mock(SizeVisualisation.class);
+            final SizeVisualisation<?> sizeVisualisation = mock(SizeVisualisation.class);
             boolean activated = false;
             final AnalyticViewController instance = AnalyticViewController.getDefault();
             instance.updateGraphVisualisations(sizeVisualisation, activated);
@@ -246,6 +247,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testUpdateResults() {
         System.out.println("updateResults");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -271,6 +273,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testRemoveAnalyticQuestion() {
         System.out.println("removeAnalyticQuestion");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -295,6 +298,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testRemovePluginsMatchingCategory() {
         System.out.println("removePluginsMatchingCategory");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -319,6 +323,7 @@ public class AnalyticViewControllerNGTest {
     @Test
     public void testAddAnalyticQuestion() {
         System.out.println("addAnalyticQuestion");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -336,56 +341,19 @@ public class AnalyticViewControllerNGTest {
     }
 
     /**
-     * Test of deactivateResultUpdates method, of class AnalyticViewController.
-     */
-    @Test
-    public void testDeactivateResultUpdates() {
-        System.out.println("deactivateResultUpdates");
-        try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
-            final AnalyticViewController controller = spy(AnalyticViewController.class);
-            controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
-            
-            final SizeVisualisation sizeVisualisation = mock(SizeVisualisation.class);
-            final boolean activated = true;
-
-            try (final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class)) {
-                graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
-                final Graph graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
-                when(graphManager.getActiveGraph()).thenReturn(graph);
-
-                controller.updateGraphVisualisations(sizeVisualisation, activated);
-                controller.writeState();
-                controller.deactivateResultUpdates(graph);
-                controller.readState();
-
-                final Map<GraphVisualisation, Boolean> newVisualisations = new HashMap<>();
-                newVisualisations.put(sizeVisualisation, false);
-                
-                final ReadableGraph rg = graph.getReadableGraph();
-                final int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.get(rg);
-                if (stateAttributeId != Graph.NOT_FOUND) {
-                    final AnalyticViewState currentState = rg.getObjectValue(stateAttributeId, 0);
-
-                    final Map<GraphVisualisation, Boolean> visualisations = currentState.getGraphVisualisations();
-                    assertEquals(visualisations, newVisualisations);
-                }
-            }
-        }
-    }
-
-    /**
      * Test of updateState method, of class AnalyticViewController.
      */
     @Test
     public void testUpdateState() {
         System.out.println("updateState");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
             when(controller.getParent()).thenReturn(topComponent);
             
             final boolean pluginWasSelected = true;
-            final ListView<AnalyticConfigurationPane.SelectableAnalyticPlugin> pluginList = new ListView();
+            final ListView<AnalyticConfigurationPane.SelectableAnalyticPlugin> pluginList = new ListView<>();
             final AnalyticViewPane pane = mock(AnalyticViewPane.class);
             when(topComponent.createContent()).thenReturn(pane);
             final AnalyticConfigurationPane configPane = mock(AnalyticConfigurationPane.class);

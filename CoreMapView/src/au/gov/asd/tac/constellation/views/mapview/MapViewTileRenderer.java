@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,6 +142,14 @@ public class MapViewTileRenderer extends PApplet {
 
         currentProvider = provider;
         map.mapDisplay.setMapProvider(provider);
+
+        // Adjust zoom level to fit the new provider
+        if (map.getZoomLevel() > provider.zoomLevels()) {
+            map.zoomToLevel(provider.zoomLevels());
+        }
+
+        map.setZoomRange(1, provider.zoomLevels());
+
     }
 
     public void zoomToLocation(final Location location) {
@@ -500,6 +508,7 @@ public class MapViewTileRenderer extends PApplet {
                 }
             }
             default -> {
+                // do nothing
             }
         }
 

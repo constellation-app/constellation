@@ -42,15 +42,25 @@ and open the template in the editor.
 }
 
 .text-area {
-    --text-area-background: black ;
+    -text-area-background: white ;
 }
 
 .text-area .content {
-    -fx-background-color: --text-area-background ;
+    -fx-background-color: -text-area-background ;
+}
+
+.button {
+    -fx-background-insets: 0,0,0,0;
+    -fx-background-radius: 1px, 1px, 1px, 1px;
+    -fx-padding: 4,0,4,0
+}
+
+.titled-pane > * {
+    -fx-background-color: #b8c9db;
 }
 
 .titled-pane-heading .title, .titled-pane-heading > .title {
-    -fx-background-color: linear-gradient(to bottom, derive(#cd853f,100%), derive(#cd853f,0%) 5%, derive(#cd853f,-25%) 95%, derive(#cd853f,50%) 100%);
+    -fx-background-color: linear-gradient(to bottom, derive(#eeeeee,100%), derive(#cccccc,0%) 5%, derive(#cccccc,-25%) 95%, derive(#dddddd,50%) 100%);
     -fx-text-fill: white;
     -fx-padding: 3;
 }

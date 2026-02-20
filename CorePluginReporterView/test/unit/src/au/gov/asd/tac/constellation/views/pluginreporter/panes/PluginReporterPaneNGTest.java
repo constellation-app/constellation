@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,9 +76,9 @@ public class PluginReporterPaneNGTest {
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(PluginReporterPane.class))).thenReturn(prefs);
 
-            instance.onChanged(c);
+            instance.onChanged();
 
-            verify(prefs, times(1)).put(Mockito.eq(key), Mockito.eq(returnValue));
+            verify(prefs, times(1)).put(key, returnValue);
         }
     }
 

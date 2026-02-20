@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
@@ -26,12 +27,17 @@ import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar;
 import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar.ExecuteButtonState;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.components.OptionsMenuBar;
+import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessParametersIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetterListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -50,7 +56,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
     private final DataAccessViewTopComponent parentComponent;
     private final DataAccessTabPane dataAccessTabPane;
-    private final OptionsMenuBar optionsMenuBar;
+    private final OptionsMenuBar workflowOptionsMenuBar;
     private final ButtonToolbar buttonToolbar;
 
     private final TextField searchPluginTextField;
@@ -68,33 +74,33 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         // the UI components here while it does that
         DataAccessPaneState.getCurrentGraphId();
 
-        this.optionsMenuBar = new OptionsMenuBar(this);
-        this.optionsMenuBar.init();
+        this.workflowOptionsMenuBar = new OptionsMenuBar(this);
+        this.workflowOptionsMenuBar.init();
 
         this.buttonToolbar = new ButtonToolbar(this);
         this.buttonToolbar.init();
 
         searchPluginTextField = new TextField();
         searchPluginTextField.setPromptText("Type to search for a plugin");
-        searchPluginTextField.textProperty().addListener((observable, oldValue, newValue) ->
+        searchPluginTextField.textProperty().addListener((observable, oldValue, newValue) -> // NOSONAR
             getDataAccessTabPane().getQueryPhasePaneOfCurrentTab()
                     .showMatchingPlugins(newValue)
-        );
+        ); 
 
         // Plugins are now needed, so wait until the load is complete
         final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins;
         try {
             plugins = DataAccessPaneState.getPlugins();
-        } catch (ExecutionException ex) {
+        } catch (final ExecutionException ex) {
             throw new IllegalStateException("Failed to load data access plugins. "
-                    + "Data Access View cannot be created.");
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
+                    + "Data Access View cannot be created."); // NOSONAR
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt(); // NOSONAR
 
             throw new IllegalStateException("Failed to load data access plugins. "
-                    + "Data Access View cannot be created.");
+                    + "Data Access View cannot be created."); // NOSONAR
         }
-
+        
         this.dataAccessTabPane = new DataAccessTabPane(this, plugins);
         this.dataAccessTabPane.newTab();
 
@@ -114,6 +120,14 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                     );
             contextMenuEvent.consume();
         });
+        
+        //read keyboard shortcut to load templates
+        addEventHandler(KeyEvent.KEY_PRESSED, event -> {            
+            if (!event.getCode().isModifierKey()) {                                
+                DataAccessParametersIoProvider.loadParameters(this, createCombo(event).getDisplayText().replace('+', ' '));
+            }
+        });
+        
         // Refresh all the status of menu items, execute buttons etc.
         // based on the current state of the data access view
         update();
@@ -124,7 +138,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      */
     public void addUIComponents() {
         final VBox vbox = new VBox(
-                getOptionsMenuBar().getMenuBar(),
+                getWorkflowOptionsMenuBar().getMenuBar(),
                 getSearchPluginTextField(),
                 getDataAccessTabPane().getTabPane(),
                 getButtonToolbar().getRabRegionExectueHBoxBottom()
@@ -137,23 +151,22 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         AnchorPane.setRightAnchor(vbox, 0.0);
 
         getChildren().add(vbox);
-
-        AnchorPane.setTopAnchor(getButtonToolbar().getOptionsToolbar(), 5.0);
+        
         AnchorPane.setRightAnchor(getButtonToolbar().getOptionsToolbar(), 5.0);
-
+        AnchorPane.setTopAnchor(getButtonToolbar().getOptionsToolbar(), 5.0);
+        
         getChildren().add(getButtonToolbar().getOptionsToolbar());
 
         // Modifies the menu sizes and positions as the overall pane size is
         // either shrunk or grown
         widthProperty().addListener((observable, oldValue, newValue) -> {
+            final int fontSize = FontUtilities.getApplicationFontSize() * 2;
+            getWorkflowOptionsMenuBar().getMenuBar().setPrefHeight(fontSize);                
             if (newValue.intValue() <= 460) {
                 getButtonToolbar().handleShrinkingPane();
-
-                getOptionsMenuBar().getMenuBar().setMinHeight(60);
+                getWorkflowOptionsMenuBar().getMenuBar().setPrefHeight(60);
             } else {
                 getButtonToolbar().handleGrowingPane();
-
-                getOptionsMenuBar().getMenuBar().setMinHeight(36);
             }
         });
     }
@@ -244,8 +257,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      *
      * @return the options menu bar
      */
-    public OptionsMenuBar getOptionsMenuBar() {
-        return optionsMenuBar;
+    public OptionsMenuBar getWorkflowOptionsMenuBar() {
+        return workflowOptionsMenuBar;
     }
 
     /**
@@ -370,5 +383,22 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         // in the pane has no selected plugin, an invalid time range,
         // or the selected plugins contain invalid parameter values.
         return !queryIsRunning && !canExecuteTabPane;
+    }
+    
+    public KeyCombination createCombo(final KeyEvent event) {
+        final List<KeyCombination.Modifier> modifiers = new ArrayList<>();
+        if (event.isControlDown()) {
+            modifiers.add(KeyCombination.CONTROL_DOWN);
+        }
+        if (event.isMetaDown()) {
+            modifiers.add(KeyCombination.META_DOWN);
+        }
+        if (event.isAltDown()) {
+            modifiers.add(KeyCombination.ALT_DOWN);
+        }
+        if (event.isShiftDown()) {
+            modifiers.add(KeyCombination.SHIFT_DOWN);
+        }
+        return new KeyCodeCombination(event.getCode(), modifiers.toArray(KeyCombination.Modifier[]::new));
     }
 }

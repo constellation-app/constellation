@@ -11,7 +11,7 @@
 }
 
 .menu:hover {
-    -fx-background-color: #0093FF;
+    -fx-background-color: #51a5f8;
 }
 
 .description-label {
@@ -28,25 +28,25 @@
 }
 
 .accordion .titled-pane-heading .title, .titled-pane-heading > .title {
-    -fx-background-color: linear-gradient(to bottom, derive(#0093FF,100%), derive(#0093FF,0%) 5%, derive(#0093FF,-25%) 95%, derive(#0093FF,50%) 100%);
+    -fx-background-color: linear-gradient(to bottom, derive(#51a5f8,100%), derive(#51a5f8,0%) 5%, derive(#51a5f8,-25%) 95%, derive(#51a5f8,50%) 100%);
     -fx-padding: 3;
 }
 
 .titled-pane-selected > .title {
-    -fx-background-color: linear-gradient(to bottom, derive(#2adb48,100%), derive(#2adb48,0%) 5%, derive(#2adb48,-25%) 95%, derive(#2adb48,50%) 100%);
+    -fx-background-color: linear-gradient(to bottom, derive(#3aeb78,100%), derive(#3aeb78,0%) 5%, derive(#3aeb78,-25%) 95%, derive(#3aeb78,50%) 100%);
 }
 
 .titled-pane-selected-invalid > .title {
-    -fx-background-color: linear-gradient(to bottom, derive(#2adb48,0%), derive(#2adb48,0%) 60%, derive(#2adb48,0%) 85%, derive(#2adb48,0%) 100%);
+    -fx-background-color: linear-gradient(to bottom, derive(#3aeb78,0%), derive(#3aeb78,0%) 60%, derive(#3aeb78,0%) 85%, derive(#3aeb78,0%) 100%);
     
 }
 
 .titled-pane-matched > .title {
-    -fx-background-color: linear-gradient(to bottom, derive(#0093FF,100%), derive(#0093FF,0%) 5%, derive(#0093FF,-25%) 95%, derive(#0093FF,50%) 100%);
+    -fx-background-color: linear-gradient(to bottom, derive(#51a5f8,100%), derive(#51a5f8,0%) 5%, derive(#51a5f8,-25%) 95%, derive(#51a5f8,50%) 100%);
 }
 
 .titled-pane-invalid > .title {
-    -fx-background-color: linear-gradient(to bottom, derive(#B31D2F,100%), derive(#B31D2F,0%) 5%, derive(#B31D2F,-25%) 95%, derive(#B31D2F,50%) 100%);
+    -fx-background-color: linear-gradient(to bottom, derive(#ff8888,100%), derive(#ff8888,0%) 5%, derive(#ff8888,-25%) 95%, derive(#ff8888,50%) 100%);
 }
 
 .titled-pane-heading > .title {
@@ -67,16 +67,21 @@
 }
 
 #invalid {
-    -fx-background-color: #B31D2F;
-    -fx-control-inner-background: #B31D2F;
+    -fx-background-color: #ff8888;
+    -fx-control-inner-background: #ff8888;
 }
 
 #titled-pane-label {
+    -fx-padding: 2 0 0 0;
     -fx-text-fill: #111111;
 }
 
+#layer-checkbox {
+    -fx-padding: 2 0 0 0;
+}
+
 .combo-box {
-    -fx-background-color: white;
+    -fx-background-color: #f0f0f0;
     -fx-border-color: #999999
 }
 
@@ -85,3 +90,22 @@
     -fx-border-color: white;
 }
 
+
+#layer-function-enable {
+    -fx-text-fill: black;
+    -fx-background-color: #8fb8e8;
+}
+
+#layer-function-enable:hover {
+    -fx-text-fill: black;
+    -fx-background-color: #98c2f3;
+}
+
+#layer-function-disable {
+    -fx-text-fill: black;
+    -fx-background-color: #e7a09c;
+}
+#layer-function-disable:hover {
+    -fx-text-fill: black;
+    -fx-background-color: #f4aaa4;
+}

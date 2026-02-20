@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import static au.gov.asd.tac.constellation.graph.interaction.plugins.io.screensh
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +54,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
+import org.openide.awt.NotificationDisplayer;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
@@ -61,6 +64,13 @@ import org.openide.util.NbPreferences;
  * @author Delphinus8821
  */
 public class WelcomeViewPane extends BorderPane {
+
+    /**
+     * @return the bottomHBox
+     */
+    public HBox getBottomRecentSection() {
+        return bottomHBox;
+    }
 
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
@@ -75,6 +85,7 @@ public class WelcomeViewPane extends BorderPane {
     private static final Image PLACEHOLDER_IMAGE = new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"));
 
     private static final Button[] recentGraphButtons = new Button[10];
+    private final HBox bottomHBox = new HBox();
 
     public WelcomeViewPane() {
         pane = new BorderPane();
@@ -132,13 +143,12 @@ public class WelcomeViewPane extends BorderPane {
 
             //Create HBoxes for the right_vbox
             final HBox topHBox = new HBox();
-            final HBox bottomHBox = new HBox();
 
             //hbox formatting
             topHBox.setPadding(new Insets(50, 0, 50, 0));
             topHBox.setSpacing(10);
-            bottomHBox.setPadding(new Insets(50, 0, 50, 0));
-            bottomHBox.setSpacing(10);
+            getBottomRecentSection().setPadding(new Insets(50, 0, 50, 0));
+            getBottomRecentSection().setSpacing(10);
 
             final WelcomePageLayoutProvider layout = Lookup.getDefault().lookup(WelcomePageLayoutProvider.class);
 
@@ -186,11 +196,11 @@ public class WelcomeViewPane extends BorderPane {
             recent.setId("title");
             rightVBox.getChildren().add(topHBox);
             rightVBox.getChildren().add(recent);
-            rightVBox.getChildren().add(bottomHBox);
+            rightVBox.getChildren().add(getBottomRecentSection());
 
             // add the recent graphs section 
             final FlowPane flow = recentGraphsSetup();
-            bottomHBox.getChildren().add(flow);
+            getBottomRecentSection().getChildren().add(flow);
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             VBox.setVgrow(rightVBox, Priority.ALWAYS);
             this.setCenter(pane);
@@ -234,6 +244,14 @@ public class WelcomeViewPane extends BorderPane {
                 //on the button action
                 final String path = fileDetails.get(i).getPath();
                 recentGraphButtons[i].setOnAction(e -> {
+                    if (!(new File(path).isFile())) {
+                        final String msg = String.format("The graph %s does not exist.", path);
+                        NotificationDisplayer.getDefault().notify(
+                                "Recent Files",
+                                UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()),
+                                msg, null);
+                        return;
+                    }
                     OpenFile.open(RecentFiles.convertPath2File(path), -1);
                     saveCurrentDirectory(path);
                 });
@@ -310,5 +328,16 @@ public class WelcomeViewPane extends BorderPane {
         if (!lastFileOpenAndSaveLocation.equals(path)) {
             PREFERENCES.put(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, path);
         }
+    }
+    /**
+     * Get the latest recent files and repopulate the recent section.
+     */
+    public final void refreshRecentFiles() {
+        final FlowPane flow = recentGraphsSetup();
+        // Remove current flowpane which contain recent graphs
+        if (!getBottomRecentSection().getChildren().isEmpty()) {
+            getBottomRecentSection().getChildren().remove(0);
+        }
+        getBottomRecentSection().getChildren().add(flow);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
  */
 public class Matrix44dNGTest {
 
-    private static final double D[] = {
+    private static final double[] D = {
         101.1D, 102.2D, 103.3D, 104.4D,
         111.1D, 112.2D, 113.3D, 114.4D,
         121.1D, 122.2D, 123.3D, 124.4D,
@@ -43,7 +43,7 @@ public class Matrix44dNGTest {
     @Test
     public void testConstructor() {
         final Matrix44d m = new Matrix44d();
-        double a[] = m.getA();
+        double[] a = m.getA();
         for (int i = 0; i < a.length; i++) {
             assertEquals(a[i], 0D);
         }
@@ -54,7 +54,7 @@ public class Matrix44dNGTest {
      */
     @Test
     public void testGetA() {
-        final double a[] = M1.getA();
+        final double[] a = M1.getA();
         for (int i = 0; i < a.length; i++) {
             assertEquals(a[i], D[i]);
         }
@@ -77,7 +77,7 @@ public class Matrix44dNGTest {
      */
     @Test
     public void testIdentity() {
-        final double junk[] = new double[Matrix44d.LENGTH];
+        final double[] junk = new double[Matrix44d.LENGTH];
         for (int i = 0; i < Matrix44d.LENGTH; i++) {
             junk[i] = 1089.1451D;
         }
@@ -85,7 +85,7 @@ public class Matrix44dNGTest {
         m.setA(junk);
 
         m.identity();
-        final double a[] = m.getA();
+        final double[] a = m.getA();
         for (int i = 0; i < a.length; i++) {
             if (i == 0 || i == 5 || i == 10 || i == 15) {
                 assertEquals(a[i], 1D);

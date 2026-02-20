@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -81,14 +83,15 @@ public class GraphicsCardUtilities {
                     final String tmp = System.getProperty("user.home") + "/dxdiag.txt";
                     final File file = new File(tmp);
                     if (file.exists()) {
-                        final boolean fileIsDeleted = file.delete();
-                        if (!fileIsDeleted) {
+                        try {
+                            Files.delete(Path.of(tmp));
+                        } catch (final IOException ex) {
                             //TODO: Handle case where file not successfully deleted
                         }
                     }
 
                     final long startTime = System.currentTimeMillis();
-                    Runtime.getRuntime().exec("dxdiag /64bit /t " + tmp);
+                    Runtime.getRuntime().exec(new String[]{"dxdiag", "/64bit", "/t", tmp});
                     while (!file.exists()) {
                         try {
                             LOCK.wait(1000);

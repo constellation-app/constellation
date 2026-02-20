@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -38,6 +37,8 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -122,13 +123,13 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
         // Local process-tracking varables (Process is indeteminate until quantity of nodes to be removed is known)
         int removedCount = 0;
         int totalProcessSteps = -1;
-        interaction.setProgress(removedCount, totalProcessSteps, "Removing nodes...", true);
-
-        if (removeType.equals(REMOVE_TYPE_LENGTH)) {   
+        interaction.setProgressTimestamp(true);
+        interaction.setProgress(removedCount, totalProcessSteps, "Removing nodes...", true, parameters);
+        final MutableIntList verticesToRemove = new IntArrayList();       
             
+        if (removeType.equals(REMOVE_TYPE_LENGTH)) {
             //Determine which nodes need to be removed
             final int vertexCount = wg.getVertexCount();
-            final List<Integer> verticesToRemove = new ArrayList<>();       
             for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                 final int vxId = wg.getVertex(vertexPosition);
                 if (wg.getBooleanValue(selectedAttribute, vxId)) {
@@ -139,7 +140,8 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
             totalProcessSteps = verticesToRemove.size();
 
             //Remove identified vertices
-            for (final int vertex : verticesToRemove) {
+            for (int i = 0; i < verticesToRemove.size(); i++) {
+                final int vertex = verticesToRemove.get(i);
                 if (removeNodesByLength(wg, vertex, identifierAttribute, threshold)) {
                     interaction.setProgress(++removedCount, totalProcessSteps, true);
                 }

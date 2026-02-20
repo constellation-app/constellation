@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 /**
  * this class is required for the unit testing
@@ -380,12 +382,13 @@ public final class StoreGraphValidator implements GraphWriteMethods {
         private Link link;
         private int direction;
     }
-    private final Map<Integer, Vertex> vertexMap = new HashMap<>();
+    private final MutableIntObjectMap<Vertex> vertexMap = new IntObjectHashMap<>();
     private final List<Vertex> vertexList = new ArrayList<>();
-    private final Map<Integer, Link> linkMap = new HashMap<>();
+    private final MutableIntObjectMap<Link> linkMap = new IntObjectHashMap<>();
     private final List<Link> linkList = new ArrayList<>();
-    private final Map<Integer, Transaction> transactionMap = new HashMap<>();
+    private final MutableIntObjectMap<Transaction> transactionMap = new IntObjectHashMap<>();
     private final List<Transaction> transactionList = new ArrayList<>();
+    private GraphElementMerger graphElementMerger;
 
     @Override
     public int addTransaction(final int sourceVertex, final int destinationVertex, final boolean directed) {
@@ -467,21 +470,24 @@ public final class StoreGraphValidator implements GraphWriteMethods {
         }
 
         switch (t.direction) {
-            case 0:
+            case 0 -> {
                 l.uphillTransactions.add(t);
                 low.outgoingTransactions.add(t);
                 high.incomingTransactions.add(t);
-                break;
-            case 1:
+            }
+            case 1 -> {
                 l.downhillTransactions.add(t);
                 low.incomingTransactions.add(t);
                 high.outgoingTransactions.add(t);
-                break;
-            case 2:
+            }
+            case 2 -> {
                 l.undirectedTransactions.add(t);
                 low.undirectedTransactions.add(t);
                 high.undirectedTransactions.add(t);
-                break;
+            }
+            default -> {
+                // do nothing
+            }
         }
 
         l.transactions.add(t);
@@ -728,30 +734,36 @@ public final class StoreGraphValidator implements GraphWriteMethods {
 
     @Override
     public int getTransactionSourceVertex(final int transaction) {
-        Transaction t = transactionMap.get(transaction);
+        final Transaction t = transactionMap.get(transaction);
         switch (t.direction) {
-            case 0:
+            case 0 -> {
                 return t.link.lowVertex.id;
-            case 1:
+            }
+            case 1 -> {
                 return t.link.highVertex.id;
-            case 2:
+            }
+            case 2 -> {
                 return t.link.lowVertex.id;
+            }
+            default -> throw new IllegalStateException("Found transaction with invalid direction: transaction = " + transaction + ", direction = " + t.direction);
         }
-        throw new IllegalStateException("Found transaction with invalid direction: transaction = " + transaction + ", direction = " + t.direction);
     }
 
     @Override
     public int getTransactionDestinationVertex(final int transaction) {
         Transaction t = transactionMap.get(transaction);
         switch (t.direction) {
-            case 0:
+            case 0 -> {
                 return t.link.highVertex.id;
-            case 1:
+            }
+            case 1 -> {
                 return t.link.lowVertex.id;
-            case 2:
+            }
+            case 2 -> {
                 return t.link.highVertex.id;
+            }
+            default -> throw new IllegalStateException("Found transaction with invalid direction: transaction = " + transaction + ", direction = " + t.direction);
         }
-        throw new IllegalStateException("Found transaction with invalid direction: transaction = " + transaction + ", direction = " + t.direction);
     }
 
     @Override
@@ -957,5 +969,10 @@ public final class StoreGraphValidator implements GraphWriteMethods {
     @Override
     public IntStream transactionStream() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setGraphElementMerger(final GraphElementMerger graphElementMerger) {
+        this.graphElementMerger = graphElementMerger;
     }
 }

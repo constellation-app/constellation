@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +50,7 @@ import javax.swing.JViewport;
 import javax.swing.event.MouseInputListener;
 
 /**
- * The HistogramDisplay provides a panel the actually shows the histogram bins
- * with their associated bars and labels.
+ * The HistogramDisplay provides a panel the actually shows the histogram bins with their associated bars and labels.
  *
  * @author sirius
  * @author antares
@@ -229,14 +228,11 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     }
 
     /**
-     * * calculate how large to draw the bars and the text. If the total width
-     * is not wide enough for the minimum text length and the preferred bar
-     * length then draw the text at minimum length and give the rest to the
-     * bars. If the total width is greater than the minimum text length +
-     * preferred bar length but not long enough for the preferred text length +
-     * preferred bar length then set the bars to preferred length and give the
-     * rest to the text. Finally if the total width is greater than the
-     * preferred text length + preferred bar length then set the text to the
+     * * calculate how large to draw the bars and the text. If the total width is not wide enough for the minimum text
+     * length and the preferred bar length then draw the text at minimum length and give the rest to the bars. If the
+     * total width is greater than the minimum text length + preferred bar length but not long enough for the preferred
+     * text length + preferred bar length then set the bars to preferred length and give the rest to the text. Finally
+     * if the total width is greater than the preferred text length + preferred bar length then set the text to the
      * preferred length and give the rest to the bars.**
      */
     private void calculateTextAndBarLength(Graphics g, int padding) {
@@ -326,16 +322,16 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
                 final int barLeft = LEFT_MARGIN + iconPadding + textWidth + TEXT_TO_BAR_GAP;
                 int barTop = TOP_MARGIN + barOffset * (firstBar + 1); // (firstBar+1) to account for header
 
-                Color barColor = binSelectionMode.getBarColor();
+                Color barColor = fxtColorToAwtColor(binSelectionMode.getBarColor());
                 Color darkerBarColor = barColor.darker();
 
-                Color activatedBarColor = binSelectionMode.getActivatedBarColor();
+                Color activatedBarColor = fxtColorToAwtColor(binSelectionMode.getActivatedBarColor());
                 Color darkerActivatedBarColor = activatedBarColor.darker();
 
-                Color selectedColor = binSelectionMode.getSelectedColor();
+                Color selectedColor = fxtColorToAwtColor(binSelectionMode.getSelectedColor());
                 Color darkerSelectedColor = selectedColor.darker();
 
-                Color activatedSelectedColor = binSelectionMode.getActivatedSelectedColor();
+                Color activatedSelectedColor = fxtColorToAwtColor(binSelectionMode.getActivatedSelectedColor());
                 Color darkerActivatedSelectedColor = activatedSelectedColor.darker();
 
                 // Draw the histogram headers
@@ -356,8 +352,8 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
                 for (int bar = firstBar; bar <= lastBar; bar++) {
                     Bin bin = bins[bar];
 
-                    final int selectedCount = bin.selectedCount;
-                    final int elementCount = bin.elementCount;
+                    final int selectedCount = bin.getSelectedCount();
+                    final int elementCount = bin.getElementCount();
 
                     // Always draw something, even if there aren't enough pixels to draw the actual length.
                     final int barLength = Math.max((int) (elementCount * scaleFactor), MINIMUM_BAR_WIDTH);
@@ -377,7 +373,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
                     // Draw the unselected component of the bar
                     if (selectedLength < barLength) {
-                        Paint paint = bin.activated
+                        Paint paint = bin.getIsActivated()
                                 ? new GradientPaint(0, barTop, activatedBarColor, 0, (float) barTop + barHeight, darkerActivatedBarColor)
                                 : new GradientPaint(0, barTop, barColor, 0, (float) barTop + barHeight, darkerBarColor);
                         g2.setPaint(paint);
@@ -387,7 +383,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
                     // Draw the selected component of the bar
                     if (selectedLength > 0) {
-                        Paint paint = bin.activated
+                        Paint paint = bin.getIsActivated()
                                 ? new GradientPaint(0, barTop, activatedSelectedColor, 0, (float) barTop + barHeight, darkerActivatedSelectedColor)
                                 : new GradientPaint(0, barTop, selectedColor, 0, (float) barTop + barHeight, darkerSelectedColor);
                         g2.setPaint(paint);
@@ -425,9 +421,9 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
                         }
 
                         // Bin count text.
-                        String binCount = Integer.toString(bin.elementCount);
-                        if (bin.selectedCount > 0) {
-                            binCount = Integer.toString(bin.selectedCount) + "/" + binCount;
+                        String binCount = Integer.toString(bin.getElementCount());
+                        if (bin.getSelectedCount() > 0) {
+                            binCount = Integer.toString(bin.getSelectedCount()) + "/" + binCount;
                         }
                         final Rectangle2D bounds = fm.getStringBounds(binCount, g2);
                         g2.drawString(binCount, (int) (parentWidth - bounds.getWidth() - RIGHT_MARGIN - 2), y);
@@ -498,24 +494,20 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     /**
      * Determine the bar that is under the specified point.
      * <p>
-     * The bar number is mathematically calculated based on the position of bar
-     * 0, the current bar height, and the specified position. If bounded is
-     * false, no attempt is made to limit the bar number to the actual number of
-     * bins, so the value returned may be less than zero or greater than the
-     * number of bins. If bounded is true, the bar number is bounded by the
-     * number of bins (between 0 and bins-1 inclusive). by the actual number of
-     * bins
+     * The bar number is mathematically calculated based on the position of bar 0, the current bar height, and the
+     * specified position. If bounded is false, no attempt is made to limit the bar number to the actual number of bins,
+     * so the value returned may be less than zero or greater than the number of bins. If bounded is true, the bar
+     * number is bounded by the number of bins (between 0 and bins-1 inclusive). by the actual number of bins
      *
      * @param p A Point on the bar that will be returned.
      * @param bounded is the return value bounded by the number of bins?
      *
-     * @return The index of the prospective bar under the Point, even if that
-     * bar doesn't exist.
+     * @return The index of the prospective bar under the Point, even if that bar doesn't exist.
      */
     private int getBarAtPoint(Point p, boolean bounded) {
         int n = (int) ((p.y - 2 + GAP_BETWEEN_BARS / 2F) / (GAP_BETWEEN_BARS + barHeight)) - 1;
         if (bounded) {
-            n = Math.min(Math.max(n, 0), binCollection.getBins().length - 1);
+            n = Math.clamp(n, 0, binCollection.getBins().length - 1);
         }
 
         return n;
@@ -552,21 +544,19 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     /**
      * Copy the values of the selected bars on the Histogram to the clipboard.
      * <p>
-     * Iterates through the current collection of bins, bins representing the
-     * bars, and determines if they are selected by checking their selectedCount
-     * value, 1 if selected, 0 if not selected.
+     * Iterates through the current collection of bins, bins representing the bars, and determines if they are selected
+     * by checking their selectedCount value, 1 if selected, 0 if not selected.
      *
-     * @param includeCounts True if the counts corresponding to the values are
-     * also to be copied to the clipboard.
+     * @param includeCounts True if the counts corresponding to the values are also to be copied to the clipboard.
      */
     private void copySelectedToClipboard(final boolean includeCounts) {
         final StringBuilder buf = new StringBuilder();
         for (final Bin bin : binCollection.getBins()) {
             // Check if the bar(s) on the Histogram are selected.
-            if (bin.selectedCount > 0) {
+            if (bin.getSelectedCount() > 0) {
                 final String label = bin.getLabel() != null ? bin.getLabel() : HistogramDisplay.NO_VALUE;
                 if (includeCounts) {
-                    buf.append(String.format("%s\t%d%n", label, bin.elementCount));
+                    buf.append(String.format("%s\t%d%n", label, bin.getElementCount()));
                 } else {
                     buf.append(String.format("%s%n", label));
                 }
@@ -699,5 +689,14 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         }
 
         scrollpane.setViewPosition(new Point(0, Math.max(0, y)));
+    }
+
+    public static Color fxtColorToAwtColor(final javafx.scene.paint.Color fxColor) {
+        final int r = (int) Math.round(fxColor.getRed() * 255);
+        final int g = (int) Math.round(fxColor.getGreen() * 255);
+        final int b = (int) Math.round(fxColor.getBlue() * 255);
+        final int a = (int) Math.round(fxColor.getOpacity() * 255);
+
+        return new Color(r, g, b, a);
     }
 }

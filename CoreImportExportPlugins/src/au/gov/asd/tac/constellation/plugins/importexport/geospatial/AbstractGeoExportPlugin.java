@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,8 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         outputParameter.setRequired(true);
         FileParameterType.setKind(outputParameter, FileParameterType.FileParameterKind.SAVE);
         FileParameterType.setFileFilters(outputParameter, getExportType());
-        parameters.addParameter(outputParameter);
+        FileParameterType.setWarnOverwrite(outputParameter, true);
+        parameters.addParameter(outputParameter);      
 
         if (includeSpatialReference()) {
             final PluginParameter<SingleChoiceParameterValue> spatialReferenceParameter = SingleChoiceParameterType.build(SPATIAL_REFERENCE_PARAMETER_ID, SpatialReferenceParameterValue.class);
@@ -143,7 +144,6 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         final PluginParameter<MultiChoiceParameterValue> attributesParameter = MultiChoiceParameterType.build(ATTRIBUTES_PARAMETER_ID, GraphAttributeParameterValue.class);
         attributesParameter.setName("Attributes");
         attributesParameter.setDescription("The list of attribute names to include in the export");
-        attributesParameter.setEnabled(false);
         parameters.addParameter(attributesParameter);
 
         final PluginParameter<BooleanParameterValue> selectedOnlyParameter = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);
@@ -161,7 +161,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                     final ReadableGraph readableGraph = activeGraph.getReadableGraph();
                     try {
                         final ParameterValue pv = params.get(master.getId()).getSingleChoice();
-                        if (pv instanceof ElementTypeParameterValue elementTypeParameterValue){
+                        if (pv instanceof ElementTypeParameterValue elementTypeParameterValue) {
                             final GraphElementType elementType = elementTypeParameterValue.getGraphElementType();
                             switch (elementType) {
                                 case TRANSACTION:
@@ -462,11 +462,11 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
             default -> throw new PluginException(PluginNotificationLevel.ERROR, "Invalid element type");
         }
 
-        try {            
+        try {
             //Check for valid path
             if (isValidPath(output)) {
-                exportGeo(parameters, GraphNode.getGraphNode(graph.getId()).getDisplayName(), shapes, attributes, output);  
-            }            
+                exportGeo(parameters, GraphNode.getGraphNode(graph.getId()).getDisplayName(), shapes, attributes, output);
+            }
         } catch (final IOException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex);
         }
@@ -478,18 +478,26 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                 ConstellationLoggerHelper.SUCCESS
         );
     }
-    
-    private boolean isValidPath(File output) {
-        if(StringUtils.isEmpty(output.getPath())) {
+
+    protected boolean isValidPath(final File output) {
+        if (StringUtils.isEmpty(output.getPath())) {
             NotifyDisplayer.display("Invalid output file provided, cannot be empty", NotifyDescriptor.ERROR_MESSAGE);
             return false;
         }
-        if(output.isDirectory() || (!output.isDirectory() 
+        if (output.isDirectory() || (!output.isDirectory()
                 && output.getParentFile() != null && output.getParentFile().exists())) {
             return true;
         } else {
             NotifyDisplayer.display("Invalid file path", NotifyDescriptor.ERROR_MESSAGE);
             return false;
-        }        
+        }
     }
-} 
+
+    protected boolean doesFileExist(final File output) {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))) {
+            return false;
+        }
+        // if file exists
+        return output.isFile();
+    }    
+}

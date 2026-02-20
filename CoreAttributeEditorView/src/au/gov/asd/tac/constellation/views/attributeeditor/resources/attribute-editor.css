@@ -31,14 +31,9 @@
     -fx-base:#4f7fba;
 }
 
-.menu-item:hover .label {
-    -fx-text-fill: white;
+#options-menu {
+    -fx-padding: 3;
+    -fx-background-color: #121212;
+    -fx-border-color: none;
 }
 
-.context-menu .menu-item:hover {
-    -fx-background-color: #0093FF;
-}
-
-.context-menu .menu-item:focused {
-    -fx-background-color: #0093FF;
-}

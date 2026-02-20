@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +42,9 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
 public final class CreateVertexPlugin extends SimpleEditPlugin {
 
-    public static final String X_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, VisualConcept.VertexAttribute.X.getName());
-    public static final String Y_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, VisualConcept.VertexAttribute.Y.getName());
-    public static final String Z_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, VisualConcept.VertexAttribute.Z.getName());
+    public static final String X_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, "x");
+    public static final String Y_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, "y");
+    public static final String Z_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, "z");
 
     @Override
     public PluginParameters createParameters() {
@@ -53,19 +53,16 @@ public final class CreateVertexPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> xParam = FloatParameterType.build(X_PARAMETER_ID);
         xParam.setName("X");
         xParam.setDescription("The position of the X coordinate");
-        xParam.setFloatValue(0F);
         parameters.addParameter(xParam);
 
         final PluginParameter<FloatParameterValue> yParam = FloatParameterType.build(Y_PARAMETER_ID);
         yParam.setName("Y");
         yParam.setDescription("The position of the Y coordinate");
-        yParam.setFloatValue(0F);
         parameters.addParameter(yParam);
 
         final PluginParameter<FloatParameterValue> zParam = FloatParameterType.build(Z_PARAMETER_ID);
         zParam.setName("Z");
         zParam.setDescription("The position of the Z coordinate");
-        zParam.setFloatValue(0F);
         parameters.addParameter(zParam);
 
         return parameters;
@@ -92,7 +89,7 @@ public final class CreateVertexPlugin extends SimpleEditPlugin {
         // add layer mask attributes
         if (graphLayerAttrId != Graph.NOT_FOUND && vxLayerAttrId != Graph.NOT_FOUND) {
             int layer = graph.getIntValue(graphLayerAttrId, 0);
-            layer = layer == 1 ? 1 : layer | (1 << 0);
+            layer = layer == 1 ? 1 : layer | 1;
             graph.setIntValue(vxLayerAttrId, vxId, layer);
         }
 

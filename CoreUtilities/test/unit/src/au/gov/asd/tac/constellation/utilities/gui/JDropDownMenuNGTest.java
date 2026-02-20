@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.event.ListSelectionListener;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -67,10 +67,10 @@ public class JDropDownMenuNGTest {
 
     private static final String COOKIE_ICON_PATH = "au/gov/asd/tac/constellation/utilities/modules/ext/icons/cookie.png";
     private static final String DROP_DOWN_ARROW_ICON_PATH = "au/gov/asd/tac/constellation/utilities/modules/ext/icons/drop_down_arrow.png";
-    private static final File iconFile = new File(DROP_DOWN_ARROW_ICON_PATH);
+    private static final File ICON_FILE = new File(DROP_DOWN_ARROW_ICON_PATH);
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         installedFileLocatorMocked = mock(InstalledFileLocator.class);
         installedFileLocatorMockedStatic = Mockito.mockStatic(InstalledFileLocator.class);
     }
@@ -86,7 +86,7 @@ public class JDropDownMenuNGTest {
                 .thenReturn(installedFileLocatorMocked);
         installedFileLocatorMockedStatic.when(() -> InstalledFileLocator.getDefault()
                 .locate("modules/ext/icons/drop_down_arrow.png", "au.gov.asd.tac.constellation.utilities", false))
-                .thenReturn(iconFile);
+                .thenReturn(ICON_FILE);
         items.clear();
         items.add("Item 1");
         items.add("Item 2");
@@ -105,10 +105,11 @@ public class JDropDownMenuNGTest {
     @Test
     public void testConstructor_WithText() {
         System.out.println("constructor_WithText");
+        
         final File iconFile = new File("non_existing_icon.png");
         installedFileLocatorMockedStatic.when(() -> InstalledFileLocator.getDefault().locate("modules/ext/icons/drop_down_arrow.png", "au.gov.asd.tac.constellation.utilities", false)).thenReturn(iconFile);
 
-        JDropDownMenu instance = new JDropDownMenu("Text", items);
+        JDropDownMenu<String> instance = new JDropDownMenu<>("Text", items);
         String expResult = "Text";
 
         String result = instance.getText();
@@ -121,8 +122,9 @@ public class JDropDownMenuNGTest {
     @Test
     public void testConstructor_WithIcon() {
         System.out.println("constructor_WithIcon");
+        
         final Icon icon = new ImageIcon(COOKIE_ICON_PATH);
-        final JDropDownMenu instance = new JDropDownMenu(icon, items);
+        final JDropDownMenu<String> instance = new JDropDownMenu<>(icon, items);
         final CompoundIcon result = (CompoundIcon) instance.getIcon();
         assertEquals(result.getIconCount(), 2);
 
@@ -135,17 +137,20 @@ public class JDropDownMenuNGTest {
     /**
      * Test the constructor Triggers Assertion Error when the arrow icon cannot
      * be generated.
+     * 
+     * @throws java.net.MalformedURLException
      */
     @Test(expectedExceptions = AssertionError.class)
     public void testConstructor_WithIcon_ThrowsMalformedURLExceptionTriggersAssertionError() throws MalformedURLException {
         System.out.println("constructor_WithIcon_ThrowsMalformedURLExceptionTriggersAssertionError");
+        
         try (final MockedStatic<Utilities> utilitiesMockStatic = Mockito.mockStatic(Utilities.class);) {
             final Icon icon = new ImageIcon(COOKIE_ICON_PATH);
             final URI uriMock = mock(URI.class);
             utilitiesMockStatic.when(() -> Utilities.toURI(any(File.class)))
                     .thenReturn(uriMock);
             when(uriMock.toURL()).thenThrow(MalformedURLException.class);
-            new JDropDownMenu(icon, items);
+            new JDropDownMenu<>(icon, items);
         }
     }
 
@@ -156,7 +161,8 @@ public class JDropDownMenuNGTest {
     @Test
     public void testaddButtonActionListener() {
         System.out.println("addButtonActionListener");
-        final JDropDownMenu instance = new JDropDownMenu("Text", items);
+        
+        final JDropDownMenu<String> instance = new JDropDownMenu<>("Text", items);
 
         final JButton button = instance.getButton();
         final JPopupMenu menu = instance.getMenu();
@@ -186,8 +192,8 @@ public class JDropDownMenuNGTest {
     public void testAddMenuItemActionListener() {
         System.out.println("addMenuItemActionListener");
 
-        final JDropDownMenu instance = new JDropDownMenu("Text", items);
-        final JDropDownMenu instanceSpy = spy(instance);
+        final JDropDownMenu<String> instance = new JDropDownMenu<>("Text", items);
+        final JDropDownMenu<String> instanceSpy = spy(instance);
 
         final ActionEvent actionEventMock = mock(ActionEvent.class);
         final Map<JMenuItem, String> menuItems = instanceSpy.getMenuItems();
@@ -216,8 +222,9 @@ public class JDropDownMenuNGTest {
     @Test
     public void testGetText() {
         System.out.println("getText");
+        
         final String text = "Test text";
-        final JDropDownMenu instance = new JDropDownMenu(text, items);
+        final JDropDownMenu<String> instance = new JDropDownMenu<>(text, items);
         final String result = instance.getText();
         assertEquals(result, text);
     }
@@ -228,8 +235,9 @@ public class JDropDownMenuNGTest {
     @Test
     public void testSetText() {
         System.out.println("setText");
+        
         final String text = "Test text";
-        final JDropDownMenu instance = new JDropDownMenu("Text", items);
+        final JDropDownMenu<String> instance = new JDropDownMenu<>("Text", items);
         instance.setText(text);
         final String result = instance.getText();
         assertEquals(result, text);
@@ -241,21 +249,23 @@ public class JDropDownMenuNGTest {
     @Test
     public void testGetIcon() {
         System.out.println("getIcon");
-        final JDropDownMenu instance = new JDropDownMenu("Text", items);
+        
+        final JDropDownMenu<String> instance = new JDropDownMenu<>("Text", items);
         final Icon result = instance.getIcon();
         assertNotNull(result);
     }
 
     /**
      * Test of setIcon method, of class JDropDownMenu.
+     * @throws java.net.MalformedURLException
      */
     @Test
     public void testSetIcon() throws MalformedURLException {
         System.out.println("setIcon");
 
-        final JDropDownMenu instance = new JDropDownMenu("Text", items);
+        final JDropDownMenu<String> instance = new JDropDownMenu<>("Text", items);
 
-        final Icon newIcon1 = new ImageIcon(Utilities.toURI(iconFile).toURL());
+        final Icon newIcon1 = new ImageIcon(Utilities.toURI(ICON_FILE).toURL());
         final Icon newIcon2 = new ImageIcon(DROP_DOWN_ARROW_ICON_PATH);
         instance.setIcon(newIcon1);
         Icon result = instance.getIcon();
@@ -273,8 +283,9 @@ public class JDropDownMenuNGTest {
     @Test
     public void testGetItems() {
         System.out.println("getItems");
-        final JDropDownMenu instance = new JDropDownMenu("Text", items);
-        final Set result = instance.getItems();
+        
+        final JDropDownMenu<String> instance = new JDropDownMenu<>("Text", items);
+        final Set<String> result = instance.getItems();
         assertEqualsNoOrder(result.toArray(), items.toArray());
     }
 
@@ -284,9 +295,10 @@ public class JDropDownMenuNGTest {
     @Test
     public void testSetSelectedItem() {
         System.out.println("setSelectedItem");
+        
         final String item = "Item 2";
-        final JDropDownMenu instance = new JDropDownMenu("Text", items);
-        final JDropDownMenu instanceSpy = spy(instance);
+        final JDropDownMenu<String> instance = new JDropDownMenu<>("Text", items);
+        final JDropDownMenu<String> instanceSpy = spy(instance);
         instanceSpy.setSelectedItem(item);
         verify(instanceSpy, times(1)).actionPerformed(any(ActionEvent.class));
     }
@@ -297,10 +309,11 @@ public class JDropDownMenuNGTest {
     @Test
     public void testAddActionListener() {
         System.out.println("addActionListener");
+        
         final ActionListener actionListenerMock = mock(ActionListener.class);
-        final JDropDownMenu instance = new JDropDownMenu("Text", items);
+        final JDropDownMenu<String> instance = new JDropDownMenu<>("Text", items);
         instance.addActionListener(actionListenerMock);
-        final Set<ListSelectionListener> resultListeners = instance.getListeners();
+        final Set<ActionListener> resultListeners = instance.getListeners();
         assertEquals(resultListeners.size(), 1);
         assertEquals(resultListeners.stream().findFirst().get(), actionListenerMock);
     }
@@ -309,28 +322,28 @@ public class JDropDownMenuNGTest {
      * Test of actionPerformed method, of class JDropDownMenu.
      */
     @Test
-    public void testActionPerformed() throws Exception {
+    public void testActionPerformed() {
         System.out.println("actionPerformed");
 
-        final JDropDownMenu instance = new JDropDownMenu("Text", items);
-        final JDropDownMenu instanceSpy = spy(instance);
+        final JDropDownMenu<String> instance = new JDropDownMenu<>("Text", items);
+        final JDropDownMenu<String> instanceSpy = spy(instance);
         final ActionEvent actionEventMock = mock(ActionEvent.class);
         instanceSpy.actionPerformed(actionEventMock);
         verify(instanceSpy, times(1)).performActionsOnListeners(any(ActionEvent.class));
     }
 
     @Test
-    public void testPerformActionsOnListeners() throws Exception {
+    public void testPerformActionsOnListeners() throws InterruptedException, ExecutionException {
         System.out.println("performActionsOnListeners");
 
         final ActionEvent mockEvent = mock(ActionEvent.class);
         final ActionListener actionListenerMock1 = mock(ActionListener.class);
-        final JDropDownMenu instance = new JDropDownMenu("Text", items);
+        final JDropDownMenu<String> instance = new JDropDownMenu<>("Text", items);
         instance.addActionListener(actionListenerMock1);
         List<CompletableFuture<Void>> completableFuture = instance.performActionsOnListeners(mockEvent);
         assertEquals(completableFuture.size(), 1);
 
-        CompletableFuture result = completableFuture.stream().findFirst().get();
+        CompletableFuture<Void> result = completableFuture.stream().findFirst().get();
         result.get();
 
         assertTrue(result.isDone());
@@ -343,8 +356,9 @@ public class JDropDownMenuNGTest {
     @Test
     public void testSetToolTipText() {
         System.out.println("setToolTipText");
+        
         final String text = "Tooltip text to test";
-        final JDropDownMenu instance = new JDropDownMenu("Text", items);
+        final JDropDownMenu<String> instance = new JDropDownMenu<>("Text", items);
         instance.setToolTipText(text);
         final String result = instance.getToolTipText();
         assertEquals(result, text);

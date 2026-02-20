@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -26,9 +25,8 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 
 /**
  *
@@ -36,27 +34,24 @@ import org.openide.util.NbBundle;
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.zoom.ResetToNXAxisAction")
 @ActionRegistration(displayName = "#CTL_ResetToNXAxisAction", iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/zoom/resources/axis_x_negative.png", surviveFocusChange = true)
-@ActionReferences({
-    @ActionReference(path = "Menu/Display/Reset View by Axis", position = 200)
-})
-@NbBundle.Messages("CTL_ResetToNXAxisAction=-X Axis")
+@ActionReference(path = "Menu/Display/Reset View by Axis", position = 200)
+@Messages("CTL_ResetToNXAxisAction=-X Axis")
 public class ResetToNXAxisAction extends AbstractAction {
 
     private final GraphNode context;
     private static final Icon AXIS_NX_ICON = UserInterfaceIconProvider.AXIS_X_NEGATIVE.buildIcon(16);
 
     public ResetToNXAxisAction(final GraphNode context) {
-        putValue(Action.SMALL_ICON, AXIS_NX_ICON);
         this.context = context;
+        putValue(Action.SMALL_ICON, AXIS_NX_ICON);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        final Graph graph = context.getGraph();
+    public void actionPerformed(final ActionEvent e) {
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
                 .withParameter(ResetViewPlugin.AXIS_PARAMETER_ID, "x")
                 .withParameter(ResetViewPlugin.NEGATIVE_PARAMETER_ID, true)
                 .withParameter(ResetViewPlugin.SIGNIFICANT_PARAMETER_ID, true)
-                .executeLater(graph);
+                .executeLater(context.getGraph());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.utilities.camera;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Determine the bounding box of two sets of 3D vertices.
@@ -341,15 +342,33 @@ public final class BoundingBox implements Serializable {
         isEmpty = false;
     }
     
-    /**
-     * Method used for testing to check if BoundingBox values are equal
-     * 
-     * @param bbox the BoundingBox to compare to this instance
-     * @return true if the BoundingBox are the same, false otherwise
-     */
-    public boolean areSame(final BoundingBox bbox) {
-        return min.areSame(bbox.getMin()) && min2.areSame(bbox.getMin2()) && max.areSame(bbox.getMax()) && max2.areSame(bbox.getMax2()) && Boolean.compare(isEmpty, bbox.isEmpty()) == 0;
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(min);
+        hash = 59 * hash + Objects.hashCode(max);
+        hash = 59 * hash + Objects.hashCode(min2);
+        hash = 59 * hash + Objects.hashCode(max2);
+        hash = 59 * hash + Objects.hashCode(isEmpty);
+        return hash;
     }
+    
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final BoundingBox other = (BoundingBox) obj;
+        return min.equals(other.getMin()) 
+                && min2.equals(other.getMin2()) 
+                && max.equals(other.getMax()) 
+                && max2.equals(other.getMax2()) 
+                && Boolean.compare(isEmpty, other.isEmpty()) == 0;
+    }
+    
 
     @Override
     public String toString() {

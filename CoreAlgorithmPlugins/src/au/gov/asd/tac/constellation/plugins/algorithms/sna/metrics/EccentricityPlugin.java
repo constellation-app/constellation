@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,8 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.BitSet;
-import java.util.HashMap;
+import org.eclipse.collections.api.map.primitive.MutableObjectFloatMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectFloatHashMap;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -104,7 +105,7 @@ public class EccentricityPlugin extends SimpleEditPlugin {
 
         // calculate the maximum eccentricity
         float maxEccentricity = 0;
-        final HashMap<BitSet, Float> maxEccentricityConnectedComponents = new HashMap<>();
+        final MutableObjectFloatMap<BitSet> maxEccentricityConnectedComponents = new ObjectFloatHashMap<>();
         final int vertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final float betweenness = eccentricities[vertexPosition];

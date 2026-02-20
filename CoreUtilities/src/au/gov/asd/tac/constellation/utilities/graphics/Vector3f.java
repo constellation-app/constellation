@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.graphics;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * A vector of three floating point values.
@@ -398,6 +399,25 @@ public final class Vector3f implements Serializable {
         return a[0] == vec.a[0] && a[1] == vec.a[1] && a[2] == vec.a[2];
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 41 * hash + Arrays.hashCode(a);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vector3f other = (Vector3f) obj;
+        return a[0] == other.a[0] && a[1] == other.a[1] && a[2] == other.a[2];
+    }
+    
     @Override
     public String toString() {
         return String.format("3f[%f,%f,%f]", a[0], a[1], a[2]);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,7 +106,7 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
                     wordSignificances.put(significance, words);
                     final Iterator<JsonNode> subIter = iter.next().iterator();
                     while (subIter.hasNext()) {
-                        words.add(iter.next().asText());
+                        words.add(subIter.next().asText());
                     }
                 }
             }

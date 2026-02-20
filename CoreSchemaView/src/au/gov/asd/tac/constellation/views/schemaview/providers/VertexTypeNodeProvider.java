@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import static au.gov.asd.tac.constellation.views.schemaview.providers.HelpIconProvider.populateHelpIconWithCaption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,6 +67,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -88,6 +90,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
     private final Map<SchemaVertexType, Image> foregroundIcons;
     private final RadioButton startsWithRb;
     private final TextField filterText;
+    private final HBox schemaLabelAndHelp;
 
     public VertexTypeNodeProvider() {
         schemaLabel = new Label(SeparatorConstants.HYPHEN);
@@ -95,6 +98,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         treeView = new TreeView<>();
         vertexTypes = new ArrayList<>();
         detailsView = new HBox();
+        schemaLabelAndHelp = new HBox();
         detailsView.setPadding(new Insets(5));
         backgroundIcons = new HashMap<>();
         foregroundIcons = new HashMap<>();
@@ -192,7 +196,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         });
     }
 
-    private VBox addFilter() {
+    private synchronized VBox addFilter() {
         filterText.setPromptText("Filter Node types");
         final ToggleGroup toggleGroup = new ToggleGroup();
         startsWithRb.setToggleGroup(toggleGroup);
@@ -210,14 +214,16 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         headerBox.setAlignment(Pos.CENTER_LEFT);
         headerBox.setPadding(new Insets(5));
 
-        final VBox box = new VBox(schemaLabel, headerBox, treeView);
+        final VBox box = new VBox(schemaLabelAndHelp, headerBox, treeView);
         VBox.setVgrow(treeView, Priority.ALWAYS);
         return box;
     }
 
-    private void populateTree() {
-        final TreeItem<SchemaVertexType> root = createNode(null);
-        treeView.setRoot(root);
+    private synchronized void populateTree() {
+        Platform.runLater(() -> {
+            final TreeItem<SchemaVertexType> root = createNode(null);
+            treeView.setRoot(root);
+        });
     }
 
     private boolean isFilterMatchCurrentNodeOrAnyChildren(final SchemaVertexType treeItem) {
@@ -256,15 +262,17 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
     private boolean isFilterMatchText(final String propertyValue) {
         final String filterInputText = filterText.getText().toLowerCase();
         return (StringUtils.isNotBlank(filterText.getText()) && StringUtils.isNotBlank(propertyValue))
-                && (startsWithRb.isSelected() ? StringUtils.startsWithIgnoreCase(propertyValue, filterInputText)
-                : StringUtils.containsIgnoreCase(propertyValue, filterInputText));
+                && (startsWithRb.isSelected() ? Strings.CI.startsWith(propertyValue, filterInputText)
+                : Strings.CI.contains(propertyValue, filterInputText));
 
     }
 
     @Override
-    public void setContent(final Tab tab) {
+    public synchronized void setContent(final Tab tab) {
         GraphManager.getDefault().addGraphManagerListener(this);
         final VBox filterBox = addFilter();
+
+        populateHelpIconWithCaption(this.getClass().getName(), "Node Types", schemaLabel, schemaLabelAndHelp);
 
         treeView.setShowRoot(false);
         treeView.setOnDragDetected(event -> {
@@ -393,7 +401,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
             }
         });
 
-        final VBox contentBox = new VBox(schemaLabel, filterBox, treeView, detailsView);
+        final VBox contentBox = new VBox(schemaLabelAndHelp, filterBox, treeView, detailsView);
         VBox.setVgrow(treeView, Priority.ALWAYS);
         detailsView.prefHeightProperty().bind(contentBox.heightProperty().multiply(0.4));
         final StackPane contentNode = new StackPane(contentBox);
@@ -420,8 +428,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
     /**
      * Recursively create a tree of vertex types.
      * <p>
-     * getSuperType() points to the parent. If getSuperType() points to itself,
-     * the vertex type is a root.
+     * getSuperType() points to the parent. If getSuperType() points to itself, the vertex type is a root.
      *
      * @param vxtype
      * @return
@@ -449,8 +456,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
             }
 
             /**
-             * A vertextype is not a leaf if another vertextype refers to it as
-             * a supertype.
+             * A vertextype is not a leaf if another vertextype refers to it as a supertype.
              *
              * @return
              */

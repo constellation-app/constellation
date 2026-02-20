@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 
 /**
  * Arrange the graph such that different values of the specified attribute are
@@ -125,7 +125,7 @@ public class LayerArranger implements Arranger {
             final float levelHeight = Math.max(width * 0.05F, 4);
 
             // Figure out which value belongs in which level.
-            final String[] valueArray = values.toArray(new String[values.size()]);
+            final String[] valueArray = values.toArray(String[]::new);
             Arrays.sort(valueArray, (s1, s2) -> {
                 if (s1 == null) {
                     return s2 == null ? 0 : -1;
@@ -135,7 +135,7 @@ public class LayerArranger implements Arranger {
                     return s1.toLowerCase().compareTo(s2.toLowerCase());
                 }
             });
-            final Map<String, Integer> attrLevel = new HashMap<>();
+            final MutableObjectIntMap<String> attrLevel = new ObjectIntHashMap<>();
             for (int i = 0; i < valueArray.length; i++) {
                 attrLevel.put(valueArray[i], i);
             }

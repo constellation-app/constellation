@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.layers.components;
 
 import au.gov.asd.tac.constellation.graph.value.utilities.ExpressionUtilities;
+import static au.gov.asd.tac.constellation.plugins.gui.FileInputPane.handleEventFilter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesChangeEvent;
@@ -25,17 +26,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -153,46 +151,11 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
         this.setVisible(true);
         recentValuesCombo.setDisable(false);
 
-        field.addEventFilter(KeyEvent.KEY_PRESSED, (final KeyEvent event) -> {
-            if (event.getCode() == KeyCode.DELETE) {
-                final IndexRange selection = field.getSelection();
-                if (selection.getLength() == 0) {
-                    field.deleteNextChar();
-                } else {
-                    field.deleteText(selection);
-                }
-                event.consume();
-            } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
-                field.selectNextWord();
-                event.consume();
-            } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
-                field.selectPreviousWord();
-                event.consume();
-            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.RIGHT)) {
-                field.nextWord();
-                event.consume();
-            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.LEFT)) {
-                field.previousWord();
-                event.consume();
-            } else if (event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
-                field.selectForward();
-                event.consume();
-            } else if (event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
-                field.selectBackward();
-                event.consume();
-            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.A)) {
-                field.selectAll();
-                event.consume();
-            } else if (event.getCode() == KeyCode.ESCAPE) {
-                event.consume();
-            } else {
-                // Do nothing
-            }
-        });
+        field.addEventFilter(KeyEvent.KEY_PRESSED, (final KeyEvent event) -> handleEventFilter(event, field));
 
         final Tooltip tooltip = new Tooltip("");
         tooltip.setStyle("-fx-text-fill: white;");
-        field.focusedProperty().addListener((final ObservableValue<? extends Boolean> ov, final Boolean t, final Boolean t1) -> {
+        field.focusedProperty().addListener((ov, t, t1) -> {
             if (!t1) {
                 if(validityCheckRequired) {
                     final boolean isValid = field.getText() == null || ExpressionUtilities.testQueryValidity(field.getText());
@@ -235,7 +198,7 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
     }
     
     public String getQuery() {
-        return field.getText().equals("") ? null : field.getText();
+        return StringUtils.isEmpty(field.getText()) ? null : field.getText();
     }
     
     public void setQuery(final String query) {

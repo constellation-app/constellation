@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * The DefaultConversationSenderProvider creates a sender display based on the
@@ -60,7 +62,7 @@ public class DefaultConversationSenderProvider implements ConversationSenderProv
             final int iconAttribute = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph);
 
             // Find all the requested sender attributes
-            final List<Integer> senderAttributeIds = new ArrayList<>(senderAttributes.size());
+            final MutableIntList senderAttributeIds = new IntArrayList(senderAttributes.size());
             for (final String senderAttribute : senderAttributes) {
                 final int senderAttributeId = graph.getAttribute(GraphElementType.VERTEX, senderAttribute);
                 if (senderAttributeId != Graph.NOT_FOUND) {
@@ -70,11 +72,11 @@ public class DefaultConversationSenderProvider implements ConversationSenderProv
 
             // Process each message
             for (final ConversationMessage message : messages) {
-
                 boolean validSender = false;
                 List<String> senderLabels = new ArrayList<>(senderAttributeIds.size());
 
-                for (int senderAttributeId : senderAttributeIds) {
+                for (int i = 0; i < senderAttributeIds.size(); i++) {
+                    final int senderAttributeId = senderAttributeIds.get(i);
                     final String senderLabel = graph.getStringValue(senderAttributeId, message.getSender());
                     if (StringUtils.isBlank(senderLabel)) {
                         senderLabels.add(SeparatorConstants.HYPHEN);

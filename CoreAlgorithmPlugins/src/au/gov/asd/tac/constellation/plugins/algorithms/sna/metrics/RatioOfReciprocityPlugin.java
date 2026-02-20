@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.HashMap;
-import java.util.Map;
+import org.eclipse.collections.api.map.primitive.MutableIntFloatMap;
+import org.eclipse.collections.api.tuple.primitive.IntFloatPair;
+import org.eclipse.collections.impl.map.mutable.primitive.IntFloatHashMap;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -75,7 +76,7 @@ public class RatioOfReciprocityPlugin extends SimpleEditPlugin {
 
         // calculate ratio of reciprocity for every pair of vertices on the graph
         float maxRatioOfReciprocity = 0;
-        final Map<Integer, Float> ratioOfReciprocities = new HashMap<>();
+        final MutableIntFloatMap ratioOfReciprocities = new IntFloatHashMap();
         final int linkCount = graph.getLinkCount();
         for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
             final int linkId = graph.getLink(linkPosition);
@@ -108,14 +109,14 @@ public class RatioOfReciprocityPlugin extends SimpleEditPlugin {
 
         // update the graph with ratio of reciprocity values
         final int ratioOfReciprocityAttribute = RATIO_OF_RECIPROCITY_ATTRIBUTE.ensure(graph);
-        for (final Map.Entry<Integer, Float> entry : ratioOfReciprocities.entrySet()) {
-            final int transactionCount = graph.getLinkTransactionCount(entry.getKey());
+        for (final IntFloatPair keyValue : ratioOfReciprocities.keyValuesView()) {
+            final int transactionCount = graph.getLinkTransactionCount(keyValue.getOne());
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                final int transactionId = graph.getLinkTransaction(entry.getKey(), transactionPosition);
+                final int transactionId = graph.getLinkTransaction(keyValue.getOne(), transactionPosition);
                 if (normaliseByAvailable && maxRatioOfReciprocity > 0) {
-                    graph.setFloatValue(ratioOfReciprocityAttribute, transactionId, entry.getValue() / maxRatioOfReciprocity);
+                    graph.setFloatValue(ratioOfReciprocityAttribute, transactionId, keyValue.getTwo() / maxRatioOfReciprocity);
                 } else {
-                    graph.setFloatValue(ratioOfReciprocityAttribute, transactionId, entry.getValue());
+                    graph.setFloatValue(ratioOfReciprocityAttribute, transactionId, keyValue.getTwo());
                 }
             }
         }

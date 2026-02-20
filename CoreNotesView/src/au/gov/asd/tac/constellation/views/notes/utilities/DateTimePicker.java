@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,16 @@ import java.time.ZonedDateTime;
 import java.time.chrono.Chronology;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.regex.Pattern;
 import javafx.geometry.Insets;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
-
 
 /**
  * A DateTime Selector that is in JavaFX instead of Swing.
@@ -38,29 +39,26 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DateTimePicker {
 
-    private static final String pickerLabel = "picker-label";
     private final Pane dateTimePane;
     private final DatePicker datePicker = new DatePicker();
     private final Spinner<Integer> hourPicker = new Spinner<>(0, 23, 0);
     private final Spinner<Integer> minPicker = new Spinner<>(0, 59, 0);
     private final Spinner<Integer> secPicker = new Spinner<>(0, 59, 0);
-
     private final GridPane mainGridPane = new GridPane();
+    private ZoneId zone;
+
     private static final String FROM_TEXT = "From:";
     private static final String TO_TEXT = "To:";
-
-    boolean active = false;
-    boolean from = false;
-
-    private ZoneId zone;
+    private static final String PICKER_LABEL = "picker-label";
+    private static final Pattern NUMBERS_ONLY_REGEX = Pattern.compile("\\d*");
 
     public DateTimePicker(final boolean from) {
         dateTimePane = new Pane();
         datePicker.setChronology(Chronology.ofLocale(Locale.ENGLISH));
 
         datePicker.setConverter(new StringConverter<LocalDate>() {
-            final String pattern = "yyyy-MM-dd";
-            final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+            static final String PATTERN = "yyyy-MM-dd";
+            final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(PATTERN);
 
             @Override
             public String toString(final LocalDate object) {
@@ -71,41 +69,51 @@ public class DateTimePicker {
             public LocalDate fromString(final String string) {
                 return StringUtils.isNotBlank(string) ? LocalDate.parse(string, dateFormatter) : null;
             }
-
         });
-        
+
         datePicker.setStyle("-fx-text-fill: black;");
-            
-        this.from = from;
         dateTimePane.getChildren().add(mainGridPane);
 
         final GridPane datePickerGridPane = new GridPane();
-
         final Label datePickerLabel = new Label();
 
         if (from) {
             datePickerLabel.setText(FROM_TEXT);
-            datePickerLabel.setId(pickerLabel);
+            datePickerLabel.setId(PICKER_LABEL);
         } else {
             datePickerLabel.setText(TO_TEXT);
-            datePickerLabel.setId(pickerLabel);
+            datePickerLabel.setId(PICKER_LABEL);
         }
-
 
         datePickerGridPane.add(datePickerLabel, 0, 0);
         datePickerGridPane.add(datePicker, 1, 0);
         datePicker.setMaxWidth(150);
-        final GridPane timePickerGrid = new GridPane();
+        datePicker.setEditable(false);
+
         final Label hourLabel = new Label("Hour");
         final Label minLabel = new Label("Minute");
         final Label secLabel = new Label("Second");
-        hourLabel.setId(pickerLabel);
-        minLabel.setId(pickerLabel);
-        secLabel.setId(pickerLabel);
 
-        timePickerGrid.add(hourLabel, 0, 0);
-        timePickerGrid.add(minLabel, 1, 0);
-        timePickerGrid.add(secLabel, 2, 0);
+        hourLabel.setId(PICKER_LABEL);
+        minLabel.setId(PICKER_LABEL);
+        secLabel.setId(PICKER_LABEL);
+
+        final GridPane timePickerGridPane = new GridPane();
+        timePickerGridPane.add(hourLabel, 0, 0);
+        timePickerGridPane.add(minLabel, 1, 0);
+        timePickerGridPane.add(secLabel, 2, 0);
+
+        final TextField hourField = hourPicker.getEditor();
+        final TextField minField = minPicker.getEditor();
+        final TextField secField = secPicker.getEditor();
+
+        hourField.textProperty().addListener((observable, oldValue, newValue) -> hourField.setText(validateInput(oldValue, newValue)));
+        minField.textProperty().addListener((observable, oldValue, newValue) -> minField.setText(validateInput(oldValue, newValue)));
+        secField.textProperty().addListener((observable, oldValue, newValue) -> secField.setText(validateInput(oldValue, newValue)));
+
+        hourField.focusedProperty().addListener((observable, oldValue, newValue) -> hourField.setText(validateBlankInput(hourField)));
+        minField.focusedProperty().addListener((observable, oldValue, newValue) -> minField.setText(validateBlankInput(minField)));
+        secField.focusedProperty().addListener((observable, oldValue, newValue) -> secField.setText(validateBlankInput(secField)));
 
         hourPicker.setMinWidth(60);
         minPicker.setMinWidth(60);
@@ -119,14 +127,21 @@ public class DateTimePicker {
         minPicker.setEditable(true);
         secPicker.setEditable(true);
 
-        timePickerGrid.add(hourPicker, 0, 1);
-        timePickerGrid.add(minPicker, 1, 1);
-        timePickerGrid.add(secPicker, 2, 1);
+        timePickerGridPane.add(hourPicker, 0, 1);
+        timePickerGridPane.add(minPicker, 1, 1);
+        timePickerGridPane.add(secPicker, 2, 1);
 
         mainGridPane.add(datePickerGridPane, 0, 0);
-        mainGridPane.add(timePickerGrid, 0, 1);
+        mainGridPane.add(timePickerGridPane, 0, 1);
         mainGridPane.setPadding(new Insets(1, 1, 1, 1));
+    }
 
+    public String validateInput(final String oldValue, final String newValue) {
+        return (!NUMBERS_ONLY_REGEX.matcher(newValue).matches() || newValue.length() > 2) ? oldValue : newValue;
+    }
+
+    public String validateBlankInput(final TextField textField) {
+        return (!textField.isFocused() && textField.getText().isBlank()) ? "0" : textField.getText();
     }
 
     public void disableControls(final boolean disable) {
@@ -136,11 +151,9 @@ public class DateTimePicker {
         secPicker.setDisable(disable);
     }
 
-
-    public Pane getPane() {
+    protected Pane getPane() {
         return dateTimePane;
     }
-
 
     /**
      * Sets the current date time to whatever the current local time is
@@ -151,7 +164,6 @@ public class DateTimePicker {
         this.zone = zone;
 
         final ZonedDateTime timeAtZone = ZonedDateTime.now(zone);
-
         datePicker.valueProperty().set(LocalDate.now(zone));
         hourPicker.getValueFactory().setValue(timeAtZone.getHour());
         minPicker.getValueFactory().setValue(timeAtZone.getMinute());
@@ -164,35 +176,15 @@ public class DateTimePicker {
      * @param convertTo - id of zone to convert to
      */
     public void convertCurrentDateTime(final ZoneId convertTo) {
-        if (convertTo == null || zone == convertTo) {
-            return;
+        if (convertTo != null || zone != convertTo) {
+            zone = convertTo;
+
+            final ZonedDateTime currentTime = getCurrentDateTime().withZoneSameInstant(convertTo);
+            datePicker.valueProperty().set(currentTime.toLocalDate());
+            hourPicker.getValueFactory().setValue(currentTime.getHour());
+            minPicker.getValueFactory().setValue(currentTime.getMinute());
+            secPicker.getValueFactory().setValue(currentTime.getSecond());
         }
-
-        ZonedDateTime currentTime = ZonedDateTime.of(datePicker.getValue().getYear(),
-                datePicker.getValue().getMonthValue(),
-                datePicker.getValue().getDayOfMonth(),
-                hourPicker.getValue(),
-                minPicker.getValue(),
-                secPicker.getValue(),
-                0,
-                zone);
-
-        currentTime = currentTime.withZoneSameInstant(convertTo);
-        zone = convertTo;
-
-        datePicker.valueProperty().set(currentTime.toLocalDate());
-        hourPicker.getValueFactory().setValue(currentTime.getHour());
-        minPicker.getValueFactory().setValue(currentTime.getMinute());
-        secPicker.getValueFactory().setValue(currentTime.getSecond());
-
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(final boolean active) {
-        this.active = active;
     }
 
     /**
@@ -201,12 +193,13 @@ public class DateTimePicker {
      * @return
      */
     public ZonedDateTime getCurrentDateTime() {
-        return ZonedDateTime.of(datePicker.getValue().getYear(),
+        return ZonedDateTime.of(
+                datePicker.getValue().getYear(),
                 datePicker.getValue().getMonthValue(),
                 datePicker.getValue().getDayOfMonth(),
-                hourPicker.getValue(),
-                minPicker.getValue(),
-                secPicker.getValue(),
+                hourPicker.getValue() != null ? hourPicker.getValue() : 0,
+                minPicker.getValue() != null ? minPicker.getValue() : 0,
+                secPicker.getValue() != null ? secPicker.getValue() : 0,
                 0,
                 zone);
     }
@@ -214,5 +207,4 @@ public class DateTimePicker {
     public ZoneId getZoneId() {
         return zone;
     }
-
 }

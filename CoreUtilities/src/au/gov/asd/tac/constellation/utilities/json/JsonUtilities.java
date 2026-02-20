@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -249,9 +249,8 @@ public class JsonUtilities {
     }
 
     /**
-     * Return the {@code JsonNode} found after traversing through nodes with
-     * supplied keys from starting {@code JsonNode} - or null if path doesn't
-     * return a valid node.
+     * Return the {@code JsonNode} found after traversing through nodes with supplied keys from starting
+     * {@code JsonNode} - or null if path doesn't return a valid node.
      *
      * @param node Node to start iteration from.
      * @param keys Text names of nodes to traverse through.
@@ -269,13 +268,11 @@ public class JsonUtilities {
     }
 
     /**
-     * Private helper method returning string value of node. No validation of
-     * node is performed, it is the responsibility of calling method to ensure
-     * node is not null.
+     * Private helper method returning string value of node. No validation of node is performed, it is the
+     * responsibility of calling method to ensure node is not null.
      *
      * @param node Node to extract string value from.
-     * @return String representation of node except returns null if the node is
-     * null.
+     * @return String representation of node except returns null if the node is null.
      */
     public static String getNodeText(final JsonNode node) {
         if (node.isNull()) {
@@ -300,8 +297,8 @@ public class JsonUtilities {
     }
 
     /**
-     * Return the concatenated {@code textValue()} separated by
-     * {@code delimiter} of a {@code JsonNode} which has an array of values
+     * Return the concatenated {@code textValue()} separated by {@code delimiter} of a {@code JsonNode} which has an
+     * array of values
      *
      * @param attribute the attribute of the node to return.
      * @param node the node that holds the attribute
@@ -313,7 +310,7 @@ public class JsonUtilities {
 
         if (node.has(attribute)) {
             for (final JsonNode entry : node.get(attribute)) {
-                if (sb.length() > 0) {
+                if (!sb.isEmpty()) {
                     sb.append(delimiter);
                 }
                 sb.append(getNodeText(entry));
@@ -325,8 +322,8 @@ public class JsonUtilities {
     }
 
     /**
-     * Return the {@code textValue()} of a {@code JsonNode} which is inside
-     * another {@code JsonNode} indexed at position 0.
+     * Return the {@code textValue()} of a {@code JsonNode} which is inside another {@code JsonNode} indexed at position
+     * 0.
      *
      * <p>
      * Example: {@code root.get("thing").get(0).get("uri").textValue()}
@@ -337,8 +334,8 @@ public class JsonUtilities {
      * @return a {@code String} or null if not found
      */
     public static String getTextValueOfFirstSubElement(final String attribute, final String innerAttribute, final JsonNode node) {
-        return node.has(attribute) && node.get(attribute).has(0) && node.get(attribute).get(0).has(innerAttribute) 
-                ? getNodeText(node.get(attribute).get(0).get(innerAttribute)) 
+        return node.has(attribute) && node.get(attribute).has(0) && node.get(attribute).get(0).has(innerAttribute)
+                ? getNodeText(node.get(attribute).get(0).get(innerAttribute))
                 : null;
     }
 
@@ -360,8 +357,20 @@ public class JsonUtilities {
     }
 
     /**
-     * Converts a map to JSON String. Will return an empty string if no entries
-     * are valid in the map.
+     * Converts a map to JSON String. Will return an empty string if no entries are valid in the map. Uses default
+     * JsonFactory
+     *
+     * @param <K> the key type of the map
+     * @param <V> the value type of the map
+     * @param map the map to convert to a json string
+     * @return the JSON String representation of the map
+     */
+    public static <K, V> String getMapAsString(final Map<K, V> map) {
+        return getMapAsString(JsonFactoryUtilities.getJsonFactory(), map);
+    }
+
+    /**
+     * Converts a map to JSON String. Will return an empty string if no entries are valid in the map.
      *
      * @param <K> the key type of the map
      * @param <V> the value type of the map
@@ -394,8 +403,18 @@ public class JsonUtilities {
     }
 
     /**
-     * Converts a JSON String to a String, String map. Will return an empty Map
-     * if no valid items within the String
+     * Converts a JSON String to a String, String map. Will return an empty Map if no valid items within the String.
+     * Uses default JsonFactory
+     *
+     * @param mapAsString the JSON String representation of the map
+     * @return A String, String map based on the JSON String
+     */
+    public static Map<String, String> getStringAsMap(final String mapAsString) {
+        return getStringAsMap(JsonFactoryUtilities.getJsonFactory(), mapAsString);
+    }
+
+    /**
+     * Converts a JSON String to a String, String map. Will return an empty Map if no valid items within the String
      *
      * @param factory the jsonFactory object to use
      * @param mapAsString the JSON String representation of the map

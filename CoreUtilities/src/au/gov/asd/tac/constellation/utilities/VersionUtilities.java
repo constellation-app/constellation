@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,16 @@
  */
 package au.gov.asd.tac.constellation.utilities;
 
+import java.util.regex.Pattern;
+
 /**
  *
  * @author aquila
  */
 public class VersionUtilities {
+    
+    private static final Pattern CHARACTERS_AFTER_SPACE_REGEX = Pattern.compile(" .*");
+    private static final Pattern SEP_REGEX = Pattern.compile("\\.");
     
     private VersionUtilities() {
         throw new IllegalStateException("Utility class");
@@ -35,8 +40,10 @@ public class VersionUtilities {
      * @return True if current is at least minimum_version, false otherwise.
      */
     public static boolean doesVersionMeetMinimum(final String current, final String minimumVersion) {
-        final String[] currentSplit = current.replaceAll(" .*", "").trim().split("\\.");
-        final String[] minimumVersionSplit = minimumVersion.replaceAll(" .*", "").trim().split("\\.");
+        final String trimmedCurrent = CHARACTERS_AFTER_SPACE_REGEX.matcher(current).replaceAll("").trim();
+        final String[] currentSplit = SEP_REGEX.split(trimmedCurrent);
+        final String trimmedMinimumVersion = CHARACTERS_AFTER_SPACE_REGEX.matcher(minimumVersion).replaceAll("").trim();
+        final String[] minimumVersionSplit = SEP_REGEX.split(trimmedMinimumVersion);
 
         final int length = Math.max(currentSplit.length, minimumVersionSplit.length);
         for (int i = 0; i < length; i++) {

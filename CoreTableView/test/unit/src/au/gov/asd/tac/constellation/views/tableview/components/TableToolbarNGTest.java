@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,6 +150,7 @@ public class TableToolbarNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -182,8 +183,7 @@ public class TableToolbarNGTest {
 
         assertTrue(separator.isPresent());
 
-        assertEquals(
-                FXCollections.observableList(
+        assertEquals(FXCollections.observableList(
                         List.of(
                                 tableToolbar.getColumnVisibilityButton(),
                                 tableToolbar.getSelectedOnlyButton(),
@@ -194,58 +194,40 @@ public class TableToolbarNGTest {
                                 tableToolbar.getPreferencesMenu().getPreferencesButton(),
                                 tableToolbar.getHelpButton()
                         )
-                ),
-                tableToolbar.getToolbar().getItems()
-        );
+                ), tableToolbar.getToolbar().getItems());
         assertEquals(Orientation.VERTICAL, tableToolbar.getToolbar().getOrientation());
         assertEquals(new Insets(5), tableToolbar.getToolbar().getPadding());
 
         // Column Visibility Button
-        buttonChecks(
-                tableToolbar.getColumnVisibilityButton(),
-                UserInterfaceIconProvider.COLUMNS.buildImage(16),
-                "Column Visibility"
-        );
+        buttonChecks(tableToolbar.getColumnVisibilityButton(), UserInterfaceIconProvider.COLUMNS.buildImage(16), "Column Visibility");
 
         columnVisibilityButtonActionCheck();
 
         // Selected Only Mode Button
-        toggleButtonChecks(
-                tableToolbar.getSelectedOnlyButton(),
-                UserInterfaceIconProvider.VISIBLE.buildImage(16),
-                "Selected Only"
-        );
+        toggleButtonChecks(tableToolbar.getSelectedOnlyButton(), UserInterfaceIconProvider.VISIBLE.buildImage(16), "Selected Only");
 
         selectedOnlyModeActionChecks(true, UserInterfaceIconProvider.VISIBLE.buildImage(16));
         selectedOnlyModeActionChecks(false, UserInterfaceIconProvider.VISIBLE.buildImage(16, ConstellationColor.CHERRY.getJavaColor()));
 
         // Element Type Button
-        buttonChecks(
-                tableToolbar.getElementTypeButton(),
-                UserInterfaceIconProvider.TRANSACTIONS.buildImage(16),
-                "Element Type"
-        );
+        buttonChecks(tableToolbar.getElementTypeButton(), UserInterfaceIconProvider.TRANSACTIONS.buildImage(16), "Element Type");
 
-        elementTypeActionCheck();
+        //elementTypeActionCheck();
+
+        elementTypeChangeActionChecks(GraphElementType.VERTEX, GraphElementType.TRANSACTION, new ImageView(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16)).getImage());
+        elementTypeChangeActionChecks(GraphElementType.META, GraphElementType.TRANSACTION, new ImageView(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16)).getImage());
+        elementTypeChangeActionChecks(GraphElementType.TRANSACTION, GraphElementType.VERTEX, new ImageView(UserInterfaceIconProvider.NODES.buildImage(16)).getImage());
 
         // Help Button
-        buttonChecks(
-                tableToolbar.getHelpButton(),
-                UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.WHITE.getJavaColor()),
-                "Display help for Table View"
-        );
+        buttonChecks(tableToolbar.getHelpButton(), UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.WHITE.getJavaColor()), "Display help for Table View");
 
         helpContextButtonActionCheck();
     }
 
     @Test
     public void updateToolbar() throws InterruptedException {
-        buttonChangeChecksOnToolbarUpdate(
-                true,
-                GraphElementType.TRANSACTION,
-                UserInterfaceIconProvider.VISIBLE.buildImage(16, ConstellationColor.CHERRY.getJavaColor()),
-                UserInterfaceIconProvider.TRANSACTIONS.buildImage(16)
-        );
+        buttonChangeChecksOnToolbarUpdate(true, GraphElementType.TRANSACTION, UserInterfaceIconProvider.VISIBLE.buildImage(16, ConstellationColor.CHERRY.getJavaColor()),
+                UserInterfaceIconProvider.TRANSACTIONS.buildImage(16));
 
         buttonChangeChecksOnToolbarUpdate(
                 false,
@@ -283,16 +265,13 @@ public class TableToolbarNGTest {
         when(tableTopComponent.getCurrentState()).thenReturn(state);
 
         state.setElementType(GraphElementType.META);
-        assertTrue(isImageEqual(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16),
-                tableToolbar.getElementTypeInitialIcon().getImage()));
+        assertTrue(isImageEqual(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16), tableToolbar.getElementTypeInitialIcon().getImage()));
 
         state.setElementType(GraphElementType.TRANSACTION);
-        assertTrue(isImageEqual(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16),
-                tableToolbar.getElementTypeInitialIcon().getImage()));
+        assertTrue(isImageEqual(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16), tableToolbar.getElementTypeInitialIcon().getImage()));
 
         state.setElementType(GraphElementType.VERTEX);
-        assertTrue(isImageEqual(UserInterfaceIconProvider.NODES.buildImage(16),
-                tableToolbar.getElementTypeInitialIcon().getImage()));
+        assertTrue(isImageEqual(UserInterfaceIconProvider.NODES.buildImage(16), tableToolbar.getElementTypeInitialIcon().getImage()));
 
         state.setElementType(GraphElementType.EDGE);
         assertTrue(isImageEqual(UserInterfaceIconProvider.EDGES.buildImage(16),
@@ -304,8 +283,7 @@ public class TableToolbarNGTest {
 
         when(tableTopComponent.getCurrentState()).thenReturn(null);
 
-        assertTrue(isImageEqual(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16),
-                tableToolbar.getElementTypeInitialIcon().getImage()));
+        assertTrue(isImageEqual(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16), tableToolbar.getElementTypeInitialIcon().getImage()));
     }
 
     @Test
@@ -343,10 +321,8 @@ public class TableToolbarNGTest {
      * @param expectedSelectedOnlyIcon the icon expected to be on the selected only button once update is called
      * @param expectedElementTypeIcon the icon expected to be on the element type button once the update it called
      */
-    private void buttonChangeChecksOnToolbarUpdate(final boolean newSelectedOnlyState,
-            final GraphElementType newElementType,
-            final Image expectedSelectedOnlyIcon,
-            final Image expectedElementTypeIcon) throws InterruptedException {
+    private void buttonChangeChecksOnToolbarUpdate(final boolean newSelectedOnlyState, final GraphElementType newElementType,
+            final Image expectedSelectedOnlyIcon, final Image expectedElementTypeIcon) throws InterruptedException {
         final TableViewState state = new TableViewState();
 
         final ArgumentCaptor<ImageView> selectedOnlyCaptor = ArgumentCaptor.forClass(ImageView.class);
@@ -369,16 +345,10 @@ public class TableToolbarNGTest {
 
         verify(selectedOnlyButton).setSelected(newSelectedOnlyState);
         verify(selectedOnlyButton).setGraphic(selectedOnlyCaptor.capture());
-        assertTrue(isImageEqual(
-                expectedSelectedOnlyIcon,
-                selectedOnlyCaptor.getValue().getImage()
-        ));
+        assertTrue(isImageEqual(expectedSelectedOnlyIcon, selectedOnlyCaptor.getValue().getImage()));
 
         verify(elementTypeButton).setGraphic(elementTypeCaptor.capture());
-        assertTrue(isImageEqual(
-                expectedElementTypeIcon,
-                elementTypeCaptor.getValue().getImage()
-        ));
+        assertTrue(isImageEqual(expectedElementTypeIcon, elementTypeCaptor.getValue().getImage()));
     }
 
     /**
@@ -388,9 +358,7 @@ public class TableToolbarNGTest {
      * @param expectedIcon the expected image to be present on the button
      * @param expectedToolTip the expected tool tip to be associated with the button
      */
-    private void buttonChecks(final Button button,
-            final Image expectedIcon,
-            final String expectedToolTip) {
+    private void buttonChecks(final Button button, final Image expectedIcon, final String expectedToolTip) {
         final ImageView buttonIcon = (ImageView) button.getGraphic();
         assertTrue(isImageEqual(expectedIcon, buttonIcon.getImage()));
         assertEquals(120.0d, button.getMaxWidth());
@@ -405,9 +373,7 @@ public class TableToolbarNGTest {
      * @param expectedIcon the expected image to be present on the toggle button
      * @param expectedToolTip the expected tool tip to be associated with the toggle button
      */
-    private void toggleButtonChecks(final ToggleButton toggleButton,
-            final Image expectedIcon,
-            final String expectedToolTip) {
+    private void toggleButtonChecks(final ToggleButton toggleButton, final Image expectedIcon, final String expectedToolTip) {
         final ImageView buttonIcon = (ImageView) toggleButton.getGraphic();
         assertTrue(isImageEqual(expectedIcon, buttonIcon.getImage()));
         assertEquals(120.0d, toggleButton.getMaxWidth());
@@ -437,10 +403,8 @@ public class TableToolbarNGTest {
      * button is pressed will be the inverse
      * @param expectedNewIcon the new image that is expected to be on the button after it was clicked
      */
-    private void selectedOnlyModeActionChecks(final boolean selectedOnlyModeInitialState,
-            final Image expectedNewIcon) {
-        try (MockedStatic<PluginExecution> pluginExecutionMockedStatic
-                = Mockito.mockStatic(PluginExecution.class)) {
+    private void selectedOnlyModeActionChecks(final boolean selectedOnlyModeInitialState, final Image expectedNewIcon) {
+        try (MockedStatic<PluginExecution> pluginExecutionMockedStatic = Mockito.mockStatic(PluginExecution.class)) {
             final PluginExecution pluginExecution = mock(PluginExecution.class);
             final ActionEvent actionEvent = mock(ActionEvent.class);
 
@@ -449,8 +413,7 @@ public class TableToolbarNGTest {
 
             when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
 
-            final ArgumentCaptor<UpdateStatePlugin> captor
-                    = ArgumentCaptor.forClass(UpdateStatePlugin.class);
+            final ArgumentCaptor<UpdateStatePlugin> captor = ArgumentCaptor.forClass(UpdateStatePlugin.class);
 
             pluginExecutionMockedStatic.when(() -> PluginExecution
                     .withPlugin(captor.capture())).thenReturn(pluginExecution);
@@ -477,16 +440,39 @@ public class TableToolbarNGTest {
      * @param elementTypeEndState the expected element type in the state after the button is pressed
      * @param expectedNewIcon the expected image to be now on the element type change button
      */
-    private void elementTypeActionCheck() {
-        final ActionEvent actionEvent = mock(ActionEvent.class);
+
+    //private void elementTypeActionCheck() {
+        //final ActionEvent actionEvent = mock(ActionEvent.class);
+
+    private void elementTypeChangeActionChecks(final GraphElementType elementTypeInitialState, final GraphElementType elementTypeEndState,
+            final Image expectedNewIcon) {
+        try (MockedStatic<PluginExecution> pluginExecutionMockedStatic = Mockito.mockStatic(PluginExecution.class)) {
+            final PluginExecution pluginExecution = mock(PluginExecution.class);
+            final ActionEvent actionEvent = mock(ActionEvent.class);
 
         tableToolbar.getElementTypeButton().getOnAction().handle(actionEvent);
 
         System.out.println("contextMenu:");
         System.out.println(contextMenu.toString());
 
-        verify(contextMenu).show(tableToolbar.getElementTypeButton(), Side.RIGHT, 0, 0);
-        verify(actionEvent).consume();
+        //verify(contextMenu).show(tableToolbar.getElementTypeButton(), Side.RIGHT, 0, 0);
+        //verify(actionEvent).consume();
+            final ArgumentCaptor<UpdateStatePlugin> captor = ArgumentCaptor.forClass(UpdateStatePlugin.class);
+
+            pluginExecutionMockedStatic.when(() -> PluginExecution
+                    .withPlugin(captor.capture())).thenReturn(pluginExecution);
+
+            tableToolbar.getElementTypeButton().getOnAction().handle(actionEvent);
+
+            final UpdateStatePlugin updatePlugin = captor.getValue();
+
+            final ImageView buttonIcon = (ImageView) tableToolbar.getElementTypeButton().getGraphic();
+            assertTrue(isImageEqual(expectedNewIcon, buttonIcon.getImage()));
+
+            assertEquals(elementTypeEndState, updatePlugin.getTableViewState().getElementType());
+            verify(pluginExecution).executeLater(graph);
+            verify(actionEvent).consume();
+        }
     }
 
     /**
@@ -524,14 +510,11 @@ public class TableToolbarNGTest {
         }
 
         // Compare images size
-        if (firstImage.getWidth() != secondImage.getWidth()) {
+        if (firstImage.getWidth() != secondImage.getWidth()
+                || firstImage.getHeight() != secondImage.getHeight()) {
             return false;
         }
-
-        if (firstImage.getHeight() != secondImage.getHeight()) {
-            return false;
-        }
-
+        
         // Compare images color
         for (int x = 0; x < firstImage.getWidth(); x++) {
             for (int y = 0; y < firstImage.getHeight(); y++) {

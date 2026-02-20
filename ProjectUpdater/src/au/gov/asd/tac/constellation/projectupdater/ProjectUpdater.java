@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -166,7 +168,6 @@ public class ProjectUpdater extends Task {
                             extractMatchingPackages(jarFile, packages, publicPackages);
                         }
                     } else {
-//                        throw new IllegalStateException("Not a JAR file: " + jarFile.getAbsolutePath());
                         logMessage("\tWARNING: Not a JAR file: " + jarFile.getAbsolutePath());
                     }
                 }
@@ -189,8 +190,9 @@ public class ProjectUpdater extends Task {
             }
 
             // Delete the existing old file and replace it with a copy of the current project.xml
-            final boolean oldProjectFileDeleted = oldProjectFile.delete();
-            if (!oldProjectFileDeleted) {
+            try {
+                Files.delete(Path.of(oldProjectFile.getPath()));
+            } catch (final IOException ex) {
                 logMessage("ERROR: The old project.xml file could not be deleted.");
             }
             final boolean projectFileRenamed = projectFile.renameTo(oldProjectFile);
@@ -230,9 +232,7 @@ public class ProjectUpdater extends Task {
         final DocumentBuilder builder = builderFactory.newDocumentBuilder();
 
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        // Ant's build.xml can not use this
-//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         final Transformer transformer = transformerFactory.newTransformer();
 
         // Create a document to work on
@@ -250,9 +250,7 @@ public class ProjectUpdater extends Task {
 
     private static void saveXMLFile(final Document document, final File xmlFile) throws IOException, TransformerException {
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        // Ant's build.xml can not use this
-//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         final Transformer transformer = transformerFactory.newTransformer();
 
         try (final FileOutputStream out = new FileOutputStream(xmlFile)) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,15 +58,13 @@ public abstract class AttributeValueEditorFactory<V> extends AbstractEditorFacto
         final List<String> editTypes = new ArrayList<>();
         editTypes.add(attributeType);
         editTypes.addAll(interaction.getPreferredEditTypes());
-
-        String chosenEditType = null;
+        
         for (final String editType : editTypes) {
             if (typeHandlers.containsKey(editType)) {
-                chosenEditType = editType;
-                break;
+                return typeHandlers.get(editType);
             }
         }
-
-        return chosenEditType == null ? null : typeHandlers.get(chosenEditType);
+        
+        return null;
     }
 }

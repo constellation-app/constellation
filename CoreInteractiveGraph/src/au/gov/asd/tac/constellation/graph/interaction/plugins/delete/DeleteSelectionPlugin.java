@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,15 +44,14 @@ public class DeleteSelectionPlugin extends SimpleEditPlugin {
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         // Delete vertices first. This will implicitly delete their transactions, including any selected ones,
         // which means less work below.
-        int vxSelected = VisualConcept.VertexAttribute.SELECTED.get(graph);
-
+        final int vxSelected = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (vxSelected != Graph.NOT_FOUND) {
-            int vertexCount = graph.getVertexCount();
-            int[] deletedVertices = new int[vertexCount];
+            final int vertexCount = graph.getVertexCount();
+            final int[] deletedVertices = new int[vertexCount];
             int deletedVertexCount = 0;
 
             for (int position = 0; position < vertexCount; position++) {
-                int vertex = graph.getVertex(position);
+                final int vertex = graph.getVertex(position);
                 if (graph.getBooleanValue(vxSelected, vertex)) {
                     deletedVertices[deletedVertexCount++] = vertex;
                 }
@@ -69,14 +68,14 @@ public class DeleteSelectionPlugin extends SimpleEditPlugin {
             }
         }
 
-        int txSelected = VisualConcept.TransactionAttribute.SELECTED.get(graph);
+        final int txSelected = VisualConcept.TransactionAttribute.SELECTED.get(graph);
         if (txSelected != Graph.NOT_FOUND) {
-            int transactionCount = graph.getTransactionCount();
-            int[] deletedTransactions = new int[transactionCount];
+            final int transactionCount = graph.getTransactionCount();
+            final int[] deletedTransactions = new int[transactionCount];
             int deletedTransactionCount = 0;
 
             for (int position = 0; position < transactionCount; position++) {
-                int transaction = graph.getTransaction(position);
+                final int transaction = graph.getTransaction(position);
                 if (graph.getBooleanValue(txSelected, transaction)) {
                     deletedTransactions[deletedTransactionCount++] = transaction;
                 }

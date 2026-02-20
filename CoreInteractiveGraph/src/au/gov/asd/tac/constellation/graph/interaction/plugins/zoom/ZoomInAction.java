@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,12 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 
 /**
  * Zoom the camera inwards
@@ -36,24 +34,13 @@ import org.openide.util.NbBundle;
 @ActionReferences({
     @ActionReference(path = "Menu/Display", position = 201, separatorBefore = 199),
     @ActionReference(path = "Toolbars/Display", position = 102),
-    @ActionReference(path = "Shortcuts", name = "CA-Up")
+    @ActionReference(path = "Shortcuts", name = "D-EQUALS"),
+    @ActionReference(path = "Shortcuts", name = "D-ADD")
 })
-@NbBundle.Messages("CTL_ZoomIn=Zoom In")
-public final class ZoomInAction implements ActionListener {
-
-    private final GraphNode context;
-
-    /**
-     * Construct a new ZoomInAction.
-     *
-     * @param context GraphNode.
-     */
+@Messages("CTL_ZoomIn=Zoom In")
+public final class ZoomInAction extends SimplePluginAction {
+    
     public ZoomInAction(final GraphNode context) {
-        this.context = context;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_IN).executeLater(context.getGraph());
+        super(context, InteractiveGraphPluginRegistry.ZOOM_IN);
     }
 }

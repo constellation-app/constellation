@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -249,7 +249,7 @@ public abstract class SchemaFactory {
      * objects of {@link SchemaAttribute} objects which will be registered to
      * {@link Schema} objects created by this SchemaFactory.
      */
-    public final EnumMap<GraphElementType, Map<String, SchemaAttribute>> getRegisteredAttributes() {
+    public final Map<GraphElementType, Map<String, SchemaAttribute>> getRegisteredAttributes() {
         return allRegisteredAttributes;
     }
 

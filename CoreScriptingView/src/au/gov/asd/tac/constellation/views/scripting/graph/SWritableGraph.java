@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -237,10 +237,10 @@ public class SWritableGraph extends SReadableGraph {
      * @param traceback the exception traceback.
      */
     @Override
-    public void __exit__(final Object exc_Type, final Object excValue, final Object traceback) {
+    public void __exit__(final Object excType, final Object excValue, final Object traceback) {
         LOGGER.log(Level.FINE, "__exit__ {0}", this);
-        LOGGER.log(Level.FINE, "{0} {1} {2}", new Object[]{exc_Type, excValue, traceback});
-        if (exc_Type == null) {
+        LOGGER.log(Level.FINE, "{0} {1} {2}", new Object[]{excType, excValue, traceback});
+        if (excType == null) {
             commit();
         } else {
             rollback();

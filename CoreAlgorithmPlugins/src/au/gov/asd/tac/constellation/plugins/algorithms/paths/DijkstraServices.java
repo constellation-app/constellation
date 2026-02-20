@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -563,7 +563,6 @@ public class DijkstraServices {
                         shortestPaths.add(new ArrayList<>(path));
                         path.remove(path.indexOf(previous));
                     }
-                    count++;
                 } else if (count == 0) {
                     //If we are at 0 and not at the target we have reached a dead end
                     //Not the shortest path

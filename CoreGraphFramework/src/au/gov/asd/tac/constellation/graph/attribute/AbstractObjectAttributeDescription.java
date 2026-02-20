@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,9 +100,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
             Arrays.fill(data, len, capacity, defaultValue);
         }
     }
-
-    // Suppressing warning as the data within the ObjectAttributeDescription will always be convertable to type T
-    @SuppressWarnings("unchecked")
+    
     @Override
     public String getString(final int id) {
         return data[id] != null ? String.valueOf(data[id]) : null;

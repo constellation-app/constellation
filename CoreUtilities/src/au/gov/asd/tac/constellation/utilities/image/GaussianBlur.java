@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,8 +71,8 @@ public class GaussianBlur {
                         double wsum = Double.MIN_VALUE;
                         for (int iy = (i - rs); iy < (i + rs + 1); iy++) {
                             for (int ix = (j - rs); ix < (j + rs + 1); ix++) {
-                                final int x = Math.min(width - 1, Math.max(0, ix));
-                                final int y = Math.min(height - 1, Math.max(0, iy));
+                                final int x = Math.clamp(ix, 0, width - 1);
+                                final int y = Math.clamp(iy, 0, height - 1);
                                 final int dsq = (ix - j) * (ix - j) + (iy - i) * (iy - i);
                                 final double wght = Math.exp(-dsq / (2.0 * radius * radius)) / (Math.PI * 2.0 * radius * radius);
                                 val += sourceChannel[y * width + x] * wght;
@@ -165,8 +165,8 @@ public class GaussianBlur {
                 double val = 0;
                 for (int iy = (i - radius); iy < (i + radius + 1); iy++) {
                     for (int ix = (j - radius); ix < (j + radius + 1); ix++) {
-                        final int x = Math.min(width - 1, Math.max(0, ix));
-                        final int y = Math.min(height - 1, Math.max(0, iy));
+                        final int x = Math.clamp(ix, 0, width - 1);
+                        final int y = Math.clamp(iy, 0, height - 1);
                         val += sourceChannel[y * width + x];
                     }
                 }
@@ -181,7 +181,7 @@ public class GaussianBlur {
             for (int j = 0; j < width; j++) {
                 double val = 0;
                 for (int ix = (j - radius); ix < (j + radius + 1); ix++) {
-                    final int x = Math.min(width - 1, Math.max(0, ix));
+                    final int x = Math.clamp(ix, 0, width - 1);
                     val += sourceChannel[i * width + x];
                 }
                 targetChannel[i * width + j] = (float) (val / (radius + radius + 1));
@@ -195,7 +195,7 @@ public class GaussianBlur {
             for (int j = 0; j < width; j++) {
                 double val = 0;
                 for (int iy = (i - radius); iy < (i + radius + 1); iy++) {
-                    final int y = Math.min(height - 1, Math.max(0, iy));
+                    final int y = Math.clamp(iy, 0, height - 1);
                     val += sourceChannel[y * width + j];
                 }
                 targetChannel[i * width + j] = (float) (val / (radius + radius + 1));

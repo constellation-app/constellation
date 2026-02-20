@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -140,22 +140,24 @@ public class GraphReport implements UndoRedoReportListener {
     @Override
     public void fireNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
         if (hasMatchingPluginReport(undoRedoReport)) {
-            getMatchingPluginReport(undoRedoReport).setUndone(undoRedoReport.getActionType() == UNDO);
+            getMatchingPluginReport(undoRedoReport);
         }
     }
 
-    private PluginReport getMatchingPluginReport(final UndoRedoReport undoRedoReport) {
+    private void getMatchingPluginReport(final UndoRedoReport undoRedoReport) {
         if (undoRedoReport.getActionType() == UNDO) {
-            return getPluginReports().stream()
+            getPluginReports().stream()
                     .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName())
                     && !entry.isUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
-                    .max(Comparator.comparing(PluginReport::getStartTime)).get();
+                    .max(Comparator.comparing(PluginReport::getStartTime))
+                    .ifPresent(pr -> pr.setUndone(undoRedoReport.getActionType() == UNDO));
 
         } else {
-            return getPluginReports().stream()
+            getPluginReports().stream()
                     .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName())
                     && entry.isUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
-                    .min(Comparator.comparing(PluginReport::getStartTime)).get();
+                    .min(Comparator.comparing(PluginReport::getStartTime))
+                    .ifPresent(pr -> pr.setUndone(undoRedoReport.getActionType() == UNDO));
         }
     }
 

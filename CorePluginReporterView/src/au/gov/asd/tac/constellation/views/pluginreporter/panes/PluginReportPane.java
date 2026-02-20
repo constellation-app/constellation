@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -206,7 +206,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
         try (final PrintWriter out = new PrintWriter(writer)) {
             out.append("Name: " + pluginReport.getPluginName() + SeparatorConstants.NEWLINE);
             out.append("Description: " + pluginReport.getPluginDescription() + SeparatorConstants.NEWLINE);
-            out.append("Last Message: " + pluginReport.getLastMessage() + SeparatorConstants.NEWLINE);
+            out.append("All Messages: " + SeparatorConstants.NEWLINE + pluginReport.getAllMessages() + SeparatorConstants.NEWLINE + SeparatorConstants.NEWLINE);
             out.append("Tags: " + Arrays.toString(pluginReport.getTags()) + SeparatorConstants.NEWLINE);
             out.append("Start: " + dateFormat.format(new Date(pluginReport.getStartTime())) + SeparatorConstants.NEWLINE);
             out.append("Stop: " + dateFormat.format(new Date(pluginReport.getStopTime())) + SeparatorConstants.NEWLINE);

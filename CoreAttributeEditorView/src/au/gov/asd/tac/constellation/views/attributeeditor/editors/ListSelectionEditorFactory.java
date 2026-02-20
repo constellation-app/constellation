@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,18 +28,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
+ * Editor Factory for selecting items in a list of strings
  *
  * @author twilight_sparkle
  */
 public class ListSelectionEditorFactory extends AbstractEditorFactory<List<String>> {
 
     @Override
-    public AbstractEditor<List<String>> createEditor(final EditOperation editOperation, final DefaultGetter<List<String>> defaultGetter, final ValueValidator<List<String>> validator, final String editedItemName, final List<String> initialValue) {
-        return new ListSelectionEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<List<String>> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<List<String>> validator, final List<String> defaultValue, final List<String> initialValue) {
+        return new ListSelectionEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     public class ListSelectionEditor extends AbstractEditor<List<String>> {
@@ -49,8 +49,8 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
         private ObservableList<String> availableItemsList;
         private ObservableList<String> selectedItemsList;
 
-        protected ListSelectionEditor(final EditOperation editOperation, final DefaultGetter<List<String>> defaultGetter, final ValueValidator<List<String>> validator, final String editedItemName, final List<String> initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected ListSelectionEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<List<String>> validator, final List<String> defaultValue, final List<String> initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue);
         }
 
         public void setPossibleItems(final List<String> possibleItems) {
@@ -82,25 +82,23 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-
-            final VBox nonSelectedItemsBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            final VBox selectedItemsBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            final VBox addAndRemoveButtons = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
             availableItemsList = FXCollections.observableArrayList();
-            selectedItemsList = FXCollections.observableArrayList();
-
             final Label nonSelectedLabel = new Label("Available Items:");
-            final Label selcetedLabel = new Label("Selected Items:");
             final ListView<String> availableItems = new ListView<>(availableItemsList);
+            
+            final VBox nonSelectedItemsBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, 
+                    nonSelectedLabel, availableItems);
+            
+            selectedItemsList = FXCollections.observableArrayList();
+            final Label selectedLabel = new Label("Selected Items:");
             final ListView<String> selectedItems = new ListView<>(selectedItemsList);
-
+            
+            final VBox selectedItemsBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, 
+                    selectedLabel, selectedItems);
+            
             final Button addButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_RIGHT.buildImage(16)));
-            final Button removeButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_LEFT.buildImage(16)));
             addButton.setOnAction(event -> {
-                String selectedItem = availableItems.getSelectionModel().getSelectedItem();
+                final String selectedItem = availableItems.getSelectionModel().getSelectedItem();
                 if (selectedItem == null) {
                     return;
                 }
@@ -108,6 +106,8 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
                 selectedItemsList.add(selectedItem);
                 update();
             });
+            
+            final Button removeButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_LEFT.buildImage(16)));
             removeButton.setOnAction(event -> {
                 final String selectedItem = selectedItems.getSelectionModel().getSelectedItem();
                 if (selectedItem == null) {
@@ -118,19 +118,15 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
                 update();
             });
 
-            nonSelectedItemsBox.getChildren().addAll(nonSelectedLabel, availableItems);
-            selectedItemsBox.getChildren().addAll(selcetedLabel, selectedItems);
-            addAndRemoveButtons.getChildren().addAll(addButton, removeButton);
-
-            controls.addRow(0, nonSelectedItemsBox, addAndRemoveButtons, selectedItemsBox);
+            
+            final VBox addAndRemoveButtons = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, 
+                    addButton, removeButton);
             addAndRemoveButtons.setAlignment(Pos.CENTER);
-
+            
+            final HBox controls = new HBox(nonSelectedItemsBox, addAndRemoveButtons, selectedItemsBox);
+            controls.setAlignment(Pos.CENTER);
+            
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return false;
         }
     }
 }

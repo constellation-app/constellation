@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.graph.processing;
 
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -43,6 +44,8 @@ import org.apache.commons.csv.CSVRecord;
 public class RecordStoreUtilities {
 
     private static final Logger LOGGER = Logger.getLogger(RecordStoreUtilities.class.getName());
+    
+    private static final Pattern NEWLINE_QUOTE_REGEX = Pattern.compile("[\n\"]");
     
     private RecordStoreUtilities() {
         throw new IllegalStateException("Utility class");
@@ -97,7 +100,7 @@ public class RecordStoreUtilities {
      */
     public static RecordStore fromJson(final InputStream in) throws IOException {
         final RecordStore recordStore;
-        try (final JsonParser parser = new MappingJsonFactory().createParser(in)) {
+        try (final JsonParser parser = JsonFactoryUtilities.getJsonFactory().createParser(in)) {
             recordStore = new GraphRecordStore();
             JsonToken currentToken = parser.nextToken();
             if (currentToken != JsonToken.START_ARRAY) {
@@ -111,7 +114,7 @@ public class RecordStoreUtilities {
                     while (true) {
                         currentToken = parser.nextToken();
                         if (currentToken == JsonToken.FIELD_NAME) {
-                            final String fieldName = parser.getCurrentName();
+                            final String fieldName = parser.currentName();
 
                             String fieldValue;
                             currentToken = parser.nextToken();
@@ -270,7 +273,7 @@ public class RecordStoreUtilities {
             if (!columnsWritten) {
                 line.setLength(0);
                 for (final String key : recordStore.keys()) {
-                    final String columnValue = key == null ? "" : key.replaceAll("[\n\"]", "");
+                    final String columnValue = key == null ? "" : NEWLINE_QUOTE_REGEX.matcher(key).replaceAll("");
                     if (columnValue.contains(",")) {
                         line.append("\"");
                         line.append(columnValue);
@@ -280,7 +283,7 @@ public class RecordStoreUtilities {
                     }
                     line.append(",");
                 }
-                line.setLength(line.length() > 0 ? line.length() - 1 : 0);
+                line.setLength(!line.isEmpty() ? line.length() - 1 : 0);
                 line.append(SeparatorConstants.NEWLINE);
                 columnsWritten = true;
 
@@ -304,7 +307,7 @@ public class RecordStoreUtilities {
                 }
                 line.append(",");
             }
-            line.setLength(line.length() > 0 ? line.length() - 1 : 0);
+            line.setLength(!line.isEmpty() ? line.length() - 1 : 0);
             line.append(SeparatorConstants.NEWLINE);
 
             try {

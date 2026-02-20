@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
@@ -56,6 +57,7 @@ public class OptionsMenuBar {
     private static final String TITLE = "Folder to save data access results to";
 
     private static final String OPTIONS_MENU_TEXT = "Workflow Options";
+    private static final String ICON_SET = JavafxStyleManager.isDarkTheme() ? "Light" : "Dark";
 
     static {
         SETTINGS_ICON = new ImageView(new Image(
@@ -64,27 +66,27 @@ public class OptionsMenuBar {
         SETTINGS_ICON.setFitWidth(20);
 
         SAVE_TEMPLATE_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveTemplate.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveTemplate" + ICON_SET + ".png")));
         SAVE_TEMPLATE_ICON.setFitHeight(15);
         SAVE_TEMPLATE_ICON.setFitWidth(15);
 
         LOAD_TEMPLATE_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessLoadTemplate.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessLoadTemplate" + ICON_SET + ".png")));
         LOAD_TEMPLATE_ICON.setFitHeight(15);
         LOAD_TEMPLATE_ICON.setFitWidth(15);
 
         SAVE_RESULTS_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveResults.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveResults" + ICON_SET + ".png")));
         SAVE_RESULTS_ICON.setFitHeight(15);
         SAVE_RESULTS_ICON.setFitWidth(15);
 
         UNCHECKED_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessUnchecked.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessUnchecked" + ICON_SET + ".png")));
         UNCHECKED_ICON.setFitHeight(15);
         UNCHECKED_ICON.setFitWidth(15);
 
         LOGGER_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessConnectionLogging.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessConnectionLogging" + ICON_SET + ".png")));
         LOGGER_ICON.setFitHeight(15);
         LOGGER_ICON.setFitWidth(15);
     }
@@ -130,9 +132,9 @@ public class OptionsMenuBar {
         // Save Menu
         ////////////////////
         saveMenuItem = new MenuItem(SAVE_MENU_ITEM_TEXT, SAVE_TEMPLATE_ICON);
-        saveMenuItem.setOnAction(event -> {
+        saveMenuItem.setOnAction(event -> {            
             DataAccessParametersIoProvider.saveParameters(
-                    dataAccessPane.getDataAccessTabPane().getTabPane()
+                    dataAccessPane.getDataAccessTabPane().getTabPane(), dataAccessPane.getScene().getWindow()
             );
 
             event.consume();
@@ -184,6 +186,7 @@ public class OptionsMenuBar {
         ////////////////////
         // Menu Setup
         ////////////////////
+        final int applicationFontSize = FontUtilities.getApplicationFontSize();        
         optionsMenu = new Menu(OPTIONS_MENU_TEXT, SETTINGS_ICON);
         optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem,
                 connectionLoggingMenuItem, deselectPluginsOnExecutionMenuItem);
@@ -191,7 +194,7 @@ public class OptionsMenuBar {
         optionsMenu.addEventHandler(Menu.ON_SHOWING, event -> updateMenuEntry());
         menuBar = new MenuBar();
         menuBar.getMenus().add(optionsMenu);
-        menuBar.setMinHeight(36);
+        menuBar.setPrefHeight(applicationFontSize * 2);
         menuBar.setPadding(new Insets(4));
     }
 
@@ -298,9 +301,7 @@ public class OptionsMenuBar {
          * @param newValue the new value of the save results menu checkbox
          */
         @Override
-        public void changed(final ObservableValue<? extends Boolean> observable,
-                final Boolean oldValue,
-                final Boolean newValue) {
+        public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
             if (Boolean.TRUE.equals(newValue)) {
                 lastChange = FileChooser.openOpenDialog(getDataAccessResultsFileChooser()).thenAccept(optionalFolder
                         -> optionalFolder.ifPresentOrElse(
@@ -317,7 +318,7 @@ public class OptionsMenuBar {
          *
          * @return the future work to be completed by the lister after its last call
          */
-        public CompletableFuture getLastChange() {
+        public CompletableFuture<Void> getLastChange() {
             return lastChange;
         }
 

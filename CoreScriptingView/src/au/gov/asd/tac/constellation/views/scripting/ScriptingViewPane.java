@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -70,7 +72,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.BadLocationException;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -105,9 +107,13 @@ public class ScriptingViewPane extends JPanel {
     private final JPopupMenu optionsMenu;
     private final JButton optionsButton;
     private final JButton executeButton;
+    private final JButton helpButton;
 
     private File scriptFile;
     private boolean newOutput;
+    
+    private static final Pattern COLUMN_PATTERN = Pattern.compile(" at column number (\\d+)");
+    private static final Pattern LINE_PATTERN = Pattern.compile(" at line number (\\d+)");
 
     public ScriptingViewPane(final ScriptingViewTopComponent topComponent) {
         this.topComponent = topComponent;
@@ -183,7 +189,7 @@ public class ScriptingViewPane extends JPanel {
         optionsMenu.add(newOutputItem);
 
         final JMenuItem apiItem = new JMenuItem("API Documentation");
-        apiItem.addActionListener(e -> new HelpCtx(this.getClass().getPackage().getName()).display());
+        apiItem.addActionListener(e -> new HelpCtx(this.getClass().getPackage().getName() + ".javadocs").display());
         optionsMenu.add(apiItem);
 
         final Collection<? extends ScriptingAbstractAction> scriptingActions = Lookup.getDefault().lookupAll(ScriptingAbstractAction.class);
@@ -202,6 +208,10 @@ public class ScriptingViewPane extends JPanel {
             }
         });
 
+        this.helpButton = new JButton();
+        helpButton.setIcon(UserInterfaceIconProvider.HELP.buildIcon(16, ConstellationColor.SKY.getJavaColor()));
+        helpButton.addActionListener(evt -> new HelpCtx("au.gov.asd.tac.constellation.views.scripting.ScriptingViewTopComponent").display());
+        
         this.executeButton = new JButton();
         executeButton.setText("Execute");
         executeButton.setIcon(ImageUtilities.loadImageIcon("execute.png", false));
@@ -216,6 +226,8 @@ public class ScriptingViewPane extends JPanel {
                                         .addComponent(scriptPane, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(Alignment.TRAILING, layout.createSequentialGroup()
                                                 .addComponent(optionsButton)
+                                                .addPreferredGap(ComponentPlacement.RELATED, 1, 1)
+                                                .addComponent(helpButton)
                                                 .addPreferredGap(ComponentPlacement.RELATED, 344, Short.MAX_VALUE)
                                                 .addComponent(executeButton)))
                                 .addContainerGap())
@@ -228,7 +240,8 @@ public class ScriptingViewPane extends JPanel {
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(Alignment.BASELINE)
                                         .addComponent(executeButton)
-                                        .addComponent(optionsButton))
+                                        .addComponent(optionsButton)
+                                        .addComponent(helpButton))
                                 .addContainerGap())
         );
         ScriptingViewPane.this.setLayout(layout);
@@ -257,7 +270,7 @@ public class ScriptingViewPane extends JPanel {
                     @Override
                     public boolean accept(final File pathName) {
                         final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() &&StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PYTHON)) {
+                        if (pathName.isFile() && Strings.CI.endsWith(name, FileExtensionConstants.PYTHON)) {
                             return true;
                         }
                         return pathName.isDirectory();
@@ -284,7 +297,7 @@ public class ScriptingViewPane extends JPanel {
                     @Override
                     public boolean accept(final File pathName) {
                         final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PYTHON)) {
+                        if (pathName.isFile() && Strings.CI.endsWith(name, FileExtensionConstants.PYTHON)) {
                             return true;
                         }
                         return pathName.isDirectory();
@@ -304,7 +317,7 @@ public class ScriptingViewPane extends JPanel {
         final int state = fileChooser.showSaveDialog(this);
         if (state == JFileChooser.APPROVE_OPTION) {
             String fileName = fileChooser.getSelectedFile().getPath();
-            if (!StringUtils.endsWithIgnoreCase(fileName, FileExtensionConstants.PYTHON)) {
+            if (!Strings.CI.endsWith(fileName, FileExtensionConstants.PYTHON)) {
                 fileName += FileExtensionConstants.PYTHON;
             }
             final String text = scriptEditor.getText();
@@ -368,14 +381,12 @@ public class ScriptingViewPane extends JPanel {
                         scriptParser.setError(msg, line);
                     } else {
                         // Search the exception message to find the line (and possibly column) where the error occurred.
-                        final Pattern linePattern = Pattern.compile(" at line number (\\d+)");
-                        final Matcher lineMatcher = linePattern.matcher(msg);
+                        final Matcher lineMatcher = LINE_PATTERN.matcher(msg);
                         if (lineMatcher.find()) {
                             final String ln = lineMatcher.group(1);
                             line = Integer.parseInt(ln) - 1;
 
-                            final Pattern columnPattern = Pattern.compile(" at column number (\\d+)");
-                            final Matcher columnMatcher = columnPattern.matcher(msg);
+                            final Matcher columnMatcher = COLUMN_PATTERN.matcher(msg);
                             if (columnMatcher.find()) {
                                 final String col = columnMatcher.group(1);
                                 final int column = Integer.parseInt(col) - 1;

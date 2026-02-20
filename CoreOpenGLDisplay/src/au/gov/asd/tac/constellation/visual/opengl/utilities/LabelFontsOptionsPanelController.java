@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import java.util.Locale;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javax.swing.JComponent;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
@@ -68,7 +68,7 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
         final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] availableFonts = ge.getAvailableFontFamilyNames(Locale.getDefault());
         final String os = System.getProperty("os.name");
-        if (StringUtils.containsIgnoreCase(os, "win")) {
+        if (Strings.CI.contains(os, "win")) {
             availableFonts = otfFontFilesWindows(availableFonts);
         }
 
@@ -90,7 +90,7 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
         if (local != null) {
             final File fontDir = new File(local, "Microsoft/Windows/Fonts");
             if (fontDir.isDirectory()) {
-                final File[] files = fontDir.listFiles((dir, name) -> StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.OPEN_TYPE_FONT));
+                final File[] files = fontDir.listFiles((dir, name) -> Strings.CI.endsWith(name, FileExtensionConstants.OPEN_TYPE_FONT));
                 if (files.length > 0) {
                     final List<String> names = Arrays.stream(existing).collect(Collectors.toList());
                     for (final File f : files) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import static au.gov.asd.tac.constellation.views.schemaview.providers.HelpIconProvider.populateHelpIconWithCaption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -52,7 +53,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -78,6 +79,7 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
     private final Label schemaLabel;
     private final TableView<AttributeEntry> table;
     private final ObservableList<AttributeEntry> attributeInfo;
+    private HBox schemaLabelAndHelp;
 
     public AttributeNodeProvider() {
         schemaLabel = new Label(SeparatorConstants.HYPHEN);
@@ -86,12 +88,15 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
         table = new TableView<>();
         table.setItems(attributeInfo);
         table.setPlaceholder(new Label("No schema available"));
+        schemaLabelAndHelp = new HBox();
     }
 
     @Override
     public void setContent(final Tab tab) {
         GraphManager.getDefault().addGraphManagerListener(this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
+
+        populateHelpIconWithCaption(this.getClass().getName(), "Attributes", schemaLabel, schemaLabelAndHelp);
 
         final TextField filterText = new TextField();
         filterText.setPromptText("Filter attribute names");
@@ -113,7 +118,7 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
         headerBox.setAlignment(Pos.CENTER_LEFT);
         headerBox.setPadding(new Insets(5));
 
-        final VBox box = new VBox(schemaLabel, headerBox, table);
+        final VBox box = new VBox(schemaLabelAndHelp, headerBox, table);
         VBox.setVgrow(table, Priority.ALWAYS);
 
         Platform.runLater(() -> tab.setContent(box));
@@ -128,7 +133,7 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
             final ObservableList<AttributeEntry> items = FXCollections.observableArrayList();
             attributeInfo.stream().forEach(si -> {
                 final String nameLc = si.attr.getName().toLowerCase();
-                final boolean found = st ? StringUtils.startsWithIgnoreCase(nameLc, newValue) : StringUtils.containsIgnoreCase(nameLc, newValue);
+                final boolean found = st ? Strings.CI.startsWith(nameLc, newValue) : Strings.CI.contains(nameLc, newValue);
                 if (found) {
                     items.add(si);
                 }

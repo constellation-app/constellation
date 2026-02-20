@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,10 +96,11 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
         float yOffset = y + MARGIN;
 
         // draw zoom info
-        final String zoom = String.valueOf(map.getZoomLevel());
+        final int maxZoomLevel = ((MapProvider) map.mapDisplay.getMapProvider()).zoomLevels();
+        final String zoom = String.valueOf((map.getZoomLevel() < maxZoomLevel) ? map.getZoomLevel() : maxZoomLevel);
+
         drawLabeledValue("Zoom", zoom, x + 60, yOffset, VALUE_BOX_SHORT_WIDTH);
-        drawStepBar(map.getZoomLevel(), x + 95, yOffset + 5,
-                ((MapProvider) map.mapDisplay.getMapProvider()).zoomLevels());
+        drawStepBar(map.getZoomLevel(), x + 95, yOffset + 5, maxZoomLevel);
 
         // draw separator
         yOffset += VALUE_BOX_HEIGHT + PADDING * 2;

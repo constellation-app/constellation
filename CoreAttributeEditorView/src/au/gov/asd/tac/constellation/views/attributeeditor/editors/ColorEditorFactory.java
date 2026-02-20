@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,6 +35,7 @@ import javafx.util.Callback;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Editor Factory for attributes of type color
  *
  * @author twilight_sparkle
  */
@@ -43,8 +43,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ColorEditorFactory extends AttributeValueEditorFactory<ConstellationColor> {
 
     @Override
-    public AbstractEditor<ConstellationColor> createEditor(final EditOperation editOperation, final DefaultGetter<ConstellationColor> defaultGetter, final ValueValidator<ConstellationColor> validator, final String editedItemName, final ConstellationColor initialValue) {
-        return new ColorEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
+    public AbstractEditor<ConstellationColor> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationColor> validator, final ConstellationColor defaultValue, final ConstellationColor initialValue) {
+        return new ColorEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
 
     @Override
@@ -57,8 +57,16 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
         private ComboBox<ConstellationColor> colorCombo;
         private ColorPicker picker;
 
-        protected ColorEditor(final EditOperation editOperation, final DefaultGetter<ConstellationColor> defaultGetter, final ValueValidator<ConstellationColor> validator, final String editedItemName, final ConstellationColor initialValue) {
-            super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        protected ColorEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationColor> validator, final ConstellationColor defaultValue, final ConstellationColor initialValue) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
+        }
+        
+        protected ConstellationColor getComboBoxColor() {
+            return colorCombo.getValue();
+        }
+        
+        protected Color getPickerColor() {
+            return picker.getValue();
         }
 
         @Override
@@ -79,20 +87,19 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
 
         @Override
         protected Node createEditorControls() {
-            final GridPane controls = new GridPane();
-            controls.setAlignment(Pos.CENTER);
-            controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
-
             final Label namedLabel = new Label("Named:");
-            final ObservableList<ConstellationColor> namedColors = FXCollections.observableArrayList();
-            for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
-                namedColors.add(c);
-            }
+            final ObservableList<ConstellationColor> namedColors = FXCollections.observableArrayList(ConstellationColor.NAMED_COLOR_LIST);
             colorCombo = new ComboBox<>(namedColors);
-            final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
+            namedLabel.setLabelFor(colorCombo);
+            colorCombo.valueProperty().addListener((o, oldValue, newValue) -> {
+                if (newValue != null && !newValue.equals(oldValue)) {
+                    picker.setValue(newValue.getJavaFXColor());
+                }
+            });
+            
+            final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = p -> new ListCell<>() {
                 @Override
-                protected void updateItem(final ConstellationColor item, boolean empty) {
+                protected void updateItem(final ConstellationColor item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
                         final Rectangle r = new Rectangle(12, 12, item.getJavaFXColor());
@@ -102,16 +109,8 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
                     }
                 }
             };
-
             colorCombo.setCellFactory(cellFactory);
             colorCombo.setButtonCell(cellFactory.call(null));
-            namedLabel.setLabelFor(colorCombo);
-
-            colorCombo.valueProperty().addListener((o, oldValue, newValue) -> {
-                if (newValue != null && !newValue.equals(oldValue)) {
-                    picker.setValue(newValue.getJavaFXColor());
-                }
-            });
 
             final Label pickerLabel = new Label("Pallete:");
             picker = new ColorPicker();
@@ -135,15 +134,13 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
 
                 update();
             });
+            
+            final GridPane controls = new GridPane(CONTROLS_DEFAULT_HORIZONTAL_SPACING, CONTROLS_DEFAULT_VERTICAL_SPACING);
+            controls.setAlignment(Pos.CENTER);
 
             controls.addRow(0, namedLabel, colorCombo);
             controls.addRow(1, pickerLabel, picker);
             return controls;
-        }
-
-        @Override
-        public boolean noValueCheckBoxAvailable() {
-            return true;
         }
     }
 }

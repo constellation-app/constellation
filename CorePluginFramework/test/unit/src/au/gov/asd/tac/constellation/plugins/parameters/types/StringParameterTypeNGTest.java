@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,24 +32,25 @@ import org.testng.annotations.Test;
  * @author Atlas139mkm
  */
 public class StringParameterTypeNGTest {
-
-    public StringParameterTypeNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -60,7 +61,7 @@ public class StringParameterTypeNGTest {
         System.out.println("build string");
         String id = "stringParameter";
 
-        PluginParameter result = StringParameterType.build(id);
+        PluginParameter<StringParameterValue> result = StringParameterType.build(id);
         StringParameterValue expResult = new StringParameterValue();
         System.out.println(expResult.toString());
 
@@ -78,7 +79,7 @@ public class StringParameterTypeNGTest {
         String id = "stringParameter";
 
         StringParameterValue parameterValue = new StringParameterValue();
-        PluginParameter result = StringParameterType.build(id, parameterValue);
+        PluginParameter<StringParameterValue> result = StringParameterType.build(id, parameterValue);
 
         assertEquals(result.getId(), id);
         assertTrue(result.getType() instanceof StringParameterType);
@@ -92,7 +93,7 @@ public class StringParameterTypeNGTest {
     public void testGetLines() {
         System.out.println("getLines");
 
-        PluginParameter instance = StringParameterType.build("stringParameter");
+        PluginParameter<StringParameterValue> instance = StringParameterType.build("stringParameter");
 
         // check the expected result and result equal when positive integers
         Integer expResult = 5;
@@ -126,7 +127,7 @@ public class StringParameterTypeNGTest {
     public void testSetLines() {
         System.out.println("setLines");
 
-        PluginParameter instance = StringParameterType.build("stringParameter");
+        PluginParameter<StringParameterValue> instance = StringParameterType.build("stringParameter");
 
         // check the expected result and result equal when positive integers
         Integer expResult = 5;
@@ -157,7 +158,7 @@ public class StringParameterTypeNGTest {
     public void testIsLabel() {
         System.out.println("isLabel");
 
-        PluginParameter instance = StringParameterType.build("stringParameter");
+        PluginParameter<StringParameterValue> instance = StringParameterType.build("stringParameter");
         assertFalse(StringParameterType.isLabel(instance));
 
         // check if when set to true it remains true
@@ -176,7 +177,7 @@ public class StringParameterTypeNGTest {
     public void testSetIsLabel() {
         System.out.println("setIsLabel");
 
-        PluginParameter instance = StringParameterType.build("stringParameter");
+        PluginParameter<StringParameterValue> instance = StringParameterType.build("stringParameter");
 
         // check if when set to true it remains true
         StringParameterType.setIsLabel(instance, true);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This is a data storage class to maintain the list of errors that have been
@@ -29,6 +31,9 @@ import java.util.List;
  * @author OrionsGuardian
  */
 public class ErrorReportSessionData {
+
+    private static final Logger LOGGER = Logger.getLogger(ErrorReportSessionData.class.getName());
+    private static final String FULL_STACKTRACE = "~~~~ ~~~~ FULL STACKTRACE ~~~~ ~~~~"; // must match with entry in ConstellationLogFormatter
     
     private final List<ErrorReportEntry> sessionErrors = new ArrayList<>();
     private final List<ErrorReportEntry> displayedErrors = new ArrayList<>();
@@ -58,61 +63,73 @@ public class ErrorReportSessionData {
     public boolean storeSessionError(final ErrorReportEntry entry) {
         boolean foundMatch = false;
         synchronized (sessionErrors) {
-            // check for a repeated exception from the same constellation source, but compare only the top portion
-            // of the stacktrace, as there are cases where different threads can generate the same exception,
-            // but have a different origin (thread number) in their stack trace
+            // check for a repeated exception from the same source
+            // remove stack trace elements that have their own thread identifier
+            // these show up as $ symbols and script tags
             final String[] comparisonLines = entry.getErrorData().split(SeparatorConstants.NEWLINE);
-            final StringBuilder sb = new StringBuilder();
-            final String[] constyLines = extractMatchingLines(comparisonLines, ".constellation.");
-            if (comparisonLines.length > 7) {
-                final int topNlines = 2 + comparisonLines.length / 4;
-                for (int i = 0; i < topNlines; i++) {
-                    sb.append(comparisonLines[i]).append(SeparatorConstants.NEWLINE);
+            for (int i = 0; i < comparisonLines.length; i++) {
+                final int scriptIndicator = comparisonLines[i].indexOf("<script>");
+                if (scriptIndicator > -1) {
+                    comparisonLines[i] = comparisonLines[i].substring(scriptIndicator-1);
                 }
-            } else {
-                sb.append(entry.getErrorData());
+                final int threadIndicator = comparisonLines[i].indexOf("$");
+                if (threadIndicator > -1) {
+                    comparisonLines[i] = comparisonLines[i].substring(0, threadIndicator);
+                }
             }
-            final String comparisonData = sb.toString(); 
+            
             final int errCount = sessionErrors.size();
-            for (int i = 0; i < errCount; i++) {
-                boolean allConstyLinesMatch = true;
-                for (final String constyLine : constyLines) {
-                    if (!sessionErrors.get(i).getErrorData().contains(constyLine)) {
-                        allConstyLinesMatch = false;
-                        break;
-                    }
-                }
-                if (allConstyLinesMatch && sessionErrors.get(i).getErrorLevel().equals(entry.getErrorLevel()) && sessionErrors.get(i).getErrorData().startsWith(comparisonData)) {
-                    final ErrorReportEntry ere = sessionErrors.get(i);
-                    ere.incrementOccurrences();
-                    ere.setExpanded(true);
-                    ere.setHeading(entry.getHeading());
-                    ere.setSummaryHeading(entry.getSummaryHeading());
-                    foundMatch = true;
-                    if (i > 0) {
-                        // move updated entry to the top
-                        sessionErrors.remove(i); // NOSONAR
-                        sessionErrors.add(0, ere);
+            for (int i = 0; i < errCount && !foundMatch; i++) {
+                if (sessionErrors.get(i).getErrorLevel().equals(entry.getErrorLevel())) { // allConstyLinesMatch && 
+                    final String[] storedError = sessionErrors.get(i).getErrorData().split(SeparatorConstants.NEWLINE);
+                    if (storedError.length > 0 && storedError.length == comparisonLines.length) { // else no match, create new record
+                        foundMatch = true;
+                        for (int j = 0; j < storedError.length; j++) {
+                            final int scriptIndicator = storedError[j].indexOf("<script>");
+                            if (scriptIndicator > -1) {
+                                storedError[j] = storedError[j].substring(scriptIndicator-1);
+                            }
+                            final int threadIndicator = storedError[j].indexOf("$");
+                            if (threadIndicator > -1) {
+                                storedError[j] = storedError[j].substring(0, threadIndicator);
+                            }
+                            if (!storedError[j].trim().equals(comparisonLines[j].trim())) {
+                                foundMatch = false;
+                                break;
+                            }
+                        }
+                    } 
+                    if (foundMatch) {                    
+                        final ErrorReportEntry ere = sessionErrors.get(i);
+                        ere.incrementOccurrences();
+                        ere.setExpanded(true);
+                        ere.setHeading(entry.getHeading());
+                        ere.setSummaryHeading(entry.getSummaryHeading());
+                        if (i > 0) {
+                            // move updated entry to the top
+                            sessionErrors.remove(i); // NOSONAR
+                            sessionErrors.add(0, ere);
+                        }
                     }
                 }
             }
             if (!foundMatch) {
                 // add new entry to the top
                 sessionErrors.add(0, entry);
+                if (entry.getErrorData().contains(" Caused By:")) {
+                    // put full exception details in log
+                    final StringBuilder logMessage = new StringBuilder();
+                    logMessage.append(SeparatorConstants.NEWLINE)
+                            .append(FULL_STACKTRACE)
+                            .append(SeparatorConstants.NEWLINE)
+                            .append(entry.getErrorData());
+                            
+                    LOGGER.log(Level.INFO, logMessage.toString());
+                }
             }
             lastUpdate = new Date();
         }
         return !foundMatch;
-    }
-
-    private String[] extractMatchingLines(final String[] sourceLines, final String patternToMatch) {
-        final StringBuilder destination = new StringBuilder();
-        for (int i = 0; i< sourceLines.length; i++) {
-            if (sourceLines[i].contains(patternToMatch)) {
-                destination.append(sourceLines[i]).append(SeparatorConstants.NEWLINE);
-            }
-        }
-        return destination.toString().split(SeparatorConstants.NEWLINE);
     }
     
     public void removeEntry(final double entryId) {

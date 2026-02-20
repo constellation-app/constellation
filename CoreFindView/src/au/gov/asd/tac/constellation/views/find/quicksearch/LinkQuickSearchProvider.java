@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,6 @@ public class LinkQuickSearchProvider implements SearchProvider {
      * @param response The content to be returned to the QuickSearch box.
      */
     @Override
-    @SuppressWarnings("unchecked")
     public void evaluate(final SearchRequest request, final SearchResponse response) {
         final Graph graph = graphRetriever.getGraph();
 
@@ -143,7 +142,6 @@ public class LinkQuickSearchProvider implements SearchProvider {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public void run() {
             final List<FindResult> results = new ArrayList<>();
             results.add(result);

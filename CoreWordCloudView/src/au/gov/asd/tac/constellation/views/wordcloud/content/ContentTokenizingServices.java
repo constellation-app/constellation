@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -656,8 +656,8 @@ public class ContentTokenizingServices {
         public void tokenizePhrase(final char[] phrase, final int elementPos) {
             final TokenizerState state = getNewState(phrase);
             while (state.findNextToken()) {
-                if (handler instanceof PhraseTokenHandler) {
-                    ((PhraseTokenHandler) handler).registerToken(new String(state.getToken()), elementPos, ((PhraseTokenizerState) state).currentSingleWords, ((PhraseTokenizerState) state).storeSingleWords);
+                if (handler instanceof PhraseTokenHandler phraseTokenHandler) {
+                    phraseTokenHandler.registerToken(new String(state.getToken()), elementPos, ((PhraseTokenizerState) state).currentSingleWords, ((PhraseTokenizerState) state).storeSingleWords);
                 } else {
                     handler.registerToken(new String(phrase), elementPos);
                 }
@@ -940,11 +940,13 @@ public class ContentTokenizingServices {
         @Override
         protected String sanitizeString(final String str) {
             String newStr = str;
-            for (int i = 0; i < str.length(); i++) {
-                if (toFilter.contains(str.charAt(i)) && replacement.length() > 0) {
+            int i = 0;
+            while (i < str.length()) {
+                if (toFilter.contains(str.charAt(i)) && !replacement.isEmpty()) {
                     newStr = str.substring(0, i) + replacement + str.substring(i + 1, str.length());
                     i += (replacement.length() - 1);
                 }
+                i++;
             }
             return newStr;
         }

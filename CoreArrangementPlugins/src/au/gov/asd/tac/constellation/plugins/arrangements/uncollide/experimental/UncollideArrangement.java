@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.python.modules.math;
 
 public class UncollideArrangement implements Arranger {
     
@@ -43,7 +42,7 @@ public class UncollideArrangement implements Arranger {
     private final double twinScaling;
 
     public UncollideArrangement(final Dimensions dimensions, final int maxExpansions) {
-        this.twinScaling = math.pow(1.1, -maxExpansions);
+        this.twinScaling = Math.pow(1.1, -maxExpansions);
         this.dimensions = dimensions;
 
     }
@@ -141,9 +140,9 @@ public class UncollideArrangement implements Arranger {
         final double delta;
         switch (dimensions) {
             case TWO:
-                delta = math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                delta = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
                 deltas = new double[2];
-                collisionDistance = math.sqrt(2 * wg.getFloatValue(rId, subject)) + math.sqrt(2 * wg.getFloatValue(rId, twin));
+                collisionDistance = Math.sqrt(2 * wg.getFloatValue(rId, subject)) + Math.sqrt(2 * wg.getFloatValue(rId, twin));
                 break;
             case THREE:
                 if (zId == GraphConstants.NOT_FOUND) {
@@ -176,7 +175,7 @@ public class UncollideArrangement implements Arranger {
         // nudge needed to move them to just beyond the minimum distance so that are at least a padding apart.
         final double nudge = switch (deltas.length) {
             case 2 -> 0.5 * ((twinDistance - delta) + 0.002); // Nudge needed if only moving along one axis
-            case 1 -> 0.5 * ((twinDistance - delta) + 0.002) / math.sqrt(2); // Nudge needed if moving along two axis
+            case 1 -> 0.5 * ((twinDistance - delta) + 0.002) / Math.sqrt(2); // Nudge needed if moving along two axis
             case 0 -> 0.5 * ((twinDistance - delta) + 0.002) / Math.cbrt(3); // Nudge needed if moving along 3 axis
             default -> 0.5 * ((twinDistance - delta) + 0.002); // Should never reach this but need to maske the compiler happy.
         };

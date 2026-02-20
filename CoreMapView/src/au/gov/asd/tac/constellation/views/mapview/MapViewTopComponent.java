@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,6 +75,7 @@ import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
@@ -146,12 +147,14 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     private Component glComponent;
 
     private final MapProvider defaultProvider;
-    private final List<? extends MapProvider> providers;
+    private final List<MapProvider> providers;
     private final List<? extends MapExporter> exporters;
     private final MarkerState markerState;
     private int cachedWidth;
     private int cachedHeight;
     private final Consumer<Graph> updateMarkers;
+    
+    private static final Pattern COMMA_SEPARATED_REGEX = Pattern.compile("[,\\s]+", Pattern.UNICODE_CHARACTER_CLASS);
 
     public MapViewTopComponent() {
         super();
@@ -178,7 +181,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         this.toolBar = new JToolBar(SwingConstants.HORIZONTAL);
         toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        this.mapProviderMenu = new JSingleChoiceComboBoxMenu(AnalyticIconProvider.MAP.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), providers);
+        this.mapProviderMenu = new JSingleChoiceComboBoxMenu<>(AnalyticIconProvider.MAP.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), providers);
         mapProviderMenu.addSelectionListener(event -> {
             final MapProvider mapProvider = (MapProvider) event.getSource();
             renderer.switchProviders(mapProvider);
@@ -187,8 +190,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         mapProviderMenu.setToolTipText("Select a basemap for the Map View");
         toolBar.add(mapProviderMenu);
 
-        final List<? extends MapLayer> layers = new ArrayList<>(Lookup.getDefault().lookupAll(MapLayer.class));
-        this.layersComboBox = new JMultiChoiceComboBoxMenu(UserInterfaceIconProvider.MENU.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), layers);
+        final List<MapLayer> layers = new ArrayList<>(Lookup.getDefault().lookupAll(MapLayer.class));
+        this.layersComboBox = new JMultiChoiceComboBoxMenu<>(UserInterfaceIconProvider.MENU.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), layers);
         layersComboBox.addSelectedItems(layers.stream().filter(layer -> layer.isEnabled()).toArray(MapLayer[]::new));
         layersComboBox.addSelectionListener(event -> {
             final MapLayer layer = (MapLayer) event.getSource();
@@ -197,8 +200,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         layersComboBox.setToolTipText("Select layers to render over the map in the Map View");
         toolBar.add(layersComboBox);
 
-        final List<? extends MapOverlay> overlays = new ArrayList<>(Lookup.getDefault().lookupAll(MapOverlay.class));
-        this.overlaysComboBox = new JMultiChoiceComboBoxMenu(UserInterfaceIconProvider.TAG.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), overlays);
+        final List<MapOverlay> overlays = new ArrayList<>(Lookup.getDefault().lookupAll(MapOverlay.class));
+        this.overlaysComboBox = new JMultiChoiceComboBoxMenu<>(UserInterfaceIconProvider.TAG.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), overlays);
         overlaysComboBox.addSelectedItems(overlays.stream().filter(overlay -> overlay.isEnabled()).toArray(MapOverlay[]::new));
         overlaysComboBox.addSelectionListener(event -> {
             final MapOverlay overlay = (MapOverlay) event.getSource();
@@ -232,6 +235,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                         }
                     }
                     default -> {
+                        // do nothing
                     }
                 }
             } else {
@@ -376,7 +380,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         final ConstellationAbstractMarker marker;
         switch (geoType) {
             case GEO_TYPE_COORDINATE -> {
-                final String[] coordinate = location.split("[,\\s]+");
+                final String[] coordinate = COMMA_SEPARATED_REGEX.split(location);
                 if (coordinate.length != 2 && coordinate.length != 3) {
                     NotifyDisplayer.display("Invalid coordinate syntax provided, should be comma or space separated", NotifyDescriptor.ERROR_MESSAGE);
                     return;
@@ -471,6 +475,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                 case GEO_TYPE_MGRS -> params.get(PARAMETER_LOCATION)
                             .setDescription("Enter an MGRS value");
                 default -> {
+                    // do nothing
                 }
             }
         });
@@ -624,6 +629,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                     }
                 }
                 default -> {
+                    // do nothing
                 }
             }
         }

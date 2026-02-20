@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,9 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +86,8 @@ public class ManageTemplatesPlugin extends SimplePlugin {
         templateParam.setDescription(TEMPLATE_NAME_PARAMETER_ID_DESCRIPTION);
         final List<String> templateNames = new ArrayList<>(NewSchemaGraphAction.getTemplateNames().keySet());
         SingleChoiceParameterType.setOptions(templateParam, templateNames);
-        templateParam.setStringValue(templateNames.isEmpty() ? "" : templateNames.get(0));
+        final String template = templateNames.isEmpty() ? "" : templateNames.get(0);
+        templateParam.setStringValue(template);
         params.addParameter(templateParam);
 
         final PluginParameter<ParameterValue> deleteParam = ActionParameterType.build(DELETE_TEMPLATE_PARAMETER_ID);
@@ -91,7 +95,35 @@ public class ManageTemplatesPlugin extends SimplePlugin {
         deleteParam.setName(null);
         deleteParam.setDescription(null);
         deleteParam.setStringValue(DELETE_TEMPLATE_PARAMETER_ID_NAME);
+        deleteParam.setEnabled(StringUtils.isNotBlank(template));
         params.addParameter(deleteParam, ACTIONS_GROUP_NAME);
+
+        final PluginParameter<ParameterValue> defaultParam = ActionParameterType.build(DEFAULT_TEMPLATE_PARAMETER_ID);
+        defaultParam.setName(null);
+        defaultParam.setDescription(null);
+        defaultParam.setStringValue(DEFAULT_TEMPLATE_PARAMETER_ID_NAME);
+        defaultParam.setEnabled(StringUtils.isNotBlank(template));
+        params.addParameter(defaultParam, ACTIONS_GROUP_NAME);
+
+        final PluginParameter<ParameterValue> clearParam = ActionParameterType.build(CLEAR_DEFAULT_PARAMETER_ID);
+        clearParam.setName(null);
+        clearParam.setDescription(null);
+        clearParam.setStringValue(CLEAR_DEFAULT_PARAMETER_ID_NAME);
+        final String currentDefault = prefs.get(ApplicationPreferenceKeys.DEFAULT_TEMPLATE, ApplicationPreferenceKeys.DEFAULT_TEMPLATE_DEFAULT);
+        clearParam.setEnabled(StringUtils.isNotBlank(currentDefault) && !currentDefault.equals(NO_DEFAULT));
+        params.addParameter(clearParam, ACTIONS_GROUP_NAME);
+
+        final PluginParameter<StringParameterValue> currentDefaultParam = StringParameterType.build(CURRENT_DEFAULT_PARAMETER_ID);
+        currentDefaultParam.setName(CURRENT_DEFAULT_PARAMETER_ID_NAME);
+        StringParameterType.setIsLabel(currentDefaultParam, true);
+        currentDefaultParam.setStringValue(Objects.equals(ApplicationPreferenceKeys.DEFAULT_TEMPLATE_DEFAULT, currentDefault) ? NO_DEFAULT : currentDefault);
+        params.addParameter(currentDefaultParam);
+
+        params.addController(CLEAR_DEFAULT_PARAMETER_ID, (master, parameters, change) -> {
+            if (change == ParameterChange.NO_CHANGE) { // button pressed
+                parameters.get(CURRENT_DEFAULT_PARAMETER_ID).setStringValue(NO_DEFAULT);
+            }
+        });
         params.addController(DELETE_TEMPLATE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.NO_CHANGE) { // button pressed
                 final String deleteTemplateName = parameters.get(TEMPLATE_NAME_PARAMETER_ID).getStringValue();
@@ -107,11 +139,6 @@ public class ManageTemplatesPlugin extends SimplePlugin {
             }
         });
 
-        final PluginParameter<ParameterValue> defaultParam = ActionParameterType.build(DEFAULT_TEMPLATE_PARAMETER_ID);
-        defaultParam.setName(null);
-        defaultParam.setDescription(null);
-        defaultParam.setStringValue(DEFAULT_TEMPLATE_PARAMETER_ID_NAME);
-        params.addParameter(defaultParam, ACTIONS_GROUP_NAME);
         params.addController(DEFAULT_TEMPLATE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.NO_CHANGE) { // button pressed
                 final String chosenTemplate = parameters.get(TEMPLATE_NAME_PARAMETER_ID).getStringValue();
@@ -121,23 +148,16 @@ public class ManageTemplatesPlugin extends SimplePlugin {
             }
         });
 
-        final PluginParameter<ParameterValue> clearParam = ActionParameterType.build(CLEAR_DEFAULT_PARAMETER_ID);
-        clearParam.setName(null);
-        clearParam.setDescription(null);
-        clearParam.setStringValue(CLEAR_DEFAULT_PARAMETER_ID_NAME);
-        params.addParameter(clearParam, ACTIONS_GROUP_NAME);
-        params.addController(CLEAR_DEFAULT_PARAMETER_ID, (master, parameters, change) -> {
-            if (change == ParameterChange.NO_CHANGE) { // button pressed
-                parameters.get(CURRENT_DEFAULT_PARAMETER_ID).setStringValue(NO_DEFAULT);
-            }
+        params.addController(TEMPLATE_NAME_PARAMETER_ID, (master, parameters, change) -> {
+            final String chosenTemplate = parameters.get(TEMPLATE_NAME_PARAMETER_ID).getStringValue();
+            deleteParam.setEnabled(StringUtils.isNotBlank(chosenTemplate));
+            defaultParam.setEnabled(StringUtils.isNotBlank(chosenTemplate));
         });
 
-        final PluginParameter<StringParameterValue> currentDefaultParam = StringParameterType.build(CURRENT_DEFAULT_PARAMETER_ID);
-        currentDefaultParam.setName(CURRENT_DEFAULT_PARAMETER_ID_NAME);
-        StringParameterType.setIsLabel(currentDefaultParam, true);
-        final String currentDefault = prefs.get(ApplicationPreferenceKeys.DEFAULT_TEMPLATE, ApplicationPreferenceKeys.DEFAULT_TEMPLATE_DEFAULT);
-        currentDefaultParam.setStringValue(Objects.equals(ApplicationPreferenceKeys.DEFAULT_TEMPLATE_DEFAULT, currentDefault) ? NO_DEFAULT : currentDefault);
-        params.addParameter(currentDefaultParam);
+        params.addController(CURRENT_DEFAULT_PARAMETER_ID, (master, parameters, change) -> {
+            final String currentDefaultParameter = parameters.get(CURRENT_DEFAULT_PARAMETER_ID).getStringValue();
+            clearParam.setEnabled(StringUtils.isNotBlank(currentDefaultParameter) && !currentDefaultParameter.equals(NO_DEFAULT));
+        });
 
         return params;
     }
@@ -148,8 +168,10 @@ public class ManageTemplatesPlugin extends SimplePlugin {
 
         final Map<String, String> templates = NewSchemaGraphAction.getTemplateNames();
         deletedTemplates.forEach(template -> {
-            final boolean newFileIsDeleted = new File(NewSchemaGraphAction.getTemplateDirectory(), templates.get(template) + "/" + template).delete();
-            if (!newFileIsDeleted) {
+            final File newFile = new File(NewSchemaGraphAction.getTemplateDirectory(), templates.get(template) + File.separator + template);
+            try {
+                Files.delete(Path.of(newFile.getPath()));
+            } catch (final IOException ex) {
                 //TODO: Handle case where file not successfully deleted
             }
         });

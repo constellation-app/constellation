@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -33,7 +34,7 @@ import org.openide.util.NbPreferences;
 
 /**
  * AttributeTitledPanes are used to display individual attributes and their set
- * of values for CONSTELLATION's attribute editor. The attribute editor UI
+ * of values for Constellation's attribute editor. The attribute editor UI
  * primarily consists of a number of AttributeTitledPanes for each graph element
  * type.
  * <br>
@@ -61,7 +62,6 @@ public class AttributeTitledPane extends TitledPane {
     }
 
     public AttributeTitledPane(final EventHandler<ActionEvent> removeEventHandler, final EventHandler<ActionEvent> modifyEventHandler) {
-
         if (removeEventHandler == null) {
             ctxMenu = new ContextMenu(copyValueMenuItem, separatorMenuItem, hideAttributeMenuItem);
         } else {
@@ -70,13 +70,13 @@ public class AttributeTitledPane extends TitledPane {
             modifyAttributeMenuItem.setOnAction(modifyEventHandler);
         }
 
-        copyValueMenuItem.setOnAction((final ActionEvent event) -> {
+        copyValueMenuItem.setOnAction(event -> {
             final StringSelection ss = new StringSelection(attributeValue);
             final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
         });
 
-        hideAttributeMenuItem.setOnAction((final ActionEvent event) -> {
+        hideAttributeMenuItem.setOnAction(event -> {
             if (hideAttributeMenuItem.isSelected()) {
                 hide();
                 addToPreference();
@@ -125,9 +125,8 @@ public class AttributeTitledPane extends TitledPane {
     }
 
     private void addToPreference() {
-        String hiddenAttributes = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, "");
         final String elementTypeAndAttributeName = attributeData.getElementType().toString() + attributeData.getAttributeName();
-        hiddenAttributes = hiddenAttributes + StringUtilities.escapeString(elementTypeAndAttributeName, AttributePreferenceKey.META_CHARS) + AttributePreferenceKey.SPLIT_CHAR;
+        final String hiddenAttributes = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, "") + StringUtilities.escapeString(elementTypeAndAttributeName, AttributePreferenceKey.META_CHARS) + SeparatorConstants.SEMICOLON;
         prefs.put(AttributePreferenceKey.HIDDEN_ATTRIBUTES, hiddenAttributes);
     }
 
@@ -143,7 +142,7 @@ public class AttributeTitledPane extends TitledPane {
                 }
                 if (!attrName.equals(elementTypeAndAttributeName)) {
                     newLabel.append(StringUtilities.escapeString(attrName, AttributePreferenceKey.META_CHARS));
-                    newLabel.append(AttributePreferenceKey.SPLIT_CHAR);
+                    newLabel.append(SeparatorConstants.SEMICOLON);
                 }
             }
             prefs.put(AttributePreferenceKey.HIDDEN_ATTRIBUTES, newLabel.toString());

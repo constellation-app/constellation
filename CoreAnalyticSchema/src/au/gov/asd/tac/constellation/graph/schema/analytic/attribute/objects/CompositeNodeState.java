@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@ package au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects;
 
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.processing.RecordStoreUtilities;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -216,11 +216,10 @@ public class CompositeNodeState {
      * JSON.
      */
     public static CompositeNodeState createFromString(final String s) {
-
         if (StringUtils.isBlank(s)) {
             return null;
         }
-        try (final JsonParser parser = new MappingJsonFactory().createParser(s)) {
+        try (final JsonParser parser = JsonFactoryUtilities.getMappingJsonFactory().createParser(s)) {
             final JsonNode jn = parser.readValueAsTree();
             final int nodeId = jn.get(NODE_ID).asInt();
 
@@ -265,6 +264,5 @@ public class CompositeNodeState {
         } catch (final IOException ex) {
             throw new IllegalArgumentException("Error converting this string to a composite node state");
         }
-
     }
 }

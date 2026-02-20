@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
+import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
+import java.awt.Robot;
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -47,9 +50,10 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class JsonIODialogNGTest {
+
     private static final Logger LOGGER = Logger.getLogger(JsonIODialogNGTest.class.getName());
 
-    private final FxRobot robot = new FxRobot();
+    private final FxRobot robot = new FxRobot();    
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -75,6 +79,8 @@ public class JsonIODialogNGTest {
                 () -> JsonIODialog.getSelection(names, Optional.of(""), Optional.of("")));
 
         final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
         WaitForAsyncUtils.asyncFx(() -> dialog.requestFocus()).get();
 
         robot.clickOn(robot.from(dialog.getScene().getRoot())
@@ -101,6 +107,9 @@ public class JsonIODialogNGTest {
                 () -> JsonIODialog.getSelection(names, Optional.of(""), Optional.of("")));
 
         final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
+
         WaitForAsyncUtils.asyncFx(() -> dialog.requestFocus()).get();
 
         robot.clickOn(robot.from(dialog.getScene().getRoot())
@@ -127,7 +136,6 @@ public class JsonIODialogNGTest {
             // The JsonIO Mock happens here because the static mocking needs to be on
             // the same thread as the execution
             try (MockedStatic<JsonIO> jsonIOMockedStatic = Mockito.mockStatic(JsonIO.class)) {
-
                 final Optional<String> result = JsonIODialog.getSelection(
                         names, Optional.of("loadDir"), Optional.of("filePrefix"));
 
@@ -141,6 +149,8 @@ public class JsonIODialogNGTest {
         });
 
         final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
 
         // IMPORTANT. Request focus. Until this is done the JavaFX scene in the
         // dialog does not appear to initialize and the following robot lookup
@@ -178,10 +188,11 @@ public class JsonIODialogNGTest {
 
     @Test
     public void getPreferenceFileName_ok_pressed() {
-        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileName());
+        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(() -> JsonIODialog.getPreferenceFileName());
 
         final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
 
         final String input = "myPreferenceFile";
 
@@ -205,10 +216,11 @@ public class JsonIODialogNGTest {
 
     @Test
     public void getPreferenceFileName_cancel_pressed() {
-        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileName());
+        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(() -> JsonIODialog.getPreferenceFileName());
 
         final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
 
         robot.clickOn(
                 robot.from(dialog.getScene().getRoot())
@@ -228,6 +240,72 @@ public class JsonIODialogNGTest {
         assertFalse(result.isPresent());
     }
 
+   
+    @Test
+    public void getPreferenceFileNameWithKs_ok_pressed() {
+        final Optional<String> ks = Optional.of("[ctrl 1]");
+        final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+
+        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
+                () -> JsonIODialog.getPreferenceFileNameTest(ks, preferenceDirectory, Optional.empty()));
+
+        final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
+
+        final String input = "myPreferenceFile";
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".text-field")
+                        .queryAs(TextField.class)
+        ).write(input);
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".button")
+                        .lookup(hasText("OK"))
+                        .queryAs(Button.class)
+        );
+
+        final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
+        assertEquals(result.get().getKeyboardShortcut(), ks.get());
+        assertTrue(result.get().getExisitngTemplateWithKs() == null);
+        assertEquals(input, result.get().getFileName());
+    }
+
+    
+    @Test
+    public void getPreferenceFileNameWithKs_cancel_pressed() {
+        final Optional<String> ks = Optional.of("[ctrl 1]");
+        final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+
+        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
+                () -> JsonIODialog.getPreferenceFileNameTest(ks, preferenceDirectory, Optional.empty()));
+
+        final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".text-field")
+                        .queryAs(TextField.class)
+        ).write("myPreferenceFile");
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".button")
+                        .lookup(hasText("Cancel"))
+                        .queryAs(Button.class)
+        );
+
+        final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
+
+        assertTrue(result.isPresent());       
+    }
+
+
     /**
      * Get a dialog that has been displayed to the user. This will iterate
      * through all open windows and identify one that is modal. The assumption
@@ -242,6 +320,7 @@ public class JsonIODialogNGTest {
     private Stage getDialog(final FxRobot robot) {
         Stage dialog = null;
         while (dialog == null) {
+            
             dialog = robot.robotContext().getWindowFinder().listWindows().stream()
                     .filter(window -> window instanceof javafx.stage.Stage)
                     .map(window -> (javafx.stage.Stage) window)
@@ -255,5 +334,4 @@ public class JsonIODialogNGTest {
         }
         return dialog;
     }
-
 }

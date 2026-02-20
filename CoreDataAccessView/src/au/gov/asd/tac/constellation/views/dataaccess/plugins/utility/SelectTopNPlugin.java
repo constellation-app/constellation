@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,13 +46,14 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCor
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -219,7 +220,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         final int vertexTypeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
         final int transactionTypeAttribute = AnalyticConcept.TransactionAttribute.TYPE.get(graph);
         
-        final Set<Integer> selectedNodes = new HashSet<>();
+        final MutableIntSet selectedNodes = new IntHashSet();
         for (int position = 0; position < graph.getVertexCount(); position++) {
             final int vxId = graph.getVertex(position);
             if (graph.getBooleanValue(vertexSelectedAttribute, vxId)) {
@@ -258,17 +259,18 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         final int totalProcessSteps = selectedNodes.size();
         int currentProcessStep = 0;
         final int initialSelectedNodesCount = selectedNodes.size(); 
-
+        interaction.setProgressTimestamp(true);
         interaction.setProgress(currentProcessStep, 
                 totalProcessSteps, 
                 String.format("Selecting top %s nodes...", 
                         PluginReportUtilities.getNodeCountString(limit)
                 ), 
-                true);
+                true, parameters, selectedNodes.size());
         
-        // Caluclate the Top N for Selected Nodes 
-        for (final Integer vxId : selectedNodes) {
-            
+        // Calculate the Top N for Selected Nodes
+        final IntIterator iter = selectedNodes.intIterator();
+        while (iter.hasNext()) {
+            final int vxId = iter.next();
             final String label = graph.getStringValue(vertexLabelAttribute, vxId);
             final Map<Integer, Integer> occurrences = new HashMap<>();
             final int transactionCount = graph.getVertexTransactionCount(vxId);
@@ -345,7 +347,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         // Set process to complete
         interaction.setProgress(currentProcessStep, 
                 0, 
-                String.format("Selected %s, representing the Top %s for the originaly selected %s.", 
+                String.format("Selected %s, representing the Top %s for the originally selected %s.", 
                         PluginReportUtilities.getNodeCountString(selectedNodesCount), 
                         PluginReportUtilities.getNodeCountString(limit), 
                         PluginReportUtilities.getNodeCountString(initialSelectedNodesCount)

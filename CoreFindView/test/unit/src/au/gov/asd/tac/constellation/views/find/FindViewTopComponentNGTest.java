@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,6 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -65,25 +64,16 @@ import org.testng.annotations.Test;
 public class FindViewTopComponentNGTest {
 
     private Graph graph;
-    private Map<String, Graph> graphMap = new HashMap<>();
+    private Map<String, Graph> graphMap;
     private FindViewTopComponent topComponent;
-    private FindViewTopComponent spyTopComponent;
     private FindViewPane pane;
-    private FindViewPane spyPane;
     private FindViewTabs tabs;
-    private FindViewTabs spyTabs;
     private BasicFindTab basicFindTab;
-    private BasicFindTab spyBasicFindTab;
     private ReplaceTab replaceTab;
-    private ReplaceTab spyReplaceTab;
     private AdvancedFindTab advancedFindTab;
-    private AdvancedFindTab spyAdvancedFindTab;
     private List<AdvancedCriteriaBorderPane> criteriaPanesList;
     private static final Logger LOGGER = Logger.getLogger(FindViewTopComponentNGTest.class.getName());
-
-    public FindViewTopComponentNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -103,26 +93,18 @@ public class FindViewTopComponentNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         topComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(topComponent);
-
         pane = mock(FindViewPane.class);
-        spyPane = spy(pane);
 
         tabs = mock(FindViewTabs.class);
-        spyTabs = spy(tabs);
-
         basicFindTab = mock(BasicFindTab.class);
         replaceTab = mock(ReplaceTab.class);
         advancedFindTab = mock(AdvancedFindTab.class);
-        spyBasicFindTab = spy(basicFindTab);
-        spyReplaceTab = spy(replaceTab);
-        spyAdvancedFindTab = spy(advancedFindTab);
 
-        when(spyTopComponent.getFindViewPane()).thenReturn(spyPane);
-        when(spyPane.getTabs()).thenReturn(spyTabs);
-        when(spyTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
-        when(spyTabs.getReplaceTab()).thenReturn(spyReplaceTab);
-        when(spyTabs.getAdvancedFindTab()).thenReturn(spyAdvancedFindTab);
+        when(topComponent.getFindViewPane()).thenReturn(pane);
+        when(pane.getTabs()).thenReturn(tabs);
+        when(tabs.getBasicFindTab()).thenReturn(basicFindTab);
+        when(tabs.getReplaceTab()).thenReturn(replaceTab);
+        when(tabs.getAdvancedFindTab()).thenReturn(advancedFindTab);
     }
 
     /**
@@ -132,8 +114,8 @@ public class FindViewTopComponentNGTest {
     public void testCreateContent() {
         System.out.println("createContent");
 
-        when(spyTopComponent.createContent()).thenReturn(spyPane);
-        assertEquals(spyTopComponent.createContent(), spyTopComponent.getFindViewPane());
+        when(topComponent.createContent()).thenReturn(pane);
+        assertEquals(topComponent.createContent(), topComponent.getFindViewPane());
     }
 
     /**
@@ -142,6 +124,7 @@ public class FindViewTopComponentNGTest {
     @Test
     public void testCreateStyle() {
         System.out.println("createStyle");
+        
         final FindViewTopComponent findViewTopComponent = mock(FindViewTopComponent.class);
 
         doCallRealMethod().when(findViewTopComponent).createStyle();
@@ -158,24 +141,24 @@ public class FindViewTopComponentNGTest {
 
         setupGraph();
 
-        doNothing().when(spyTopComponent).UpdateUI();
-        doNothing().when(spyTopComponent).disableFindView();
-        doNothing().when(spyTopComponent).focusFindTextField();
+        doNothing().when(topComponent).UpdateUI();
+        doNothing().when(topComponent).disableFindView();
+        doNothing().when(topComponent).focusFindTextField();
 
         // Open the component first to set up the supers listener
-        doCallRealMethod().when(spyTopComponent).handleComponentOpened();
-        spyTopComponent.handleComponentOpened();
+        doCallRealMethod().when(topComponent).handleComponentOpened();
+        topComponent.handleComponentOpened();
 
         // close the component
-        doCallRealMethod().when(spyTopComponent).handleComponentClosed();
-        spyTopComponent.handleComponentClosed();
+        doCallRealMethod().when(topComponent).handleComponentClosed();
+        topComponent.handleComponentClosed();
 
         /**
          * updateUI and disable findFindView should be called twice for
          * component open and component close
          */
-        verify(spyTopComponent, times(2)).UpdateUI();
-        verify(spyTopComponent, times(2)).disableFindView();
+        verify(topComponent, times(2)).UpdateUI();
+        verify(topComponent, times(2)).disableFindView();
     }
 
     /**
@@ -187,18 +170,18 @@ public class FindViewTopComponentNGTest {
 
         setupGraph();
 
-        doNothing().when(spyTopComponent).UpdateUI();
-        doNothing().when(spyTopComponent).disableFindView();
-        doNothing().when(spyTopComponent).focusFindTextField();
+        doNothing().when(topComponent).UpdateUI();
+        doNothing().when(topComponent).disableFindView();
+        doNothing().when(topComponent).focusFindTextField();
 
         // Open the component
-        doCallRealMethod().when(spyTopComponent).handleComponentOpened();
-        spyTopComponent.handleComponentOpened();
+        doCallRealMethod().when(topComponent).handleComponentOpened();
+        topComponent.handleComponentOpened();
 
         // verify the 3 methods were all called once
-        verify(spyTopComponent, times(1)).UpdateUI();
-        verify(spyTopComponent, times(1)).disableFindView();
-        verify(spyTopComponent, times(1)).focusFindTextField();
+        verify(topComponent).UpdateUI();
+        verify(topComponent).disableFindView();
+        verify(topComponent).focusFindTextField();
 
     }
 
@@ -211,14 +194,14 @@ public class FindViewTopComponentNGTest {
 
         setupGraph();
 
-        doNothing().when(spyTopComponent).disableFindView();
+        doNothing().when(topComponent).disableFindView();
 
         // call handle graph opened
-        doCallRealMethod().when(spyTopComponent).handleGraphOpened(graph);
-        spyTopComponent.handleGraphOpened(graph);
+        doCallRealMethod().when(topComponent).handleGraphOpened(graph);
+        topComponent.handleGraphOpened(graph);
 
         // verify that the disableFindView function was called once
-        verify(spyTopComponent, times(1)).disableFindView();
+        verify(topComponent).disableFindView();
     }
 
     /**
@@ -230,14 +213,14 @@ public class FindViewTopComponentNGTest {
 
         setupGraph();
 
-        doNothing().when(spyTopComponent).disableFindView();
+        doNothing().when(topComponent).disableFindView();
 
         // call handle graph closed
-        doCallRealMethod().when(spyTopComponent).handleGraphClosed(any(Graph.class));
-        spyTopComponent.handleGraphClosed(graph);
+        doCallRealMethod().when(topComponent).handleGraphClosed(any(Graph.class));
+        topComponent.handleGraphClosed(graph);
 
         // verify the disableFindViewFunction was called
-        verify(spyTopComponent, times(1)).disableFindView();
+        verify(topComponent).disableFindView();
 
     }
 
@@ -250,14 +233,14 @@ public class FindViewTopComponentNGTest {
 
         setupGraph();
 
-        doNothing().when(spyTopComponent).UpdateUI();
+        doNothing().when(topComponent).UpdateUI();
 
         // Call handle new graph
-        doCallRealMethod().when(spyTopComponent).handleNewGraph(graph);
-        spyTopComponent.handleNewGraph(graph);
+        doCallRealMethod().when(topComponent).handleNewGraph(graph);
+        topComponent.handleNewGraph(graph);
 
         // verify updateUI was called
-        verify(spyTopComponent, times(1)).UpdateUI();
+        verify(topComponent).UpdateUI();
     }
 
     /**
@@ -280,52 +263,9 @@ public class FindViewTopComponentNGTest {
              * Call to disable the view when no graphs are present. Verify that
              * the pane is disabled.
              */
-            spyTopComponent.disableFindView();
-            assertEquals(spyPane.isDisabled(), false);
-//            verify(spyTopComponent, times(1)).disableFindView();
-
-//            /**
-//             * SetUp the graph then repeat the same process. Verify that the
-//             * pane is no longer disabled
-//             */
-//            spyPane.setDisable(true);
-//            assertEquals(spyPane.isDisabled(), true);
-//            verify(spyTopComponent, times(2)).disableFindView();
+            topComponent.disableFindView();
+            assertEquals(pane.isDisabled(), false);
         }
-    }
-
-    /**
-     * Test of focusFindTextField method, of class FindViewTopComponent.
-     */
-    @Test
-    public void testFocusFindTextField() {
-//        System.out.println("focusFindTextField");
-//        setupGraph();
-//
-//        spyTopComponent = spy(topComponent);
-//
-//        pane = new FindViewPane(topComponent);
-//        spyPane = spy(pane);
-//
-//        tabs = new FindViewTabs(spyPane);
-//        spyTabs = spy(tabs);
-//
-//        basicFindTab = new BasicFindTab(spyTabs);
-//        spyBasicFindTab = spy(basicFindTab);
-//
-//        replaceTab = new ReplaceTab(spyTabs);
-//        spyReplaceTab = spy(replaceTab);
-//
-//        when(spyTopComponent.getFindViewPane()).thenReturn(spyPane);
-//        when(spyPane.getTabs()).thenReturn(spyTabs);
-//        when(spyTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
-//
-//        doCallRealMethod().when(spyTopComponent).focusFindTextField();
-//
-//        spyTopComponent.handleGraphOpened(graph);
-//        spyTopComponent.handleComponentOpened();
-//        spyTopComponent.focusFindTextField();
-//        assertEquals(spyBasicFindTab.getFindTextField().isFocused(), true);
     }
 
     /**
@@ -334,65 +274,63 @@ public class FindViewTopComponentNGTest {
     @Test
     public void testUpdateUI() {
         System.out.println("UpdateUI");
-//        final GraphElementType basicFindType = GraphElementType.getValue(getFindViewPane().getTabs().getBasicFindTab().getLookForChoiceBox().getSelectionModel().getSelectedItem());
 
         final ChoiceBox<String> lookForChoiceBox = new ChoiceBox<>();
         lookForChoiceBox.getItems().add("Node");
         lookForChoiceBox.getSelectionModel().select(0);
 
-        when(spyTopComponent.getFindViewPane()).thenReturn(spyPane);
-        when(spyPane.getTabs()).thenReturn(spyTabs);
-        when(spyTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
-        when(spyBasicFindTab.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
-        when(spyTabs.getReplaceTab()).thenReturn(spyReplaceTab);
-        when(spyReplaceTab.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
-        when(spyTabs.getAdvancedFindTab()).thenReturn(spyAdvancedFindTab);
-        when(spyAdvancedFindTab.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
+        when(topComponent.getFindViewPane()).thenReturn(pane);
+        when(pane.getTabs()).thenReturn(tabs);
+        when(tabs.getBasicFindTab()).thenReturn(basicFindTab);
+        when(basicFindTab.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
+        when(tabs.getReplaceTab()).thenReturn(replaceTab);
+        when(replaceTab.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
+        when(tabs.getAdvancedFindTab()).thenReturn(advancedFindTab);
+        when(advancedFindTab.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         criteriaPanesList = new ArrayList<>();
-        when(spyAdvancedFindTab.getCorrespondingCriteriaList(GraphElementType.VERTEX)).thenReturn(criteriaPanesList);
+        when(advancedFindTab.getCorrespondingCriteriaList(GraphElementType.VERTEX)).thenReturn(criteriaPanesList);
 
         // Make the functions not do nothing
-        doNothing().when(spyBasicFindTab).saveSelected(Mockito.any());
-        doNothing().when(spyBasicFindTab).populateAttributes(Mockito.any());
-        doNothing().when(spyBasicFindTab).updateSelectedAttributes(Mockito.any());
-        doNothing().when(spyReplaceTab).saveSelected(Mockito.any());
-        doNothing().when(spyReplaceTab).populateAttributes(Mockito.any());
-        doNothing().when(spyReplaceTab).updateSelectedAttributes(Mockito.any());
+        doNothing().when(basicFindTab).saveSelected(Mockito.any());
+        doNothing().when(basicFindTab).populateAttributes(Mockito.any());
+        doNothing().when(basicFindTab).updateSelectedAttributes(Mockito.any());
+        doNothing().when(replaceTab).saveSelected(Mockito.any());
+        doNothing().when(replaceTab).populateAttributes(Mockito.any());
+        doNothing().when(replaceTab).updateSelectedAttributes(Mockito.any());
 
         // call the update UI method
-        doCallRealMethod().when(spyTopComponent).UpdateUI();
-        spyTopComponent.UpdateUI();
+        doCallRealMethod().when(topComponent).UpdateUI();
+        topComponent.UpdateUI();
 
         // verify each function was called once
-        verify(spyBasicFindTab, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
-        verify(spyBasicFindTab, times(1)).populateAttributes(Mockito.eq(GraphElementType.VERTEX));
-        verify(spyBasicFindTab, times(1)).updateSelectedAttributes(Mockito.eq(spyBasicFindTab.getMatchingAttributeList(GraphElementType.VERTEX)));
-        verify(spyReplaceTab, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
-        verify(spyReplaceTab, times(1)).populateAttributes(Mockito.eq(GraphElementType.VERTEX));
-        verify(spyReplaceTab, times(1)).updateSelectedAttributes(Mockito.eq(spyBasicFindTab.getMatchingAttributeList(GraphElementType.VERTEX)));
+        verify(basicFindTab).saveSelected(GraphElementType.VERTEX);
+        verify(basicFindTab).populateAttributes(GraphElementType.VERTEX);
+        verify(basicFindTab).updateSelectedAttributes(basicFindTab.getMatchingAttributeList(GraphElementType.VERTEX));
+        verify(replaceTab).saveSelected(GraphElementType.VERTEX);
+        verify(replaceTab).populateAttributes(GraphElementType.VERTEX);
+        verify(replaceTab).updateSelectedAttributes(basicFindTab.getMatchingAttributeList(GraphElementType.VERTEX));
 
     }
 
     private void setupGraph() {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
 
+        graphMap = new HashMap<>();
         graphMap.put(graph.getId(), graph);
         try {
             WritableGraph wg = graph.getWritableGraph("", true);
             final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(wg);
 
             ArrayList<Attribute> attributeList = new ArrayList<>();
-            BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
+            BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("label name", "", GraphElementType.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
             FindResultsList foundResult = new FindResultsList(2, parameters);
 
             wg.setObjectValue(stateId, 0, foundResult);
 
             wg.commit();
-
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
         }
     }
-
 }

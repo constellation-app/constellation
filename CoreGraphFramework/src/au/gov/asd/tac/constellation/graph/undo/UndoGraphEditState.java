@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,12 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 
 /**
  *
@@ -65,7 +67,7 @@ public class UndoGraphEditState {
 
     private Object[] objectStack = new Object[1];
     private int objectCount = 0;
-    private Map<Object, Integer> objectMap = new HashMap<>();
+    private MutableObjectIntMap<Object> objectMap = new ObjectIntHashMap<>();
 
     private int currentAttribute = 0;
     private int currentId = 0;
@@ -122,7 +124,7 @@ public class UndoGraphEditState {
             longStack[i] = in.readLong();
         }
 
-        final Map<Integer, Class<?>> classMap = new HashMap<>();
+        final MutableIntObjectMap<Class<?>> classMap = new IntObjectHashMap<>();
         classMap.put(0, null);
 
         objectCount = in.readInt();
@@ -150,7 +152,7 @@ public class UndoGraphEditState {
     }
 
     public byte[] getByteStack() {
-        return byteStack.clone();
+        return byteStack;
     }
 
     public void setByteStack(final byte[] byteStack) {
@@ -166,7 +168,7 @@ public class UndoGraphEditState {
     }
 
     public short[] getShortStack() {
-        return shortStack.clone();
+        return shortStack;
     }
 
     public void setShortStack(final short[] shortStack) {
@@ -182,7 +184,7 @@ public class UndoGraphEditState {
     }
 
     public int[] getIntStack() {
-        return intStack.clone();
+        return intStack;
     }
 
     public void setIntStack(final int[] intStack) {
@@ -198,7 +200,7 @@ public class UndoGraphEditState {
     }
 
     public long[] getLongStack() {
-        return longStack.clone();
+        return longStack;
     }
 
     public void setLongStack(final long[] longStack) {
@@ -214,7 +216,7 @@ public class UndoGraphEditState {
     }
 
     public Object[] getObjectStack() {
-        return objectStack.clone();
+        return objectStack;
     }
 
     public void setObjectStack(final Object[] objectStack) {
@@ -323,9 +325,8 @@ public class UndoGraphEditState {
     }
 
     public int addObject(final Object object) {
-        final Integer existingObjectIndex = objectMap.get(object);
-        if (existingObjectIndex != null) {
-            return existingObjectIndex;
+        if (objectMap.containsKey(object)) {
+            return objectMap.get(object);
         }
         objectMap.put(object, objectCount);
         if (objectCount == objectStack.length) {
@@ -495,7 +496,7 @@ public class UndoGraphEditState {
             out.writeLong(longStack[i]);
         }
 
-        final Map<Class<?>, Integer> classMap = new HashMap<>();
+        final MutableObjectIntMap<Class<?>> classMap = new ObjectIntHashMap<>();
         classMap.put(null, 0);
 
         out.writeInt(objectCount);

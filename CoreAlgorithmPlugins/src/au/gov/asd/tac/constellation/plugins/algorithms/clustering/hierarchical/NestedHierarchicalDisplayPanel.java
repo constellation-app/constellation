@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,15 @@ import java.awt.Graphics2D;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.MouseInputListener;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 /**
  *
@@ -177,7 +177,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
         final int numOfVerts = state.getGroups().length;
 
         final List<GroupTreeNode> treeRoots = new LinkedList<>();
-        final Map<Integer, GroupTreeNode> treeNodes = new HashMap<>();
+        final MutableIntObjectMap<GroupTreeNode> treeNodes = new IntObjectHashMap<>();
 
         // Build a tree of children, calculating nodes' x positions
         for (int i = 0; i < numOfVerts; i++) {

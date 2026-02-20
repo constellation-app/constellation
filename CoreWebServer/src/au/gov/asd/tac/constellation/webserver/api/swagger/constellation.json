@@ -2,35 +2,55 @@
     "openapi": "3.0.0",
     "info": {
         "title": "CONSTELLATION REST Services",
-        "description": "<p>A REST API for CONSTELLATION.</p><p>The <span style=\"font-family:monospace\">X-CONSTELLATION-SECRET</span> value is required for all REST API endpoints. It can be found in <span style=\"font-family:monospace\">$HOME/.CONSTELLATION/rest.json</span> after the REST server has been started.",
-        "version": "2.0.0"
+        "description": "<p>A REST API for CONSTELLATION.</p><p>The <span style=\"font-family:monospace\">X-CONSTELLATION-SECRET</span> value is required for all REST API endpoints. It can be found in <span style=\"font-family:monospace\">$HOME/.ipython/rest.json</span> after the REST server has been started.",
+        "version": "(under development)"
     },
     "paths": {      
     },
-    "components":{        
+    "components":{
+        "securitySchemes": {
+            "ConstellationSecret": {
+                "type": "apiKey",
+                "name": "X-CONSTELLATION-SECRET",
+                "in": "header"
+            }
+        },
         "examples":{
-            "runPluginExample":{
-                "type": "object",
-                "properties":{
-                    "SelectTopNPlugin.mode": {
-                        "type": "string"
+            "runPluginExample": {
+                "request": {
+                    "type": "object",
+                    "properties": {
+                        "SelectTopNPlugin.mode": {
+                            "type": "string"
+                        },
+                        "SelectTopNPlugin.type_category": {
+                            "type": "string"
+                        },
+                        "SelectTopNPlugin.type": {
+                            "type": "string"
+                        },
+                        "SelectTopNPlugin.limit": {
+                            "type": "integer"
+                        }
                     },
-                    "SelectTopNPlugin.type_category": {
-                        "type": "string"
-                    },
-                    "SelectTopNPlugin.type": {
-                        "type": "string"
-                    },
-                    "SelectTopNPlugin.limit": {
-                        "type": "integer"
+                    "example": {
+                        "SelectTopNPlugin.mode": "Node",
+                        "SelectTopNPlugin.type_category": "Online Location",
+                        "SelectTopNPlugin.type": "\n\u2713 Online Location\n",
+                        "SelectTopNPlugin.limit": 2
                     }
                 },
-                "example":{
-                    "SelectTopNPlugin.mode": "Node",
-                    "SelectTopNPlugin.type_category": "Online Location",
-                    "SelectTopNPlugin.type": "\n\u2713 Online Location\n",
-                    "SelectTopNPlugin.limit": 2
-                }
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/examples/SuccessResponse"
+                    },
+                    "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                    },
+                    "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                    }
+                }                
             },
             "runPluginsExampleObject":
             {
@@ -47,27 +67,40 @@
             },
             "runPluginsExample":
             {
-                "type": "array", 
-                "items": {
-                    "$ref":"#/components/examples/runPluginsExampleObject"
-                },  
-                "example":[
-                    {                      
-                        "plugin_name": "SELECTALL"                  
+                "request": {
+                    "type": "array",
+                    "items": {
+                        "$ref":"#/components/examples/runPluginsExampleObject"
                     },
-                    {                      
-                        "plugin_name": "DESELECTBLAZES"                  
+                    "example": [
+                        {
+                            "plugin_name": "SELECTALL"
+                        },
+                        {
+                            "plugin_name": "DESELECTBLAZES"
+                        },
+                        {
+                            "plugin_name": "SELECTTOPN",
+                            "plugin_args": {
+                                "SelectTopNPlugin.mode": "Node",
+                                "SelectTopNPlugin.type_category": "Online Location",
+                                "SelectTopNPlugin.type": "\n\u2713 Online Location\n",
+                                "SelectTopNPlugin.limit": 2
+                            }
+                        }
+                    ]
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/examples/SuccessResponse"
                     },
-                    {
-                        "plugin_name": "SELECTTOPN",
-                        "plugin_args":{                               
-                            "SelectTopNPlugin.mode": "Node",
-                            "SelectTopNPlugin.type_category": "Online Location",
-                            "SelectTopNPlugin.type": "\n\u2713 Online Location\n",
-                            "SelectTopNPlugin.limit": 2
-                        }  
+                    "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                    },
+                    "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
                     }
-                ]
+                }
             },
             "addRecordStoreExampleObject":
             {
@@ -75,7 +108,7 @@
                 "properties":{
                     "columns":{
                         "type": "array"
-                    },                  
+                    },
                     "data":{
                         "type": "array"                        
                     }
@@ -83,52 +116,606 @@
             },
             "addRecordStoreExample":
             {
-                "type": "array", 
-                "items": {
-                    "$ref":"#/components/examples/addRecordStoreExampleObject"
-                },  
-                "example":{                    
-                    "columns": [
-                        "source.Label",   
-                        "source.visibility",   
-                        "source.dim",    
-                        "source.Identifier", 
-                        "source.selected"
-                    ],
-                    "data":[ 
-                        [
-                            "New Node1",
-                            true,
-                            true,
-                            "New Node1",
-                            true
+                "request": {
+                    "type": "array",
+                    "items": {
+                        "$ref":"#/components/examples/addRecordStoreExampleObject"
+                    },
+                    "example":{
+                        "columns": [
+                            "source.Label",
+                            "source.visibility",
+                            "source.dim",
+                            "source.Identifier",
+                            "source.selected"
+                        ],
+                        "data":[
+                            [
+                                "New Node1",
+                                true,
+                                true,
+                                "New Node1",
+                                true
+                            ]
                         ]
-                    ]                    
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/examples/SuccessResponse"
+                    },
+                    "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                    },
+                    "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                    }
                 }
             },
+            "getRecordsStoreExample": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "columns": [
+                                            "blaze_size",   
+                                            "highlight_color",   
+                                            "draw_directed_transactions",    
+                                            "custom_attribute_1", 
+                                            "custom_attribute_2"
+                                        ],
+                                        "data": [ 
+                                            [
+                                                0.5,
+                                                "Carrot",
+                                                true,
+                                                "custom value 1",
+                                                "custom value 2"
+                                            ]
+                                        ]   
+                                    }                                    
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                    },
+                    "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                    }
+                }            
+            },
             "setGraphAttributesExample" : {
-                "type": "array", 
-                "items": {
-                    "$ref":"#/components/examples/addRecordStoreExampleObject"
-                },  
-                "example":{                    
-                    "columns": [
-                        "blaze_size",   
-                        "highlight_color",   
-                        "draw_directed_transactions",    
-                        "custom_attribute_1", 
-                        "custom_attribute_2"
-                    ],
-                    "data":[ 
-                        [
-                            0.5,
-                            "Carrot",
-                            true,
-                            "custom value 1",
-                            "custom value 2"
+                "request": {
+                    "type": "array", 
+                    "items": {
+                        "$ref": "#/components/examples/addRecordStoreExampleObject"
+                    },
+                    "example": {
+                        "columns": [
+                            "blaze_size",   
+                            "highlight_color",   
+                            "draw_directed_transactions",    
+                            "custom_attribute_1", 
+                            "custom_attribute_2"
+                        ],
+                        "data": [ 
+                            [
+                                0.5,
+                                "Carrot",
+                                true,
+                                "custom value 1",
+                                "custom value 2"
+                            ]
                         ]
-                    ]                    
+                    }
+                },
+                "responses": { 
+                     "200": {
+                        "$ref": "#/components/examples/SuccessResponse"
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
                 }
+            },
+            "listServicesExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": [
+                                        {
+                                            "name": "get_plugin_description",
+                                            "httpMethod": "GET"
+                                        },
+                                        {
+                                            "name": "open_graph",
+                                            "httpMethod": "POST"
+                                        },
+                                        {
+                                            "name": "get_type_description",
+                                            "httpMethod": "GET"
+                                        }
+                                    ]
+                                                              
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "getAttributesExample": {
+                "responses": { 
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "graph.3d_display": "boolean",
+                                        "graph.blaze_opacity": "float",
+                                        "graph.blaze_size": "float",
+                                        "graph.camera": "camera",
+                                        "graph.max_transactions": "integer",
+                                        "graph.node_color_reference": "vertex_attribute_name",
+                                        "graph.node_top_labels": "graph_labels_nodes",
+                                        "graph.draw_directed_transactions": "boolean",
+                                        "graph.draw_flags": "draw_flags",
+                                        "graph.node_bottom_labels": "graph_labels_nodes"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                    },
+                    "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                    }
+                }
+            },
+            
+            "listGraphsExample": {
+                "responses": { 
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": [
+                                        {
+                                            "id": "fd443240-22e1-473a-9e5a-5cc05a8df6ec",
+                                            "name": "Cornell_Movie-Dialogs_Corpus",
+                                            "schema": "au.gov.asd.tac.constellation.graph.schema.AnalyticSchemaFactory"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                    },
+                    "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                    }
+                }
+            },
+            
+            "getGraphExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "id": "23b4e80e-512f-43c3-b4a5-1ad40ed0f770",
+                                        "name": "soc-redditHyperlinks-body",
+                                        "schema": "au.gov.asd.tac.constellation.graph.schema.AnalyticSchemaFactory"
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "getGraphValuesExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "columns": [
+                                            "3d_display|boolean",
+                                            "blaze_opacity|float",
+                                            "blaze_size|float",
+                                            "max_transactions|integer"
+                                        ],
+                                        "data": [
+                                            true,
+                                            1,
+                                            0.3,
+                                            8
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "renameGraphExample": {
+                 "responses": {
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "id": "23b4e80e-512f-43c3-b4a5-1ad40ed0f770",
+                                        "previous_name": "analytic graph1",
+                                        "new_name": "renamed graph"
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "description": "A graph with the name newGraph already exists."
+                     }
+                }
+            },
+            
+            "listPluginsExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": [
+                                        "CONTRACTGRAPH",
+                                        "HISTOGRAMFILTERONSELECTION",
+                                        "ARRANGEINGRIDCOMPONENTS",
+                                        "COMPONENTCOUNTANALYTIC",
+                                        "DEGREECENTRALITY",
+                                        "ECCENTRICITY",
+                                        "DELETESELECTION",
+                                        "CLOSENESSCENTRALITYANALYTIC",
+                                        "EXPANDCOMPOSITE",
+                                        "REMOVEUNUSEDATTRIBUTES"
+                                    ]
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "getPluginDescriptionExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "name": "Select All",
+                                        "id": "1568cc0c-7d4b-4ab7-bfab-4cd4467135ae",
+                                        "description": "Select everything in your graph",
+                                        "tags": [
+                                            "SELECT"
+                                        ],
+                                        "parameters": {}
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "getServiceDescriptionExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "name": "run_plugin",
+                                        "http_method": "POST",
+                                        "description": "Run a plugin, optionally specifying a graph.",
+                                        "mimetype": "application/json",
+                                        "tags": [
+                                            "plugin"
+                                        ],
+                                        "parameters": {
+                                            "plugin_name": {
+                                                "name": "Plugin name",
+                                                "type": "string",
+                                                "description": "The name of the plugin to run."
+                                            },
+                                            "graph_id": {
+                                                "name": "Graph id",
+                                                "type": "string",
+                                                "description": "The id of a graph to run the plugin on. (Default is the active graph)"
+                                            },
+                                            "args": {
+                                                "name": "Plugin arguments (body)",
+                                                "type": "string",
+                                                "description": "A JSON object containing parameter names and values to be passed to the plugin."
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "getTypeDescriptionExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "name": "Communication",
+                                        "description": "A transaction representing a communication between two entities, eg. a phone made a call to another phone",
+                                        "color": "Emerald",
+                                        "style": "SOLID",
+                                        "directed": "true",
+                                        "properties": "{}",
+                                        "super_type": "Communication",
+                                        "top_level_type": "Communication",
+                                        "hierarchy": "Communication"
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "listIconsExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": [
+                                        "",
+                                        "Background.Edge Square",
+                                        "Background.Flat Circle",
+                                        "Background.Flat Square",
+                                        "Background.Flat Triangle",
+                                        "Background.Pin",
+                                        "Background.Round Circle",
+                                        "Background.Round Square",
+                                        "Character.0"
+                                    ]
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "listNamedColorsExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "Amethyst": "#9b59b6",
+                                        "Azure": "#2e69c5",
+                                        "Banana": "#feff6a",
+                                        "Black": "#000000",
+                                        "Blue": "#0000ff",
+                                        "Blush": "#f0d4d4",
+                                        "Blueberry": "#99b3ff",
+                                        "Brown": "#7f3f3f",
+                                        "Burgundy": "#870020",
+                                        "Buttermilk": "#ffffc8",
+                                        "Carrot": "#e67e22",
+                                        "Cherry": "#de2446",
+                                        "Chocolate": "#775f4d",
+                                        "Clouds": "#ecf0f1",
+                                        "Cyan": "#00ffff",
+                                        "DarkGreen": "#007f00",
+                                        "DarkGrey": "#404040",
+                                        "DarkOrange": "#ff7f3f",
+                                        "DarkPurple": "#331a80",
+                                        "Emerald": "#2ecc4f",
+                                        "GoldenRod": "#ffbf00"
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "newGraphExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "id": "28963ab2-e5dc-48db-8c8d-6fb27ee81702",
+                                        "name": "test",
+                                        "schema": "au.gov.asd.tac.constellation.graph.schema.AnalyticSchemaFactory"
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "openGraphExample": {
+                 "responses": { 
+                     "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "id": "b2b870ce-1f5e-4132-b6db-3c59da3b0487",
+                                        "name": "CarlocsAll",
+                                        "schema": "au.gov.asd.tac.constellation.graph.schema.AnalyticSchemaFactory"
+                                    }
+                                }
+                            }
+                        }
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     }
+                }
+            },
+            
+            "refelctJsonExample": {
+                "request": {
+                    "type": "object",
+                    "properties": {
+                        "test.string": {
+                            "type": "string"
+                        },
+                        "test.integer": {
+                            "type": "integer"
+                        },
+                        "test.float": {
+                            "type": "float"
+                        }
+                    },
+                    "example": {
+                        "test.string": "Test reflect json",
+                        "test.integer": 1,
+                        "test.float": 1.1
+                    }
+                }        
+            },
+            
+            "defaultResponses": {
+              "responses": { 
+                     "200": {
+                        "$ref": "#/components/examples/SuccessResponse"
+                     },
+                     "401": {
+                        "$ref": "#/components/examples/UnAuthorisedErrorResponse"
+                     },
+                     "422": {
+                        "$ref": "#/components/examples/ValidationErrorResponse"
+                     },
+                     "500": {
+                        "$ref": "#/components/examples/ServerError"
+                     }
+                }  
+            },
+            
+            "UnAuthorisedErrorResponse": {
+                "description": "Un-Authorised"
+            },
+            "ValidationErrorResponse": {
+                "description": "Error: Unprocessable Entity"
+            },
+            "ServerError": {
+              "description": "Server Error"
+            },
+            "SuccessResponse": {
+                "description": "Success"
             }
         }
     }

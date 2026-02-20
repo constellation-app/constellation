@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,24 +30,25 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class GraphRecordStoreNGTest {
-
-    public GraphRecordStoreNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -95,15 +96,15 @@ public class GraphRecordStoreNGTest {
      */
     @Test
     public void testSet() {
-        final int record = 0;
+        final int recordEntry = 0;
         final String key = "key1";
         final String value = "value1";
 
         final GraphRecordStore instance = new GraphRecordStore();
         instance.add();
-        instance.set(record, key, value);
+        instance.set(recordEntry, key, value);
 
-        assertEquals(value, instance.get(record, key));
+        assertEquals(value, instance.get(recordEntry, key));
     }
 
     /**
@@ -111,7 +112,7 @@ public class GraphRecordStoreNGTest {
      */
     @Test
     public void testValues() {
-        final int record = 1;
+        final int recordEntry = 1;
 
         final GraphRecordStore instance = new GraphRecordStore();
         instance.add();
@@ -128,7 +129,7 @@ public class GraphRecordStoreNGTest {
         expResult.add("value3");
         expResult.add("value4");
 
-        final List<String> result = instance.values(record);
+        final List<String> result = instance.values(recordEntry);
         assertEquals(result, expResult);
     }
 
@@ -226,5 +227,4 @@ public class GraphRecordStoreNGTest {
         final String result = instance.toStringVerbose();
         assertEquals(result, expResult);
     }
-
 }

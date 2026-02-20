@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ public class BlazeV0 implements Serializable, Comparable<BlazeV0> {
     }
 
     public static BlazeV0 valueOf(final String s) {
-        if (s != null && s.length() > 0) {
+        if (s != null && !s.isEmpty()) {
             final Matcher m = BLAZE_PATTERN.matcher(s);
             if (m.matches()) {
                 final int angle = Integer.parseInt(m.group(1));

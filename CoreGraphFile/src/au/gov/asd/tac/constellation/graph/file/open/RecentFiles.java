@@ -45,6 +45,7 @@ package au.gov.asd.tac.constellation.graph.file.open;
 
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
 import com.google.common.collect.ImmutableList;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -106,12 +107,6 @@ public final class RecentFiles {
      * Boundary for items count in history
      */
     private static final int MAX_HISTORY_ITEMS = 10;
-
-    /**
-     * This is the system property that is set to true in order to make the AWT
-     * thread run in headless mode for tests, etc.
-     */
-    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
     
     /**
      * Flag to indicate if the init process has completed, 
@@ -127,7 +122,7 @@ public final class RecentFiles {
      * Will start a listener for recently closed files
      */
     public static void init() {
-        if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+        if (!HeadlessUtilities.isHeadless()) {
             WindowManager.getDefault().invokeWhenUIReady(() -> delayedInit());
         } else {
             // We are in HEADLESS mode ... do not wait for UI to be ready
@@ -354,9 +349,13 @@ public final class RecentFiles {
     }
 
     public static FileObject convertPath2File(final String path) {
-        File f = new File(path);
-        f = FileUtil.normalizeFile(f);
-        return f == null ? null : FileUtil.toFileObject(f);
+        final File file = new File(path);
+        final File normalizedFile = FileUtil.normalizeFile(file);
+        if (normalizedFile == null || file.isDirectory()) {
+            return null;
+        } else {
+            return FileUtil.toFileObject(normalizedFile);
+        }
     }
 
     /**

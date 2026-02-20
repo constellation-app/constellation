@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.NbPreferences;
 
 /**
- * Utilities for setting the HTTP proxy used by CONSTELLATION.
+ * Utilities for setting the HTTP proxy used by Constellation.
  *
  * @author algol
  * @author cygnus_x-1
@@ -39,9 +39,10 @@ import org.openide.util.NbPreferences;
 public class ProxyUtilities implements PreferenceChangeListener {
 
     private static final Logger LOGGER = Logger.getLogger(ProxyUtilities.class.getName());
+    
     private static final ProxySelector DEFAULT_PROXY_SELECTOR = new ConstellationHttpProxySelector();
+    
     public static final String PROXY_SEPARATOR = "\n";
-    public static final String SEMICOLON = ";";
 
     public ProxyUtilities() {
         NbPreferences.forModule(ProxyPreferenceKeys.class)
@@ -200,6 +201,7 @@ public class ProxyUtilities implements PreferenceChangeListener {
                 return new Pair<>(host, port);
             }
         } catch (final NumberFormatException ex) {
+            LOGGER.log(Level.WARNING, "Port couldn't be parsed");
         }
 
         return null;

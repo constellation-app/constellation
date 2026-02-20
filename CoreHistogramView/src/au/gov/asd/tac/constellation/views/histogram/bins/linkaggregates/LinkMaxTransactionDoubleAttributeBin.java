@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,14 +28,8 @@ import au.gov.asd.tac.constellation.views.histogram.bins.DoubleBin;
 public class LinkMaxTransactionDoubleAttributeBin extends DoubleBin {
 
     @Override
-    public void setKey(GraphReadMethods graph, int attribute, int element) {
-        double max = Double.MIN_VALUE;
-        final int transactionCount = graph.getLinkTransactionCount(element);
-        for (int t = 0; t < transactionCount; t++) {
-            final int transaction = graph.getLinkTransaction(element, t);
-            max = Math.max(graph.getDoubleValue(attribute, transaction), max);
-        }
-        key = max;
+    public void setKey(final GraphReadMethods graph, final int attribute, final int element) {
+        calculateAggregates(graph, attribute, element, Bin.AGGREGATION.MAX, false);
     }
 
     @Override

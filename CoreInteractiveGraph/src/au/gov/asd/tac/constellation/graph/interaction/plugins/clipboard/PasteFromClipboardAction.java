@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,17 +29,12 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-import org.openide.util.NbBundle;
 
 /**
  * Paste to clipboard action.
  *
  * @author algol
  */
-@NbBundle.Messages({
-    "# {0} - nodes pasted",
-    "# {1} - transactions pasted",
-    "MSG_Pasted=Nodes pasted: {0}; Transactions pasted {1}"})
 public final class PasteFromClipboardAction extends AbstractAction {
 
     private final GraphNode context;
@@ -67,9 +62,8 @@ public final class PasteFromClipboardAction extends AbstractAction {
 
         @Override
         protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            boolean isEmpty = wg.getVertexCount() == 0;
             PluginExecution.withPlugin(InteractiveGraphPluginRegistry.PASTE).executeNow(wg);
-            if (isEmpty) {
+            if (wg.getVertexCount() == 0) {
                 PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(wg);
             }
         }

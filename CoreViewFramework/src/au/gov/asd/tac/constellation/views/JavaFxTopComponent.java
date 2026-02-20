@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
+import au.gov.asd.tac.constellation.utilities.headless.HeadlessUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -43,6 +44,7 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
     protected JFXPanel jfxContainer = new JFXPanel();
     protected Scene scene;
     protected ScrollPane scrollPane;
+    
     /**
      * A JavaFxTopComponent will have a ScrollPane by default, as it cannot know
      * the expected layout of the given pane. If you wish to remove the
@@ -112,7 +114,10 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
 
             // set the font on initialise
             updateFont();
-
+            
+            if (HeadlessUtilities.isHeadless()) {
+                return;
+            }
             jfxContainer.setScene(scene);
             jfxContainer.setBackground(Color.red);
             SwingUtilities.invokeLater(() -> {

@@ -46,6 +46,9 @@ website shares free icons to download. (https://www.shareicon.net/tos)
 -   [Flat Icons](https://www.flaticon.com/packs/countrys-flags) under the
 license (https://file000.flaticon.com/downloads/license/license.pdf)
 
+- [MiniSearch](https://github.com/lucaong/minisearch) under the license 
+(https://github.com/lucaong/minisearch/blob/master/LICENSE.txt)
+
 The following is a list of third-party libraries used in the development
 of Constellation.
 

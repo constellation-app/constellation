@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class AnalyticViewState {
         this.currentQuestion = state.getCurrentQuestion();
         this.question = state.getQuestion();
         this.activeCategory = state.getActiveCategory();
-        this.graphVisualisations = (HashMap) state.getGraphVisualisations();
+        this.graphVisualisations = (HashMap<GraphVisualisation, Boolean>) state.getGraphVisualisations();
     }
     
     public AnalyticViewState(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,
@@ -89,15 +89,16 @@ public class AnalyticViewState {
         this.currentQuestion = currentQuestion;
         this.question = question;
         this.activeCategory = activeCategory;
-        this.graphVisualisations = (HashMap) graphVisualisations;
+        this.graphVisualisations = (HashMap<GraphVisualisation, Boolean>) graphVisualisations;
     }
 
+    @SuppressWarnings("unchecked") // cast matches return type
     public Map<GraphVisualisation, Boolean> getGraphVisualisations() {
-        return graphVisualisations != null ? (HashMap) graphVisualisations.clone() : Collections.emptyMap();
+        return graphVisualisations != null ? (HashMap<GraphVisualisation, Boolean>) graphVisualisations.clone() : Collections.emptyMap();
     }
 
     public void setGraphVisualisations(final Map<GraphVisualisation, Boolean> graphVisualisations) {
-        this.graphVisualisations = (HashMap) graphVisualisations;
+        this.graphVisualisations = (HashMap<GraphVisualisation, Boolean>) graphVisualisations;
     }
 
     public String getActiveCategory() {
@@ -128,7 +129,7 @@ public class AnalyticViewState {
         return Collections.unmodifiableList(activeAnalyticQuestions);
     }
 
-    public AnalyticResult getResult() {
+    public AnalyticResult<?> getResult() {
         return result;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,6 @@ public final class CutToClipboardPlugin extends SimpleEditPlugin {
 
     @Override
     protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         // Do a copy to the clipboard.
         final String text = GraphCopyUtilities.copyGraphTextToSystemClipboard(wg);
         ConstellationLoggerHelper.copyPropertyBuilder(this, text.length(), ConstellationLoggerHelper.SUCCESS);
@@ -63,10 +62,10 @@ public final class CutToClipboardPlugin extends SimpleEditPlugin {
                     wg.removeTransaction(id);
                 }
             }
-
-            final String msg = Bundle.MSG_Cut(vxCopied.cardinality(), txCopied.cardinality());
+            
             final StatusDisplayer statusDisplayer = StatusDisplayer.getDefault();
             if (statusDisplayer != null) {
+                final String msg = String.format("Nodes cut: %d; Transactions cut: %d", vxCopied.cardinality(), txCopied.cardinality());
                 statusDisplayer.setStatusText(msg);
             }
         } else {

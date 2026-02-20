@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.components;
 
-import au.gov.asd.tac.constellation.views.find.components.BasicFindTab;
-import au.gov.asd.tac.constellation.views.find.components.ReplaceTab;
-import au.gov.asd.tac.constellation.views.find.components.FindViewTabs;
-import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.views.find.FindViewTopComponent;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -40,23 +36,15 @@ import org.testng.annotations.Test;
  */
 public class FindViewPaneNGTest {
 
-    FindViewTopComponent findViewTopComponent;
-    FindViewTopComponent spyTopComponent;
+    private FindViewTopComponent findViewTopComponent;
 
-//    FindViewController findViewController;
-    BasicFindTab basicFindTab;
-    BasicFindTab spyBasicFindTab;
-    ReplaceTab replaceTab;
-    ReplaceTab spyReplaceTab;
-    FindViewPane findViewPane;
-    FindViewPane spyFindViewPane;
-    FindViewTabs findViewTabs;
-    FindViewTabs spyFindViewTabs;
+    private BasicFindTab basicFindTab;
+    private ReplaceTab replaceTab;
+    private FindViewPane findViewPane;
+    private FindViewTabs findViewTabs;
+    
     private static final Logger LOGGER = Logger.getLogger(FindViewPaneNGTest.class.getName());
-
-    public FindViewPaneNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -76,29 +64,22 @@ public class FindViewPaneNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         findViewTopComponent = mock(FindViewTopComponent.class);
-        spyTopComponent = spy(findViewTopComponent);
-
-        findViewPane = new FindViewPane(spyTopComponent);
-        spyFindViewPane = spy(findViewPane);
+        findViewPane = spy(new FindViewPane(findViewTopComponent));
 
         findViewTabs = mock(FindViewTabs.class);
-        spyFindViewTabs = spy(findViewTabs);
-
         basicFindTab = mock(BasicFindTab.class);
-        spyBasicFindTab = spy(basicFindTab);
-
         replaceTab = mock(ReplaceTab.class);
-        spyReplaceTab = spy(replaceTab);
 
-        when(spyFindViewTabs.getParentComponent()).thenReturn(spyFindViewPane);
-        when(spyFindViewPane.getTabs()).thenReturn(spyFindViewTabs);
-        when(spyFindViewPane.getParentComponent()).thenReturn(spyTopComponent);
-        when(spyFindViewTabs.getBasicFindTab()).thenReturn(spyBasicFindTab);
-        when(spyFindViewTabs.getReplaceTab()).thenReturn(spyReplaceTab);
+        when(findViewTabs.getParentComponent()).thenReturn(findViewPane);
+        when(findViewPane.getTabs()).thenReturn(findViewTabs);
+        when(findViewPane.getParentComponent()).thenReturn(findViewTopComponent);
+        when(findViewTabs.getBasicFindTab()).thenReturn(basicFindTab);
+        when(findViewTabs.getReplaceTab()).thenReturn(replaceTab);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -108,7 +89,7 @@ public class FindViewPaneNGTest {
     public void testGetParentComponent() {
         System.out.println("getParentComponent");
         
-        assertEquals(spyFindViewPane.getParentComponent(), spyTopComponent);
+        assertEquals(findViewPane.getParentComponent(), findViewTopComponent);
     }
 
     /**
@@ -118,6 +99,6 @@ public class FindViewPaneNGTest {
     public void testGetTabs() {
         System.out.println("getTabs");
         
-        assertEquals(spyFindViewPane.getTabs(), spyFindViewTabs);
+        assertEquals(findViewPane.getTabs(), findViewTabs);
     }
 }

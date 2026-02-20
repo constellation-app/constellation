@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import static au.gov.asd.tac.constellation.views.conversationview.ConversationSide.LEFT;
+import static au.gov.asd.tac.constellation.views.conversationview.ConversationSide.RIGHT;
 import java.util.List;
 import javafx.scene.paint.Color;
 import javax.swing.SwingUtilities;

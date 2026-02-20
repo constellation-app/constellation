@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import javax.swing.filechooser.FileFilter;
 import javax.xml.transform.TransformerException;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -102,7 +102,7 @@ public class XMLImportFileParser extends ImportFileParser {
             @Override
             public boolean accept(final File file) {
                 final String name = file.getName();
-                return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.XML)) || file.isDirectory();
+                return (file.isFile() && Strings.CI.endsWith(name, FileExtensionConstants.XML)) || file.isDirectory();
             }
 
             @Override
@@ -196,7 +196,7 @@ public class XMLImportFileParser extends ImportFileParser {
             }
         }
 
-        if (text.length() > 0) {
+        if (!text.isEmpty()) {
             rowValues.put(globalKey, text.toString());
         }
 

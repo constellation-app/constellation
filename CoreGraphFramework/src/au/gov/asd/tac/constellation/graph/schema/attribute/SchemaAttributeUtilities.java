@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,6 @@ public class SchemaAttributeUtilities {
      * @param elementType The element type
      * @return A {@link List} of all discovered {@link SchemaAttribute}.
      */
-    @SuppressWarnings("unchecked") // unchecked cast error cause by Empty set : this is fine.
     public static Collection<SchemaAttribute> getAttributes(final GraphElementType elementType) {
         buildAttributes();
         return switch (elementType) {

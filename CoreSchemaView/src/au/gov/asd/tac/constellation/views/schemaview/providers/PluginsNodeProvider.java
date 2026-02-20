@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -202,6 +202,8 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
         exportPluginsButton.setGraphic(new ImageView(UserInterfaceIconProvider.DOWNLOAD.buildImage(16, ConstellationColor.CLOUDS.getJavaColor())));
         exportPluginsButton.setOnAction(action -> exportPluginsToCsv(tab.getContent().getScene().getWindow()));
 
+        final Button helpButton = HelpIconProvider.populateHelpIcon(this.getClass().getName(), "Plugins");
+
         Platform.runLater(() -> {
             pane.setAlignment(Pos.TOP_RIGHT);
 
@@ -209,9 +211,10 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
             scrollPane.setContent(pluginList);
             scrollPane.setFitToWidth(true);
 
-            pane.getChildren().add(exportPluginsButton);
-            pane.getChildren().add(scrollPane);
-
+            final HBox hbox = new HBox();
+            hbox.setAlignment(Pos.TOP_RIGHT);
+            hbox.getChildren().addAll(helpButton, exportPluginsButton);
+            pane.getChildren().addAll(hbox, scrollPane);
             tab.setContent(pane);
         });
     }

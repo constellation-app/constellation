@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class TransactionGraphLabelsAttributeInteraction extends AbstractAttribut
             labelsString.append(label.getColor());
             labelsString.append("), ");
         });
-        return labelsString.length() > 0 ? labelsString.substring(0, labelsString.length() - 2) : labelsString.toString();
+        return !labelsString.isEmpty() ? labelsString.substring(0, labelsString.length() - 2) : labelsString.toString();
     }
 
     @Override

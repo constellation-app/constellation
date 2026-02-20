@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,11 @@ import au.gov.asd.tac.constellation.views.find.utilities.FindResult;
 import au.gov.asd.tac.constellation.views.find.utilities.FindResultsList;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -262,10 +265,11 @@ public class FindViewController {
      *
      * @param selectAll true if finding all graph elements
      * @param getNext true if finding the next element, false if the previous
+     * @param zoomToSelection true if zoomToSelection checkbox is checked
      */
-    public void retriveMatchingElements(final boolean selectAll, final boolean getNext) {
+    public void retriveMatchingElements(final boolean selectAll, final boolean getNext, final boolean zoomToSelection) {
         final BasicFindPlugin basicFindPlugin = new BasicFindPlugin(currentBasicFindParameters, selectAll, getNext);
-        final BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(currentBasicFindParameters, selectAll);
+        final BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(currentBasicFindParameters, selectAll, zoomToSelection);
         setGraphsSearched(0);
 
         /**
@@ -273,16 +277,6 @@ public class FindViewController {
          */
         try {
             if (currentBasicFindParameters.isSearchAllGraphs()) {
-
-                /**
-                 * If there are a different number of graphs in this search than the previous one
-                 * then reset the list of results 
-                 */
-                final int numberOfUniqueGraphs = GraphManager.getDefault().getAllGraphs().values().size();
-                if (numberOfUniqueGraphs != ActiveFindResultsList.getUniqueGraphCount(ActiveFindResultsList.getBasicResultsList())) {
-                    ActiveFindResultsList.setBasicResultsList(null);
-                }
-
                 for (final Graph currentGraph : GraphManager.getDefault().getAllGraphs().values()) {
                     // check to see the graph is not null
                     if (currentGraph != null) {
@@ -323,6 +317,18 @@ public class FindViewController {
         } 
     }
 
+    public void clearResultsLists() {
+        if (ActiveFindResultsList.getBasicResultsList() != null) {
+            ActiveFindResultsList.getBasicResultsList().clear();
+            ActiveFindResultsList.getBasicResultsList().setCurrentIndex(-1);
+        }
+
+        if (ActiveFindResultsList.getAdvancedResultsList() != null) {
+            ActiveFindResultsList.getAdvancedResultsList().clear();
+            ActiveFindResultsList.getAdvancedResultsList().setCurrentIndex(-1);
+        }
+    }
+
     /**
      * This function calls the basic replace plugin, passing the
      * currentBasicReplaceParameters, whether to replace all matching element or
@@ -331,8 +337,8 @@ public class FindViewController {
      * @param replaceAll true if replacing all matching elements
      * @param replaceNext true if replacing just the next element
      */
-    public void replaceMatchingElements(final boolean replaceAll, final boolean replaceNext) {
-        final ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, replaceAll, replaceNext);
+    public void replaceMatchingElements(final boolean replaceAll, final boolean replaceNext, final boolean zoomToSelection) {
+        final ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, replaceAll, replaceNext, zoomToSelection);
 
         /**
          * If search all graphs is true, execute the replace plugin on all open
@@ -354,9 +360,9 @@ public class FindViewController {
         }
     }
 
-    public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext) {
+    public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext, final boolean zoomToSelection) {
         final AdvancedSearchPlugin advancedSearchPlugin = new AdvancedSearchPlugin(currentAdvancedSearchParameters, findAll, findNext);
-        final AdvancedFindGraphSelectionPlugin findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(currentAdvancedSearchParameters, findAll, findNext);
+        final AdvancedFindGraphSelectionPlugin findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(currentAdvancedSearchParameters, findAll, findNext, zoomToSelection);
         setGraphsSearched(0);
 
         /**
@@ -365,16 +371,6 @@ public class FindViewController {
          */
         try {
             if (currentAdvancedSearchParameters.getSearchInLocation().equals(ALL_OPEN_GRAPHS)) {
-
-                /**
-                 * If there are a different number of graphs in this search than the previous one
-                 * then reset the list of results
-                 */
-                final int numberOfUniqueGraphs = GraphManager.getDefault().getAllGraphs().values().size();
-                if (numberOfUniqueGraphs != ActiveFindResultsList.getUniqueGraphCount(ActiveFindResultsList.getAdvancedResultsList())) {
-                    ActiveFindResultsList.setAdvancedResultsList(null);
-                }
-
                 for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
                     // check to see the graph is not null
                     if (graph != null && currentAdvancedSearchParameters.getSearchInLocation().equals(ALL_OPEN_GRAPHS)) {
@@ -484,21 +480,39 @@ public class FindViewController {
 
         // If delete is chosen
         if (DialogDisplayer.getDefault().notify(dialog).equals(DELETE)) {
-            for (final FindResult result : foundResults) {
-                try {
-                    // Delete each found result
+            final HashMap<String, ArrayList<DeleteResultsPlugin>> graphDeletePluginMap = new HashMap<>();
+        
+            try {
+                for (final FindResult result : foundResults) {            
+                    // Create delete plugin for each found result
                     final DeleteResultsPlugin deleteResultsPlugin = new DeleteResultsPlugin(result);
-                    final Graph graph = GraphManager.getDefault().getAllGraphs().get(result.getGraphId());
-
-                    PluginExecution.withPlugin(deleteResultsPlugin).executeLater(graph).get();
-
-                } catch (final InterruptedException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                    Thread.currentThread().interrupt();
-                } catch (final ExecutionException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                }
-            }
+                    final String graphId = result.getGraphId();
+                    ArrayList<DeleteResultsPlugin> deleteResultsPluginsList = graphDeletePluginMap.get(graphId);
+                    if (deleteResultsPluginsList == null) {
+                        deleteResultsPluginsList = new ArrayList<>();
+                    }
+                    // store in map against graph id                    
+                    deleteResultsPluginsList.add(deleteResultsPlugin);
+                    graphDeletePluginMap.put(graphId, deleteResultsPluginsList);                                        
+                }                
+                // iterate and delete per graph
+                final Iterator<Entry<String,ArrayList<DeleteResultsPlugin>>> iter = graphDeletePluginMap.entrySet().iterator();
+                while (iter.hasNext()) {
+                    final Entry<String, ArrayList<DeleteResultsPlugin>> entrySet = iter.next();
+                    final String graphId = entrySet.getKey();
+                    final ArrayList<DeleteResultsPlugin> pluginList = entrySet.getValue();
+                    final Graph graph = GraphManager.getDefault().getAllGraphs().get(graphId);
+                        
+                    for (final Object plugin : pluginList) {
+                        PluginExecution.withPlugin((DeleteResultsPlugin)plugin).executeLater(graph).get();
+                    }
+                }                
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                Thread.currentThread().interrupt();
+            } catch (final ExecutionException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            }            
         }
     }
 }

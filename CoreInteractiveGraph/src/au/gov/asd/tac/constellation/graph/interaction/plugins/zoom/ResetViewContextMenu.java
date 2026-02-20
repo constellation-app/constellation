@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,44 +69,41 @@ public class ResetViewContextMenu implements ContextMenuProvider {
 
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int element, final Vector3f unprojected) {
-        if (RESET_VIEW.equals(item)) {
-            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(graph);
-        } else if (X_AXIS.equals(item)) {
-            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
+        switch (item) {
+            case RESET_VIEW -> PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(graph);
+            case X_AXIS -> PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
                     .withParameter(ResetViewPlugin.AXIS_PARAMETER_ID, "x")
                     .withParameter(ResetViewPlugin.NEGATIVE_PARAMETER_ID, false)
                     .withParameter(ResetViewPlugin.SIGNIFICANT_PARAMETER_ID, true)
                     .executeLater(graph);
-        } else if (Y_AXIS.equals(item)) {
-            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
+            case Y_AXIS -> PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
                     .withParameter(ResetViewPlugin.AXIS_PARAMETER_ID, "y")
                     .withParameter(ResetViewPlugin.NEGATIVE_PARAMETER_ID, false)
                     .withParameter(ResetViewPlugin.SIGNIFICANT_PARAMETER_ID, true)
                     .executeLater(graph);
-        } else if (Z_AXIS.equals(item)) {
-            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
+            case Z_AXIS -> PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
                     .withParameter(ResetViewPlugin.AXIS_PARAMETER_ID, "z")
                     .withParameter(ResetViewPlugin.NEGATIVE_PARAMETER_ID, false)
                     .withParameter(ResetViewPlugin.SIGNIFICANT_PARAMETER_ID, true)
                     .executeLater(graph);
-        } else if (NEGATIVE_X_AXIS.equals(item)) {
-            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
+            case NEGATIVE_X_AXIS -> PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
                     .withParameter(ResetViewPlugin.AXIS_PARAMETER_ID, "x")
                     .withParameter(ResetViewPlugin.NEGATIVE_PARAMETER_ID, true)
                     .withParameter(ResetViewPlugin.SIGNIFICANT_PARAMETER_ID, true)
                     .executeLater(graph);
-        } else if (NEGATIVE_Y_AXIS.equals(item)) {
-            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
+            case NEGATIVE_Y_AXIS -> PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
                     .withParameter(ResetViewPlugin.AXIS_PARAMETER_ID, "y")
                     .withParameter(ResetViewPlugin.NEGATIVE_PARAMETER_ID, true)
                     .withParameter(ResetViewPlugin.SIGNIFICANT_PARAMETER_ID, true)
                     .executeLater(graph);
-        } else if (NEGATIVE_Z_AXIS.equals(item)) {
-            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
+            case NEGATIVE_Z_AXIS -> PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW)
                     .withParameter(ResetViewPlugin.AXIS_PARAMETER_ID, "z")
                     .withParameter(ResetViewPlugin.NEGATIVE_PARAMETER_ID, true)
                     .withParameter(ResetViewPlugin.SIGNIFICANT_PARAMETER_ID, true)
                     .executeLater(graph);
+            default -> {
+                // Do nothing
+            }
         }
     }
 

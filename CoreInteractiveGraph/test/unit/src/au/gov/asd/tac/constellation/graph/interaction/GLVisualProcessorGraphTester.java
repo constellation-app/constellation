@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
-import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import java.awt.Component;
@@ -50,7 +49,6 @@ public class GLVisualProcessorGraphTester {
     private static class GLVisualProcessorDemo {
 
         private VisualManager manager;
-        private VisualProcessor processor = null;
         private final Frame frame;
 
         public GLVisualProcessorDemo() {
@@ -66,12 +64,11 @@ public class GLVisualProcessorGraphTester {
             });
         }
 
-        public void runDemo(final VisualProcessor processor, final VisualManager manager) {
+        public void runDemo(final VisualManager manager) {
             if (this.manager != null) {
                 this.manager.stopProcessing();
                 frame.remove(this.manager.getVisualComponent());
             }
-            this.processor = processor;
             this.manager = manager;
             final Component canvas = manager.getVisualComponent();
             frame.add(canvas);
@@ -132,8 +129,8 @@ public class GLVisualProcessorGraphTester {
         final GLVisualProcessor processor = new GLVisualProcessor();
         final VisualManager visualManager = new VisualManager(access, processor);
         processor.startVisualising(visualManager);
-        demo.runDemo(processor, visualManager);
-        final GraphChangeListener gct = (event) -> visualManager.updateFromIndigenousChanges();
+        demo.runDemo(visualManager);
+        final GraphChangeListener gct = event -> visualManager.updateFromIndigenousChanges();
         gct.graphChanged(null);
         try {
             Thread.sleep(3000);

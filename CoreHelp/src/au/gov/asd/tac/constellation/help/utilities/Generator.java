@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.modules.Places;
 import org.openide.util.Lookup;
 import org.openide.windows.OnShowing;
 
@@ -44,54 +47,83 @@ import org.openide.windows.OnShowing;
 public class Generator implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(Generator.class.getName());
+    
     private static String baseDirectory = "";
-    private static String tocDirectory = "";
     public static final String TOC_FILE_NAME = "toc.md";
     public static final String ROOT_NODE_NAME = "Constellation Documentation";
 
-    public Generator() {
-        // Intentionally left blank
-    }
+    /**
+     * This is the system property that is set to true in order to make the AWT
+     * thread run in headless mode for tests, etc.
+     */
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
 
     /**
      * Generate a table of contents in dev versions of code
      */
     @Override
     public void run() {
-        baseDirectory = getBaseDirectory();
-        tocDirectory = String.format("ext%1$s%2$s", File.separator, TOC_FILE_NAME);
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            return;
+        }
+        CompletableFuture.runAsync(this::updateTOCFiles, Executors.newSingleThreadExecutor());
+    }
+    
+    /**
+     * Update the online and offline help TOC files.
+     */
+    protected void updateTOCFiles() {
+        // To update the online help TOC file change the boolean to true
+        // Must also run adaptors when updating online help so those links aren't removed from the TOC
+        // Reset back to false after updating the TOC file 
+        final boolean updateOnlineHelp = false;
 
-        // Create TOCFile with the location of the resources file
-        // Create the root node for application-wide table of contents
-        TOCGenerator.createTOCFile(baseDirectory + tocDirectory);
-        final TreeNode<?> root = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
-        final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
+        if (updateOnlineHelp) {
+            baseDirectory = getBaseDirectory();
 
+            // First: create the TOCFile in the base directory for ONLINE help
+            // Create the online root node for application-wide table of contents
+            TOCGenerator.createTOCFile(getOnlineHelpTOCDirectory() + TOC_FILE_NAME);
+            final TreeNode<TOCItem> root = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
+            final List<File> tocXMLFiles = getXMLFiles();
+            try {
+                TOCGenerator.convertXMLMappings(tocXMLFiles, root, true);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.WARNING, String.format("There was an error creating the documentation file %s "
+                        + "- Documentation may not be complete", baseDirectory), ex);
+            }
+        }
+
+        // Second: Create TOCFile for OFFLINE help with the location of the resources file
+        // Create the offline root node for application-wide table of contents
+        TOCGenerator.createTOCFile(getTOCDirectory());
+        final TreeNode<TOCItem> rootOffline = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
+        final List<File> tocXMLFiles = getXMLFiles();
         try {
-            TOCGenerator.convertXMLMappings(tocXMLFiles, root);
+            TOCGenerator.convertXMLMappings(tocXMLFiles, rootOffline, false);
         } catch (final IOException ex) {
             LOGGER.log(Level.WARNING, String.format("There was an error creating the documentation file %s "
-                    + "- Documentation may not be complete", baseDirectory + tocDirectory), ex);
+                    + "- Documentation may not be complete.", getTOCDirectory()), ex);
         }
     }
 
     /**
-     * get the directory that the table of contents is saved to
+     * Get the directory that the table of contents is saved to
      *
      * @return a String path for the file location
      */
     public static String getTOCDirectory() {
-        tocDirectory = String.format("ext%1$s%2$s", File.separator, TOC_FILE_NAME);
-        return tocDirectory;
+        return Places.getUserDirectory() + File.separator + TOC_FILE_NAME;
     }
 
     /**
-     * get a list of the xml files using a lookup
+     * Get a list of the xml files using a lookup
      *
-     * @param baseDirectory
-     * @return
+     * @return a list of TOC files
      */
-    protected static List<File> getXMLFiles(final String baseDirectory) {
+    protected static List<File> getXMLFiles() {
+        baseDirectory = getBaseDirectory();
+        
         // Loop all providers and add files to the tocXMLFiles list
         final List<File> tocXMLFiles = new ArrayList<>();
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
@@ -109,6 +141,9 @@ public class Generator implements Runnable {
      * @return
      */
     public static String getBaseDirectory() {
+        if (StringUtils.isNotBlank(baseDirectory)) {
+            return baseDirectory;
+        }
         try {
             final String sep = File.separator;
 
@@ -136,6 +171,12 @@ public class Generator implements Runnable {
         final int jarIx = path.toString().lastIndexOf(File.separator);
         final String newPath = jarIx > -1 ? path.toString().substring(0, jarIx) : "";
         return newPath != null ? newPath + File.separator + "ext" : "";
+    }
+    
+    public static String getOnlineHelpTOCDirectory() {
+        baseDirectory = getBaseDirectory();
+        final int index = baseDirectory.lastIndexOf("constellation" + File.separator);
+        return baseDirectory.substring(0, index + 14);
     }
 
 }
