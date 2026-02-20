@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.tableview.plugins;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +85,80 @@ public class SelectionToGraphPluginNGTest {
 
         verify(graph).setBooleanValue(0, 1, true);
         verify(graph).setBooleanValue(0, 2, false);
+
+        assertEquals("Table View: Select on Graph", selectionToGraph.getName());
+    }
+    
+    @Test
+    public void selectionToGraphEdge() throws InterruptedException, PluginException {
+        final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
+        final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
+
+        final TableView<ObservableList<String>> table = mock(TableView.class);
+        final TableView.TableViewSelectionModel<ObservableList<String>> selectionModel = mock(TableView.TableViewSelectionModel.class);
+        final GraphWriteMethods graph = mock(GraphWriteMethods.class);
+        final Map<ObservableList<String>, Integer> index = new HashMap<>();
+
+        index.put(row1, 1);
+        index.put(row2, 2);
+
+        // Two rows. Row 1 is selected
+        when(table.getItems()).thenReturn(FXCollections.observableList(List.of(row1, row2)));
+        when(table.getSelectionModel()).thenReturn(selectionModel);
+        when(selectionModel.getSelectedItems()).thenReturn(FXCollections.observableList(List.of(row1)));
+        
+        when(VisualConcept.TransactionAttribute.SELECTED.ensure(graph)).thenReturn(1);
+        // Specifiy transition count of each mocked element as 1
+        when(graph.getEdgeTransactionCount(1)).thenReturn(1);
+        when(graph.getEdgeTransactionCount(2)).thenReturn(1);
+        
+        when(graph.getEdgeTransaction(1, 0)).thenReturn(1);
+        when(graph.getEdgeTransaction(2, 0)).thenReturn(2);
+
+        final SelectionToGraphPlugin selectionToGraph
+                = new SelectionToGraphPlugin(table, index, GraphElementType.EDGE);
+
+        selectionToGraph.edit(graph, null, null);
+
+        verify(graph).setBooleanValue(1, 1, true);
+        verify(graph).setBooleanValue(1, 2, false);
+
+        assertEquals("Table View: Select on Graph", selectionToGraph.getName());
+    }
+    
+    @Test
+    public void selectionToGraphLink() throws InterruptedException, PluginException {
+        final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
+        final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
+
+        final TableView<ObservableList<String>> table = mock(TableView.class);
+        final TableView.TableViewSelectionModel<ObservableList<String>> selectionModel = mock(TableView.TableViewSelectionModel.class);
+        final GraphWriteMethods graph = mock(GraphWriteMethods.class);
+        final Map<ObservableList<String>, Integer> index = new HashMap<>();
+
+        index.put(row1, 1);
+        index.put(row2, 2);
+
+        // Two rows. Row 1 is selected
+        when(table.getItems()).thenReturn(FXCollections.observableList(List.of(row1, row2)));
+        when(table.getSelectionModel()).thenReturn(selectionModel);
+        when(selectionModel.getSelectedItems()).thenReturn(FXCollections.observableList(List.of(row1)));
+        
+        when(VisualConcept.TransactionAttribute.SELECTED.ensure(graph)).thenReturn(1);
+        // Specifiy transition count of each mocked element as 1
+        when(graph.getLinkTransactionCount(1)).thenReturn(1);
+        when(graph.getLinkTransactionCount(2)).thenReturn(1);
+        
+        when(graph.getLinkTransaction(1, 0)).thenReturn(1);
+        when(graph.getLinkTransaction(2, 0)).thenReturn(2);
+
+        final SelectionToGraphPlugin selectionToGraph
+                = new SelectionToGraphPlugin(table, index, GraphElementType.LINK);
+
+        selectionToGraph.edit(graph, null, null);
+
+        verify(graph).setBooleanValue(1, 1, true);
+        verify(graph).setBooleanValue(1, 2, false);
 
         assertEquals("Table View: Select on Graph", selectionToGraph.getName());
     }

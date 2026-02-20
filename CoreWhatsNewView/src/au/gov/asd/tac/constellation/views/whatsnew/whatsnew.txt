@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2026-02-20 Edges and Links in Table View
+<p>Edges and Links can now be viewed in the Table View.</p>
+
 == 2026-01-13 Renamed "Chinese Whispers" to "Label Propagation"
 <p> "Chinese Whispers" clustering has been renamed to "Label Propagation".
 

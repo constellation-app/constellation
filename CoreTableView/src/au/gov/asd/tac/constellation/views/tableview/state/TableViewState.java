@@ -34,12 +34,16 @@ public final class TableViewState {
     private GraphElementType elementType;
     private List<Tuple<String, Attribute>> vertexColumnAttributes;
     private List<Tuple<String, Attribute>> transactionColumnAttributes;
+    private List<Tuple<String, Attribute>> edgeColumnAttributes;
+    private List<Tuple<String, Attribute>> linkColumnAttributes;
 
     public TableViewState() {
         this.selectedOnly = false;
         this.elementType = GraphElementType.TRANSACTION;
         this.transactionColumnAttributes = null;
         this.vertexColumnAttributes = null;
+        this.edgeColumnAttributes = null;
+        this.linkColumnAttributes = null;
     }
 
     public TableViewState(final TableViewState state) {
@@ -47,6 +51,8 @@ public final class TableViewState {
         this.elementType = state == null ? GraphElementType.TRANSACTION : state.elementType;
         this.transactionColumnAttributes = state == null ? null : state.transactionColumnAttributes;
         this.vertexColumnAttributes = state == null ? null : state.vertexColumnAttributes;
+        this.edgeColumnAttributes = state == null ? null : state.edgeColumnAttributes;
+        this.linkColumnAttributes = state == null ? null : state.linkColumnAttributes;
     }
 
     public boolean isSelectedOnly() {
@@ -81,15 +87,49 @@ public final class TableViewState {
         this.vertexColumnAttributes = vertexColumnAttributes;
     }
 
+    public List<Tuple<String, Attribute>> getEdgeColumnAttributes() {
+        return edgeColumnAttributes;
+    }
+
+    public void setEdgeColumnAttributes(final List<Tuple<String, Attribute>> edgeColumnAttributes) {
+        this.edgeColumnAttributes = edgeColumnAttributes;
+    }
+
+    public List<Tuple<String, Attribute>> getLinkColumnAttributes() {
+        return linkColumnAttributes;
+    }
+
+    public void setLinkColumnAttributes(final List<Tuple<String, Attribute>> linkColumnAttributes) {
+        this.linkColumnAttributes = linkColumnAttributes;
+    }
+
     public List<Tuple<String, Attribute>> getColumnAttributes() {
-        return elementType == GraphElementType.TRANSACTION? transactionColumnAttributes : vertexColumnAttributes;
+        return switch (elementType) {
+            case GraphElementType.TRANSACTION ->
+                transactionColumnAttributes;
+            case GraphElementType.VERTEX ->
+                vertexColumnAttributes;
+            case GraphElementType.LINK ->
+                linkColumnAttributes;
+            case GraphElementType.EDGE ->
+                edgeColumnAttributes;
+            default ->
+                transactionColumnAttributes;
+        };
     }
 
     public void setColumnAttributes(final List<Tuple<String, Attribute>> columnAttributes) {
-        if (elementType == GraphElementType.TRANSACTION) {
-            this.transactionColumnAttributes = columnAttributes;
-        } else {
-            this.vertexColumnAttributes = columnAttributes;
+        switch (elementType) {
+            case GraphElementType.TRANSACTION ->
+                this.transactionColumnAttributes = columnAttributes;
+            case GraphElementType.VERTEX ->
+                this.vertexColumnAttributes = columnAttributes;
+            case GraphElementType.LINK ->
+                this.linkColumnAttributes = columnAttributes;
+            case GraphElementType.EDGE ->
+                this.edgeColumnAttributes = columnAttributes;
+            default ->
+                this.transactionColumnAttributes = columnAttributes;
         }
     }
 
@@ -110,6 +150,8 @@ public final class TableViewState {
                 .append(getElementType(), rhs.getElementType())
                 .append(getTransactionColumnAttributes(), rhs.getTransactionColumnAttributes())
                 .append(getVertexColumnAttributes(), rhs.getVertexColumnAttributes())
+                .append(getEdgeColumnAttributes(), rhs.getEdgeColumnAttributes())
+                .append(getLinkColumnAttributes(), rhs.getLinkColumnAttributes())
                 .isEquals();
     }
 
@@ -120,16 +162,20 @@ public final class TableViewState {
                 .append(getElementType())
                 .append(getVertexColumnAttributes())
                 .append(getTransactionColumnAttributes())
+                .append(getEdgeColumnAttributes())
+                .append(getLinkColumnAttributes())
                 .toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("slelectedOnly", isSelectedOnly())
+                .append("selectedOnly", isSelectedOnly())
                 .append("elementType", getElementType())
                 .append("transactionColumnAttributes", getTransactionColumnAttributes())
                 .append("vertexColumnAttributes", getVertexColumnAttributes())
+                .append("edgeColumnAttributes", getEdgeColumnAttributes())
+                .append("linkColumnAttributes", getLinkColumnAttributes())
                 .toString();
     }
 }

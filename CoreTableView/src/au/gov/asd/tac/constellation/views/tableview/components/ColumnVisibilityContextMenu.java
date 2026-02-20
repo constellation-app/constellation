@@ -53,10 +53,9 @@ import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.Lookup;
 
 /**
- * Creates the column visibility context menu. This menu contains items that
- * allow the user to control which columns are visible in the table and which
- * are not. It provides some standard visibility options (like show all or show
- * none) plus allowing for individual column selection.
+ * Creates the column visibility context menu. This menu contains items that allow the user to control which columns are
+ * visible in the table and which are not. It provides some standard visibility options (like show all or show none)
+ * plus allowing for individual column selection.
  *
  * @author formalhaunt
  */
@@ -65,6 +64,8 @@ public class ColumnVisibilityContextMenu {
     private static final String SPLIT_SOURCE = "Source";
     private static final String SPLIT_DESTINATION = "Destination";
     private static final String SPLIT_TRANSACTION = "Transaction";
+    private static final String SPLIT_LOW = "Low";
+    private static final String SPLIT_HIGH = "High";
 
     private static final String ALL_COLUMNS = "Show All Columns";
     private static final String DEFAULT_COLUMNS = "Show Default Columns";
@@ -76,6 +77,8 @@ public class ColumnVisibilityContextMenu {
     private static final ImageView SPLIT_SOURCE_ICON = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
     private static final ImageView SPLIT_DESTINATION_ICON = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
     private static final ImageView SPLIT_TRANSACTION_ICON = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
+    private static final ImageView SPLIT_LOW_ICON = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
+    private static final ImageView SPLIT_HIGH_ICON = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
 
     private static final int WIDTH = 120;
 
@@ -85,7 +88,9 @@ public class ColumnVisibilityContextMenu {
 
     private CustomMenuItem sourceVertexColumnsMenu;
     private CustomMenuItem destinationVertexColumnMenu;
-    private CustomMenuItem tansactionColumnMenu;
+    private CustomMenuItem transactionColumnMenu;
+    private CustomMenuItem lowVertexColumnMenu;
+    private CustomMenuItem highVertexColumnMenu;
 
     private CustomMenuItem showAllColumnsMenu;
     private CustomMenuItem showDefaultColumnsMenu;
@@ -102,8 +107,7 @@ public class ColumnVisibilityContextMenu {
     }
 
     /**
-     * Initializes the column visibility context menu. Until this method is
-     * called, all menu UI components will be null.
+     * Initializes the column visibility context menu. Until this method is called, all menu UI components will be null.
      */
     public void init() {
         contextMenu = new ContextMenu();
@@ -184,28 +188,47 @@ public class ColumnVisibilityContextMenu {
         final MenuButton sourceVertexColumnsButton = createMenuButton(SPLIT_SOURCE, SPLIT_SOURCE_ICON);
         final MenuButton destinationVertexColumnsButton = createMenuButton(SPLIT_DESTINATION, SPLIT_DESTINATION_ICON);
         final MenuButton transactionColumnsButton = createMenuButton(SPLIT_TRANSACTION, SPLIT_TRANSACTION_ICON);
+        final MenuButton lowVertexColumnsButton = createMenuButton(SPLIT_LOW, SPLIT_LOW_ICON);
+        final MenuButton highVertexColumnsButton = createMenuButton(SPLIT_HIGH, SPLIT_HIGH_ICON);
 
         final List<CustomMenuItem> columnCheckboxesSource = new ArrayList<>();
         final List<CustomMenuItem> columnCheckboxesDestination = new ArrayList<>();
         final List<CustomMenuItem> columnCheckboxesTransaction = new ArrayList<>();
+        final List<CustomMenuItem> columnCheckboxesLow = new ArrayList<>();
+        final List<CustomMenuItem> columnCheckboxesHigh = new ArrayList<>();
 
         // Create the filter items and add them to the button
         final CustomMenuItem columnFilterSource = createColumnFilterMenu(columnCheckboxesSource);
         final CustomMenuItem columnFilterDestination = createColumnFilterMenu(columnCheckboxesDestination);
         final CustomMenuItem columnFilterTransaction = createColumnFilterMenu(columnCheckboxesTransaction);
+        final CustomMenuItem columnFilterLow = createColumnFilterMenu(columnCheckboxesLow);
+        final CustomMenuItem columnFilterHigh = createColumnFilterMenu(columnCheckboxesHigh);
 
         sourceVertexColumnsButton.getItems().add(columnFilterSource);
         destinationVertexColumnsButton.getItems().add(columnFilterDestination);
         transactionColumnsButton.getItems().add(columnFilterTransaction);
+        lowVertexColumnsButton.getItems().add(columnFilterLow);
+        highVertexColumnsButton.getItems().add(columnFilterHigh);
 
         // Generate check boxes for each column and separate them into their groups
         table.getColumnIndex().forEach(columnTuple -> {
             final String columnHeading = columnTuple.getAttributeNamePrefix();
             if (columnHeading != null) {
                 switch (columnHeading) {
-                    case GraphRecordStoreUtilities.SOURCE -> columnCheckboxesSource.add(createColumnVisibilityMenu(columnTuple));
-                    case GraphRecordStoreUtilities.DESTINATION -> columnCheckboxesDestination.add(createColumnVisibilityMenu(columnTuple));
-                    case GraphRecordStoreUtilities.TRANSACTION -> columnCheckboxesTransaction.add(createColumnVisibilityMenu(columnTuple));
+                    case GraphRecordStoreUtilities.SOURCE ->
+                        columnCheckboxesSource.add(createColumnVisibilityMenu(columnTuple));
+                    case GraphRecordStoreUtilities.DESTINATION ->
+                        columnCheckboxesDestination.add(createColumnVisibilityMenu(columnTuple));
+                    case GraphRecordStoreUtilities.TRANSACTION ->
+                        columnCheckboxesTransaction.add(createColumnVisibilityMenu(columnTuple));
+                    case GraphRecordStoreUtilities.LINK_LOW ->
+                        columnCheckboxesLow.add(createColumnVisibilityMenu(columnTuple));
+                    case GraphRecordStoreUtilities.LINK_HIGH ->
+                        columnCheckboxesHigh.add(createColumnVisibilityMenu(columnTuple));
+                    default -> {
+                        // Do nothing
+                    }
+
                 }
             }
         });
@@ -214,11 +237,15 @@ public class ColumnVisibilityContextMenu {
         // and add the button to a new menu which can be added to the context menu
         sourceVertexColumnsMenu = createDynamicColumnMenu(sourceVertexColumnsButton, columnCheckboxesSource);
         destinationVertexColumnMenu = createDynamicColumnMenu(destinationVertexColumnsButton, columnCheckboxesDestination);
-        tansactionColumnMenu = createDynamicColumnMenu(transactionColumnsButton, columnCheckboxesTransaction);
+        transactionColumnMenu = createDynamicColumnMenu(transactionColumnsButton, columnCheckboxesTransaction);
+        lowVertexColumnMenu = createDynamicColumnMenu(lowVertexColumnsButton, columnCheckboxesLow);
+        highVertexColumnMenu = createDynamicColumnMenu(highVertexColumnsButton, columnCheckboxesHigh);
 
         Optional.ofNullable(sourceVertexColumnsMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
         Optional.ofNullable(destinationVertexColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
-        Optional.ofNullable(tansactionColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
+        Optional.ofNullable(transactionColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
+        Optional.ofNullable(lowVertexColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
+        Optional.ofNullable(highVertexColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
     }
 
     /**
@@ -240,9 +267,8 @@ public class ColumnVisibilityContextMenu {
     }
 
     /**
-     * Gets the menu item that when clicked will show the default columns. This
-     * means any column with a name that starts with a capital letter. All
-     * column names that start with a lowercase letter will be excluded.
+     * Gets the menu item that when clicked will show the default columns. This means any column with a name that starts
+     * with a capital letter. All column names that start with a lowercase letter will be excluded.
      *
      * @return the get default columns menu item
      */
@@ -251,9 +277,8 @@ public class ColumnVisibilityContextMenu {
     }
 
     /**
-     * Gets the menu item that when clicked will show only columns are used to
-     * uniquely identify vertices and transactions. This means the "primary"
-     * attributes.
+     * Gets the menu item that when clicked will show only columns are used to uniquely identify vertices and
+     * transactions. This means the "primary" attributes.
      *
      * @return the show only primary columns menu item
      */
@@ -271,8 +296,7 @@ public class ColumnVisibilityContextMenu {
     }
 
     /**
-     * Get the menu item that holds check boxes for all source vertex related
-     * columns.
+     * Get the menu item that holds check boxes for all source vertex related columns.
      *
      * @return the source vertex columns menu item
      */
@@ -281,8 +305,7 @@ public class ColumnVisibilityContextMenu {
     }
 
     /**
-     * Get the menu item that holds check boxes for all the destination vertex
-     * related columns.
+     * Get the menu item that holds check boxes for all the destination vertex related columns.
      *
      * @return the destination vertex columns menu item
      */
@@ -291,20 +314,36 @@ public class ColumnVisibilityContextMenu {
     }
 
     /**
-     * Get the menu item that holds check boxes for all the transaction related
-     * columns.
+     * Get the menu item that holds check boxes for all the transaction related columns.
      *
      * @return the transaction columns menu item
      */
     public CustomMenuItem getTransactionColumnMenu() {
-        return tansactionColumnMenu;
+        return transactionColumnMenu;
     }
 
     /**
-     * Creates a menu item that wraps a check box representing the current
-     * visibility state of the passed column. When the check box is toggled it
-     * will modify the visibility of that column as needed. Each check box will
-     * also have the column name next to it.
+     * Get the menu item that holds check boxes for all the low vertex related columns.
+     *
+     * @return the destination vertex columns menu item
+     */
+    public CustomMenuItem getLowVertexColumnMenu() {
+        return lowVertexColumnMenu;
+    }
+
+    /**
+     * Get the menu item that holds check boxes for all the high vertex related columns.
+     *
+     * @return the destination vertex columns menu item
+     */
+    public CustomMenuItem getHighVertexColumnMenu() {
+        return highVertexColumnMenu;
+    }
+
+    /**
+     * Creates a menu item that wraps a check box representing the current visibility state of the passed column. When
+     * the check box is toggled it will modify the visibility of that column as needed. Each check box will also have
+     * the column name next to it.
      *
      * @param column the column to create the check box for
      * @return the created menu item wrapping the check box
@@ -331,18 +370,16 @@ public class ColumnVisibilityContextMenu {
     }
 
     /**
-     * Creates a menu item that wraps a filter text field. As the user types in
-     * the text field the column names matching the typed text will be made
-     * visible and those that do not match the text will be hidden.
+     * Creates a menu item that wraps a filter text field. As the user types in the text field the column names matching
+     * the typed text will be made visible and those that do not match the text will be hidden.
      * <p/>
-     * Takes a list of menu items wrapping check boxes that represent the
-     * columns to be filtered. These menu items will have been created by
+     * Takes a list of menu items wrapping check boxes that represent the columns to be filtered. These menu items will
+     * have been created by
      * {@link #createColumnVisibilityMenu(au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple)}.
      * <p/>
      * The filter in this menu item will only apply to those passed columns.
      *
-     * @param columnCheckboxes the check boxes representing the columns that
-     * this filter menu will filter
+     * @param columnCheckboxes the check boxes representing the columns that this filter menu will filter
      * @return the created filter menu item
      */
     protected CustomMenuItem createColumnFilterMenu(final List<CustomMenuItem> columnCheckboxes) {
@@ -380,8 +417,8 @@ public class ColumnVisibilityContextMenu {
     }
 
     /**
-     * Takes the first two parts of the {@link ThreeTuple} and places them in a
-     * new {@link Tuple}, returning the new {@link Tuple} as a list.
+     * Takes the first two parts of the {@link ThreeTuple} and places them in a new {@link Tuple}, returning the new
+     * {@link Tuple} as a list.
      *
      * @param column the {@link ThreeTuple} to convert
      * @return the generated list containing the new {@link Tuple}
@@ -391,9 +428,8 @@ public class ColumnVisibilityContextMenu {
     }
 
     /**
-     * Iterates through the columns and takes the first two parts of the
-     * {@link ThreeTuple} and places them in a new {@link Tuple}, returning the
-     * new {@link Tuple}s as a list.
+     * Iterates through the columns and takes the first two parts of the {@link ThreeTuple} and places them in a new
+     * {@link Tuple}, returning the new {@link Tuple}s as a list.
      *
      * @param columns the {@link ThreeTuple}s to convert
      * @return the generated list of {@link Tuple}s
@@ -405,14 +441,11 @@ public class ColumnVisibilityContextMenu {
     }
 
     /**
-     * Creates a dynamic menu that lists columns as check boxes. Which columns
-     * are displayed are specified by the passed list. They are added to the
-     * passed button and then the button is added to the new menu.
+     * Creates a dynamic menu that lists columns as check boxes. Which columns are displayed are specified by the passed
+     * list. They are added to the passed button and then the button is added to the new menu.
      *
-     * @param button the button that will hold the column check boxes and be
-     * added to the new menu
-     * @param columnCheckboxes a list of check boxes representing columns to be
-     * added to the menu
+     * @param button the button that will hold the column check boxes and be added to the new menu
+     * @param columnCheckboxes a list of check boxes representing columns to be added to the menu
      * @return the created menu item or null if column check boxes is empty
      */
     private CustomMenuItem createDynamicColumnMenu(final MenuButton button, final List<CustomMenuItem> columnCheckboxes) {
@@ -428,13 +461,11 @@ public class ColumnVisibilityContextMenu {
     }
 
     /**
-     * Create a custom menu item that will be added to menu buttons on the
-     * context menu. Sets the associated text and adds a listener for when it is
-     * clicked.
+     * Create a custom menu item that will be added to menu buttons on the context menu. Sets the associated text and
+     * adds a listener for when it is clicked.
      *
      * @param title the title to be associated to the menu item
-     * @param handler the action handler that will be called when the menu item
-     * is clicked
+     * @param handler the action handler that will be called when the menu item is clicked
      * @return the created menu item
      */
     private CustomMenuItem createCustomMenu(final String title, final EventHandler<ActionEvent> handler) {
@@ -447,8 +478,7 @@ public class ColumnVisibilityContextMenu {
     }
 
     /**
-     * Creates a menu button to be added to the context menu. Sets the icon and
-     * max width.
+     * Creates a menu button to be added to the context menu. Sets the icon and max width.
      *
      * @param title the text to be associated with the menu button
      * @param icon the icon to display on the menu button
@@ -466,9 +496,8 @@ public class ColumnVisibilityContextMenu {
     }
 
     /**
-     * A key event handler that deals with a user typing in a column filter
-     * field. Based on the filter text, the handler will hide and show the
-     * columns it searches across.
+     * A key event handler that deals with a user typing in a column filter field. Based on the filter text, the handler
+     * will hide and show the columns it searches across.
      */
     private class ColumnFilterKeyReleasedEventHandler implements EventHandler<KeyEvent> {
 
@@ -477,21 +506,18 @@ public class ColumnVisibilityContextMenu {
         /**
          * Creates a new column filter handler.
          *
-         * @param columnCheckboxes the column check boxes that will be searched
-         * for a match when a user types in the filter text box
+         * @param columnCheckboxes the column check boxes that will be searched for a match when a user types in the
+         * filter text box
          */
         public ColumnFilterKeyReleasedEventHandler(final List<CustomMenuItem> columnCheckboxes) {
             this.columnCheckboxes = columnCheckboxes;
         }
 
         /**
-         * Get the text field that triggered the event and extract the filter
-         * text. Then iterate through all the column check boxes associated with
-         * the filter and identify any columns that contain the filter text in
-         * their name.
+         * Get the text field that triggered the event and extract the filter text. Then iterate through all the column
+         * check boxes associated with the filter and identify any columns that contain the filter text in their name.
          * <p/>
-         * If the filter text is found, the column will be made visible,
-         * otherwise it will be hidden.
+         * If the filter text is found, the column will be made visible, otherwise it will be hidden.
          *
          * @param event the key release event that triggered this handler
          */
