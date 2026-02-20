@@ -16,7 +16,16 @@
 package au.gov.asd.tac.constellation.views;
 
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
+import au.gov.asd.tac.constellation.views.preferences.ViewOptionsPanelController;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Window;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Map;
+import java.util.prefs.Preferences;
 import org.openide.util.HelpCtx;
+import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -29,13 +38,19 @@ import org.openide.windows.WindowManager;
  */
 public abstract class AbstractTopComponent<P> extends TopComponent {
 
-    protected P content;
+    public enum Spawn {
+        LEFT,
+        RIGHT,
+        BOTTOM
+    }
 
+    protected P content;
     private boolean isVisible;
+    private PropertyChangeListener pcl;
+    private final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
 
     /**
-     * Checks if the view will need an update when a graph changes based on if
-     * the view is visible currently.
+     * Checks if the view will need an update when a graph changes based on if the view is visible currently.
      *
      * @return true if the view is visible and needs updating
      */
@@ -48,15 +63,13 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     }
 
     /**
-     * Builds and initialises the content for this top component. You should
-     * call this method in the constructor of your TopComponent implementation
-     * after calling the initComponents() method.
+     * Builds and initialises the content for this top component. You should call this method in the constructor of your
+     * TopComponent implementation after calling the initComponents() method.
      */
     protected abstract void initContent();
 
     /**
-     * This is where you pass in content which will be rendered within the
-     * AbstractTopComponent.
+     * This is where you pass in content which will be rendered within the AbstractTopComponent.
      *
      * @return
      */
@@ -82,6 +95,22 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentOpened() {
+        pcl = (PropertyChangeEvent evt) -> { // Detects when a view is floated or docked manually via the context menu.
+            final WindowManager wm = WindowManager.getDefault();
+            prefs.putBoolean(this.getName(), wm.isTopComponentFloating(this));
+            ViewOptionsPanelController.getPanel().createTableModel();
+
+            System.out.println("[ " + this.getName() + " ]"
+                    + "\nProperty: " + evt.getPropertyName()
+                    + "\nMode: " + wm.findMode(this)
+                    + "\nFloating: " + wm.isTopComponentFloating(this)
+                    + "\nW x H: " + this.getWidth() + " x " + this.getHeight()
+                    + "\nX,Y: " + this.getX() + "," + this.getY()
+                    + "\nConstellation W x H: " + wm.getMainWindow().getWidth() + " x " + wm.getMainWindow().getHeight()
+            );
+        };
+
+        this.addPropertyChangeListener(pcl);
         super.componentOpened();
 
         isVisible = true;
@@ -90,6 +119,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentClosed() {
+        this.removePropertyChangeListener(pcl);
         super.componentClosed();
 
         isVisible = false;
@@ -160,4 +190,64 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     public final HelpCtx getHelpCtx() {
         return new HelpCtx(getClass().getName());
     }
+
+    /**
+     * Sets whether the view is floating based on the preference selection.
+     *
+     * @param name name of the view
+     * @param width width to set the floating view
+     * @param height height to set the floating view
+     * @param spawn location to set for the floating view
+     */
+    protected final void setFloating(final String name, final int width, final int height, final Spawn spawn) {
+        final Boolean isFloating = prefs.getBoolean(name, ViewOptionsPanelController.getDefaultFloatingPreferences().getOrDefault(name, false));
+        WindowManager.getDefault().setTopComponentFloating(this, isFloating);
+
+        if (isFloating) {
+            // This loops through all the current windows and compares this top component's top level ancestor
+            // with the window's parent. Sets the size and location for the floating component if a match is found.
+            for (final Window window : Window.getWindows()) {
+                if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
+                    final Frame mainWindow = WindowManager.getDefault().getMainWindow();
+                    final int mainWidth = mainWindow.getWidth();
+                    final int mainHeight = mainWindow.getHeight();
+                    final int mainX = mainWindow.getX();
+                    final int mainY = mainWindow.getY();
+                    final int offsetY = 117; // Offsets floating component so it doesn't overlap with top toolbar icons.
+
+                    final Dimension sidesSize = new Dimension(
+                            width == 0 ? Math.round(mainWidth * 0.3F) : width,
+                            height == 0 ? mainHeight - offsetY : height);
+
+                    final Dimension bottomSize = new Dimension(
+                            width == 0 ? mainWidth : width,
+                            height == 0 ? Math.round(mainHeight * 0.3F) : height);
+
+                    final Dimension size;
+
+                    switch (spawn) {
+                        case LEFT -> {
+                            size = sidesSize;
+                            window.setLocation(mainX, mainY + offsetY);
+                        }
+                        case RIGHT -> {
+                            size = sidesSize;
+                            window.setLocation(mainX + mainWidth - sidesSize.width, mainY + offsetY);
+                        }
+                        default -> {
+                            size = bottomSize;
+                            window.setLocation(mainX, mainY + mainHeight - bottomSize.height);
+                        }
+                    }
+
+                    window.setMinimumSize(size);
+                    window.setSize(size);
+                }
+            }
+
+            this.setRequestFocusEnabled(true);
+        }
+    }
+
+    public abstract Map<String, Boolean> getFloatingPreference();
 }
