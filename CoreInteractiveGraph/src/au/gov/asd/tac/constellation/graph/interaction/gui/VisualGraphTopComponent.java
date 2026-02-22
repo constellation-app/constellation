@@ -613,7 +613,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         final Component visualComponent = visualManager.getVisualComponent();
         if (visualComponent instanceof GLCanvas vc) {
                 vc.flushGLRunnables();
-                vc.swapBuffers();
                 vc.update(graphics);
         }
         ioProgressHandler.finish();
