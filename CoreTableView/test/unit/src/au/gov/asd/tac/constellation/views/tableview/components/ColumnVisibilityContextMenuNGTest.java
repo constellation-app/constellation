@@ -207,6 +207,8 @@ public class ColumnVisibilityContextMenuNGTest {
         assertNull(columnVisibilityContextMenu.getSourceVertexColumnsMenu());
         assertNull(columnVisibilityContextMenu.getDestinationVertexColumnMenu());
         assertNull(columnVisibilityContextMenu.getTransactionColumnMenu());
+        assertNull(columnVisibilityContextMenu.getLowVertexColumnMenu());
+        assertNull(columnVisibilityContextMenu.getHighVertexColumnMenu());
     }
 
     @Test
@@ -244,6 +246,9 @@ public class ColumnVisibilityContextMenuNGTest {
         assertNotNull(columnVisibilityContextMenu.getSourceVertexColumnsMenu());
         assertNotNull(columnVisibilityContextMenu.getDestinationVertexColumnMenu());
         assertNotNull(columnVisibilityContextMenu.getTransactionColumnMenu());
+        // Assert Null because these don't show by default, only when viewing links
+        assertNull(columnVisibilityContextMenu.getLowVertexColumnMenu());
+        assertNull(columnVisibilityContextMenu.getHighVertexColumnMenu());
 
         // No equality in separator so we have to pull it out and place it back in
         final Optional<MenuItem> separator = columnVisibilityContextMenu.getContextMenu().getItems().stream()

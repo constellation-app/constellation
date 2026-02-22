@@ -25,8 +25,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.text.Text;
 
 /**
- * A {@link TableCell} that updates the cells text and style classes on change.
- * It also sets up the right click context menu for cell clicks.
+ * A {@link TableCell} that updates the cells text and style classes on change. It also sets up the right click context
+ * menu for cell clicks.
  *
  * @author formalhaunt
  */
@@ -35,6 +35,8 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
     private static final String ELEMENT_SOURCE_CLASS = "element-source";
     private static final String ELEMENT_DESTINATION_CLASS = "element-destination";
     private static final String ELEMENT_TRANSACTION_CLASS = "element-transaction";
+    private static final String ELEMENT_LOW_CLASS = "element-low";
+    private static final String ELEMENT_HIGH_CLASS = "element-high";
     private static final String NULL_VALUE_CLASS = "null-value";
 
     private static final String NO_VALUE_TEXT = "<No Value>";
@@ -56,12 +58,11 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
     }
 
     /**
-     * Sets the cells text to the passed item and then updates the cells style
-     * classes based on the cells column attributes.
+     * Sets the cells text to the passed item and then updates the cells style classes based on the cells column
+     * attributes.
      *
      * @param item the string to set the cells text to
-     * @param empty true and the item will not be set to the cells text, false
-     * and it will
+     * @param empty true and the item will not be set to the cells text, false and it will
      */
     @Override
     public void updateItem(final String item, final boolean empty) {
@@ -83,6 +84,8 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
             this.getStyleClass().remove(ELEMENT_SOURCE_CLASS);
             this.getStyleClass().remove(ELEMENT_TRANSACTION_CLASS);
             this.getStyleClass().remove(ELEMENT_DESTINATION_CLASS);
+            this.getStyleClass().remove(ELEMENT_LOW_CLASS);
+            this.getStyleClass().remove(ELEMENT_HIGH_CLASS);
 
             // based on the column name prefixes ".source", ".destination" and
             // ".transaction" set the appropriate style class
@@ -91,11 +94,18 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
                     .map(column -> column.getAttributeNamePrefix())
                     .findFirst().orElse("");
             switch (columnPrefix) {
-                case GraphRecordStoreUtilities.SOURCE -> this.getStyleClass().add(ELEMENT_SOURCE_CLASS);
-                case GraphRecordStoreUtilities.TRANSACTION -> this.getStyleClass().add(ELEMENT_TRANSACTION_CLASS);
-                case GraphRecordStoreUtilities.DESTINATION -> this.getStyleClass().add(ELEMENT_DESTINATION_CLASS);
+                case GraphRecordStoreUtilities.SOURCE ->
+                    this.getStyleClass().add(ELEMENT_SOURCE_CLASS);
+                case GraphRecordStoreUtilities.TRANSACTION ->
+                    this.getStyleClass().add(ELEMENT_TRANSACTION_CLASS);
+                case GraphRecordStoreUtilities.DESTINATION ->
+                    this.getStyleClass().add(ELEMENT_DESTINATION_CLASS);
+                case GraphRecordStoreUtilities.LINK_LOW ->
+                    this.getStyleClass().add(ELEMENT_LOW_CLASS);
+                case GraphRecordStoreUtilities.LINK_HIGH ->
+                    this.getStyleClass().add(ELEMENT_HIGH_CLASS);
                 default -> {
-                    // do nothing
+                    // Do Nothing
                 }
             }
 
