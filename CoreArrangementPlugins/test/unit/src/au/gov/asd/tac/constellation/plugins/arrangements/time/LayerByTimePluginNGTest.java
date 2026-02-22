@@ -243,7 +243,7 @@ public class LayerByTimePluginNGTest {
 
         // Setup storeGraph
         final ZonedDateTime now = ZonedDateTime.now();
-        // Currently theres a bug where ZonedDateTimes are only accurate to teh second, not millisecond
+        // Currently theres a bug where ZonedDateTimes are only accurate to the second, not millisecond
         final long date0 = now.plusDays(1).toEpochSecond() * TemporalConstants.MILLISECONDS_IN_SECOND;
         final long date1 = now.plusDays(2).toEpochSecond() * TemporalConstants.MILLISECONDS_IN_SECOND;
         final long date2 = now.plusDays(3).toEpochSecond() * TemporalConstants.MILLISECONDS_IN_SECOND;
