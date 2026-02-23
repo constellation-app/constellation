@@ -32,7 +32,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import static org.mockito.Mockito.atLeast;
@@ -243,11 +242,10 @@ public class LayerByTimePluginNGTest {
 
         // Setup storeGraph
         final ZonedDateTime now = ZonedDateTime.now();
-        // Currently theres a bug where ZonedDateTimes are only accurate to the second, not millisecond
-        final long date0 = now.plusDays(1).toEpochSecond() * TemporalConstants.MILLISECONDS_IN_SECOND;
-        final long date1 = now.plusDays(2).toEpochSecond() * TemporalConstants.MILLISECONDS_IN_SECOND;
-        final long date2 = now.plusDays(3).toEpochSecond() * TemporalConstants.MILLISECONDS_IN_SECOND;
-        final long date3 = now.plusDays(4).toEpochSecond() * TemporalConstants.MILLISECONDS_IN_SECOND;
+        final long date0 = now.plusDays(1).toInstant().toEpochMilli();
+        final long date1 = now.plusDays(2).toInstant().toEpochMilli();
+        final long date2 = now.plusDays(3).toInstant().toEpochMilli();
+        final long date3 = now.plusDays(4).toInstant().toEpochMilli();
 
         final int txDateTimeAttr = TemporalConcept.TransactionAttribute.DATETIME.ensure(storeGraph);
 
