@@ -78,7 +78,7 @@ public abstract class ConstellationInputButton extends ComboBox<String> {
             arrowBtn.setMinSize(0,0);
             arrowBtn.setPadding(new Insets(0));
 
-            Region arrow = (Region)lookup(".arrow");
+            final Region arrow = (Region)lookup(".arrow");
             arrow.setMaxSize(0,0);
             arrow.setMinSize(0,0);
             arrow.setPadding(new Insets(0));

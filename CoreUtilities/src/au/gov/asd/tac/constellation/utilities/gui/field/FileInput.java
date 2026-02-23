@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 
 /**
  * A {@link ConstellationInput} for managing file selection. 
@@ -182,10 +184,11 @@ public final class FileInput extends ConstellationInput<List<File>> implements R
     @Override
     public RightButton getRightButton() {
         return new RightButton(new Label(fileInputKind.toString()), ButtonType.POPUP) {
-//            @Override
-//            public EventHandler<? super MouseEvent> action() {
-//                return event -> executeRightButtonAction();
-//            }
+            
+            @Override
+            public void show() {
+                executeRightButtonAction();
+            }
         };
     }
     
@@ -237,5 +240,5 @@ public final class FileInput extends ConstellationInput<List<File>> implements R
             this.setValue(files);
         }
     }
-    // </editor-fold>     
+    // </editor-fold>   
 }

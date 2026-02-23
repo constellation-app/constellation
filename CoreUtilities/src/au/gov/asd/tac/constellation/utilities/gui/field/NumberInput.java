@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationI
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
+import javafx.scene.input.MouseEvent;
 
 /**
  * A {@link ConstellationInput} for managing choice selection. 
@@ -260,20 +261,22 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
     @Override
     public LeftButton getLeftButton() {
         return new LeftButton(new Label(ConstellationInputConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
-//            @Override
-//            public EventHandler<? super MouseEvent> action() {
-//                return event -> executeLeftButtonAction();
-//            }
+            
+            @Override
+            public void show() {
+                executeLeftButtonAction();
+            }
         };
     }
 
     @Override
     public RightButton getRightButton() {
         return new RightButton(new Label(ConstellationInputConstants.NEXT_BUTTON_LABEL), ButtonType.CHANGER) {
-//            @Override
-//            public EventHandler<? super MouseEvent> action() {
-//                return event -> executeRightButtonAction();
-//            }
+            
+            @Override
+            public void show() {
+                executeRightButtonAction();
+            }
         };
     }
     

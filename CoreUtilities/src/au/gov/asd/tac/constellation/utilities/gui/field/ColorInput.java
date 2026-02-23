@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,10 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationI
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
+import javafx.event.EventHandler;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Labeled;
+import javafx.scene.input.MouseEvent;
 
 /**
  * A {@link ConstellationInput} for managing {@link ConstellationColor} selection. 
@@ -232,20 +234,22 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
     @Override
     public LeftButton getLeftButton() {
         return new LeftButton(label, ButtonType.CHANGER) {
-//                @Override
-//                public EventHandler<? super MouseEvent> action() {
-//                    return event -> executeLeftButtonAction();
-//                }
+                
+            @Override
+            public void show() {
+                executeLeftButtonAction();
+            }
         };        
     }
     
     @Override
     public RightButton getRightButton() {
         return new RightButton(new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL), ButtonType.DROPDOWN) {
-//                @Override
-//                public EventHandler<? super MouseEvent> action() {
-//                    return event -> executeRightButtonAction();
-//                }
+                
+            @Override
+            public void show() {
+                executeRightButtonAction();
+            }
         };
     }
     
@@ -270,7 +274,7 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
                 final Label label = new Label(mode.toString());
                 
                 label.setOnMouseClicked(event -> {
-                  //  field.setMode(mode);
+                    field.setMode(mode);
                 });
 
                 this.registerCustomMenuItem(label);

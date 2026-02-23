@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 
 /**
  * A {@link ConstellationInput} for managing password entry. 
@@ -79,12 +81,11 @@ public final class PasswordInput extends ConstellationInput<String> implements R
     @Override
     public RightButton getRightButton() {
         return new RightButton(label, ButtonType.CHANGER) {
-//            @Override
-//            public EventHandler<? super MouseEvent> action() {
-//                return event -> {
-//                    executeRightButtonAction();
-//                };
-//            }
+            
+            @Override
+            public void show() {
+                executeRightButtonAction();
+            }
         };
     }
     

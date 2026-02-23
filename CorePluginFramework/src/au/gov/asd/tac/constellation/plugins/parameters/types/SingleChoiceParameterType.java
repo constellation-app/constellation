@@ -256,15 +256,6 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         return parameter.getParameterValue().getIcons();
     }
 
-    public static void setIcons(PluginParameter<SingleChoiceParameterValue> parameter, List<Image> icons) {
-        
-        parameter.getParameterValue().setIcons(icons.stream().map(icon -> new ImageView(icon)).toList());
-    }
-    
-    public static List<ImageView> getIcons(PluginParameter<SingleChoiceParameterValue> parameter) {
-        return parameter.getParameterValue().getIcons();
-    }
-
     /**
      * Constructs a new instance of this type.
      * <p>

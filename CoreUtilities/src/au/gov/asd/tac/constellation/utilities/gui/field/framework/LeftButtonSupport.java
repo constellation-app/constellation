@@ -30,6 +30,7 @@ public interface LeftButtonSupport {
     public void executeLeftButtonAction();
     
     public abstract class LeftButton extends ConstellationInputButton {
+        
         protected LeftButton(final Label label, final ConstellationInputButton.ButtonType type) {
             super(label, type);
         }

@@ -15,7 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.ENABLED;
+import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.PROPERTY;
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VALUE;
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VISIBLE;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
@@ -24,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.FileInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
 import java.util.List;
@@ -66,182 +69,32 @@ public final class FileInputPane extends ParameterInputPane<FileParameterValue, 
     public static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
     private static final Logger LOGGER = Logger.getLogger(FileInputPane.class.getName());
     
-    private final Button fileAddButton;
-    private final TextInputControl field;
-    private final boolean required;
+  //  private final Button fileAddButton;
+ //   private final TextInputControl field;
+  //  private final boolean required;
     
     public FileInputPane(final PluginParameter<FileParameterValue> parameter) {
-        this(parameter, DEFAULT_WIDTH, null, null);
+        this(parameter, 1);
     }
-
-    public FileInputPane(final PluginParameter<FileParameterValue> parameter, final int defaultWidth) {
-        this(parameter, defaultWidth, null, null);
-    }
-
+    
     /**
      * Primary constructor
      *
      * @param parameter parameter to link to value
      * @param suggestedHeight suggested hight (in lines)
      */
-    public FileInputPane(final PluginParameter<FileParameterValue> parameter, final int defaultWidth, Integer suggestedHeight) {
-        this(parameter, defaultWidth, suggestedHeight, null);
+    public FileInputPane(final PluginParameter<FileParameterValue> parameter, int suggestedHeight) {
+        super(suggestedHeight > 1 ? new FileInput(parameter.getParameterValue().getKind(), TextType.MULTILINE, suggestedHeight) : new FileInput(parameter.getParameterValue().getKind()), parameter); 
+
+        final FileParameterType.FileParameterValue pv = parameter.getParameterValue();
+        
+        ((FileInput) input).setFileFilter(FileParameterType.getFileFilters(parameter));
+        ((FileInput) input).setAcceptAll(FileParameterType.isAcceptAllFileFilterUsed(parameter));
+        
+        setFieldValue(pv.get());
     }
 
-    /**
-     * Primary constructor
-     *
-     * @param parameter parameter to link to value
-     * @param defaultWidth default width (in pixels)
-     * @param suggestedHeight suggested hight (in lines)
-     * @param fileExtension the file extension to filter file dialog
-     */
-    public FileInputPane(final PluginParameter<FileParameterValue> parameter, final int defaultWidth, Integer suggestedHeight, final String fileExtension) {
-        super(new FileInput(), parameter);
-        if (suggestedHeight == null) {
-            suggestedHeight = 1;
-        }
-
-        required = parameter.isRequired();
-
-        final FileParameterValue paramaterValue = parameter.getParameterValue();
-        fileAddButton = new Button(paramaterValue.getKind() == null ? "" : paramaterValue.getKind().toString());
-        fileAddButton.setOnAction(event -> handleButtonOnAction(paramaterValue, parameter, fileExtension));
-
-        if (suggestedHeight > 1) {
-            field = new TextArea();
-            ((TextArea) field).setWrapText(true);
-            ((TextArea) field).setPrefRowCount(suggestedHeight);
-        } else {
-            field = new TextField();
-        }
-
-        if (parameter.getParameterValue().getGuiInit() != null) {
-            parameter.getParameterValue().getGuiInit().init(field);
-        }
-
-        field.setDisable(!parameter.isEnabled());
-        field.setVisible(parameter.isVisible());
-        field.setManaged(parameter.isVisible());
-        this.setManaged(parameter.isVisible());
-        this.setVisible(parameter.isVisible());
-
-        field.addEventFilter(KeyEvent.KEY_PRESSED, event -> handleEventFilter(event, field));
-
-        field.setPromptText(parameter.getDescription());
-        if (parameter.getObjectValue() != null) {
-            field.setText(parameter.getStringValue());
-        }
-
-        field.setEditable(true);
-        field.setPrefWidth(defaultWidth);
-
-        final Tooltip tooltip = new Tooltip("");
-
-        // Looks for changes to the input field
-        // Triggers a change to the parameter
-        field.textProperty().addListener((observableValue, oldValue, newValue) -> {
-
-            // As the change is happening in the field, the parameter object will not have updated its error value yet
-            final String error = parameter.validateString(newValue);
-            if ((required && StringUtils.isBlank(newValue)) || error != null) {
-                tooltip.setText(StringUtils.isNotBlank(error) ? error : "File is required!");
-                field.setTooltip(tooltip);
-                field.setId("invalid");
-            } else {
-                tooltip.setText("");
-                field.setTooltip(null);
-                field.setId("");
-            }
-            parameter.setStringValue(field.getText());
-        });
-
-        // Looks for changes to the plugin parameter
-        // Can be triggered by a change from the application or a change from the respective input field
-        // Can trigger a change to the input field which will cause this listner to be triggered a second time.
-        parameter.addListener((pluginParameter, change)
-                -> Platform.runLater(() -> {
-                    switch (change) {
-                        case VALUE -> {
-                            // Do not retrigger the fieled listner if this event was triggered by the field listner.
-                            final String param = parameter.getStringValue();
-                            if (!field.getText().equals(param)) {
-                                field.setText(param);
-                            }
-                        }
-                        case ENABLED ->
-                            field.setDisable(!pluginParameter.isEnabled());
-                        case VISIBLE -> {
-                            field.setManaged(parameter.isVisible());
-                            field.setVisible(parameter.isVisible());
-                            this.setVisible(parameter.isVisible());
-                            this.setManaged(parameter.isVisible());
-                        }
-                        default -> {
-                            // do nothing
-                        }
-                    }
-                }));
-
-        final HBox fieldAndAddButton = new HBox();
-        fieldAndAddButton.setSpacing(2);
-        fieldAndAddButton.getChildren().addAll(field, fileAddButton);
-        getChildren().add(fieldAndAddButton);
-    }
-
-    // Public for testing
-    public void handleButtonOnAction(final FileParameterValue parameterValue, final PluginParameter<FileParameterValue> parameter, final String fileExtension) {
-        final List<File> files = new ArrayList<>();
-        final CompletableFuture<Void> dialogFuture;
-        switch (parameterValue.getKind()) {
-            case OPEN, OPEN_OBSCURED ->
-                dialogFuture = FileChooser.openOpenDialog(getFileChooser(parameter, "Open", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
-                    if (openFile != null) {
-                        files.add(openFile);
-                    }
-                }));
-            case OPEN_MULTIPLE, OPEN_MULTIPLE_OBSCURED ->
-                dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open File(s)", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
-                    if (openFiles != null) {
-                        files.addAll(openFiles);
-                    }
-                }));
-            case SAVE, SAVE_OBSCURED ->
-                dialogFuture = FileChooser.openSaveDialog(getFileChooser(parameter, "Save", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(saveFile -> {
-                    if (saveFile != null) {
-                        //Save files may have been typed by the user and an extension may not have been specified.
-                        final String fnam = saveFile.getAbsolutePath();
-                        final String expectedExtension = FileParameterType.getFileFilters(parameter).getExtensions().get(0);
-                        if (!fnam.toLowerCase().endsWith(expectedExtension)) {
-                            saveFile = new File(fnam + expectedExtension);
-                        }
-                        files.add(saveFile);
-                    }
-                }));
-            default -> {
-                dialogFuture = null;
-                LOGGER.log(Level.FINE, "ignoring file selection type {0}.", parameterValue.getKind());
-            }
-        }
-
-        // As the dialog windows are completed on another thread 
-        // the execution of this method must wait until the thread has finnished executing.
-        if (dialogFuture != null) {
-            try {
-                dialogFuture.get();
-            } catch (final InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-            } catch (final ExecutionException ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-            }
-        }
-
-        if (!files.isEmpty()) {
-            parameter.setObjectValue(files);
-        }
-    }
-
+    
     public static void handleEventFilter(final KeyEvent event, final TextInputControl field) {
         if (event.getCode() == KeyCode.DELETE) {
             final IndexRange selection = field.getSelection();
@@ -278,78 +131,261 @@ public final class FileInputPane extends ParameterInputPane<FileParameterValue, 
             // Do nothing
         }
     }
+    
+//
+//    /**
+//     * Primary constructor
+//     *
+//     * @param parameter parameter to link to value
+//     * @param suggestedHeight suggested hight (in lines)
+//     */
+//    public FileInputPane(final PluginParameter<FileParameterValue> parameter, final int defaultWidth, Integer suggestedHeight) {
+//        this(parameter, defaultWidth, suggestedHeight, null);
+//    }
+//
+//    /**
+//     * Primary constructor
+//     *
+//     * @param parameter parameter to link to value
+//     * @param defaultWidth default width (in pixels)
+//     * @param suggestedHeight suggested hight (in lines)
+//     * @param fileExtension the file extension to filter file dialog
+//     */
+//    public FileInputPane(final PluginParameter<FileParameterValue> parameter, final int defaultWidth, Integer suggestedHeight, final String fileExtension) {
+//        if (suggestedHeight == null) {
+//            suggestedHeight = 1;
+//        }
+//
+//        required = parameter.isRequired();
+//
+//        final FileParameterValue paramaterValue = parameter.getParameterValue();
+//        fileAddButton = new Button(paramaterValue.getKind() == null ? "" : paramaterValue.getKind().toString());
+//        fileAddButton.setOnAction(event -> handleButtonOnAction(paramaterValue, parameter, fileExtension));
+//
+//        if (suggestedHeight > 1) {
+//            field = new TextArea();
+//            ((TextArea) field).setWrapText(true);
+//            ((TextArea) field).setPrefRowCount(suggestedHeight);
+//        } else {
+//            field = new TextField();
+//        }
+//
+//        if (parameter.getParameterValue().getGuiInit() != null) {
+//            parameter.getParameterValue().getGuiInit().init(field);
+//        }
+//
+//        field.setDisable(!parameter.isEnabled());
+//        field.setVisible(parameter.isVisible());
+//        field.setManaged(parameter.isVisible());
+//        this.setManaged(parameter.isVisible());
+//        this.setVisible(parameter.isVisible());
+//
+//        field.addEventFilter(KeyEvent.KEY_PRESSED, event -> handleEventFilter(event, field));
+//
+//        field.setPromptText(parameter.getDescription());
+//        if (parameter.getObjectValue() != null) {
+//            field.setText(parameter.getStringValue());
+//        }
+//
+//        field.setEditable(true);
+//        field.setPrefWidth(defaultWidth);
+//
+//        final Tooltip tooltip = new Tooltip("");
+//
+//        // Looks for changes to the input field
+//        // Triggers a change to the parameter
+//        field.textProperty().addListener((observableValue, oldValue, newValue) -> {
+//
+//            // As the change is happening in the field, the parameter object will not have updated its error value yet
+//            final String error = parameter.validateString(newValue);
+//            if ((required && StringUtils.isBlank(newValue)) || error != null) {
+//                tooltip.setText(StringUtils.isNotBlank(error) ? error : "File is required!");
+//                field.setTooltip(tooltip);
+//                field.setId("invalid");
+//            } else {
+//                tooltip.setText("");
+//                field.setTooltip(null);
+//                field.setId("");
+//            }
+//            parameter.setStringValue(field.getText());
+//        });
+//
+//        // Looks for changes to the plugin parameter
+//        // Can be triggered by a change from the application or a change from the respective input field
+//        // Can trigger a change to the input field which will cause this listner to be triggered a second time.
+//        parameter.addListener((pluginParameter, change)
+//                -> Platform.runLater(() -> {
+//                    switch (change) {
+//                        case VALUE -> {
+//                            // Do not retrigger the fieled listner if this event was triggered by the field listner.
+//                            final String param = parameter.getStringValue();
+//                            if (!field.getText().equals(param)) {
+//                                field.setText(param);
+//                            }
+//                        }
+//                        case ENABLED ->
+//                            field.setDisable(!pluginParameter.isEnabled());
+//                        case VISIBLE -> {
+//                            field.setManaged(parameter.isVisible());
+//                            field.setVisible(parameter.isVisible());
+//                            this.setVisible(parameter.isVisible());
+//                            this.setManaged(parameter.isVisible());
+//                        }
+//                        default -> {
+//                            // do nothing
+//                        }
+//                    }
+//                }));
+//
+//        final HBox fieldAndAddButton = new HBox();
+//        fieldAndAddButton.setSpacing(2);
+//        fieldAndAddButton.getChildren().addAll(field, fileAddButton);
+//        getChildren().add(fieldAndAddButton);
+//    }
+//
+//    // Public for testing
+//    public void handleButtonOnAction(final FileParameterValue parameterValue, final PluginParameter<FileParameterValue> parameter, final String fileExtension) {
+//        final List<File> files = new ArrayList<>();
+//        final CompletableFuture<Void> dialogFuture;
+//        switch (parameterValue.getKind()) {
+//            case OPEN, OPEN_OBSCURED ->
+//                dialogFuture = FileChooser.openOpenDialog(getFileChooser(parameter, "Open", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
+//                    if (openFile != null) {
+//                        files.add(openFile);
+//                    }
+//                }));
+//            case OPEN_MULTIPLE, OPEN_MULTIPLE_OBSCURED ->
+//                dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open File(s)", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
+//                    if (openFiles != null) {
+//                        files.addAll(openFiles);
+//                    }
+//                }));
+//            case SAVE, SAVE_OBSCURED ->
+//                dialogFuture = FileChooser.openSaveDialog(getFileChooser(parameter, "Save", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(saveFile -> {
+//                    if (saveFile != null) {
+//                        //Save files may have been typed by the user and an extension may not have been specified.
+//                        final String fnam = saveFile.getAbsolutePath();
+//                        final String expectedExtension = FileParameterType.getFileFilters(parameter).getExtensions().get(0);
+//                        if (!fnam.toLowerCase().endsWith(expectedExtension)) {
+//                            saveFile = new File(fnam + expectedExtension);
+//                        }
+//                        files.add(saveFile);
+//                    }
+//                }));
+//            default -> {
+//                dialogFuture = null;
+//                LOGGER.log(Level.FINE, "ignoring file selection type {0}.", parameterValue.getKind());
+//            }
+//        }
+//
+//        // As the dialog windows are completed on another thread 
+//        // the execution of this method must wait until the thread has finnished executing.
+//        if (dialogFuture != null) {
+//            try {
+//                dialogFuture.get();
+//            } catch (final InterruptedException ex) {
+//                Thread.currentThread().interrupt();
+//                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+//            } catch (final ExecutionException ex) {
+//                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+//            }
+//        }
+//
+//        if (!files.isEmpty()) {
+//            parameter.setObjectValue(files);
+//        }
+//    }
+//
+//
+//    /**
+//     * Creates a FileChooser for the Parameter If an extension filter has not been specified, all file types will be
+//     * accepted by default.
+//     *
+//     * @param parameter
+//     * @param title
+//     * @return
+//     */
+//    private FileChooserBuilder getFileChooser(final PluginParameter<FileParameterValue> parameter, final String title) {
+//        final ExtensionFilter extensionFilter = FileParameterType.getFileFilters(parameter);
+//
+//        FileChooserBuilder fileChooserBuilder = FileChooser.createFileChooserBuilder(title)
+//                .setAcceptAllFileFilterUsed(extensionFilter == null || FileParameterType.isAcceptAllFileFilterUsed(parameter));
+//
+//        if (extensionFilter != null) {
+//            // Add a file filter for all registered exportable file types.
+//            fileChooserBuilder = fileChooserBuilder.addFileFilter(new FileFilter() {
+//                @Override
+//                public boolean accept(final File file) {
+//                    final String name = file.getName();
+//                    final String ext = name.lastIndexOf('.') > -1
+//                            ? name.substring(name.lastIndexOf('.')).toLowerCase()
+//                            : "" ;
+//                    final boolean isValidExtension = extensionFilter.getExtensions() == null 
+//                            || extensionFilter.getExtensions().contains(ext);
+//                    return (file.isFile() && isValidExtension) || file.isDirectory();
+//                }
+//
+//                @Override
+//                public String getDescription() {
+//                    return extensionFilter.getDescription();
+//                }
+//            });
+//        }
+//        return fileChooserBuilder;
+//    }
+//
+//    /**
+//     * Creates a FileChooser for the Parameter If an extension filter has not been specified, all file types will be
+//     * accepted by default.
+//     *
+//     * @param parameter
+//     * @param title
+//     * @return
+//     */
+//    private FileChooserBuilder getFileChooser(final PluginParameter<FileParameterValue> parameter, final String title, final String fileExtension) {
+//        final FileChooserBuilder fcb;
+//
+//        if (fileExtension != null) {
+//            fcb = FileChooser.createFileChooserBuilder(title, fileExtension)
+//                    .setAcceptAllFileFilterUsed(FileParameterType.isAcceptAllFileFilterUsed(parameter));
+//        } else {
+//            fcb = getFileChooser(parameter, title);
+//        }
+//
+//        if (FileParameterType.isWarnOverwriteUsed(parameter) && FileParameterType.getFileFilters(parameter) != null) {
+//            for (final String extension : FileParameterType.getFileFilters(parameter).getExtensions()) {
+//                FileChooser.setWarnOverwrite(fcb, extension);
+//            }
+//        }
+//
+//        return fcb;
+//    }
 
-    /**
-     * Creates a FileChooser for the Parameter If an extension filter has not been specified, all file types will be
-     * accepted by default.
-     *
-     * @param parameter
-     * @param title
-     * @return
-     */
-    private FileChooserBuilder getFileChooser(final PluginParameter<FileParameterValue> parameter, final String title) {
-        final ExtensionFilter extensionFilter = FileParameterType.getFileFilters(parameter);
-
-        FileChooserBuilder fileChooserBuilder = FileChooser.createFileChooserBuilder(title)
-                .setAcceptAllFileFilterUsed(extensionFilter == null || FileParameterType.isAcceptAllFileFilterUsed(parameter));
-
-        if (extensionFilter != null) {
-            // Add a file filter for all registered exportable file types.
-            fileChooserBuilder = fileChooserBuilder.addFileFilter(new FileFilter() {
-                @Override
-                public boolean accept(final File file) {
-                    final String name = file.getName();
-                    final String ext = name.lastIndexOf('.') > -1
-                            ? name.substring(name.lastIndexOf('.')).toLowerCase()
-                            : "" ;
-                    final boolean isValidExtension = extensionFilter.getExtensions() == null 
-                            || extensionFilter.getExtensions().contains(ext);
-                    return (file.isFile() && isValidExtension) || file.isDirectory();
-                }
-
-                @Override
-                public String getDescription() {
-                    return extensionFilter.getDescription();
-                }
-            });
-        }
-        return fileChooserBuilder;
-    }
-
-    /**
-     * Creates a FileChooser for the Parameter If an extension filter has not been specified, all file types will be
-     * accepted by default.
-     *
-     * @param parameter
-     * @param title
-     * @return
-     */
-    private FileChooserBuilder getFileChooser(final PluginParameter<FileParameterValue> parameter, final String title, final String fileExtension) {
-        final FileChooserBuilder fcb;
-
-        if (fileExtension != null) {
-            fcb = FileChooser.createFileChooserBuilder(title, fileExtension)
-                    .setAcceptAllFileFilterUsed(FileParameterType.isAcceptAllFileFilterUsed(parameter));
-        } else {
-            fcb = getFileChooser(parameter, title);
-        }
-
-        if (FileParameterType.isWarnOverwriteUsed(parameter) && FileParameterType.getFileFilters(parameter) != null) {
-            for (final String extension : FileParameterType.getFileFilters(parameter).getExtensions()) {
-                FileChooser.setWarnOverwrite(fcb, extension);
-            }
-        }
-
-        return fcb;
-    }
-
-    @Override
+     @Override
     public ConstellationInputListener getFieldChangeListener(PluginParameter<FileParameterValue> parameter) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return (ConstellationInputListener<List<File>>) (List<File> newValue) -> {
+            parameter.setStringValue(input.getText());
+        };
     }
 
     @Override
     public PluginParameterListener getPluginParameterListener() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return (PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
+            switch (change) {
+                case VALUE -> {
+
+                    // Do not retrigger the fieled listner if this event was triggered by the input listner.
+                    final String param = pluginParameter.getStringValue();
+                    if (!input.getText().equals(param)) {
+                        input.setText(param);
+                    }
+                }
+                case PROPERTY -> {
+                    ((FileInput) input).setFileFilter(FileParameterType.getFileFilters(parameter));
+                }
+                case ENABLED -> updateFieldEnablement();
+                case VISIBLE -> updateFieldVisibility();
+            }
+        });
     }
 }
