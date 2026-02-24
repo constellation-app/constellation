@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.ControlsInvalidException;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.DateTimeEditorFactory.DateTimeEditor;
@@ -110,7 +110,7 @@ public class DateTimeEditorFactoryNGTest {
             assertEquals(editor.getMinValue(), (Integer) 0);
             assertEquals(editor.getSecValue(), (Integer) 0);
             assertEquals(editor.getMilliValue(), (Integer) 0);
-            assertEquals(editor.getTZValue(), TimeZoneUtilities.UTC);
+            assertEquals(editor.getTZValue(), TemporalUtilities.UTC);
 
             editor.updateControlsWithValue(ZonedDateTime.of(2050, 5, 5, 5, 50, 50, 5000000, ZoneId.of("GMT+2")));
             

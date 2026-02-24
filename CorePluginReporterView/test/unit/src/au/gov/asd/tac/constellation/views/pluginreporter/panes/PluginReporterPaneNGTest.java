@@ -23,6 +23,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -64,7 +66,7 @@ public class PluginReporterPaneNGTest {
      * Test of onChanged method, of class PluginReporterPane.
      */
     @Test
-    public void testOnChanged() {
+    public void testChanged() {
         System.out.println("onChanged");
         final String key = "filteredTags";
         final Preferences prefs = mock(Preferences.class);
@@ -75,8 +77,9 @@ public class PluginReporterPaneNGTest {
 
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(PluginReporterPane.class))).thenReturn(prefs);
+            final ObservableList<String> availableTags = FXCollections.observableArrayList();
 
-            instance.onChanged();
+            instance.changed(availableTags);
 
             verify(prefs, times(1)).put(key, returnValue);
         }
