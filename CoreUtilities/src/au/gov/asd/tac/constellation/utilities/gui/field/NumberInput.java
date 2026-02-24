@@ -122,13 +122,13 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
                 case Integer integerValue -> {
                     return Integer.MAX_VALUE;
                 }
-                case Float floatvalue -> {
+                case Float floatValue -> {
                     return Float.MAX_VALUE;
                 }
-                case Double floatvalue -> {
+                case Double floatValue -> {
                     return Float.MAX_VALUE;
                 }
-                default ->{
+                default -> {
                     throw new IllegalArgumentException(String.format("Unsupported type %s found.", max.getClass()));
                 }
             }
@@ -143,7 +143,7 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
                 case Integer integerValue -> {
                     return Integer.MIN_VALUE;
                 }
-                case Float floatvalue -> {
+                case Float floatValue -> {
                     return Float.MIN_VALUE;
                 }
                 default ->{
@@ -164,7 +164,7 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
     private Number getStep(){
         if (step == null) {
             switch(init) {
-                case Float floatvalue-> {
+                case Float floatValue-> {
                     return 0.1;
                 }
                 case Integer intValue -> {
@@ -182,7 +182,7 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
     private void setNumber(final Number value){
         switch (init) {
             case Integer integerValue -> this.setText(Integer.toString(value.intValue()));
-            case Float floatvalue -> this.setText(Float.toString(value.floatValue()));
+            case Float floatValue -> this.setText(Float.toString(value.floatValue()));
             default -> {
                 //do nothing
             }
