@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterListParame
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValueUtility;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -336,7 +337,7 @@ public class PluginParameter<V extends ParameterValue> {
      * @return True if recent values were found, false otherwise.
      */
     public boolean loadToRecentValue() {
-        final List<String> recentValues = RecentParameterValues.getRecentValues(id);
+        final List<String> recentValues = RecentValueUtility.getRecentValues(id);
         if (CollectionUtils.isNotEmpty(recentValues)) {
             setStringValue(recentValues.get(0));
             return true;
@@ -349,7 +350,7 @@ public class PluginParameter<V extends ParameterValue> {
      * Request that this parameter store recent values.
      */
     public void storeRecentValue() {
-        RecentParameterValues.storeRecentValue(id, getStringValue());
+        RecentValueUtility.storeRecentValue(id, getStringValue());
     }
 
     /**

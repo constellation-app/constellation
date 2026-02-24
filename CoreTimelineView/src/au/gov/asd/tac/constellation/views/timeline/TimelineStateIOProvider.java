@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.time.ZoneId;
@@ -82,7 +82,7 @@ public class TimelineStateIOProvider extends AbstractGraphIOProvider {
             if (jnode.has(TIME_ZONE)) {
                 state.setTimeZone(ZoneId.of(jnode.get(TIME_ZONE).asText()));
             } else {
-                state.setTimeZone(TimeZoneUtilities.UTC);
+                state.setTimeZone(TemporalUtilities.UTC);
             }
 
             graph.setObjectValue(attributeId, elementId, state);

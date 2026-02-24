@@ -187,6 +187,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     @Override
     public List<C> getValue() {
         final List<C> choices = getChoices();
+
         return choices != null && !choices.contains(null) ? choices : new ArrayList<>();
     }
 
@@ -383,5 +384,6 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
                 });
         return suggestions;
     }        
+        
     // </editor-fold> 
 }

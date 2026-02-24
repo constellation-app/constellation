@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -57,13 +57,13 @@ public final class ZonedDateTimeAttributeDescription extends AbstractObjectAttri
         } catch (final IllegalArgumentException ex) {
             switch (object) {
                 case Date date -> {
-                    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), TimeZoneUtilities.UTC);
+                    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), TemporalUtilities.UTC);
                 }
                 case Calendar calendar -> {
                     return ZonedDateTime.ofInstant(Instant.ofEpochMilli(calendar.getTimeInMillis()), calendar.getTimeZone().toZoneId());
                 }
                 case Number number -> {
-                    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(number.longValue()), TimeZoneUtilities.UTC);
+                    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(number.longValue()), TemporalUtilities.UTC);
                 }
                 default -> throw new IllegalArgumentException(String.format(
                         "Error converting Object '%s' to datetime", object.getClass()));
@@ -116,7 +116,7 @@ public final class ZonedDateTimeAttributeDescription extends AbstractObjectAttri
                         : null;
                 final ZoneId zoneId;
                 if (regionId == null) {
-                    zoneId = offsetId == null ? TimeZoneUtilities.UTC : ZoneOffset.of(offsetId);
+                    zoneId = offsetId == null ? TemporalUtilities.UTC : ZoneOffset.of(offsetId);
                 } else {
                     zoneId = ZoneId.of(regionId);
                 }
@@ -135,7 +135,7 @@ public final class ZonedDateTimeAttributeDescription extends AbstractObjectAttri
 
     @Override
     public void setLong(final int id, final long value) {
-        data[id] = ZonedDateTime.ofInstant(Instant.ofEpochMilli(value), TimeZoneUtilities.UTC);
+        data[id] = ZonedDateTime.ofInstant(Instant.ofEpochMilli(value), TemporalUtilities.UTC);
     }
 
     @Override

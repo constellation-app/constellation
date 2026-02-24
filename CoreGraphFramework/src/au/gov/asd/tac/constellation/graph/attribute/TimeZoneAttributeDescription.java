@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.TimeZone;
@@ -33,7 +33,7 @@ public final class TimeZoneAttributeDescription extends AbstractObjectAttributeD
     public static final String ATTRIBUTE_NAME = "time_zone";
     public static final int ATTRIBUTE_VERSION = 1;
     public static final Class<ZoneId> NATIVE_CLASS = ZoneId.class;
-    public static final ZoneId DEFAULT_VALUE = TimeZoneUtilities.UTC;
+    public static final ZoneId DEFAULT_VALUE = TemporalUtilities.UTC;
 
     public TimeZoneAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
@@ -76,7 +76,7 @@ public final class TimeZoneAttributeDescription extends AbstractObjectAttributeD
 
     @Override
     public String getString(final int id) {
-        return data[id] == null ? null : TimeZoneUtilities.getTimeZoneAsString((ZoneId) data[id]);
+        return data[id] == null ? null : TemporalUtilities.getTimeZoneAsString((ZoneId) data[id]);
     }
 
     @Override

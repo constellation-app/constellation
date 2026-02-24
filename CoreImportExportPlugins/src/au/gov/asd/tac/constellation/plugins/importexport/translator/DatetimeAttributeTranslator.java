@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
@@ -111,7 +111,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
 
         final List<String> timeZonesSortedString = FXCollections.observableArrayList();
         timeZonesSortedString.add("");
-        timeZonesSorted.forEach(id -> timeZonesSortedString.add(TimeZoneUtilities.getTimeZoneAsString(id)));
+        timeZonesSorted.forEach(id -> timeZonesSortedString.add(TemporalUtilities.getTimeZoneAsString(id)));
 
         final PluginParameter<SingleChoiceParameterValue> timeZoneParam = SingleChoiceParameterType.build(TIMEZONE_PARAMETER_ID);
         timeZoneParam.setName("Time Zone");

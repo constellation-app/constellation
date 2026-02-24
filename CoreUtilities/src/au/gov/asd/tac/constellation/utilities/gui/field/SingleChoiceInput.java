@@ -153,6 +153,7 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
         }
     }
 
+
     @Override
     public C getValue() {
         return getChoice();
@@ -162,6 +163,7 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
     public void setValue(final C value) {
         this.setChoice(value);
     }
+
 
     @Override
     public boolean isValidContent() {
@@ -206,6 +208,7 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
         final Label label;
         final ButtonType buttonType;
 
+
         switch (type) {
             case SINGLE_SPINNER -> {
                 label = new Label(ConstellationInputConstants.NEXT_BUTTON_LABEL);
@@ -214,11 +217,13 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
             case SINGLE_DROPDOWN -> {
                 label = new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL);
                 buttonType = ButtonType.DROPDOWN;
+
             }
             default -> {
                 return null;
             }
         }
+
         return new RightButton(label, buttonType) {           
             @Override
             public void show() {

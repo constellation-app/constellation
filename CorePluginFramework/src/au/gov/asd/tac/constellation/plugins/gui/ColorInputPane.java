@@ -17,19 +17,19 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.field.ColorInput;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Callback;
@@ -44,83 +44,55 @@ import javafx.util.Callback;
  *
  * @see au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType
  * @author algol
+ * @author capricornunicorn123
  */
-public class ColorInputPane extends Pane {
+public final class ColorInputPane extends ParameterInputPane<ColorParameterValue, ConstellationColor> {
 
-    private final ColorPicker field;
-    private final ComboBox<ConstellationColor> namedCombo;
     private static final Logger LOGGER = Logger.getLogger(ColorInputPane.class.getName());
-
+    
     public ColorInputPane(final PluginParameter<ColorParameterValue> parameter) {
-        field = new ColorPicker();
-        namedCombo = makeNamedCombo();
-        final HBox hbox = new HBox(field, namedCombo);
+        super(new ColorInput(), parameter);
+        
+        // Set the initial Field value
+        setFieldValue(parameter.getParameterValue().get());
+    }
 
-        field.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                final Color opaque = Color.color(newValue.getRed(), newValue.getGreen(), newValue.getBlue());
-                if (!opaque.equals(oldValue)) {
-                    boolean foundNamedColor = false;
-                    for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
-                        final Color fxc = c.getJavaFXColor();
-                        if (opaque.equals(fxc)) {
-                            namedCombo.setValue(c);
-                            foundNamedColor = true;
-                            break;
-                        }
-                    }
-
-                    if (!foundNamedColor) {
-                        namedCombo.setValue(null);
-                    }
-                }
-            }
-        });
-
-        final ColorParameterValue pv = parameter.getParameterValue();
-
-        field.setValue(pv.get().getJavaFXColor());
-
-        if (parameter.getParameterValue().getGuiInit() != null) {
-            parameter.getParameterValue().getGuiInit().init(hbox);
-        }
-
-        field.setDisable(!parameter.isEnabled());
-        field.setManaged(parameter.isVisible());
-        field.setVisible(parameter.isVisible());
-        this.setManaged(parameter.isVisible());
-        this.setVisible(parameter.isVisible());
-
-        namedCombo.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.equals(oldValue)) {
-                field.setValue(newValue.getJavaFXColor());
-                parameter.setColorValue(ConstellationColor.fromFXColor(field.getValue()));
-            }
-        });
-
-        field.setOnAction(event -> parameter.setColorValue(ConstellationColor.fromFXColor(field.getValue())));
-
-        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
+    @Override
+    public final ConstellationInputListener getFieldChangeListener(PluginParameter<ColorParameterValue> parameter) {
+        return (ConstellationInputListener<ConstellationColor>) (ConstellationColor newValue) -> {
+            parameter.setColorValue(newValue);
+        };
+    }
+    
+    @Override 
+    public final PluginParameterListener getPluginParameterListener() {
+        return (PluginParameter<?> parameter, ParameterChange change) -> {
+            Platform.runLater(() -> {
                 switch (change) {
                     case VALUE -> {
                         // Don't change the value if it isn't necessary.
-                        final ConstellationColor param = pluginParameter.getColorValue();
-                        if (!param.equals(field.getValue())) {
-                            field.setValue(param.getJavaFXColor());
+                        final ConstellationColor param = parameter.getColorValue();
+                        if (getInputReference().isValid()) {
+                            if (param != null && !param.equals(getInputReference().getValue())) {
+                                getInputReference().setValue(param);
+                            }
                         }
                     }
-                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
+                    case ENABLED ->
+                        input.setDisable(!parameter.isEnabled());
                     case VISIBLE -> {
-                        field.setManaged(parameter.isVisible());
-                        field.setVisible(parameter.isVisible());
+                        input.setManaged(parameter.isVisible());
+                        input.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
                     }
-                    default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+                    default ->
+                        LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
-            }));
+            });
 
-        getChildren().add(hbox);
+           // getChildren().add(hbox);
+        };
     }
 
     private ComboBox<ConstellationColor> makeNamedCombo() {

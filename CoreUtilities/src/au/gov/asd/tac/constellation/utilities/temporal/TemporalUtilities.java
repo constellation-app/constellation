@@ -15,11 +15,13 @@
  */
 package au.gov.asd.tac.constellation.utilities.temporal;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.TimeZone;
 
 /**
@@ -28,7 +30,7 @@ import java.util.TimeZone;
  *
  * @author twilight_sparkle
  */
-public class TimeZoneUtilities {
+public class TemporalUtilities {
 
     public static final ZoneId UTC = TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId();
 
@@ -37,7 +39,7 @@ public class TimeZoneUtilities {
         return offsetCompare != 0 ? offsetCompare : t1.getId().compareTo(t2.getId());
     };
     
-    private TimeZoneUtilities() {
+    private TemporalUtilities() {
         throw new IllegalStateException("Utility class");
     }
 
@@ -50,5 +52,24 @@ public class TimeZoneUtilities {
             return null;
         }
         return ZonedDateTime.of(ldt != null ? ldt : LocalDateTime.now(), timeZone).format(TemporalFormatting.TIME_ZONE_FORMATTER);
+    }
+    
+    /**
+     * Converts a LocalDate to a Date Object
+     * @param localDate
+     * @return a Date
+     */
+    public static Date localDateToDate(LocalDate localDate){
+        return new Date(localDate.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000);
+    }
+    
+    /**
+     * Converts a Date to a LocalDate Object
+     * ZoneID
+     * @param date
+     * @return a LocalDate
+     */
+    public static LocalDate dateToLocalDate(Date date){
+        return LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }
 }

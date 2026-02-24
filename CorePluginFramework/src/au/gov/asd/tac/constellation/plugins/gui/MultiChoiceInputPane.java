@@ -44,7 +44,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationI
  */
 public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoiceParameterValue, List<ParameterValue>> {
 
-    private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputPane.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputPane.class.getName());   
 
     
     public MultiChoiceInputPane(final PluginParameter<MultiChoiceParameterValue> parameter) {

@@ -41,6 +41,7 @@ import java.util.logging.Logger;
  * @see au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType
  *
  * @author ruby_crucis
+ * @author capricornunicorn123
  */
 public class SingleChoiceInputPane extends ParameterInputPane<SingleChoiceParameterValue, ParameterValue> {
 
@@ -48,6 +49,7 @@ public class SingleChoiceInputPane extends ParameterInputPane<SingleChoiceParame
 
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
         super(new SingleChoiceInput<ParameterValue>(ChoiceType.SINGLE_DROPDOWN), parameter);
+
         final SingleChoiceParameterType.SingleChoiceParameterValue pv = parameter.getParameterValue();
         ((SingleChoiceInput) input).setOptions(pv.getOptionsData());
         ((SingleChoiceInput) input).setIcons(pv.getIcons());

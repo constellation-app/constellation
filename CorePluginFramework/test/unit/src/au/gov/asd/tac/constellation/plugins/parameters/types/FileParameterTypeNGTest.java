@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.plugins.parameters.types;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.getFileFilters;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.FileInputKind;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -114,10 +114,10 @@ public class FileParameterTypeNGTest {
         System.out.println("setKind");
 
         final PluginParameter<FileParameterValue> fileParam = FileParameterType.build("My File");
-        assertEquals(FileParameterType.getKind(fileParam), FileParameterKind.OPEN_MULTIPLE);
+        assertEquals(FileParameterType.getKind(fileParam), FileInputKind.OPEN_MULTIPLE);
 
-        FileParameterType.setKind(fileParam, FileParameterKind.SAVE);
-        assertEquals(FileParameterType.getKind(fileParam), FileParameterKind.SAVE);
+        FileParameterType.setKind(fileParam, FileInputKind.SAVE);
+        assertEquals(FileParameterType.getKind(fileParam), FileInputKind.SAVE);
     }
 
     /**

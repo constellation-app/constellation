@@ -66,6 +66,7 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
         //Update the prompt text of the input
         this.input.setPromptText(parameter.getDescription());
         
+
         // Ensure that the input and the parameter are listening to changes on each other
         this.input.addListener(getFieldChangeListener(parameter));
         parameter.addListener(getPluginParameterListener());
@@ -142,6 +143,7 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
      *   };
      * </pre>
      * </p>
+
      *
      * @param parameter
      * @return A ChangeListener that can be registered to a

@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -153,7 +153,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
             ZoneId.getAvailableZoneIds().forEach(id -> timeZones.add(ZoneId.of(id)));
             timeZoneComboBox = new ComboBox<>(timeZones.sorted(zoneIdComparator));
-            timeZoneComboBox.getSelectionModel().select(TimeZoneUtilities.UTC);
+            timeZoneComboBox.getSelectionModel().select(TemporalUtilities.UTC);
             timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener(updateTimeFromZone);
             
             final Label timeZoneComboBoxLabel = new Label("Time Zone:");
@@ -165,15 +165,18 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
                 protected void updateItem(final ZoneId item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
-                        setText(TimeZoneUtilities.getTimeZoneAsString(currentValue == null ? null : currentValue.toLocalDateTime(), item));
+                        setText(TemporalUtilities.getTimeZoneAsString(currentValue == null ? null : currentValue.toLocalDateTime(), item));
                     }
                 }
             };
             timeZoneComboBox.setCellFactory(cellFactory);
             timeZoneComboBox.setButtonCell(cellFactory.call(null));
-            
-            final HBox timeZoneHbox = new HBox(CONTROLS_DEFAULT_HORIZONTAL_SPACING, 
-                    timeZoneComboBoxLabel, timeZoneComboBox);
+            timeZoneComboBox.getSelectionModel().select(TemporalUtilities.UTC);
+            timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener(updateTimeFromZone);
+
+            final HBox timeZoneHbox = new HBox(timeZoneComboBoxLabel, timeZoneComboBox);
+            timeZoneHbox.setSpacing(5);
+
             final HBox timeSpinnerContainer = createTimeSpinners();
             
             final VBox controls = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, 

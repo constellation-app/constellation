@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.TimeZoneEditorFactory.TimeZoneEditor;
 import java.time.ZoneId;
@@ -108,7 +108,7 @@ public class TimeZoneEditorFactoryNGTest {
         editor.createEditorControls();
 
         // default values from instantiation
-        assertEquals(editor.getValueFromControls(), TimeZoneUtilities.UTC);
+        assertEquals(editor.getValueFromControls(), TemporalUtilities.UTC);
 
         editor.updateControlsWithValue(ZoneId.of("GMT+2"));
 

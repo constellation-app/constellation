@@ -57,6 +57,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.FileInputKind;
 import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
@@ -83,12 +84,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.NbBundle.Messages;
@@ -272,14 +268,14 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginParameter<FileParameterValue> openFileParam = FileParameterType.build(INPUT_FILE_PARAMETER_ID);
         openFileParam.setName("Input file");
         openFileParam.setDescription("A file to read stuff from");
-        FileParameterType.setKind(openFileParam, FileParameterType.FileParameterKind.OPEN);
+        FileParameterType.setKind(openFileParam, FileInputKind.OPEN);
         FileParameterType.enableAcceptAllFileFilter(openFileParam);
         params.addParameter(openFileParam);
 
         final PluginParameter<FileParameterValue> saveFileParam = FileParameterType.build(OUTPUT_FILE_PARAMETER_ID);
         saveFileParam.setName("Output file");
         saveFileParam.setDescription("A file to write stuff to");
-        FileParameterType.setKind(saveFileParam, FileParameterType.FileParameterKind.SAVE);
+        FileParameterType.setKind(saveFileParam, FileInputKind.SAVE);
         FileParameterType.setFileFilters(saveFileParam, new ExtensionFilter("Text files", FileExtensionConstants.TEXT));
         params.addParameter(saveFileParam);
 

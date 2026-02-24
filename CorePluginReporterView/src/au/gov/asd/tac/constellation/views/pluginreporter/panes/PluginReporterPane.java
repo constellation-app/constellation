@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.field.MultiChoiceInput;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
@@ -52,13 +53,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbPreferences;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 
 /**
  * A PluginReporterPane provides a UI where all PluginReports for a single graph are displayed.
  *
  * @author sirius
  */
-public class PluginReporterPane extends BorderPane {
+public class PluginReporterPane extends BorderPane implements ConstellationInputListener<List<String>> {
 
     private static final String FILTERED_TAGS_KEY = "filteredTags";
 
@@ -69,7 +71,8 @@ public class PluginReporterPane extends BorderPane {
     private GraphReport graphReport = null;
 
     private final ObservableList<String> availableTags = FXCollections.observableArrayList();
-    private final Set<String> filteredTags = new HashSet<>(); // filter out tags
+    private final MultiChoiceInput<String> tagFilterInput = new MultiChoiceInput<>(availableTags);
+    private final Set<String> filteredTags = new HashSet<>();
     private PluginReportFilter pluginReportFilter = null;
 
     // The height of the report box last time we looked
@@ -111,7 +114,7 @@ public class PluginReporterPane extends BorderPane {
         
         params.addController(REPORT_SETTINGS_PARAMETER_ID, (masterId, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
-                onChanged();
+                changed(availableTags);
            }
         });
         
@@ -127,7 +130,7 @@ public class PluginReporterPane extends BorderPane {
         // Group these together so the Toolbar treats them as a unit.
         final HBox filterBox = new HBox(filterLabel, reportSettingPane);
         filterBox.setAlignment(Pos.BASELINE_LEFT);
-        filterBox.setPadding(new Insets(0, 0, 4, 0));
+
 
         // The clear button
         Button clearButton = new Button("Clear");
@@ -177,14 +180,11 @@ public class PluginReporterPane extends BorderPane {
         setCenter(reportBoxScroll);
     }
     
-    public void onChanged() {
-        if (params.hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
-            final MultiChoiceParameterValue multiChoiceValue = params.getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
-            final List<String> options = multiChoiceValue.getOptions();
-            final List<String> choices = multiChoiceValue.getChoices();
-            
-            filteredTags.addAll(options);
-            filteredTags.removeAll(choices);            
+    @Override
+    public void changed(final List<String> c) {
+        if (params.hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {            
+            filteredTags.addAll(tagFilterInput.getOptions());
+            filteredTags.removeAll(c);            
         }                
 
         // Save the new filtered tags to preferences

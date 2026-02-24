@@ -147,7 +147,7 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
      * An implementation of {@link ParameterValue} corresponding to this type.
      * It holds float values.
      */
-    public static class FloatParameterValue extends ParameterValue implements NumberParameterValue {
+    public static class FloatParameterValue extends NumberParameterValue {
 
         private static final NumberStringConverter CONVERTER = new NumberStringConverter();
 

@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import au.gov.asd.tac.constellation.views.histogram.Bin;
 import au.gov.asd.tac.constellation.views.histogram.bins.AttributeBin;
 import au.gov.asd.tac.constellation.views.histogram.bins.ObjectBin;
@@ -63,7 +63,7 @@ public class DateTimeZuluDateTimeFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.getKeyAsObject() == null ? null : LocalDateTime.ofInstant(((ZonedDateTime) bin.getKeyAsObject()).toInstant(), TimeZoneUtilities.UTC);
+            key = bin.getKeyAsObject() == null ? null : LocalDateTime.ofInstant(((ZonedDateTime) bin.getKeyAsObject()).toInstant(), TemporalUtilities.UTC);
         }
 
         @Override

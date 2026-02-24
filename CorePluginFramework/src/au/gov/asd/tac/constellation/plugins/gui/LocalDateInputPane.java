@@ -17,16 +17,14 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterType.LocalDateParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.field.DateInput;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.scene.control.DatePicker;
-import javafx.scene.layout.Pane;
-import javafx.util.StringConverter;
-import org.apache.commons.lang3.StringUtils;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 
 /**
  * A Date Picker, which is the GUI element corresponding to a
@@ -40,66 +38,43 @@ import org.apache.commons.lang3.StringUtils;
  * au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterType
  *
  * @author algol
+ * @author capricornunicorn123
  */
-public class LocalDateInputPane extends Pane {
-
-    private static final String PATTERN = "yyyy-MM-dd";
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+public final class LocalDateInputPane extends ParameterInputPane<LocalDateParameterValue, LocalDate> {
+    
     private static final Logger LOGGER = Logger.getLogger(LocalDateInputPane.class.getName());
 
-    private final DatePicker field;
-
     public LocalDateInputPane(final PluginParameter<LocalDateParameterValue> parameter) {
-        field = new DatePicker();
+        super(new DateInput(), parameter);
         final LocalDateParameterValue pv = parameter.getParameterValue();
+        
+        setFieldValue(pv.get());
+    }
 
-        field.setPromptText(PATTERN);
-        field.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(final LocalDate date) {
-                return date != null ? DATE_FORMATTER.format(date) : "";
+    @Override
+    public ConstellationInputListener getFieldChangeListener(PluginParameter<LocalDateParameterValue> parameter) {
+        return (ConstellationInputListener<LocalDate>) (LocalDate newValue) -> {
+            if (newValue != null) {
+                parameter.setLocalDateValue(newValue);
             }
+        };
+    }
 
-            @Override
-            public LocalDate fromString(final String s) {
-                return StringUtils.isNotBlank(s) ? LocalDate.parse(s, DATE_FORMATTER) : null;
-            }
-        });
-
-        field.setValue(pv.get());
-
-        if (parameter.getParameterValue().getGuiInit() != null) {
-            parameter.getParameterValue().getGuiInit().init(field);
-        }
-
-        field.setDisable(!parameter.isEnabled());
-        field.setVisible(parameter.isVisible());
-        field.setManaged(parameter.isVisible());
-        this.setManaged(parameter.isVisible());
-        this.setVisible(parameter.isVisible());
-
-        field.setOnAction(event -> parameter.setLocalDateValue(field.getValue()));
-
-        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
+    @Override
+    public PluginParameterListener getPluginParameterListener() {
+        return (PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
                 switch (change) {
                     case VALUE -> {
                         // Don't change the value if it isn't necessary.
                         final LocalDate param = pluginParameter.getLocalDateValue();
-                        if (!param.equals(field.getValue())) {
-                            field.setValue(param);
+                        if (!param.equals(getFieldValue())) {
+                            input.setValue(param);
                         }
                     }
-                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
-                    case VISIBLE -> {
-                        field.setManaged(parameter.isVisible());
-                        field.setVisible(parameter.isVisible());
-                        this.setVisible(parameter.isVisible());
-                        this.setManaged(parameter.isVisible());
-                    }
+                    case ENABLED -> updateFieldEnablement();
+                    case VISIBLE -> updateFieldVisibility();
                     default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
-            }));
-
-        getChildren().add(field);
+        });
     }
 }
