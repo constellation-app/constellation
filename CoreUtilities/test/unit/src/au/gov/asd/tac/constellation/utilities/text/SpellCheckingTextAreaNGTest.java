@@ -18,6 +18,10 @@ package au.gov.asd.tac.constellation.utilities.text;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.mockito.MockedConstruction;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -148,6 +152,29 @@ public class SpellCheckingTextAreaNGTest {
         assertEquals(instance.getStyleAtPosition(0), SpellCheckingTextArea.CLEAR_STYLE);
         assertEquals(instance.getStyleAtPosition(1), SpellCheckingTextArea.CLEAR_STYLE);
         assertEquals(instance.getStyleAtPosition(2), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
+    }
+
+    /**
+     * Test of handleKeyReleased method, of class SpellCheckingTextArea.
+     */
+    @Test
+    public void testHandleKeyReleased() {
+        System.out.println("handleKeyReleased");
+        final String text = "This is some text";
+
+        try (final MockedConstruction<SpellChecker> mockSpellChecker = Mockito.mockConstruction(SpellChecker.class,
+                (mock, context) -> {
+                    when(mock.canCheckSpelling(text)).thenReturn(true);
+                })) {
+
+            final SpellCheckingTextArea instance = new SpellCheckingTextArea(true);
+            instance.setText(text);
+            instance.handleKeyReleased();
+
+            final SpellChecker sc = mockSpellChecker.constructed().get(0);
+            verify(sc).canCheckSpelling(text);
+            verify(sc).checkSpelling();
+        }
     }
 
 //    /**

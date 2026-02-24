@@ -95,7 +95,6 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
 //            List<Paragraph<String, String, String>> p = this.getVisibleParagraphs();
 //            //System.out.println(p);
 //        });
-
         this.setOnMouseClicked((final MouseEvent event) -> {
             if (event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
                 spellChecker.checkSpelling();
@@ -103,36 +102,25 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             }
         });
 
-        this.setOnKeyReleased((final KeyEvent event) -> {
-            if (!spellChecker.canCheckSpelling(this.getText())) {
-                return;
-            }
-
-            if (spellCheckThread != null) {
-                spellCheckThread.interrupt();
-            }
-            spellCheckThread = new SpellCheckThread(spellChecker);
-            spellCheckThread.start();
-
-        });
+        this.setOnKeyReleased((final KeyEvent event) -> handleKeyReleased());
 
         // Set the right click context menu
         final ContextMenu contextMenu = addRightClickContextMenu(enableSpellChecking);
         this.setContextMenu(contextMenu);
     }
 
-    public class SpellCheckThread extends Thread {
-
-        private final SpellChecker spellChecker;
-
-        public SpellCheckThread(final SpellChecker spellChecker) {
-            this.spellChecker = spellChecker;
+    protected void handleKeyReleased() {
+        if (!spellChecker.canCheckSpelling(this.getText())) {
+            return;
         }
 
-        @Override
-        public void run() {
-            spellChecker.checkSpelling();
+        if (spellCheckThread != null) {
+
+            spellCheckThread.interrupt();
         }
+
+        spellCheckThread = new SpellCheckThread(spellChecker);
+        spellCheckThread.start();
     }
 
     public SpellCheckingTextArea(final boolean isSpellCheckEnabled, final String text) {
@@ -285,5 +273,20 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
                 }
             }
         });
+    }
+
+    // Inner class for starting and restarting spellchecking
+    public class SpellCheckThread extends Thread {
+
+        private final SpellChecker spellChecker;
+
+        public SpellCheckThread(final SpellChecker spellChecker) {
+            this.spellChecker = spellChecker;
+        }
+
+        @Override
+        public void run() {
+            spellChecker.checkSpelling();
+        }
     }
 }
