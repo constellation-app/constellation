@@ -17,9 +17,13 @@ package au.gov.asd.tac.constellation.graph.node;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
+import com.jogamp.opengl.awt.GLCanvas;
+import java.awt.Component;
+import java.awt.Graphics;
 import java.io.IOException;
 import java.lang.ref.Cleaner;
 import java.util.ArrayList;
@@ -61,6 +65,17 @@ public class GraphNode extends AbstractNode {
     public static void addGraphManagerListener(final GraphManagerListener listener) {
         if (listener != null && !LISTENERS.contains(listener)) {
             LISTENERS.add(listener);
+        }
+    }
+
+    public static void redrawDisplay() {
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (graph != null) {
+            final Graphics graphics = getGraphNode(graph).getTopComponent().getGraphics();
+            final Component visualComponent = getGraphNode(graph).getVisualManager().getVisualComponent();
+            if (visualComponent instanceof GLCanvas vc) {
+                vc.display();
+            }
         }
     }
 
