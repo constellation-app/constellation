@@ -73,17 +73,14 @@ public class ScriptFormatter extends BinFormatter {
 
     @Override
     public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
-        final String script = parameters.getParameters().get(SCRIPT_PARAMETER_ID).getStringValue().replaceAll("[\\n\\r]+$", "");
-        parameters.setStringValue(SCRIPT_PARAMETER_ID, script);
+        final String script = parameters.getParameters().get(SCRIPT_PARAMETER_ID).getStringValue();
 
-        final ScriptEngineManager manager;
-        final ScriptEngine engine;
         Bindings bindings = null;
         CompiledScript compiledScript = null;
 
         try {
-            manager = new ScriptEngineManager();
-            engine = manager.getEngineByName(LANGUAGES.get("Python"));
+            final ScriptEngineManager manager = new ScriptEngineManager();
+            final ScriptEngine engine = manager.getEngineByName(LANGUAGES.get("Python"));
             bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
             compiledScript = ((Compilable) engine).compile(script);
         } catch (final ScriptException e) {
