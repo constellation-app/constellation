@@ -27,10 +27,9 @@ import java.util.regex.Pattern;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * A BinFormatter that allows the user to bin elements the parts of their labels
- * that match a regular expression. If the regular expression matches then the
- * bin key will be the character sequence that matched. If the regular
- * expression does not match then the key will be null.
+ * A BinFormatter that allows the user to bin elements the parts of their labels that match a regular expression. If the
+ * regular expression matches then the bin key will be the character sequence that matched. If the regular expression
+ * does not match then the key will be null.
  *
  * @author sirius
  */
@@ -45,7 +44,7 @@ public class FindFormatter extends BinFormatter {
 
     @Override
     public PluginParameters createParameters() {
-        PluginParameters params = new PluginParameters();
+        final PluginParameters params = new PluginParameters();
 
         final PluginParameter<StringParameterValue> findParameter = StringParameterType.build(FIND_PARAMETER_ID);
         findParameter.setName("Find");
@@ -56,15 +55,18 @@ public class FindFormatter extends BinFormatter {
     }
 
     @Override
-    public boolean appliesToBin(Bin bin) {
+    public boolean appliesToBin(final Bin bin) {
         return bin instanceof StringBin;
     }
 
     @Override
     public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
-        String find = parameters.getParameters().get(FIND_PARAMETER_ID).getStringValue();
+        // Get string parameter value and remove trailing newline characters
+        final String find = parameters.getParameters().get(FIND_PARAMETER_ID).getStringValue().replaceAll("[\\n\\r]+$", "");
+        // Set the parameter value so that trailing newlines are removed here too
+        parameters.setStringValue(FIND_PARAMETER_ID, find);
 
-        Pattern pattern = Pattern.compile(find);
+        final Pattern pattern = Pattern.compile(find);
         return new FindReplaceFormatBin((StringBin) bin, pattern);
     }
 
@@ -73,21 +75,21 @@ public class FindFormatter extends BinFormatter {
         private final StringBin bin;
         private final Pattern pattern;
 
-        public FindReplaceFormatBin(StringBin bin, Pattern pattern) {
+        public FindReplaceFormatBin(final StringBin bin, final Pattern pattern) {
             this.bin = bin;
             this.pattern = pattern;
         }
 
         @Override
-        public void setKey(GraphReadMethods graph, int attribute, int element) {
+        public void setKey(final GraphReadMethods graph, final int attribute, final int element) {
             bin.setKey(graph, attribute, element);
 
-            String k = bin.getKey();
+            final String k = bin.getKey();
 
             if (k == null) {
                 key = null;
             } else {
-                Matcher matcher = pattern.matcher(k);
+                final Matcher matcher = pattern.matcher(k);
                 if (matcher.find()) {
                     key = matcher.group(matcher.groupCount());
                 } else {
