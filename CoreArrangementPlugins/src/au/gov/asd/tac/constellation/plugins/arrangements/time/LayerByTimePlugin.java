@@ -175,7 +175,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final int NUM_ROWS_OR_COLS_DEFAULT = 1;
 
     private static final String ROW_DIST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "row_dist");
-    private static final String ROW_DIST_NAME = "Distance bewteen rows";
+    private static final String ROW_DIST_NAME = "Distance between rows";
     private static final int ROW_DIST_DEFAULT = 10;
 
     private static final String COL_DIST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "col_dist");
@@ -183,7 +183,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final int COL_DIST_DEFAULT = 10;
 
     private static final String NODE_DIST_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "node_dist");
-    private static final String NODE_DIST_NAME = "Distance bewteen nodes in layer";
+    private static final String NODE_DIST_NAME = "Distance between nodes in layer";
     private static final int NODE_DIST_DEFAULT = 10;
 
     private static final String HOW_TO_ARRANGE_PARAMETER_ID = PluginParameter.buildId(LayerByTimePlugin.class, "how_to_arrange");
