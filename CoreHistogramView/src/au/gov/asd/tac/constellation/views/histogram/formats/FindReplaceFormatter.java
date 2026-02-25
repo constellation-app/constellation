@@ -26,8 +26,8 @@ import java.util.regex.Pattern;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * A BinFormatter that allows the user to bin by attribute values after they
- * have undergone a a find/replace substitution.
+ * A BinFormatter that allows the user to bin by attribute values after they have undergone a a find/replace
+ * substitution.
  *
  * @author sirius
  */
@@ -43,7 +43,7 @@ public class FindReplaceFormatter extends BinFormatter {
 
     @Override
     public PluginParameters createParameters() {
-        PluginParameters params = new PluginParameters();
+        final PluginParameters params = new PluginParameters();
 
         final PluginParameter<StringParameterValue> findParameter = StringParameterType.build(FIND_PARAMETER_ID);
         findParameter.setName("Find");
@@ -59,16 +59,19 @@ public class FindReplaceFormatter extends BinFormatter {
     }
 
     @Override
-    public boolean appliesToBin(Bin bin) {
+    public boolean appliesToBin(final Bin bin) {
         return bin instanceof StringBin;
     }
 
     @Override
     public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
-        String find = parameters.getParameters().get(FIND_PARAMETER_ID).getStringValue();
-        String replace = parameters.getParameters().get(REPLACE_PARAMETER_ID).getStringValue();
+        final String find = parameters.getParameters().get(FIND_PARAMETER_ID).getStringValue().replaceAll("[\\n\\r]+$", "");
+        final String replace = parameters.getParameters().get(REPLACE_PARAMETER_ID).getStringValue().replaceAll("[\\n\\r]+$", "");
 
-        Pattern pattern = Pattern.compile(find);
+        parameters.setStringValue(FIND_PARAMETER_ID, find);
+        parameters.setStringValue(REPLACE_PARAMETER_ID, replace);
+
+        final Pattern pattern = Pattern.compile(find);
         return new FindReplaceFormatBin((StringBin) bin, pattern, replace);
     }
 
@@ -78,17 +81,17 @@ public class FindReplaceFormatter extends BinFormatter {
         private final Pattern pattern;
         private final String replace;
 
-        public FindReplaceFormatBin(StringBin bin, Pattern pattern, String replace) {
+        public FindReplaceFormatBin(final StringBin bin, final Pattern pattern, final String replace) {
             this.bin = bin;
             this.pattern = pattern;
             this.replace = replace;
         }
 
         @Override
-        public void setKey(GraphReadMethods graph, int attribute, int element) {
+        public void setKey(final GraphReadMethods graph, final int attribute, final int element) {
             bin.setKey(graph, attribute, element);
 
-            String k = bin.getKey();
+            final String k = bin.getKey();
 
             if (k == null) {
                 key = null;

@@ -66,6 +66,10 @@ public class FindFormatter extends BinFormatter {
         // Set the parameter value so that trailing newlines are removed here too
         parameters.setStringValue(FIND_PARAMETER_ID, find);
 
+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+            System.out.println(ste);
+        }
+
         final Pattern pattern = Pattern.compile(find);
         return new FindReplaceFormatBin((StringBin) bin, pattern);
     }

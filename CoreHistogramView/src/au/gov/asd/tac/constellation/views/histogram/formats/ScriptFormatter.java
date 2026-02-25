@@ -36,15 +36,15 @@ import javax.script.ScriptException;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * A BinFormatter that allows the user to apply an arbitrary script to transform
- * the natural bin values before they are binned.
+ * A BinFormatter that allows the user to apply an arbitrary script to transform the natural bin values before they are
+ * binned.
  *
  * @author sirius
  */
 @ServiceProvider(service = BinFormatter.class)
 public class ScriptFormatter extends BinFormatter {
 
-    private static final Logger LOGGER = Logger.getLogger(ScriptFormatter.class.getName());   
+    private static final Logger LOGGER = Logger.getLogger(ScriptFormatter.class.getName());
 
     public static final String SCRIPT_PARAMETER_ID = PluginParameter.buildId(ScriptFormatter.class, "script");
 
@@ -73,10 +73,11 @@ public class ScriptFormatter extends BinFormatter {
 
     @Override
     public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
-        final String script = parameters.getParameters().get(SCRIPT_PARAMETER_ID).getStringValue();
+        final String script = parameters.getParameters().get(SCRIPT_PARAMETER_ID).getStringValue().replaceAll("[\\n\\r]+$", "");
+        parameters.setStringValue(SCRIPT_PARAMETER_ID, script);
 
-        ScriptEngineManager manager;
-        ScriptEngine engine;
+        final ScriptEngineManager manager;
+        final ScriptEngine engine;
         Bindings bindings = null;
         CompiledScript compiledScript = null;
 
@@ -98,14 +99,14 @@ public class ScriptFormatter extends BinFormatter {
         private final Bindings bindings;
         private final CompiledScript compiledScript;
 
-        public ScriptFormatBin(Bin bin, Bindings bindings, CompiledScript compiledScript) {
+        public ScriptFormatBin(final Bin bin, final Bindings bindings, final CompiledScript compiledScript) {
             this.bin = bin;
             this.bindings = bindings;
             this.compiledScript = compiledScript;
         }
 
         @Override
-        public void setKey(GraphReadMethods graph, int attribute, int element) {
+        public void setKey(final GraphReadMethods graph, final int attribute, final int element) {
             if (compiledScript == null) {
                 key = "ERROR";
             } else {
