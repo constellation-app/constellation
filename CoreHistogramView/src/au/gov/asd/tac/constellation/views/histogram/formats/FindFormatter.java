@@ -88,14 +88,11 @@ public class FindFormatter extends BinFormatter {
 
             if (k == null) {
                 key = null;
-            } else {
-                final Matcher matcher = pattern.matcher(k);
-                if (matcher.find()) {
-                    key = matcher.group(matcher.groupCount());
-                } else {
-                    key = null;
-                }
+                return;
             }
+
+            final Matcher matcher = pattern.matcher(k);
+            key = matcher.find() ? matcher.group(matcher.groupCount()) : null;
         }
 
         @Override

@@ -19,13 +19,17 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.histogram.Bin;
-import au.gov.asd.tac.constellation.views.histogram.bins.AttributeBin;
 import au.gov.asd.tac.constellation.views.histogram.bins.StringBin;
 import java.util.Map;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -112,5 +116,44 @@ public class FindFormatterNGTest {
         verify(mockPluginParameters).getParameters();
         verify(mockParameters).get(FindFormatter.FIND_PARAMETER_ID);
         verify(mockParam).getStringValue();
+    }
+
+    /**
+     * Test of setKey method, of class FindReplaceFormatBin.
+     */
+    @Test
+    public void testFindReplaceFormatBinSetKey() {
+        System.out.println("findReplaceFormatBinSetKey");
+
+        final GraphReadMethods graph = null;
+        final int attribute = 0;
+        final int element = 0;
+
+        final FindFormatter findFormatter = new FindFormatter();
+
+        final PluginParameters mockPluginParameters = mock(PluginParameters.class);
+        final Map<String, PluginParameter<?>> mockParameters = mock(Map.class);
+        final PluginParameter mockParam = mock(PluginParameter.class);
+        final StringBin mockBin = mock(StringBin.class);
+        final String mockString = "test string";
+
+        when(mockPluginParameters.getParameters()).thenReturn(mockParameters);
+        when(mockParameters.get(FindFormatter.FIND_PARAMETER_ID)).thenReturn(mockParam);
+        when(mockParam.getStringValue()).thenReturn(mockString);
+
+        // Create instance
+        StringBin instance = (StringBin) findFormatter.createBin(graph, attribute, mockPluginParameters, mockBin);
+        instance.setKey(graph, attribute, element);
+        assertNull(instance.getKey());
+
+        when(mockBin.getKey()).thenReturn(mockString);
+
+        // Create instance
+        instance = (StringBin) findFormatter.createBin(graph, attribute, mockPluginParameters, mockBin);
+        instance.setKey(graph, attribute, element);
+        assertNotNull(instance.getKey());
+
+        verify(mockBin, times(2)).setKey(graph, attribute, element);
+        verify(mockBin, times(2)).getKey();
     }
 }
