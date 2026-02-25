@@ -93,11 +93,7 @@ public class FindReplaceFormatter extends BinFormatter {
 
             final String k = bin.getKey();
 
-            if (k == null) {
-                key = null;
-            } else {
-                key = pattern.matcher(k).replaceAll(replace);
-            }
+            key = k != null ? pattern.matcher(k).replaceAll(replace) : null;
         }
 
         @Override

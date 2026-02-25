@@ -67,15 +67,15 @@ public class FindFormatter extends BinFormatter {
         parameters.setStringValue(FIND_PARAMETER_ID, find);
 
         final Pattern pattern = Pattern.compile(find);
-        return new FindReplaceFormatBin((StringBin) bin, pattern);
+        return new FindFormatBin((StringBin) bin, pattern);
     }
 
-    private class FindReplaceFormatBin extends StringBin {
+    private class FindFormatBin extends StringBin {
 
         private final StringBin bin;
         private final Pattern pattern;
 
-        public FindReplaceFormatBin(final StringBin bin, final Pattern pattern) {
+        public FindFormatBin(final StringBin bin, final Pattern pattern) {
             this.bin = bin;
             this.pattern = pattern;
         }
@@ -97,7 +97,7 @@ public class FindFormatter extends BinFormatter {
 
         @Override
         public Bin create() {
-            return new FindReplaceFormatBin(bin, pattern);
+            return new FindFormatBin(bin, pattern);
         }
     }
 }
