@@ -40,7 +40,7 @@ import org.testng.annotations.Test;
  *
  * @author Quasar985
  */
-public class FindFormatterNGTest {
+public class SubstringFormatterNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -63,34 +63,35 @@ public class FindFormatterNGTest {
     }
 
     /**
-     * Test of createParameters method, of class FindFormatter.
+     * Test of createParameters method, of class SubstringFormatter.
      */
     @Test
     public void testCreateParameters() {
         System.out.println("createParameters");
-        final FindFormatter instance = new FindFormatter();
+        final SubstringFormatter instance = new SubstringFormatter();
         final String expResult = "";
 
         final PluginParameters result = instance.createParameters();
-        assertEquals(result.getParameters().get(FindFormatter.FIND_PARAMETER_ID).getStringValue(), expResult);
+        assertEquals(result.getParameters().get(SubstringFormatter.START_PARAMETER_ID).getStringValue(), expResult);
+        assertEquals(result.getParameters().get(SubstringFormatter.END_PARAMETER_ID).getStringValue(), expResult);
     }
 
     /**
-     * Test of appliesToBin method, of class FindFormatter.
+     * Test of appliesToBin method, of class SubstringFormatter.
      */
     @Test
     public void testAppliesToBin() {
         System.out.println("appliesToBin");
         final Bin mockBin = mock(Bin.class);
         final Bin mockStringBin = mock(StringBin.class);
-        final FindFormatter instance = new FindFormatter();
+        final SubstringFormatter instance = new SubstringFormatter();
 
         assertTrue(instance.appliesToBin(mockStringBin));
         assertFalse(instance.appliesToBin(mockBin));
     }
 
     /**
-     * Test of createBin method, of class FindFormatter.
+     * Test of createBin method, of class SubstringFormatter.
      */
     @Test
     public void testCreateBin() {
@@ -98,7 +99,7 @@ public class FindFormatterNGTest {
         final GraphReadMethods graph = null;
         final int attribute = 0;
 
-        final FindFormatter instance = new FindFormatter();
+        final SubstringFormatter instance = new SubstringFormatter();
 
         final PluginParameters mockPluginParameters = mock(PluginParameters.class);
         final Map<String, PluginParameter<?>> mockParameters = mock(Map.class);
@@ -107,29 +108,31 @@ public class FindFormatterNGTest {
         final String mockString = "test string";
 
         when(mockPluginParameters.getParameters()).thenReturn(mockParameters);
-        when(mockParameters.get(FindFormatter.FIND_PARAMETER_ID)).thenReturn(mockParam);
+        when(mockParameters.get(SubstringFormatter.START_PARAMETER_ID)).thenReturn(mockParam);
+        when(mockParameters.get(SubstringFormatter.END_PARAMETER_ID)).thenReturn(mockParam);
         when(mockParam.getStringValue()).thenReturn(mockString);
 
         // Run function
         instance.createBin(graph, attribute, mockPluginParameters, mockBin);
 
-        verify(mockPluginParameters).getParameters();
-        verify(mockParameters).get(FindFormatter.FIND_PARAMETER_ID);
-        verify(mockParam).getStringValue();
+        verify(mockPluginParameters, times(2)).getParameters();
+        verify(mockParameters).get(SubstringFormatter.START_PARAMETER_ID);
+        verify(mockParameters).get(SubstringFormatter.END_PARAMETER_ID);
+        verify(mockParam, times(2)).getStringValue();
     }
 
     /**
-     * Test of setKey method, of class FindFormatBin.
+     * Test of setKey method, of class SubstringFormatBin.
      */
     @Test
-    public void testFindReplaceFormatBinSetKey() {
-        System.out.println("findFormatBinSetKey");
+    public void testSubstringFormatBinSetKey() {
+        System.out.println("substringFormatBinSetKey");
 
         final GraphReadMethods graph = null;
         final int attribute = 0;
         final int element = 0;
 
-        final FindFormatter findFormatter = new FindFormatter();
+        final SubstringFormatter findReplaceFormatter = new SubstringFormatter();
 
         final PluginParameters mockPluginParameters = mock(PluginParameters.class);
         final Map<String, PluginParameter<?>> mockParameters = mock(Map.class);
@@ -138,18 +141,19 @@ public class FindFormatterNGTest {
         final String mockString = "test string";
 
         when(mockPluginParameters.getParameters()).thenReturn(mockParameters);
-        when(mockParameters.get(FindFormatter.FIND_PARAMETER_ID)).thenReturn(mockParam);
+        when(mockParameters.get(SubstringFormatter.START_PARAMETER_ID)).thenReturn(mockParam);
+        when(mockParameters.get(SubstringFormatter.END_PARAMETER_ID)).thenReturn(mockParam);
         when(mockParam.getStringValue()).thenReturn(mockString);
 
         // Create instance
-        StringBin instance = (StringBin) findFormatter.createBin(graph, attribute, mockPluginParameters, mockBin);
+        StringBin instance = (StringBin) findReplaceFormatter.createBin(graph, attribute, mockPluginParameters, mockBin);
         instance.setKey(graph, attribute, element);
         assertNull(instance.getKey());
 
         when(mockBin.getKey()).thenReturn(mockString);
 
         // Create instance
-        instance = (StringBin) findFormatter.createBin(graph, attribute, mockPluginParameters, mockBin);
+        instance = (StringBin) findReplaceFormatter.createBin(graph, attribute, mockPluginParameters, mockBin);
         instance.setKey(graph, attribute, element);
         assertNotNull(instance.getKey());
 

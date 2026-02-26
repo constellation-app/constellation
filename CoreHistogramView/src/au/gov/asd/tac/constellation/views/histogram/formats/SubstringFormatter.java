@@ -65,7 +65,7 @@ public class SubstringFormatter extends BinFormatter {
     public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
         final String startString = parameters.getParameters().get(START_PARAMETER_ID).getStringValue().replaceAll("[\\n\\r]+$", "");
         parameters.setStringValue(START_PARAMETER_ID, startString);
-        
+
         int start;
         try {
             start = Integer.parseInt(startString);
@@ -75,7 +75,7 @@ public class SubstringFormatter extends BinFormatter {
 
         final String endString = parameters.getParameters().get(END_PARAMETER_ID).getStringValue().replaceAll("[\\n\\r]+$", "");
         parameters.setStringValue(END_PARAMETER_ID, endString);
-        
+
         int end;
         try {
             end = Integer.parseInt(endString);
@@ -106,34 +106,33 @@ public class SubstringFormatter extends BinFormatter {
 
             if (k == null) {
                 key = null;
-            } else {
-                final int l = k.length();
-
-                int s = start;
-                if (s < 0) {
-                    s += l;
-                }
-                if (s > l) {
-                    s = l;
-                } else if (s < 0) {
-                    s = 0;
-                } else {
-                    // Do nothing
-                }
-
-                int e = end;
-                if (e < 0) {
-                    e += l;
-                }
-                if (e > l) {
-                    e = l;
-                }
-                if (e < s) {
-                    e = s;
-                }
-
-                key = k.substring(s, e);
+                return;
             }
+            
+            final int l = k.length();
+
+            int s = start;
+            if (s < 0) {
+                s += l;
+            }
+            if (s > l) {
+                s = l;
+            } else if (s < 0) {
+                s = 0;
+            }
+
+            int e = end;
+            if (e < 0) {
+                e += l;
+            }
+            if (e > l) {
+                e = l;
+            }
+            if (e < s) {
+                e = s;
+            }
+
+            key = k.substring(s, e);
         }
 
         @Override
