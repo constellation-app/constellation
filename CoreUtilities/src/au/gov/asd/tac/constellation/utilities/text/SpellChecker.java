@@ -107,8 +107,8 @@ public final class SpellChecker {
     public SpellChecker(final SpellCheckingTextArea spellCheckingTextArea) {
         textArea = spellCheckingTextArea;
 
+        System.out.println("LANGTOOL_LOAD " + LANGTOOL_LOAD);
         LANGTOOL_LOAD.thenRun(() -> initializeRules());
-
         //initialize popup
         suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue != null) {
@@ -121,9 +121,12 @@ public final class SpellChecker {
         });
     }
 
-    private void initializeRules() {
+    protected void initializeRules() {
+        System.out.println("!!!!! initializeRules");
         try {
-            langTool = LanguagetoolClassLoader.getMultiThreadedJLanguageTool().getDeclaredConstructor(LanguagetoolClassLoader.getLanguage()).newInstance(language);
+            System.out.println("initializeRules 2 " + language);
+            langTool = LanguagetoolClassLoader.getMultiThreadedJLanguageTool().getDeclaredConstructor(LanguagetoolClassLoader.getLanguage()).newInstance(language); // this throws InvocationTargetException in test cases
+            System.out.println("initializeRules 3");
             final List<?> rules = (List<?>) LanguagetoolClassLoader.getJLanguagetool().getMethod("getAllRules").invoke(langTool);
             for (final Object rule : rules) {
                 if (LanguagetoolClassLoader.getRule().getMethod("getId").invoke(rule).equals("UPPERCASE_SENTENCE_START")) {
@@ -232,6 +235,7 @@ public final class SpellChecker {
 
             int totalElements = 0;
             for (final String d : diff) {
+                System.out.println("langTool " + langTool + " d " + d);
                 final List<Object> list = (List<Object>) LanguagetoolClassLoader.getJLanguagetool().getMethod("check", String.class).invoke(langTool, d);
 
                 matchesLocal.add(list); // treating matches like a list of lists
@@ -266,16 +270,16 @@ public final class SpellChecker {
                     startEndIndex++;
                 }
             }
-
-            if (totalElements > 0) {
-                Platform.runLater(() -> {
-                    for (final Pair<Integer, Integer> span : diffSpans) {
-                        textArea.clearStyle(span.getKey(), span.getValue());
-                    }
-
-                    textArea.highlightTextMultiple(starts, ends);
-                });
-            }
+// TODO: uncomment
+//            if (totalElements > 0) {
+//                Platform.runLater(() -> {
+//                    for (final Pair<Integer, Integer> span : diffSpans) {
+//                        textArea.clearStyle(span.getKey(), span.getValue());
+//                    }
+//
+//                    textArea.highlightTextMultiple(starts, ends);
+//                });
+//            }
 
             prevParts = parts;
         } catch (final IllegalAccessException | NoSuchMethodException ex) {
@@ -417,5 +421,10 @@ public final class SpellChecker {
     private static void logAndDisplayErrorMessage(final String message, final Exception ex) {
         LOGGER.log(Level.SEVERE, String.format("%s: %s", message, ex));
         NotifyDisplayer.display(message, NotifyDescriptor.ERROR_MESSAGE);
+    }
+
+    // used in testing
+    protected List<Object> getMatches() {
+        return matches;
     }
 }
