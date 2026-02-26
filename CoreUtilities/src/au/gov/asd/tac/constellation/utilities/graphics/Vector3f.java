@@ -67,8 +67,7 @@ public final class Vector3f implements Serializable {
     }
 
     /**
-     * Create a new vector using the first three values from an existing
-     * Vector4f.
+     * Create a new vector using the first three values from an existing Vector4f.
      *
      * @param v4f An existing Vector4f.
      */
@@ -98,7 +97,7 @@ public final class Vector3f implements Serializable {
      */
     public static Vector3f add(final Vector3f... vectors) {
         final Vector3f result = new Vector3f();
-        for (final Vector3f vector : vectors){
+        for (final Vector3f vector : vectors) {
             result.add(vector);
         }
         return result;
@@ -197,7 +196,7 @@ public final class Vector3f implements Serializable {
      */
     public static Vector3f subtract(final Vector3f u, final Vector3f v) {
         return new Vector3f(u.a[0] - v.a[0], u.a[1] - v.a[1], u.a[2] - v.a[2]);
-        }
+    }
 
     /**
      * Calculate u-v, store the result in result.
@@ -211,10 +210,10 @@ public final class Vector3f implements Serializable {
         result.a[1] = u.a[1] - v.a[1];
         result.a[2] = u.a[2] - v.a[2];
     }
-    
+
     /**
-     * The cross product is the vector perpendicular to the vectors being
-     * multiplied and normal to the plane containing them.
+     * The cross product is the vector perpendicular to the vectors being multiplied and normal to the plane containing
+     * them.
      *
      * @param u A vector.
      * @param v A vector.
@@ -224,7 +223,7 @@ public final class Vector3f implements Serializable {
         a[1] = -u.a[0] * v.a[2] + v.a[0] * u.a[2];
         a[2] = u.a[0] * v.a[1] - v.a[0] * u.a[1];
     }
-    
+
     /**
      * The dot product is the cosine of the angle between the vectors.
      *
@@ -380,23 +379,26 @@ public final class Vector3f implements Serializable {
     /**
      * Does this vector contain valid numbers.
      * <p>
-     * "Valid" means each element of the vector returns true for
-     * Float.isFinite().
+     * "Valid" means each element of the vector returns true for Float.isFinite().
      *
      * @return True if each element of the vector is not Nan or infinite.
      */
     public boolean isValid() {
         return Float.isFinite(a[0]) && Float.isFinite(a[1]) && Float.isFinite(a[2]);
     }
-    
+
     /**
      * Method used for testing to check if Vector3f values are equal
-     * 
+     *
      * @param vec the Vector3f to compare to this instance
      * @return true if the Vector3f are the same, false otherwise
      */
     public boolean areSame(final Vector3f vec) {
         return a[0] == vec.a[0] && a[1] == vec.a[1] && a[2] == vec.a[2];
+    }
+
+    public static Vector3f createZeroVector() {
+        return new Vector3f(0, 0, 0);
     }
 
     @Override
@@ -417,7 +419,7 @@ public final class Vector3f implements Serializable {
         final Vector3f other = (Vector3f) obj;
         return a[0] == other.a[0] && a[1] == other.a[1] && a[2] == other.a[2];
     }
-    
+
     @Override
     public String toString() {
         return String.format("3f[%f,%f,%f]", a[0], a[1], a[2]);
