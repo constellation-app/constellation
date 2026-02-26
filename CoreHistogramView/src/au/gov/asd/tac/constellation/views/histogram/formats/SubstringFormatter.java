@@ -63,7 +63,7 @@ public class SubstringFormatter extends BinFormatter {
 
     @Override
     public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
-        final String startString = parameters.getParameters().get(START_PARAMETER_ID).getStringValue().replaceAll("[\\n\\r]+$", "");
+        final String startString = parameters.getParameters().get(START_PARAMETER_ID).getStringValue().replaceAll(REMOVE_TRAILING_NEWLINE, "");
         parameters.setStringValue(START_PARAMETER_ID, startString);
 
         int start;
@@ -73,7 +73,7 @@ public class SubstringFormatter extends BinFormatter {
             start = 0;
         }
 
-        final String endString = parameters.getParameters().get(END_PARAMETER_ID).getStringValue().replaceAll("[\\n\\r]+$", "");
+        final String endString = parameters.getParameters().get(END_PARAMETER_ID).getStringValue().replaceAll(REMOVE_TRAILING_NEWLINE, "");
         parameters.setStringValue(END_PARAMETER_ID, endString);
 
         int end;

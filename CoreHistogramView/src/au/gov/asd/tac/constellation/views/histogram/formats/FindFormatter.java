@@ -62,7 +62,7 @@ public class FindFormatter extends BinFormatter {
     @Override
     public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
         // Get string parameter value and remove trailing newline characters
-        final String find = parameters.getParameters().get(FIND_PARAMETER_ID).getStringValue().replaceAll("[\\n\\r]+$", "");
+        final String find = parameters.getParameters().get(FIND_PARAMETER_ID).getStringValue().replaceAll(REMOVE_TRAILING_NEWLINE, "");
         // Set the parameter value so that trailing newlines are removed here too
         parameters.setStringValue(FIND_PARAMETER_ID, find);
 

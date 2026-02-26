@@ -65,8 +65,8 @@ public class FindReplaceFormatter extends BinFormatter {
 
     @Override
     public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
-        final String find = parameters.getParameters().get(FIND_PARAMETER_ID).getStringValue().replaceAll("[\\n\\r]+$", "");
-        final String replace = parameters.getParameters().get(REPLACE_PARAMETER_ID).getStringValue().replaceAll("[\\n\\r]+$", "");
+        final String find = parameters.getParameters().get(FIND_PARAMETER_ID).getStringValue().replaceAll(REMOVE_TRAILING_NEWLINE, "");
+        final String replace = parameters.getParameters().get(REPLACE_PARAMETER_ID).getStringValue().replaceAll(REMOVE_TRAILING_NEWLINE, "");
 
         parameters.setStringValue(FIND_PARAMETER_ID, find);
         parameters.setStringValue(REPLACE_PARAMETER_ID, replace);
