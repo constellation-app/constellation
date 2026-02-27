@@ -15,10 +15,14 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
  * This button will be used within the ConstellationInput framework.
@@ -33,13 +37,35 @@ import javafx.scene.layout.Region;
 public abstract class ConstellationInputButton extends ComboBox<String> {
 
     private final ButtonType btnType;
-    private Region arrowBtn = null ;
+    private Region arrowBtn = null;
+    private static final int END_CELL_PREF_WIDTH = 50;
+    private static final int DEFAULT_CELL_HEIGHT = 22;
+    private final Color buttonColor = Color.color(25/255D, 84/255D, 154/255D);
+    private final Color optionColor = Color.color(97/255D, 99/255D, 102/255D);
+    private final Rectangle background = new Rectangle(END_CELL_PREF_WIDTH, DEFAULT_CELL_HEIGHT); 
     
     protected ConstellationInputButton(final Label label, final ButtonType type) {        
         btnType = type;
         if (!label.getText().isEmpty()) {
             this.setValue(label.getText());
         }
+        
+        final Color color = switch (type){
+            case POPUP -> buttonColor;
+            default -> optionColor;
+        };
+        background.setFill(color);
+
+        background.setOnMouseEntered(event -> background.setFill(color.brighter()));
+        background.setOnMouseExited(event -> background.setFill(color));
+        label.setMouseTransparent(true);
+        label.setPrefWidth(END_CELL_PREF_WIDTH);
+        label.setAlignment(Pos.CENTER);
+        this.getChildren().addAll(background, label);
+    }
+    
+    public DoubleProperty getHeightProperty(){
+        return background.heightProperty();
     }
     
     @Override
@@ -62,7 +88,6 @@ public abstract class ConstellationInputButton extends ComboBox<String> {
         }
     }
     
-        
     public enum ButtonType{
         POPUP,
         DROPDOWN,

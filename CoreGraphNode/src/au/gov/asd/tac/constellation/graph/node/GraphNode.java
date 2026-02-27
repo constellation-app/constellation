@@ -17,9 +17,12 @@ package au.gov.asd.tac.constellation.graph.node;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
+import com.jogamp.opengl.awt.GLCanvas;
+import java.awt.Component;
 import java.io.IOException;
 import java.lang.ref.Cleaner;
 import java.util.ArrayList;
@@ -34,6 +37,8 @@ import java.util.logging.Logger;
 import org.openide.awt.UndoRedo;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.Node;
+import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 import org.openide.util.HelpCtx;
 import org.openide.util.lookup.AbstractLookup;
@@ -59,6 +64,16 @@ public class GraphNode extends AbstractNode {
     public static void addGraphManagerListener(final GraphManagerListener listener) {
         if (listener != null && !LISTENERS.contains(listener)) {
             LISTENERS.add(listener);
+        }
+    }
+
+    public static void redrawDisplay() {
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (graph != null) {
+            final Component visualComponent = getGraphNode(graph).getVisualManager().getVisualComponent();
+            if (visualComponent instanceof GLCanvas vc) {
+                vc.display();
+            }
         }
     }
 
@@ -281,12 +296,93 @@ public class GraphNode extends AbstractNode {
      */
     @Override
     protected Sheet createSheet() {
-        return null;
+        final Sheet sheet = Sheet.createDefault();
+
+        // General
+        final Sheet.Set general = Sheet.createPropertiesSet();
+        general.setName("general");
+        general.setDisplayName("General");
+        general.setShortDescription("General properties of this graph");
+
+        final Node.Property<String> displayNameProp = new PropertySupport.ReadOnly<>(
+                "displayName",
+                String.class,
+                "Display Name",
+                "The display name of the graph"
+        ) {
+            @Override
+            public String getValue() {
+                return tc.getDisplayName();
+            }
+        };
+
+        final Node.Property<String> graphIdProp = new PropertySupport.ReadOnly<>(
+                "graphId",
+                String.class,
+                "Graph Id",
+                "Id of the graph"
+        ) {
+            @Override
+            public String getValue() {
+                return graph.getId();
+            }
+        };
+
+        final Node.Property<String> filePathProp = new PropertySupport.ReadOnly<>(
+                "filePath",
+                String.class,
+                "File Path",
+                "Saved location of the graph"
+        ) {
+            @Override
+            public String getValue() {
+                return gdo.getToolTipText();
+            }
+        };
+
+        final Node.Property<Boolean> savedProp = new PropertySupport.ReadOnly<>(
+                "isSaved",
+                Boolean.class,
+                "Graph Saved",
+                "Is this graph saved?"
+        ) {
+            @Override
+            public Boolean getValue() {
+                return !gdo.isInMemory();
+            }
+        };
+
+        general.put(displayNameProp);
+        general.put(filePathProp);
+        general.put(savedProp);
+        general.put(graphIdProp);
+        sheet.put(general);
+
+        // Advanced
+        final Sheet.Set advanced = Sheet.createPropertiesSet();
+        advanced.setName("advanced");
+        advanced.setDisplayName("Advanced");
+
+        final Node.Property<Integer> hashCodeProp = new PropertySupport.ReadOnly<>(
+                "hashCode",
+                Integer.class,
+                "Hash Code",
+                "Hash code of the graph"
+        ) {
+            @Override
+            public Integer getValue() {
+                return graph.hashCode();
+            }
+        };
+        advanced.put(hashCodeProp);
+        sheet.put(advanced);
+
+        return sheet;
     }
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("au.gov.asd.tac.constellation.graph.attributes");
+        return null;
     }
 
     @Override

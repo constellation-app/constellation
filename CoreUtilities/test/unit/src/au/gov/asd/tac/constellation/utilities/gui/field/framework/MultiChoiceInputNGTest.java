@@ -178,7 +178,7 @@ public class MultiChoiceInputNGTest {
         doNothing().when(multiChoiceInput).executeRightButtonAction();
         
         final RightButtonSupport.RightButton rightButton = multiChoiceInput.getRightButton();
-        Assert.assertNull(rightButton.getValue()); //label default
+        Assert.assertEquals(rightButton.getValue(), "Select"); //label default
         rightButton.show();
         verify(multiChoiceInput, times(1)).executeRightButtonAction();
         verify(multiChoiceInput, times(0)).setMenuShown(false);

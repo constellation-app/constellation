@@ -50,7 +50,7 @@ import org.openide.util.NbBundle.Messages;
 public final class LayerByTimeAction extends AbstractAction {
 
     private final GraphNode context;
-    private final Dimension size = new Dimension(550, 750);
+    private final Dimension size = new Dimension(750, 750);
 
     public LayerByTimeAction(final GraphNode context) {
         this.context = context;
