@@ -63,6 +63,10 @@ public enum BinSelectionMode {
 
         @Override
         public void mouseDragged(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int oldDragEnd, final int newDragEnd) {
+            if (bins.length < 1) {
+                return;
+            }
+
             final int min = 0;
             final int max = Math.max(0, bins.length - 1);
             int firstBar = Math.clamp(Math.min(dragStart, oldDragEnd), min, max); // Picks the smallest index
@@ -177,6 +181,10 @@ public enum BinSelectionMode {
 
         @Override
         public void mouseDragged(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int oldDragEnd, final int newDragEnd) {
+            if (bins.length < 1) {
+                return;
+            }
+
             final int min = 0;
             final int max = Math.max(0, bins.length - 1);
             int firstBar = Math.clamp(Math.min(dragStart, oldDragEnd), min, max); // Picks the smallest index
@@ -263,6 +271,10 @@ public enum BinSelectionMode {
 
         @Override
         public void mouseDragged(final boolean shiftDown, final boolean controlDown, final Bin[] bins, final int dragStart, final int oldDragEnd, final int newDragEnd) {
+            if (bins.length < 1) {
+                return;
+            }
+
             final int min = 0;
             final int max = Math.max(0, bins.length - 1);
             int firstBar = Math.clamp(Math.min(dragStart, oldDragEnd), min, max); // Picks the smallest index
