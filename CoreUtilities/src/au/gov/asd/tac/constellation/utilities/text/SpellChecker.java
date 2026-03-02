@@ -153,8 +153,7 @@ public final class SpellChecker {
         try {
             final ArrayList<String> parts = new ArrayList<>();
             final ArrayList<Integer> partsOffsets = new ArrayList<>();
-
-            final ArrayList<Pair<Integer, Integer>> partsSpans = new ArrayList<>();// new
+            final ArrayList<Pair<Integer, Integer>> partsSpans = new ArrayList<>();
 
             int tokensRemaining = TOKENS_PER_PART;
             int subStringStart = 0;
@@ -193,7 +192,7 @@ public final class SpellChecker {
 
             final ArrayList<String> diff = new ArrayList<>();
             final ArrayList<Integer> diffOffsets = new ArrayList<>();
-            final ArrayList<Pair<Integer, Integer>> diffSpans = new ArrayList<>();// new
+            final ArrayList<Pair<Integer, Integer>> diffSpans = new ArrayList<>();
 
             // find major differences
             if (prevParts.isEmpty()) {

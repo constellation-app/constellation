@@ -95,7 +95,6 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         }
 
         if (spellCheckThread != null) {
-
             spellCheckThread.interrupt();
         }
 
