@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -41,7 +42,7 @@ public class ComponentSubgraph implements GraphWriteMethods {
 
     protected final GraphWriteMethods proxy;
 
-    protected final Set<Integer> includedVertexIDs;
+    protected final BitSet includedVertexIDs;
     protected final int[] vertexList;
     protected final int[] vertexPositions;
     protected int[] linkList = null;
@@ -58,7 +59,8 @@ public class ComponentSubgraph implements GraphWriteMethods {
 
     public ComponentSubgraph(final GraphWriteMethods proxy, final Set<Integer> includedVertexIDs) {
         this.proxy = proxy;
-        this.includedVertexIDs = includedVertexIDs;
+        this.includedVertexIDs = new BitSet();
+        includedVertexIDs.stream().forEach(this.includedVertexIDs::set);
         vertexList = new int[includedVertexIDs.size()];
         vertexPositions = new int[proxy.getVertexCapacity()];
         int pos = 0;
@@ -112,22 +114,22 @@ public class ComponentSubgraph implements GraphWriteMethods {
 
     @Override
     public final boolean vertexExists(final int vertex) {
-        return includedVertexIDs.contains(vertex);
+        return includedVertexIDs.get(vertex);
     }
 
     @Override
     public final boolean linkExists(final int link) {
-        return includedVertexIDs.contains(getLinkLowVertex(link)) && includedVertexIDs.contains(getLinkHighVertex(link));
+        return includedVertexIDs.get(getLinkLowVertex(link)) && includedVertexIDs.get(getLinkHighVertex(link));
     }
 
     @Override
     public final boolean edgeExists(final int edge) {
-        return includedVertexIDs.contains(getEdgeSourceVertex(edge)) && includedVertexIDs.contains(getEdgeDestinationVertex(edge));
+        return includedVertexIDs.get(getEdgeSourceVertex(edge)) && includedVertexIDs.get(getEdgeDestinationVertex(edge));
     }
 
     @Override
     public final boolean transactionExists(final int transaction) {
-        return includedVertexIDs.contains(getTransactionSourceVertex(transaction)) && includedVertexIDs.contains(getTransactionDestinationVertex(transaction));
+        return includedVertexIDs.get(getTransactionSourceVertex(transaction)) && includedVertexIDs.get(getTransactionDestinationVertex(transaction));
     }
 
     @Override

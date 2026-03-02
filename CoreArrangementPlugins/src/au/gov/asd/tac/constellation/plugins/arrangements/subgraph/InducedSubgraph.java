@@ -49,7 +49,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
         int pos = 0;
         for (int i = 0; i < proxy.getVertexNeighbourCount(vertex); i++) {
             final int neighbourID = proxy.getVertexNeighbour(vertex, i);
-            if (includedVertexIDs.contains(neighbourID)) {
+            if (includedVertexIDs.get(neighbourID)) {
                 neighbours[pos++] = neighbourID;
             }
         }
@@ -62,7 +62,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
         for (int i = 0; i < proxy.getVertexLinkCount(vertex); i++) {
             final int lxID = proxy.getVertexLink(vertex, i);
             final int neighbourID = getLinkLowVertex(lxID) == vertex ? getLinkHighVertex(lxID) : getLinkLowVertex(lxID);
-            if (includedVertexIDs.contains(neighbourID)) {
+            if (includedVertexIDs.get(neighbourID)) {
                 links[pos++] = lxID;
             }
         }
@@ -75,7 +75,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
         for (int i = 0; i < proxy.getVertexEdgeCount(vertex); i++) {
             final int exID = proxy.getVertexEdge(vertex, i);
             final int neighbourID = getEdgeSourceVertex(exID) == vertex ? getEdgeDestinationVertex(exID) : getEdgeSourceVertex(exID);
-            if (includedVertexIDs.contains(neighbourID)) {
+            if (includedVertexIDs.get(neighbourID)) {
                 edges[pos++] = exID;
             }
         }
@@ -88,7 +88,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
         for (int i = 0; i < proxy.getVertexTransactionCount(vertex); i++) {
             final int txID = proxy.getVertexTransaction(vertex, i);
             final int neighbourID = getTransactionSourceVertex(txID) == vertex ? getTransactionDestinationVertex(txID) : getTransactionSourceVertex(txID);
-            if (includedVertexIDs.contains(neighbourID)) {
+            if (includedVertexIDs.get(neighbourID)) {
                 transactions[pos++] = txID;
             }
         }

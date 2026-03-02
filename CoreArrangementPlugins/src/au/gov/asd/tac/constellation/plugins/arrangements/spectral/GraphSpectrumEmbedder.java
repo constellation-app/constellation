@@ -16,16 +16,16 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.spectral;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.eclipse.collections.api.map.primitive.IntIntMap;
 import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 /**
  *
@@ -33,8 +33,8 @@ import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
  */
 public class GraphSpectrumEmbedder {
 
-    public static Map<Integer, double[]> spectralEmbedding(final GraphReadMethods rg, final Set<Integer> includedVertices) {
-        final Map<Integer, double[]> vertexPositions = new HashMap<>();
+    public static MutableIntObjectMap<double[]> spectralEmbedding(final GraphReadMethods rg, final MutableIntSet includedVertices) {
+        final MutableIntObjectMap<double[]> vertexPositions = new IntObjectHashMap<>();
 
         // Don't position anything if there are fewer than 3 vertices to embedd - this embedding shouldn't be used in these cases.
         if (includedVertices.size() <= 2) {
@@ -63,12 +63,6 @@ public class GraphSpectrumEmbedder {
 
     }
 
-    private enum MatrixType {
-
-        ADJACENCY_MATRIX,
-        LAPLACIAN_MATRIX,;
-    }
-
     private static class GraphMatrix {
 
         private final MutableIntIntMap matrixPositionToID;
@@ -81,15 +75,7 @@ public class GraphSpectrumEmbedder {
             this.dimension = laplacianMatrix.length;
         }
 
-        public static GraphMatrix adjacencyFromGraph(final GraphReadMethods rg, final Set<Integer> includedVertices, final Set<Integer> excludedLinks) {
-            return matrixFromGraph(rg, includedVertices, excludedLinks, MatrixType.ADJACENCY_MATRIX);
-        }
-
-        public static GraphMatrix laplacianFromGraph(final GraphReadMethods rg, final Set<Integer> includedVertices, final Set<Integer> excludedLinks) {
-            return matrixFromGraph(rg, includedVertices, excludedLinks, MatrixType.LAPLACIAN_MATRIX);
-        }
-
-        public static GraphMatrix matrixFromGraph(final GraphReadMethods rg, final Collection<Integer> includedVertices, final Collection<Integer> excludedLinks, final MatrixType type) {
+        public static GraphMatrix adjacencyFromGraph(final GraphReadMethods rg, final MutableIntSet includedVertices, final Set<Integer> excludedLinks) {
             final int numVertices = includedVertices.size();
             final double[][] matrixEntries = new double[numVertices][];
             for (int i = 0; i < numVertices; i++) {
@@ -123,31 +109,9 @@ public class GraphSpectrumEmbedder {
                         continue;
                     }
                     neighbourCount++;
-                    if (type != null) {
-                        switch (type) {
-                            case LAPLACIAN_MATRIX:
-                                matrixEntries[i][idToMatrixPosition.get(neighbourID)] = -1;
-                                break;
-                            case ADJACENCY_MATRIX:
-                                matrixEntries[i][idToMatrixPosition.get(neighbourID)] = 1;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
+                    matrixEntries[i][idToMatrixPosition.get(neighbourID)] = 1;
                 }
-                if (type != null) {
-                    switch (type) {
-                        case LAPLACIAN_MATRIX:
-                            matrixEntries[i][i] = neighbourCount;
-                            break;
-                        case ADJACENCY_MATRIX:
-                            matrixEntries[i][i] = 0;
-                            break;
-                        default:
-                            break;
-                    }
-                }
+                matrixEntries[i][i] = 0;
             }
             return new GraphMatrix(matrixEntries, matrixPositionToID);
         }
