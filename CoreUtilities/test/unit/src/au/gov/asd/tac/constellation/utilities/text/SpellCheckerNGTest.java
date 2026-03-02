@@ -15,22 +15,12 @@
  */
 package au.gov.asd.tac.constellation.utilities.text;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.input.MouseEvent;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -76,38 +66,6 @@ public class SpellCheckerNGTest {
     /**
      * Test of checkSpelling method, of class SpellChecker.
      */
-//    @Test
-//    public void testCheckSpelling() throws Exception {
-//        System.out.println("checkSpelling");
-//        final String text = "This is some text that has a spelling error! jkl";
-//        final SpellCheckingTextArea textArea = new SpellCheckingTextArea(true);
-//        textArea.setText(text);
-//
-//        final Class<org.languagetool.JLanguageTool> mockJLanguageTool = mock(org.languagetool.JLanguageTool.class);
-//        final Method mockCheckMethod = mock(Method.class);
-//        final Class mockMatch = mock(Class.class);
-//        final List<Object> mockListOfMatches = new ArrayList<>();
-//        mockListOfMatches.add(mockMatch);
-//
-//        when(mockJLanguageTool.getMethod("check", String.class)).thenReturn(mockCheckMethod);
-//        when(mockCheckMethod.invoke(any(Object.class), anyString())).thenReturn(mockListOfMatches);
-//
-//        try (final MockedStatic<LanguagetoolClassLoader> languagetoolClassLoader = Mockito.mockStatic(LanguagetoolClassLoader.class)) {
-//            languagetoolClassLoader.when(LanguagetoolClassLoader::getJLanguagetool).thenReturn(mockJLanguageTool);
-//            assertEquals(LanguagetoolClassLoader.getJLanguagetool(), mockJLanguageTool);
-//
-//            assertEquals(mockJLanguageTool.getMethod("check", String.class), mockCheckMethod);
-//            assertEquals(mockCheckMethod.invoke(null, ""), mockListOfMatches);
-//
-//            final SpellChecker instance = new SpellChecker(textArea);
-//            instance.checkSpelling();
-//            System.out.println(instance.getMatches());
-//        }
-//    }
-
-    /**
-     * Test of checkSpelling method, of class SpellChecker.
-     */
     @Test
     public void testCheckSpellingBlank() {
         System.out.println("checkSpelling blank");
@@ -130,42 +88,4 @@ public class SpellCheckerNGTest {
         final SpellChecker instance = new SpellChecker(textArea);
         Platform.runLater(() -> instance.popUpSuggestionsListAction(event));
     }
-
-//    /**
-//     * Test of canCheckSpelling method, of class SpellChecker.
-//     */
-//    @Test
-//    public void testCanCheckSpelling() {
-//        System.out.println("canCheckSpelling");
-//        String newText = "";
-//        SpellChecker instance = null;
-//        boolean expResult = false;
-//        boolean result = instance.canCheckSpelling(newText);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//    /**
-//     * Test of turnOffSpellChecking method, of class SpellChecker.
-//     */
-//    @Test
-//    public void testTurnOffSpellChecking() {
-//        System.out.println("turnOffSpellChecking");
-//        boolean turnOffSpellChecking = false;
-//        SpellChecker instance = null;
-//        instance.turnOffSpellChecking(turnOffSpellChecking);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//    /**
-//     * Test of addWordsToIgnore method, of class SpellChecker.
-//     */
-//    @Test
-//    public void testAddWordsToIgnore() {
-//        System.out.println("addWordsToIgnore");
-//        SpellChecker instance = null;
-//        instance.addWordsToIgnore();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 }

@@ -30,7 +30,6 @@ import javafx.scene.control.IndexRange;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyEvent;
@@ -38,10 +37,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Popup;
 import org.apache.commons.lang3.StringUtils;
-import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.InlineCssTextArea;
-import org.fxmisc.richtext.StyledTextArea;
-import org.fxmisc.richtext.model.Paragraph;
 import org.fxmisc.richtext.util.UndoUtils;
 import org.openide.util.NbPreferences;
 
@@ -79,22 +75,6 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         final String css = SpellCheckingTextArea.class.getResource("SpellChecker.css").toExternalForm();//"resources/test.css"
         this.getStylesheets().add(css);
 
-//        this.estimatedScrollYProperty().addListener((obs, oldVal, newVal) -> { // works, but i dont know what newValue is. liek i want 0 - 1 not like the number of pixles
-//            //this.onScrollProperty().addListener((obs, oldVal, newVal) -> { // doesnt work
-//            // this.setOnScroll((final ScrollEvent event) -> { // dosnt work
-//            final int scroll = newVal.intValue();
-//            final int something = scroll * this.getLength();
-//            final int start = Math.max(something - 10, 0);
-//            final int end = Math.min(something + 10, this.getLength());
-//
-//            final int adjustedHeight = (int) (this.getTotalHeightEstimate() - this.getHeight());
-//            final float scrollPercent = scroll / adjustedHeight;
-//
-//            System.out.println("this.getLength(): " + this.getLength() + " scroll: " + scroll + " start: " + start + " end: " + end + " this.getHeight() " + this.getHeight() + " this.getTotalHeightEstimate(): " + this.getTotalHeightEstimate());
-//            //highlightText(start, end);
-//            List<Paragraph<String, String, String>> p = this.getVisibleParagraphs();
-//            //System.out.println(p);
-//        });
         this.setOnMouseClicked((final MouseEvent event) -> {
             if (event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
                 spellChecker.checkSpelling();
