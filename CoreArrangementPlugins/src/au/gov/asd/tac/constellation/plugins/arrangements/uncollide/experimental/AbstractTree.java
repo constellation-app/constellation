@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.collections.api.iterator.IntIterator;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
@@ -147,7 +148,7 @@ public abstract class AbstractTree {
     /*
      * Return all objects that could collide with the given object.
      */
-    protected final List<Integer> getPossibleColliders(final List<Integer> colliders, final int vxId) {
+    protected final MutableIntList getPossibleColliders(final MutableIntList colliders, final int vxId) {
         // Recursively find all child colliders...
         final int index = getIndex(vxId);
         if (index != -1 && nodes != null) {
@@ -185,13 +186,15 @@ public abstract class AbstractTree {
      * @return the number of collisions.
      */
     protected final boolean nodeCollides(final int subject) {
-        final List<Integer> possibles = new ArrayList<>();
+        final MutableIntList possibles = new IntArrayList();
         getPossibleColliders(possibles, subject);
 
         // We need to deal with pathological cases such as everything at the same x,y point,
         // or everything co-linear.
         // We add a perturbation so points go different ways at different stages.
-        for (final int possible : possibles) {
+        final IntIterator possiblesIter = possibles.intIterator();
+        while (possiblesIter.hasNext()) {
+            final int possible = possiblesIter.next();
             if (subject != possible) {
                 final double delta = getDelta(subject, possible);
                 final double collisionDistance = getCollisionDistance(subject, possible);
@@ -219,11 +222,15 @@ public abstract class AbstractTree {
      * @return A set of vertex ideas for verticies that are twins with the
      * subject
      */
-    public List<Integer> getTwins(final int subject, final double twinThreshold) {
-        final List<Integer> possibles = new ArrayList<>();
+    public MutableIntList getTwins(final int subject, final double twinThreshold) {
+        final MutableIntList possibles = new IntArrayList();
         getPossibleColliders(possibles, subject);
-        final List<Integer> twins = new ArrayList<>();
-        for (final int possible : possibles) {
+        
+        final MutableIntList twins = new IntArrayList();
+        
+        final IntIterator possiblesIter = possibles.intIterator();
+        while (possiblesIter.hasNext()) {
+            final int possible = possiblesIter.next();
             if (subject != possible) {
                 final double delta = getDelta(subject, possible);
                 final double collisionDistance = getCollisionDistance(subject, possible);
