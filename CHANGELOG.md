@@ -1,7 +1,7 @@
 # Constellation Changes
 
 ## Changes in March 2026
--   Updated `HierarchyArranger` constructor to pass `MutableIntList` instead of `Set<Integer>`. Old constructor has been deprecated.
+-   Updated `BubbleTreeArranger`, and `HierarchyArranger` constructor to pass `MutableIntList` instead of `Set<Integer>`. Old constructor has been deprecated.
 
 ## Changes in January 2026
 -   Renamed `Chinese Whispers` to `Label Propagation`.

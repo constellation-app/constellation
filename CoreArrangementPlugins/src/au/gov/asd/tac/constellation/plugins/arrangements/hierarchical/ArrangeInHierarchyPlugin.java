@@ -52,7 +52,7 @@ public class ArrangeInHierarchyPlugin extends SimpleEditPlugin {
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        @SuppressWarnings("unchecked") //roots will be a set of integers, which extends object type
+        @SuppressWarnings("unchecked") //roots will be a list of ints, which extends object type
         final MutableIntList roots = (MutableIntList) parameters.getParameters().get(ROOTS_PARAMETER_ID).getObjectValue();
 
         if (graph.getVertexCount() > 0) {

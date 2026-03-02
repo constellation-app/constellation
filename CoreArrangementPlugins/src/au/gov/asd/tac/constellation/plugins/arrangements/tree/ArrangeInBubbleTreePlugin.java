@@ -37,7 +37,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.Set;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -73,8 +73,8 @@ public class ArrangeInBubbleTreePlugin extends SimpleEditPlugin {
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         // Get the prospective root vertex ids.
-        @SuppressWarnings("unchecked") //roots will be a set of integers which extends object type
-        final Set<Integer> roots = (Set<Integer>) parameters.getParameters().get(ROOTS_PARAMETER_ID).getObjectValue();
+        @SuppressWarnings("unchecked") //roots will be a list of ints which extends object type
+        final MutableIntList roots = (MutableIntList) parameters.getParameters().get(ROOTS_PARAMETER_ID).getObjectValue();
         final boolean isMinimal = parameters.getParameters().get(IS_MINIMAL_PARAMETER_ID).getBooleanValue();
 
         if (graph.getVertexCount() > 0) {
