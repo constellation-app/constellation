@@ -40,8 +40,6 @@ public class SpellCheckerNGTest {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
-
-        SpellChecker.LANGTOOL_LOAD.get();
     }
 
     @AfterClass

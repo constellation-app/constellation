@@ -132,29 +132,6 @@ public class SpellCheckingTextAreaNGTest {
     }
 
     /**
-     * Test of clearStyles method, of class SpellCheckingTextArea.
-     */
-    @Test
-    public void testClearStyles_int_int() {
-        System.out.println("clearStyles");
-        final int from = 0;
-        final int to = 1;
-        final String testText = "test";
-
-        final SpellCheckingTextArea instance = new SpellCheckingTextArea(true);
-        instance.setText(testText);
-        instance.highlightText(0, 2);
-        for (int i = 0; i < 3; i++) {
-            assertEquals(instance.getStyleAtPosition(i), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
-        }
-
-        instance.clearStyles(from, to);
-        assertEquals(instance.getStyleAtPosition(0), SpellCheckingTextArea.CLEAR_STYLE);
-        assertEquals(instance.getStyleAtPosition(1), SpellCheckingTextArea.CLEAR_STYLE);
-        assertEquals(instance.getStyleAtPosition(2), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
-    }
-
-    /**
      * Test of handleKeyReleased method, of class SpellCheckingTextArea.
      */
     @Test

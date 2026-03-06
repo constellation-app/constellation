@@ -73,7 +73,7 @@ public final class SpellChecker {
     protected static final CompletableFuture<Void> LANGTOOL_LOAD;
 
     private static final int TOKENS_PER_PART = 20;
-    private ArrayList<String> prevParts = new ArrayList<>();
+    private List<String> prevParts = new ArrayList<>();
 
     static {
         // langToolStatic is used to initialize the JLanguageTool at the loading, because
@@ -120,9 +120,9 @@ public final class SpellChecker {
         });
     }
 
-    protected void initializeRules() {
+    private void initializeRules() {
         try {
-            langTool = LanguagetoolClassLoader.getMultiThreadedJLanguageTool().getDeclaredConstructor(LanguagetoolClassLoader.getLanguage()).newInstance(language); // this throws InvocationTargetException in test cases
+            langTool = LanguagetoolClassLoader.getMultiThreadedJLanguageTool().getDeclaredConstructor(LanguagetoolClassLoader.getLanguage()).newInstance(language);
             final List<?> rules = (List<?>) LanguagetoolClassLoader.getJLanguagetool().getMethod("getAllRules").invoke(langTool);
             for (final Object rule : rules) {
                 if (LanguagetoolClassLoader.getRule().getMethod("getId").invoke(rule).equals("UPPERCASE_SENTENCE_START")) {
@@ -235,8 +235,30 @@ public final class SpellChecker {
                 matchesLocal.add(list); // treating matches like a list of lists
                 totalElements += list.size();
             }
+            //matches.clear(); //TODO REMOVE
+            // Remove old matches in the ranges of what has changed
+            for (final Pair<Integer, Integer> span : diffSpans) {
+                final int spanStart = span.getKey();
+                final int spanEnd = span.getValue();
 
-            matches.clear();
+                final List<Object> toRemove = new ArrayList<>();
+                for (final Object match : matches) {
+                    System.out.println("REMOVE: " + match);
+                    if (!LanguagetoolClassLoader.getRuleMatch().isInstance(match)) {
+                        continue;
+                    }
+
+                    final int start = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getFromPos").invoke(match);
+                    final int end = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos").invoke(match);
+
+                    if (start >= spanStart && end <= spanEnd) {
+                        toRemove.add(match);
+                    }
+                }
+
+                matches.removeAll(toRemove);
+            }
+
             matches.addAll(matchesLocal);
 
             int startEndIndex = 0;
@@ -256,7 +278,7 @@ public final class SpellChecker {
                     final int end = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos").invoke(match);
 
                     final String misspell = inputText.substring(start, end);
-                    misspells.add(misspell);
+                    misspells.add(misspell); // TODO: this might also not be accurate anymore
                     // Add offset because start and end value is reletive to the string it's in, not the whole text input
                     starts[startEndIndex] = start + diffOffsets.get(i);
                     ends[startEndIndex] = end + diffOffsets.get(i);
@@ -265,6 +287,21 @@ public final class SpellChecker {
                 }
             }
 
+            // NEW
+//            misspells.clear();
+//            for (final Object match : matches) {
+//                System.out.println("MISSPELLS: " + match);
+//                if (!LanguagetoolClassLoader.getRuleMatch().isInstance(match)) {
+//                    continue;
+//                }
+//
+//                final int start = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getFromPos").invoke(match);
+//                final int end = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos").invoke(match);
+//
+//                final String misspell = inputText.substring(start, end);
+//                misspells.add(misspell);
+//            }
+//            System.out.println(misspells);
             if (totalElements > 0) {
                 Platform.runLater(() -> {
                     for (final Pair<Integer, Integer> span : diffSpans) {
@@ -321,9 +358,7 @@ public final class SpellChecker {
                 popupContent.getChildren().addAll(labelMessage);
             } else {
                 suggestions.setItems(suggestionsList.size() > 5 ? FXCollections.observableArrayList(suggestionsList.subList(0, 5)) : suggestionsList);
-                ignoreButton.setOnAction(e -> {
-                    this.addWordsToIgnore();
-                });
+                ignoreButton.setOnAction(e -> this.addWordsToIgnore());
                 suggestions.setPrefHeight(suggestions.getItems().size() * ITEM_HEIGHT);
 
                 // Temporary check to remove ignore button on non spelling errors
@@ -415,10 +450,5 @@ public final class SpellChecker {
     private static void logAndDisplayErrorMessage(final String message, final Exception ex) {
         LOGGER.log(Level.SEVERE, String.format("%s: %s", message, ex));
         NotifyDisplayer.display(message, NotifyDescriptor.ERROR_MESSAGE);
-    }
-
-    // used in testing
-    protected List<Object> getMatches() {
-        return matches;
     }
 }
