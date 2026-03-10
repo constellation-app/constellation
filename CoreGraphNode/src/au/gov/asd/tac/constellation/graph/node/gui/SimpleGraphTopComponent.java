@@ -24,10 +24,8 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
-import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.lang.ref.Cleaner;
 import java.lang.ref.Cleaner.Cleanable;
-import java.util.Map;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -36,7 +34,7 @@ import org.openide.nodes.Node;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
-import org.openide.util.lookup.ServiceProvider;
+import org.openide.windows.CloneableTopComponent;
 import org.openide.windows.TopComponent;
 
 /**
@@ -68,8 +66,7 @@ import org.openide.windows.TopComponent;
     "CTL_SimpleGraphTopComponent=Simple Graph",
     "HINT_SimpleGraphTopComponent=Simple Graph"
 })
-@ServiceProvider(service = AbstractTopComponent.class)
-public final class SimpleGraphTopComponent extends AbstractTopComponent implements GraphChangeListener, UndoRedo.Provider {
+public final class SimpleGraphTopComponent extends CloneableTopComponent implements GraphChangeListener, UndoRedo.Provider {
 
     private final InstanceContent instanceContent;
     private final Graph graph;
@@ -365,11 +362,6 @@ public final class SimpleGraphTopComponent extends AbstractTopComponent implemen
     // End of variables declaration//GEN-END:variables
 
     @Override
-    protected void componentOpened() {
-        super.componentOpened();
-    }
-
-    @Override
     protected void componentClosed() {
         super.componentClosed();
 
@@ -382,25 +374,5 @@ public final class SimpleGraphTopComponent extends AbstractTopComponent implemen
         instanceContent.remove(graphNode);
 
         graphNode.destroy();
-    }
-
-    @Override
-    protected void initContent() {
-        // Required for AbstractTopComponent, intentionally left blank.
-    }
-
-    @Override
-    protected InstanceContent createContent() {
-        return instanceContent;
-    }
-
-    @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_SimpleGraphTopComponent(), Boolean.FALSE);
-    }
-
-    @Override
-    protected String getModeName() {
-        return "editor";
     }
 }
