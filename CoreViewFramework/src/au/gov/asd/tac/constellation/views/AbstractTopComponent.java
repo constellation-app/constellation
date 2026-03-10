@@ -114,11 +114,10 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                         final int mainHeight = mainWindow.getHeight();
                         final int mainX = mainWindow.getX();
                         final int mainY = mainWindow.getY();
-                        final int offsetY = 117; // Offsets floating component so it doesn't overlap with top toolbar icons.
 
                         final Dimension sideSize = new Dimension(
                                 Math.round(mainWidth * 0.3F),
-                                mainHeight - offsetY
+                                Math.round(mainHeight * 0.9F)
                         );
 
                         final Dimension bottomSize = new Dimension(
@@ -131,19 +130,31 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                         switch (getModeName()) {
                             case "leftSlidingSide", "explorer", "navigator" -> {
                                 size = sideSize;
-                                window.setLocation(mainX, mainY + offsetY);
+                                window.setLocation(
+                                        mainX,
+                                        mainY + mainHeight - size.height
+                                );
                             }
                             case "commonpalette", "properties", "rightSlidingSide" -> {
                                 size = sideSize;
-                                window.setLocation(mainX + mainWidth - size.width, mainY + offsetY);
+                                window.setLocation(
+                                        mainX + mainWidth - size.width,
+                                        mainY + mainHeight - size.height
+                                );
                             }
                             case "output", "bottomSlidingSide", "isSliding" -> {
                                 size = bottomSize;
-                                window.setLocation(mainX, mainY + mainHeight - size.height);
+                                window.setLocation(
+                                        mainX,
+                                        mainY + mainHeight - size.height
+                                );
                             }
                             default -> { // Any other mode, default to opening on the left side.
                                 size = sideSize;
-                                window.setLocation(mainX, mainY + offsetY);
+                                window.setLocation(
+                                        mainX,
+                                        mainY + mainHeight - size.height
+                                );
                             }
                         }
 
