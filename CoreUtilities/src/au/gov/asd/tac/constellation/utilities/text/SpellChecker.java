@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.text;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,8 +51,9 @@ import org.openide.NotifyDescriptor;
 public final class SpellChecker {
 
     private final SpellCheckingTextArea textArea;
-    private static final List<String> misspells = new ArrayList<>();
-    private final List<Object> matches = new ArrayList<>();
+    //private static final List<String> misspells = new ArrayList<>();
+    //private final List<Object> matches = new ArrayList<>();
+    private final List<Match> matches2 = new ArrayList<>();
     private int indexOfMisspelledTextUnderCursor;       // position of the current misspelled text in misspells list
     private final ListView<String> suggestions = new ListView<>(FXCollections.observableArrayList());
     private Object langTool;
@@ -74,6 +76,12 @@ public final class SpellChecker {
 
     private static final int TOKENS_PER_PART = 20;
     private List<String> prevParts = new ArrayList<>();
+
+    private static Method getFromPos;
+    private static Method getToPos;
+    private static Method getSuggestedReplacements;
+    private static Method getSpecificRuleId;
+    private static Method getMessage;
 
     static {
         // langToolStatic is used to initialize the JLanguageTool at the loading, because
@@ -107,6 +115,8 @@ public final class SpellChecker {
     public SpellChecker(final SpellCheckingTextArea spellCheckingTextArea) {
         textArea = spellCheckingTextArea;
 
+        initMethods();
+
         LANGTOOL_LOAD.thenRun(() -> initializeRules());
         //initialize popup
         suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
@@ -137,16 +147,40 @@ public final class SpellChecker {
         }
     }
 
+    private void initMethods() {
+        try {
+            if (getFromPos == null) {
+                getFromPos = LanguagetoolClassLoader.getRuleMatch().getMethod("getFromPos");
+            }
+            if (getToPos == null) {
+                getToPos = LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos");
+            }
+            if (getSuggestedReplacements == null) {
+                getSuggestedReplacements = LanguagetoolClassLoader.getRuleMatch().getMethod("getSuggestedReplacements");
+            }
+            if (getSpecificRuleId == null) {
+                getSpecificRuleId = LanguagetoolClassLoader.getRuleMatch().getMethod("getSpecificRuleId");
+            }
+            if (getMessage == null) {
+                getMessage = LanguagetoolClassLoader.getRuleMatch().getMethod("getMessage");
+            }
+        } catch (final NoSuchMethodException | SecurityException ex) {
+        }
+    }
+
     /**
      * Check Spelling of the entire text. This will ensure scenarios like duplicate words, grammar mistakes etc. are
      * triggered
      */
     public void checkSpelling() {
-        misspells.clear();
+        System.out.println("checkSpelling");
+        //misspells.clear();
 
         final String inputText = textArea.getText();
 
-        if (turnOffSpellChecking || !StringUtils.isNotBlank(inputText)) {
+        if (turnOffSpellChecking || StringUtils.isBlank(inputText)) {
+            System.out.println("text blank");
+            matches2.clear();
             return;
         }
 
@@ -228,15 +262,50 @@ public final class SpellChecker {
 
             final List<Object> matchesLocal = new ArrayList<>();
 
+            // prune matches2, so that data being overwrriten is gone
+            for (final Pair<Integer, Integer> span : diffSpans) {
+                final int spanStart = span.getKey();
+                final int spanEnd = span.getValue();
+
+                final List<Match> toRemove = new ArrayList<>();
+                for (final Match match : matches2) {
+
+                    final int start = match.getFromPos();
+                    final int end = match.getToPos();
+
+                    if (start >= spanStart && end <= spanEnd) {
+                        toRemove.add(match);
+                    }
+                }
+                System.out.println("Removing from matches2: " + toRemove);
+                matches2.removeAll(toRemove);
+            }
+
             int totalElements = 0;
-            for (final String d : diff) {
+            // TODO: change this list of lists business to a regular list, with NEW rulematch variables with all the same data EXCEPT the to and from variables have the offsets added to them
+//            for (final String d : diff) {
+            for (int i = 0; i < diff.size(); i++) {
+                final String d = diff.get(i);
                 final List<Object> list = (List<Object>) LanguagetoolClassLoader.getJLanguagetool().getMethod("check", String.class).invoke(langTool, d);
 
-                matchesLocal.add(list); // treating matches like a list of lists
+                for (final Object ruleMatch : list) {
+                    //final RuleMatch ruleMatch = new RuleMatch((RuleMatch) match);
+                    final Match match = createMatch(ruleMatch, diffOffsets.get(i));
+                    //System.out.println("Custom match to: " + match.getToPos() + " from: " + match.getFromPos());
+                    matches2.add(match);
+                }
+
+                matchesLocal.add(list); // treating matches like a list of lists, because the index of each list corresponds to an index in diffOffsets to offset the start and end variables by
                 totalElements += list.size();
             }
+
+            System.out.println(matches2);
+
             //matches.clear(); //TODO REMOVE
             // Remove old matches in the ranges of what has changed
+            // MIGHT NOT BE CORRECT IF MATCHES IS A LIST OF LISTS?
+            // also current problem is matches to and from values are NOT offset to a correct global position
+            /*
             for (final Pair<Integer, Integer> span : diffSpans) {
                 final int spanStart = span.getKey();
                 final int spanEnd = span.getValue();
@@ -258,9 +327,8 @@ public final class SpellChecker {
 
                 matches.removeAll(toRemove);
             }
-
-            matches.addAll(matchesLocal);
-
+             */
+            //matches.addAll(matchesLocal);
             int startEndIndex = 0;
             final int[] starts = new int[totalElements];
             final int[] ends = new int[totalElements];
@@ -277,8 +345,8 @@ public final class SpellChecker {
                     final int start = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getFromPos").invoke(match);
                     final int end = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos").invoke(match);
 
-                    final String misspell = inputText.substring(start, end);
-                    misspells.add(misspell); // TODO: this might also not be accurate anymore
+                    //final String misspell = inputText.substring(start, end);
+                    //misspells.add(misspell); // TODO: this might also not be accurate anymore
                     // Add offset because start and end value is reletive to the string it's in, not the whole text input
                     starts[startEndIndex] = start + diffOffsets.get(i);
                     ends[startEndIndex] = end + diffOffsets.get(i);
@@ -320,6 +388,23 @@ public final class SpellChecker {
         }
     }
 
+    // Todo: move this into a contructor
+    private Match createMatch(final Object ruleMatch, final int offset) {
+        try {
+            final int fromPos = (int) getFromPos.invoke(ruleMatch) + offset;
+            final int toPos = (int) getToPos.invoke(ruleMatch) + offset;
+            final List<String> suggestedReplacements = (List<String>) getSuggestedReplacements.invoke(ruleMatch);
+            final String ruleMatchSpecificRuleId = (String) getSpecificRuleId.invoke(ruleMatch);
+            final String message = (String) getMessage.invoke(ruleMatch);
+
+            return new Match(fromPos, toPos, suggestedReplacements, ruleMatchSpecificRuleId, message);
+        } catch (final InvocationTargetException | IllegalAccessException ex) {
+            // TODO add logger
+        }
+
+        return null;
+    }
+
     /**
      * Pop up the suggestions list if the word/phrase under the cursor is misspelled.
      *
@@ -352,7 +437,8 @@ public final class SpellChecker {
             popup.getContent().clear();
             suggestions.getSelectionModel().clearSelection();
 
-            suggestionsList.addAll((List<String>) (LanguagetoolClassLoader.getRuleMatch().getMethod("getSuggestedReplacements").invoke(matches.get(indexOfMisspelledTextUnderCursor))));
+//            suggestionsList.addAll((List<String>) (LanguagetoolClassLoader.getRuleMatch().getMethod("getSuggestedReplacements").invoke(matches.get(indexOfMisspelledTextUnderCursor))));
+            suggestionsList.addAll(matches2.get(indexOfMisspelledTextUnderCursor).getSuggestedReplacements());
             if (suggestionsList.isEmpty()) {
                 labelMessage.setText("No matching suggestions available");
                 popupContent.getChildren().addAll(labelMessage);
@@ -382,7 +468,39 @@ public final class SpellChecker {
      * Retrieve the word/phrase under the cursor and check if it is misspelled. If it is misspelled the index is
      * populated.
      */
+    // OLD FUNCTION
+//    private boolean isWordUnderCursorMisspelled() throws InvocationTargetException, NoSuchMethodException, SecurityException, IllegalAccessException {
+//        System.out.println("isWordUnderCursorMisspelled");
+//        final int cursorIndex = textArea.getCaretPosition();
+//
+//        if (cursorIndex <= 0 || cursorIndex >= textArea.getText().length()) {
+//            //= is to avoid the scenario of displaying the suggesttions of the first/last word
+//            // (if they are incorrect) when clicking on the empty space right/below the text
+//            return false;
+//        }
+//
+////        System.out.println("isWordUnderCursorMisspelled " + matches);
+//        for (final Object match : matches) {
+//            if (!LanguagetoolClassLoader.getRuleMatch().isInstance(match)) {
+//                continue;
+//            }
+//
+//            final int start = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getFromPos").invoke(match);
+//            final int end = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos").invoke(match);
+//            if (cursorIndex >= start && cursorIndex <= end) {
+//                indexOfMisspelledTextUnderCursor = misspells.indexOf(textArea.getText().substring(start, end)); // This could be errors prone? Also misspells only purpose is to get the index in matches?
+//                System.out.println("indexOfMisspelledTextUnderCursor " + indexOfMisspelledTextUnderCursor);
+//                startOfMisspelledTextUnderCursor = start;
+//                endOfMisspelledTextUnderCursor = end;
+//                specificRuleId = (String) LanguagetoolClassLoader.getRuleMatch().getMethod("getSpecificRuleId").invoke(match);
+//                labelMessage.setText((String) LanguagetoolClassLoader.getRuleMatch().getMethod("getMessage").invoke(match));
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
     private boolean isWordUnderCursorMisspelled() throws InvocationTargetException, NoSuchMethodException, SecurityException, IllegalAccessException {
+        System.out.println("isWordUnderCursorMisspelled NEW");
         final int cursorIndex = textArea.getCaretPosition();
 
         if (cursorIndex <= 0 || cursorIndex >= textArea.getText().length()) {
@@ -391,18 +509,19 @@ public final class SpellChecker {
             return false;
         }
 
-        for (final Object match : matches) {
-            if (LanguagetoolClassLoader.getRuleMatch().isInstance(match)) {
-                final int start = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getFromPos").invoke(match);
-                final int end = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos").invoke(match);
-                if (cursorIndex >= start && cursorIndex <= end) {
-                    indexOfMisspelledTextUnderCursor = misspells.indexOf(textArea.getText().substring(start, end));
-                    startOfMisspelledTextUnderCursor = start;
-                    endOfMisspelledTextUnderCursor = end;
-                    specificRuleId = (String) LanguagetoolClassLoader.getRuleMatch().getMethod("getSpecificRuleId").invoke(match);
-                    labelMessage.setText((String) LanguagetoolClassLoader.getRuleMatch().getMethod("getMessage").invoke(match));
-                    return true;
-                }
+        for (int i = 0; i < matches2.size(); i++) {
+            final Match match = matches2.get(i);
+
+            final int start = match.getFromPos();
+            final int end = match.getToPos();
+            if (cursorIndex >= start && cursorIndex <= end) {
+                indexOfMisspelledTextUnderCursor = i;
+                System.out.println("indexOfMisspelledTextUnderCursor " + indexOfMisspelledTextUnderCursor);
+                startOfMisspelledTextUnderCursor = start;
+                endOfMisspelledTextUnderCursor = end;
+                specificRuleId = match.getSpecificRuleId();
+                labelMessage.setText(match.getMessage());
+                return true;
             }
         }
         return false;
@@ -450,5 +569,47 @@ public final class SpellChecker {
     private static void logAndDisplayErrorMessage(final String message, final Exception ex) {
         LOGGER.log(Level.SEVERE, String.format("%s: %s", message, ex));
         NotifyDisplayer.display(message, NotifyDescriptor.ERROR_MESSAGE);
+    }
+
+    private class Match {
+
+        private final int fromPos;
+        private final int toPos;
+        private final List<String> suggestedReplacements;
+        private final String specificRuleId;
+        private final String message;
+
+        public Match(final int fromPos, final int toPos, final List<String> suggestedReplacements, final String specificRuleId, final String message) {
+            this.fromPos = fromPos;
+            this.toPos = toPos;
+            this.suggestedReplacements = suggestedReplacements;
+            this.specificRuleId = specificRuleId;
+            this.message = message;
+        }
+
+        public int getFromPos() {
+            return fromPos;
+        }
+
+        public int getToPos() {
+            return toPos;
+        }
+
+        public List<String> getSuggestedReplacements() {
+            return suggestedReplacements;
+        }
+
+        public String getSpecificRuleId() {
+            return specificRuleId;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        @Override
+        public String toString() {
+            return "{" + getFromPos() + ", " + getToPos() + "}";
+        }
     }
 }
