@@ -4,6 +4,10 @@
 == 2025-11-20 Add preference to set whether views open docked or floating by default
 <p> Views can now be set to open docked or floating by default via Setup -> Options -> CONSTELLATION -> View.
 
+== 2026-02-11 Add "Arrange in 2D" option to Layer By Time
+<p> This new option allows a user to arrange the result of Layer By Time into a more readable format.
+
+
 == 2026-01-13 Renamed "Chinese Whispers" to "Label Propagation"
 <p> "Chinese Whispers" clustering has been renamed to "Label Propagation".
 

@@ -366,7 +366,7 @@ public class Vector3fNGTest {
         v.a[2] = 0F;
         assertTrue(v.isZero());
     }
-    
+
     @Test
     public void testEquals() {
         assertTrue(new Vector3f(F1, F2, F3).equals(new Vector3f(F1, F2, F3)));

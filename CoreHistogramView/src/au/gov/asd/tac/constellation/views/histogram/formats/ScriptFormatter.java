@@ -36,15 +36,15 @@ import javax.script.ScriptException;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * A BinFormatter that allows the user to apply an arbitrary script to transform
- * the natural bin values before they are binned.
+ * A BinFormatter that allows the user to apply an arbitrary script to transform the natural bin values before they are
+ * binned.
  *
  * @author sirius
  */
 @ServiceProvider(service = BinFormatter.class)
 public class ScriptFormatter extends BinFormatter {
 
-    private static final Logger LOGGER = Logger.getLogger(ScriptFormatter.class.getName());   
+    private static final Logger LOGGER = Logger.getLogger(ScriptFormatter.class.getName());
 
     public static final String SCRIPT_PARAMETER_ID = PluginParameter.buildId(ScriptFormatter.class, "script");
 
@@ -75,14 +75,12 @@ public class ScriptFormatter extends BinFormatter {
     public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
         final String script = parameters.getParameters().get(SCRIPT_PARAMETER_ID).getStringValue();
 
-        ScriptEngineManager manager;
-        ScriptEngine engine;
         Bindings bindings = null;
         CompiledScript compiledScript = null;
 
         try {
-            manager = new ScriptEngineManager();
-            engine = manager.getEngineByName(LANGUAGES.get("Python"));
+            final ScriptEngineManager manager = new ScriptEngineManager();
+            final ScriptEngine engine = manager.getEngineByName(LANGUAGES.get("Python"));
             bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
             compiledScript = ((Compilable) engine).compile(script);
         } catch (final ScriptException e) {
@@ -98,14 +96,14 @@ public class ScriptFormatter extends BinFormatter {
         private final Bindings bindings;
         private final CompiledScript compiledScript;
 
-        public ScriptFormatBin(Bin bin, Bindings bindings, CompiledScript compiledScript) {
+        public ScriptFormatBin(final Bin bin, final Bindings bindings, final CompiledScript compiledScript) {
             this.bin = bin;
             this.bindings = bindings;
             this.compiledScript = compiledScript;
         }
 
         @Override
-        public void setKey(GraphReadMethods graph, int attribute, int element) {
+        public void setKey(final GraphReadMethods graph, final int attribute, final int element) {
             if (compiledScript == null) {
                 key = "ERROR";
             } else {

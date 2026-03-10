@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.ApplicationOptionsPanelController;
 import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import java.awt.event.ActionEvent;
@@ -91,6 +92,7 @@ public final class AnaglyphicDisplayAction extends AbstractAction implements Pre
             LEFT_EYE.set(ApplicationOptionsPanelController.getColorMask(leftColor));
             RIGHT_EYE.set(ApplicationOptionsPanelController.getColorMask(rightColor));
         }
+        GraphNode.redrawDisplay();
     }
 
     @Override

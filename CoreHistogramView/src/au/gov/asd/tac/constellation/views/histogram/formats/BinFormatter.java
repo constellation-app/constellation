@@ -43,6 +43,7 @@ public class BinFormatter implements Comparable<BinFormatter> {
     private static final List<BinFormatter> FORMATTER_LIST = new ArrayList<>();
 
     public static final BinFormatter DEFAULT_BIN_FORMATTER;
+    protected static final String REMOVE_TRAILING_NEWLINE = "[\\n\\r]+$";
 
     static {
         init();

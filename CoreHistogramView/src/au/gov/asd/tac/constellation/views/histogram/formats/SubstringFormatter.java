@@ -25,8 +25,7 @@ import au.gov.asd.tac.constellation.views.histogram.bins.StringBin;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * A BinFormatter that allows the user to bin String values by a substring of
- * their original values.
+ * A BinFormatter that allows the user to bin String values by a substring of their original values.
  *
  * @author sirius
  */
@@ -42,7 +41,7 @@ public class SubstringFormatter extends BinFormatter {
 
     @Override
     public PluginParameters createParameters() {
-        PluginParameters params = new PluginParameters();
+        final PluginParameters params = new PluginParameters();
 
         final PluginParameter<StringParameterValue> startParameter = StringParameterType.build(START_PARAMETER_ID);
         startParameter.setName("Start");
@@ -58,13 +57,15 @@ public class SubstringFormatter extends BinFormatter {
     }
 
     @Override
-    public boolean appliesToBin(Bin bin) {
+    public boolean appliesToBin(final Bin bin) {
         return bin instanceof StringBin;
     }
 
     @Override
     public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
-        String startString = parameters.getParameters().get(START_PARAMETER_ID).getStringValue();
+        final String startString = parameters.getParameters().get(START_PARAMETER_ID).getStringValue().replaceAll(REMOVE_TRAILING_NEWLINE, "");
+        parameters.setStringValue(START_PARAMETER_ID, startString);
+
         int start;
         try {
             start = Integer.parseInt(startString);
@@ -72,7 +73,9 @@ public class SubstringFormatter extends BinFormatter {
             start = 0;
         }
 
-        String endString = parameters.getParameters().get(END_PARAMETER_ID).getStringValue();
+        final String endString = parameters.getParameters().get(END_PARAMETER_ID).getStringValue().replaceAll(REMOVE_TRAILING_NEWLINE, "");
+        parameters.setStringValue(END_PARAMETER_ID, endString);
+
         int end;
         try {
             end = Integer.parseInt(endString);
@@ -89,48 +92,47 @@ public class SubstringFormatter extends BinFormatter {
         private final int start;
         private final int end;
 
-        public SubstringFormatBin(StringBin bin, int start, int end) {
+        public SubstringFormatBin(final StringBin bin, final int start, final int end) {
             this.bin = bin;
             this.start = start;
             this.end = end;
         }
 
         @Override
-        public void setKey(GraphReadMethods graph, int attribute, int element) {
+        public void setKey(final GraphReadMethods graph, final int attribute, final int element) {
             bin.setKey(graph, attribute, element);
 
-            String k = bin.getKey();
+            final String k = bin.getKey();
 
             if (k == null) {
                 key = null;
-            } else {
-                final int l = k.length();
-
-                int s = start;
-                if (s < 0) {
-                    s += l;
-                }
-                if (s > l) {
-                    s = l;
-                } else if (s < 0) {
-                    s = 0;
-                } else {
-                    // Do nothing
-                }
-
-                int e = end;
-                if (e < 0) {
-                    e += l;
-                }
-                if (e > l) {
-                    e = l;
-                }
-                if (e < s) {
-                    e = s;
-                }
-
-                key = k.substring(s, e);
+                return;
             }
+            
+            final int l = k.length();
+
+            int s = start;
+            if (s < 0) {
+                s += l;
+            }
+            if (s > l) {
+                s = l;
+            } else if (s < 0) {
+                s = 0;
+            }
+
+            int e = end;
+            if (e < 0) {
+                e += l;
+            }
+            if (e > l) {
+                e = l;
+            }
+            if (e < s) {
+                e = s;
+            }
+
+            key = k.substring(s, e);
         }
 
         @Override

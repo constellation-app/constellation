@@ -60,8 +60,10 @@ public class DateTimeCustomFormatter extends BinFormatter {
     }
 
     @Override
-    public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, Bin bin) {
-        return new DateTimeCustomFormatBin((AttributeBin) bin, DateTimeFormatter.ofPattern(parameters.getParameters().get(FORMAT_PARAMETER_ID).getStringValue()));
+    public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
+        final String dateTimeString = parameters.getParameters().get(FORMAT_PARAMETER_ID).getStringValue().replaceAll(REMOVE_TRAILING_NEWLINE, "");
+        parameters.setStringValue(FORMAT_PARAMETER_ID, dateTimeString);
+        return new DateTimeCustomFormatBin((AttributeBin) bin, DateTimeFormatter.ofPattern(dateTimeString));
     }
 
     private class DateTimeCustomFormatBin extends StringBin {
