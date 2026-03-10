@@ -148,7 +148,6 @@ public final class HistogramTopComponent extends AbstractTopComponent implements
     public void componentOpened() {
         GraphManager.getDefault().addGraphManagerListener(this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
-        setFloating(Bundle.CTL_HistogramTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -322,7 +321,7 @@ public final class HistogramTopComponent extends AbstractTopComponent implements
 
     private void reset() {
         if (currentGraph != null) {
-            try (final ReadableGraph rg = currentGraph.getReadableGraph()){
+            try (final ReadableGraph rg = currentGraph.getReadableGraph()) {
                 reset(rg);
             }
         } else {
@@ -798,7 +797,12 @@ public final class HistogramTopComponent extends AbstractTopComponent implements
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_HistogramTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 }

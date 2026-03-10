@@ -139,7 +139,6 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         UpdateUI();
         disableFindView();
         focusFindTextField();
-        setFloating(Bundle.CTL_FindViewTopComponent(), 600, 350, Spawn.BOTTOM);
     }
 
     /**
@@ -232,8 +231,13 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_FindViewTopComponent(), Boolean.TRUE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "output";
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

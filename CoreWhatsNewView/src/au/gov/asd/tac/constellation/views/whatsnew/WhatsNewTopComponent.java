@@ -169,7 +169,12 @@ public final class WhatsNewTopComponent extends JavaFxTopComponent<WhatsNewViewP
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_TutorialTopComponentTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "editor";
     }
 }

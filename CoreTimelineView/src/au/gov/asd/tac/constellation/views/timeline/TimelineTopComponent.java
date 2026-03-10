@@ -340,7 +340,6 @@ public final class TimelineTopComponent extends AbstractTopComponent implements 
         result.addLookupListener(this);
         // Populate the graph, this ensures that when timeline view is opened after being closed, it will be updated
         populateFromGraphNode(true);
-        setFloating(Bundle.CTL_TimelineTopComponent(), 0, 0, Spawn.BOTTOM);
     }
 
     public void zoomFromOverview(final ScrollEvent se) {
@@ -825,7 +824,12 @@ public final class TimelineTopComponent extends AbstractTopComponent implements 
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_TimelineTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "output";
     }
 }

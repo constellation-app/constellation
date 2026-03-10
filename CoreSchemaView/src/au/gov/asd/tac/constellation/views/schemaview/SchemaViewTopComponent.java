@@ -82,7 +82,6 @@ public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewP
     protected void handleComponentOpened() {
         super.handleComponentOpened();
         schemaViewPane.populate();
-        setFloating(Bundle.CTL_SchemaViewTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -92,8 +91,13 @@ public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewP
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_SchemaViewTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 
     /**

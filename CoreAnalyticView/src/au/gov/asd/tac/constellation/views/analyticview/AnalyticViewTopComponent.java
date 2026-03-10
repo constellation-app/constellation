@@ -219,8 +219,6 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         if (activeGraph == null) {
             analyticViewPane.reset();
         }
-
-        setFloating(Bundle.CTL_AnalyticViewTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -265,7 +263,12 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_AnalyticViewTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 }

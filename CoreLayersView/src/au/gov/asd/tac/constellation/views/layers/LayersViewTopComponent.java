@@ -140,7 +140,6 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         super.handleComponentOpened();
         preparePane();
         setPaneStatus();
-        setFloating(Bundle.CTL_LayersViewTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -218,8 +217,13 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_LayersViewTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 
     /**

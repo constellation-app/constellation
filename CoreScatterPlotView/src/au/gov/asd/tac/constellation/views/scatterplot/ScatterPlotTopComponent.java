@@ -233,14 +233,13 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     }
 
     @Override
-    public void handleComponentOpened() {
-        super.handleComponentOpened();
-        setFloating(Bundle.CTL_ScatterPlotTopComponent(), 0, 0, Spawn.LEFT);
+    public Map<String, Boolean> getDefaultFloatingPreference() {
+        return Map.of(Bundle.CTL_ScatterPlotTopComponent(), Boolean.FALSE);
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
-        return Map.of(Bundle.CTL_ScatterPlotTopComponent(), Boolean.FALSE);
+    protected String getModeName() {
+        return "explorer";
     }
 
     /**

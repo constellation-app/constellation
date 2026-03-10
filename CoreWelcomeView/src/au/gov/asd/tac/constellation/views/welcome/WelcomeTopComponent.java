@@ -173,7 +173,12 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_WelcomeTopComponentTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "editor";
     }
 }

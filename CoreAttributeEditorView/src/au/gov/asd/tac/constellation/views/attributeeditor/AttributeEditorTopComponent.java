@@ -171,8 +171,6 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
         if (attributePanel != null) {
             attributePanel.refreshShowEmpty();
         }
-
-        setFloating(Bundle.CTL_AttributeEditorTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -268,7 +266,12 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_AttributeEditorTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 }

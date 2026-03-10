@@ -521,7 +521,6 @@ public final class HierarchicalControllerTopComponent extends AbstractTopCompone
     public void componentOpened() {
         result.addLookupListener(this);
         resultChanged(null);
-        setFloating(Bundle.CTL_HierarchicalControllerTopComponent(), 0, 0, Spawn.BOTTOM);
     }
 
     @Override
@@ -719,8 +718,13 @@ public final class HierarchicalControllerTopComponent extends AbstractTopCompone
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_HierarchicalControllerTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "output";
     }
 
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})

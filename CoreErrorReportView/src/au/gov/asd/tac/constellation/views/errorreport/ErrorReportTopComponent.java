@@ -508,7 +508,6 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     protected void handleComponentOpened() {
         errorReportRunning = true;
         ErrorReportDialogManager.getInstance().setErrorReportRunning(errorReportRunning);
-        setFloating(Bundle.CTL_ErrorReportTopComponent(), 0, 0, Spawn.RIGHT);
     }
 
     /**
@@ -1147,7 +1146,12 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_ErrorReportTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "rightSlidingSide";
     }
 }

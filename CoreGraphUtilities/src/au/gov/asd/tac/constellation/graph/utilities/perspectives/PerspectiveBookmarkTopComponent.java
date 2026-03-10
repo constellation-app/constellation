@@ -337,7 +337,6 @@ public final class PerspectiveBookmarkTopComponent extends AbstractTopComponent 
     protected void componentOpened() {
         enableUI(GraphManager.getDefault().getActiveGraph() != null);
         GraphManager.getDefault().addGraphManagerListener(this);
-        setFloating(Bundle.CTL_PerspectiveBookmarkTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -503,7 +502,12 @@ public final class PerspectiveBookmarkTopComponent extends AbstractTopComponent 
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_PerspectiveBookmarkTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 }

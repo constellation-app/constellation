@@ -107,7 +107,6 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
         GraphManager.getDefault().addGraphManagerListener(this);
         GraphReportManager.addGraphReportListener(this);
         handleNewGraph(GraphManager.getDefault().getActiveGraph());
-        setFloating(Bundle.CTL_PluginReporterTopComponent(), 0, 0, Spawn.RIGHT);
     }
 
     @Override
@@ -166,7 +165,12 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_PluginReporterTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "rightSlidingSide";
     }
 }

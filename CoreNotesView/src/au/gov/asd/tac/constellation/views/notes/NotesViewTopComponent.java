@@ -184,7 +184,6 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         GraphReportManager.addGraphReportListener(this);
         UndoRedoReportManager.addUndoRedoReportListener(this);
         LOGGER.log(Level.FINE, "Handling Component opened");
-        setFloating(Bundle.CTL_NotesViewTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     private void populateNotes() {
@@ -241,8 +240,13 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_NotesViewTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 
     /**

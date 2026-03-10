@@ -432,7 +432,6 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
     public void componentOpened() {
         result.addLookupListener(this);
         resultChanged(null);
-        setFloating(Bundle.CTL_KTrussControllerTopComponent(), 0, 0, Spawn.BOTTOM);
     }
 
     @Override
@@ -1042,6 +1041,16 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
         // Required for @ConvertAsProperties, intentionally left blank
     }
 
+    @Override
+    public Map<String, Boolean> getDefaultFloatingPreference() {
+        return Map.of(Bundle.CTL_KTrussControllerTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "output";
+    }
+
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static class KTrussCalculatePlugin extends SimpleEditPlugin {
 
@@ -1071,10 +1080,5 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
             interactiveButton.setText(TOGGLE_ENABLED);
             interactiveButton.setSelected(false);
         }
-    }
-
-    @Override
-    public Map<String, Boolean> getFloatingPreference() {
-        return Map.of(Bundle.CTL_KTrussControllerTopComponent(), Boolean.FALSE);
     }
 }

@@ -200,7 +200,6 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
         // Ensure the manager is initialised and determine whether it is managing a graph:
         final boolean isEnabled = NamedSelectionManager.getDefault().isManagingActiveGraph();
         toggleUI(isEnabled);
-        setFloating(Bundle.CTL_NamedSelectionTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     /**
@@ -1120,7 +1119,12 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_NamedSelectionTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 }

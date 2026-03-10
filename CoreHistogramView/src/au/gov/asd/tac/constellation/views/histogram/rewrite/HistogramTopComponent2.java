@@ -183,7 +183,6 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
         super.handleComponentOpened();
         GraphManager.getDefault().addGraphManagerListener(this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
-        setFloating(Bundle.CTL_HistogramTopComponent2(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -882,7 +881,12 @@ public final class HistogramTopComponent2 extends JavaFxTopComponent<HistogramPa
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_HistogramTopComponent2(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 }

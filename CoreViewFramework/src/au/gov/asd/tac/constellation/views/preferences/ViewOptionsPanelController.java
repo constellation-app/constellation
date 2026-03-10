@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.preferences;
 
-import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import org.netbeans.spi.options.OptionsPanelController;
@@ -46,7 +42,6 @@ import org.openide.util.NbPreferences;
 public class ViewOptionsPanelController extends OptionsPanelController {
 
     private final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
-    private final static Map<String, Boolean> defaultPrefs = new TreeMap<>();
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private static ViewOptionsPanel panel;
 
@@ -63,7 +58,7 @@ public class ViewOptionsPanelController extends OptionsPanelController {
             if (isChanged()) {
                 pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
 
-                for (final String view : defaultPrefs.keySet()) {
+                for (final String view : ViewOptionsUtility.getDefaultFloatingPreferences().keySet()) {
                     prefs.putBoolean(view, getPanel().getOptionsFromUI().get(view));
                 }
             }
@@ -111,13 +106,5 @@ public class ViewOptionsPanelController extends OptionsPanelController {
         }
 
         return panel;
-    }
-
-    public static final Map<String, Boolean> getDefaultFloatingPreferences() {
-        if (defaultPrefs.isEmpty()) {
-            Lookup.getDefault().lookupAll(AbstractTopComponent.class).forEach(lookup -> defaultPrefs.putAll(lookup.getFloatingPreference()));
-        }
-
-        return Collections.unmodifiableMap(defaultPrefs);
     }
 }

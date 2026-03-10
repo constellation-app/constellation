@@ -106,12 +106,16 @@ public final class DelimitedImportTopComponent extends ImportTopComponent {
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        setFloating(Bundle.CTL_ImportDelimitedFileAction(), 0, 0, Spawn.LEFT);
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_ImportDelimitedFileAction(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 
     /**

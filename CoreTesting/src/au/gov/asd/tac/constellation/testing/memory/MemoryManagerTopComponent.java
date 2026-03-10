@@ -105,7 +105,6 @@ public final class MemoryManagerTopComponent extends AbstractTopComponent implem
     public void componentOpened() {
         MemoryManager.addMemoryManagerListener(this);
         updateObjectCounts();
-        setFloating(Bundle.CTL_MemoryManagerTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -162,7 +161,12 @@ public final class MemoryManagerTopComponent extends AbstractTopComponent implem
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_MemoryManagerTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "rightSlidingSide";
     }
 }

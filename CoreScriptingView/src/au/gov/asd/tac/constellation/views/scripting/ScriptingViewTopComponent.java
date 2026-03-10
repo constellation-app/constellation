@@ -97,14 +97,13 @@ public final class ScriptingViewTopComponent extends SwingTopComponent {
     }
 
     @Override
-    public void handleComponentOpened() {
-        super.handleComponentOpened();
-        setFloating(Bundle.CTL_ScriptingViewTopComponent(), 0, 0, Spawn.LEFT);
+    public Map<String, Boolean> getDefaultFloatingPreference() {
+        return Map.of(Bundle.CTL_ScriptingViewTopComponent(), Boolean.FALSE);
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
-        return Map.of(Bundle.CTL_ScriptingViewTopComponent(), Boolean.FALSE);
+    protected String getModeName() {
+        return "explorer";
     }
 
     /**

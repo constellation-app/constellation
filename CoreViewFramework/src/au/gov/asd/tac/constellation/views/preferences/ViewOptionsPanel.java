@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import org.openide.util.NbPreferences;
 
@@ -31,12 +32,14 @@ import org.openide.util.NbPreferences;
 public class ViewOptionsPanel extends JPanel {
 
     private final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
-    private final Map<String, Boolean> defaultPrefs = ViewOptionsPanelController.getDefaultFloatingPreferences();
+    private final Map<String, Boolean> defaultPrefs = ViewOptionsUtility.getDefaultFloatingPreferences();
     private DefaultTableModel tableModel;
 
     protected ViewOptionsPanel() {
         initComponents();
         createTableModel();
+        jLabel.setText("Set whether a view opens docked or floating by default.");
+        jLabel.setBorder(new EmptyBorder(0, 0, 10, 0));
     }
 
     public final void createTableModel() {
@@ -103,11 +106,17 @@ public class ViewOptionsPanel extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel = new javax.swing.JLabel();
         jScrollPane = new javax.swing.JScrollPane();
         jTable = new javax.swing.JTable();
 
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setLayout(new java.awt.BorderLayout());
+
+        jLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel.setText("View options description here.");
+        jLabel.setToolTipText("");
+        add(jLabel, java.awt.BorderLayout.PAGE_START);
 
         jScrollPane.setViewportView(jTable);
 
@@ -115,6 +124,7 @@ public class ViewOptionsPanel extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel;
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JTable jTable;
     // End of variables declaration//GEN-END:variables

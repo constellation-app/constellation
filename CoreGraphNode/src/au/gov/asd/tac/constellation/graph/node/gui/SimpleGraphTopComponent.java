@@ -367,7 +367,6 @@ public final class SimpleGraphTopComponent extends AbstractTopComponent implemen
     @Override
     protected void componentOpened() {
         super.componentOpened();
-        setFloating(Bundle.CTL_SimpleGraphTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -396,7 +395,12 @@ public final class SimpleGraphTopComponent extends AbstractTopComponent implemen
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_SimpleGraphTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "editor";
     }
 }

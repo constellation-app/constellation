@@ -412,14 +412,13 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     }
 
     @Override
-    public void handleComponentOpened() {
-        super.handleComponentOpened();
-        setFloating(Bundle.CTL_TableViewTopComponent(), 0, 0, Spawn.BOTTOM);
+    public Map<String, Boolean> getDefaultFloatingPreference() {
+        return Map.of(Bundle.CTL_TableViewTopComponent(), Boolean.FALSE);
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
-        return Map.of(Bundle.CTL_TableViewTopComponent(), Boolean.FALSE);
+    protected String getModeName() {
+        return "output";
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

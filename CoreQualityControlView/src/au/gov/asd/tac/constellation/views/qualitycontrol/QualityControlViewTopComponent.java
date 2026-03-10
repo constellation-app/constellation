@@ -85,7 +85,6 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
         QualityControlAutoVetter.getInstance().addListener(this);
         QualityControlAutoVetter.getInstance().invokeListener(this);
         QualityControlAutoVetter.getInstance().init();
-        setFloating(Bundle.CTL_QualityControlViewTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -118,8 +117,13 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_QualityControlViewTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 
     /**

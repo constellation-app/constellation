@@ -317,7 +317,6 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
     protected void componentOpened() {
         result.addLookupListener(this);
         resultChanged(null);
-        setFloating(Bundle.CTL_PlaneManagerTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -684,7 +683,12 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_PlaneManagerTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 }

@@ -85,7 +85,6 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     protected void handleComponentOpened() {
         super.handleComponentOpened();
         controller.getConversation().getGraphUpdateManager().setManaged(needsUpdate());
-        setFloating(Bundle.CTL_ConversationViewTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -128,8 +127,13 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_ConversationViewTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 
     /**

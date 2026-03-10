@@ -162,7 +162,6 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
         super.handleComponentOpened();
         controller.updateGraph();
         setPaneStatus();
-        setFloating(Bundle.CTL_WordCloudTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -181,8 +180,13 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_WordCloudTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 
     /**

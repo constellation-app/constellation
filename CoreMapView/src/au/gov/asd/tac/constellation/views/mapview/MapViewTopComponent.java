@@ -544,7 +544,6 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     protected void handleComponentOpened() {
         super.handleComponentOpened();
         resetContent();
-        setFloating(Bundle.CTL_MapViewTopComponent(), 0, 0, Spawn.LEFT);
     }
 
     @Override
@@ -645,7 +644,12 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     }
 
     @Override
-    public Map<String, Boolean> getFloatingPreference() {
+    public Map<String, Boolean> getDefaultFloatingPreference() {
         return Map.of(Bundle.CTL_MapViewTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 }
