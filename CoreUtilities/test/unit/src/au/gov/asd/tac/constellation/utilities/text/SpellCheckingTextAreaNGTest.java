@@ -40,6 +40,8 @@ public class SpellCheckingTextAreaNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        LanguagetoolClassLoader.loadDependencies();
+        
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
@@ -118,6 +120,7 @@ public class SpellCheckingTextAreaNGTest {
     @Test
     public void testClearStyles_0args() {
         System.out.println("clearStyles");
+
         final SpellCheckingTextArea instance = new SpellCheckingTextArea(true);
         final String testText = "test";
 
@@ -146,7 +149,7 @@ public class SpellCheckingTextAreaNGTest {
 
             final SpellCheckingTextArea instance = new SpellCheckingTextArea(true);
             instance.setText(text);
-            instance.handleKeyReleased();
+            instance.handleKeyReleased(null);
 
             final SpellChecker sc = mockSpellChecker.constructed().get(0);
             verify(sc).canCheckSpelling(text);

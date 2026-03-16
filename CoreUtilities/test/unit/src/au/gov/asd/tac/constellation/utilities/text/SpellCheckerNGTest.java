@@ -37,6 +37,7 @@ public class SpellCheckerNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        LanguagetoolClassLoader.loadDependencies();
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
@@ -67,6 +68,7 @@ public class SpellCheckerNGTest {
     @Test
     public void testCheckSpellingBlank() {
         System.out.println("checkSpelling blank");
+
         final String text = "";
         final SpellCheckingTextArea textArea = new SpellCheckingTextArea(true);
         textArea.setText(text);

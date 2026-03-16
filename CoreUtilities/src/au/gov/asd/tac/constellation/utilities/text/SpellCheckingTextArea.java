@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.text;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import java.util.Arrays;
 import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
@@ -174,9 +175,16 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         // CheckMenuItem to toggle turn On/Off Spell Checking. On by default
         final CheckMenuItem toggleSpellCheckMenuItem = new CheckMenuItem("Turn On Spell Checking");
         toggleSpellCheckMenuItem.setSelected(enableSpellChecking);
+
         toggleSpellCheckMenuItem.setOnAction(event -> {
-            spellChecker.turnOffSpellChecking(!toggleSpellCheckMenuItem.isSelected());
-            spellChecker.checkSpelling();
+            final boolean enabled = toggleSpellCheckMenuItem.isSelected();
+            spellChecker.turnOffSpellChecking(!enabled);
+
+            if (enabled) {
+                spellChecker.checkSpelling();
+            } else {
+                clearStyles();
+            }
         });
 
         // avoid Undo redo of highlighting
