@@ -117,7 +117,7 @@ public final class SpellChecker {
         LANGTOOL_LOAD.thenRun(() -> initializeRules());
     }
 
-    private void func(final String text) {
+    private void handleMenuItem(final String text) {
         final StringBuilder builder = new StringBuilder(textArea.getText());
         builder.replace(startOfMisspelledTextUnderCursor, endOfMisspelledTextUnderCursor, text);
         textArea.replaceText​(builder.toString());
@@ -402,11 +402,7 @@ public final class SpellChecker {
 
                 for (int i = 0; i < suggestionsList.size() && i < MAX_SUGGESTIONS; i++) {
                     final MenuItem item = new MenuItem(suggestionsList.get(i));
-                    item.setOnAction(e -> {
-                        System.out.println(item.getText());
-                        func(item.getText());
-                    });
-
+                    item.setOnAction(e -> handleMenuItem(item.getText()));
                     items.add(item);
                 }
 
