@@ -80,15 +80,13 @@ public final class SpellChecker {
     private final ContextMenu contextMenu = new ContextMenu();
 
     static {
-        
         LanguagetoolClassLoader.loadDependencies();
-        
+
         // langToolStatic is used to initialize the JLanguageTool at the loading, because
         // the very first initializing of JLanguageTool is slow but after that it is fast.
         LANGTOOL_LOAD = CompletableFuture.supplyAsync(new Supplier<Void>() {
             @Override
             public Void get() {
-                //LanguagetoolClassLoader.loadDependencies();
                 if (LanguagetoolClassLoader.getMultiThreadedJLanguageTool() == null) {
                     NotifyDisplayer.display("Error while loading spell checker. Spell checking will not be functioning.", NotifyDescriptor.ERROR_MESSAGE);
                     return null;
@@ -103,7 +101,6 @@ public final class SpellChecker {
 
                     //perform a check here to prevent the spell checking being too slow at the first word after loading consty
                     LanguagetoolClassLoader.getJLanguagetool().getMethod("check", String.class).invoke(langToolStatic, "random text");
-                    //check.invoke(langToolStatic, "random text");
                 } catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                     logAndDisplayErrorMessage("Error while initializing spell checking. Spell checking may not be functioning.", ex);
                 }
@@ -265,7 +262,7 @@ public final class SpellChecker {
                 }
             }
 
-            final List<Object> matchesLocal = new ArrayList<>();
+            final List<Object> listOfMatchLists = new ArrayList<>();
 
             // prune matches, so that data being overwritten is gone
             for (final Pair<Integer, Integer> span : diffSpans) {
@@ -287,7 +284,6 @@ public final class SpellChecker {
             }
 
             int totalElements = 0;
-            // TODO: change this list of lists business to a regular list, with NEW rulematch variables with all the same data EXCEPT the to and from variables have the offsets added to them
             for (int i = 0; i < diff.size(); i++) {
                 final String d = diff.get(i);
                 final List<Object> list = (List<Object>) check.invoke(langTool, d);
@@ -297,7 +293,7 @@ public final class SpellChecker {
                     matches.add(match);
                 }
 
-                matchesLocal.add(list); // treating matches like a list of lists, because the index of each list corresponds to an index in diffOffsets to offset the start and end variables by
+                listOfMatchLists.add(list);
                 totalElements += list.size();
             }
 
@@ -306,10 +302,10 @@ public final class SpellChecker {
             final int[] ends = new int[totalElements];
 
             // for each list of matches
-            for (int i = 0; i < matchesLocal.size(); i++) {
-                final List<Object> listOfMatches = (List<Object>) matchesLocal.get(i);
+            for (int i = 0; i < listOfMatchLists.size(); i++) {
+                final List<Object> matchList = (List<Object>) listOfMatchLists.get(i);
 
-                for (final Object match : listOfMatches) {
+                for (final Object match : matchList) {
                     if (!LanguagetoolClassLoader.getRuleMatch().isInstance(match)) {
                         continue;
                     }
@@ -339,7 +335,7 @@ public final class SpellChecker {
         } catch (final IllegalAccessException ex) {
             logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
         } catch (final InvocationTargetException ex) {
-            // Left intentionally blank, as interrupting this function causes an InvocationTargetException
+            // Left intentionally blank, as this function is designed to be interrupted and interrupting this function causes an InvocationTargetException
         }
     }
 
@@ -357,7 +353,10 @@ public final class SpellChecker {
         textArea.highlightTextMultiple(starts, ends);
     }
 
-    // Todo: move this into a contructor
+    /**
+     * Creates a Match object with the relevant data from the given RuleMatch object, but adjusts the fromPos and toPos
+     * by Offset value
+     */
     private Match createMatch(final Object ruleMatch, final int offset) {
         try {
             final int fromPos = (int) getFromPos.invoke(ruleMatch) + offset;
@@ -368,7 +367,7 @@ public final class SpellChecker {
 
             return new Match(fromPos, toPos, suggestedReplacements, ruleMatchSpecificRuleId, message);
         } catch (final InvocationTargetException | IllegalAccessException ex) {
-            // TODO add logger
+            LOGGER.log(Level.SEVERE, String.format("Error in creating match object in SpellChecker.java: %s", ex));
         }
 
         return null;
@@ -509,6 +508,10 @@ public final class SpellChecker {
         NotifyDisplayer.display(message, NotifyDescriptor.ERROR_MESSAGE);
     }
 
+    /**
+     * Inner class that acts as data structure to some data from a RuleMatch object. This is done as data from a
+     * RuleMatch can't be changed, such as fromPos and toPos.
+     */
     private class Match {
 
         private final int fromPos;
@@ -543,11 +546,6 @@ public final class SpellChecker {
 
         public String getMessage() {
             return message;
-        }
-
-        @Override
-        public String toString() {
-            return "{" + getFromPos() + ", " + getToPos() + "}";
         }
     }
 }

@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities.text;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import java.util.Arrays;
 import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
