@@ -30,16 +30,12 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.NotifyDescriptor;
@@ -53,11 +49,8 @@ import org.openide.NotifyDescriptor;
 public final class SpellChecker {
 
     private final SpellCheckingTextArea textArea;
-    //private static final List<String> misspells = new ArrayList<>();
-    //private final List<Object> matches = new ArrayList<>();
-    private final List<Match> matches2 = new ArrayList<>();
+    private final List<Match> matches = new ArrayList<>();
     private int indexOfMisspelledTextUnderCursor;       // position of the current misspelled text in misspells list
-    private final ListView<String> suggestions = new ListView<>(FXCollections.observableArrayList());
     private Object langTool;
     private static Object langToolStatic;
     private Object spellingCheckRule;
@@ -67,8 +60,7 @@ public final class SpellChecker {
     private int endOfMisspelledTextUnderCursor;
     private String specificRuleId;
     private static final Logger LOGGER = Logger.getLogger(SpellChecker.class.getName());
-    private static final double POPUP_PADDING = 5;
-    private static final double ITEM_HEIGHT = 24;
+    private static final double MAX_SUGGESTIONS = 5;
     private static Object language = null;
     private static final String NON_WORD_PATTERN = "[\\W]"; //excludes alphanumeric characters including the underscore
     private static final Pattern NON_WORD_MATCHER = Pattern.compile(NON_WORD_PATTERN);
@@ -88,12 +80,15 @@ public final class SpellChecker {
     private final ContextMenu contextMenu = new ContextMenu();
 
     static {
+        
+        LanguagetoolClassLoader.loadDependencies();
+        
         // langToolStatic is used to initialize the JLanguageTool at the loading, because
         // the very first initializing of JLanguageTool is slow but after that it is fast.
         LANGTOOL_LOAD = CompletableFuture.supplyAsync(new Supplier<Void>() {
             @Override
             public Void get() {
-                LanguagetoolClassLoader.loadDependencies();
+                //LanguagetoolClassLoader.loadDependencies();
                 if (LanguagetoolClassLoader.getMultiThreadedJLanguageTool() == null) {
                     NotifyDisplayer.display("Error while loading spell checker. Spell checking will not be functioning.", NotifyDescriptor.ERROR_MESSAGE);
                     return null;
@@ -190,7 +185,7 @@ public final class SpellChecker {
         final String inputText = textArea.getText();
 
         if (turnOffSpellChecking || StringUtils.isBlank(inputText)) {
-            matches2.clear();
+            matches.clear();
             return;
         }
 
@@ -272,13 +267,13 @@ public final class SpellChecker {
 
             final List<Object> matchesLocal = new ArrayList<>();
 
-            // prune matches2, so that data being overwritten is gone
+            // prune matches, so that data being overwritten is gone
             for (final Pair<Integer, Integer> span : diffSpans) {
                 final int spanStart = span.getKey();
                 final int spanEnd = span.getValue();
 
                 final List<Match> toRemove = new ArrayList<>();
-                for (final Match match : matches2) {
+                for (final Match match : matches) {
 
                     final int start = match.getFromPos();
                     final int end = match.getToPos();
@@ -288,7 +283,7 @@ public final class SpellChecker {
                     }
                 }
 
-                matches2.removeAll(toRemove);
+                matches.removeAll(toRemove);
             }
 
             int totalElements = 0;
@@ -299,7 +294,7 @@ public final class SpellChecker {
 
                 for (final Object ruleMatch : list) {
                     final Match match = createMatch(ruleMatch, diffOffsets.get(i));
-                    matches2.add(match);
+                    matches.add(match);
                 }
 
                 matchesLocal.add(list); // treating matches like a list of lists, because the index of each list corresponds to an index in diffOffsets to offset the start and end variables by
@@ -349,11 +344,11 @@ public final class SpellChecker {
     }
 
     private void refreshHighlights() {
-        final int totalElements = matches2.size();
+        final int totalElements = matches.size();
         final int[] starts = new int[totalElements];
         final int[] ends = new int[totalElements];
         for (int i = 0; i < totalElements; i++) {
-            final Match m = matches2.get(i);
+            final Match m = matches.get(i);
             starts[i] = m.getFromPos();
             ends[i] = m.getToPos();
         }
@@ -389,8 +384,6 @@ public final class SpellChecker {
             return;
         }
 
-        final ObservableList<String> suggestionsList = FXCollections.observableArrayList();
-
         contextMenu.hide();
         contextMenu.setAutoFix(true);
         contextMenu.setAutoHide(true);
@@ -400,33 +393,16 @@ public final class SpellChecker {
                 return;
             }
 
-            final Button ignoreButton = new Button("Ignore All");
-            final VBox popupContent = new VBox(POPUP_PADDING);
-            popupContent.setStyle(
-                    "-fx-background-color: black;"
-                    + "-fx-text-fill: white;"
-                    + "-fx-padding: " + POPUP_PADDING + ";");
-            popupContent.getChildren().clear();
-            suggestionsList.clear();
-
-            suggestions.getSelectionModel().clearSelection();
-
             contextMenu.getItems().clear();
+            final List<String> suggestionsList = matches.get(indexOfMisspelledTextUnderCursor).getSuggestedReplacements();
 
-            suggestionsList.addAll(matches2.get(indexOfMisspelledTextUnderCursor).getSuggestedReplacements());
             if (suggestionsList.isEmpty()) {
                 labelMessage.setText("No matching suggestions available");
-                popupContent.getChildren().addAll(labelMessage);
             } else {
-                suggestions.setItems(suggestionsList.size() > 5 ? FXCollections.observableArrayList(suggestionsList.subList(0, 5)) : suggestionsList);
-                ignoreButton.setOnAction(e -> this.addWordsToIgnore());
-                suggestions.setPrefHeight(suggestions.getItems().size() * ITEM_HEIGHT);
-
-                // NEW
                 final List<MenuItem> items = new ArrayList();
-                for (int i = 0; i < 5 && i < suggestionsList.size(); i++) {
-                    final String s = suggestionsList.get(i);
-                    final MenuItem item = new MenuItem(s);
+
+                for (int i = 0; i < suggestionsList.size() && i < MAX_SUGGESTIONS; i++) {
+                    final MenuItem item = new MenuItem(suggestionsList.get(i));
                     item.setOnAction(e -> {
                         System.out.println(item.getText());
                         func(item.getText());
@@ -439,16 +415,15 @@ public final class SpellChecker {
 
                 // Temporary check to remove ignore button on non spelling errors
                 if (specificRuleId.equals("MORFOLOGIK_RULE_EN_AU")) {
-                    popupContent.getChildren().addAll(suggestions, ignoreButton, labelMessage);
-                    // NEW
+                    // The button itself will not do anything
+                    final Button ignoreButton = new Button("Ignore All");
+                    // The menu item that contains the button will handle ignoring words
                     final CustomMenuItem customItemWithButton = new CustomMenuItem(ignoreButton);
                     customItemWithButton.setOnAction(e -> {
                         this.addWordsToIgnore();
                         checkSpellingForce();
                     });
                     contextMenu.getItems().add(customItemWithButton);
-                } else {
-                    popupContent.getChildren().addAll(suggestions, labelMessage);
                 }
             }
 
@@ -472,8 +447,8 @@ public final class SpellChecker {
             return false;
         }
 
-        for (int i = 0; i < matches2.size(); i++) {
-            final Match match = matches2.get(i);
+        for (int i = 0; i < matches.size(); i++) {
+            final Match match = matches.get(i);
 
             final int start = match.getFromPos();
             final int end = match.getToPos();

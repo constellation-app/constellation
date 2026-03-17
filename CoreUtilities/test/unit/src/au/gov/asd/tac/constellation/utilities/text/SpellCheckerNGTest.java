@@ -37,7 +37,6 @@ public class SpellCheckerNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        LanguagetoolClassLoader.loadDependencies();
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
