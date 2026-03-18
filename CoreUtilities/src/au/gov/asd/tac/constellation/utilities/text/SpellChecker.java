@@ -178,7 +178,7 @@ public final class SpellChecker {
      * Check Spelling of the entire text. This will ensure scenarios like duplicate words, grammar mistakes etc. are
      * triggered
      */
-    public void checkSpelling() {
+    public synchronized void checkSpelling() {
         final String inputText = textArea.getText();
 
         if (turnOffSpellChecking || StringUtils.isBlank(inputText)) {
