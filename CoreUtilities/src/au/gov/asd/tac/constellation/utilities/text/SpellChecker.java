@@ -36,8 +36,11 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
-import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.tuple.primitive.IntIntPair;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 import org.openide.NotifyDescriptor;
 
 /**
@@ -165,6 +168,7 @@ public final class SpellChecker {
                 check = LanguagetoolClassLoader.getJLanguagetool().getMethod("check", String.class);
             }
         } catch (final NoSuchMethodException | SecurityException ex) {
+            LOGGER.log(Level.SEVERE, String.format("Error initialising methods in SpellChecker.java: %s", ex));
         }
     }
 
@@ -187,9 +191,9 @@ public final class SpellChecker {
         }
 
         try {
-            final ArrayList<String> parts = new ArrayList<>();
-            final ArrayList<Integer> partsOffsets = new ArrayList<>();
-            final ArrayList<Pair<Integer, Integer>> partsSpans = new ArrayList<>();
+            final List<String> parts = new ArrayList<>();
+            final MutableIntList partsOffsets = new IntArrayList();
+            final List<IntIntPair> partsSpans = new ArrayList<>();
 
             int tokensRemaining = TOKENS_PER_PART;
             int subStringStart = 0;
@@ -207,7 +211,7 @@ public final class SpellChecker {
                     parts.add(partAsString);
                     partsOffsets.add(subStringStart);
 
-                    partsSpans.add(new Pair(subStringStart, i));
+                    partsSpans.add(PrimitiveTuples.pair(subStringStart, i));
 
                     subStringStart = i;
                     tokensRemaining = TOKENS_PER_PART;
@@ -219,16 +223,16 @@ public final class SpellChecker {
                     parts.add(partAsString);
                     partsOffsets.add(subStringStart);
 
-                    partsSpans.add(new Pair(subStringStart, i));
+                    partsSpans.add(PrimitiveTuples.pair(subStringStart, i));
 
                     subStringStart = i;
                     tokensRemaining = TOKENS_PER_PART;
                 }
             }
 
-            final ArrayList<String> diff = new ArrayList<>();
-            final ArrayList<Integer> diffOffsets = new ArrayList<>();
-            final ArrayList<Pair<Integer, Integer>> diffSpans = new ArrayList<>();
+            final List<String> diff = new ArrayList<>();
+            final MutableIntList diffOffsets = new IntArrayList();
+            final List<IntIntPair> diffSpans = new ArrayList<>();
 
             // find major differences
             if (prevParts.isEmpty()) {
@@ -238,11 +242,7 @@ public final class SpellChecker {
                 diffSpans.addAll(partsSpans);
             } else {
                 // Iterate through the current input text and the prev input text and find differences
-                for (int i = 0; i < prevParts.size() || i < parts.size(); i++) {
-                    // If out of new input
-                    if (i >= parts.size()) {
-                        break;
-                    }
+                for (int i = 0; i < prevParts.size() && i < parts.size(); i++) {
 
                     // If elem doesnt exist in prev input, add it as it must be new
                     if (i >= prevParts.size()) {
@@ -265,9 +265,9 @@ public final class SpellChecker {
             final List<Object> listOfMatchLists = new ArrayList<>();
 
             // prune matches, so that data being overwritten is gone
-            for (final Pair<Integer, Integer> span : diffSpans) {
-                final int spanStart = span.getKey();
-                final int spanEnd = span.getValue();
+            for (final IntIntPair span : diffSpans) {
+                final int spanStart = span.getOne();
+                final int spanEnd = span.getTwo();
 
                 final List<Match> toRemove = new ArrayList<>();
                 for (final Match match : matches) {
@@ -323,8 +323,8 @@ public final class SpellChecker {
 
             if (totalElements > 0) {
                 Platform.runLater(() -> {
-                    for (final Pair<Integer, Integer> span : diffSpans) {
-                        textArea.clearStyle(span.getKey(), span.getValue());
+                    for (final IntIntPair span : diffSpans) {
+                        textArea.clearStyle(span.getOne(), span.getTwo());
                     }
 
                     textArea.highlightTextMultiple(starts, ends);
