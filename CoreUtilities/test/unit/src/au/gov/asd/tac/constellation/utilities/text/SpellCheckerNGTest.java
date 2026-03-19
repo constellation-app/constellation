@@ -106,7 +106,7 @@ public class SpellCheckerNGTest {
 
         Platform.runLater(() -> {
             instance.popUpSuggestionsListAction(event);
-            assertTrue(instance.getContextMenu().getItems().isEmpty()   );
+            assertTrue(instance.getContextMenu().getItems().isEmpty());
         });
     }
 }
