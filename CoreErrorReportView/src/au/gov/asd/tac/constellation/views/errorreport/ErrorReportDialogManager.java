@@ -59,14 +59,14 @@ public class ErrorReportDialogManager {
         final TimerTask refreshAction = new TimerTask() {
             @Override
             public void run() {
-                refresh();
+                refreshErrorPopups();
             }
         };
         final Timer refreshTimer = new Timer();
         refreshTimer.schedule(refreshAction, 745, 1475);        
     }
     
-    protected void refresh() {
+    protected void refreshErrorPopups() {
         if (!isErrorReportRunning && FxToolkit.isFXApplicationThreadRunning()) {
             final Date currentDate = new Date();
             if (gracePeriodResumptionDate != null && currentDate.before(gracePeriodResumptionDate)) {

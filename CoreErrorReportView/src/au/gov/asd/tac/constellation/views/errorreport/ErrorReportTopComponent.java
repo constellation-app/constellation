@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
@@ -189,11 +188,11 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGap(0, 300, Short.MAX_VALUE)
         );
         setName(Bundle.CTL_ErrorReportTopComponent());
@@ -203,7 +202,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final TimerTask refreshAction = new TimerTask() {
             @Override
             public void run() {
-                refresh();
+                refreshErrorFlashing();
             }
         };
         refreshTimer = new Timer();
@@ -213,7 +212,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     /**
      * @return the params
      */
-    public PluginParameters getParams() {
+    protected PluginParameters getParams() {
         return params;
     }
 
@@ -1015,19 +1014,13 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final Button dismissButton = new Button("");
         dismissButton.setStyle(FX_BACKGROUND + dismissButtonColor + "; -fx-border-color: #606060");
         dismissButton.setGraphic(crossImageHighlight);
-        dismissButton.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(final MouseEvent mouseEvent) {
-                dismissButton.setStyle("-fx-background-color: #e84848; -fx-border-color: #c03c3c");
-                mouseEvent.consume();
-            }
+        dismissButton.addEventFilter(MouseEvent.MOUSE_ENTERED, (final MouseEvent mouseEvent) -> {
+            dismissButton.setStyle("-fx-background-color: #e84848; -fx-border-color: #c03c3c");
+            mouseEvent.consume();
         });
-        dismissButton.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(final MouseEvent mouseEvent) {
-                dismissButton.setStyle(FX_BACKGROUND + dismissButtonColor + "; -fx-border-color: #606060");
-                mouseEvent.consume();
-            }
+        dismissButton.addEventFilter(MouseEvent.MOUSE_EXITED, (final MouseEvent mouseEvent) -> {
+            dismissButton.setStyle(FX_BACKGROUND + dismissButtonColor + "; -fx-border-color: #606060");
+            mouseEvent.consume();
         });
         dismissButton.setPadding(new Insets(3, 1, 1, 1));
         dismissButton.setMinHeight(22);
@@ -1080,7 +1073,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         return ttlPane;
     }
     
-    protected void refresh() {
+    protected void refreshErrorFlashing() {
         Platform.runLater(() -> {
             boolean gracePeriodRefresh = false;
             final Date currentDate = new Date();

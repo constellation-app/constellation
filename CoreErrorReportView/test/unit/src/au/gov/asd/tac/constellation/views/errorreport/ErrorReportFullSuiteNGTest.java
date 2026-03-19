@@ -186,15 +186,15 @@ public class ErrorReportFullSuiteNGTest {
         
         // allow content in the top component to be created in the FX thread before proceeding
         final CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(() -> latch.countDown());
+        Platform.runLater(latch::countDown);
         latch.await();
         
         // the refresh will normally happen in a timer task, 
         // but in the interest of not waiting for the scheduled task to happen, we're manually triggering the refresh to keep the test moving along
-        ertcInstance.refresh();
+        ertcInstance.refreshErrorFlashing();
         // allow refresh job in the top component to run in the FX thread before proceeding
         final CountDownLatch latch1 = new CountDownLatch(1);
-        Platform.runLater(() -> latch1.countDown());
+        Platform.runLater(latch1::countDown);
         latch1.await();
 
         final ErrorReportEntry partialEntry5 = new ErrorReportEntry(Level.WARNING, null, "part summary", "part message", ErrorReportSessionData.getNextEntryId());
@@ -214,10 +214,10 @@ public class ErrorReportFullSuiteNGTest {
         assertEquals(storedList.size(), 1);
         
         // another manual refresh to force updates through
-        ertcInstance.refresh();
+        ertcInstance.refreshErrorFlashing();
         // allow refresh job in the top component to run in the FX thread before proceeding
         final CountDownLatch latch2 = new CountDownLatch(1);
-        Platform.runLater(() -> latch2.countDown());
+        Platform.runLater(latch2::countDown);
         latch2.await();
         
         final boolean isFlashing = ertcInstance.isIconFlashing();
@@ -243,10 +243,10 @@ public class ErrorReportFullSuiteNGTest {
         int dialogCounter = 0;
         // the refresh will normally happen in a timer task, 
         // but in the interest of not waiting for the scheduled task to happen, we're manually triggering the refresh to keep the test moving along
-        erdm.refresh();
+        erdm.refreshErrorPopups();
         // required to allow tasks to complete in the Swing thread before continuing
         final CountDownLatch latch = new CountDownLatch(1);
-        SwingUtilities.invokeLater(() -> latch.countDown());
+        SwingUtilities.invokeLater(latch::countDown);
         latch.await();
         
         final List<ErrorReportEntry> errorList = ErrorReportSessionData.getInstance().refreshDisplayedErrors(filters);
