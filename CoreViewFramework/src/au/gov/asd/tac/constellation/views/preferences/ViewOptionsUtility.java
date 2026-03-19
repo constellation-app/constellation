@@ -16,36 +16,190 @@
 package au.gov.asd.tac.constellation.views.preferences;
 
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import org.openide.util.Lookup;
-import org.openide.util.NbPreferences;
+import org.openide.windows.OnShowing;
 
 /**
- * Utility class for view options.
+ * Handles operations on the file containing the default floating preferences.
  *
  * @author sol695510
  */
-public class ViewOptionsUtility {
+@OnShowing()
+public class ViewOptionsUtility implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(ViewOptionsUtility.class.getName());
 
-    private final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
-    private final static Map<String, Boolean> defaultPrefs = new TreeMap<>();
+    private static final String DFP_FILE_NAME = "dfp.txt";
+    private static File DFPFile;
+    private static final Map<String, Boolean> DFPMap = new TreeMap<>();
+
+    // This is the system property that is set to true in order to make the AWT thread run in headless mode for tests, etc.
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
 
     /**
-     * Retrieve the default floating preferences for all views included in the lookup.
-     *
-     * @return a map of the default floating preferences for views included in the lookup.
+     * Generate the default viewing preferences in developer versions of code.
      */
-    public static final Map<String, Boolean> getDefaultFloatingPreferences() {
-        if (defaultPrefs.isEmpty()) {
-            Lookup.getDefault().lookupAll(AbstractTopComponent.class).forEach(lookup -> defaultPrefs.putAll(lookup.getDefaultFloatingPreference()));
+    @Override
+    public void run() {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            return;
+        }
+        CompletableFuture.runAsync(this::updateDFPFile, Executors.newSingleThreadExecutor());
+    }
+
+    /**
+     * Update the file containing the default viewing preferences.
+     */
+    protected void updateDFPFile() {
+        // Change boolean to true to update default floating preferences file, revert back to false after updating.
+        final Boolean updateDFP = Boolean.FALSE;
+
+        if (updateDFP) {
+            createDFPFile(getBaseDirectory());
+        }
+    }
+
+    /**
+     * Create a default viewing preferences file at the given file path.
+     *
+     * @param filePath
+     */
+    protected static void createDFPFile(final String filePath) {
+        if (filePath == null) {
+            throw new IllegalArgumentException("Null file path used for creation of DFP file");
         }
 
-        return Collections.unmodifiableMap(defaultPrefs);
+        try {
+            if (Files.deleteIfExists(FileSystems.getDefault().getPath(filePath))) {
+                LOGGER.log(Level.FINE, "Previous DFP file was replaced at: {0}", filePath);
+            }
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, "Path to DFP file was invalid: %s".formatted(filePath), ex);
+        }
+
+        DFPFile = new File(filePath);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(DFPFile))) {
+            final Map<String, Boolean> DFPFromLookUp = getDFPFromLookUp();
+
+            for (final Map.Entry<String, Boolean> entry : DFPFromLookUp.entrySet()) {
+                writer.write(entry.getKey() + ":" + entry.getValue() + "\n");
+            }
+
+            DFPFile.createNewFile();
+
+            LOGGER.log(Level.FINE, "DFP file was created at: {0}", filePath);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, "Unable to create DFP file. FilePath: %s".formatted(filePath), ex);
+        }
+    }
+
+    /**
+     * Read the default floating preferences file from the given file path.
+     *
+     * @param filePath
+     */
+    protected static void readDFPFile(final String filePath) {
+        if (filePath == null) {
+            throw new IllegalArgumentException("Null file path used for reading of DFP file");
+        }
+
+        DFPFile = new File(filePath);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(DFPFile))) {
+            final Scanner sc = new Scanner(reader);
+
+            while (sc.hasNextLine()) {
+                final String nextLine = sc.nextLine();
+                final String[] ss = nextLine.split(":");
+                DFPMap.put(ss[0], Boolean.valueOf(ss[1]));
+            }
+
+            LOGGER.log(Level.FINE, "DFP file was read at: {0}", filePath);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, "Unable to read DFP file. FilePath: %s".formatted(filePath), ex);
+        }
+    }
+
+    /**
+     * Get the file path of where the default floating preferences file is stored.
+     *
+     * @return a string representation of the file path where the default floating preferences file is stored.
+     */
+    protected static String getBaseDirectory() {
+        String baseDirectory = "";
+        final String resource = getResource();
+
+        if (!resource.isBlank()) {
+            baseDirectory = resource + File.separator + DFP_FILE_NAME;
+        }
+
+        return baseDirectory;
+    }
+
+    /**
+     * Get the resource file path.
+     *
+     * @return the resource file path.
+     * @throws IllegalArgumentException
+     */
+    protected static String getResource() throws IllegalArgumentException {
+        final URL sourceLocation = ViewOptionsUtility.class.getProtectionDomain().getCodeSource().getLocation();
+        final String pathLoc = sourceLocation.getPath();
+        final URI uri = URI.create(pathLoc);
+        final Path path = Paths.get(uri);
+        final int jarIx = path.toString().lastIndexOf(File.separator);
+        final String newPath = jarIx > -1 ? path.toString().substring(0, jarIx) : "";
+        return newPath != null ? newPath + File.separator + "ext" : "";
+    }
+
+    /**
+     * Get a map of the default floating preferences from the lookup.
+     *
+     * @return a map of the default floating preferences.
+     */
+    protected static Map<String, Boolean> getDFPFromLookUp() {
+        final Map<String, Boolean> DFPFromLookUp = new TreeMap<>();
+
+        if (DFPFromLookUp.isEmpty()) {
+            Lookup.getDefault().lookupAll(AbstractTopComponent.class).forEach(lookup -> {
+                DFPFromLookUp.putAll(lookup.getDefaultFloatingPreference());
+            });
+        }
+
+        return Collections.unmodifiableMap(DFPFromLookUp);
+    }
+
+    /**
+     * Get a map of the default floating preferences from the saved file.
+     *
+     * @return a map of the default floating preferences.
+     */
+    public static Map<String, Boolean> getDFPFromFile() {
+        if (DFPMap.isEmpty()) {
+            readDFPFile(getBaseDirectory());
+        }
+
+        return Collections.unmodifiableMap(DFPMap);
     }
 }

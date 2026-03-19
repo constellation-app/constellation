@@ -58,7 +58,7 @@ public class ViewOptionsPanelController extends OptionsPanelController {
             if (isChanged()) {
                 pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
 
-                for (final String view : ViewOptionsUtility.getDefaultFloatingPreferences().keySet()) {
+                for (final String view : ViewOptionsUtility.getDFPFromFile().keySet()) {
                     prefs.putBoolean(view, getPanel().getOptionsFromUI().get(view));
                 }
             }

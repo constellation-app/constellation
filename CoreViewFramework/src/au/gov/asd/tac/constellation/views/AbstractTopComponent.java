@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.views;
 
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
-import au.gov.asd.tac.constellation.views.preferences.ViewOptionsPanelController;
 import au.gov.asd.tac.constellation.views.preferences.ViewOptionsUtility;
+import au.gov.asd.tac.constellation.views.preferences.ViewOptionsPanelController;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
@@ -100,8 +100,8 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
         this.addPropertyChangeListener(pcl);
         super.componentOpened();
 
-        if (ViewOptionsUtility.getDefaultFloatingPreferences().containsKey(this.getName())) {
-            final Boolean isFloating = prefs.getBoolean(this.getName(), ViewOptionsUtility.getDefaultFloatingPreferences().get(this.getName()));
+        if (ViewOptionsUtility.getDFPFromFile().containsKey(this.getName())) {
+            final Boolean isFloating = prefs.getBoolean(this.getName(), ViewOptionsUtility.getDFPFromFile().get(this.getName()));
             WindowManager.getDefault().setTopComponentFloating(this, isFloating);
 
             if (isFloating) {

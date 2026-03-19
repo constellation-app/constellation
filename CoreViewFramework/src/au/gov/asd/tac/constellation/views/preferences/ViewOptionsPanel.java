@@ -32,7 +32,7 @@ import org.openide.util.NbPreferences;
 public class ViewOptionsPanel extends JPanel {
 
     private final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
-    private final Map<String, Boolean> defaultPrefs = ViewOptionsUtility.getDefaultFloatingPreferences();
+    private final Map<String, Boolean> defaultPrefs = ViewOptionsUtility.getDFPFromFile();
     private DefaultTableModel tableModel;
 
     protected ViewOptionsPanel() {
