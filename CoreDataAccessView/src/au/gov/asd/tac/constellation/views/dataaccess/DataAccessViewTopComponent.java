@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
@@ -34,6 +35,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -67,7 +69,7 @@ import org.openide.windows.TopComponent;
     "CTL_DataAccessViewTopComponent=Data Access View",
     "HINT_DataAccessViewTopComponent=Data Access View"
 })
-//@ServiceProvider(service = AbstractTopComponent.class)
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAccessPane> {
 
     private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("DAV-Thread", 1);
