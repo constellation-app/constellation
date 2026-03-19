@@ -20,7 +20,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.input.MouseEvent;
+import org.apache.commons.lang3.StringUtils;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -72,19 +82,31 @@ public class SpellCheckerNGTest {
         final SpellCheckingTextArea textArea = new SpellCheckingTextArea(true);
         textArea.setText(text);
 
-        final SpellChecker instance = new SpellChecker(textArea);
-        instance.checkSpelling();
+        final SpellChecker instance = spy(new SpellChecker(textArea));
+
+        try (final MockedStatic<StringUtils> stringUtils = Mockito.mockStatic(StringUtils.class, Mockito.CALLS_REAL_METHODS)) {
+            instance.checkSpelling();
+            stringUtils.verify(() -> StringUtils.isBlank(text), times(1));
+        }
+
+        assertTrue(instance.getMatches().isEmpty());
+        verify(instance, never()).findDifferences(anyString(), any(), any(), any(), any());
+        verify(instance, never()).removeDiffsFromMatches(any());
     }
 
     /**
      * Test of popUpSuggestionsListAction method, of class SpellChecker.
      */
     @Test
-    public void testPopUpSuggestionsListAction() {
-        System.out.println("popUpSuggestionsListAction");
+    public void testPopUpSuggestionsListActionEarlyReturn() {
+        System.out.println("popUpSuggestionsListAction early return");
         final MouseEvent event = null;
         final SpellCheckingTextArea textArea = new SpellCheckingTextArea(true);
         final SpellChecker instance = new SpellChecker(textArea);
-        Platform.runLater(() -> instance.popUpSuggestionsListAction(event));
+
+        Platform.runLater(() -> {
+            instance.popUpSuggestionsListAction(event);
+            assertTrue(instance.getContextMenu().getItems().isEmpty()   );
+        });
     }
 }

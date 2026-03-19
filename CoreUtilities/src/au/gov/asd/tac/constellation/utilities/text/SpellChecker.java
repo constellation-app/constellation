@@ -191,98 +191,16 @@ public final class SpellChecker {
         }
 
         try {
-            final List<String> parts = new ArrayList<>();
-            final MutableIntList partsOffsets = new IntArrayList();
-            final List<IntIntPair> partsSpans = new ArrayList<>();
-
-            int tokensRemaining = TOKENS_PER_PART;
-            int subStringStart = 0;
-            for (int i = 0; i < inputText.length(); i++) {
-                final char character = inputText.charAt(i);
-
-                // non word character
-                if (!Character.isLetterOrDigit(character)) {
-                    tokensRemaining--;
-                }
-
-                // If we've counted enough tokens
-                if (tokensRemaining <= 0) {
-                    final String partAsString = inputText.substring(subStringStart, i);
-                    parts.add(partAsString);
-                    partsOffsets.add(subStringStart);
-
-                    partsSpans.add(PrimitiveTuples.pair(subStringStart, i));
-
-                    subStringStart = i;
-                    tokensRemaining = TOKENS_PER_PART;
-                }
-
-                // If end of string, store remaining text in string
-                if (i == inputText.length() - 1) {
-                    final String partAsString = inputText.substring(subStringStart, i);
-                    parts.add(partAsString);
-                    partsOffsets.add(subStringStart);
-
-                    partsSpans.add(PrimitiveTuples.pair(subStringStart, i));
-
-                    subStringStart = i;
-                    tokensRemaining = TOKENS_PER_PART;
-                }
-            }
-
             final List<String> diff = new ArrayList<>();
             final MutableIntList diffOffsets = new IntArrayList();
             final List<IntIntPair> diffSpans = new ArrayList<>();
+            final List<String> parts = new ArrayList<>();
 
-            // find major differences
-            if (prevParts.isEmpty()) {
-                // All new input will be different to old
-                diff.addAll(parts);
-                diffOffsets.addAll(partsOffsets);
-                diffSpans.addAll(partsSpans);
-            } else {
-                // Iterate through the current input text and the prev input text and find differences
-                for (int i = 0; i < prevParts.size() && i < parts.size(); i++) {
+            findDifferences(inputText, parts, diff, diffOffsets, diffSpans);
 
-                    // If elem doesnt exist in prev input, add it as it must be new
-                    if (i >= prevParts.size()) {
-                        diff.add(parts.get(i));
-                        diffOffsets.add(partsOffsets.get(i));
-                        diffSpans.add(partsSpans.get(i));
-                        continue;
-                    }
-
-                    // If current elements are different, add to diff list
-                    if (!prevParts.get(i).equals(parts.get(i))) {
-                        diff.add(parts.get(i));
-                        diffOffsets.add(partsOffsets.get(i));
-                        diffSpans.add(partsSpans.get(i));
-                    }
-
-                }
-            }
+            removeDiffsFromMatches(diffSpans);
 
             final List<Object> listOfMatchLists = new ArrayList<>();
-
-            // prune matches, so that data being overwritten is gone
-            for (final IntIntPair span : diffSpans) {
-                final int spanStart = span.getOne();
-                final int spanEnd = span.getTwo();
-
-                final List<Match> toRemove = new ArrayList<>();
-                for (final Match match : matches) {
-
-                    final int start = match.getFromPos();
-                    final int end = match.getToPos();
-
-                    if (start >= spanStart && end <= spanEnd) {
-                        toRemove.add(match);
-                    }
-                }
-
-                matches.removeAll(toRemove);
-            }
-
             int totalElements = 0;
             for (int i = 0; i < diff.size(); i++) {
                 final String d = diff.get(i);
@@ -339,6 +257,96 @@ public final class SpellChecker {
         }
     }
 
+    // Protected for testing
+    protected void findDifferences(final String inputText, final List<String> parts, final List<String> diff, final MutableIntList diffOffsets, final List<IntIntPair> diffSpans) {
+        final MutableIntList partsOffsets = new IntArrayList();
+        final List<IntIntPair> partsSpans = new ArrayList<>();
+
+        int tokensRemaining = TOKENS_PER_PART;
+        int subStringStart = 0;
+        for (int i = 0; i < inputText.length(); i++) {
+            final char character = inputText.charAt(i);
+
+            // non word character
+            if (!Character.isLetterOrDigit(character)) {
+                tokensRemaining--;
+            }
+
+            // If we've counted enough tokens
+            if (tokensRemaining <= 0) {
+                final String partAsString = inputText.substring(subStringStart, i);
+                parts.add(partAsString);
+                partsOffsets.add(subStringStart);
+
+                partsSpans.add(PrimitiveTuples.pair(subStringStart, i));
+
+                subStringStart = i;
+                tokensRemaining = TOKENS_PER_PART;
+            }
+
+            // If end of string, store remaining text in string
+            if (i == inputText.length() - 1) {
+                final String partAsString = inputText.substring(subStringStart, i);
+                parts.add(partAsString);
+                partsOffsets.add(subStringStart);
+
+                partsSpans.add(PrimitiveTuples.pair(subStringStart, i));
+
+                subStringStart = i;
+                tokensRemaining = TOKENS_PER_PART;
+            }
+        }
+
+        // find major differences
+        if (prevParts.isEmpty()) {
+            // All new input will be different to old
+            diff.addAll(parts);
+            diffOffsets.addAll(partsOffsets);
+            diffSpans.addAll(partsSpans);
+        } else {
+            // Iterate through the current input text and the prev input text and find differences
+            for (int i = 0; i < prevParts.size() && i < parts.size(); i++) {
+
+                // If elem doesnt exist in prev input, add it as it must be new
+                if (i >= prevParts.size()) {
+                    diff.add(parts.get(i));
+                    diffOffsets.add(partsOffsets.get(i));
+                    diffSpans.add(partsSpans.get(i));
+                    continue;
+                }
+
+                // If current elements are different, add to diff list
+                if (!prevParts.get(i).equals(parts.get(i))) {
+                    diff.add(parts.get(i));
+                    diffOffsets.add(partsOffsets.get(i));
+                    diffSpans.add(partsSpans.get(i));
+                }
+
+            }
+        }
+    }
+
+    // Protected for testing
+    protected void removeDiffsFromMatches(final List<IntIntPair> diffSpans) {
+        for (final IntIntPair span : diffSpans) {
+            final int spanStart = span.getOne();
+            final int spanEnd = span.getTwo();
+
+            final List<Match> toRemove = new ArrayList<>();
+            for (final Match match : matches) {
+
+                final int start = match.getFromPos();
+                final int end = match.getToPos();
+
+                if (start >= spanStart && end <= spanEnd) {
+                    toRemove.add(match);
+                }
+            }
+
+            matches.removeAll(toRemove);
+        }
+    }
+
     private void refreshHighlights() {
         final int totalElements = matches.size();
         final int[] starts = new int[totalElements];
@@ -387,46 +395,53 @@ public final class SpellChecker {
         contextMenu.setAutoFix(true);
         contextMenu.setAutoHide(true);
         contextMenu.setHideOnEscape(true);
+
         try {
             if (!isWordUnderCursorMisspelled()) {
                 return;
             }
-
-            contextMenu.getItems().clear();
-            final List<String> suggestionsList = matches.get(indexOfMisspelledTextUnderCursor).getSuggestedReplacements();
-
-            if (suggestionsList.isEmpty()) {
-                labelMessage.setText("No matching suggestions available");
-            } else {
-                final List<MenuItem> items = new ArrayList();
-
-                for (int i = 0; i < suggestionsList.size() && i < MAX_SUGGESTIONS; i++) {
-                    final MenuItem item = new MenuItem(suggestionsList.get(i));
-                    item.setOnAction(e -> handleMenuItem(item.getText()));
-                    items.add(item);
-                }
-
-                contextMenu.getItems().addAll(items);
-
-                // Temporary check to remove ignore button on non spelling errors
-                if (specificRuleId.equals("MORFOLOGIK_RULE_EN_AU")) {
-                    // The button itself will not do anything
-                    final Button ignoreButton = new Button("Ignore All");
-                    // The menu item that contains the button will handle ignoring words
-                    final CustomMenuItem customItemWithButton = new CustomMenuItem(ignoreButton);
-                    customItemWithButton.setOnAction(e -> {
-                        this.addWordsToIgnore();
-                        checkSpellingForce();
-                    });
-                    contextMenu.getItems().add(customItemWithButton);
-                }
-            }
-
-            contextMenu.setAutoFix(true);
-            contextMenu.show(textArea, event.getScreenX(), event.getScreenY() + 10);
         } catch (final InvocationTargetException | NoSuchMethodException | IllegalAccessException ex) {
             logAndDisplayErrorMessage("Error while populating suggestions. Spell checking may not be functioning properly.", ex);
         }
+
+        contextMenu.getItems().clear();
+        final List<String> suggestionsList = matches.get(indexOfMisspelledTextUnderCursor).getSuggestedReplacements();
+
+        if (suggestionsList.isEmpty()) {
+            labelMessage.setText("No matching suggestions available");
+        } else {
+            final List<MenuItem> items = new ArrayList();
+
+            for (int i = 0; i < suggestionsList.size() && i < MAX_SUGGESTIONS; i++) {
+                final MenuItem item = new MenuItem(suggestionsList.get(i));
+                item.setOnAction(e -> handleMenuItem(item.getText()));
+                items.add(item);
+            }
+
+            contextMenu.getItems().addAll(items);
+
+            // Temporary check to remove ignore button on non spelling errors
+            if (specificRuleId.equals("MORFOLOGIK_RULE_EN_AU")) {
+                // The button itself will not do anything
+                final Button ignoreButton = new Button("Ignore All");
+                // The menu item that contains the button will handle ignoring words
+                final CustomMenuItem customItemWithButton = new CustomMenuItem(ignoreButton);
+                customItemWithButton.setOnAction(e -> {
+                    this.addWordsToIgnore();
+                    checkSpellingForce();
+                });
+                contextMenu.getItems().add(customItemWithButton);
+            }
+        }
+        contextMenu.getItems().add(new MenuItem(labelMessage.getText()));
+
+        contextMenu.setAutoFix(true);
+        contextMenu.show(textArea, event.getScreenX(), event.getScreenY() + 10);
+    }
+
+    // Used for testing
+    protected ContextMenu getContextMenu() {
+        return contextMenu;
     }
 
     /**
@@ -502,6 +517,10 @@ public final class SpellChecker {
     private static void logAndDisplayErrorMessage(final String message, final Exception ex) {
         LOGGER.log(Level.SEVERE, String.format("%s: %s", message, ex));
         NotifyDisplayer.display(message, NotifyDescriptor.ERROR_MESSAGE);
+    }
+
+    protected List<Match> getMatches() {
+        return matches;
     }
 
     /**
