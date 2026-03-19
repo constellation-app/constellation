@@ -79,6 +79,7 @@ public final class SpellChecker {
     private static Method getSpecificRuleId;
     private static Method getMessage;
     private static Method check;
+    private static final String LABEL_CSS_ID = "spellCheckContextLabel";
 
     private final ContextMenu contextMenu = new ContextMenu();
 
@@ -433,7 +434,11 @@ public final class SpellChecker {
                 contextMenu.getItems().add(customItemWithButton);
             }
         }
-        contextMenu.getItems().add(new MenuItem(labelMessage.getText()));
+
+        final CustomMenuItem labelItem = new CustomMenuItem(labelMessage);
+        labelItem.setId(LABEL_CSS_ID);
+        labelItem.setHideOnClick(false);
+        contextMenu.getItems().add(labelItem);
 
         contextMenu.setAutoFix(true);
         contextMenu.show(textArea, event.getScreenX(), event.getScreenY() + 10);
