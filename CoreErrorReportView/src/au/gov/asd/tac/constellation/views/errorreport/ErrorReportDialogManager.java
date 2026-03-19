@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import javafx.application.Platform;
 import org.eclipse.collections.api.list.primitive.MutableDoubleList;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.testfx.api.FxToolkit;
@@ -54,39 +53,40 @@ public class ErrorReportDialogManager {
         return instance;
     }
 
-    public void startDefaultProcessor(){
+    private void startDefaultProcessor(){
         popupTypeFilters.add("SEVERE");
         popupTypeFilters.add("WARNING");
         final TimerTask refreshAction = new TimerTask() {
             @Override
             public void run() {
-                if (!isErrorReportRunning && FxToolkit.isFXApplicationThreadRunning()) {
-                    Platform.runLater(() -> {
-                        final Date currentDate = new Date();
-                        if (gracePeriodResumptionDate != null && currentDate.before(gracePeriodResumptionDate)) {
-                            return;
-                        }
-                        if (latestRetrievalDate == null || latestRetrievalDate.before(ErrorReportSessionData.getLastUpdate())) {
-                            backupRetrievalDate = previousRetrievalDate == null ? null : new Date(previousRetrievalDate.getTime());
-                            previousRetrievalDate = latestRetrievalDate == null ? null : new Date(latestRetrievalDate.getTime());
-                            latestRetrievalDate = currentDate;
-                            sessionPopupErrors = ErrorReportSessionData.getInstance().refreshDisplayedErrors(popupTypeFilters);
-                            for (final ErrorReportEntry reportEntry : sessionPopupErrors) {
-                                if (popupTypeFilters.contains(reportEntry.getErrorLevel().getName()) && (previousRetrievalDate == null || reportEntry.getLastPopupDate() == null || reportEntry.getLastDate().after(previousRetrievalDate))) {
-                                    showErrorDialog(reportEntry, false);
-                                }
-                            }
-                            
-                        }
-                    });
-                }
+                refresh();
             }
         };
         final Timer refreshTimer = new Timer();
         refreshTimer.schedule(refreshAction, 745, 1475);        
     }
     
-    public void updatePopupSettings(final int popupMode, final Iterable<String> popupFilters) {
+    protected void refresh() {
+        if (!isErrorReportRunning && FxToolkit.isFXApplicationThreadRunning()) {
+            final Date currentDate = new Date();
+            if (gracePeriodResumptionDate != null && currentDate.before(gracePeriodResumptionDate)) {
+                return;
+            }
+            if (latestRetrievalDate == null || latestRetrievalDate.before(ErrorReportSessionData.getLastUpdate())) {
+                backupRetrievalDate = previousRetrievalDate == null ? null : new Date(previousRetrievalDate.getTime());
+                previousRetrievalDate = latestRetrievalDate == null ? null : new Date(latestRetrievalDate.getTime());
+                latestRetrievalDate = currentDate;
+                sessionPopupErrors = ErrorReportSessionData.getInstance().refreshDisplayedErrors(popupTypeFilters);
+                for (final ErrorReportEntry reportEntry : sessionPopupErrors) {
+                    if (popupTypeFilters.contains(reportEntry.getErrorLevel().getName()) && (previousRetrievalDate == null || reportEntry.getLastPopupDate() == null || reportEntry.getLastDate().after(previousRetrievalDate))) {
+                        showErrorDialog(reportEntry, false);
+                    }
+                }
+            }
+        }
+    }
+    
+    protected void updatePopupSettings(final int popupMode, final Iterable<String> popupFilters) {
         popupDisplayMode = popupMode;
         popupTypeFilters.clear();
         for (final String filterEntry : popupFilters) {
@@ -94,11 +94,11 @@ public class ErrorReportDialogManager {
         }
     }
 
-    public void setErrorReportRunning(final boolean isRunning){
+    protected void setErrorReportRunning(final boolean isRunning) {
         isErrorReportRunning = isRunning;
     }
     
-    public void showErrorDialog(final ErrorReportEntry entry, final boolean review) {
+    protected void showErrorDialog(final ErrorReportEntry entry, final boolean review) {
         if (activePopupIds.size() >= 5) {
             // limit of 5 popups on screen at a time
             return;
@@ -147,42 +147,34 @@ public class ErrorReportDialogManager {
      * @param entry 
      * @param review 
      */
-    public void showDialog(final ErrorReportEntry entry, final boolean review) {
-        Platform.runLater(() -> {
-            entry.setLastPopupDate(new Date());
-            final ErrorReportDialog errorDlg = new ErrorReportDialog(entry);
-            entry.setDialog(errorDlg);
-            errorDlg.showDialog((review ? "Reviewing: " : "") + "Unexpected Exception ...");
-        });
+    protected void showDialog(final ErrorReportEntry entry, final boolean review) {
+        entry.setLastPopupDate(new Date());
+        final ErrorReportDialog errorDlg = new ErrorReportDialog(entry);
+        entry.setDialog(errorDlg);
+        errorDlg.showDialog((review ? "Reviewing: " : "") + "Unexpected Exception ...");
     }
 
     /**
      * Remove entry from active popup list
      * @param id 
      */
-    public void removeActivePopupId(final double id) {
+    protected void removeActivePopupId(final double id) {
         activePopupIds.remove(id);
     }
 
-    public Date getLatestPopupDismissDate() {
-        if (latestPopupDismissDate == null) {
-            return null;
-        }
-        return new Date(latestPopupDismissDate.getTime());
+    protected Date getLatestPopupDismissDate() {
+        return latestPopupDismissDate == null ? null : new Date(latestPopupDismissDate.getTime());
     }
 
-    public Date getGracePeriodResumptionDate(){
-        if (gracePeriodResumptionDate == null) {
-            return null;
-        }
-        return new Date(gracePeriodResumptionDate.getTime());
+    protected Date getGracePeriodResumptionDate(){
+        return gracePeriodResumptionDate == null ? null : new Date(gracePeriodResumptionDate.getTime());
     }
     
     /**
      * set the date/time at which the latest popup was closed.
      * @param latestDismissDate 
      */
-    public void setLatestPopupDismissDate(final Date latestDismissDate) {
+    protected void setLatestPopupDismissDate(final Date latestDismissDate) {
         if (latestDismissDate == null) {
             latestPopupDismissDate = null;
             gracePeriodResumptionDate = null;
@@ -192,7 +184,7 @@ public class ErrorReportDialogManager {
         }
     }
 
-    public List<String> getActivePopupErrorLevels(){
+    protected List<String> getActivePopupErrorLevels(){
         final List<String> resultList = new ArrayList<>();
         activePopupIds.forEach(id -> {
             final String errorLevel = ErrorReportSessionData.getInstance().findDisplayedEntryWithId(id).getErrorLevel().getName();
