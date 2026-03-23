@@ -35,6 +35,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
@@ -247,10 +248,11 @@ public final class SpellChecker {
                     }
 
                     textArea.highlightTextMultiple(starts, ends);
+
+                    prevParts = parts;
                 });
             }
 
-            prevParts = parts;
         } catch (final IllegalAccessException ex) {
             logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
         } catch (final InvocationTargetException ex) {
@@ -265,6 +267,8 @@ public final class SpellChecker {
 
         int tokensRemaining = TOKENS_PER_PART;
         int subStringStart = 0;
+
+        // Construct the chunks of text
         for (int i = 0; i < inputText.length(); i++) {
             final char character = inputText.charAt(i);
 
@@ -273,20 +277,8 @@ public final class SpellChecker {
                 tokensRemaining--;
             }
 
-            // If we've counted enough tokens
-            if (tokensRemaining <= 0) {
-                final String partAsString = inputText.substring(subStringStart, i);
-                parts.add(partAsString);
-                partsOffsets.add(subStringStart);
-
-                partsSpans.add(PrimitiveTuples.pair(subStringStart, i));
-
-                subStringStart = i;
-                tokensRemaining = TOKENS_PER_PART;
-            }
-
-            // If end of string, store remaining text in string
-            if (i == inputText.length() - 1) {
+            // If we've counted enough tokens, or we're at the end of input
+            if (tokensRemaining <= 0 || i == inputText.length() - 1) {
                 final String partAsString = inputText.substring(subStringStart, i);
                 parts.add(partAsString);
                 partsOffsets.add(subStringStart);
@@ -298,32 +290,33 @@ public final class SpellChecker {
             }
         }
 
-        // find major differences
+        // If prevParts empty, then all new input will be different
         if (prevParts.isEmpty()) {
-            // All new input will be different to old
             diff.addAll(parts);
             diffOffsets.addAll(partsOffsets);
             diffSpans.addAll(partsSpans);
-        } else {
-            // Iterate through the current input text and the prev input text and find differences
-            for (int i = 0; i < prevParts.size() && i < parts.size(); i++) {
+            return;
+        }
 
-                // If elem doesnt exist in prev input, add it as it must be new
-                if (i >= prevParts.size()) {
-                    diff.add(parts.get(i));
-                    diffOffsets.add(partsOffsets.get(i));
-                    diffSpans.add(partsSpans.get(i));
-                    continue;
-                }
-
-                // If current elements are different, add to diff list
-                if (!prevParts.get(i).equals(parts.get(i))) {
-                    diff.add(parts.get(i));
-                    diffOffsets.add(partsOffsets.get(i));
-                    diffSpans.add(partsSpans.get(i));
-                }
-
+        // Iterate through the current input text and the prev input text and find differences
+        for (int i = 0; i < prevParts.size() && i < parts.size(); i++) {
+            // If current elements are different, add to diff list
+            if (!prevParts.get(i).equals(parts.get(i))) {
+                diff.add(parts.get(i));
+                diffOffsets.add(partsOffsets.get(i));
+                diffSpans.add(partsSpans.get(i));
             }
+        }
+
+        // If there is more text in the new input, add all new text
+        if (prevParts.size() >= parts.size()) {
+            return;
+        }
+
+        for (int i = prevParts.size(); i < parts.size(); i++) {
+            diff.add(parts.get(i));
+            diffOffsets.add(partsOffsets.get(i));
+            diffSpans.add(partsSpans.get(i));
         }
     }
 
@@ -427,6 +420,7 @@ public final class SpellChecker {
                 final Button ignoreButton = new Button("Ignore All");
                 // The menu item that contains the button will handle ignoring words
                 final CustomMenuItem customItemWithButton = new CustomMenuItem(ignoreButton);
+
                 customItemWithButton.setOnAction(e -> {
                     this.addWordsToIgnore();
                     checkSpellingForce();
@@ -434,6 +428,12 @@ public final class SpellChecker {
                 contextMenu.getItems().add(customItemWithButton);
             }
         }
+
+//        contextMenu.addEventFilter(KeyEvent.ANY, keyEvent -> {
+//            if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED || keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
+//                keyEvent.consume(); // Prevents ENTER or SPACE activation
+//            }
+//        });
 
         final CustomMenuItem labelItem = new CustomMenuItem(labelMessage);
         labelItem.setId(LABEL_CSS_ID);
