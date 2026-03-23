@@ -429,12 +429,6 @@ public final class SpellChecker {
             }
         }
 
-//        contextMenu.addEventFilter(KeyEvent.ANY, keyEvent -> {
-//            if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED || keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
-//                keyEvent.consume(); // Prevents ENTER or SPACE activation
-//            }
-//        });
-
         final CustomMenuItem labelItem = new CustomMenuItem(labelMessage);
         labelItem.setId(LABEL_CSS_ID);
         labelItem.setHideOnClick(false);
