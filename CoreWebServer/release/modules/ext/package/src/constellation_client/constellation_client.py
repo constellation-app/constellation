@@ -15,13 +15,25 @@ import tempfile
 import time
 import io
 
-# A version number of the form yyyymmdd.
+# [OLD]: A version number of the form yyyymmdd.
 #
 # Increase this version number when a change happens.
 # For example, if a new function is added, clients that require that function
 # to be present can check the version.
 #
-__version__ = 20240711
+#__version__ = 20240711
+
+# [UPDATED 16 Mar 2026]: this version here is to keep track of
+# constellation_client.py. Whenever this file is updated, this version is to be
+# updated. The version in pyproject.toml needs to be updated to match (this also
+# builds the wheel with this version). To build the new wheel and tar.gz files,
+# you can use the build_pyproject.sh script which downloads and installs pip and builds
+# the wheel. Python needs to be installed, if it is not, you can uncomment the
+# block of script that downloads and installed python too (this requires
+# internet access) or install python by other means that you are able to access.
+#
+# Last updated 16 Mar 2026
+__version__ = 1.0.1 
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
 #

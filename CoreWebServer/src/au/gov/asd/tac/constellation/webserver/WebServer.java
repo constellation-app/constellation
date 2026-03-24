@@ -30,6 +30,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -75,6 +76,8 @@ import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
+import org.python.apache.commons.io.IOCase;
+import org.python.apache.commons.io.filefilter.SuffixFileFilter;
 
 /**
  * A Web Server.
@@ -141,13 +144,15 @@ public class WebServer {
 
     private static final String PACKAGE_NAME = "constellation_client";
     protected static final String CONSTELLATION_CLIENT = PACKAGE_NAME + ".py";
+    private static final String DELIMITER = ",";
 
     private static final String IPYTHON = ".ipython";
     private static final String SEP = File.separator;
     private static final String SCRIPT_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "src" + SEP + PACKAGE_NAME + SEP;
 
     private static final String PACKAGE_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "package_dist";
-    private static final String[] PACKAGE_INSTALL = {"pip", "install", "--upgrade", PACKAGE_NAME, "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
+    private static final String[] PACKAGE_INSTALL = {"pip", "install", PACKAGE_NAME, "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
+    private static final String[] PACKAGE_UNINSTALL = {"pip", "uninstall", "-y", PACKAGE_NAME};
     private static final String[] WINDOWS_COMMAND = {"cmd.exe", "/C"};
 
     private static final String[] CHECK_INSTALL = {"pip", "freeze"};
@@ -327,7 +332,14 @@ public class WebServer {
         }
 
         try {
-            Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+            final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
+            if (pythonRestClientDownload) {
+                LOGGER.log(Level.INFO, String.format("Copying constellation_client.py into %s", download.getPath()));
+                Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } else {
+                LOGGER.log(Level.WARNING, String.format("NOT copying constellation_client.py into %s: Download REST client preference is %s", download.getPath(), pythonRestClientDownload));
+            }
         } catch (final IOException e) {
             // Formatted string is used both to log directory and because the exception would be shown
             // to user if e was logged as throwable, rather than converted to string
@@ -431,103 +443,126 @@ public class WebServer {
      */
     public static void installPythonPackage() throws IOException {
         // Create the process buillder with required arguments
-        final ProcessBuilder pb;
         int processResult = -1; // Fail by default
+        
+        // check if same version as wheel. Null is returned if not installed
+        final Boolean sameVersion = verifyInstalledPackageVersionSame();
 
-        if (isWindows()) {
-            pb = new ProcessBuilder(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL)).redirectErrorStream(true);
-        } else {
-            pb = new ProcessBuilder(PACKAGE_INSTALL).redirectErrorStream(true);
-        }
+        // if current install not the same version as wheel, uninstall package first
+        if (sameVersion != null && !sameVersion) {
+            ProcessBuilder pb;
+            
+            if (isWindows()) {
+                pb = new ProcessBuilder(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_UNINSTALL)).redirectErrorStream(true);
+            } else {
+                pb = new ProcessBuilder(PACKAGE_UNINSTALL).redirectErrorStream(true);
+            }
+            
+            // Start uninstall process
+            final Process p = startPythonProcess(pb, "uninstall");
+            if (p == null) {
+                return;
+            }
+            
+            try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
 
-        // Start install process
-        final Process p = startPythonProcess(pb, "installation");
-        if (p == null) {
-            return;
-        }
+                // If inputStream available, log output
+                String line;
 
-        try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
+                while ((line = inputBuffer.readLine()) != null) {
+                    LOGGER.log(Level.INFO, "{0}", line);
+                }
+                processResult = p.waitFor();
+                LOGGER.log(Level.INFO, "constellation_client package uninstall finished...");
+                LOGGER.log(Level.INFO, "constellation_client package uninstall process result: {0}", processResult);
 
-            // If inputStream available, log output
-            String line;
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the constellation_client package uninstall:", ex);
+                Thread.currentThread().interrupt();
+            }
+            
+            p.destroy();
+            pb = null;
+        } 
 
-            while ((line = inputBuffer.readLine()) != null) {
-                LOGGER.log(Level.INFO, "{0}", line);
+        // if not installed or diff version, then install
+        if (sameVersion == null || !sameVersion) {
+            ProcessBuilder pb;
+        
+            // install package
+            if (isWindows()) {                
+                pb = new ProcessBuilder(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL)).redirectErrorStream(true);
+            } else {
+                pb = new ProcessBuilder(PACKAGE_INSTALL).redirectErrorStream(true);
             }
 
-            processResult = p.waitFor();
-            LOGGER.log(Level.INFO, "Python package installation finished...");
-            LOGGER.log(Level.INFO, "Python install process result: {0}", processResult);
+            // Start install process
+            final Process p = startPythonProcess(pb, "installation");
+            if (p == null) {
+                return;
+            }
+            try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
+                
+                // If inputStream available, log output
+                String line;
+                
+                while ((line = inputBuffer.readLine()) != null) {
+                    LOGGER.log(Level.INFO, "{0}", line);
+                }
 
-            // If not successful
-            if (processResult != INSTALL_SUCCESS) {
-                LOGGER.log(Level.INFO, "Python package installation unsuccessful, copying script to notebook directory...");
-                downloadPythonClientNotebookDir();
+                processResult = p.waitFor();
+                LOGGER.log(Level.INFO, "Python package installation finished...");
+                LOGGER.log(Level.INFO, "Python install process result: {0}", processResult);
+
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the python package installation:", ex);
+                Thread.currentThread().interrupt();
             }
 
-        } catch (final InterruptedException ex) {
-            LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the python package installation:", ex);
-            Thread.currentThread().interrupt();
+            p.destroy();
         }
-
-        p.destroy();
-
-        // Verify install worked, unsuccessful process would have already been caught
-        if (processResult == INSTALL_SUCCESS) {
-            verifyPythonPackage();
-        }
+        
+        // make sure the contellation_client is copied
+        LOGGER.log(Level.INFO, "Copying script to Jupyter notebook directory...");
+        downloadPythonClientNotebookDir();
+        
     }
 
-    /**
-     * Verify that the Python REST API client package was installed. Otherwise copy the script file to the notebook
-     * directory
+      /**
+     * Verify that the Python REST API client package installed is the same
+     * version as the latest one in package_dist by checking the pip
+     * installation version and the wheel filename version.
      *
+     * @return null if not installed, otherwise return true/false whether the
+     * installed version is same version as the wheel
      * @throws java.io.IOException
      */
-    public static void verifyPythonPackage() throws IOException {
-        // Create the process buillder with required arguments
-        final ProcessBuilder pb = new ProcessBuilder(CHECK_INSTALL).redirectErrorStream(true);
-
-        // Verify process
-        final Process p = startPythonProcess(pb, "verification");
-        if (p == null) {
-            return;
+    public static Boolean verifyInstalledPackageVersionSame() throws IOException {        
+        // get installed version
+        final String installedVersion = getInstalledVersion();
+        LOGGER.log(Level.INFO, "getInstalledVersion = {0}",  installedVersion);
+        if (installedVersion == null || installedVersion.isBlank()) {
+            return null;
         }
+        
+        // get wheel version
+        final File packageDir = new File(PACKAGE_SOURCE);        
+        if (packageDir.isDirectory() && packageDir.listFiles().length > 0) {
+            final File[] listOfFiles = packageDir.listFiles(
+                (FileFilter) new SuffixFileFilter(".whl", IOCase.INSENSITIVE));
 
-        try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
-
-            // If inputStream available, log output
-            String allLines = "";
-            String currentLine;
-
-            while ((currentLine = inputBuffer.readLine()) != null) {
-                allLines = allLines.concat(currentLine);
+            // assume always only one wheel
+            final String filename = listOfFiles[0].getName();
+            final int firstHyphenIndex = filename.indexOf("-");
+            final String version = filename.substring(firstHyphenIndex + 1, filename.indexOf("-", firstHyphenIndex + 1));
+            LOGGER.log(Level.INFO, "Package version = {0}",  version);
+            if (installedVersion.equalsIgnoreCase(version)) {
+                return true;
             }
-
-            final int result = p.waitFor();
-
-            LOGGER.log(Level.INFO, "Verification process result: {0}", result);
-
-            // If not successful
-            if (result != INSTALL_SUCCESS) {
-                LOGGER.log(Level.INFO, "Python package verification unsuccessful, copying script to notebook directory...");
-                downloadPythonClientNotebookDir();
-            } else if (allLines.contains(PACKAGE_NAME)) {  // Result must be success, so if output of listed packages include constellation_client
-                LOGGER.log(Level.INFO, "Python package was installed!");
-            } else {
-                LOGGER.log(Level.INFO, "Could not find python package, copying script to notebook directory...");
-                downloadPythonClientNotebookDir();
-            }
-
-        } catch (final InterruptedException ex) {
-            LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the python package verification:", ex);
-            Thread.currentThread().interrupt();
         }
-
-        LOGGER.log(Level.INFO, "Verification of package finished...");
-        p.destroy();
+        return false;
     }
-
+    
     public static Process startPythonProcess(final ProcessBuilder pb, final String warning) {
         LOGGER.log(Level.INFO, "Python package {0} begun...", warning);
         final Process p;
@@ -591,5 +626,63 @@ public class WebServer {
 
     public static boolean isWindows() {
         return System.getProperty("os.name").startsWith("Windows");
+    }
+    
+    /**
+     * Gets the installed version of the constellation_client package.
+     * Returns null if not installed.
+     * @return the version of the installed package, if installed.
+     * @throws IOException 
+     */
+    public static String getInstalledVersion() throws IOException {
+        // Create the process buillder with required arguments
+        final ProcessBuilder pb = new ProcessBuilder(CHECK_INSTALL).redirectErrorStream(true);
+
+        // Verify process
+        final Process p = startPythonProcess(pb, "getInstalledVersion");
+            
+        if (p == null) {
+            return null;
+        }
+
+        try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
+
+            // If inputStream available, log output
+            String allLines = "";
+            String currentLine;
+
+            while ((currentLine = inputBuffer.readLine()) != null) {
+                allLines = allLines.concat(DELIMITER + currentLine);
+            }
+            
+            final int result = p.waitFor();            
+
+            // If not successful
+            if (result != INSTALL_SUCCESS) {
+                LOGGER.log(Level.INFO, "Python package version verification unsuccessful, assume different version...");
+                return null;
+            } else if (allLines.contains(PACKAGE_NAME)) {
+                // Result must be success, so if output of listed packages include constellation_client, get the version
+                final int index = allLines.indexOf(PACKAGE_NAME + "==");
+                // check index, if index == -1, assume it's not installed
+                if (index > -1) {
+                    int indexOfDelimiter = allLines.indexOf(DELIMITER, index);
+                    // check if delimiter > -1, else set to the end of line
+                    if (indexOfDelimiter == -1) {
+                        indexOfDelimiter = allLines.length();
+                    }
+                    final String version = allLines.substring(index+(PACKAGE_NAME).length() + "==".length(), indexOfDelimiter);
+                    return version;
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the python package verification:", ex);
+            Thread.currentThread().interrupt();
+        }
+        return null;
     }
 }

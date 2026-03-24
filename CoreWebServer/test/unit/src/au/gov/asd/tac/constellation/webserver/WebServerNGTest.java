@@ -17,9 +17,11 @@ package au.gov.asd.tac.constellation.webserver;
 
 import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -34,7 +36,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.apache.commons.io.IOUtils;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
@@ -44,6 +45,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.mockito.stubbing.Answer;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbPreferences;
 import org.testfx.api.FxToolkit;
@@ -100,7 +102,7 @@ public class WebServerNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
         // Clean up created files from this test
-        final String[] filesArray = {WebServer.CONSTELLATION_CLIENT, REST_FILE};
+        final String[] filesArray = {WebServer.CONSTELLATION_CLIENT, REST_FILE, "testFile.py"};
         for (String file : filesArray) {
             // Delete in home directory
             final String homeDir = System.getProperty("user.home");
@@ -112,7 +114,6 @@ public class WebServerNGTest {
                     LOGGER.log(Level.WARNING, "Error deleting file {0} at {1}", new Object[]{file, filePath});
                 }
             }
-
             // Delete in notebook directory
             final Path filePathNotebook = NOTEBOOK_PATH.resolve(file);
             if (Files.exists(filePathNotebook)) {
@@ -203,13 +204,13 @@ public class WebServerNGTest {
     }
 
     @Test
-    public void testInstallPythonPackageWindows() throws InterruptedException {
+    public void testInstallPythonPackageWindows() throws InterruptedException, IOException {
         System.out.println("testInstallPythonPackageWindows");
         installPythonPackageHelper(true);
     }
 
     @Test
-    public void testInstallPythonPackageLinux() throws InterruptedException {
+    public void testInstallPythonPackageLinux() throws InterruptedException, IOException {
         System.out.println("testInstallPythonPackageLinux");
         installPythonPackageHelper(false);
     }
@@ -227,7 +228,7 @@ public class WebServerNGTest {
             when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
         })) {
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
-
+            webserverMock.when(WebServer::verifyInstalledPackageVersionSame).thenReturn(null);
             // Webserver is mocked, but calles real methods aside from isWindows()
             webserverMock.when(WebServer::isWindows).thenReturn(isWindows);
 
@@ -251,6 +252,15 @@ public class WebServerNGTest {
     }
 
     @Test
+    /**
+     * This test checks that the process waitFor() is never called when the
+     * installation process throws an IOException. Test that if IOException 
+     * thrown, downloadPythonClientNotebookDir will still be run.
+     * Notes: 
+     * 1) Set up to throw IOException when process start() is called.
+     * 3) In getInstalledVersion() startPythonProcess function is called, throwing IOException will call downloadPythonClientNotebookDir.
+     * 4) Installation of package with startPythonProcess function will begin but will throw IOException as well, this will result in another call to downloadPythonClientNotebookDir.
+     */
     public void testInstallPythonPackageIOException() throws InterruptedException {
         System.out.println("testInstallPythonPackageIOException");
         // Mocks
@@ -265,8 +275,10 @@ public class WebServerNGTest {
             when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
         })) {
             // Setup mocks
-            generatorMock.when(Generator::getBaseDirectory).thenReturn("");
-
+            webserverMock.when(WebServer::getInstalledVersion).thenReturn(null);
+            webserverMock.when(() ->  WebServer.downloadPythonClientToDir(Mockito.any())).then((Answer<Void>) invocation -> null);
+            webserverMock.when(() ->  WebServer.equalScripts(Mockito.any())).thenReturn(true);
+           
             // Run function
             try {
                 WebServer.installPythonPackage();
@@ -274,8 +286,8 @@ public class WebServerNGTest {
                 System.out.println("Caught IOException when running WebServer.installPythonPackage()");
             }
 
-            // Assert processBuilder was made
-            assertEquals(1, processBuilderMock.constructed().size());
+            // Assert processBuilder was made once
+            assertEquals(2, processBuilderMock.constructed().size());
 
             // Assert process never got to run
             try {
@@ -285,17 +297,25 @@ public class WebServerNGTest {
             }
 
             // Assert function was called to download script
-            webserverMock.verify(WebServer::downloadPythonClientNotebookDir, times(1));
+            webserverMock.verify(WebServer::downloadPythonClientNotebookDir, times(2));
         }
     }
 
     @Test
-    public void testInstallPythonPackageNotSuccessfull() throws InterruptedException {
-        System.out.println("testInstallPythonPackageNotSuccessfull");
+    /**
+     * This test checks that when process waitFor() returns -1 (unsuccessful
+     * process) during the installPythonPackage installation process,
+     * downloadPythonClientNotebookDir is called. 
+     * Notes: 
+     * 1) Set up so no there are no previous versions ie. verifyInstalledPackageVersionSame = null, so no need to uninstall
+     * 2) processBuilder was constructed twice, once for getInstalledVersion, once for installation.
+     * 3) InputStream is set to null so the while loop returns.
+     */
+    public void testInstallPythonPackageNotSuccessful() throws InterruptedException, IOException {
+        System.out.println("testInstallPythonPackageNotSuccessful");
         // Mocks
         Process processMock = mock(Process.class);
         when(processMock.waitFor()).thenReturn(-1); // Return NOT success
-        when(processMock.getInputStream()).thenReturn(InputStream.nullInputStream());
 
         // Mocking Webserver only to verify functions were run
         try (final MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS); final MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); final MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
@@ -303,6 +323,7 @@ public class WebServerNGTest {
             // Return our mocked process when start is called
             when(mock.start()).thenReturn(processMock);
             when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
+            when(processMock.getInputStream()).thenReturn(InputStream.nullInputStream());
         })) {
             // Setup mocks
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
@@ -315,13 +336,13 @@ public class WebServerNGTest {
             }
 
             // Assert processBuilder was made
-            assertEquals(1, processBuilderMock.constructed().size());
+            assertEquals(2, processBuilderMock.constructed().size());
 
-            // Assert process never got to run
+            // Assert process waitFor got to run
             try {
-                verify(processMock).waitFor();
+                verify(processMock, times(2)).waitFor();
             } catch (final InterruptedException ex) {
-                System.out.println("Caught InterruptedException in testInstallPythonPackageIOException");
+                System.out.println("Caught InterruptedException in testInstallPythonPackageNotSuccessful");
             }
 
             // Assert function was called to download script
@@ -330,38 +351,49 @@ public class WebServerNGTest {
     }
 
     @Test
-    public void testVerifyPythonPackage() throws InterruptedException {
-        System.out.println("testVerifyPythonPackage");
+    /**
+     * This test checks that verifyInstalledPackageVersionSame returns false
+     * when compared with a test current version 0.0.0 when stubbing the
+     * installed version. 
+     * 
+     * Notes: 
+     * 1) Set up so current version = 0.0.0
+     * 2) processBuilder was constructed once, for getInstalledVersion.
+     * 3) Result should always be false.
+     */
+    public void testVerifyInstalledPackageVersionSameFalse() throws InterruptedException, IOException {
+        System.out.println("testVerifyInstalledPackageVersionSameFalse");
         // Mocks
         Process processMock = mock(Process.class);
         when(processMock.waitFor()).thenReturn(0); // Return success
-        final InputStream stubInputStream = IOUtils.toInputStream("constellation_client", "UTF-8");
+        // mock the installed version
+        final InputStream stubInputStream = IOUtils.toInputStream("constellation_client==0.0.0", "UTF-8");
         when(processMock.getInputStream()).thenReturn(stubInputStream);
-
+        
         try (final MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS); final MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); final MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
                 -> {
             // Return our mocked process when start is called
             when(mock.start()).thenReturn(processMock);
             when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
         })) {
-            //Setup mocks
-            generatorMock.when(Generator::getBaseDirectory).thenReturn("");
-
             // Run function
             try {
-                WebServer.verifyPythonPackage();
+                // should not be the same!
+                final Boolean result = WebServer.verifyInstalledPackageVersionSame();
+                assertEquals(result, Boolean.FALSE);
             } catch (IOException ex) {
-                System.out.println("Caught IOException when running WebServer.installPythonPackage()");
+                System.out.println("Caught IOException when running WebServer.verifyInstalledPackageVersionSame()");
             }
             verify(processMock, times(1)).getInputStream();
-
+            webserverMock.verify(WebServer::getInstalledVersion, times(1));
+            
             // Assert processBuilder was made
             assertEquals(1, processBuilderMock.constructed().size());
 
             try {
                 verify(processMock, times(1)).waitFor();
             } catch (final InterruptedException ex) {
-                System.out.println("Caught InterruptedException in testVerifyPythonPackage");
+                System.out.println("Caught InterruptedException in testVerifyInstalledPackageVersionSameFalse");
             }
 
             // Assert function was NOT called to download script
@@ -370,6 +402,14 @@ public class WebServerNGTest {
     }
 
     @Test
+    /**
+     * This test checks that if IOException is thrown, download of the 
+     * file will still be performed.
+     * Notes: 
+     * 1) Set up so first process start function will throw IOException.
+     * 2) Verify that downloadPythonClientNotebookDir will be called
+     * 
+     */
     public void testVerifyPythonPackageIOException() throws InterruptedException {
         System.out.println("testVerifyPythonPackageIOException");
         // Mocks
@@ -388,12 +428,12 @@ public class WebServerNGTest {
 
             // Run verification function
             try {
-                WebServer.verifyPythonPackage();
+                WebServer.verifyInstalledPackageVersionSame();
             } catch (final IOException ex) {
-                System.out.println("Caught IOException when running WebServer.installPythonPackage()");
+                System.out.println("Caught IOException when running WebServer.verifyInstalledPackageVersionSame()");
             }
 
-            // Assert processBuilder was made
+            // Assert processBuilder was made once
             assertEquals(1, processBuilderMock.constructed().size());
 
             // Assert process never got to run
@@ -409,38 +449,39 @@ public class WebServerNGTest {
     }
 
     @Test
-    public void testVerifyPythonPackageNotSuccessful() throws InterruptedException {
-        System.out.println("testVerifyPythonPackageIOException");
+    /**
+     * This test will test when verifyInstalledPackageVersionSame returns false
+     * when attempting to installPythonPackage.
+     * This will then uninstall the package and install the new package as well
+     * as download the constellation_client.py file.
+     * Note: Process is called 3 times: 1)Verify 2)Uninstall 3)Install
+     */
+    public void testverifyInstalledPackageVersionDifferentUninstall() throws InterruptedException {
+        System.out.println("testverifyInstalledPackageVersionDifferentUninstall");
         // Mocks
         Process processMock = mock(Process.class);
-        when(processMock.waitFor()).thenReturn(-1); // Return NOT success
-        when(processMock.getInputStream()).thenReturn(InputStream.nullInputStream());
-
+        
         try (final MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS); final MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); final MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
                 -> {
-            // Return our mocked process when start is called
+            // Return success for getInstalledVersion, uninstall and installation
+            when(processMock.waitFor()).thenReturn(0, 0, 0); 
             when(mock.start()).thenReturn(processMock);
             when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
         })) {
             //Setup mocks
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
-
+            webserverMock.when(WebServer::verifyInstalledPackageVersionSame).thenReturn(Boolean.FALSE);
+            when(processMock.getInputStream()).thenReturn(InputStream.nullInputStream(), InputStream.nullInputStream(), InputStream.nullInputStream());
+                        
             // Run verification function
             try {
-                WebServer.verifyPythonPackage();
+                WebServer.installPythonPackage();
             } catch (final IOException ex) {
                 System.out.println("Caught IOException when running WebServer.installPythonPackage()");
             }
 
-            // Assert processBuilder was made
-            assertEquals(1, processBuilderMock.constructed().size());
-
-            // Assert process never got to run
-            try {
-                verify(processMock, times(1)).waitFor();
-            } catch (final InterruptedException ex) {
-                System.out.println("Caught InterruptedException in testInstallPythonPackageIOException");
-            }
+            // Assert processBuilder should be called 3 times: getInstalledVersion, Uninstall, Install
+            assertEquals(3, processBuilderMock.constructed().size());
 
             // Assert function was called to download script
             webserverMock.verify(WebServer::downloadPythonClientNotebookDir, times(1));
@@ -478,11 +519,15 @@ public class WebServerNGTest {
         System.out.println("downloadPythonClient");
         final String scriptDir = WebServer.getScriptDir(false).toString();
         final Path filePath = Path.of(scriptDir).resolve(WebServer.CONSTELLATION_CLIENT);
+        final Preferences prefsMock = mock(Preferences.class );
+        when(prefsMock.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)).thenReturn(true);
+        
+        final Path testFilePath = createTestFile(scriptDir);
 
-        final Path testFilePath = createTestFile();
-
-        try (final MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class)) {
+        try (final MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class);
+                 final MockedStatic<NbPreferences> nbPreferencesStatic = Mockito.mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS)) {            
             pathsStaticMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(testFilePath);
+            nbPreferencesStatic.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class)).thenReturn(prefsMock);
             WebServer.downloadPythonClient();
             assertTrue(Files.exists(filePath));
         }
@@ -496,11 +541,15 @@ public class WebServerNGTest {
         System.out.println("DownloadPythonClientNotebookDir");
         final String notebookDir = WebServer.getNotebookDir();
         final Path filePath = Path.of(notebookDir).resolve(WebServer.CONSTELLATION_CLIENT);
+        final Preferences prefsMock = mock(Preferences.class );
+        when(prefsMock.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)).thenReturn(true);
+        when(prefsMock.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT)).thenReturn(notebookDir);
+        final Path testFilePath = createTestFile(notebookDir);
 
-        final Path testFilePath = createTestFile();
-
-        try (final MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class)) {
+        try (final MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class);
+                final MockedStatic<NbPreferences> nbPreferencesStatic = Mockito.mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS)) {
             pathsStaticMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(testFilePath);
+            nbPreferencesStatic.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class)).thenReturn(prefsMock);
             WebServer.downloadPythonClientNotebookDir();
             assertTrue(Files.exists(filePath));
         }
@@ -512,15 +561,20 @@ public class WebServerNGTest {
     @Test
     public void testDownloadPythonClientToDir() {
         System.out.println("downloadPythonClientToDir");
-        final String pathString = System.getProperty("user.dir");
+        final String pathString = NOTEBOOK_PATH.toString();
         final Path filePath = Path.of(pathString).resolve(WebServer.CONSTELLATION_CLIENT);
+        // set preferences to allow download true
+        final Preferences prefsMock = mock(Preferences.class );
+        when(prefsMock.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)).thenReturn(true);
 
-        final Path testFilePath = createTestFile();
+        final Path testFilePath = createTestFile(pathString);
 
-        try (final MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class); final MockedStatic<WebServer> webServerStaticMock = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS); final MockedStatic<StatusDisplayer> statusDisplayerStaticMock = Mockito.mockStatic(StatusDisplayer.class, Mockito.CALLS_REAL_METHODS)) {
+        try (final MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class); final MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); final MockedStatic<StatusDisplayer> statusDisplayerStaticMock = Mockito.mockStatic(StatusDisplayer.class, Mockito.CALLS_REAL_METHODS); final MockedStatic<NbPreferences> nbPreferencesStatic = Mockito.mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS); final MockedStatic<WebServer> webserverMockStatic = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS); ) {
             pathsStaticMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(testFilePath);
-            webServerStaticMock.when(() -> WebServer.equalScripts(any(File.class))).thenReturn(true);
-
+            generatorMock.when(Generator::getBaseDirectory).thenReturn("");
+            nbPreferencesStatic.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class)).thenReturn(prefsMock);
+            
+            webserverMockStatic.when(() -> WebServer.equalScripts(Mockito.any(File.class))).thenReturn(false);
             WebServer.downloadPythonClientToDir(new File(pathString));
             // Assert file was created
             assertTrue(Files.exists(filePath));
@@ -529,17 +583,18 @@ public class WebServerNGTest {
             statusDisplayerStaticMock.verify(StatusDisplayer::getDefault, times(1));
 
             // Run the same function again, verify that function returned early as functions weren't called a second time
+            webserverMockStatic.when(() -> WebServer.equalScripts(Mockito.any(File.class))).thenReturn(true);                        
             WebServer.downloadPythonClientToDir(new File(pathString));
             pathsStaticMock.verify(() -> Paths.get(Mockito.anyString()), times(1));
             statusDisplayerStaticMock.verify(StatusDisplayer::getDefault, times(1));
         }
     }
-
+    
     /**
      * Function to create empty file to be used in tests.
      */
-    private Path createTestFile() {
-        final File testFile = new File("testFile.py");
+    private Path createTestFile(String dir) {
+        final File testFile = new File(dir, "testFile.py");
         try {
             if (testFile.createNewFile()) {
                 System.out.println("File created: " + testFile.getName());
