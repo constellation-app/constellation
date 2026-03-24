@@ -23,6 +23,10 @@
 #""$INSTALLER_PATH"" /verbose InstallAllUsers=1 PrependPath=1 Include_test=0
 #echo "Finished installation!"
 
+# IMPORTANT: Once python is installed, ensure that the version in pyproject.toml
+#  is updated if constellation_client.py has been updated, the version in
+# constellation_client.py should match. This ensures that any different
+# version will be updated. Check in the new packages.
 
 # ensure the latest pip is installed
 py -m pip install --upgrade pip

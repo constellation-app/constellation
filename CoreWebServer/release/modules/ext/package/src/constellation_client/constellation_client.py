@@ -32,7 +32,7 @@ import io
 # block of script that downloads and installed python too (this requires
 # internet access) or install python by other means that you are able to access.
 #
-# Last updated 16 Mar 2026
+# Last updated 24 Mar 2026
 __version__ = 1.0.1 
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
