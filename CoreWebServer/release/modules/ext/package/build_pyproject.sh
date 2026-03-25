@@ -37,6 +37,4 @@ py -m pip install --upgrade build
 # build and put the packages in package_dist
 py -m build --outdir ./package_dist
 
-pip list --user
-
 read -p "Press [Enter] key to continue..."

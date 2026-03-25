@@ -70,7 +70,8 @@ public class WebServerNGTest {
     private static final String IPYTHON = ".ipython";
     private static final String REST_FILE = "rest.json";
     private static final String TEST_TEXT = "TEST FILE";
-    private static final Path NOTEBOOK_PATH = Path.of(NbPreferences.forModule(ApplicationPreferenceKeys.class).get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
+    private static String TEST_FOLDER = "test_folder";
+
     private static final Preferences PREFS = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
     private static final boolean OLD_PREF_VALUE = PREFS.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
@@ -97,6 +98,10 @@ public class WebServerNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         // Not currently required
+        final File test_dir = new File(TEST_FOLDER);        
+        if (!test_dir.exists()) {
+            test_dir.mkdir();
+        }
     }
 
     @AfterMethod
@@ -104,9 +109,8 @@ public class WebServerNGTest {
         // Clean up created files from this test
         final String[] filesArray = {WebServer.CONSTELLATION_CLIENT, REST_FILE, "testFile.py"};
         for (String file : filesArray) {
-            // Delete in home directory
-            final String homeDir = System.getProperty("user.home");
-            final Path filePath = Path.of(homeDir, IPYTHON).resolve(file);
+            // Delete in test directory
+            final Path filePath = Path.of(TEST_FOLDER).resolve(file);
             if (Files.exists(filePath)) {
                 try {
                     Files.delete(filePath);
@@ -114,15 +118,10 @@ public class WebServerNGTest {
                     LOGGER.log(Level.WARNING, "Error deleting file {0} at {1}", new Object[]{file, filePath});
                 }
             }
-            // Delete in notebook directory
-            final Path filePathNotebook = NOTEBOOK_PATH.resolve(file);
-            if (Files.exists(filePathNotebook)) {
-                try {
-                    Files.delete(filePathNotebook);
-                } catch (final IOException e) {
-                    LOGGER.log(Level.WARNING, "Error deleting file {0} at {1}", new Object[]{file, filePath});
-                }
-            }
+        }
+        final Path test_path = Path.of(TEST_FOLDER);
+        if (Files.isDirectory(test_path)) {
+            Files.delete(test_path);
         }
     }
 
@@ -231,6 +230,7 @@ public class WebServerNGTest {
             webserverMock.when(WebServer::verifyInstalledPackageVersionSame).thenReturn(null);
             // Webserver is mocked, but calles real methods aside from isWindows()
             webserverMock.when(WebServer::isWindows).thenReturn(isWindows);
+            webserverMock.when(WebServer::getNotebookDir).thenReturn(TEST_FOLDER);
 
             // Run function
             try {
@@ -278,6 +278,7 @@ public class WebServerNGTest {
             webserverMock.when(WebServer::getInstalledVersion).thenReturn(null);
             webserverMock.when(() ->  WebServer.downloadPythonClientToDir(Mockito.any())).then((Answer<Void>) invocation -> null);
             webserverMock.when(() ->  WebServer.equalScripts(Mockito.any())).thenReturn(true);
+            webserverMock.when(WebServer::getNotebookDir).thenReturn(TEST_FOLDER);
            
             // Run function
             try {
@@ -327,7 +328,7 @@ public class WebServerNGTest {
         })) {
             // Setup mocks
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
-
+            webserverMock.when(WebServer::getNotebookDir).thenReturn(TEST_FOLDER);
             // Run function
             try {
                 WebServer.installPythonPackage();
@@ -471,6 +472,7 @@ public class WebServerNGTest {
             //Setup mocks
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
             webserverMock.when(WebServer::verifyInstalledPackageVersionSame).thenReturn(Boolean.FALSE);
+            webserverMock.when(WebServer::getNotebookDir).thenReturn(TEST_FOLDER);
             when(processMock.getInputStream()).thenReturn(InputStream.nullInputStream(), InputStream.nullInputStream(), InputStream.nullInputStream());
                         
             // Run verification function
@@ -517,16 +519,18 @@ public class WebServerNGTest {
     @Test
     public void testDownloadPythonClient() {
         System.out.println("downloadPythonClient");
-        final String scriptDir = WebServer.getScriptDir(false).toString();
-        final Path filePath = Path.of(scriptDir).resolve(WebServer.CONSTELLATION_CLIENT);
+        final Path filePath = Path.of(TEST_FOLDER).resolve(WebServer.CONSTELLATION_CLIENT);
         final Preferences prefsMock = mock(Preferences.class );
         when(prefsMock.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)).thenReturn(true);
         
-        final Path testFilePath = createTestFile(scriptDir);
+        final Path testFilePath = createTestFile(TEST_FOLDER);
 
         try (final MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class);
-                 final MockedStatic<NbPreferences> nbPreferencesStatic = Mockito.mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS)) {            
+                final MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class);
+                final MockedStatic<WebServer> webserverMockStatic = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS);
+                final MockedStatic<NbPreferences> nbPreferencesStatic = Mockito.mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS)) {            
             pathsStaticMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(testFilePath);
+            webserverMockStatic.when(() -> WebServer.getScriptDir(true)).thenReturn(new File(TEST_FOLDER));
             nbPreferencesStatic.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class)).thenReturn(prefsMock);
             WebServer.downloadPythonClient();
             assertTrue(Files.exists(filePath));
@@ -539,14 +543,14 @@ public class WebServerNGTest {
     @Test
     public void testDownloadPythonClientNotebookDir() {
         System.out.println("DownloadPythonClientNotebookDir");
-        final String notebookDir = WebServer.getNotebookDir();
-        final Path filePath = Path.of(notebookDir).resolve(WebServer.CONSTELLATION_CLIENT);
+        final Path filePath = Path.of(TEST_FOLDER).resolve(WebServer.CONSTELLATION_CLIENT);
         final Preferences prefsMock = mock(Preferences.class );
         when(prefsMock.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)).thenReturn(true);
-        when(prefsMock.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT)).thenReturn(notebookDir);
-        final Path testFilePath = createTestFile(notebookDir);
+        when(prefsMock.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT)).thenReturn(TEST_FOLDER);
+        final Path testFilePath = createTestFile(TEST_FOLDER);
 
         try (final MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class);
+                final MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class);
                 final MockedStatic<NbPreferences> nbPreferencesStatic = Mockito.mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS)) {
             pathsStaticMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(testFilePath);
             nbPreferencesStatic.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class)).thenReturn(prefsMock);
@@ -561,13 +565,12 @@ public class WebServerNGTest {
     @Test
     public void testDownloadPythonClientToDir() {
         System.out.println("downloadPythonClientToDir");
-        final String pathString = NOTEBOOK_PATH.toString();
-        final Path filePath = Path.of(pathString).resolve(WebServer.CONSTELLATION_CLIENT);
+        final Path filePath = Path.of(TEST_FOLDER).resolve(WebServer.CONSTELLATION_CLIENT);
         // set preferences to allow download true
         final Preferences prefsMock = mock(Preferences.class );
         when(prefsMock.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)).thenReturn(true);
 
-        final Path testFilePath = createTestFile(pathString);
+        final Path testFilePath = createTestFile(TEST_FOLDER);
 
         try (final MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class); final MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); final MockedStatic<StatusDisplayer> statusDisplayerStaticMock = Mockito.mockStatic(StatusDisplayer.class, Mockito.CALLS_REAL_METHODS); final MockedStatic<NbPreferences> nbPreferencesStatic = Mockito.mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS); final MockedStatic<WebServer> webserverMockStatic = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS); ) {
             pathsStaticMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(testFilePath);
@@ -575,7 +578,7 @@ public class WebServerNGTest {
             nbPreferencesStatic.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class)).thenReturn(prefsMock);
             
             webserverMockStatic.when(() -> WebServer.equalScripts(Mockito.any(File.class))).thenReturn(false);
-            WebServer.downloadPythonClientToDir(new File(pathString));
+            WebServer.downloadPythonClientToDir(new File(TEST_FOLDER));
             // Assert file was created
             assertTrue(Files.exists(filePath));
             // Verify functions were called
@@ -584,7 +587,7 @@ public class WebServerNGTest {
 
             // Run the same function again, verify that function returned early as functions weren't called a second time
             webserverMockStatic.when(() -> WebServer.equalScripts(Mockito.any(File.class))).thenReturn(true);                        
-            WebServer.downloadPythonClientToDir(new File(pathString));
+            WebServer.downloadPythonClientToDir(new File(TEST_FOLDER));
             pathsStaticMock.verify(() -> Paths.get(Mockito.anyString()), times(1));
             statusDisplayerStaticMock.verify(StatusDisplayer::getDefault, times(1));
         }
