@@ -562,7 +562,7 @@ public class WebServer {
         }
         return false;
     }
-    
+
     public static Process startPythonProcess(final ProcessBuilder pb, final String warning) {
         LOGGER.log(Level.INFO, "Python package {0} begun...", warning);
         final Process p;
@@ -671,8 +671,7 @@ public class WebServer {
                     if (indexOfDelimiter == -1) {
                         indexOfDelimiter = allLines.length();
                     }
-                    final String version = allLines.substring(index+(PACKAGE_NAME).length() + "==".length(), indexOfDelimiter);
-                    return version;
+                    return allLines.substring(index+(PACKAGE_NAME).length() + "==".length(), indexOfDelimiter);
                 } else {
                     return null;
                 }

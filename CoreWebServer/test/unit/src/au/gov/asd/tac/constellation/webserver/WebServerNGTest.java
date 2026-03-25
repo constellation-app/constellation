@@ -67,10 +67,9 @@ public class WebServerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(WebServerNGTest.class.getName());
 
-    private static final String IPYTHON = ".ipython";
     private static final String REST_FILE = "rest.json";
     private static final String TEST_TEXT = "TEST FILE";
-    private static String TEST_FOLDER = "test_folder";
+    private static final String TEST_FOLDER = "test_folder";
 
     private static final Preferences PREFS = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
@@ -98,9 +97,9 @@ public class WebServerNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         // Not currently required
-        final File test_dir = new File(TEST_FOLDER);        
-        if (!test_dir.exists()) {
-            test_dir.mkdir();
+        final File testDir = new File(TEST_FOLDER);        
+        if (!testDir.exists()) {
+            testDir.mkdir();
         }
     }
 
@@ -119,9 +118,9 @@ public class WebServerNGTest {
                 }
             }
         }
-        final Path test_path = Path.of(TEST_FOLDER);
-        if (Files.isDirectory(test_path)) {
-            Files.delete(test_path);
+        final Path testPath = Path.of(TEST_FOLDER);
+        if (Files.isDirectory(testPath)) {
+            Files.delete(testPath);
         }
     }
 
@@ -203,13 +202,13 @@ public class WebServerNGTest {
     }
 
     @Test
-    public void testInstallPythonPackageWindows() throws InterruptedException, IOException {
+    public void testInstallPythonPackageWindows() throws InterruptedException {
         System.out.println("testInstallPythonPackageWindows");
         installPythonPackageHelper(true);
     }
 
     @Test
-    public void testInstallPythonPackageLinux() throws InterruptedException, IOException {
+    public void testInstallPythonPackageLinux() throws InterruptedException {
         System.out.println("testInstallPythonPackageLinux");
         installPythonPackageHelper(false);
     }
