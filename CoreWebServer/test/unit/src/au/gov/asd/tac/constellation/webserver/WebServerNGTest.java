@@ -226,7 +226,7 @@ public class WebServerNGTest {
             when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
         })) {
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
-            webserverMock.when(WebServer::verifyInstalledPackageVersionSame).thenReturn(null);
+            webserverMock.when(WebServer::verifyInstalledPackageVersionSame).thenReturn(false);
             // Webserver is mocked, but calles real methods aside from isWindows()
             webserverMock.when(WebServer::isWindows).thenReturn(isWindows);
             webserverMock.when(WebServer::getNotebookDir).thenReturn(TEST_FOLDER);
@@ -307,8 +307,8 @@ public class WebServerNGTest {
      * process) during the installPythonPackage installation process,
      * downloadPythonClientNotebookDir is called. 
      * Notes: 
-     * 1) Set up so no there are no previous versions ie. verifyInstalledPackageVersionSame = null, so no need to uninstall
-     * 2) processBuilder was constructed twice, once for getInstalledVersion, once for installation.
+     * 1) verifyInstalledPackageVersionSame = false, so need to uninstall
+     * 2) processBuilder was constructed thrice, for getInstalledVersion, uninstall and for installation.
      * 3) InputStream is set to null so the while loop returns.
      */
     public void testInstallPythonPackageNotSuccessful() throws InterruptedException, IOException {
@@ -336,11 +336,11 @@ public class WebServerNGTest {
             }
 
             // Assert processBuilder was made
-            assertEquals(2, processBuilderMock.constructed().size());
+            assertEquals(3, processBuilderMock.constructed().size());
 
             // Assert process waitFor got to run
             try {
-                verify(processMock, times(2)).waitFor();
+                verify(processMock, times(3)).waitFor();
             } catch (final InterruptedException ex) {
                 System.out.println("Caught InterruptedException in testInstallPythonPackageNotSuccessful");
             }

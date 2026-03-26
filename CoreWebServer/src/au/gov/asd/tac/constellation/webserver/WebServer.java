@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -76,8 +77,9 @@ import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
-import org.python.apache.commons.io.IOCase;
-import org.python.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A Web Server.
@@ -144,7 +146,7 @@ public class WebServer {
 
     private static final String PACKAGE_NAME = "constellation_client";
     protected static final String CONSTELLATION_CLIENT = PACKAGE_NAME + ".py";
-    private static final String DELIMITER = ",";
+    private static final String DELIMITER = SeparatorConstants.COMMA;
 
     private static final String IPYTHON = ".ipython";
     private static final String SEP = File.separator;
@@ -335,10 +337,11 @@ public class WebServer {
             final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
             final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
             if (pythonRestClientDownload) {
-                LOGGER.log(Level.INFO, String.format("Copying constellation_client.py into %s", download.getPath()));
+                LOGGER.log(Level.INFO, "Copying constellation_client.py into {0}", download.getPath());
                 Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } else {
-                LOGGER.log(Level.WARNING, String.format("NOT copying constellation_client.py into %s: Download REST client preference is %s", download.getPath(), pythonRestClientDownload));
+                String[] infoParams = new String[]{download.getPath(), String.valueOf(pythonRestClientDownload)};
+                LOGGER.log(Level.WARNING, "NOT copying constellation_client.py into {0}: Download REST client preference is {1}", infoParams);
             }
         } catch (final IOException e) {
             // Formatted string is used both to log directory and because the exception would be shown
@@ -445,12 +448,12 @@ public class WebServer {
         // Create the process buillder with required arguments
         int processResult = -1; // Fail by default
         
-        // check if same version as wheel. Null is returned if not installed
-        final Boolean sameVersion = verifyInstalledPackageVersionSame();
+        // check if same version as wheel
+        final boolean sameVersion = verifyInstalledPackageVersionSame();
 
         // if current install not the same version as wheel, uninstall package first
-        if (sameVersion != null && !sameVersion) {
-            ProcessBuilder pb;
+        if (!sameVersion) {
+            final ProcessBuilder pb;
             
             if (isWindows()) {
                 pb = new ProcessBuilder(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_UNINSTALL)).redirectErrorStream(true);
@@ -470,7 +473,7 @@ public class WebServer {
                 String line;
 
                 while ((line = inputBuffer.readLine()) != null) {
-                    LOGGER.log(Level.INFO, "{0}", line);
+                    LOGGER.log(Level.FINE, "{0}", line);
                 }
                 processResult = p.waitFor();
                 LOGGER.log(Level.INFO, "constellation_client package uninstall finished...");
@@ -481,13 +484,12 @@ public class WebServer {
                 Thread.currentThread().interrupt();
             }
             
-            p.destroy();
-            pb = null;
+            p.destroy();            
         } 
 
         // if not installed or diff version, then install
-        if (sameVersion == null || !sameVersion) {
-            ProcessBuilder pb;
+        if (!sameVersion) {
+            final ProcessBuilder pb;
         
             // install package
             if (isWindows()) {                
@@ -507,7 +509,7 @@ public class WebServer {
                 String line;
                 
                 while ((line = inputBuffer.readLine()) != null) {
-                    LOGGER.log(Level.INFO, "{0}", line);
+                    LOGGER.log(Level.FINE, "{0}", line);
                 }
 
                 processResult = p.waitFor();
@@ -533,16 +535,16 @@ public class WebServer {
      * version as the latest one in package_dist by checking the pip
      * installation version and the wheel filename version.
      *
-     * @return null if not installed, otherwise return true/false whether the
+     * @return return true/false whether the
      * installed version is same version as the wheel
      * @throws java.io.IOException
      */
-    public static Boolean verifyInstalledPackageVersionSame() throws IOException {        
+    public static boolean verifyInstalledPackageVersionSame() throws IOException {        
         // get installed version
         final String installedVersion = getInstalledVersion();
         LOGGER.log(Level.INFO, "getInstalledVersion = {0}",  installedVersion);
-        if (installedVersion == null || installedVersion.isBlank()) {
-            return null;
+        if (StringUtils.isBlank(installedVersion)) {
+            return false;
         }
         
         // get wheel version
@@ -553,8 +555,8 @@ public class WebServer {
 
             // assume always only one wheel
             final String filename = listOfFiles[0].getName();
-            final int firstHyphenIndex = filename.indexOf("-");
-            final String version = filename.substring(firstHyphenIndex + 1, filename.indexOf("-", firstHyphenIndex + 1));
+            final int firstHyphenIndex = filename.indexOf(SeparatorConstants.HYPHEN);
+            final String version = filename.substring(firstHyphenIndex + 1, filename.indexOf(SeparatorConstants.HYPHEN, firstHyphenIndex + 1));
             LOGGER.log(Level.INFO, "Package version = {0}",  version);
             if (installedVersion.equalsIgnoreCase(version)) {
                 return true;
