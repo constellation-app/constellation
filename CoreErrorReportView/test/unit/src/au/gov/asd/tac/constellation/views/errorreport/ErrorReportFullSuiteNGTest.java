@@ -23,16 +23,16 @@ import static au.gov.asd.tac.constellation.views.errorreport.ErrorReportTopCompo
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javax.swing.SwingUtilities;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -53,7 +53,7 @@ public class ErrorReportFullSuiteNGTest {
             if (!FxToolkit.isFXApplicationThreadRunning()) {
                 FxToolkit.registerPrimaryStage();
             }
-        } catch (TimeoutException e) {
+        } catch (final TimeoutException e) {
             System.out.println("\n**** SETUP ERROR: " + e);
             throw e;
         }
@@ -63,9 +63,9 @@ public class ErrorReportFullSuiteNGTest {
     public static void tearDownClass() throws Exception {
         try {
             FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
+        } catch (final TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             if (e.toString().contains("HeadlessException")) {
                 System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
             } else {
@@ -76,22 +76,22 @@ public class ErrorReportFullSuiteNGTest {
     } 
 
     @Test
-    public void runSessionDataTest() {
-
+    public void runSessionDataTest() throws InterruptedException {
         System.out.println("\n>>>> ERROR REPORT VIEW - TEST SUITE\n");
     
         final ErrorReportDialogManager erdm = ErrorReportDialogManager.getInstance();
         erdm.setErrorReportRunning(false);
         erdm.setLatestPopupDismissDate(null);
-        assertTrue(erdm.getLatestPopupDismissDate() == null);
-        assertTrue(erdm.getGracePeriodResumptionDate() == null);
+        assertNull(erdm.getLatestPopupDismissDate());
+        assertNull(erdm.getGracePeriodResumptionDate());
 
         final ErrorReportSessionData session = ErrorReportSessionData.getInstance();
         ErrorReportSessionData.setLastUpdate(null);
-        assertTrue(ErrorReportSessionData.getLastUpdate() == null);
-        Date lastUpdateDateTest = new Date();
+        assertNull(ErrorReportSessionData.getLastUpdate());
+        
+        final Date lastUpdateDateTest = new Date();
         ErrorReportSessionData.setLastUpdate(lastUpdateDateTest);
-        assertTrue(ErrorReportSessionData.getLastUpdate().equals(lastUpdateDateTest));
+        assertEquals(ErrorReportSessionData.getLastUpdate(), lastUpdateDateTest);
 
         final String nineLineMessage = "Line1\nLine2\nLine3\nLine4\nLine5\nLine6\nLine7\nLine8\nLine9\n";
         final ErrorReportEntry testEntry = new ErrorReportEntry(Level.SEVERE, "heading1", "summary1", nineLineMessage, ErrorReportSessionData.getNextEntryId());
@@ -103,7 +103,6 @@ public class ErrorReportFullSuiteNGTest {
 
         final String trimmedHeader = testEntry3.getTrimmedHeading(7).substring(0, 2);
         final String entryToString = testEntry3.toString();
-        System.out.println("\n>>>> Check header");
         assertTrue(entryToString.contains(trimmedHeader));
 
         final List<String> filters = new ArrayList<>();
@@ -117,34 +116,22 @@ public class ErrorReportFullSuiteNGTest {
         List<ErrorReportEntry> storedList = session.refreshDisplayedErrors(filters);
 
         // should contain 3 entries, one of which has 2 occurences
-        System.out.println("\n>>>> Check list size");
         assertEquals(storedList.size(), 3);
         final ErrorReportEntry storedData = session.findDisplayedEntryWithId(testEntry2.getEntryId());
-
-        System.out.println("\n>>>> Check Occurrences");
+        
         assertEquals(storedData.getOccurrences(), 2);
 
         ErrorReportSessionData.requestScreenUpdate(true);
-        System.out.println("\n>>>> Check screen update requested");
         assertTrue(ErrorReportSessionData.isScreenUpdateRequested());
-
-        System.out.println("\n\n>>>> Waiting for SEVERE dialogs");
+        
         // default popup mode 2 only allows 1 popup
-        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.SEVERE)), 1);
-        System.out.println("\n\n>>>> Done Waiting");
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.SEVERE)), 1, erdm);
 
         dismissPopups(storedList);
 
         session.removeEntry(testEntry.getEntryId());
         storedList = session.refreshDisplayedErrors(filters);
-        System.out.println("\n>>>> Check new list size");
         assertEquals(storedList.size(), 2);
-
-        List<String> activeLevels = erdm.getActivePopupErrorLevels();
-
-        System.out.println("\n>>>> Check active levels: " + activeLevels);
-        System.out.println("\n>>>> resumption date: " + erdm.getGracePeriodResumptionDate()
-                + "\n>>>> latest pop dis data: " + erdm.getLatestPopupDismissDate());
 
         System.out.println("\n\n>>>> Generating WARNING, INFO, and FINE entries");
 
@@ -166,13 +153,7 @@ public class ErrorReportFullSuiteNGTest {
 
         session.storeSessionError(partialEntry3);
 
-        activeLevels = erdm.getActivePopupErrorLevels();
-        System.out.println("\n>>>> Check active levels: " + activeLevels);
-
-        System.out.println("\n\n>>>> Waiting for WARN/INFO/FINE dialogs");
-        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.WARNING, Level.INFO, Level.FINE)), 3);
-        System.out.println("\n\n>>>> Done Waiting");
-        System.out.println("\n>>>> Check WARN/INFO/FINE list size");
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.WARNING, Level.INFO, Level.FINE)), 3, erdm);
         assertEquals(storedList.size(), 3);
 
         // clear ALL popups
@@ -196,16 +177,25 @@ public class ErrorReportFullSuiteNGTest {
             erdm.showErrorDialog(erEntry, true); // should redisplay dialog in review mode
         }
 
-        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.SEVERE, Level.WARNING, Level.INFO, Level.FINE)), 4);
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.SEVERE, Level.WARNING, Level.INFO, Level.FINE)), 4, erdm);
         dismissPopups(storedList);
 
         final ErrorReportTopComponent ertcInstance = new ErrorReportTopComponent();
         // when the Top Component is started it takes over control of the popup handling        
         ertcInstance.handleComponentOpened();
-
-        System.out.println("\n\n>>>> Waiting 5s for popup grace period");
-        delay(5100);
-        System.out.println("\n\n>>>> Done Waiting");
+        
+        // allow content in the top component to be created in the FX thread before proceeding
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(latch::countDown);
+        latch.await();
+        
+        // the refresh will normally happen in a timer task, 
+        // but in the interest of not waiting for the scheduled task to happen, we're manually triggering the refresh to keep the test moving along
+        ertcInstance.refreshErrorFlashing();
+        // allow refresh job in the top component to run in the FX thread before proceeding
+        final CountDownLatch latch1 = new CountDownLatch(1);
+        Platform.runLater(latch1::countDown);
+        latch1.await();
 
         final ErrorReportEntry partialEntry5 = new ErrorReportEntry(Level.WARNING, null, "part summary", "part message", ErrorReportSessionData.getNextEntryId());
         session.storeSessionError(partialEntry5);
@@ -219,15 +209,17 @@ public class ErrorReportFullSuiteNGTest {
         final PluginParameter<MultiChoiceParameterValue> filterTypeParameter = (PluginParameter<MultiChoiceParameterValue>) ertcInstance.getParams().getParameters().get(REPORT_SETTINGS_PARAMETER_ID);
         filterTypeParameter.fireChangeEvent(ParameterChange.PROPERTY);
         
-        System.out.println("\n\n>>>> Waiting for TC dialogs");
-        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.WARNING)), 1);
-        System.out.println("\n\n>>>> Done Waiting");
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.WARNING)), 1, erdm);
 
-        System.out.println("\n>>>> Check WARNINGS list size");
         assertEquals(storedList.size(), 1);
-        System.out.println("\n\n>>>> Waiting 8s for updates to flow through");
-        delay(8000);
-        System.out.println("\n>>>> Check if Error Report Icon is flashing");
+        
+        // another manual refresh to force updates through
+        ertcInstance.refreshErrorFlashing();
+        // allow refresh job in the top component to run in the FX thread before proceeding
+        final CountDownLatch latch2 = new CountDownLatch(1);
+        Platform.runLater(latch2::countDown);
+        latch2.await();
+        
         final boolean isFlashing = ertcInstance.isIconFlashing();
         // icon should be flashing while there are error popups, and stop flashing when they are all dismissed
         assertTrue(isFlashing);
@@ -235,7 +227,6 @@ public class ErrorReportFullSuiteNGTest {
         ertcInstance.setReportsExpanded(false);
         ertcInstance.refreshSessionErrors(); // sync sessionErrors & SessionErrorsBox
         final ErrorReportEntry checkEntry = ertcInstance.findActiveEntryWithId(storedList.get(0).getEntryId());
-        System.out.println("\n>>>> Check ErrorReportEntry : " + checkEntry.toString());
         assertFalse(checkEntry.isExpanded());
 
         dismissPopups(storedList);
@@ -244,48 +235,35 @@ public class ErrorReportFullSuiteNGTest {
         ertcInstance.close();
 
         System.out.println("\n>>>> PASSED ALL TESTS");
-
     }
 
-    private void delay(final long milliseconds) {
-        // may need to wait for timers to trigger and do their thing
-        final Executor delayed = CompletableFuture.delayedExecutor(milliseconds, TimeUnit.MILLISECONDS);
-        final CompletableFuture<Void> cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
-                .thenAccept(LOGGER::info);
-        try {
-            cf.get();
-        } catch (final InterruptedException | ExecutionException ex) {
-            LOGGER.log(Level.INFO, "\n -------- future was not completed ? : {0}", ex.toString());
-        }
-    }
-
-    private List<ErrorReportEntry> waitForDialogToBeDisplayed(final List<Level> logLevels, final int expectedCount) {
+    private List<ErrorReportEntry> waitForDialogToBeDisplayed(final List<Level> logLevels, final int expectedCount, final ErrorReportDialogManager erdm) throws InterruptedException {
         final List<String> filters = new ArrayList<>();
         logLevels.forEach(logLevel -> filters.add(logLevel.getName()));
-        int loopCounter = 0;
         int dialogCounter = 0;
-        List<ErrorReportEntry> errorList = ErrorReportSessionData.getInstance().refreshDisplayedErrors(filters);
-        while (loopCounter < 60 && dialogCounter < expectedCount) {
-            dialogCounter = 0;
-            errorList = ErrorReportSessionData.getInstance().refreshDisplayedErrors(filters);
-            for (final ErrorReportEntry entry : errorList) {
-                if (entry.getDialog() != null) {
-                    dialogCounter++;
-                }
+        // the refresh will normally happen in a timer task, 
+        // but in the interest of not waiting for the scheduled task to happen, we're manually triggering the refresh to keep the test moving along
+        erdm.refreshErrorPopups();
+        // required to allow tasks to complete in the Swing thread before continuing
+        final CountDownLatch latch = new CountDownLatch(1);
+        SwingUtilities.invokeLater(latch::countDown);
+        latch.await();
+        
+        final List<ErrorReportEntry> errorList = ErrorReportSessionData.getInstance().refreshDisplayedErrors(filters);
+        for (final ErrorReportEntry entry : errorList) {
+            if (entry.getDialog() != null) {
+                dialogCounter++;
             }
-            delay(3000);
-            loopCounter++;
         }
-        // fails if it takes over 3 minutes
-        assertTrue(loopCounter < 60);
+        // dialog counter should match expected count
+        assertEquals(dialogCounter, expectedCount);
         return errorList;
     }
 
     private int dismissPopups(final Iterable<ErrorReportEntry> storedList) {
         int count = 0;
         for (final ErrorReportEntry erEntry : storedList) {
-            System.out.println("\n>>>> Checking entry: " + erEntry);
-            ErrorReportDialog erDialog = erEntry.getDialog();
+            final ErrorReportDialog erDialog = erEntry.getDialog();
             if (erDialog != null) {
                 // simulate close
                 erDialog.finaliseSessionSettings();

@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
@@ -67,6 +66,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javax.imageio.ImageIO;
+import javax.swing.GroupLayout;
 import javax.swing.SwingUtilities;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -111,17 +111,10 @@ import org.openide.windows.TopComponent;
 @ServiceProvider(service = AbstractTopComponent.class)
 public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
-    /**
-     * @return the params
-     */
-    public PluginParameters getParams() {
-        return params;
-    }
-
     private static final Logger LOGGER = Logger.getLogger(ErrorReportTopComponent.class.getName());
 
-    private List<ErrorReportEntry> sessionErrors = new ArrayList<>();
-    private List<ErrorReportEntry> hiddenErrors = new ArrayList<>();
+    private final List<ErrorReportEntry> sessionErrors = new ArrayList<>();
+    private final List<ErrorReportEntry> hiddenErrors = new ArrayList<>();
     static VBox sessionErrorsBox = new VBox();
 
     public enum SeverityCode {
@@ -129,6 +122,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         WARNING("WARNING"),
         INFO("INFO"),
         FINE("FINE");
+        
         private final String code;
 
         SeverityCode(final String severityCode) {
@@ -149,7 +143,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         }
     }
 
-    static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
+    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
 
     private final FlowPane severePopupAllowed = new FlowPane();
     private final FlowPane warnPopupAllowed = new FlowPane();
@@ -193,71 +187,41 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     public static final String REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "report_settings");
     public static final String POPUP_REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "popup_report_settings");
 
-    public ErrorReportTopComponent() {
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+    ErrorReportTopComponent() {
+        final GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGap(0, 300, Short.MAX_VALUE)
         );
         setName(Bundle.CTL_ErrorReportTopComponent());
         setToolTipText(Bundle.HINT_ErrorReportTopComponent());
         initContent();
+        
         final TimerTask refreshAction = new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> {
-                    boolean gracePeriodRefresh = false;
-                    final Date currentDate = new Date();
-                    if (waitForGracePeriod) {
-                        final Date resumptionDate = ErrorReportDialogManager.getInstance().getGracePeriodResumptionDate();
-                        if (currentDate.after(resumptionDate)) {
-                            waitForGracePeriod = false;
-                            gracePeriodRefresh = true;
-                        }
-                    }
-                    if (errorReportRunning && updateInProgress != null && !updateInProgress.get()
-                            && (gracePeriodRefresh || latestRetrievalDate == null
-                            || latestRetrievalDate.before(ErrorReportSessionData.getLastUpdate())
-                            || latestRetrievalDate.before(filterUpdateDate)
-                            || ErrorReportSessionData.isScreenUpdateRequested())) {
-
-                        previousRetrievalDate = latestRetrievalDate == null ? null : new Date(latestRetrievalDate.getTime());
-                        latestRetrievalDate = new Date();
-                        boolean flashRequired = true;
-                        if (ErrorReportDialogManager.getInstance().getLatestPopupDismissDate() != null && ErrorReportDialogManager.getInstance().getLatestPopupDismissDate().after(ErrorReportSessionData.getLastUpdate())) {
-                            flashRequired = false;
-                        }
-                        updateFilterData();
-                        ErrorReportDialogManager.getInstance().updatePopupSettings(getPopupControlValue(), popupFilters);
-                        Date topEntryPrevDate = null;
-                        if (!sessionErrors.isEmpty()) {
-                            topEntryPrevDate = sessionErrors.get(0).getLastDate();
-                        }
-                        updateSessionErrorsBox(-1);
-                        ErrorReportSessionData.requestScreenUpdate(false);
-                        if (!sessionErrors.isEmpty() && !gracePeriodRefresh && topEntryPrevDate != null && !sessionErrors.get(0).getLastDate().after(topEntryPrevDate)) {
-                            flashRequired = false;
-                        }
-                        flashErrorIcon(flashRequired);
-                    }
-                });
+                refreshErrorFlashing();
             }
         };
-
         refreshTimer = new Timer();
         refreshTimer.schedule(refreshAction, 745, 1475);
+    }
+    
+    /**
+     * @return the params
+     */
+    protected PluginParameters getParams() {
+        return params;
     }
 
     @Override
     protected String createStyle() {
-        return DARK_MODE
-                ? "resources/error-report-dark.css"
-                : "resources/error-report-light.css";
+        return DARK_MODE ? "resources/error-report-dark.css" : "resources/error-report-light.css";
     }
 
     @Override
@@ -297,52 +261,37 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
         settingsBox.setPrefSize(23, 21);
         settingsBox.setPadding(new Insets(4, 0, 0, 0));
-        settingsBox.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent mouseEvent) {
-                flashErrorIcon(false);
-                mouseEvent.consume();
-            }
+        settingsBox.addEventFilter(MouseEvent.MOUSE_ENTERED, (final MouseEvent mouseEvent) -> {
+            flashErrorIcon(false);
+            mouseEvent.consume();
         });
 
         updateSettings();
 
+        final List<String> settingOptions = Arrays.asList(SeverityCode.SEVERE.getCode(), SeverityCode.WARNING.getCode(), SeverityCode.INFO.getCode(), SeverityCode.FINE.getCode());
+        
         final PluginParameter<MultiChoiceParameterType.MultiChoiceParameterValue> reportSettingOptions = MultiChoiceParameterType.build(REPORT_SETTINGS_PARAMETER_ID);
         reportSettingOptions.setName("Report Settings");
         reportSettingOptions.setDescription("Report Settings");
-        MultiChoiceParameterType.setOptions(reportSettingOptions, Arrays.asList(
-                SeverityCode.SEVERE.getCode(), SeverityCode.WARNING.getCode(),
-                SeverityCode.INFO.getCode(), SeverityCode.FINE.getCode()));
-
-        final List<String> checked = new ArrayList<>();
-        checked.add(SeverityCode.SEVERE.getCode());
-        checked.add(SeverityCode.WARNING.getCode());
-        checked.add(SeverityCode.INFO.getCode());
-        checked.add(SeverityCode.FINE.getCode());
-        MultiChoiceParameterType.setChoices(reportSettingOptions, checked);
+        MultiChoiceParameterType.setOptions(reportSettingOptions, settingOptions);
+        MultiChoiceParameterType.setChoices(reportSettingOptions, settingOptions);
         reportSettingOptions.setEnabled(true);
+        getParams().addParameter(reportSettingOptions);
 
         final PluginParameter<MultiChoiceParameterType.MultiChoiceParameterValue> popupReportSettingOptions = MultiChoiceParameterType.build(POPUP_REPORT_SETTINGS_PARAMETER_ID);
         popupReportSettingOptions.setName("Popup Report Settings");
         popupReportSettingOptions.setDescription("Popup Report Settings");
-        MultiChoiceParameterType.setOptions(popupReportSettingOptions, Arrays.asList(
-                SeverityCode.SEVERE.getCode(),
-                SeverityCode.WARNING.getCode(),
-                SeverityCode.INFO.getCode(),
-                SeverityCode.FINE.getCode()));
-        final List<String> popupChecked = new ArrayList<>();
-        popupChecked.add(SeverityCode.SEVERE.getCode());
-        popupChecked.add(SeverityCode.WARNING.getCode());
+        MultiChoiceParameterType.setOptions(popupReportSettingOptions, settingOptions);
+        final List<String> popupChecked = Arrays.asList(SeverityCode.SEVERE.getCode(), SeverityCode.WARNING.getCode());
         MultiChoiceParameterType.setChoices(popupReportSettingOptions, popupChecked);
         popupReportSettingOptions.setEnabled(true);
-
-        getParams().addParameter(reportSettingOptions);
         getParams().addParameter(popupReportSettingOptions);
 
         getParams().addController(REPORT_SETTINGS_PARAMETER_ID, (masterId, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 filterUpdateDate = new Date();
                 updateSettings();
-                updateSessionErrorsBox(-1);
+                updateSessionErrorsBox();
             }
         });
 
@@ -350,7 +299,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             if (change == ParameterChange.VALUE) {
                 filterUpdateDate = new Date();
                 updateSettings();
-                updateSessionErrorsBox(-1);
+                updateSessionErrorsBox();
             }
         });
 
@@ -399,6 +348,8 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         popupControl.getItems().add(oneRedispItem);
         popupControl.getItems().add(multiItem);
         popupControl.getItems().add(multiRedispItem);
+        final int applicationFontSize = FontUtilities.getApplicationFontSize();        
+        popupControl.getItems().addAll(neverItem, oneItem, oneRedispItem, multiItem, multiRedispItem);
         popupControl.setMaxWidth(200);
         popupControl.setMinHeight(26);
         popupControl.setPrefHeight(applicationFontSize * 2);
@@ -411,7 +362,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 ErrorReportSessionData.getInstance().removeEntry(entry.getEntryId());
             }
             sessionErrors.clear();
-            updateSessionErrorsBox(-1);
+            updateSessionErrorsBox();
         });
         clearButton.setMinHeight(26);
         clearButton.setPrefHeight(applicationFontSize * 2);
@@ -482,11 +433,9 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         sessionErrorsBox.setPadding(new Insets(0, 0, 0, 0));
         sessionErrorsBox.setSpacing(2);
 
-        errorBPane.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent mouseEvent) {
-                flashErrorIcon(false);
-                mouseEvent.consume();
-            }
+        errorBPane.addEventFilter(MouseEvent.MOUSE_ENTERED, (final MouseEvent mouseEvent) -> {
+            flashErrorIcon(false);
+            mouseEvent.consume();
         });
 
         errorBPane.setTop(sessionErrorsBox);
@@ -572,8 +521,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         updateFilterData();
     }
 
-    public void updateFilterData() {
-
+    private void updateFilterData() {
         List<String> popupChoices = new ArrayList<>();
         if (getParams().hasParameter(POPUP_REPORT_SETTINGS_PARAMETER_ID)) {
             MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(POPUP_REPORT_SETTINGS_PARAMETER_ID);
@@ -604,11 +552,11 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         settingsPane.setStyle(FX_BACKGROUND + innerShade + "; -fx-border-color: " + borderShade + ";");
     }
 
-    public void setReportsExpanded(final boolean expandedMode) {
+    protected void setReportsExpanded(final boolean expandedMode) {
         sessionErrorsBox.getChildren().forEach(tpNode -> ((TitledPane) tpNode).setExpanded(expandedMode));
     }
 
-    public ErrorReportEntry findActiveEntryWithId(final double id) {
+    protected ErrorReportEntry findActiveEntryWithId(final double id) {
         for (final ErrorReportEntry activeEntry : sessionErrors) {
             if (activeEntry.getEntryId() == id) {
                 return activeEntry;
@@ -617,7 +565,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         return null;
     }
 
-    public void refreshSessionErrors() {
+    protected void refreshSessionErrors() {
         // save expanded states
         final int errCount = sessionErrors.size();
         if (!sessionErrorsBox.getChildren().isEmpty()) {
@@ -704,7 +652,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         }
     }
 
-    public void updateSessionErrorsBox(final int insertPos) {
+    private void updateSessionErrorsBox() {
         synchronized (updateInProgress) {
             if (updateInProgress.compareAndSet(false, true)) {
                 refreshSessionErrors();
@@ -760,7 +708,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         }
     }
 
-    public boolean isIconFlashing() {
+    protected boolean isIconFlashing() {
         return iconFlashing;
     }
 
@@ -769,7 +717,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
      *
      * @param enabled
      */
-    public void flashErrorIcon(final boolean enabled) {
+    private void flashErrorIcon(final boolean enabled) {
         if (!enabled) {
             iconFlashing = false;
             if (waitForGracePeriod) {
@@ -853,13 +801,8 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         }
         alertStateActive = !alertStateActive;
     }
-
-    public void removeEntry(final int indexPosition) {
-        sessionErrors.remove(indexPosition);
-        updateSessionErrorsBox(-1);
-    }
-
-    public int getPopupControlValue() {
+    
+    private int getPopupControlValue() {
         return popupMode;
     }
 
@@ -879,7 +822,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
      * @param entry
      * @return
      */
-    public TitledPane generateErrorReportTitledPane(final ErrorReportEntry entry) {
+    private TitledPane generateErrorReportTitledPane(final ErrorReportEntry entry) {
         final TitledPane ttlPane = new TitledPane();
         String backgroundColour;
         String backgroundFadeColour;
@@ -1080,26 +1023,20 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final Button dismissButton = new Button("");
         dismissButton.setStyle(FX_BACKGROUND + dismissButtonColor + "; -fx-border-color: #606060");
         dismissButton.setGraphic(crossImageHighlight);
-        dismissButton.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(final MouseEvent mouseEvent) {
-                dismissButton.setStyle("-fx-background-color: #e84848; -fx-border-color: #c03c3c");
-                mouseEvent.consume();
-            }
+        dismissButton.addEventFilter(MouseEvent.MOUSE_ENTERED, (final MouseEvent mouseEvent) -> {
+            dismissButton.setStyle("-fx-background-color: #e84848; -fx-border-color: #c03c3c");
+            mouseEvent.consume();
         });
-        dismissButton.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(final MouseEvent mouseEvent) {
-                dismissButton.setStyle(FX_BACKGROUND + dismissButtonColor + "; -fx-border-color: #606060");
-                mouseEvent.consume();
-            }
+        dismissButton.addEventFilter(MouseEvent.MOUSE_EXITED, (final MouseEvent mouseEvent) -> {
+            dismissButton.setStyle(FX_BACKGROUND + dismissButtonColor + "; -fx-border-color: #606060");
+            mouseEvent.consume();
         });
         dismissButton.setPadding(new Insets(3, 1, 1, 1));
         dismissButton.setMinHeight(22);
         dismissButton.setMaxHeight(22);
         dismissButton.setOnAction((final ActionEvent event) -> {
             ErrorReportSessionData.getInstance().removeEntry(entry.getEntryId());
-            updateSessionErrorsBox(-1);
+            updateSessionErrorsBox();
         });
 
         label.setStyle(FX_TEXT_FILL + textColour + ";");
@@ -1153,5 +1090,43 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     @Override
     protected String getModeName() {
         return "rightSlidingSide";
+    
+    protected void refreshErrorFlashing() {
+        Platform.runLater(() -> {
+            boolean gracePeriodRefresh = false;
+            final Date currentDate = new Date();
+            if (waitForGracePeriod) {
+                final Date resumptionDate = ErrorReportDialogManager.getInstance().getGracePeriodResumptionDate();
+                if (currentDate.after(resumptionDate)) {
+                    waitForGracePeriod = false;
+                    gracePeriodRefresh = true;
+                }
+            }
+            if (errorReportRunning && updateInProgress != null && !updateInProgress.get()
+                    && (gracePeriodRefresh || latestRetrievalDate == null
+                    || latestRetrievalDate.before(ErrorReportSessionData.getLastUpdate())
+                    || latestRetrievalDate.before(filterUpdateDate)
+                    || ErrorReportSessionData.isScreenUpdateRequested())) {
+
+                previousRetrievalDate = latestRetrievalDate == null ? null : new Date(latestRetrievalDate.getTime());
+                latestRetrievalDate = new Date();
+                boolean flashRequired = true;
+                if (ErrorReportDialogManager.getInstance().getLatestPopupDismissDate() != null && ErrorReportDialogManager.getInstance().getLatestPopupDismissDate().after(ErrorReportSessionData.getLastUpdate())) {
+                    flashRequired = false;
+                }
+                updateFilterData();
+                ErrorReportDialogManager.getInstance().updatePopupSettings(getPopupControlValue(), popupFilters);
+                Date topEntryPrevDate = null;
+                if (!sessionErrors.isEmpty()) {
+                    topEntryPrevDate = sessionErrors.get(0).getLastDate();
+                }
+                updateSessionErrorsBox();
+                ErrorReportSessionData.requestScreenUpdate(false);
+                if (!sessionErrors.isEmpty() && !gracePeriodRefresh && topEntryPrevDate != null && !sessionErrors.get(0).getLastDate().after(topEntryPrevDate)) {
+                    flashRequired = false;
+                }
+                flashErrorIcon(flashRequired);
+            }
+        });
     }
 }
