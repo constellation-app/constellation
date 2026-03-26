@@ -340,7 +340,7 @@ public class WebServer {
                 LOGGER.log(Level.INFO, "Copying constellation_client.py into {0}", download.getPath());
                 Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } else {
-                String[] infoParams = new String[]{download.getPath(), String.valueOf(pythonRestClientDownload)};
+                final String[] infoParams = new String[]{download.getPath(), String.valueOf(pythonRestClientDownload)};
                 LOGGER.log(Level.WARNING, "NOT copying constellation_client.py into {0}: Download REST client preference is {1}", infoParams);
             }
         } catch (final IOException e) {
@@ -473,11 +473,16 @@ public class WebServer {
                 String line;
 
                 while ((line = inputBuffer.readLine()) != null) {
-                    LOGGER.log(Level.FINE, "{0}", line);
+                    LOGGER.log(Level.INFO, "{0}", line);
                 }
                 processResult = p.waitFor();
                 LOGGER.log(Level.INFO, "constellation_client package uninstall finished...");
                 LOGGER.log(Level.INFO, "constellation_client package uninstall process result: {0}", processResult);
+                
+                // verify that the package installed is the same version
+                if (processResult != INSTALL_SUCCESS) {
+                    LOGGER.log(Level.WARNING, "There was an issue during the python package uninstall!");
+                }
 
             } catch (final InterruptedException ex) {
                 LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the constellation_client package uninstall:", ex);
@@ -509,12 +514,16 @@ public class WebServer {
                 String line;
                 
                 while ((line = inputBuffer.readLine()) != null) {
-                    LOGGER.log(Level.FINE, "{0}", line);
+                    LOGGER.log(Level.INFO, "{0}", line);
                 }
 
                 processResult = p.waitFor();
                 LOGGER.log(Level.INFO, "Python package installation finished...");
                 LOGGER.log(Level.INFO, "Python install process result: {0}", processResult);
+                
+                if (processResult != INSTALL_SUCCESS) {
+                    LOGGER.log(Level.WARNING, "There was an issue during the python package installation!");
+                }
 
             } catch (final InterruptedException ex) {
                 LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the python package installation:", ex);
@@ -523,7 +532,7 @@ public class WebServer {
 
             p.destroy();
         }
-        
+
         // make sure the contellation_client is copied
         LOGGER.log(Level.INFO, "Copying script to Jupyter notebook directory...");
         downloadPythonClientNotebookDir();
