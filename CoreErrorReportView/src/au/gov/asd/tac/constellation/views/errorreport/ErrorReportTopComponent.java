@@ -122,7 +122,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         WARNING("WARNING"),
         INFO("INFO"),
         FINE("FINE");
-        
+
         private final String code;
 
         SeverityCode(final String severityCode) {
@@ -187,7 +187,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     public static final String REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "report_settings");
     public static final String POPUP_REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "popup_report_settings");
 
-    ErrorReportTopComponent() {
+    public ErrorReportTopComponent() {
         final GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
@@ -201,7 +201,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         setName(Bundle.CTL_ErrorReportTopComponent());
         setToolTipText(Bundle.HINT_ErrorReportTopComponent());
         initContent();
-        
+
         final TimerTask refreshAction = new TimerTask() {
             @Override
             public void run() {
@@ -211,7 +211,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         refreshTimer = new Timer();
         refreshTimer.schedule(refreshAction, 745, 1475);
     }
-    
+
     /**
      * @return the params
      */
@@ -269,7 +269,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         updateSettings();
 
         final List<String> settingOptions = Arrays.asList(SeverityCode.SEVERE.getCode(), SeverityCode.WARNING.getCode(), SeverityCode.INFO.getCode(), SeverityCode.FINE.getCode());
-        
+
         final PluginParameter<MultiChoiceParameterType.MultiChoiceParameterValue> reportSettingOptions = MultiChoiceParameterType.build(REPORT_SETTINGS_PARAMETER_ID);
         reportSettingOptions.setName("Report Settings");
         reportSettingOptions.setDescription("Report Settings");
@@ -343,12 +343,6 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
         oneRedispItem.setSelected(true);
         final int applicationFontSize = FontUtilities.getApplicationFontSize();
-        popupControl.getItems().add(neverItem);
-        popupControl.getItems().add(oneItem);
-        popupControl.getItems().add(oneRedispItem);
-        popupControl.getItems().add(multiItem);
-        popupControl.getItems().add(multiRedispItem);
-        final int applicationFontSize = FontUtilities.getApplicationFontSize();        
         popupControl.getItems().addAll(neverItem, oneItem, oneRedispItem, multiItem, multiRedispItem);
         popupControl.setMaxWidth(200);
         popupControl.setMinHeight(26);
@@ -801,7 +795,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         }
         alertStateActive = !alertStateActive;
     }
-    
+
     private int getPopupControlValue() {
         return popupMode;
     }
@@ -1090,7 +1084,8 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     @Override
     protected String getModeName() {
         return "rightSlidingSide";
-    
+    }
+
     protected void refreshErrorFlashing() {
         Platform.runLater(() -> {
             boolean gracePeriodRefresh = false;
