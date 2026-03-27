@@ -49,14 +49,9 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
         protected BooleanObjectEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<Boolean> validator, final Boolean defaultValue, final Boolean initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }
-        
-        protected boolean isCheckBoxDisabled() {
-            return checkBox.isDisable();
-        }
 
         @Override
         public void updateControlsWithValue(final Boolean value) {
-            checkBox.setDisable(value == null);
             checkBox.setSelected(value != null && value);
         }
 

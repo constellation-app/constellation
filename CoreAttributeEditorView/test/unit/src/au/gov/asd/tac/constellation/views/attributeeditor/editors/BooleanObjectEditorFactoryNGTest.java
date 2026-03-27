@@ -107,14 +107,11 @@ public class BooleanObjectEditorFactoryNGTest {
         
         // default values from instantiation
         assertFalse(editor.getValueFromControls());
-        assertFalse(editor.isCheckBoxDisabled());
-        
+
         editor.updateControlsWithValue(true);
         assertTrue(editor.getValueFromControls());
-        assertFalse(editor.isCheckBoxDisabled());
                 
         editor.updateControlsWithValue(null);
         assertFalse(editor.getValueFromControls());
-        assertTrue(editor.isCheckBoxDisabled());
     }
 }
