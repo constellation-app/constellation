@@ -533,6 +533,11 @@ public class WebServer {
             p.destroy();
         }
 
+        // Make sure that package was installed
+        if (!verifyInstalledPackageVersionSame()) {
+            LOGGER.log(Level.WARNING, "Python package installation failed, possible due to permission issues");
+        }
+        
         // make sure the contellation_client is copied
         LOGGER.log(Level.INFO, "Copying script to Jupyter notebook directory...");
         downloadPythonClientNotebookDir();

@@ -306,7 +306,7 @@ public class WebServerNGTest {
      * downloadPythonClientNotebookDir is called. 
      * Notes: 
      * 1) verifyInstalledPackageVersionSame = false, so need to uninstall
-     * 2) processBuilder was constructed thrice, for getInstalledVersion, uninstall and for installation.
+     * 2) processBuilder was constructed 4 times, for getInstalledVersion, uninstall, installation, and getInstalledVersion (for verification).
      * 3) InputStream is set to null so the while loop returns.
      */
     public void testInstallPythonPackageNotSuccessful() throws InterruptedException, IOException {
@@ -334,11 +334,11 @@ public class WebServerNGTest {
             }
 
             // Assert processBuilder was made
-            assertEquals(3, processBuilderMock.constructed().size());
+            assertEquals(4, processBuilderMock.constructed().size());
 
             // Assert process waitFor got to run
             try {
-                verify(processMock, times(3)).waitFor();
+                verify(processMock, times(4)).waitFor();
             } catch (final InterruptedException ex) {
                 System.out.println("Caught InterruptedException in testInstallPythonPackageNotSuccessful");
             }
