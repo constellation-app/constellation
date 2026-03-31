@@ -33,7 +33,7 @@ import io
 # internet access) or install python by other means that you are able to access.
 ################################################################################################
 # ATTENTION: Any change to this file will require a new WHEEL file to be built at the same time.
-#           Both files will need to be set to the same updated VERSION number.
+#            Both files will need to be set to the same updated VERSION number.
 ################################################################################################
 # Last updated 24 Mar 2026
 __version__ = 1.0.1 
