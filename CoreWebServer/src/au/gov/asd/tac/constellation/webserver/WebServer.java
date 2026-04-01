@@ -535,7 +535,7 @@ public class WebServer {
 
         // Make sure that package was installed
         if (!verifyInstalledPackageVersionSame()) {
-            LOGGER.log(Level.WARNING, "Python package installation failed, possible due to a permissions issue");
+            LOGGER.log(Level.WARNING, "Python package installation failed, possibly due to a permissions issue");
         }
         
         // make sure the contellation_client is copied
