@@ -64,7 +64,7 @@ public final class ApplicationPreferenceKeys {
      * @return The default user data directory.
      */
     private static String getDefaultUserDir() {
-        return new File(System.getProperty("user.home"), ".CONSTELLATION").getPath();
+        return new File(System.getProperty("user.home"), HOME_CONSTELLATION_DIR_DEFAULT).getPath();
     }
 
     /**
@@ -103,7 +103,8 @@ public final class ApplicationPreferenceKeys {
      * Jupyter notebook directory.
      */
     public static final String JUPYTER_NOTEBOOK_DIR = "jupyterNotebookDir";
-    public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new File(System.getProperty("user.dir")).getPath();
+    public static final String HOME_CONSTELLATION_DIR_DEFAULT = ".CONSTELLATION";
+    public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new File(System.getProperty("user.home"), HOME_CONSTELLATION_DIR_DEFAULT).getPath();
 
     /**
      * File Save location.
