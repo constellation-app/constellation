@@ -18,9 +18,14 @@ package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.set.primitive.IntSet;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  * Each taxon consists of nodes that have the same set of neighbours.
@@ -38,13 +43,13 @@ public class TaxFromNeighbours {
      *
      * @return the graph taxonomy.
      */
-    public static GraphTaxonomy getTaxonomy(final GraphWriteMethods graph, final Iterable<Integer> verticesToConsider) {
-        // We'll use a Map<Set, Set<Integer>>, where a Set key represents a set of neighbour vertexIds defined by
+    public static GraphTaxonomy getTaxonomy(final GraphWriteMethods graph, final IntSet verticesToConsider) {
+        // We'll use a Map<MutableIntSet, MutableIntSet>, where a Set key represents a set of neighbour vertexIds defined by
         // the bits that are set.
-        final Map<Set<Integer>, Set<Integer>> commonNeighbours = new HashMap<>();
-        for (final int vxId : verticesToConsider) {
+        final Map<MutableIntSet, MutableIntSet> commonNeighbours = new HashMap<>();
+        verticesToConsider.forEach(vxId -> {
             // Get neighbours of this vertex.
-            final HashSet<Integer> neighbours = new HashSet<>();
+            final MutableIntSet neighbours = new IntHashSet();
             final int nn = graph.getVertexNeighbourCount(vxId);
             for (int vxPosition = 0; vxPosition < nn; vxPosition++) {
                 final int nbId = graph.getVertexNeighbour(vxId, vxPosition);
@@ -52,24 +57,67 @@ public class TaxFromNeighbours {
             }
 
             if (!commonNeighbours.containsKey(neighbours)) {
-                final Set<Integer> vertices = new HashSet<>();
+                final MutableIntSet vertices = new IntHashSet();
                 commonNeighbours.put(neighbours, vertices);
             }
 
-            final Set<Integer> vertices = commonNeighbours.get(neighbours);
+            final MutableIntSet vertices = commonNeighbours.get(neighbours);
+            vertices.add(vxId);
+        });
+
+        // Now each key (a set of neighbours) maps to a set of vertices that have those neighbours in common).
+        final MutableIntObjectMap<MutableIntSet> tax = new IntObjectHashMap<>();
+        final MutableIntIntMap nodeToTaxa = new IntIntHashMap();
+        for (final Map.Entry<MutableIntSet, MutableIntSet> entry : commonNeighbours.entrySet()) {
+            final MutableIntSet vertices = entry.getValue();
+            final int key = vertices.intIterator().next();
+            tax.put(key, vertices);
+            vertices.forEach(vertex -> nodeToTaxa.put(vertex, key));
+        }
+
+        return new GraphTaxonomy(graph, tax, nodeToTaxa);
+    }
+    
+    /**
+     * Produce a taxonomy of the given graph; each taxon consists of vertices
+     * that have the same neighbors.
+     *
+     * @param graph the write lock that will be used to perform the operation.
+     * @param verticesToConsider the set of vertices to be included.
+     *
+     * @return the graph taxonomy.
+     */
+    @Deprecated(since = "3.4", forRemoval = true)
+    public static GraphTaxonomy getTaxonomy(final GraphWriteMethods graph, final Iterable<Integer> verticesToConsider) {
+        // We'll use a Map<MutableIntSet, MutableIntSet>, where a Set key represents a set of neighbour vertexIds defined by
+        // the bits that are set.
+        final Map<MutableIntSet, MutableIntSet> commonNeighbours = new HashMap<>();
+        for (final int vxId : verticesToConsider) {
+            // Get neighbours of this vertex.
+            final MutableIntSet neighbours = new IntHashSet();
+            final int nn = graph.getVertexNeighbourCount(vxId);
+            for (int vxPosition = 0; vxPosition < nn; vxPosition++) {
+                final int nbId = graph.getVertexNeighbour(vxId, vxPosition);
+                neighbours.add(nbId);
+            }
+
+            if (!commonNeighbours.containsKey(neighbours)) {
+                final MutableIntSet vertices = new IntHashSet();
+                commonNeighbours.put(neighbours, vertices);
+            }
+
+            final MutableIntSet vertices = commonNeighbours.get(neighbours);
             vertices.add(vxId);
         }
 
         // Now each key (a set of neighbours) maps to a set of vertices that have those neighbours in common).
-        final Map<Integer, Set<Integer>> tax = new HashMap<>();
-        final Map<Integer, Integer> nodeToTaxa = new HashMap<>();
-        for (final Map.Entry<Set<Integer>, Set<Integer>> entry : commonNeighbours.entrySet()) {
-            final Set<Integer> vertices = entry.getValue();
-            final Integer key = vertices.iterator().next();
+        final MutableIntObjectMap<MutableIntSet> tax = new IntObjectHashMap<>();
+        final MutableIntIntMap nodeToTaxa = new IntIntHashMap();
+        for (final Map.Entry<MutableIntSet, MutableIntSet> entry : commonNeighbours.entrySet()) {
+            final MutableIntSet vertices = entry.getValue();
+            final int key = vertices.intIterator().next();
             tax.put(key, vertices);
-            for (final int vertex : vertices) {
-                nodeToTaxa.put(vertex, key);
-            }
+            vertices.forEach(vertex -> nodeToTaxa.put(vertex, key));
         }
 
         return new GraphTaxonomy(graph, tax, nodeToTaxa);

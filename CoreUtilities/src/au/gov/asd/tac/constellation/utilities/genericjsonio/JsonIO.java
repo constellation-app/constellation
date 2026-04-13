@@ -91,13 +91,13 @@ public class JsonIO {
      * Save the supplied JSON data in a file, within an allocated subdirectory
      * of the users configuration directory. The filename can optionally be
      * prefixed with a string, which can be used to categorize it.
-     * <p/>
+     * 
      * Normal operation sees an empty filePrefix string supplied. In this case,
      * the name of the file will contain only the filename entered by the user.
-     * <p/>
+     * 
      * If however a non-empty filePrefix is supplied, then the filename provided
      * by the user will be prefixed with this.
-     * <p/>
+     * 
      * This is MOST useful when a dedicated directory exists for similar 'type'
      * configuration files, like the example below:
      *
@@ -117,7 +117,7 @@ public class JsonIO {
      * using 'tableconfigs' as the value for {@code saveDir}, three using
      * 'transaction_' for {@code filePrefix} and the other three using
      * 'vertex_'.
-     * <p/>
+     * 
      * This functionality is integrated with
      * {@link #loadJsonPreferences(String, String)} such that if a
      * {@code filePrefix} is supplied in the
@@ -397,7 +397,7 @@ public class JsonIO {
      * @deprecated use {@link #loadJsonPreferences(Optional, Optional, Class)}
      * instead
      */
-    @Deprecated(since = "2.4")
+    @Deprecated(since = "2.4", forRemoval = true)
     public static JsonNode loadJsonPreferences(final Optional<String> loadDir, final Optional<String> filePrefix) {
         return loadJsonPreferences(loadDir, filePrefix, file -> {
             try {
@@ -420,7 +420,7 @@ public class JsonIO {
      * @see #loadJsonPreferences(Optional, Optional, Function)
      * @deprecated use {@link #loadJsonPreferences(Optional, Class)} instead
      */
-    @Deprecated(since = "2.4")
+    @Deprecated(since = "2.4", forRemoval = true)
     public static JsonNode loadJsonPreferences(final Optional<String> loadDir) {
         return loadJsonPreferences(loadDir, Optional.empty());
     }

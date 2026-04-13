@@ -16,8 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.spectral;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import java.util.HashSet;
-import java.util.Set;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.eclipse.collections.api.map.primitive.IntIntMap;
@@ -26,6 +24,7 @@ import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  *
@@ -41,7 +40,7 @@ public class GraphSpectrumEmbedder {
             return vertexPositions;
         }
 
-        final GraphMatrix l = GraphMatrix.adjacencyFromGraph(rg, includedVertices, new HashSet<>());
+        final GraphMatrix l = GraphMatrix.adjacencyFromGraph(rg, includedVertices, new IntHashSet());
 
         final EigenDecomposition e = new EigenDecomposition(MatrixUtils.createRealMatrix(l.laplacianMatrix));
         final int numVectors = e.getRealEigenvalues().length;
@@ -75,7 +74,7 @@ public class GraphSpectrumEmbedder {
             this.dimension = laplacianMatrix.length;
         }
 
-        public static GraphMatrix adjacencyFromGraph(final GraphReadMethods rg, final MutableIntSet includedVertices, final Set<Integer> excludedLinks) {
+        public static GraphMatrix adjacencyFromGraph(final GraphReadMethods rg, final MutableIntSet includedVertices, final MutableIntSet excludedLinks) {
             final int numVertices = includedVertices.size();
             final double[][] matrixEntries = new double[numVertices][];
             for (int i = 0; i < numVertices; i++) {

@@ -1,8 +1,9 @@
 # Constellation Changes
 
-## Changes in March 2026
+## Changes in April 2026
 -   Updated `BubbleTreeArranger`, and `HierarchyArranger` constructor to pass `MutableIntList` instead of `Set<Integer>`. Old constructor has been deprecated.
 -   Updated `GraphSpectrumEmbedder.spectralEmbedding()` return type to `MutableIntObjectMap`, and `includedVertices` parameter to a `MutableIntSet`
+-   Updated `SubgraphFactory.constructSubgraph() to pass `MutableIntSet` instead of `Set<Integer>`.
 
 ## Changes in January 2026
 -   Renamed `Chinese Whispers` to `Label Propagation`.

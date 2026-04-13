@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.arrangements.subgraph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import java.util.Arrays;
 import java.util.Set;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
 
 /**
  *
@@ -25,6 +26,17 @@ import java.util.Set;
  */
 public final class InducedSubgraph extends ComponentSubgraph {
 
+    public InducedSubgraph(final GraphWriteMethods proxy, final MutableIntSet includedVertexIDs) {
+        super(proxy, includedVertexIDs);
+
+        final int vertexCapacity = getVertexCapacity();
+        vertexNeighbours = new int[vertexCapacity][];
+        vertexLinks = new int[vertexCapacity][];
+        vertexEdges = new int[vertexCapacity][];
+        vertexTransactions = new int[vertexCapacity][];
+    }
+    
+    @Deprecated(since = "3.4", forRemoval = true)
     public InducedSubgraph(final GraphWriteMethods proxy, final Set<Integer> includedVertexIDs) {
         super(proxy, includedVertexIDs);
 
@@ -41,7 +53,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
     private final int[][] vertexTransactions;
 
     public static SubgraphFactory getSubgraphFactory() {
-        return (final GraphWriteMethods wg, final Set<Integer> vertexIDs) -> new InducedSubgraph(wg, vertexIDs);
+        return (final GraphWriteMethods wg, final MutableIntSet vertexIDs) -> new InducedSubgraph(wg, vertexIDs);
     }
 
     private void calculateNeighbours(final int vertex) {

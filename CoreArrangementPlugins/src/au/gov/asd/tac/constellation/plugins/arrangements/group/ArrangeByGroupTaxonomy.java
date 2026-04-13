@@ -23,9 +23,11 @@ import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.InducedSubgraph;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  * A taxonomy that groups by a specified attribute.
@@ -50,7 +52,7 @@ public class ArrangeByGroupTaxonomy extends GraphTaxonomyArranger {
         final int attrId = wg.getAttribute(GraphElementType.VERTEX, attrLabel);
 
         // Discover the unique attribute values.
-        final HashMap<String, Set<Integer>> values = new HashMap<>();
+        final Map<String, MutableIntSet> values = new HashMap<>();
 
         final int vxCount = wg.getVertexCount();
         for (int position = 0; position < vxCount; position++) {
@@ -60,7 +62,7 @@ public class ArrangeByGroupTaxonomy extends GraphTaxonomyArranger {
             if (values.containsKey(value)) {
                 values.get(value).add(vxId);
             } else {
-                final Set<Integer> vxIds = new HashSet<>();
+                final MutableIntSet vxIds = new IntHashSet();
                 vxIds.add(vxId);
                 values.put(value, vxIds);
             }
@@ -68,9 +70,9 @@ public class ArrangeByGroupTaxonomy extends GraphTaxonomyArranger {
 
         // Create the taxonomy.
         // Use any vxId from each group as the taxonomy key, the actual key isn't important.
-        final Map<Integer, Set<Integer>> tax = new HashMap<>();
-        for (final Set<Integer> vxIds : values.values()) {
-            tax.put(vxIds.iterator().next(), vxIds);
+        final MutableIntObjectMap<MutableIntSet> tax = new IntObjectHashMap<>();
+        for (final MutableIntSet vxIds : values.values()) {
+            tax.put(vxIds.intIterator().next(), vxIds);
         }
 
         return new GraphTaxonomy(wg, tax);

@@ -33,7 +33,6 @@ import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.security.SecureRandom;
-import java.util.Set;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -96,14 +95,13 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
 
             // Color the taxonomies so we can see what's going on.
             if (tax != null) {
-                for (final Integer subvxId : tax.getTaxa().keySet()) {
+                tax.getTaxa().forEachValue(subgraph -> {
                     final ConstellationColor color = ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1F);
-                    final Set<Integer> subgraph = tax.getTaxa().get(subvxId);
-                    for (final int vxId : subgraph) {
+                    subgraph.forEach(vxId -> {
                         graph.setStringValue(bgiconAttr, vxId, "Background.Round Circle");
                         graph.setObjectValue(colorAttr, vxId, color);
-                    }
-                }
+                    });
+                });
             }
 
             final CircTreeArranger arranger = new CircTreeArranger(CircTreeChoiceParameters.getDefaultParameters());

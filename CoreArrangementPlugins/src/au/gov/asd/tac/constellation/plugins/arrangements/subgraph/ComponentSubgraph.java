@@ -32,6 +32,8 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Set;
 import java.util.stream.IntStream;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
 
 /**
  * Subgraph write methods for a connected component
@@ -54,9 +56,25 @@ public class ComponentSubgraph implements GraphWriteMethods {
     private GraphElementMerger graphElementMerger;
 
     public static SubgraphFactory getSubgraphFactory() {
-        return (final GraphWriteMethods wg, final Set<Integer> vertexIDs) -> new ComponentSubgraph(wg, vertexIDs);
+        return (final GraphWriteMethods wg, final MutableIntSet vertexIDs) -> new ComponentSubgraph(wg, vertexIDs);
     }
 
+    public ComponentSubgraph(final GraphWriteMethods proxy, final MutableIntSet includedVertexIDs) {
+        this.proxy = proxy;
+        this.includedVertexIDs = new BitSet();
+        includedVertexIDs.forEach(this.includedVertexIDs::set);
+        vertexList = new int[includedVertexIDs.size()];
+        vertexPositions = new int[proxy.getVertexCapacity()];
+        int pos = 0;
+        final IntIterator iter = includedVertexIDs.intIterator();
+        while (iter.hasNext()) {
+            final int vert = iter.next();
+            vertexPositions[vert] = pos;
+            vertexList[pos++] = vert;
+        }
+    }
+    
+    @Deprecated(since = "3.4", forRemoval = true)
     public ComponentSubgraph(final GraphWriteMethods proxy, final Set<Integer> includedVertexIDs) {
         this.proxy = proxy;
         this.includedVertexIDs = new BitSet();

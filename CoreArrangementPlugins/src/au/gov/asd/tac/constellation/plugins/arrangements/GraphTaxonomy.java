@@ -24,14 +24,19 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayDeque;
 import java.util.BitSet;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.collections.api.IntIterable;
+import org.eclipse.collections.api.iterator.IntIterator;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  * A representation of a grouping operation on a graph.
@@ -84,29 +89,63 @@ public final class GraphTaxonomy {
     // A collection of taxa keyed by one of the vertices in each taxon.
     // The key may be meaningful (such as the root vertex if the taxon is a
     // tree), or meaningless (if for example a taxon is a graph component).
-    private final Map<Integer, Set<Integer>> taxa;
-    private final Map<Integer, Integer> nodeToTaxa;
+    private final MutableIntObjectMap<MutableIntSet> taxa;
+    private final MutableIntIntMap nodeToTaxa;
 
     // A set of keys that indicates these taxa are to be arranged in a grid.
-    private final Set<Integer> arrangeRectangularly;
+    private final MutableIntSet arrangeRectangularly;
 
     // The keys of the singleton and doublet taxa (if they exist).
     private int singletonKey;
     private int doubletKey;
+    
+    public GraphTaxonomy(final GraphWriteMethods wg, final MutableIntObjectMap<MutableIntSet> taxa) {
+        this(wg, taxa, null);
+    }
 
+    public GraphTaxonomy(final GraphWriteMethods wg, final MutableIntObjectMap<MutableIntSet> taxa, final MutableIntIntMap nodeToTaxa) {
+        this(wg, taxa, nodeToTaxa, Graph.NOT_FOUND, Graph.NOT_FOUND);
+    }
+
+    public GraphTaxonomy(final GraphWriteMethods wg, final MutableIntObjectMap<MutableIntSet> taxa, final MutableIntIntMap nodeToTaxa, final int singletonKey, final int doubletKey) {
+        this.wg = wg;
+        this.taxa = new IntObjectHashMap<>(taxa);
+        this.nodeToTaxa = nodeToTaxa == null ? null : new IntIntHashMap(nodeToTaxa);
+        arrangeRectangularly = new IntHashSet();
+        this.singletonKey = singletonKey;
+        this.doubletKey = doubletKey;
+    }
+
+    @Deprecated(since = "3.4", forRemoval = true)
     public GraphTaxonomy(final GraphWriteMethods wg, final Map<Integer, Set<Integer>> taxa) {
         this(wg, taxa, null);
     }
 
+    @Deprecated(since = "3.4", forRemoval = true)
     public GraphTaxonomy(final GraphWriteMethods wg, final Map<Integer, Set<Integer>> taxa, final Map<Integer, Integer> nodeToTaxa) {
         this(wg, taxa, nodeToTaxa, Graph.NOT_FOUND, Graph.NOT_FOUND);
     }
 
+    @Deprecated(since = "3.4", forRemoval = true)
     public GraphTaxonomy(final GraphWriteMethods wg, final Map<Integer, Set<Integer>> taxa, final Map<Integer, Integer> nodeToTaxa, final int singletonKey, final int doubletKey) {
         this.wg = wg;
-        this.taxa = new HashMap<>(taxa);
-        this.nodeToTaxa = nodeToTaxa == null ? null : new HashMap<>(nodeToTaxa);
-        arrangeRectangularly = new HashSet<>();
+        this.taxa = new IntObjectHashMap<>();
+        for (final Entry<Integer, Set<Integer>> entry : taxa.entrySet()) {
+            final MutableIntSet intSet = new IntHashSet();
+            for (final int taxaValue : entry.getValue()) {
+                intSet.add(taxaValue);
+            }
+            this.taxa.put(entry.getKey(), intSet);
+        }
+        if (nodeToTaxa == null) {
+            this.nodeToTaxa = null;
+        } else {
+            this.nodeToTaxa = new IntIntHashMap();
+            for (final Entry<Integer, Integer> entry : nodeToTaxa.entrySet()) {
+                this.nodeToTaxa.put(entry.getKey(), entry.getValue());
+            }
+        }
+        arrangeRectangularly = new IntHashSet();
         this.singletonKey = singletonKey;
         this.doubletKey = doubletKey;
     }
@@ -115,12 +154,8 @@ public final class GraphTaxonomy {
         return wg;
     }
 
-    public Map<Integer, Set<Integer>> getTaxa() {
+    public MutableIntObjectMap<MutableIntSet> getTaxa() {
         return taxa;
-    }
-
-    public Map<Integer, Integer> getNodeToTaxa() {
-        return Collections.unmodifiableMap(nodeToTaxa);
     }
 
     public int getSingletonKey() {
@@ -146,15 +181,25 @@ public final class GraphTaxonomy {
      * @param otherTaxa the new taxa to add.
      */
     public void add(final GraphTaxonomy otherTaxa) {
-        for (final Integer k : otherTaxa.getTaxa().keySet()) {
-            taxa.put(k, otherTaxa.getTaxa().get(k));
-            if (otherTaxa.arrangeRectangularly.contains(k)) {
-                arrangeRectangularly.add(k);
+        otherTaxa.getTaxa().forEachKeyValue((key, value) -> {
+            taxa.put(key, value);
+            if (otherTaxa.arrangeRectangularly.contains(key)) {
+                arrangeRectangularly.add(key);
             }
-        }
+        });
         if (otherTaxa.nodeToTaxa != null) {
             nodeToTaxa.putAll(otherTaxa.nodeToTaxa);
         }
+    }
+    
+    /**
+     * The taxa specified by the keys are to be arranged in a grid.
+     *
+     * @param keys the keys of the taxa to be arranged in a grid.
+     */
+    public void setArrangeRectangularly(final IntIterable keys) {
+        arrangeRectangularly.clear();
+        keys.forEach(arrangeRectangularly::add);
     }
 
     /**
@@ -162,6 +207,7 @@ public final class GraphTaxonomy {
      *
      * @param keys the keys of the taxa to be arranged in a grid.
      */
+    @Deprecated(since = "3.4", forRemoval = true)
     public void setArrangeRectangularly(final Iterable<Integer> keys) {
         arrangeRectangularly.clear();
         for (final Integer k : keys) {
@@ -181,20 +227,20 @@ public final class GraphTaxonomy {
      * so any vertex will do.)
      */
     public int mergeSingletonTaxa() {
-        final Set<Integer> singletons = new HashSet<>();
-
-        for (final Iterator<Integer> ii = taxa.keySet().iterator(); ii.hasNext();) {
-            final Integer k = ii.next();
-            final Set<Integer> members = taxa.get(k);
-            if (members.size() == 1) {
-                singletons.add(k);
-                ii.remove();
+        final MutableIntSet singletons = new IntHashSet();
+        
+        taxa.forEachKeyValue((key, value) -> {
+            if (value.size() == 1) {
+                singletons.add(key);
             }
-        }
+        });
 
         if (!singletons.isEmpty()) {
+            // remove all of the singletons before creating a new merged entry
+            taxa.removeIf((key, value) -> singletons.contains(key));
+            
             // We don't care which vertex id we use for the key.
-            singletonKey = singletons.iterator().next();
+            singletonKey = singletons.intIterator().next();
             taxa.put(singletonKey, singletons);
 
             return singletonKey;
@@ -210,30 +256,25 @@ public final class GraphTaxonomy {
      * @return A member of the doublet as the key of the new taxon.
      */
     public int mergeDoubletTaxa() {
-        final Set<Integer> doublets = new HashSet<>();
+        final MutableIntSet doublets = new IntHashSet();
 
-        for (final Iterator<Integer> ii = taxa.keySet().iterator(); ii.hasNext();) {
-            final Integer k = ii.next();
-            final Set<Integer> members = taxa.get(k);
-            if (members.size() == 2) {
+        taxa.forEachValue(value -> {
+            if (value.size() == 2) {
                 // Check if the members are actually linked and that we don't
                 // have a taxa containing two singletons.
-                final Integer[] twoVerts = new Integer[2];
-                members.toArray(twoVerts);
-                if (wg.getVertexNeighbourCount(twoVerts[0]) == 0) {
-                    continue;
-                }
-
-                for (final Integer m : members) {
-                    doublets.add(m);
-                }
-                ii.remove();
+                final int[] twoVerts = value.toArray();
+                if (wg.getVertexNeighbourCount(twoVerts[0]) > 0) {
+                    value.forEach(doublets::add);
+                }               
             }
-        }
+        });
 
         if (!doublets.isEmpty()) {
+            // remove all of the doublets before creating a new merged entry
+            taxa.removeIf((key, value) -> doublets.contains(key));
+            
             // We don't care which vertex id we use for the key.
-            doubletKey = doublets.iterator().next();
+            doubletKey = doublets.intIterator().next();
             taxa.put(doubletKey, doublets);
 
             return doubletKey;
@@ -256,8 +297,8 @@ public final class GraphTaxonomy {
      * TODO: sometimes its not worth adding the transactions.
      */
     public Condensation getCondensedGraph() throws InterruptedException {
-        final Map<Integer, Integer> cVxIdToTaxonKey = new HashMap<>();
-        final Map<Integer, Integer> taxonKeyToVxId = new HashMap<>();
+        final MutableIntIntMap cVxIdToTaxonKey = new IntIntHashMap();
+        final MutableIntIntMap taxonKeyToVxId = new IntIntHashMap();
 
         final GraphWriteMethods condensedGraph = new StoreGraph(wg.getSchema());
         final int cxAttr = VisualConcept.VertexAttribute.X.ensure(condensedGraph);
@@ -284,10 +325,8 @@ public final class GraphTaxonomy {
             final int cVxId = condensedGraph.addVertex();
 
             final BitSet vertices = new BitSet();
-            for (final Integer member : taxa.get(k)) {
-                vertices.set(member);
-            }
-
+            taxa.get(k).forEach(vertices::set);
+            
             // Figure out where and how big the new vertex will be.
             final Extent extent = Extent.getExtent(wg, vertices);
 
@@ -310,27 +349,28 @@ public final class GraphTaxonomy {
         // but only look in the remaining taxa for destinations,
         // otherwise we end up with two transactions between each vertex.
         final ArrayDeque<Integer> sources = new ArrayDeque<>();
-        sources.addAll(taxa.keySet());
+        taxa.forEachKey(sources::add);
 
         while (!sources.isEmpty()) {
             // If we already have a transaction from the current source to a particular destination,
             // don't add another one.
-            final Set<Integer> found = new HashSet<>();
+            final MutableIntSet found = new IntHashSet();
 
-            final Integer src = sources.removeFirst();
+            final int src = sources.removeFirst();
             found.add(src);
-            final Set<Integer> members = taxa.get(src);
-            for (final Integer mm : members) {
+            final IntIterator membersIter = taxa.get(src).intIterator();
+            
+            while (membersIter.hasNext()) {
+                final int m = membersIter.next();
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
                 }
-                final int m = mm;
+                
                 final int nNeighbours = wg.getVertexNeighbourCount(m);
                 for (int position = 0; position < nNeighbours; position++) {
                     final int nbId = wg.getVertexNeighbour(m, position);
-                    final Integer dst = nodeToTaxa != null ? nodeToTaxa.get(nbId) : findTaxonContainingVertex(sources, nbId);
-                    // Found the test for null was required to avoid issues
-                    if (dst != null && dst != Graph.NOT_FOUND && !found.contains(dst)) {
+                    final int dst = nodeToTaxa != null ? nodeToTaxa.get(nbId) : findTaxonContainingVertex(sources, nbId);
+                    if (dst != Graph.NOT_FOUND && !found.contains(dst)) {
                         condensedGraph.addTransaction(taxonKeyToVxId.get(src), taxonKeyToVxId.get(dst), true);
                         found.add(dst);
                     }
@@ -393,7 +433,7 @@ public final class GraphTaxonomy {
             final float dz = cz - czorig;
 
             final int k = c.cVxIdToTaxonKey.get(cVxId);
-            for (final int vxId : taxa.get(k)) {
+            taxa.get(k).forEach(vxId -> {
                 final float x = wg.getFloatValue(xAttr, vxId);
                 final float y = wg.getFloatValue(yAttr, vxId);
                 final float z = wg.getFloatValue(zAttr, vxId);
@@ -401,7 +441,7 @@ public final class GraphTaxonomy {
                 wg.setFloatValue(xAttr, vxId, x + dx);
                 wg.setFloatValue(yAttr, vxId, y + dy);
                 wg.setFloatValue(zAttr, vxId, z + dz);
-            }
+            });
 
             if (Thread.interrupted()) {
                 throw new InterruptedException();
@@ -419,18 +459,44 @@ public final class GraphTaxonomy {
      */
     public static class Condensation {
 
-        public final GraphWriteMethods wg;
-        public final Map<Integer, Integer> cVxIdToTaxonKey;
+        private final GraphWriteMethods wg;
+        private final MutableIntIntMap cVxIdToTaxonKey;
 
         /**
          * Construct a new Condensation instance.
          *
          * @param graph The graph that this condensation was built from.
          * @param cVxIdToTaxonKey A mapping of vertexId to taxon.
+         * 
+         * @deprecated in favor of new implementation
+         * @see #Condensation(au.gov.asd.tac.constellation.graph.GraphWriteMethods, org.eclipse.collections.api.map.primitive.MutableIntIntMap)
          */
+        @Deprecated(since = "3.4", forRemoval = true)
         public Condensation(final GraphWriteMethods graph, final Map<Integer, Integer> cVxIdToTaxonKey) {
             this.wg = graph;
+            this.cVxIdToTaxonKey = new IntIntHashMap();
+            for (final Entry<Integer, Integer> entry : cVxIdToTaxonKey.entrySet()) {
+                this.cVxIdToTaxonKey.put(entry.getKey(), entry.getValue());
+            }
+        }
+        
+        /**
+         * Construct a new Condensation instance.
+         *
+         * @param graph The graph that this condensation was built from.
+         * @param cVxIdToTaxonKey A mapping of vertexId to taxon.
+         */
+        public Condensation(final GraphWriteMethods graph, final MutableIntIntMap cVxIdToTaxonKey) {
+            this.wg = graph;
             this.cVxIdToTaxonKey = cVxIdToTaxonKey;
+        }
+
+        public GraphWriteMethods getGraph() {
+            return wg;
+        }
+
+        public MutableIntIntMap getcVxIdToTaxonKey() {
+            return cVxIdToTaxonKey;
         }
     }
 
@@ -444,9 +510,7 @@ public final class GraphTaxonomy {
      */
     private MutableIntList getSortedTaxaKeys() {
         final MutableIntList keys = new IntArrayList(taxa.size());
-        for (final Integer k : taxa.keySet()) {
-            keys.add(k);
-        }
+        taxa.forEachKey(keys::add);
 
         keys.sortThis((final int key1, final int key2) -> {
             if (key1 == singletonKey) {
@@ -477,9 +541,9 @@ public final class GraphTaxonomy {
      *
      * @return The key of the taxon that contains the given vertex.
      */
-    private Integer findTaxonContainingVertex(final ArrayDeque<Integer> dstKeys, final Integer vxId) {
-        for (final Integer k : dstKeys) {
-            final Set<Integer> members = taxa.get(k);
+    private int findTaxonContainingVertex(final ArrayDeque<Integer> dstKeys, final int vxId) {
+        for (final int k : dstKeys) {
+            final MutableIntSet members = taxa.get(k);
             if (members.contains(vxId)) {
                 return k;
             }

@@ -31,6 +31,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  * provides a set of functions pertaining to a graph's components and its
@@ -199,7 +205,7 @@ public final class ArrangementUtilities {
         }
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static float[] getSubsetMean(final GraphWriteMethods graph, final BitSet vertices) {
         final double[] mean = new double[]{0, 0, 0};
 
@@ -270,15 +276,15 @@ public final class ArrangementUtilities {
      * (weak) component.
      */
     public static GraphTaxonomy getComponents(final GraphWriteMethods wg) {
-        final Map<Integer, Set<Integer>> components = new HashMap<>();
-        final Map<Integer, Integer> nodeToComponent = new HashMap<>();
+        final MutableIntObjectMap<MutableIntSet> components = new IntObjectHashMap<>();
+        final MutableIntIntMap nodeToComponent = new IntIntHashMap();
         final int singletonsComponentID = -1;
         final int doubletsComponentID = -2;
-        components.put(singletonsComponentID, new HashSet<>());
-        components.put(doubletsComponentID, new HashSet<>());
+        components.put(singletonsComponentID, new IntHashSet());
+        components.put(doubletsComponentID, new IntHashSet());
         final BitSet potentials = vertexBits(wg);
         for (int vxID = potentials.nextSetBit(0); vxID >= 0; vxID = potentials.nextSetBit(vxID + 1)) {
-            final Set<Integer> component = new HashSet<>();
+            final MutableIntSet component = new IntHashSet();
             component.add(vxID);
             nodeToComponent.put(vxID, vxID);
             potentials.clear(vxID);
@@ -286,7 +292,7 @@ public final class ArrangementUtilities {
                 final Deque<Integer> neighbours = new LinkedList<>();
                 neighbours.add(vxID);
                 while (!neighbours.isEmpty()) {
-                    final Integer nxID = neighbours.remove();
+                    final int nxID = neighbours.remove();
                     for (int i = 0; i < wg.getVertexNeighbourCount(nxID); i++) {
                         final int nextNxID = wg.getVertexNeighbour(nxID, i);
                         if (potentials.get(nextNxID)) {
@@ -298,50 +304,19 @@ public final class ArrangementUtilities {
                     }
                 }
             }
-            if (component.size() == 1) {
-                components.get(singletonsComponentID).addAll(component);
-                nodeToComponent.put(vxID, singletonsComponentID);
-            } else if (component.size() == 2) {
-                components.get(doubletsComponentID).addAll(component);
-                for (final int vert : component) {
-                    nodeToComponent.put(vert, doubletsComponentID);
+            switch (component.size()) {
+                case 1 -> {
+                    components.get(singletonsComponentID).addAll(component);
+                    nodeToComponent.put(vxID, singletonsComponentID);
                 }
-            } else {
-                components.put(vxID, component);
+                case 2 -> {
+                    components.get(doubletsComponentID).addAll(component);
+                    component.forEach(vert -> nodeToComponent.put(vert, doubletsComponentID));
+                }
+                default -> components.put(vxID, component);
             }
         }
         return new GraphTaxonomy(wg, components, nodeToComponent, singletonsComponentID, doubletsComponentID);
-    }
-
-    /**
-     * Given a vertex, find all of the vertices in its component.
-     *
-     * @param rg The graph containing the vertex.
-     * @param seedVxId The vertex to start from.
-     *
-     * @return A Set&lt;Integer&gt; containing all of the vertices in the same
-     * component as rootVxId.
-     */
-    public static Set<Integer> getComponentContainingVertex(final GraphReadMethods rg, final int seedVxId) {
-        final Set<Integer> component = new HashSet<>();
-
-        final ArrayDeque<Integer> neighbours = new ArrayDeque<>();
-        neighbours.add(seedVxId);
-        component.add(seedVxId);
-        while (!neighbours.isEmpty()) {
-            final Integer vxId = neighbours.removeFirst();
-            final int nNeighbours = rg.getVertexNeighbourCount(vxId);
-            for (int nbPosition = 0; nbPosition < nNeighbours; nbPosition++) {
-                final int nbId = rg.getVertexNeighbour(vxId, nbPosition);
-
-                if (!component.contains(nbId)) {
-                    neighbours.add(nbId);
-                    component.add(nbId);
-                }
-            }
-        }
-
-        return component;
     }
 
     /**
@@ -357,7 +332,7 @@ public final class ArrangementUtilities {
      * @return a GraphTaxonomy, with each taxon representing the vertices in a
      * (weak) component.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static GraphTaxonomy getComponents(final GraphWriteMethods graph, final BitSet verticesToArrange) {
         final Map<Integer, Set<Integer>> tax = new HashMap<>();
 
@@ -394,7 +369,7 @@ public final class ArrangementUtilities {
      * @return A Set&lt;Integer%gt; containing all of the vertices in the same
      * component as rootVxId.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static Set<Integer> getComponentContainingVertex(final GraphReadMethods graph, final int seedVxId, final BitSet verticesToArrange) {
         final Set<Integer> component = new HashSet<>();
 
