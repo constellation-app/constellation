@@ -22,7 +22,6 @@ import org.eclipse.collections.api.IntIterable;
 import org.eclipse.collections.api.map.primitive.IntIntMap;
 import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
-import org.eclipse.collections.api.set.primitive.MutableIntSet;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
@@ -75,7 +74,7 @@ public class GraphSpectrumEmbedder {
             this.dimension = laplacianMatrix.length;
         }
 
-        public static GraphMatrix adjacencyFromGraph(final GraphReadMethods rg, final IntIterable includedVertices, final MutableIntSet excludedLinks) {
+        public static GraphMatrix adjacencyFromGraph(final GraphReadMethods rg, final IntIterable includedVertices, final IntIterable excludedLinks) {
             final int numVertices = includedVertices.size();
             final double[][] matrixEntries = new double[numVertices][];
             for (int i = 0; i < numVertices; i++) {
