@@ -74,6 +74,13 @@ public class ComponentSubgraph implements GraphWriteMethods {
         }
     }
     
+    /**
+     * 
+     * @param proxy
+     * @param includedVertexIDs
+     * @deprecated in favor of new implementation
+     * @see #ComponentSubgraph(au.gov.asd.tac.constellation.graph.GraphWriteMethods, org.eclipse.collections.api.set.primitive.MutableIntSet)
+     */
     @Deprecated(since = "3.4", forRemoval = true)
     public ComponentSubgraph(final GraphWriteMethods proxy, final Set<Integer> includedVertexIDs) {
         this.proxy = proxy;

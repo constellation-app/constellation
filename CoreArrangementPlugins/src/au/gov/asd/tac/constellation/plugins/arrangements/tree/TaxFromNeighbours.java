@@ -86,6 +86,8 @@ public class TaxFromNeighbours {
      * @param verticesToConsider the set of vertices to be included.
      *
      * @return the graph taxonomy.
+     * @deprecated in favor of new implementation
+     * @see #getTaxonomy(au.gov.asd.tac.constellation.graph.GraphWriteMethods, org.eclipse.collections.api.set.primitive.IntSet)
      */
     @Deprecated(since = "3.4", forRemoval = true)
     public static GraphTaxonomy getTaxonomy(final GraphWriteMethods graph, final Iterable<Integer> verticesToConsider) {

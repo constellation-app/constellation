@@ -118,16 +118,41 @@ public final class GraphTaxonomy {
         this.doubletKey = doubletKey;
     }
 
+    /**
+     * 
+     * @param wg
+     * @param taxa
+     * @deprecated in favor of new implementation
+     * @see #GraphTaxonomy(au.gov.asd.tac.constellation.graph.GraphWriteMethods, org.eclipse.collections.api.map.primitive.MutableIntObjectMap)
+     */
     @Deprecated(since = "3.4", forRemoval = true)
     public GraphTaxonomy(final GraphWriteMethods wg, final Map<Integer, Set<Integer>> taxa) {
         this(wg, taxa, null);
     }
 
+    /**
+     * 
+     * @param wg
+     * @param taxa
+     * @param nodeToTaxa
+     * @deprecated in favor of new implementation
+     * @see #GraphTaxonomy(au.gov.asd.tac.constellation.graph.GraphWriteMethods, org.eclipse.collections.api.map.primitive.MutableIntObjectMap, org.eclipse.collections.api.map.primitive.MutableIntIntMap)
+     */
     @Deprecated(since = "3.4", forRemoval = true)
     public GraphTaxonomy(final GraphWriteMethods wg, final Map<Integer, Set<Integer>> taxa, final Map<Integer, Integer> nodeToTaxa) {
         this(wg, taxa, nodeToTaxa, Graph.NOT_FOUND, Graph.NOT_FOUND);
     }
 
+    /**
+     * 
+     * @param wg
+     * @param taxa
+     * @param nodeToTaxa
+     * @param singletonKey
+     * @param doubletKey
+     * @deprecated in favor of new implementation
+     * @see #GraphTaxonomy(au.gov.asd.tac.constellation.graph.GraphWriteMethods, org.eclipse.collections.api.map.primitive.MutableIntObjectMap, org.eclipse.collections.api.map.primitive.MutableIntIntMap, int, int)
+     */
     @Deprecated(since = "3.4", forRemoval = true)
     public GraphTaxonomy(final GraphWriteMethods wg, final Map<Integer, Set<Integer>> taxa, final Map<Integer, Integer> nodeToTaxa, final int singletonKey, final int doubletKey) {
         this.wg = wg;
@@ -208,6 +233,8 @@ public final class GraphTaxonomy {
      * The taxa specified by the keys are to be arranged in a grid.
      *
      * @param keys the keys of the taxa to be arranged in a grid.
+     * @deprecated in favor of new implementation
+     * @see #setArrangeRectangularly(org.eclipse.collections.api.IntIterable)
      */
     @Deprecated(since = "3.4", forRemoval = true)
     public void setArrangeRectangularly(final Iterable<Integer> keys) {

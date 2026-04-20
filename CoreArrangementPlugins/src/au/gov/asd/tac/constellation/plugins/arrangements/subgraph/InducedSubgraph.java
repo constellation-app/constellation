@@ -36,6 +36,13 @@ public final class InducedSubgraph extends ComponentSubgraph {
         vertexTransactions = new int[vertexCapacity][];
     }
     
+    /**
+     * 
+     * @param proxy
+     * @param includedVertexIDs
+     * @deprecated in favor of new implementation
+     * @see #InducedSubgraph(au.gov.asd.tac.constellation.graph.GraphWriteMethods, org.eclipse.collections.api.set.primitive.MutableIntSet)
+     */
     @Deprecated(since = "3.4", forRemoval = true)
     public InducedSubgraph(final GraphWriteMethods proxy, final Set<Integer> includedVertexIDs) {
         super(proxy, includedVertexIDs);
