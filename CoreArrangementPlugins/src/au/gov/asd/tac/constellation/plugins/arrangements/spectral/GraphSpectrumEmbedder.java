@@ -96,18 +96,13 @@ public class GraphSpectrumEmbedder {
 
             for (int i = 0; i < numVertices; i++) {
                 final int vxID = matrixPositionToID.get(i);
-                int neighbourCount = 0;
                 for (int j = 0; j < rg.getVertexNeighbourCount(vxID); j++) {
                     final int neighbourID = rg.getVertexNeighbour(vxID, j);
-                    if (excludedLinks.contains(rg.getLink(vxID, neighbourID))) {
-                        continue;
-                    } else if (!includedVertices.contains(neighbourID)) {
-                        neighbourCount++;
-                        continue;
-                    } else if (idToMatrixPosition.get(neighbourID) == i) {
+                    if (excludedLinks.contains(rg.getLink(vxID, neighbourID))
+                            || !includedVertices.contains(neighbourID)
+                            || idToMatrixPosition.get(neighbourID) == i) {
                         continue;
                     }
-                    neighbourCount++;
                     matrixEntries[i][idToMatrixPosition.get(neighbourID)] = 1;
                 }
                 matrixEntries[i][i] = 0;
