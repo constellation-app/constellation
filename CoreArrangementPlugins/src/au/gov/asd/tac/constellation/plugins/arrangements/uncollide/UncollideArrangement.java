@@ -16,9 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
@@ -60,13 +58,13 @@ public class UncollideArrangement implements Arranger {
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
         final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
 
-        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        final int rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
-        final int x2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
-        final int y2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
-        final int z2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
+        final int xId = VisualConcept.VertexAttribute.X.get(wg);
+        final int yId = VisualConcept.VertexAttribute.Y.get(wg);
+        final int zId = VisualConcept.VertexAttribute.Z.get(wg);
+        final int rId = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
+        final int x2Id = VisualConcept.VertexAttribute.X2.get(wg);
+        final int y2Id = VisualConcept.VertexAttribute.Y2.get(wg);
+        final int z2Id = VisualConcept.VertexAttribute.Z2.get(wg);
 
         final int vxCount = wg.getVertexCount();
 

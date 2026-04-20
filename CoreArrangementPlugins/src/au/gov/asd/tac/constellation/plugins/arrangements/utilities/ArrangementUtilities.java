@@ -34,9 +34,11 @@ import java.util.Set;
 import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.api.stack.primitive.MutableIntStack;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+import org.eclipse.collections.impl.stack.mutable.primitive.IntArrayStack;
 
 /**
  * provides a set of functions pertaining to a graph's components and its
@@ -46,7 +48,9 @@ import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
  */
 public final class ArrangementUtilities {
 
-    public static final int FUNDAMENTAL_SIZE = 2;  
+    public static final int FUNDAMENTAL_SIZE = 2;
+    
+    private static final int NO_DISTANCE = -1;
     
     private ArrangementUtilities() {
         throw new IllegalStateException("Utility class");
@@ -79,7 +83,6 @@ public final class ArrangementUtilities {
         final float[] distancesToVertices = new float[graph.getVertexCapacity()];
 
         // Fill the array with -1 to indicate "unknown distance".
-        final int NO_DISTANCE = -1;
         Arrays.fill(distancesToVertices, NO_DISTANCE);
 
         // Add the starting vertex; no traversal is required to know that the starting vertex
@@ -87,12 +90,12 @@ public final class ArrangementUtilities {
         distancesToVertices[vxId] = 0;
 
         // This will hold all vertices that have been reached so far but not processed.
-        final ArrayDeque<Integer> vxQueue = new ArrayDeque<>();
-        vxQueue.add(vxId);
+        final MutableIntStack vxStack = new IntArrayStack();
+        vxStack.push(vxId);
 
-        while (!vxQueue.isEmpty()) {
-            // Get the first vertex in the queue...
-            final int parentVxId = vxQueue.removeFirst();
+        while (!vxStack.isEmpty()) {
+            // Get the first vertex in the stack...
+            final int parentVxId = vxStack.pop();
 
             // ...and its distance.
             final float parentRadius = Math.max(minRadius, nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, parentVxId) : 1);
@@ -109,7 +112,7 @@ public final class ArrangementUtilities {
                     if (distancesToVertices[childVxId] == NO_DISTANCE) {
                         final float childRadius = Math.max(minRadius, nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, childVxId) : 1);
                         final float childDistance = parentDistance + childRadius;
-                        vxQueue.add(childVxId);
+                        vxStack.push(childVxId);
                         distancesToVertices[childVxId] = childDistance;
                     }
                 }
@@ -126,7 +129,7 @@ public final class ArrangementUtilities {
                     if (distancesToVertices[childVxId] == NO_DISTANCE) {
                         final float childRadius = 1.5F * (nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, childVxId) : 1);
                         final float childDistance = parentDistance + childRadius;
-                        vxQueue.add(childVxId);
+                        vxStack.push(childVxId);
                         distancesToVertices[childVxId] = childDistance;
                     }
                 }
@@ -148,9 +151,9 @@ public final class ArrangementUtilities {
 
         final int vxCount = rg.getVertexCount();
         if (vxCount != 0) {
-            final int xAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-            final int yAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-            final int zAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+            final int xAttr = VisualConcept.VertexAttribute.X.get(rg);
+            final int yAttr = VisualConcept.VertexAttribute.Y.get(rg);
+            final int zAttr = VisualConcept.VertexAttribute.Z.get(rg);
 
             // Use a double[] in case we get big numbers.
             for (int position = 0; position < vxCount; position++) {
@@ -181,12 +184,12 @@ public final class ArrangementUtilities {
      */
     public static void moveMean(final GraphWriteMethods wg, final float[] oldMean) {
         final float[] newMean = ArrangementUtilities.getXyzMean(wg);
-        final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        final int x2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X2.getName());
-        final int y2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y2.getName());
-        final int z2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z2.getName());
+        final int xAttr = VisualConcept.VertexAttribute.X.get(wg);
+        final int yAttr = VisualConcept.VertexAttribute.Y.get(wg);
+        final int zAttr = VisualConcept.VertexAttribute.Z.get(wg);
+        final int x2Attr = VisualConcept.VertexAttribute.X2.get(wg);
+        final int y2Attr = VisualConcept.VertexAttribute.Y2.get(wg);
+        final int z2Attr = VisualConcept.VertexAttribute.Z2.get(wg);
         final boolean xyz2 = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
 
         final int vxCount = wg.getVertexCount();
@@ -289,16 +292,16 @@ public final class ArrangementUtilities {
             nodeToComponent.put(vxID, vxID);
             potentials.clear(vxID);
             if (wg.getVertexNeighbourCount(vxID) != 0) {
-                final Deque<Integer> neighbours = new LinkedList<>();
-                neighbours.add(vxID);
+                final MutableIntStack neighbours = new IntArrayStack();
+                neighbours.push(vxID);
                 while (!neighbours.isEmpty()) {
-                    final int nxID = neighbours.remove();
+                    final int nxID = neighbours.pop();
                     for (int i = 0; i < wg.getVertexNeighbourCount(nxID); i++) {
                         final int nextNxID = wg.getVertexNeighbour(nxID, i);
                         if (potentials.get(nextNxID)) {
                             component.add(nextNxID);
                             nodeToComponent.put(nextNxID, vxID);
-                            neighbours.add(nextNxID);
+                            neighbours.push(nextNxID);
                             potentials.clear(nextNxID);
                         }
                     }

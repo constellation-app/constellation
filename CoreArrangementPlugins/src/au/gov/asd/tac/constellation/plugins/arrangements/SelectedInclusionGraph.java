@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.arrangements;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 
@@ -38,13 +37,11 @@ public class SelectedInclusionGraph extends AbstractInclusionGraph {
      */
     public SelectedInclusionGraph(final GraphWriteMethods wg, final Connections connections) {
         super(wg, connections);
-        selectedAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+        selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
     }
 
     @Override
     public boolean isVertexIncluded(final int vxId) {
-
-        // Don't forget to allow for selected not being present.
-        return (selectedAttr == Graph.NOT_FOUND || wg.getBooleanValue(selectedAttr, vxId));
+        return selectedAttr == Graph.NOT_FOUND || wg.getBooleanValue(selectedAttr, vxId);
     }
 }

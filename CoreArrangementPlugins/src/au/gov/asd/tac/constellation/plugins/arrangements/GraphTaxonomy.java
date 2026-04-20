@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.util.ArrayDeque;
 import java.util.BitSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,10 +32,13 @@ import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.api.stack.primitive.IntStack;
+import org.eclipse.collections.api.stack.primitive.MutableIntStack;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+import org.eclipse.collections.impl.stack.mutable.primitive.IntArrayStack;
 
 /**
  * A representation of a grouping operation on a graph.
@@ -348,15 +350,15 @@ public final class GraphTaxonomy {
         // We search through all of the taxa to find sources,
         // but only look in the remaining taxa for destinations,
         // otherwise we end up with two transactions between each vertex.
-        final ArrayDeque<Integer> sources = new ArrayDeque<>();
-        taxa.forEachKey(sources::add);
+        final MutableIntStack sources = new IntArrayStack();
+        taxa.forEachKey(sources::push);
 
         while (!sources.isEmpty()) {
             // If we already have a transaction from the current source to a particular destination,
             // don't add another one.
             final MutableIntSet found = new IntHashSet();
 
-            final int src = sources.removeFirst();
+            final int src = sources.pop();
             found.add(src);
             final IntIterator membersIter = taxa.get(src).intIterator();
             
@@ -541,8 +543,10 @@ public final class GraphTaxonomy {
      *
      * @return The key of the taxon that contains the given vertex.
      */
-    private int findTaxonContainingVertex(final ArrayDeque<Integer> dstKeys, final int vxId) {
-        for (final int k : dstKeys) {
+    private int findTaxonContainingVertex(final IntStack dstKeys, final int vxId) {
+        final IntIterator iter = dstKeys.intIterator();
+        while (iter.hasNext()) {
+            final int k = iter.next();
             final MutableIntSet members = taxa.get(k);
             if (members.contains(vxId)) {
                 return k;
