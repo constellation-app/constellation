@@ -16,9 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
@@ -38,7 +36,7 @@ import org.openide.util.NotImplementedException;
  * MDS uses an incremental arrangement method, beginning with a subset,
  * arranging that subset with multiple starts, picking the arrangement with
  * minimum stress, introducing more of the graph, and repeating. Each
- * minimization uses steepest descent of semiproportional stress.
+ * minimization uses steepest descent of semi-proportional stress.
  *
  * Target distances: distance between A and B is minimum number of edges between
  * A and B times scaleFactor. The value of scaleFactor is 100 * scaleSetting
@@ -54,6 +52,11 @@ public class MdsArranger implements Arranger {
     private static final float CIRC_RADIUS = (float) Math.sqrt(2);
     private static final float RADIUS_INFLATION_AT_100_PERCENT = 1.5F;
     private static final float EXTENTS_SIZE_INFLATION = 1.2F;
+    
+    private static final int START_SET_SIZE_MAX = 8;
+    private static final int SMALL_GRAPH_SIZE = 20;
+    private static final int ITERATIONS_PER_STAGE_SMALL_GRAPH = 25;
+    private static final int NUM_TRIALS_FOR_SMALL_GRAPH = 4;
 
     private final MDSChoiceParameters params;
 
@@ -68,21 +71,16 @@ public class MdsArranger implements Arranger {
         }
 
         final BitSet verticesToArrange = ArrangementUtilities.vertexBits(wg);
-
-        // Parameter setup.
-        final int maxTrialsPerStage = params.maxTrialsPerStage;
-        final int minTrialsPerStage = params.minTrialsPerStage;
-        int iterationsPerStageTrial = params.iterationsPerStageTrial;
-        final boolean usingExtents = params.linkWeight == LinkWeight.USE_EXTENTS;
+        
+        final int maxTrialsPerStage = params.getMaxTrialsPerStage();
+        final int minTrialsPerStage = params.getMinTrialsPerStage();
+        int iterationsPerStageTrial = params.getIterationsPerStageTrial();
+        final boolean usingExtents = params.getLinkWeight() == LinkWeight.USE_EXTENTS;
 
         boolean showIterations = false;
-        final int startSetSizeMax = 8;
-        final int smallGraphSize = 20;
-        final int iterationsPerStageSmallGraph = 25;
-        final int numTrialsForSmallGraph = 4;
 
-        final boolean setMinByRadii = params.tryToAvoidOverlap;
-        final float radiusInflation = RADIUS_INFLATION_AT_100_PERCENT * (params.overlapAvoidance / 100.0F);
+        final boolean setMinByRadii = params.isTryToAvoidOverlap();
+        final float radiusInflation = RADIUS_INFLATION_AT_100_PERCENT * (params.getOverlapAvoidance() / 100.0F);
 
         if (iterationsPerStageTrial < 0) {
             iterationsPerStageTrial = -iterationsPerStageTrial;
@@ -93,7 +91,7 @@ public class MdsArranger implements Arranger {
         final float scaleFactor;
         final float perturbationSize;
         if (usingExtents) {
-            scaleFactor = params.scale;
+            scaleFactor = params.getScale();
             perturbationSize = (scaleFactor * 3F * ArrangementUtilities.FUNDAMENTAL_SIZE) / 2F;
         } else {
             final float minSpacing;
@@ -114,7 +112,7 @@ public class MdsArranger implements Arranger {
                 minSpacing = Math.max(min, 3 * ArrangementUtilities.FUNDAMENTAL_SIZE);
             }
 
-            scaleFactor = 3F * minSpacing * params.scale;
+            scaleFactor = 3F * minSpacing * params.getScale();
             perturbationSize = scaleFactor / 2F;
         }
 
@@ -123,26 +121,16 @@ public class MdsArranger implements Arranger {
         //  vxsToInfluence: first numVxsToInfluence entries will act on vertices
         //  vxsToArrange:    first numVxsToArrange entries will be moved
         //  vxsToArrangeLater:    numVxsLater entries to be done after others done
-        // and 2 more vectors for the whole thing
-        //  totVxsToArrange: first numTotVxsToArrange entries will act on vertices
-        //  totVxsToInfluence: first numTotVxsToInfluence entries will act on vertices
-        final int[] vxsToArrange = new int[wg.getVertexCapacity()];
-        final int[] vxsToInfluence = new int[wg.getVertexCapacity()];
-        final int[] vxsToArrangeLater = new int[wg.getVertexCapacity()];
-
-        final int[] totVxsToArrange = new int[wg.getVertexCapacity()];
-        final int[] totVxsToInfluence = new int[wg.getVertexCapacity()];
+        final int vxCount = wg.getVertexCount();
+        final int[] vxsToArrange = new int[vxCount];
+        final int[] vxsToInfluence = new int[vxCount];
+        final int[] vxsToArrangeLater = new int[vxCount];
 
         int numVxsToInfluence = 0;
         int numVxsToArrange = 0;
         int numVxsLater = 0;
-
-        int numTotVxsToArrange = 0;
-        int numTotVxsToInfluence = 0;
-
-        final int vxCount = wg.getVertexCount();
+        
         for (int vxId = verticesToArrange.nextSetBit(0); vxId >= 0; vxId = verticesToArrange.nextSetBit(vxId + 1)) {
-
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
@@ -152,23 +140,17 @@ public class MdsArranger implements Arranger {
             final boolean useLocs = false; //verticesToUseExistingLoc.contains( thisVertex )
             if (arrangeIt && useLocs) {
                 vxsToArrange[numVxsToArrange++] = vxId;
-            } else if (arrangeIt && !useLocs) {
+            } else if (arrangeIt) {
                 vxsToArrangeLater[numVxsLater++] = vxId;
             }
             if (influence && (useLocs || !arrangeIt)) {
                 vxsToInfluence[numVxsToInfluence++] = vxId;
             }
-            if (arrangeIt) {
-                totVxsToArrange[numTotVxsToArrange++] = vxId;
-            }
-            if (influence) {
-                totVxsToInfluence[numTotVxsToInfluence++] = vxId;
-            }
         }
 
         // Get all distances in a matrix represented as a vector.
         // Index 0 is source vxId, index 1 is destination (influence) vxId.
-        final float[][] distanceMatrix = calcDistanceMatrix(wg, verticesToArrange, params.linkWeight, scaleFactor);
+        final float[][] distanceMatrix = calcDistanceMatrix(wg, verticesToArrange, params.getLinkWeight(), scaleFactor);
         if (setMinByRadii) {
             setMinDistancesByRadii(wg, verticesToArrange, distanceMatrix, radiusInflation);
         }
@@ -176,7 +158,6 @@ public class MdsArranger implements Arranger {
         final float[] gains = new float[wg.getVertexCapacity()];
         final float[] currentX = new float[wg.getVertexCapacity()];
         final float[] currentY = new float[wg.getVertexCapacity()];
-        final float[] radii = new float[wg.getVertexCapacity()];
         final float[] bestX = new float[wg.getVertexCapacity()];
         final float[] bestY = new float[wg.getVertexCapacity()];
         final float[] startX = new float[wg.getVertexCapacity()];
@@ -184,19 +165,10 @@ public class MdsArranger implements Arranger {
         final int[] closestVertices = new int[wg.getVertexCapacity()];
         final int[] nextClosestVertices = new int[wg.getVertexCapacity()];
         final float[] gammas = new float[wg.getVertexCapacity()];
-
-        if (wg.getAttribute(GraphElementType.VERTEX, "x") == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", null, null);
-        }
-        if (wg.getAttribute(GraphElementType.VERTEX, "y") == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", null, null);
-        }
-        if (wg.getAttribute(GraphElementType.VERTEX, "z") == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", null, null);
-        }
-        final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        
+        final int xAttr = VisualConcept.VertexAttribute.X.ensure(wg);
+        final int yAttr = VisualConcept.VertexAttribute.Y.ensure(wg);
+        final int zAttr = VisualConcept.VertexAttribute.Z.ensure(wg);
 
         // Remember the old locations.
         for (int vxId = verticesToArrange.nextSetBit(0); vxId >= 0; vxId = verticesToArrange.nextSetBit(vxId + 1)) {
@@ -206,7 +178,7 @@ public class MdsArranger implements Arranger {
 
         // Find first subset size and skip factor for filling in remainder.
         final int[] vxsToDo = new int[numVxsLater];
-        final int initialIncrement = fillOrderToIntroduceVerticesVector(vxsToDo, vxsToArrangeLater, numVxsLater, startSetSizeMax);
+        final int initialIncrement = fillOrderToIntroduceVerticesVector(vxsToDo, vxsToArrangeLater, numVxsLater, START_SET_SIZE_MAX);
 
         int incrementSize = initialIncrement;
         int remainingVertices = numVxsLater;
@@ -215,7 +187,6 @@ public class MdsArranger implements Arranger {
 
         // Stage loop.
         while (!done) {
-
             // Save location so far.
             final int numberOfLocationsSaved = numVxsToArrange;
 
@@ -263,8 +234,8 @@ public class MdsArranger implements Arranger {
             if (trialsPerStage < minTrialsPerStage) {
                 trialsPerStage = minTrialsPerStage;
             }
-            if ((numVxsToArrange <= smallGraphSize) && (trialsPerStage < numTrialsForSmallGraph)) {
-                trialsPerStage = numTrialsForSmallGraph;
+            if (numVxsToArrange <= SMALL_GRAPH_SIZE && trialsPerStage < NUM_TRIALS_FOR_SMALL_GRAPH) {
+                trialsPerStage = NUM_TRIALS_FOR_SMALL_GRAPH;
             }
 
             for (int trial = 0; trial < trialsPerStage; trial++) {
@@ -282,8 +253,8 @@ public class MdsArranger implements Arranger {
                 // Do the minimisation.
                 int numIterations = iterationsPerStageTrial;
 
-                if (numVxsToArrange <= smallGraphSize) {
-                    numIterations = iterationsPerStageSmallGraph;
+                if (numVxsToArrange <= SMALL_GRAPH_SIZE) {
+                    numIterations = ITERATIONS_PER_STAGE_SMALL_GRAPH;
                 }
 
                 if (showIterations) {
@@ -322,14 +293,11 @@ public class MdsArranger implements Arranger {
                             currentY,
                             distanceMatrix,
                             gains,
-                            radii,
                             vxsToArrange,
                             numVxsToArrange,
                             vxsToInfluence,
                             numVxsToInfluence,
-                            numIterations,
-                            setMinByRadii,
-                            radiusInflation);
+                            numIterations);
                 }
 
                 // Measure stress for this trial.
@@ -388,9 +356,9 @@ public class MdsArranger implements Arranger {
     }
 
     /**
-     * This version calculates distances based on graph pathlength weighting
+     * This version calculates distances based on graph path length weighting
      * edges by the sum of the extents of the vertices they join.
-     * <p>
+     * 
      * Usual edge weights, multiple edges, etc, are not considered.
      */
     private static float[][] calcDistanceMatrixByExtent(final GraphWriteMethods graph, final BitSet verticesToArrange, final float scaleFactor) {
@@ -455,7 +423,7 @@ public class MdsArranger implements Arranger {
     /**
      * Alter distanceMatrix so that the distances don't encourage vertices of
      * large extent to overlap.
-     * <p>
+     * 
      * Go through all pairs of an influence vertex with an arrange vertex. For
      * each pair, set their target distance equal to the max of the incoming
      * value with the sum of their radii.
@@ -557,7 +525,7 @@ public class MdsArranger implements Arranger {
     /**
      * Give a range of vertices their initial locations, based on the their two
      * nearest neighbors.
-     * <p>
+     * 
      * Fills in the appropriate entries in currentX and currentY, using the
      * corresponding entries of closestVertices, nextClosestVertices, and
      * gammas.
@@ -574,7 +542,7 @@ public class MdsArranger implements Arranger {
             final int vxClosest = closestVertices[vxNew];
             final int vxNextClosest = nextClosestVertices[vxNew];
 
-            if ((vxClosest >= 0) && (vxNextClosest >= 0)) {
+            if (vxClosest >= 0 && vxNextClosest >= 0) {
                 final float cX = currentX[vxClosest];
                 final float ncX = currentX[vxNextClosest];
                 currentX[vxNew] = cX + (gammas[vxNew] * (cX - ncX)) + (perturbationSize * (RANDOM.nextFloat() - 0.5F));
@@ -595,18 +563,17 @@ public class MdsArranger implements Arranger {
     /**
      * Updates the locations in currentX and currentY with numIterations
      * iterations of MDS.
-     * <p>
+     * 
      * Target distances are specified in the ravelled array which is
      * numMatrixCols by numMatrixCols. The indices in the position vectors and
      * distance matrix are specified by the entries in arrays vxsToArrange and
      * vxsToInfluence, which may given overlapping lists of vertices.
-     * <p>
-     * Minimization of semiproportional stress is done.
+     * 
+     * Minimization of semi-proportional stress is done.
      */
     private static void directMin(final float[] currentX, final float[] currentY, final float[][] distanceMatrix,
-            final float[] gains, final float[] radii, final int[] vxsToArrange, final int numVxsToArrange,
-            final int[] vxsToInfluence, final int numVxsToInfluence, final int numIterations, 
-            final boolean setMinByRadii, final float radiusInflation) throws InterruptedException {
+            final float[] gains, final int[] vxsToArrange, final int numVxsToArrange,
+            final int[] vxsToInfluence, final int numVxsToInfluence, final int numIterations) throws InterruptedException {
         final float[] newX = new float[currentX.length];
         final float[] newY = new float[currentY.length];
 
@@ -635,25 +602,6 @@ public class MdsArranger implements Arranger {
                         } else if (currentDistSquared != 0) {
                             final float currentDist = (float) Math.sqrt(currentDistSquared);
                             float mult = (1.0F / targetDist) - (1.0F / currentDist);
-
-                            if (setMinByRadii && (mult < 0.0)) {
-                                final float minDist = radiusInflation * (radii[vxId] + radii[inflvxId]);
-
-                                if (currentDist < minDist) {
-                                    float inflation = minDist / currentDist;
-                                    inflation *= inflation;
-
-                                    if (inflation > 10) {
-                                        inflation = 10;
-                                    }
-
-                                    if (inflation > (numVxsToInfluence - 1)) {
-                                        inflation = numVxsToInfluence - 1F;
-                                    }
-
-                                    mult *= inflation;
-                                }
-                            }
 
                             xInc += (xDelta * mult);
                             yInc += (yDelta * mult);
@@ -710,12 +658,8 @@ public class MdsArranger implements Arranger {
                 }
             }
         }
-
-        if (numContributions == 0) {
-            return 0;
-        }
-
-        return stress / numContributions;
+        
+        return numContributions == 0 ? 0 : stress / numContributions;
     }
 
     @Override

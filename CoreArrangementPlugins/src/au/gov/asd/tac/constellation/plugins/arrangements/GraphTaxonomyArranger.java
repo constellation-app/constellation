@@ -22,10 +22,9 @@ import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridChoiceParameters;
 import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.SubgraphFactory;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
 
 /**
  * The GraphTaxonomy arranger.
@@ -43,8 +42,6 @@ import java.util.logging.Logger;
  * @author algol
  */
 public abstract class GraphTaxonomyArranger implements Arranger {
-
-    private static final Logger LOGGER = Logger.getLogger(GraphTaxonomyArranger.class.getName());
 
     private final Arranger inner;
     private final Arranger outer;
@@ -133,7 +130,7 @@ public abstract class GraphTaxonomyArranger implements Arranger {
         final GraphTaxonomy taxonomy = getTaxonomy(wg);
 
         if (taxonomy.size() == 1) {
-            final int k = taxonomy.getTaxa().keySet().iterator().next();
+            final int k = taxonomy.getTaxa().keysView().intIterator().next();
             inner.arrange(subgraphFactory.constructSubgraph(wg, taxonomy.getTaxa().get(k)));
         } else {
             if (singletonArranger != null) {
@@ -151,31 +148,31 @@ public abstract class GraphTaxonomyArranger implements Arranger {
             }
 
             // Do the appropriate inner arrangement on each taxon.
-            final Map<Integer, Set<Integer>> taxa = taxonomy.getTaxa();
+            final MutableIntObjectMap<MutableIntSet> taxa = taxonomy.getTaxa();
             final int steps = taxa.size() + 1;
             int step = 0;
-            for (final Map.Entry<Integer, Set<Integer>> entry : taxa.entrySet()) {
-                if (taxonomy.isArrangeRectangularly(entry.getKey())) {
+            for (final IntObjectPair<MutableIntSet> keyValue : taxa.keyValuesView()) {
+                if (taxonomy.isArrangeRectangularly(keyValue.getOne())) {
                     if (interaction != null) {
                         interaction.setProgress(step, steps, "Arrange grid...", true);
                     }
-                    rectArranger.arrange(subgraphFactory.constructSubgraph(wg, entry.getValue()));
-                } else if (entry.getKey() == singletonsKey) {
+                    rectArranger.arrange(subgraphFactory.constructSubgraph(wg, keyValue.getTwo()));
+                } else if (keyValue.getOne() == singletonsKey) {
                     if (interaction != null) {
                         interaction.setProgress(step, steps, "Arrange singletons...", true);
                     }
-                    singletonArranger.arrange(subgraphFactory.constructSubgraph(wg, entry.getValue()));
-                } else if (entry.getKey() == doubletsKey) {
+                    singletonArranger.arrange(subgraphFactory.constructSubgraph(wg, keyValue.getTwo()));
+                } else if (keyValue.getOne() == doubletsKey) {
                     if (interaction != null) {
                         interaction.setProgress(step, steps, "Arrange doublets...", true);
                     }
-                    doubletArranger.arrange(subgraphFactory.constructSubgraph(wg, entry.getValue()));
+                    doubletArranger.arrange(subgraphFactory.constructSubgraph(wg, keyValue.getTwo()));
                 } else {
                     if (interaction != null) {
                         final String msg = String.format("Arrange inner (%s)...", inner.getClass().getSimpleName());
                         interaction.setProgress(step, steps, msg, true);
                     }
-                    inner.arrange(subgraphFactory.constructSubgraph(wg, entry.getValue()));
+                    inner.arrange(subgraphFactory.constructSubgraph(wg, keyValue.getTwo()));
                 }
                 step++;
             }
@@ -187,17 +184,17 @@ public abstract class GraphTaxonomyArranger implements Arranger {
 
             // Do the outer arrangement on a condensed graph of taxon keys.
             final GraphTaxonomy.Condensation c = taxonomy.getCondensedGraph();
-            outer.arrange(c.wg);
+            outer.arrange(c.getGraph());
 
             // Do an uncollide arrangement to remove overlaps.
             // Doing the uncolliding can take a while.
             // If there are too many vertices, don't do it.
-            if (uncollider != null && c.wg.getVertexCount() <= 10000) {
+            if (uncollider != null && c.getGraph().getVertexCount() <= 10000) {
                 if (interaction != null) {
                     interaction.setProgress(0, 0, "Arrange overlaps...", true);
                 }
 
-                uncollider.arrange(c.wg);
+                uncollider.arrange(c.getGraph());
             }
 
             taxonomy.reposition(c);
@@ -222,13 +219,6 @@ public abstract class GraphTaxonomyArranger implements Arranger {
         }
         if (outer != null) {
             outer.setMaintainMean(b);
-        }
-    }
-
-    public static void dump(final Map<Integer, Set<Integer>> taxa) {
-        for (final Map.Entry<Integer, Set<Integer>> entry : taxa.entrySet()) {
-            final String log = String.format("tax %d: size %d%n", entry.getKey(), entry.getValue().size());
-            LOGGER.log(Level.INFO, log);
         }
     }
 }

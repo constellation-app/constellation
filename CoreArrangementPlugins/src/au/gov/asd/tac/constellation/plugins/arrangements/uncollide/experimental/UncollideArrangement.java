@@ -26,11 +26,11 @@ import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegist
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
 
 public class UncollideArrangement implements Arranger {
     
@@ -104,10 +104,9 @@ public class UncollideArrangement implements Arranger {
     }
 
     private int nudgeAllTwins(final GraphWriteMethods wg, final AbstractTree tree) {
-        List<Integer> twins;
         int numberNoTwins = 0;
         for (int subject = 0; subject < wg.getVertexCount(); subject++) {
-            twins = tree.getTwins(subject, twinScaling);
+            final MutableIntList twins = tree.getTwins(subject, twinScaling);
             if (twins.isEmpty()) {
                 numberNoTwins++;
             } else {
@@ -139,12 +138,12 @@ public class UncollideArrangement implements Arranger {
         final double collisionDistance;
         final double delta;
         switch (dimensions) {
-            case TWO:
+            case TWO -> {
                 delta = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
                 deltas = new double[2];
                 collisionDistance = Math.sqrt(2 * wg.getFloatValue(rId, subject)) + Math.sqrt(2 * wg.getFloatValue(rId, twin));
-                break;
-            case THREE:
+            }
+            case THREE -> {
                 if (zId == GraphConstants.NOT_FOUND) {
                     throw new IllegalArgumentException("Unable to perform 3D uncllide on 2D graph");
                 }
@@ -153,9 +152,8 @@ public class UncollideArrangement implements Arranger {
                 collisionDistance = Math.cbrt(3 * wg.getFloatValue(rId, subject)) + Math.cbrt(3 * wg.getFloatValue(rId, twin));
                 deltas = new double[3];
                 deltas[2] = deltaZ;
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid number of dimensions");
+            }
+            default -> throw new IllegalArgumentException("Invalid number of dimensions");
         }
         deltas[0] = deltaX;
         deltas[1] = deltaY;

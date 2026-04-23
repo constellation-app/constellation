@@ -16,9 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.grid;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
@@ -33,9 +31,8 @@ import java.util.BitSet;
 public class GridArranger implements Arranger {
 
     private final GridChoiceParameters params;
-    private boolean forceEvenNumCols;
+    private final boolean forceEvenNumCols;
     private boolean maintainMean;
-    private int topLeftVxId;
 
     /**
      * A grid arrangement with default parameters.
@@ -50,10 +47,7 @@ public class GridArranger implements Arranger {
      * @param params Parameters for the arrangement.
      */
     public GridArranger(final GridChoiceParameters params) {
-        this.params = params;
-        maintainMean = false;
-        forceEvenNumCols = false;
-        topLeftVxId = Graph.NOT_FOUND;
+        this(params, false);
     }
 
     /**
@@ -67,7 +61,6 @@ public class GridArranger implements Arranger {
         this.params = params;
         maintainMean = false;
         this.forceEvenNumCols = forceEvenNumCols;
-        topLeftVxId = Graph.NOT_FOUND;
     }
 
     @Override
@@ -75,33 +68,12 @@ public class GridArranger implements Arranger {
         maintainMean = b;
     }
 
-    /**
-     * Specify whether there must be an even number of columns in the grid.
-     *
-     * @param b If true, ensure that there is an even number of columns in the
-     * grid.
-     */
-    public void setForceEvenNumCols(final boolean b) {
-        forceEvenNumCols = b;
-    }
-
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
-
         // Get/set the x,y,z attributes.
-        if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", null, null);
-        }
-        if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", null, null);
-        }
-        if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", null, null);
-        }
-
-        final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        final int xAttr = VisualConcept.VertexAttribute.X.ensure(wg);
+        final int yAttr = VisualConcept.VertexAttribute.Y.ensure(wg);
+        final int zAttr = VisualConcept.VertexAttribute.Z.ensure(wg);
         final int radiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(wg);
 
         final int vxCount = wg.getVertexCount();
@@ -223,10 +195,6 @@ public class GridArranger implements Arranger {
                 final int row = i / nfCols;
                 final int col = i - row * nfCols;
 
-                if (col == 0 && row == nfRows - 1) {
-                    topLeftVxId = vxId;
-                }
-
                 final float x = colCentres[col];
                 float y = rowCentres[row];
 
@@ -245,11 +213,7 @@ public class GridArranger implements Arranger {
             }
         }
     }
-
-    public int getTopLeftVxId() {
-        return topLeftVxId;
-    }
-
+    
     /**
      * Given the choice of grid (one of the GRID_CHOICE_xxx constants), return a
      * setting from number of rows and number of columns. Zero means
@@ -260,20 +224,16 @@ public class GridArranger implements Arranger {
      * @return A Dimension corresponding to the choice of grid.
      */
     private static Dimension getGridSize(final GridChoice gc) {
-        if (gc == null) {
-            return new Dimension(0, 0);
-        } else {
-            return switch (gc) {
-                case HORIZONTAL_LINE -> new Dimension(0, 1);
-                case VERTICAL_LINE -> new Dimension(1, 0);
-                case TWO_ROWS -> new Dimension(0, 2);
-                case THREE_ROWS -> new Dimension(0, 3);
-                case FOUR_ROWS -> new Dimension(0, 4);
-                case TWO_COLUMNS -> new Dimension(2, 0);
-                case THREE_COLUMNS -> new Dimension(3, 0);
-                case FOUR_COLUMNS -> new Dimension(4, 0);
-                default -> new Dimension(0, 0);
-            };
-        }
+        return switch (gc) {
+            case HORIZONTAL_LINE -> new Dimension(0, 1);
+            case VERTICAL_LINE -> new Dimension(1, 0);
+            case TWO_ROWS -> new Dimension(0, 2);
+            case THREE_ROWS -> new Dimension(0, 3);
+            case FOUR_ROWS -> new Dimension(0, 4);
+            case TWO_COLUMNS -> new Dimension(2, 0);
+            case THREE_COLUMNS -> new Dimension(3, 0);
+            case FOUR_COLUMNS -> new Dimension(4, 0);
+            case null, default -> new Dimension(0, 0);
+        };
     }
 }

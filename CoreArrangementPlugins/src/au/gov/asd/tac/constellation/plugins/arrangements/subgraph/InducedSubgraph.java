@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.arrangements.subgraph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import java.util.Arrays;
 import java.util.Set;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
 
 /**
  *
@@ -25,6 +26,24 @@ import java.util.Set;
  */
 public final class InducedSubgraph extends ComponentSubgraph {
 
+    public InducedSubgraph(final GraphWriteMethods proxy, final MutableIntSet includedVertexIDs) {
+        super(proxy, includedVertexIDs);
+
+        final int vertexCapacity = getVertexCapacity();
+        vertexNeighbours = new int[vertexCapacity][];
+        vertexLinks = new int[vertexCapacity][];
+        vertexEdges = new int[vertexCapacity][];
+        vertexTransactions = new int[vertexCapacity][];
+    }
+    
+    /**
+     * 
+     * @param proxy
+     * @param includedVertexIDs
+     * @deprecated in favor of new implementation
+     * @see #InducedSubgraph(au.gov.asd.tac.constellation.graph.GraphWriteMethods, org.eclipse.collections.api.set.primitive.MutableIntSet)
+     */
+    @Deprecated(since = "3.4", forRemoval = true)
     public InducedSubgraph(final GraphWriteMethods proxy, final Set<Integer> includedVertexIDs) {
         super(proxy, includedVertexIDs);
 
@@ -41,7 +60,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
     private final int[][] vertexTransactions;
 
     public static SubgraphFactory getSubgraphFactory() {
-        return (final GraphWriteMethods wg, final Set<Integer> vertexIDs) -> new InducedSubgraph(wg, vertexIDs);
+        return (final GraphWriteMethods wg, final MutableIntSet vertexIDs) -> new InducedSubgraph(wg, vertexIDs);
     }
 
     private void calculateNeighbours(final int vertex) {
@@ -49,7 +68,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
         int pos = 0;
         for (int i = 0; i < proxy.getVertexNeighbourCount(vertex); i++) {
             final int neighbourID = proxy.getVertexNeighbour(vertex, i);
-            if (includedVertexIDs.contains(neighbourID)) {
+            if (includedVertexIDs.get(neighbourID)) {
                 neighbours[pos++] = neighbourID;
             }
         }
@@ -62,7 +81,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
         for (int i = 0; i < proxy.getVertexLinkCount(vertex); i++) {
             final int lxID = proxy.getVertexLink(vertex, i);
             final int neighbourID = getLinkLowVertex(lxID) == vertex ? getLinkHighVertex(lxID) : getLinkLowVertex(lxID);
-            if (includedVertexIDs.contains(neighbourID)) {
+            if (includedVertexIDs.get(neighbourID)) {
                 links[pos++] = lxID;
             }
         }
@@ -75,7 +94,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
         for (int i = 0; i < proxy.getVertexEdgeCount(vertex); i++) {
             final int exID = proxy.getVertexEdge(vertex, i);
             final int neighbourID = getEdgeSourceVertex(exID) == vertex ? getEdgeDestinationVertex(exID) : getEdgeSourceVertex(exID);
-            if (includedVertexIDs.contains(neighbourID)) {
+            if (includedVertexIDs.get(neighbourID)) {
                 edges[pos++] = exID;
             }
         }
@@ -88,7 +107,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
         for (int i = 0; i < proxy.getVertexTransactionCount(vertex); i++) {
             final int txID = proxy.getVertexTransaction(vertex, i);
             final int neighbourID = getTransactionSourceVertex(txID) == vertex ? getTransactionDestinationVertex(txID) : getTransactionSourceVertex(txID);
-            if (includedVertexIDs.contains(neighbourID)) {
+            if (includedVertexIDs.get(neighbourID)) {
                 transactions[pos++] = txID;
             }
         }

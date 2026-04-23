@@ -16,9 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
@@ -26,6 +24,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
+import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
@@ -73,20 +72,10 @@ public final class CircTreeArranger implements Arranger {
     @Override
     public void arrange(final GraphWriteMethods graph) throws InterruptedException {
         this.graph = graph;
-
-        // x, y, z
-        if (VisualConcept.VertexAttribute.X.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", null, null);
-        }
-        if (VisualConcept.VertexAttribute.Y.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", null, null);
-        }
-        if (VisualConcept.VertexAttribute.Z.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", null, null);
-        }
-        xAttr = VisualConcept.VertexAttribute.X.get(graph);
-        yAttr = VisualConcept.VertexAttribute.Y.get(graph);
-        zAttr = VisualConcept.VertexAttribute.Z.get(graph);
+        
+        xAttr = VisualConcept.VertexAttribute.X.ensure(graph);
+        yAttr = VisualConcept.VertexAttribute.Y.ensure(graph);
+        zAttr = VisualConcept.VertexAttribute.Z.ensure(graph);
         radiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(graph);
 
         final int vxCount = graph.getVertexCount();
@@ -116,7 +105,7 @@ public final class CircTreeArranger implements Arranger {
             vxsToGo.clear(rootVxId);
 
             // Map vxIds to their ordered children (vxId and nChildren).
-            final MutableIntObjectMap<ArrayList<VxInfo>> orderedChildren = new IntObjectHashMap<>();
+            final MutableIntObjectMap<List<VxInfo>> orderedChildren = new IntObjectHashMap<>();
             final BitSet onlyChildren = new BitSet();
 
             orderChildren(rootVxId, vxsToGo, orderedChildren, onlyChildren);
@@ -128,7 +117,7 @@ public final class CircTreeArranger implements Arranger {
             final float[] fullRadii = new float[graph.getVertexCapacity()];
             final AnnulusInfo[] annulusInfo = new AnnulusInfo[graph.getVertexCapacity()];
 
-            findSpacingOf(rootVxId, vxsToGo, orderedChildren, onlyChildren, params.scale, params.strictCircularLayout, childrenRadii, fullRadii, annulusInfo);
+            findSpacingOf(rootVxId, vxsToGo, orderedChildren, onlyChildren, params.getScale(), params.isStrictCircularLayout(), childrenRadii, fullRadii, annulusInfo);
 
             // Do the arrangement.
             vxsToGo = (BitSet) verticesToArrange.clone();
@@ -137,7 +126,7 @@ public final class CircTreeArranger implements Arranger {
             final float ourLocX = 0;
             final float ourLocY = 0;
 
-            positionThis(rootVxId, vxsToGo, orderedChildren, ourLocX, ourLocY, 0, 0, params.strictCircularLayout, childrenRadii, fullRadii, annulusInfo, 0);
+            positionThis(rootVxId, vxsToGo, orderedChildren, ourLocX, ourLocY, 0, 0, params.isStrictCircularLayout(), childrenRadii, fullRadii, annulusInfo, 0);
 
             if (maintainMean) {
                 final float[] newCentre = ArrangementUtilities.getXyzMean(graph);
@@ -155,7 +144,7 @@ public final class CircTreeArranger implements Arranger {
      * @param vxs
      * @param children
      */
-    private static void removeChildren(final BitSet vxs, final ArrayList<VxInfo> children) {
+    private static void removeChildren(final BitSet vxs, final List<VxInfo> children) {
         for (final VxInfo vxInfo : children) {
             vxs.clear(vxInfo.vxId);
         }
@@ -168,8 +157,8 @@ public final class CircTreeArranger implements Arranger {
      * Record result an AtomicQueue stored by parent in hash table. Returns
      * number of children for vertex.
      */
-    private int orderChildren(final int vxId, final BitSet vxsToGo, final MutableIntObjectMap<ArrayList<VxInfo>> orderedChildren, final BitSet onlyChildren) {
-        final ArrayList<VxInfo> children = new ArrayList<>();
+    private int orderChildren(final int vxId, final BitSet vxsToGo, final MutableIntObjectMap<List<VxInfo>> orderedChildren, final BitSet onlyChildren) {
+        final List<VxInfo> children = new ArrayList<>();
 
         // For the specified vertex, get its children and record how many children they have.
         for (int position = 0; position < graph.getVertexNeighbourCount(vxId); position++) {
@@ -190,7 +179,7 @@ public final class CircTreeArranger implements Arranger {
         removeChildren(vxsToGo, children);
 
         int result = 1;
-        final ArrayList<VxInfo> numChildren = new ArrayList<>();
+        final List<VxInfo> numChildren = new ArrayList<>();
         for (final VxInfo vxInfo : children) {
             final int nChildren = orderChildren(vxInfo.vxId, vxsToGo, orderedChildren, onlyChildren);
             numChildren.add(new VxInfo(vxInfo.vxId, nChildren));
@@ -203,7 +192,7 @@ public final class CircTreeArranger implements Arranger {
         return result;
     }
 
-    private float findSpacingOf(final int vxId, final BitSet vxsToGo, final MutableIntObjectMap<ArrayList<VxInfo>> orderedChildren,
+    private float findSpacingOf(final int vxId, final BitSet vxsToGo, final MutableIntObjectMap<List<VxInfo>> orderedChildren,
             final BitSet onlyChildren, final float scale, final boolean strictCircularLayout, final float[] childrenRadii,
             final float[] fullRadii, final AnnulusInfo[] annulusInfo) throws InterruptedException {
         // Get the radius of the starting vertex.
@@ -213,7 +202,7 @@ public final class CircTreeArranger implements Arranger {
         final float selfRadius = scale * (radiusAttr != Graph.NOT_FOUND ? Math.max(graph.getFloatValue(radiusAttr, vxId), minRadius) : 1);
 
         // Find adjacent vertices to work on.
-        final ArrayList<VxInfo> children = orderedChildren.get(vxId);
+        final List<VxInfo> children = orderedChildren.get(vxId);
 
         if (CollectionUtils.isEmpty(children)) {
             fullRadii[vxId] = selfRadius;
@@ -229,7 +218,7 @@ public final class CircTreeArranger implements Arranger {
             // Since the single child will be pointed away from our parent,
             // we could pretend that we are actually smaller, but it is a
             // fudge that could get us in trouble.
-            float fullRadius = selfRadius + selfRadius + childRadius;
+            final float fullRadius = selfRadius + selfRadius + childRadius;
 
             // Record and return result.
             childrenRadii[vxId] = fullRadius;
@@ -346,7 +335,7 @@ public final class CircTreeArranger implements Arranger {
         }
     }
 
-    private void positionThis(final int vxId, final BitSet vxsToGo, final MutableIntObjectMap<ArrayList<VxInfo>> orderedChildren,
+    private void positionThis(final int vxId, final BitSet vxsToGo, final MutableIntObjectMap<List<VxInfo>> orderedChildren,
             final float ourLocX, final float ourLocY, final float parentOffsetX, final float parentOffsetY,
             final boolean strictCircularLayout, final float[] childrenRadii, final float[] fullRadii,
             final AnnulusInfo[] annulusInfo, final float parentAngle) throws InterruptedException {
@@ -362,7 +351,7 @@ public final class CircTreeArranger implements Arranger {
         final float childrenRadius = childrenRadii[vxId];
 
         // Get adjacent vertices to work on.
-        final ArrayList<VxInfo> children = orderedChildren.get(vxId);
+        final List<VxInfo> children = orderedChildren.get(vxId);
 
         if (CollectionUtils.isEmpty(children)) {
             // Position us in centre.

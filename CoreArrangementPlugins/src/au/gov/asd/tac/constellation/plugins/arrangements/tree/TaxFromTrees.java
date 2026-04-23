@@ -20,11 +20,13 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  * build a taxonomy by trees
@@ -60,12 +62,12 @@ public class TaxFromTrees {
         final int vxCount = graph.getVertexCount();
 
         // Every vertex starts in its own tree; its only member is itself.
-        final HashMap<Integer, Set<Integer>> members = new HashMap<>();
-        final Map<Integer, Integer> nodeToTaxa = new HashMap<>();
+        final MutableIntObjectMap<MutableIntSet> members = new IntObjectHashMap<>();
+        final MutableIntIntMap nodeToTaxa = new IntIntHashMap();
         for (int position = 0; position < vxCount; position++) {
             final int vxId = graph.getVertex(position);
 
-            final Set<Integer> vertices = new HashSet<>();
+            final MutableIntSet vertices = new IntHashSet();
             vertices.add(vxId);
             members.put(vxId, vertices);
             nodeToTaxa.put(vxId, vxId);
@@ -106,13 +108,15 @@ public class TaxFromTrees {
 
             if (valences[neighbourId] != Graph.NOT_FOUND) {
                 // Get the set of the neighbour's members.
-                final Set<Integer> neighbourVertices = members.get(neighbourId);
+                final MutableIntSet neighbourVertices = members.get(neighbourId);
 
                 // Pass the members of the vertex being removed along to the neighbour.
-                final Set<Integer> vertices = members.get(vxToRemoveId);
+                final MutableIntSet vertices = members.get(vxToRemoveId);
                 neighbourVertices.addAll(vertices);
 
-                for (final int vertex : vertices) {
+                final IntIterator verticesIter = vertices.intIterator();
+                while (verticesIter.hasNext()) {
+                    final int vertex = verticesIter.next();
                     nodeToTaxa.put(vertex, neighbourId);
                 }
 
@@ -130,14 +134,7 @@ public class TaxFromTrees {
         }
 
         if (skipSingletons) {
-            final Iterator<Integer> i = members.keySet().iterator();
-            while (i.hasNext()) {
-                final Integer vxId = i.next();
-                final Set<Integer> vertices = members.get(vxId);
-                if (vertices.size() == 1) {
-                    i.remove();
-                }
-            }
+            members.removeIf((key, value) -> value.size() == 1);
         }
 
         return new GraphTaxonomy(graph, members, nodeToTaxa);

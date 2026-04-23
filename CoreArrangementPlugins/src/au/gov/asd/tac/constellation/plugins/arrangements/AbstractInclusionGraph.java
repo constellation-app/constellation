@@ -265,15 +265,15 @@ public abstract class AbstractInclusionGraph {
             }
         }
 
-        if (connections == Connections.NONE) {
-            // Do nothing, the inclusion graph won't have any transactions.
-        } else if (connections == Connections.TRANSACTIONS) {
-            addTransactionsFromTransactions(wg, storeGraph, vertices);
-        } else if (connections == Connections.EDGES) {
-            addTransactionsFromEdges(wg, storeGraph, vertices);
-        } else {
-            addTransactionsFromLinks(wg, storeGraph, vertices);
+        switch (connections) {
+            case NONE -> {
+                // Do nothing, the inclusion graph won't have any transactions.
+            }
+            case TRANSACTIONS -> addTransactionsFromTransactions(wg, storeGraph, vertices);
+            case EDGES -> addTransactionsFromEdges(wg, storeGraph, vertices);
+            case null, default -> addTransactionsFromLinks(wg, storeGraph, vertices);
         }
+        
 
         this.inclusionGraph = storeGraph;
     }

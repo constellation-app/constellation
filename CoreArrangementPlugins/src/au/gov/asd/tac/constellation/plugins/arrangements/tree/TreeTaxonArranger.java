@@ -21,10 +21,9 @@ import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.InducedSubgraph;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  * A GraphTaxonomyArranger that uses a taxonomy where each taxon is a tree.
@@ -60,17 +59,16 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
 
         if (putSingletonTaxaWithSameNeighborsTogether) {
             // Remove all taxa with only one member and add all of the single members to a single new taxon.
-            final Set<Integer> singletons = new HashSet<>();
-            final Map<Integer, Set<Integer>> taxa = taxByTrees.getTaxa();
-            for (Iterator<Integer> ii = taxa.keySet().iterator(); ii.hasNext();) {
-                final Integer vxRoot = ii.next();
-
-                final Set<Integer> members = taxa.get(vxRoot);
+            final MutableIntSet singletons = new IntHashSet();
+            final MutableIntObjectMap<MutableIntSet> taxa = taxByTrees.getTaxa();
+            taxa.forEachKeyValue((vxRoot, members) -> {
                 if (members.size() == 1) {
                     singletons.add(vxRoot);
-                    ii.remove();
                 }
-            }
+            });
+            
+            // remove all of the singletons
+            taxa.removeIf((key, value) -> singletons.contains(key));
 
             final GraphTaxonomy taxByNeighbours = TaxFromNeighbours.getTaxonomy(graph, singletons);
             taxByTrees.add(taxByNeighbours);

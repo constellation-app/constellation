@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.util.ArrayList;
-import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -122,14 +122,14 @@ public class QuadTreeNGTest {
         System.out.println("getTwins");
         double twinThreshold = 0.5;
 
-        List<Integer> expResult = new ArrayList<>();
+        final MutableIntList expResult = new IntArrayList();
 
-        List<Integer> noCollisionResult = noCollisionsQT.getTwins(noCollisionSubject, twinThreshold);
+        final MutableIntList noCollisionResult = noCollisionsQT.getTwins(noCollisionSubject, twinThreshold);
         assertEquals(noCollisionResult, expResult); // Check empty set is returned if there are no collisions.
 
         expResult.add(twin1);
         expResult.add(twin2);
-        List<Integer> result = twoTwinsQT.getTwins(twoTwinsSubject, twinThreshold);
+        final MutableIntList result = twoTwinsQT.getTwins(twoTwinsSubject, twinThreshold);
         assertEquals(result, expResult);
     }
 

@@ -24,14 +24,15 @@ import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.util.BitSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import org.eclipse.collections.api.iterator.DoubleIterator;
+import org.eclipse.collections.api.iterator.IntIterator;
 import org.eclipse.collections.api.list.primitive.MutableDoubleList;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
@@ -101,8 +102,8 @@ public class SpectralArranger implements Arranger {
 
     private static class GetTrussResultHandler implements KTrussResultHandler {
 
-        private final Set<Integer> verticesInHighestTruss = new HashSet<>();
-        private final Set<Integer> otherVertices = new HashSet<>();
+        private final MutableIntSet verticesInHighestTruss = new IntHashSet();
+        private final MutableIntSet otherVertices = new IntHashSet();
         private int highestK;
 
         @Override
@@ -156,7 +157,7 @@ public class SpectralArranger implements Arranger {
         }
 
         // Otherwise calculate the spectral (eigenvector) embedding of the most interconnected truss
-        final Map<Integer, double[]> vertexToCoordinates = GraphSpectrumEmbedder.spectralEmbedding(wg, handler.verticesInHighestTruss);
+        final MutableIntObjectMap<double[]> vertexToCoordinates = GraphSpectrumEmbedder.spectralEmbedding(wg, handler.verticesInHighestTruss);
         if (vertexToCoordinates.isEmpty()) {
             return;
         }
@@ -167,19 +168,21 @@ public class SpectralArranger implements Arranger {
         final int zAttr = VisualConcept.VertexAttribute.Z.get(wg);
 
         // Position vertices in the most interconnected truss by their spectra.
-        for (final Map.Entry<Integer, double[]> entry : vertexToCoordinates.entrySet()) {
-            wg.setDoubleValue(xAttr, entry.getKey(), entry.getValue()[0]);
-            wg.setDoubleValue(yAttr, entry.getKey(), entry.getValue()[1]);
-            wg.setDoubleValue(zAttr, entry.getKey(), 0);
+        for (final IntObjectPair<double[]> keyValue : vertexToCoordinates.keyValuesView()) {
+            wg.setDoubleValue(xAttr, keyValue.getOne(), keyValue.getTwo()[0]);
+            wg.setDoubleValue(yAttr, keyValue.getOne(), keyValue.getTwo()[1]);
+            wg.setDoubleValue(zAttr, keyValue.getOne(), 0);
         }
 
         // Position all the other vertices at a level (z-position) corresponding to their distance from the most interconnected truss, and at the centre (x,y-position) of their neighbours on the level above them.
         int level = 0;
         while (!handler.otherVertices.isEmpty()) {
             level++;
-            final Set<Integer> verticesPlacedThisLevel = new HashSet<>();
+            final MutableIntSet verticesPlacedThisLevel = new IntHashSet();
             final Map<MutableIntSet, MutableIntList> significantNeighbourSets = new HashMap<>();
-            for (final int vxID : handler.otherVertices) {
+            final IntIterator otherVerticesIter = handler.otherVertices.intIterator();
+            while (otherVerticesIter.hasNext()) {
+                final int vxID = otherVerticesIter.next();
                 double xPos = 0;
                 double yPos = 0;
                 int significantNeighbourCount = 0;

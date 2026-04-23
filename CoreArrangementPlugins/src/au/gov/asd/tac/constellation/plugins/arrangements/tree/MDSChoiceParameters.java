@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-
 /**
  * A convenient holder for the parameters of an MDS arrangement.
  *
@@ -24,18 +22,16 @@ import au.gov.asd.tac.constellation.graph.Graph;
  */
 public class MDSChoiceParameters {
 
-    final LinkWeight linkWeight;
-    final int weightAttributeId;
-    final float scale;
-    final int iterationsPerStageTrial;
-    final int maxTrialsPerStage;
-    final int minTrialsPerStage;
-    final boolean tryToAvoidOverlap;
-    final int overlapAvoidance;
+    private final LinkWeight linkWeight;
+    private final float scale;
+    private final int iterationsPerStageTrial;
+    private final int maxTrialsPerStage;
+    private final int minTrialsPerStage;
+    private final boolean tryToAvoidOverlap;
+    private final int overlapAvoidance;
 
-    public MDSChoiceParameters(final LinkWeight linkWeight, final int weightAttributeId, final float scale, final int iterationsPerStageTrial, final int maxTrialsPerStage, final int minTrialsPerStage, final boolean tryToAvoidOverlap, final int overlapAvoidance) {
+    public MDSChoiceParameters(final LinkWeight linkWeight, final float scale, final int iterationsPerStageTrial, final int maxTrialsPerStage, final int minTrialsPerStage, final boolean tryToAvoidOverlap, final int overlapAvoidance) {
         this.linkWeight = linkWeight;
-        this.weightAttributeId = weightAttributeId;
         this.scale = scale;
         this.iterationsPerStageTrial = iterationsPerStageTrial;
         this.maxTrialsPerStage = maxTrialsPerStage;
@@ -44,7 +40,35 @@ public class MDSChoiceParameters {
         this.overlapAvoidance = overlapAvoidance;
     }
 
+    public LinkWeight getLinkWeight() {
+        return linkWeight;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    public int getIterationsPerStageTrial() {
+        return iterationsPerStageTrial;
+    }
+
+    public int getMaxTrialsPerStage() {
+        return maxTrialsPerStage;
+    }
+
+    public int getMinTrialsPerStage() {
+        return minTrialsPerStage;
+    }
+
+    public boolean isTryToAvoidOverlap() {
+        return tryToAvoidOverlap;
+    }
+
+    public int getOverlapAvoidance() {
+        return overlapAvoidance;
+    }
+    
     public static MDSChoiceParameters getDefaultParameters() {
-        return new MDSChoiceParameters(LinkWeight.USE_EXTENTS, Graph.NOT_FOUND, 1, 20, 8, 1, true, 100);
+        return new MDSChoiceParameters(LinkWeight.USE_EXTENTS, 1, 20, 8, 1, true, 100);
     }
 }

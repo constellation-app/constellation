@@ -31,6 +31,14 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.api.stack.primitive.MutableIntStack;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+import org.eclipse.collections.impl.stack.mutable.primitive.IntArrayStack;
 
 /**
  * provides a set of functions pertaining to a graph's components and its
@@ -40,7 +48,9 @@ import java.util.Set;
  */
 public final class ArrangementUtilities {
 
-    public static final int FUNDAMENTAL_SIZE = 2;  
+    public static final int FUNDAMENTAL_SIZE = 2;
+    
+    private static final int NO_DISTANCE = -1;
     
     private ArrangementUtilities() {
         throw new IllegalStateException("Utility class");
@@ -73,7 +83,6 @@ public final class ArrangementUtilities {
         final float[] distancesToVertices = new float[graph.getVertexCapacity()];
 
         // Fill the array with -1 to indicate "unknown distance".
-        final int NO_DISTANCE = -1;
         Arrays.fill(distancesToVertices, NO_DISTANCE);
 
         // Add the starting vertex; no traversal is required to know that the starting vertex
@@ -81,12 +90,12 @@ public final class ArrangementUtilities {
         distancesToVertices[vxId] = 0;
 
         // This will hold all vertices that have been reached so far but not processed.
-        final ArrayDeque<Integer> vxQueue = new ArrayDeque<>();
-        vxQueue.add(vxId);
+        final MutableIntStack vxStack = new IntArrayStack();
+        vxStack.push(vxId);
 
-        while (!vxQueue.isEmpty()) {
-            // Get the first vertex in the queue...
-            final int parentVxId = vxQueue.removeFirst();
+        while (!vxStack.isEmpty()) {
+            // Get the first vertex in the stack...
+            final int parentVxId = vxStack.pop();
 
             // ...and its distance.
             final float parentRadius = Math.max(minRadius, nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, parentVxId) : 1);
@@ -103,7 +112,7 @@ public final class ArrangementUtilities {
                     if (distancesToVertices[childVxId] == NO_DISTANCE) {
                         final float childRadius = Math.max(minRadius, nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, childVxId) : 1);
                         final float childDistance = parentDistance + childRadius;
-                        vxQueue.add(childVxId);
+                        vxStack.push(childVxId);
                         distancesToVertices[childVxId] = childDistance;
                     }
                 }
@@ -120,7 +129,7 @@ public final class ArrangementUtilities {
                     if (distancesToVertices[childVxId] == NO_DISTANCE) {
                         final float childRadius = 1.5F * (nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, childVxId) : 1);
                         final float childDistance = parentDistance + childRadius;
-                        vxQueue.add(childVxId);
+                        vxStack.push(childVxId);
                         distancesToVertices[childVxId] = childDistance;
                     }
                 }
@@ -142,9 +151,9 @@ public final class ArrangementUtilities {
 
         final int vxCount = rg.getVertexCount();
         if (vxCount != 0) {
-            final int xAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-            final int yAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-            final int zAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+            final int xAttr = VisualConcept.VertexAttribute.X.get(rg);
+            final int yAttr = VisualConcept.VertexAttribute.Y.get(rg);
+            final int zAttr = VisualConcept.VertexAttribute.Z.get(rg);
 
             // Use a double[] in case we get big numbers.
             for (int position = 0; position < vxCount; position++) {
@@ -175,12 +184,12 @@ public final class ArrangementUtilities {
      */
     public static void moveMean(final GraphWriteMethods wg, final float[] oldMean) {
         final float[] newMean = ArrangementUtilities.getXyzMean(wg);
-        final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        final int x2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X2.getName());
-        final int y2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y2.getName());
-        final int z2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z2.getName());
+        final int xAttr = VisualConcept.VertexAttribute.X.get(wg);
+        final int yAttr = VisualConcept.VertexAttribute.Y.get(wg);
+        final int zAttr = VisualConcept.VertexAttribute.Z.get(wg);
+        final int x2Attr = VisualConcept.VertexAttribute.X2.get(wg);
+        final int y2Attr = VisualConcept.VertexAttribute.Y2.get(wg);
+        final int z2Attr = VisualConcept.VertexAttribute.Z2.get(wg);
         final boolean xyz2 = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
 
         final int vxCount = wg.getVertexCount();
@@ -199,7 +208,7 @@ public final class ArrangementUtilities {
         }
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static float[] getSubsetMean(final GraphWriteMethods graph, final BitSet vertices) {
         final double[] mean = new double[]{0, 0, 0};
 
@@ -270,78 +279,47 @@ public final class ArrangementUtilities {
      * (weak) component.
      */
     public static GraphTaxonomy getComponents(final GraphWriteMethods wg) {
-        final Map<Integer, Set<Integer>> components = new HashMap<>();
-        final Map<Integer, Integer> nodeToComponent = new HashMap<>();
+        final MutableIntObjectMap<MutableIntSet> components = new IntObjectHashMap<>();
+        final MutableIntIntMap nodeToComponent = new IntIntHashMap();
         final int singletonsComponentID = -1;
         final int doubletsComponentID = -2;
-        components.put(singletonsComponentID, new HashSet<>());
-        components.put(doubletsComponentID, new HashSet<>());
+        components.put(singletonsComponentID, new IntHashSet());
+        components.put(doubletsComponentID, new IntHashSet());
         final BitSet potentials = vertexBits(wg);
         for (int vxID = potentials.nextSetBit(0); vxID >= 0; vxID = potentials.nextSetBit(vxID + 1)) {
-            final Set<Integer> component = new HashSet<>();
+            final MutableIntSet component = new IntHashSet();
             component.add(vxID);
             nodeToComponent.put(vxID, vxID);
             potentials.clear(vxID);
             if (wg.getVertexNeighbourCount(vxID) != 0) {
-                final Deque<Integer> neighbours = new LinkedList<>();
-                neighbours.add(vxID);
+                final MutableIntStack neighbours = new IntArrayStack();
+                neighbours.push(vxID);
                 while (!neighbours.isEmpty()) {
-                    final Integer nxID = neighbours.remove();
+                    final int nxID = neighbours.pop();
                     for (int i = 0; i < wg.getVertexNeighbourCount(nxID); i++) {
                         final int nextNxID = wg.getVertexNeighbour(nxID, i);
                         if (potentials.get(nextNxID)) {
                             component.add(nextNxID);
                             nodeToComponent.put(nextNxID, vxID);
-                            neighbours.add(nextNxID);
+                            neighbours.push(nextNxID);
                             potentials.clear(nextNxID);
                         }
                     }
                 }
             }
-            if (component.size() == 1) {
-                components.get(singletonsComponentID).addAll(component);
-                nodeToComponent.put(vxID, singletonsComponentID);
-            } else if (component.size() == 2) {
-                components.get(doubletsComponentID).addAll(component);
-                for (final int vert : component) {
-                    nodeToComponent.put(vert, doubletsComponentID);
+            switch (component.size()) {
+                case 1 -> {
+                    components.get(singletonsComponentID).addAll(component);
+                    nodeToComponent.put(vxID, singletonsComponentID);
                 }
-            } else {
-                components.put(vxID, component);
+                case 2 -> {
+                    components.get(doubletsComponentID).addAll(component);
+                    component.forEach(vert -> nodeToComponent.put(vert, doubletsComponentID));
+                }
+                default -> components.put(vxID, component);
             }
         }
         return new GraphTaxonomy(wg, components, nodeToComponent, singletonsComponentID, doubletsComponentID);
-    }
-
-    /**
-     * Given a vertex, find all of the vertices in its component.
-     *
-     * @param rg The graph containing the vertex.
-     * @param seedVxId The vertex to start from.
-     *
-     * @return A Set&lt;Integer&gt; containing all of the vertices in the same
-     * component as rootVxId.
-     */
-    public static Set<Integer> getComponentContainingVertex(final GraphReadMethods rg, final int seedVxId) {
-        final Set<Integer> component = new HashSet<>();
-
-        final ArrayDeque<Integer> neighbours = new ArrayDeque<>();
-        neighbours.add(seedVxId);
-        component.add(seedVxId);
-        while (!neighbours.isEmpty()) {
-            final Integer vxId = neighbours.removeFirst();
-            final int nNeighbours = rg.getVertexNeighbourCount(vxId);
-            for (int nbPosition = 0; nbPosition < nNeighbours; nbPosition++) {
-                final int nbId = rg.getVertexNeighbour(vxId, nbPosition);
-
-                if (!component.contains(nbId)) {
-                    neighbours.add(nbId);
-                    component.add(nbId);
-                }
-            }
-        }
-
-        return component;
     }
 
     /**
@@ -357,7 +335,7 @@ public final class ArrangementUtilities {
      * @return a GraphTaxonomy, with each taxon representing the vertices in a
      * (weak) component.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static GraphTaxonomy getComponents(final GraphWriteMethods graph, final BitSet verticesToArrange) {
         final Map<Integer, Set<Integer>> tax = new HashMap<>();
 
@@ -394,7 +372,7 @@ public final class ArrangementUtilities {
      * @return A Set&lt;Integer%gt; containing all of the vertices in the same
      * component as rootVxId.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static Set<Integer> getComponentContainingVertex(final GraphReadMethods graph, final int seedVxId, final BitSet verticesToArrange) {
         final Set<Integer> component = new HashSet<>();
 
