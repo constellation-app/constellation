@@ -153,7 +153,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     private int cachedWidth;
     private int cachedHeight;
     private final Consumer<Graph> updateMarkers;
-    
+    private final MapViewState mapState;
+
     private static final Pattern COMMA_SEPARATED_REGEX = Pattern.compile("[,\\s]+", Pattern.UNICODE_CHARACTER_CLASS);
 
     public MapViewTopComponent() {
@@ -176,6 +177,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         this.defaultProvider = Lookup.getDefault().lookup(MapProvider.class);
         this.providers = new ArrayList<>(Lookup.getDefault().lookupAll(MapProvider.class));
         this.exporters = new ArrayList<>(Lookup.getDefault().lookupAll(MapExporter.class));
+        this.mapState = new MapViewState(this.defaultProvider);
 
         // initialise toolbar
         this.toolBar = new JToolBar(SwingConstants.HORIZONTAL);
@@ -335,7 +337,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                             || event.getComponent().getHeight() != cachedHeight) {
                         cachedWidth = event.getComponent().getWidth();
                         cachedHeight = event.getComponent().getHeight();
-                        resetContent();
+                        rebuildRenderer();
                     }
                     return null;
                 }, 500, TimeUnit.MILLISECONDS);
@@ -374,6 +376,14 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         if (markerState.getColorScheme().getTransactionAttribute() != null) {
             addAttributeValueChangeHandler(markerState.getColorScheme().getTransactionAttribute(), updateMarkers);
         }
+    }
+
+    public void updateMapState(final MapProvider provider, final Location center, final int zoom) {
+        mapState.update(provider, center, zoom);
+    }
+
+    public MapViewState getMapState() {
+        return mapState;
     }
 
     private void zoomLocationBasedOnGeoType(final String geoType, final String location) throws AssertionError {
@@ -505,19 +515,20 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                 : getHeight() - toolBar.getHeight();
     }
 
-    public void resetContent() {
-
+    public void rebuildRenderer() {
         SwingUtilities.invokeLater(() -> {
             scrollPane.setViewportView(null);
             if (renderer != null) {
+                renderer.saveMapState();
                 renderer.dispose();
             }
             renderer = new MapViewTileRenderer(this);
             glComponent = renderer.init();
             scrollPane.setViewportView(glComponent);
 
-            mapProviderMenu.setSelectedItem(defaultProvider);
-            mapProviderMenu.setText(defaultProvider.getName());
+            MapProvider provider = getMapState().getProviderOrDefault();
+            mapProviderMenu.setSelectedItem(provider);
+            mapProviderMenu.setText(provider.getName());
             markerVisibilityComboBox.setSelectedItems(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI);
             markerColorSchemeComboBox.setSelectedItem(MarkerColorScheme.DEFAULT);
             markerLabelComboBox.setSelectedItem(MarkerLabel.DEFAULT);
@@ -534,7 +545,12 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        resetContent();
+        updateMapState(
+                mapState.getProviderOrDefault(),
+                mapState.getCenterOrDefault(),
+                mapState.getZoomOrDefault()
+        );
+        rebuildRenderer();
     }
 
     @Override

@@ -76,8 +76,6 @@ public class MapViewTileRenderer extends PApplet {
     private static final Logger LOGGER = Logger.getLogger(MapViewTileRenderer.class.getName());
 
     public static final Object LOCK = new Object();
-    private static final int DEFAULT_ZOOM = 4;
-    private static final Location DEFAULT_LOCATION = new Location(3.0, 126.0);
 
     private final MapViewTopComponent parent;
     private final MarkerCache markerCache;
@@ -101,7 +99,6 @@ public class MapViewTileRenderer extends PApplet {
     public MapViewTileRenderer(final MapViewTopComponent parent) {
         this.parent = parent;
         this.markerCache = MarkerCache.getDefault();
-        this.currentProvider = parent.getDefaultProvider();
 
         this.boxSelectionEnabled = false;
         this.boxZoomEnabled = false;
@@ -109,14 +106,6 @@ public class MapViewTileRenderer extends PApplet {
         this.boxOriginY = -1;
         this.boxDeltaX = -1;
         this.boxDeltaY = -1;
-    }
-
-    public int getDefaultZoom() {
-        return DEFAULT_ZOOM;
-    }
-
-    public Location getDefaultLocation() {
-        return DEFAULT_LOCATION;
     }
 
     public MarkerCache getMarkerCache() {
@@ -149,7 +138,7 @@ public class MapViewTileRenderer extends PApplet {
         }
 
         map.setZoomRange(1, provider.zoomLevels());
-
+        parent.updateMapState(provider, map.getCenter(), map.getZoomLevel());
     }
 
     public void zoomToLocation(final Location location) {
@@ -159,7 +148,8 @@ public class MapViewTileRenderer extends PApplet {
             return;
         }
 
-        map.zoomAndPanTo(getDefaultZoom(), location == null ? getDefaultLocation() : location);
+        map.zoomAndPanTo(parent.getMapState().getZoomOrDefault(), location == null ? parent.getMapState().getCenterOrDefault() : location
+        );
     }
 
     public void zoomToMarkers(final MarkerState markerState) {
@@ -344,6 +334,11 @@ public class MapViewTileRenderer extends PApplet {
     @Override
     public void setup() {
         assert !SwingUtilities.isEventDispatchThread();
+        final MapViewState state = parent.getMapState();
+        if (!state.isValid()) {
+            return;
+        }
+        currentProvider = state.getProviderOrDefault();
 
         markerFactory = new ConstellationMarkerFactory();
         markerFactory.setDefaultColor(MarkerUtilities.DEFAULT_COLOR);
@@ -354,7 +349,7 @@ public class MapViewTileRenderer extends PApplet {
         markerFactory.setDefaultStrokeWeight(MarkerUtilities.DEFAULT_STROKE_WEIGHT);
 
         map = new UnfoldingMap(this, "Map View", currentProvider);
-        map.setTweening(true);
+        map.setTweening(false); //This is required to prevent the Unfolding apply intermediate zoom levels during loading
 
         dispatcher = MapUtils.createDefaultEventDispatcher(this, map);
         // The map library, Unfolding Maps, defaults to a hard-coded left click pan
@@ -370,19 +365,25 @@ public class MapViewTileRenderer extends PApplet {
         barScale = new BarScaleUI(this, map, 10F, this.getComponent().getHeight() - 10F);
 
         updateMarkers(parent.getCurrentGraph(), new MarkerState());
-        zoomToLocation(null);
+
+        map.mapDisplay.setMapProvider(currentProvider);
+        map.setZoomRange(1, currentProvider.zoomLevels());
+        map.zoomAndPanTo(state.getZoomLevel(), state.getCenter());
+        map.setTweening(true);
     }
 
     @Override
     public void draw() {
         assert !SwingUtilities.isEventDispatchThread();
+        if (currentProvider == null || map == null) {
+            return;
+        }
 
         background(0);
 
         if (updating) {
             // TODO: draw loading animation
         } else {
-            map.setZoomRange(0, currentProvider.zoomLevels());
             synchronized (LOCK) {
                 map.draw();
             }
@@ -402,7 +403,19 @@ public class MapViewTileRenderer extends PApplet {
             }
 
             updateClusters(parent.getMarkerState());
+            saveMapState();
         }
+    }
+
+    public void saveMapState() {
+        if (map == null) {
+            return;
+        }
+        parent.updateMapState(
+                currentProvider,
+                map.getCenter(),
+                map.getZoomLevel()
+        );
     }
 
     @Override
