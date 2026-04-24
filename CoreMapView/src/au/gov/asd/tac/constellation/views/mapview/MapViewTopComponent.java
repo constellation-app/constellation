@@ -46,7 +46,6 @@ import au.gov.asd.tac.constellation.utilities.gui.JSingleChoiceComboBoxMenu;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
@@ -72,8 +71,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -82,6 +79,7 @@ import javax.swing.JToolBar;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -322,23 +320,16 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
         // top component resize listener
         addComponentListener(new ComponentAdapter() {
-            ScheduledFuture<?> scheduledFuture;
+            private final Timer resizeTimer = new Timer(250, e -> {
+                renderer.resizeContent(getWidth(), getHeight());
+            });
+            {
+                resizeTimer.setRepeats(false);
+            }
 
             @Override
-            //Cancels the previous resize (future) and then performs the latest one every half second
-            public void componentResized(ComponentEvent event) {
-                if (scheduledFuture != null) {
-                    scheduledFuture.cancel(true);
-                }
-                scheduledFuture = ConstellationGlobalThreadPool.getThreadPool().getScheduledExecutorService().schedule(() -> {
-                    if (event.getComponent().getWidth() != cachedWidth
-                            || event.getComponent().getHeight() != cachedHeight) {
-                        cachedWidth = event.getComponent().getWidth();
-                        cachedHeight = event.getComponent().getHeight();
-                        resetContent();
-                    }
-                    return null;
-                }, 500, TimeUnit.MILLISECONDS);
+            public void componentResized(ComponentEvent e) {
+                resizeTimer.restart();
             }
         });
 
@@ -505,13 +496,9 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                 : getHeight() - toolBar.getHeight();
     }
 
-    public void resetContent() {
+    public void initMapView() {
 
         SwingUtilities.invokeLater(() -> {
-            scrollPane.setViewportView(null);
-            if (renderer != null) {
-                renderer.dispose();
-            }
             renderer = new MapViewTileRenderer(this);
             glComponent = renderer.init();
             scrollPane.setViewportView(glComponent);
@@ -534,7 +521,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        resetContent();
+        initMapView();
     }
 
     @Override
