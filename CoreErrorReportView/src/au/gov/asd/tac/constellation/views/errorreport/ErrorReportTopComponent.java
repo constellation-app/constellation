@@ -25,16 +25,16 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import javafx.scene.layout.BorderPane;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.Color;
 import java.awt.Image;
 import java.io.IOException;
-import javafx.scene.input.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -58,6 +58,8 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -71,6 +73,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -105,7 +108,7 @@ import org.openide.windows.TopComponent;
     "CTL_ErrorReportTopComponent=Error Report",
     "HINT_ErrorReportTopComponent=Error Report"
 })
-
+@ServiceProvider(service = AbstractTopComponent.class)
 public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
     private static final Logger LOGGER = Logger.getLogger(ErrorReportTopComponent.class.getName());
@@ -119,7 +122,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         WARNING("WARNING"),
         INFO("INFO"),
         FINE("FINE");
-        
+
         private final String code;
 
         SeverityCode(final String severityCode) {
@@ -184,7 +187,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     public static final String REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "report_settings");
     public static final String POPUP_REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "popup_report_settings");
 
-    ErrorReportTopComponent() {
+    public ErrorReportTopComponent() {
         final GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
@@ -198,7 +201,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         setName(Bundle.CTL_ErrorReportTopComponent());
         setToolTipText(Bundle.HINT_ErrorReportTopComponent());
         initContent();
-        
+
         final TimerTask refreshAction = new TimerTask() {
             @Override
             public void run() {
@@ -208,7 +211,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         refreshTimer = new Timer();
         refreshTimer.schedule(refreshAction, 745, 1475);
     }
-    
+
     /**
      * @return the params
      */
@@ -266,7 +269,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         updateSettings();
 
         final List<String> settingOptions = Arrays.asList(SeverityCode.SEVERE.getCode(), SeverityCode.WARNING.getCode(), SeverityCode.INFO.getCode(), SeverityCode.FINE.getCode());
-        
+
         final PluginParameter<MultiChoiceParameterType.MultiChoiceParameterValue> reportSettingOptions = MultiChoiceParameterType.build(REPORT_SETTINGS_PARAMETER_ID);
         reportSettingOptions.setName("Report Settings");
         reportSettingOptions.setDescription("Report Settings");
@@ -339,7 +342,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         multiRedispItem.setToggleGroup(popupFrequency);
 
         oneRedispItem.setSelected(true);
-        final int applicationFontSize = FontUtilities.getApplicationFontSize();        
+        final int applicationFontSize = FontUtilities.getApplicationFontSize();
         popupControl.getItems().addAll(neverItem, oneItem, oneRedispItem, multiItem, multiRedispItem);
         popupControl.setMaxWidth(200);
         popupControl.setMinHeight(26);
@@ -389,7 +392,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final ToolBar controlToolbar2 = new ToolBar();
         final Label reportSettingsLabel = new Label("Report:");
         final Label popupReportSettingsLabel = new Label("Popup:");
-        
+
         final MultiChoiceInputPane reportSettingPane = new MultiChoiceInputPane(reportSettingOptions);
         reportSettingsLabel.setPadding(new Insets(0, -5, 0, 0));
         reportSettingsLabel.autosize();
@@ -649,10 +652,10 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 refreshSessionErrors();
                 final Date nextFilterDate = new Date();
                 final int errCount = sessionErrors.size();
-                // rebuild                
+                // rebuild
                 sessionErrorsBox.getChildren().clear();
 
-                // check popup selection               
+                // check popup selection
                 List<String> popupChoices = new ArrayList<>();
                 if (getParams().hasParameter(POPUP_REPORT_SETTINGS_PARAMETER_ID)) {
                     MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(POPUP_REPORT_SETTINGS_PARAMETER_ID);
@@ -792,7 +795,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         }
         alertStateActive = !alertStateActive;
     }
-    
+
     private int getPopupControlValue() {
         return popupMode;
     }
@@ -1072,7 +1075,17 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
         return ttlPane;
     }
-    
+
+    @Override
+    public Map<String, Boolean> getDefaultFloatingPreference() {
+        return Map.of(Bundle.CTL_ErrorReportTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "rightSlidingSide";
+    }
+
     protected void refreshErrorFlashing() {
         Platform.runLater(() -> {
             boolean gracePeriodRefresh = false;
