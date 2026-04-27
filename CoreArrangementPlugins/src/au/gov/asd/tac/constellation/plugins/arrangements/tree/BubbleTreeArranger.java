@@ -26,8 +26,9 @@ import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUt
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3d;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  *
@@ -35,7 +36,7 @@ import java.util.Set;
  */
 public class BubbleTreeArranger implements Arranger {
 
-    private final Set<Integer> roots;
+    private final MutableIntList roots;
     private final boolean isMinimal;
     private final boolean nAlgo;
     private GraphWriteMethods tree;
@@ -48,8 +49,25 @@ public class BubbleTreeArranger implements Arranger {
 
     private int[] vxDepth;
 
+    public BubbleTreeArranger(final MutableIntList roots, final boolean isMinimal) {
+        this.roots = new IntArrayList(roots.toArray());
+        this.isMinimal = isMinimal;
+        nAlgo = true;
+        maintainMean = false;
+    }
+    
+    /**
+     * 
+     * @param roots
+     * @deprecated in favor of new implementation
+     * @see #BubbleTreeArranger(org.eclipse.collections.api.list.primitive.MutableIntList, boolean)
+     */
+    @Deprecated(since = "3.4", forRemoval = true)
     public BubbleTreeArranger(final Set<Integer> roots, final boolean isMinimal) {
-        this.roots = new HashSet<>(roots);
+        this.roots = new IntArrayList();
+        for (final int root : roots) {
+            this.roots.add(root);
+        }
         this.isMinimal = isMinimal;
         nAlgo = true;
         maintainMean = false;

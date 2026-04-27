@@ -28,10 +28,10 @@ import au.gov.asd.tac.constellation.views.namedselection.NamedSelection;
 import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
 import au.gov.asd.tac.constellation.views.namedselection.utilities.SelectNamedSelectionPanel;
 import java.awt.event.ActionEvent;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.swing.AbstractAction;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.awt.ActionID;
@@ -66,8 +66,7 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
     @Override
     public void actionPerformed(final ActionEvent e) {
         final Graph graph = context.getGraph();
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             NamedSelectionState nsState = null;
             final int namedSelectionId = rg.getAttribute(GraphElementType.VERTEX, "named_selection");
             if (namedSelectionId != Graph.NOT_FOUND) {
@@ -81,13 +80,11 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
             if (nsState == null) {
                 selectElementsAndRunArrangement(rg, null);
             }
-        } finally {
-            rg.release();
         }
     }
 
     private void selectElementsAndRunArrangement(final ReadableGraph rg, final List<NamedSelection> namedSelections) {
-        final Set<Integer> rootVxIds = new HashSet<>();
+        final MutableIntList rootVxIds = new IntArrayList();
         final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(rg);
         for (int position = 0; position < rg.getVertexCount(); position++) {
             final int vxId = rg.getVertex(position);

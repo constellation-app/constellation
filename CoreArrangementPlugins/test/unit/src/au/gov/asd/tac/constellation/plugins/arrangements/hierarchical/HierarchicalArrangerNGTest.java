@@ -27,9 +27,9 @@ import au.gov.asd.tac.constellation.views.namedselection.utilities.SelectNamedSe
 import java.awt.Dialog;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.mockito.MockedStatic;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -51,8 +51,8 @@ import org.testng.annotations.Test;
  */
 public class HierarchicalArrangerNGTest {
 
-    private List<Integer> vtxList;
-    private List<Integer> txnList;
+    private MutableIntList vtxList;
+    private MutableIntList txnList;
     private Graph graph;
     private boolean delayedSave = false;
     
@@ -92,8 +92,8 @@ public class HierarchicalArrangerNGTest {
      */
     private void setupGraph(final int nodeCount) throws InterruptedException {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
-        vtxList = new ArrayList<>();
-        txnList = new ArrayList<>();
+        vtxList = new IntArrayList();
+        txnList = new IntArrayList();
         
         final WritableGraph wg = graph.getWritableGraph("", true);
         
@@ -108,9 +108,7 @@ public class HierarchicalArrangerNGTest {
         for (int j = 0; j < nodeCount; j++) {
             vtxList.add(wg.addVertex());
         }
-        for (final int vtxId : vtxList) {
-            wg.setStringValue(vertexIdentifierAttribute, vtxId, "Vtx-" + vtxId);
-        }
+        vtxList.forEach(vtxId -> wg.setStringValue(vertexIdentifierAttribute, vtxId, "Vtx-" + vtxId));
 
         int vtxIndex = 0;
         // add transactions
@@ -169,7 +167,7 @@ public class HierarchicalArrangerNGTest {
         setupGraph(150);
 
         final WritableGraph wg = graph.getWritableGraph("", true);
-        final Set<Integer> rootVxIds = new HashSet<>();
+        final MutableIntList rootVxIds = new IntArrayList();
         rootVxIds.add(vtxList.get(0));
         rootVxIds.add(vtxList.get(1));
         rootVxIds.add(vtxList.get(2));
@@ -195,7 +193,7 @@ public class HierarchicalArrangerNGTest {
         setupGraph(1500);
         
         final WritableGraph wg = graph.getWritableGraph("", true);
-        final Set<Integer> rootVxIds = new HashSet<>();
+        final MutableIntList rootVxIds = new IntArrayList();
         rootVxIds.add(vtxList.get(0));
         rootVxIds.add(vtxList.get(1));
         rootVxIds.add(vtxList.get(2));
@@ -221,7 +219,7 @@ public class HierarchicalArrangerNGTest {
         setupGraph(15000);
 
         final WritableGraph wg = graph.getWritableGraph("", true);
-        final Set<Integer> rootVxIds = new HashSet<>();
+        final MutableIntList rootVxIds = new IntArrayList();
         rootVxIds.add(vtxList.get(0));
         rootVxIds.add(vtxList.get(1));
         rootVxIds.add(vtxList.get(2));

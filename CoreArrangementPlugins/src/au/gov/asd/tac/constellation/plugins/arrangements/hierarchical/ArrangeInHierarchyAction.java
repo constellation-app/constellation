@@ -28,10 +28,11 @@ import au.gov.asd.tac.constellation.views.namedselection.NamedSelection;
 import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
 import au.gov.asd.tac.constellation.views.namedselection.utilities.SelectNamedSelectionPanel;
 import java.awt.event.ActionEvent;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.AbstractAction;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.awt.ActionID;
@@ -66,8 +67,7 @@ public class ArrangeInHierarchyAction extends AbstractAction {
     @Override
     public void actionPerformed(final ActionEvent e) {
         final Graph graph = context.getGraph();
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             NamedSelectionState nsState = null;
             final int namedSelectionId = rg.getAttribute(GraphElementType.VERTEX, "named_selection");
             if (namedSelectionId != Graph.NOT_FOUND) {
@@ -81,13 +81,11 @@ public class ArrangeInHierarchyAction extends AbstractAction {
             if (nsState == null) {
                 selectElementsAndRunArrangement(rg, null);
             }
-        } finally {
-            rg.release();
         }
     }
 
-    private Set<Integer> getSelectedIds(final ReadableGraph rg) {
-        final Set<Integer> selectedIds = new HashSet<>();
+    private MutableIntList getSelectedIds(final ReadableGraph rg) {
+        final MutableIntList selectedIds = new IntArrayList();
         final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(rg);
         for (int position = 0; position < rg.getVertexCount(); position++) {
             final int vxId = rg.getVertex(position);
@@ -99,7 +97,7 @@ public class ArrangeInHierarchyAction extends AbstractAction {
     }
 
     private void selectElementsAndRunArrangement(final ReadableGraph rg, final List<NamedSelection> namedSelections) {
-        final Set<Integer> rootVxIds = getSelectedIds(rg);
+        final MutableIntList rootVxIds = getSelectedIds(rg);
         final SelectNamedSelectionPanel ssp = new SelectNamedSelectionPanel(namedSelections, "Which element(s) will represent the TOP of the hierarchy ?", rootVxIds.isEmpty());
         final DialogDescriptor dd = new DialogDescriptor(ssp, Bundle.CTL_ArrangeInHierarchyAction());
         dd.setHelpCtx(new HelpCtx(HELP_LOCATION));

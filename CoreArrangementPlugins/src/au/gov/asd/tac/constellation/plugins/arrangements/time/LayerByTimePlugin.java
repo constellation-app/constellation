@@ -525,7 +525,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             wgcopy.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, ORIGINAL_ID_LABEL, "Original Node Id", -1, null);
 
             // Create lists of layers
-            final List<Float> values = new ArrayList<>();
+            final MutableFloatList values = new FloatArrayList();
             final MutableIntObjectMap<MutableFloatList> remappedLayers = new IntObjectHashMap<>();
             final MutableIntObjectMap<String> displayNames = new IntObjectHashMap<>();
             if (useIntervals) {
@@ -807,7 +807,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * @param unit The interval unit in seconds.
      * @param amount The number of interval units per layer.
      */
-    private void buildIntervals(final GraphWriteMethods wgcopy, final List<Float> values, final MutableIntObjectMap<MutableFloatList> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Long d1, final Long d2, final int unit, final int amount) {
+    private void buildIntervals(final GraphWriteMethods wgcopy, MutableFloatList values, final MutableIntObjectMap<MutableFloatList> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Long d1, final Long d2, final int unit, final int amount) {
         // Convert to milliseconds.
         final long intervalLength = unit * amount * 1000L;
 
@@ -838,8 +838,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         for (int txId = txUnused.nextSetBit(0); txId >= 0; txId = txUnused.nextSetBit(txId + 1)) {
             wgcopy.removeTransaction(txId);
         }
-
-        Collections.sort(values);
+        
+        values = values.sortThis();
 
         for (int i = 0; i < values.size(); i++) {
             final MutableFloatList runningLayers = new FloatArrayList();
@@ -853,7 +853,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
         final SimpleDateFormat sdf = new SimpleDateFormat("EE yyyy-MM-dd HH:mm:ss");
         for (int i = 0; i < values.size(); i++) {
-            final long layerBase = values.get(i).longValue() * intervalLength + d1;
+            final long layerBase = (long) values.get(i) * intervalLength + d1;
             final long layerEnd = layerBase + intervalLength - 1;
             displayNames.put(i, String.format("%s .. %s", sdf.format(layerBase), sdf.format(layerEnd)));
         }
@@ -872,7 +872,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * @param unit
      * @param binAmount
      */
-    private void buildBins(final GraphWriteMethods wgcopy, final List<Float> values, final MutableIntObjectMap<MutableFloatList> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Long d1, final Long d2, final int unit, final int binAmount) {
+    private void buildBins(final GraphWriteMethods wgcopy, MutableFloatList values, final MutableIntObjectMap<MutableFloatList> remappedLayers, final MutableIntObjectMap<String> displayNames, final int dtAttr, final Long d1, final Long d2, final int unit, final int binAmount) {
         final Calendar dtg = Calendar.getInstance();
         final float maxUnit = dtg.getMaximum(unit);
 
@@ -912,7 +912,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             wgcopy.removeTransaction(txId);
         }
 
-        Collections.sort(values);
+        values = values.sortThis();
 
         int j = 0;
 

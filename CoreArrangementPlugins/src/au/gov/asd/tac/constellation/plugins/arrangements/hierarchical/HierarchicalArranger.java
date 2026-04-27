@@ -26,9 +26,9 @@ import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUt
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.collections.api.iterator.IntIterator;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.api.map.primitive.IntFloatMap;
 import org.eclipse.collections.api.map.primitive.MutableIntFloatMap;
@@ -53,13 +53,27 @@ public class HierarchicalArranger implements Arranger {
 
     private static final int MAX_SWAPS = 10;
 
-    private final Set<Integer> roots;
+    private final MutableIntList roots;
     private boolean maintainMean;
     private static PluginInteraction interaction;
     private static String lastMessage;
-
+    
+    public HierarchicalArranger(final MutableIntList roots) {
+        this.roots = new IntArrayList(roots.toArray());
+    }
+    
+    /**
+     * 
+     * @param roots
+     * @deprecated in favor of new implementation
+     * @see #HierarchicalArranger(org.eclipse.collections.api.list.primitive.MutableIntList)
+     */
+    @Deprecated(since = "3.4", forRemoval = true)
     public HierarchicalArranger(final Set<Integer> roots) {
-        this.roots = new HashSet<>(roots);
+        this.roots = new IntArrayList();
+        for (final int root : roots) {
+            this.roots.add(root);
+        }
     }
 
     @Override
@@ -79,7 +93,9 @@ public class HierarchicalArranger implements Arranger {
         }
 
         int maxLevel = 0;
-        for (final int root : roots) {
+        final IntIterator rootsIter = roots.intIterator();
+        while (rootsIter.hasNext()) {
+            final int root = rootsIter.next();
             // Is this root in this graph?
             // If this an inclusion graph, it may very well not be.
             // If none of the roots are in this graph, then nothing will happen.
