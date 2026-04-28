@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.undo.GraphEdit;
 import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 import au.gov.asd.tac.constellation.utilities.datastructure.IntHashSet;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import java.io.Serializable;
 import java.lang.ref.Cleaner;
@@ -41,6 +42,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 enum Operator {
     EQUALS,
@@ -1531,11 +1534,14 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         int[] existingAttributes = attributeNames.get(label);
         if (existingAttributes != null && existingAttributes[elementType.ordinal()] >= 0) {
             final int attribute = existingAttributes[elementType.ordinal()];
-            if (attributes[attribute].getAttributeType().equals(attributeType)) {
+            final String existingAttributeType = attributes[attribute].getAttributeType();
+            if (existingAttributeType.equals(attributeType)) {
+                return attribute;
+            } else {
+                final String message = elementType + " attribute Name `" + label + "` already exists, of type " + existingAttributeType + ". Please choose a different Name.";
+                Platform.runLater(() -> NotifyDisplayer.displayAlert("Add " + elementType + " Attribute", "Duplicate Attribute Name", message, Alert.AlertType.ERROR));
                 return attribute;
             }
-
-            throw new IllegalArgumentException("Attempt to create a " + elementType + " attribute with a duplicate label: " + label);
         }
 
         final AttributeDescription attributeDescription;
