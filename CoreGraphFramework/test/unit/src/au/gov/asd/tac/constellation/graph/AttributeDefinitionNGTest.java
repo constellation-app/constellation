@@ -122,14 +122,16 @@ public class AttributeDefinitionNGTest {
     /**
      * Test of addAttribute method, of class StoreGraph.
      */
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void addAttributeTwice() {
         final GraphElementType elementType = GraphElementType.VERTEX;
         final String name = "node1";
         final String attributeType = "string";
         final GraphWriteMethods graph = new StoreGraph();
-        graph.addAttribute(elementType, attributeType, name, null, null, null);
-        graph.addAttribute(elementType, IntegerAttributeDescription.ATTRIBUTE_NAME, name, null, null, null);
+        int attrId1 = graph.addAttribute(elementType, attributeType, name, null, null, null);
+        int attrId2 = graph.addAttribute(elementType, attributeType, name, null, null, null);
+        assertEquals("Add duplicate Attribute with same Type:", attrId1, attrId2);
+        int attrId3 = graph.addAttribute(elementType, IntegerAttributeDescription.ATTRIBUTE_NAME, name, null, null, null);
+        assertEquals("Add duplicate Attribute with different Type:", attrId1, attrId3);
     }
 
     /**
