@@ -1535,13 +1535,14 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         if (existingAttributes != null && existingAttributes[elementType.ordinal()] >= 0) {
             final int attribute = existingAttributes[elementType.ordinal()];
             final String existingAttributeType = attributes[attribute].getAttributeType();
+            String message = "";
             if (existingAttributeType.equals(attributeType)) {
-                return attribute;
+                message = elementType + " attribute Name `" + label + "` already exists. Please choose a different Name.";
             } else {
-                final String message = elementType + " attribute Name `" + label + "` already exists, of type " + existingAttributeType + ". Please choose a different Name.";
-                Platform.runLater(() -> NotifyDisplayer.displayAlert("Add " + elementType + " Attribute", "Duplicate Attribute Name", message, Alert.AlertType.ERROR));
-                return attribute;
+                message = elementType + " attribute Name `" + label + "` already exists, of type " + existingAttributeType + ". Please choose a different Name.";
             }
+            Platform.runLater(() -> NotifyDisplayer.displayAlert("Add " + elementType + " Attribute", "Duplicate Attribute Name", message, Alert.AlertType.ERROR));
+            return attribute;
         }
 
         final AttributeDescription attributeDescription;
