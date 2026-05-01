@@ -127,10 +127,10 @@ public class AttributeDefinitionNGTest {
         final String name = "node1";
         final String attributeType = "string";
         final GraphWriteMethods graph = new StoreGraph();
-        int attrId1 = graph.addAttribute(elementType, attributeType, name, null, null, null);
-        int attrId2 = graph.addAttribute(elementType, attributeType, name, null, null, null);
+        final int attrId1 = graph.addAttribute(elementType, attributeType, name, null, null, null);
+        final int attrId2 = graph.addAttribute(elementType, attributeType, name, null, null, null);
         assertEquals("Add duplicate Attribute with same Type:", attrId1, attrId2);
-        int attrId3 = graph.addAttribute(elementType, IntegerAttributeDescription.ATTRIBUTE_NAME, name, null, null, null);
+        final int attrId3 = graph.addAttribute(elementType, IntegerAttributeDescription.ATTRIBUTE_NAME, name, null, null, null);
         assertEquals("Add duplicate Attribute with different Type:", attrId1, attrId3);
     }
 
