@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.graph.undo.GraphEdit;
 import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 import au.gov.asd.tac.constellation.utilities.datastructure.IntHashSet;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import java.io.Serializable;
 import java.lang.ref.Cleaner;
@@ -1537,10 +1538,11 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             final String existingAttributeType = attributes[attribute].getAttributeType();
 
             final String message = existingAttributeType.equals(attributeType)
-                    ? elementType + " attribute name `" + label + "` already exists. Please choose a different name."
-                    : elementType + " attribute name `" + label + "` already exists (type: " + existingAttributeType + "). Please choose a different name.";
+                    ? elementType.getShortLabel() + " custom attribute with name `" + label + "` already exists."
+                    : elementType.getShortLabel() + " custom attribute with name `" + label + "` already exists (with type: " + existingAttributeType + ").";
 
-            Platform.runLater(() -> NotifyDisplayer.displayAlert("Add " + elementType + " Attribute", "Duplicate Attribute Name", message, Alert.AlertType.ERROR));
+            Platform.runLater(() -> NotifyDisplayer.displayAlert("Add " + elementType.getShortLabel() + " Attribute",
+                    "Duplicate Attribute Name", message, Alert.AlertType.ERROR, ScreenWindowsHelper.getMainWindowCentrePoint()));
             return attribute;
         }
 
