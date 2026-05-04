@@ -1,0 +1,27 @@
+Analytic View:false
+Attribute Editor:false
+Conversation View:false
+Data Access View:false
+Error Report:false
+Find and Replace:true
+From Database...:false
+From File...:false
+Hierarchical:false
+Histogram:false
+K-Truss:false
+Layers View:false
+Map View:false
+Memory Manager:false
+Named Selections:false
+New Histogram:false
+Notes View:false
+Perspective Bookmarks:false
+Plane Manager:false
+Plugin Reporter:false
+Quality Control View:false
+Scatter Plot:false
+Schema View:false
+Scripting View:false
+Table View:false
+Timeline:false
+Word Cloud View:false
