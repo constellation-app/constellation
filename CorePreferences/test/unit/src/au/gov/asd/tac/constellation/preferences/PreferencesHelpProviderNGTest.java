@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2025 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class PreferencesHelpProviderNGTest {
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         // Not currently required
@@ -56,12 +56,12 @@ public class PreferencesHelpProviderNGTest {
     @Test
     public void testGetHelpMap() {
         System.out.println("getHelpMap");
-        
+
         final PreferencesHelpProvider instance = new PreferencesHelpProvider();
         final Map<String, String> helpMap = instance.getHelpMap();
 
-        assertEquals(helpMap.size(), 3);
-        //not going to go through and assert the existence of each specific item in the map 
+        assertEquals(helpMap.size(), 4);
+        //not going to go through and assert the existence of each specific item in the map
         //but will assert they're all correctly located within the plugin reporter package
         final String packageStart = "au.gov.asd.tac.constellation.preferences.";
         for (final String path : helpMap.keySet()) {
@@ -75,7 +75,7 @@ public class PreferencesHelpProviderNGTest {
     @Test
     public void testGetHelpTOC() {
         System.out.println("getHelpTOC");
-        
+
         final PreferencesHelpProvider instance = new PreferencesHelpProvider();
         final String tocLocation = instance.getHelpTOC();
 
@@ -88,5 +88,5 @@ public class PreferencesHelpProviderNGTest {
 
         assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CorePreferences"));
         assertTrue(tocLocation.indexOf("CorePreferences") < tocLocation.indexOf("preferences-toc.xml"));
-    }   
+    }
 }
