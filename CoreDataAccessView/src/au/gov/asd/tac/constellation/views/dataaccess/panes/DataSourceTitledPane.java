@@ -47,6 +47,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import org.openide.util.HelpCtx;
 
 /**
@@ -117,6 +118,11 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
 
         setPadding(Insets.EMPTY);
         setTooltip(new Tooltip(plugin.getDescription()));
+        
+        // set the tooltip duration longer for longer text
+        if (getTooltip().getText().length() > 150) {
+            getTooltip().setShowDuration(Duration.seconds(10));
+        }
     }
     
     @Override

@@ -74,7 +74,7 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
 
     @Override
     public String getDescription() {
-        return "Remove nodes from your graph";
+        return "Removes any currently selected nodes from your graph based on defined criteria.";
     }
 
     @Override
