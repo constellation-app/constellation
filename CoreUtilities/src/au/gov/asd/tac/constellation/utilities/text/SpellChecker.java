@@ -35,7 +35,6 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
@@ -73,6 +72,7 @@ public final class SpellChecker {
 
     private static final int TOKENS_PER_PART = 20;
     private List<String> prevParts = new ArrayList<>();
+    private MutableIntList prevPartsOffsets = new IntArrayList();
 
     private static Method getFromPos;
     private static Method getToPos;
@@ -83,6 +83,9 @@ public final class SpellChecker {
     private static final String LABEL_CSS_ID = "spellCheckContextLabel";
 
     private final ContextMenu contextMenu = new ContextMenu();
+
+    private int firstVisible = 0;
+    private int lastVisible = 0;
 
     static {
         LanguagetoolClassLoader.loadDependencies();
@@ -122,13 +125,29 @@ public final class SpellChecker {
         LANGTOOL_LOAD.thenRun(() -> initializeRules());
     }
 
+    private void setVisibleHighlights(final int first, final int last) {
+        firstVisible = first;
+        lastVisible = last;
+    }
+
+    public void handleVisibleIndicesChange(final int first, final int last) {
+        setVisibleHighlights(first, last);
+
+        Platform.runLater(() -> {
+            refreshHighlights();
+        });
+    }
+
     private void handleMenuItem(final String text) {
         final StringBuilder builder = new StringBuilder(textArea.getText());
         builder.replace(startOfMisspelledTextUnderCursor, endOfMisspelledTextUnderCursor, text);
         textArea.replaceText​(builder.toString());
 
         contextMenu.hide();
+        //checkSpellingForce();
+        //checkSpellingForce(startOfMisspelledTextUnderCursor);
         checkSpelling();
+
         refreshHighlights();
     }
 
@@ -176,93 +195,142 @@ public final class SpellChecker {
 
     private void checkSpellingForce() {
         prevParts.clear();
+        prevPartsOffsets.clear();
         textArea.clearStyles();
         checkSpelling();
     }
+
+    private void checkSpellingForce(final int from) {
+        int total = 0;
+        int index = 0;
+        for (final String part : prevParts) {
+            total += part.length();
+            if (total <= from) {
+                index++;
+            }
+        }
+
+        prevParts.subList(index, prevParts.size()).clear();
+        textArea.clearStyles(from);
+        checkSpelling();
+    }
+
+    private int numTimesCheckCalled = 0;
 
     /**
      * Check Spelling of the entire text. This will ensure scenarios like duplicate words, grammar mistakes etc. are
      * triggered
      */
     public synchronized void checkSpelling() {
-        final String inputText = textArea.getText();
+        System.out.println("checkSpelling " + (++numTimesCheckCalled));
+        synchronized (matches) {
+            final String inputText = textArea.getText();
 
-        if (turnOffSpellChecking || StringUtils.isBlank(inputText)) {
-            matches.clear();
+            if (turnOffSpellChecking || StringUtils.isBlank(inputText)) {
+                matches.clear();
+                return;
+            }
+
+            try {
+                final List<String> diff = new ArrayList<>();
+                final MutableIntList diffOffsets = new IntArrayList();
+                final List<IntIntPair> diffSpans = new ArrayList<>();
+                final List<String> parts = new ArrayList<>();
+                final MutableIntList partsOffsets = new IntArrayList();
+
+                //findDifferences(inputText, parts, diff, diffOffsets, diffSpans);
+                findDifferences(inputText, parts, partsOffsets, diff, diffOffsets, diffSpans);
+                System.out.println("diff: " + diff);
+                removeDiffsFromMatches(diffSpans);
+                //adjustMatches(adjustStart, adjustAmount);
+                System.out.println("");
+
+                //final List<Object> listOfMatchLists = new ArrayList<>();
+                int totalElements = 0;
+                for (int i = 0; i < diff.size(); i++) {
+                    final String d = diff.get(i);
+                    final List<Object> list = (List<Object>) check.invoke(langTool, d);
+
+                    for (final Object ruleMatch : list) {
+                        final Match match = createMatch(ruleMatch, diffOffsets.get(i));
+                        matches.add(match);
+                    }
+
+                    //listOfMatchLists.add(list);
+                    totalElements += list.size();
+                }
+
+                /*
+                int startEndIndex = 0;
+                final int[] starts = new int[totalElements];
+                final int[] ends = new int[totalElements];
+
+                // for each list of matches
+                for (int i = 0; i < listOfMatchLists.size(); i++) {
+                    final List<Object> matchList = (List<Object>) listOfMatchLists.get(i);
+
+                    for (final Object match : matchList) {
+                        if (!LanguagetoolClassLoader.getRuleMatch().isInstance(match)) {
+                            continue;
+                        }
+
+                        final int start = (int) getFromPos.invoke(match);
+                        final int end = (int) getToPos.invoke(match);
+
+                        // Add offset because start and end value is reletive to the string it's in, not the whole text input
+                        starts[startEndIndex] = start + diffOffsets.get(i);
+                        ends[startEndIndex] = end + diffOffsets.get(i);
+
+                        startEndIndex++;
+                    }
+                }
+                 */
+                if (totalElements > 0) {
+                    textArea.forceRefreshVisibleText();
+
+                    Platform.runLater(() -> {
+//                    for (final IntIntPair span : diffSpans) {
+//                        textArea.clearStyle(span.getOne(), span.getTwo());
+//                    }
+//
+//                    textArea.highlightTextMultiple(starts, ends);  
+
+                        prevParts = parts;
+                        prevPartsOffsets = partsOffsets;
+                        refreshHighlights();// Need to re test if this is slower than above
+                    });
+                }
+
+            } catch (final IllegalAccessException ex) {
+                logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
+            } catch (final InvocationTargetException ex) {
+                // Left intentionally blank, as this function is designed to be interrupted and interrupting this function causes an InvocationTargetException
+            }
+        }
+    }
+
+//    private int adjustStart = 0;
+//    private int adjustAmount = 0;
+    protected void adjustMatches(final int start, final int amount) {
+        System.out.println("adjustMatches " + start + " " + amount);
+        if (amount == 0) {
             return;
         }
-
-        try {
-            final List<String> diff = new ArrayList<>();
-            final MutableIntList diffOffsets = new IntArrayList();
-            final List<IntIntPair> diffSpans = new ArrayList<>();
-            final List<String> parts = new ArrayList<>();
-
-            findDifferences(inputText, parts, diff, diffOffsets, diffSpans);
-
-            removeDiffsFromMatches(diffSpans);
-
-            final List<Object> listOfMatchLists = new ArrayList<>();
-            int totalElements = 0;
-            for (int i = 0; i < diff.size(); i++) {
-                final String d = diff.get(i);
-                final List<Object> list = (List<Object>) check.invoke(langTool, d);
-
-                for (final Object ruleMatch : list) {
-                    final Match match = createMatch(ruleMatch, diffOffsets.get(i));
-                    matches.add(match);
-                }
-
-                listOfMatchLists.add(list);
-                totalElements += list.size();
-            }
-
-            int startEndIndex = 0;
-            final int[] starts = new int[totalElements];
-            final int[] ends = new int[totalElements];
-
-            // for each list of matches
-            for (int i = 0; i < listOfMatchLists.size(); i++) {
-                final List<Object> matchList = (List<Object>) listOfMatchLists.get(i);
-
-                for (final Object match : matchList) {
-                    if (!LanguagetoolClassLoader.getRuleMatch().isInstance(match)) {
-                        continue;
-                    }
-
-                    final int start = (int) getFromPos.invoke(match);
-                    final int end = (int) getToPos.invoke(match);
-
-                    // Add offset because start and end value is reletive to the string it's in, not the whole text input
-                    starts[startEndIndex] = start + diffOffsets.get(i);
-                    ends[startEndIndex] = end + diffOffsets.get(i);
-
-                    startEndIndex++;
+        synchronized (matches) {
+            // If things match BUT their offsets are different, offset
+            for (final Match match : matches) {
+                if (match.getFromPos() >= start) {
+                    match.adjust(amount);
                 }
             }
-
-            if (totalElements > 0) {
-                Platform.runLater(() -> {
-                    for (final IntIntPair span : diffSpans) {
-                        textArea.clearStyle(span.getOne(), span.getTwo());
-                    }
-
-                    textArea.highlightTextMultiple(starts, ends);
-
-                    prevParts = parts;
-                });
-            }
-
-        } catch (final IllegalAccessException ex) {
-            logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
-        } catch (final InvocationTargetException ex) {
-            // Left intentionally blank, as this function is designed to be interrupted and interrupting this function causes an InvocationTargetException
         }
     }
 
     // Protected for testing
-    protected void findDifferences(final String inputText, final List<String> parts, final List<String> diff, final MutableIntList diffOffsets, final List<IntIntPair> diffSpans) {
-        final MutableIntList partsOffsets = new IntArrayList();
+    protected void findDifferences(final String inputText, final List<String> parts, final MutableIntList partsOffsets, final List<String> diff, final MutableIntList diffOffsets, final List<IntIntPair> diffSpans) {
+        System.out.println("findDifferences");
+        final List<String> same = new ArrayList<>();
+//final MutableIntList partsOffsets = new IntArrayList();
         final List<IntIntPair> partsSpans = new ArrayList<>();
 
         int tokensRemaining = TOKENS_PER_PART;
@@ -290,6 +358,38 @@ public final class SpellChecker {
             }
         }
 
+        System.out.println("parts: " + parts);
+        System.out.println("partsOffsets: " + partsOffsets);
+
+        System.out.println("prevParts: " + prevParts);
+        System.out.println("prevPartsOffsets: " + prevPartsOffsets);
+
+        // Figure out offsets
+//        final int[] partsOffsetsArray = partsOffsets.toArray();
+//        final int[] prevPartsOffsetsArray = prevPartsOffsets.toArray();
+//        final int adjustStart;
+//        final int adjustAmount;
+//        for (int i = 0; i < partsOffsetsArray.length; i++) {
+//            if (i >= prevPartsOffsetsArray.length) {
+//                break;
+//            }
+//
+//            if (partsOffsetsArray[i] == prevPartsOffsetsArray[i]) {
+//                continue;
+//            }
+//
+//            if (partsOffsetsArray[i] > prevPartsOffsetsArray[i]) {
+//                adjustStart = prevPartsOffsetsArray[i];
+//                adjustAmount = partsOffsetsArray[i] - prevPartsOffsetsArray[i];
+//            } else {
+//                adjustStart = partsOffsetsArray[i];
+//                adjustAmount = prevPartsOffsetsArray[i] - partsOffsetsArray[i];
+//            }
+//
+//            adjustMatches(adjustStart, adjustAmount);
+//
+//            break;
+//        }
         // If prevParts empty, then all new input will be different
         if (prevParts.isEmpty()) {
             diff.addAll(parts);
@@ -301,10 +401,13 @@ public final class SpellChecker {
         // Iterate through the current input text and the prev input text and find differences
         for (int i = 0; i < prevParts.size() && i < parts.size(); i++) {
             // If current elements are different, add to diff list
-            if (!prevParts.get(i).equals(parts.get(i))) {
+            //if (!prevParts.get(i).equals(parts.get(i))) {
+            if (!prevParts.get(i).equals(parts.get(i)) || prevPartsOffsets.get(i) != partsOffsets.get(i)) {
                 diff.add(parts.get(i));
                 diffOffsets.add(partsOffsets.get(i));
                 diffSpans.add(partsSpans.get(i));
+            } else {
+                same.add(parts.get(i));
             }
         }
 
@@ -322,7 +425,38 @@ public final class SpellChecker {
 
     // Protected for testing
     protected void removeDiffsFromMatches(final List<IntIntPair> diffSpans) {
+        System.out.println("removeDiffsFromMatches " + diffSpans);
+
+        if (diffSpans.isEmpty()) {
+            return;
+        }
+
+        final List<IntIntPair> spans = new ArrayList<>();
+
+        // if spans are contigous, merge
+        IntIntPair currentPair = PrimitiveTuples.pair(diffSpans.get(0).getOne(), diffSpans.get(0).getTwo());
         for (final IntIntPair span : diffSpans) {
+            //skip first element
+            if (span == diffSpans.get(0)) {
+                continue;
+            }
+            if (currentPair.getTwo() == span.getOne()) {
+                final int start = currentPair.getOne();
+                final int end = span.getTwo();
+                currentPair = PrimitiveTuples.pair(start, end);
+            } else {
+                // not contigous
+                spans.add(currentPair);
+                // set to current
+                currentPair = PrimitiveTuples.pair(span.getOne(), span.getTwo());
+            }
+        }
+        spans.add(currentPair);
+        
+        System.out.println("merged spans " + spans);
+
+        for (final IntIntPair span : spans) {
+            //for (final IntIntPair span : diffSpans) {
             final int spanStart = span.getOne();
             final int spanEnd = span.getTwo();
 
@@ -341,18 +475,31 @@ public final class SpellChecker {
         }
     }
 
-    private void refreshHighlights() {
-        final int totalElements = matches.size();
-        final int[] starts = new int[totalElements];
-        final int[] ends = new int[totalElements];
-        for (int i = 0; i < totalElements; i++) {
-            final Match m = matches.get(i);
-            starts[i] = m.getFromPos();
-            ends[i] = m.getToPos();
+    public void refreshHighlights() {
+        if (textArea.getText().isEmpty()) {
+            return;
         }
 
-        textArea.clearStyles();
-        textArea.highlightTextMultiple(starts, ends);
+        synchronized (matches) {
+            System.out.println("");
+            final int totalElements = matches.size();
+            final int[] starts = new int[totalElements];
+            final int[] ends = new int[totalElements];
+            for (int i = 0; i < totalElements; i++) {
+                final Match m = matches.get(i);
+                if (m.getFromPos() < firstVisible || m.getToPos() > lastVisible) {
+                    continue;
+                }
+
+                System.out.println(m.getFromPos() + " " + m.getToPos());
+
+                starts[i] = m.getFromPos();
+                ends[i] = m.getToPos();
+            }
+
+            textArea.clearStyles();
+            textArea.highlightTextMultiple(starts, ends);
+        }
     }
 
     /**
@@ -528,8 +675,8 @@ public final class SpellChecker {
      */
     private class Match {
 
-        private final int fromPos;
-        private final int toPos;
+        private int fromPos;
+        private int toPos;
         private final List<String> suggestedReplacements;
         private final String specificRuleId;
         private final String message;
@@ -560,6 +707,11 @@ public final class SpellChecker {
 
         public String getMessage() {
             return message;
+        }
+
+        public void adjust(final int amount) {
+            fromPos += amount;
+            toPos += amount;
         }
     }
 }

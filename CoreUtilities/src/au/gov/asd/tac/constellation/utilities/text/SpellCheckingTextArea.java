@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.utilities.text;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import javax.swing.Timer;
+import java.time.Duration;
 import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
@@ -64,6 +66,10 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             + "-rtfx-underline-color: transparent;";
 
     SpellCheckThread spellCheckThread = null;
+    private Double scrollValue = null; // Shit hacky way of getting this timer thing to work
+
+    private int prevClampedScrollValue = -1; // Prevents infite loop
+    public static final float EPSILON = 0.1F;
 
     public SpellCheckingTextArea(final boolean isSpellCheckEnabled) {
         final boolean enableSpellChecking = PREFERENCES.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT) && isSpellCheckEnabled;
@@ -82,14 +88,91 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             }
         });
 
-        this.setOnKeyReleased((final KeyEvent event) -> handleKeyReleased());
-
+        //this.setOnKeyReleased((final KeyEvent event) -> handleKeyReleased());
         // Set the right click context menu
         final ContextMenu contextMenu = addRightClickContextMenu(enableSpellChecking);
         this.setContextMenu(contextMenu);
+
+        // May need to refactor exact type of timer, as this is java swing
+        final Timer timer = new Timer(200, e -> handleTimeout());
+        timer.setRepeats(false); // Ensure it only runs once per trigger
+
+        // Testing out highlighting AFTER half a second
+        this.multiPlainChanges()
+                .successionEnds(Duration.ofMillis(300))
+                .subscribe(change -> {
+                    spellChecker.checkSpelling(); // works surprisingly well
+                    //handleTimeout(); // works
+                    //timer.restart(); // Resets the 300ms countdown on every change
+                });
+
+        estimatedScrollYProperty().addListener((obs, oldVal, newVal) -> {
+            scrollValue = newVal;
+            timer.restart(); // Resets the 300ms countdown on every change
+        });
+    }
+
+    private void handleTimeout() {
+        final int newVal = scrollValue.intValue();
+        calculateVisibleIndices(newVal, (int) getHeight(), (int) getTotalHeightEstimate());
+    }
+
+    public void forceRefreshVisibleText() {
+        final int newVal = scrollValue.intValue();
+        calculateVisibleIndices(newVal, (int) getHeight(), (int) getTotalHeightEstimate(), true);
+    }
+
+    private void calculateVisibleIndices(final int scroll, final int height, final int estHeight) {
+        calculateVisibleIndices(scroll, height, estHeight, false);
+    }
+
+    // I think the scroll percent thing is slightly off, but it works ok
+    private void calculateVisibleIndices(final int scroll, final int height, final int estHeight, final boolean force) {
+        // Helps mitigate infinite loop stuff
+        if (estHeight == 0) {
+            return;
+        }
+
+        final int length = getText().length();
+        final int textHeight = Math.max(height, estHeight - height); // seems to be a more accurate text height
+
+        // Calculate what percent of the text box is currently viewable
+        final float percentViewable = (float) height / textHeight;
+
+        if (percentViewable >= 1f) {
+            spellChecker.handleVisibleIndicesChange(0, length);
+            return;
+        }
+
+        final float halfVisiblePercent = percentViewable / 2F;
+
+        // Also clamp the scroll value, otherwise reaching the top or bottom will be wrong
+        final int minScroll = Math.round(halfVisiblePercent * textHeight);
+        final int maxScroll = textHeight - Math.round(halfVisiblePercent * textHeight);
+        final int clampedScroll = Math.clamp(scroll, minScroll, maxScroll);
+
+        if (!force && prevClampedScrollValue == clampedScroll) {
+            return;
+        }
+        prevClampedScrollValue = clampedScroll;
+
+        // How far down is the middle of the user's view (e.g 0.5 is half way down)
+        final float viewMidPercent = (float) clampedScroll / textHeight;
+
+        // Calculate what the lower and upper values of the "viewable percent" translate to as text indecies
+        //final int viewMidindex = Math.round(length * viewMidPercent);
+        final float lower = Math.max(0F, viewMidPercent - halfVisiblePercent - EPSILON);
+        final float upper = Math.min(1F, viewMidPercent + halfVisiblePercent + EPSILON);
+
+        final int firstVisibleIndex = Math.round(length * lower);
+        final int lastVisibleIndex = Math.round(length * upper);
+
+        spellChecker.handleVisibleIndicesChange(firstVisibleIndex, lastVisibleIndex);
     }
 
     protected void handleKeyReleased() {
+        spellChecker.checkSpelling();
+        /*
         if (!spellChecker.canCheckSpelling(this.getText())) {
             return;
         }
@@ -100,6 +183,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
 
         spellCheckThread = new SpellCheckThread(spellChecker);
         spellCheckThread.start();
+         */
     }
 
     public SpellCheckingTextArea(final boolean isSpellCheckEnabled, final String text) {
@@ -118,6 +202,10 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      * @param end the index to stop highlighting
      */
     public void highlightText(final int start, final int end) {
+        final String text = getText();
+        if (text == null || text.isEmpty() || start >= text.length() || end >= text.length()) {
+            return;
+        }
         this.setStyle(start, end, UNDERLINE_AND_HIGHLIGHT_STYLE);
     }
 
@@ -128,16 +216,41 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      * @param ends array of indexes to stop highlighting
      */
     public void highlightTextMultiple(final int[] starts, final int[] ends) {
+        createMultiChange(starts.length);
         for (int i = 0; i < starts.length; i++) {
             highlightText(starts[i], ends[i]);
         }
     }
 
+    // Alternate method of highlihgitng that may be faster i dont know
+//    public void highlightTextMultiple(final int[] starts, final int[] ends) {
+//        System.out.println("highlightTextMultiple ");
+//        final StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+//        int prevEnd = 0;
+//        for (int i = 0; i < starts.length; i++) {
+//            spansBuilder.add(Collections.emptyList(), starts[i] - prevEnd);
+//            spansBuilder.add(Collections.singleton("underlined"), ends[i] - starts[i]);
+//            prevEnd = ends[i];
+//        }
+//
+//        spansBuilder.add(Collections.emptyList(), getText().length() - prevEnd);
+//
+//        final StyleSpans<Collection<String>> spans = spansBuilder.create();
+//        System.out.println("spans: " + spans);
+//        this.setStyleSpans(0, spans);
+//    }
     /**
      * Clear any previous highlighting.
      */
     public void clearStyles() {
         this.setStyle(0, this.getText().length(), CLEAR_STYLE);
+//        final StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+//        spansBuilder.add(Collections.emptyList(), getText().length());
+//        //this.setStyleSpans(0, spansBuilder.create());
+    }
+
+    public void clearStyles(final int from) {
+        this.setStyle(from, this.getText().length(), CLEAR_STYLE);
     }
 
     public boolean isWordUnderCursorHighlighted(final int index) {

@@ -90,7 +90,7 @@ public class SpellCheckerNGTest {
         }
 
         assertTrue(instance.getMatches().isEmpty());
-        verify(instance, never()).findDifferences(anyString(), any(), any(), any(), any());
+        verify(instance, never()).findDifferences(anyString(), any(), any(), any(), any(), any());
         verify(instance, never()).removeDiffsFromMatches(any());
     }
 
