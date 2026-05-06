@@ -182,9 +182,8 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                     final String value = recentValuesCombo.getValue();
                     if (value != null) {
                         field.setText(recentValuesCombo.getValue());
-                        Platform.runLater(() -> {
-                            recentValuesCombo.getSelectionModel().clearSelection();
-                        });
+                        Platform.runLater(() -> 
+                            recentValuesCombo.getSelectionModel().clearSelection());
                     }
                 };
                 recentValuesCombo.getSelectionModel().selectedIndexProperty().addListener(recentValueSelectionListener);
