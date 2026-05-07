@@ -94,7 +94,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
     @Override
     public String getDescription() {
-        return "Merge nodes in your graph together";
+        return "Merge nodes in your graph together based on the defined criteria.";
     }
 
     protected static final Comparator<String> LONGEST_VERTEX_CHOOSER = (o1, o2) -> {

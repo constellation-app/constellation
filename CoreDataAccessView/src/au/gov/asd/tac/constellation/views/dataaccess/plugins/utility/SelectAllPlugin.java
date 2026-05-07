@@ -60,7 +60,7 @@ public class SelectAllPlugin extends SimpleQueryPlugin implements DataAccessPlug
 
     @Override
     public String getDescription() {
-        return "Select everything in your graph";
+        return "Select everything in your graph.";
     }
 
     @Override

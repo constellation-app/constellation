@@ -93,8 +93,8 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
     }
 
     @Override
-    public String getDescription() {
-        return "Select the top N on your graph using types";
+    public String getDescription() { 
+        return "Select the top N on your graph based on criteria.";
     }
 
     @Override
