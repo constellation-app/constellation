@@ -40,6 +40,7 @@ import de.fhpotsdam.unfolding.events.ZoomMapEvent;
 import de.fhpotsdam.unfolding.geo.Location;
 import de.fhpotsdam.unfolding.ui.BarScaleUI;
 import de.fhpotsdam.unfolding.utils.MapUtils;
+import de.fhpotsdam.unfolding.utils.ScreenPosition;
 import java.applet.Applet;
 import java.awt.Component;
 import java.io.File;
@@ -97,6 +98,10 @@ public class MapViewTileRenderer extends PApplet {
     private int boxDeltaX;
     private int boxDeltaY;
     private boolean updating = false;
+    private boolean resizePending = false;
+    private int cachedWidth;
+    private int cachedHeight;
+    private float cachedZoom;
 
     public MapViewTileRenderer(final MapViewTopComponent parent) {
         this.parent = parent;
@@ -336,6 +341,11 @@ public class MapViewTileRenderer extends PApplet {
         }
     }
 
+    public void resizeContent(final int width, final int height) {
+        resizePending = true;
+        surface.setSize(width, height);
+    }
+
     @Override
     public void settings() {
         size(parent.getContentWidth(), parent.getContentHeight(), PConstants.P2D);
@@ -353,6 +363,7 @@ public class MapViewTileRenderer extends PApplet {
         markerFactory.setDefaultStrokeColor(MarkerUtilities.DEFAULT_STROKE_COLOR);
         markerFactory.setDefaultStrokeWeight(MarkerUtilities.DEFAULT_STROKE_WEIGHT);
 
+        surface.setResizable(true);
         map = new UnfoldingMap(this, "Map View", currentProvider);
         map.setTweening(true);
 
@@ -371,11 +382,32 @@ public class MapViewTileRenderer extends PApplet {
 
         updateMarkers(parent.getCurrentGraph(), new MarkerState());
         zoomToLocation(null);
+
+        cachedWidth = width;
+        cachedHeight = height;
     }
 
     @Override
     public void draw() {
         assert !SwingUtilities.isEventDispatchThread();
+        float currentZoom = map.getZoomLevel();
+        if (resizePending && (width != cachedWidth || height != cachedHeight) && currentZoom == cachedZoom) {
+            map.mapDisplay.resize(width, height);
+
+            // Adjust the visual center in the NEW window
+            Location anchor = map.getLocation(cachedWidth / 2f, cachedHeight / 2f);
+            ScreenPosition pos = map.getScreenPosition(anchor);
+
+            float targetX = width / 2f;
+            float targetY = height / 2f;
+
+            map.panBy(targetX - pos.x, targetY - pos.y);
+
+            cachedWidth = width;
+            cachedHeight = height;
+            resizePending = false;
+        }
+        cachedZoom = currentZoom;
 
         background(0);
 
