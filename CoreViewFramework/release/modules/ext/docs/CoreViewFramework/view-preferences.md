@@ -1,10 +1,10 @@
-# View Preferences
+# View Default Floating Preferences
 
 View preferences can be accessed via Setup -> Options ->
 CONSTELLATION -> View.
 
 <div style="text-align: center">
-<img src="../ext/docs/CorePreferences/resources/viewPanel.png" alt="View Options Panel" />
+<img src="../ext/docs/CoreViewFramework/resources/viewPanel.png" alt="View Options Panel" />
 </div>
 
 <br>

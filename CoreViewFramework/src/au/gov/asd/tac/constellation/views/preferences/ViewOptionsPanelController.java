@@ -87,7 +87,7 @@ public class ViewOptionsPanelController extends OptionsPanelController {
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("au.gov.asd.tac.constellation.preferences.view");
+        return new HelpCtx("au.gov.asd.tac.constellation.views.preferences");
     }
 
     @Override
