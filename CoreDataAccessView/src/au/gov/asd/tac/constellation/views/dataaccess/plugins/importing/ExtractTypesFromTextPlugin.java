@@ -73,7 +73,10 @@ public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implement
 
     @Override
     public String getDescription() {
-        return "Identify schema type values within text and add them to your graph";
+        return """
+           All schema types that matches the regular expressions found in the text are added to the graph. New nodes are added with the following attributes:
+           * Seed = True
+           """;
     }
 
     @Override

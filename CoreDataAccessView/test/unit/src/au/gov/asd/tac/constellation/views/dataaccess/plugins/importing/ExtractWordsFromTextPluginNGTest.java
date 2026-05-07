@@ -87,7 +87,10 @@ public class ExtractWordsFromTextPluginNGTest {
     @Test
     public void testGetDescription() {
         ExtractWordsFromTextPlugin instance = new ExtractWordsFromTextPlugin();
-        String expResult = "Extract words from text and add them to the graph";
+        String expResult = 
+           """
+           Extract words from text and add them to the graph if words are found in the specified content attribute of all transactions.
+           The source node will be linked to the word by a transaction of type Referenced. """;
         String result = instance.getDescription();
         assertEquals(result, expResult);
     }
