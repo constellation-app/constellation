@@ -140,7 +140,7 @@ public class SpellCheckingTextAreaNGTest {
         System.out.println("handleKeyReleased");
         final String text = "This is some text";
 
-        try (final MockedConstruction<SpellCheckingTextArea.SpellCheckThread> mockSpellCheckThread = Mockito.mockConstruction(SpellCheckingTextArea.SpellCheckThread.class); final MockedConstruction<SpellChecker> mockSpellChecker = Mockito.mockConstruction(SpellChecker.class,
+        try (final MockedConstruction<SpellChecker> mockSpellChecker = Mockito.mockConstruction(SpellChecker.class,
                 (mock, context) -> {
                     when(mock.canCheckSpelling(text)).thenReturn(true);
                 })) {
@@ -150,9 +150,7 @@ public class SpellCheckingTextAreaNGTest {
             instance.handleKeyReleased();
 
             final SpellChecker sc = mockSpellChecker.constructed().get(0);
-            verify(sc).canCheckSpelling(text);
-            final SpellCheckingTextArea.SpellCheckThread sct = mockSpellCheckThread.constructed().get(0);
-            verify(sct).start();
+            verify(sc).checkSpelling();
         }
     }
 }

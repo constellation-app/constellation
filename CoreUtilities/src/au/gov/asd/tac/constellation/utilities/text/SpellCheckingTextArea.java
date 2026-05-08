@@ -65,8 +65,9 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     protected static final String CLEAR_STYLE = "-rtfx-background-color: transparent;"
             + "-rtfx-underline-color: transparent;";
 
-    SpellCheckThread spellCheckThread = null;
-    private Double scrollValue = null; // Shit hacky way of getting this timer thing to work
+    private Double scrollValue = null;
+    public static final int SCROLL_CHANGE_TIMER = 200;
+    public static final int KEYBOARD_CHANGE_TIMER = 300;
 
     private int prevClampedScrollValue = -1; // Prevents infite loop
     public static final float EPSILON = 0.1F;
@@ -88,45 +89,38 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             }
         });
 
-        //this.setOnKeyReleased((final KeyEvent event) -> handleKeyReleased());
         // Set the right click context menu
         final ContextMenu contextMenu = addRightClickContextMenu(enableSpellChecking);
         this.setContextMenu(contextMenu);
 
         // May need to refactor exact type of timer, as this is java swing
-        final Timer timer = new Timer(200, e -> handleTimeout());
-        timer.setRepeats(false); // Ensure it only runs once per trigger
+        final Timer timer = new Timer(SCROLL_CHANGE_TIMER, e -> handleTimeout());
+        timer.setRepeats(false);
 
-        // Testing out highlighting AFTER half a second
+        // Setup speckcheck to run after user stops typing
         this.multiPlainChanges()
-                .successionEnds(Duration.ofMillis(300))
-                .subscribe(change -> {
-                    spellChecker.checkSpelling(); // works surprisingly well
-                    //handleTimeout(); // works
-                    //timer.restart(); // Resets the 300ms countdown on every change
-                });
+                .successionEnds(Duration.ofMillis(KEYBOARD_CHANGE_TIMER))
+                .subscribe(change -> spellChecker.checkSpelling());
 
+        // Setup highlighting to run after user stops scrolling
         estimatedScrollYProperty().addListener((obs, oldVal, newVal) -> {
             scrollValue = newVal;
-            timer.restart(); // Resets the 300ms countdown on every change
+            timer.restart(); // Resets the 200ms countdown on every change
         });
     }
 
     private void handleTimeout() {
-        final int newVal = scrollValue.intValue();
-        calculateVisibleIndices(newVal, (int) getHeight(), (int) getTotalHeightEstimate());
+        calculateVisibleIndices(scrollValue.intValue(), (int) getHeight(), (int) getTotalHeightEstimate());
     }
 
     public void forceRefreshVisibleText() {
-        final int newVal = scrollValue.intValue();
-        calculateVisibleIndices(newVal, (int) getHeight(), (int) getTotalHeightEstimate(), true);
+        calculateVisibleIndices(scrollValue.intValue(), (int) getHeight(), (int) getTotalHeightEstimate(), true);
     }
 
     private void calculateVisibleIndices(final int scroll, final int height, final int estHeight) {
         calculateVisibleIndices(scroll, height, estHeight, false);
     }
 
-    // I think the scroll percent thing is slightly off, but it works ok
     private void calculateVisibleIndices(final int scroll, final int height, final int estHeight, final boolean force) {
         // Helps mitigate infinite loop stuff
         if (estHeight == 0) {
@@ -140,7 +134,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         final float percentViewable = (float) height / textHeight;
 
         if (percentViewable >= 1f) {
-            spellChecker.handleVisibleIndicesChange(0, length);
+            spellChecker.setVisibleIndices(0, length);
             return;
         }
 
@@ -167,23 +161,11 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         final int firstVisibleIndex = Math.round(length * lower);
         final int lastVisibleIndex = Math.round(length * upper);
 
-        spellChecker.handleVisibleIndicesChange(firstVisibleIndex, lastVisibleIndex);
+        spellChecker.setVisibleIndices(firstVisibleIndex, lastVisibleIndex);
     }
 
     protected void handleKeyReleased() {
         spellChecker.checkSpelling();
-        /*
-        if (!spellChecker.canCheckSpelling(this.getText())) {
-            return;
-        }
-
-        if (spellCheckThread != null) {
-            spellCheckThread.interrupt();
-        }
-
-        spellCheckThread = new SpellCheckThread(spellChecker);
-        spellCheckThread.start();
-         */
     }
 
     public SpellCheckingTextArea(final boolean isSpellCheckEnabled, final String text) {
@@ -222,23 +204,6 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         }
     }
 
-    // Alternate method of highlihgitng that may be faster i dont know
-//    public void highlightTextMultiple(final int[] starts, final int[] ends) {
-//        System.out.println("highlightTextMultiple ");
-//        final StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
-//        int prevEnd = 0;
-//        for (int i = 0; i < starts.length; i++) {
-//            spansBuilder.add(Collections.emptyList(), starts[i] - prevEnd);
-//            spansBuilder.add(Collections.singleton("underlined"), ends[i] - starts[i]);
-//            prevEnd = ends[i];
-//        }
-//
-//        spansBuilder.add(Collections.emptyList(), getText().length() - prevEnd);
-//
-//        final StyleSpans<Collection<String>> spans = spansBuilder.create();
-//        System.out.println("spans: " + spans);
-//        this.setStyleSpans(0, spans);
-//    }
     /**
      * Clear any previous highlighting.
      */
@@ -368,20 +333,5 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
                 }
             }
         });
-    }
-
-    // Inner class for starting and restarting spellchecking
-    public class SpellCheckThread extends Thread {
-
-        private final SpellChecker spellChecker;
-
-        public SpellCheckThread(final SpellChecker spellChecker) {
-            this.spellChecker = spellChecker;
-        }
-
-        @Override
-        public void run() {
-            spellChecker.checkSpelling();
-        }
     }
 }
