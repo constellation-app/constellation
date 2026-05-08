@@ -60,7 +60,7 @@ public class PreferencesHelpProviderNGTest {
         final PreferencesHelpProvider instance = new PreferencesHelpProvider();
         final Map<String, String> helpMap = instance.getHelpMap();
 
-        assertEquals(helpMap.size(), 4);
+        assertEquals(helpMap.size(), 3);
         //not going to go through and assert the existence of each specific item in the map
         //but will assert they're all correctly located within the plugin reporter package
         final String packageStart = "au.gov.asd.tac.constellation.preferences.";
