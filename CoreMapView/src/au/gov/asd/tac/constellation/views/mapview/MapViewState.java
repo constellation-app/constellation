@@ -27,11 +27,11 @@ public final class MapViewState {
     private int zoomLevel = -1;
     private boolean valid = false;
 
-    public MapViewState(MapProvider defaultProvider) {
+    public MapViewState(final MapProvider defaultProvider) {
         this.defaultProvider = defaultProvider;
     }
 
-    public void update(MapProvider provider, Location center, int zoomLevel) {
+    public void update(final MapProvider provider, final Location center, final int zoomLevel) {
         this.provider = provider;
         this.center = center;
         this.zoomLevel = zoomLevel;
