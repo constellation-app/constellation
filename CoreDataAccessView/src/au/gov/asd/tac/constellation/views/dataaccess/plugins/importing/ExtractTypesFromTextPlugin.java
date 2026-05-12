@@ -74,7 +74,9 @@ public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implement
     @Override
     public String getDescription() {
         return """
-           All schema types that matches the regular expressions found in the text are added to the graph. New nodes are added with the following attributes:
+           All schema types that matches the regular expressions found in the
+           text are added to the graph. New nodes are added with the following
+           attributes:
            * Seed = True
            """;
     }

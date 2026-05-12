@@ -96,7 +96,9 @@ public class ImportGraphFilePlugin extends RecordStoreQueryPlugin implements Dat
     @Override
     public String getDescription() {
         return """
-           Import a Graph File by extracting the network structure and displaying the data (with/without transactions).  Currently does not support graphs nested in nodes.
+           Import a Graph File by extracting the network structure and
+           displaying the data (with/without transactions).
+           Currently does not support graphs nested in nodes.
            Support file types: GML, GraphML and Pajek.""";
     }
 

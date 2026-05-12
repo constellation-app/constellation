@@ -100,7 +100,9 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
 
     @Override
     public String getDescription() {
-        return "Merge groups of transactions (of the same type and activity) between two nodes together.";
+        return """
+               Merge groups of transactions (of the same type"
+               and activity) between two nodes together.""";
     }
 
     /**
