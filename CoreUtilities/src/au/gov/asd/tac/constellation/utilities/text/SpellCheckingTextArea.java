@@ -185,7 +185,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      */
     public void highlightText(final int start, final int end) {
         final String text = getText();
-        if (text == null || text.isEmpty() || start >= text.length() || end >= text.length()) {
+        if (StringUtils.isEmpty(text) || start > text.length() || end > text.length()) {
             return;
         }
         this.setStyle(start, end, UNDERLINE_AND_HIGHLIGHT_STYLE);

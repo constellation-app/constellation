@@ -203,6 +203,7 @@ public final class SpellChecker {
     private void checkSpellingForce() {
         prevParts.clear();
         prevPartsOffsets.clear();
+        matches.clear();
         checkSpelling();
     }
 
@@ -278,11 +279,13 @@ public final class SpellChecker {
 
             // If we've counted enough tokens, or we're at the end of input
             if (tokensRemaining <= 0 || i == inputText.length() - 1) {
-                final String partAsString = inputText.substring(subStringStart, i);
+                final int index = (i == inputText.length() - 1) ? inputText.length() : i;
+                final String partAsString = inputText.substring(subStringStart, index);
+
                 parts.add(partAsString);
                 partsOffsets.add(subStringStart);
 
-                partsSpans.add(PrimitiveTuples.pair(subStringStart, i));
+                partsSpans.add(PrimitiveTuples.pair(subStringStart, index));
 
                 subStringStart = i;
                 tokensRemaining = TOKENS_PER_PART;
@@ -355,10 +358,10 @@ public final class SpellChecker {
             final List<Match> toRemove = new ArrayList<>();
             for (final Match match : matches) {
 
-                final int start = match.getFromPos();
-                final int end = match.getToPos();
+                final int matchStart = match.getFromPos();
+                final int matchEnd = match.getToPos();
 
-                if (start >= spanStart && end <= spanEnd) {
+                if ((matchStart >= spanStart && matchEnd <= spanEnd) || (matchStart <= spanEnd && matchEnd >= spanEnd) || (matchEnd > spanStart && matchStart <= spanStart)) {
                     toRemove.add(match);
                 }
             }
