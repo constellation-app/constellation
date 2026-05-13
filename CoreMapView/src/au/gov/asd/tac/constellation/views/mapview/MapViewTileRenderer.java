@@ -454,11 +454,13 @@ public class MapViewTileRenderer extends PApplet {
             final PanMapEvent panMapEvent = new PanMapEvent(this, map.getId());
             final Location location = map.getLocation(mouseX, mouseY);
             panMapEvent.setToLocation(location);
+            map.setTweening(false);
             dispatcher.fireMapEvent(panMapEvent);
             final ZoomMapEvent zoomMapEvent = new ZoomMapEvent(this, map.getId(), ZoomMapEvent.ZOOM_BY_LEVEL, 1);
             zoomMapEvent.setTransformationCenterLocation(location);
             dispatcher.fireMapEvent(zoomMapEvent);
             dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
+            map.setTweening(true);
         } else {
             // Do nothing
         }
@@ -605,7 +607,9 @@ public class MapViewTileRenderer extends PApplet {
             } else {
                 // Do nothing
             }
+            map.setTweening(false);
             dispatcher.fireMapEvent(zoomMapEvent);
+            map.setTweening(true);
         }
 
         dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
