@@ -215,7 +215,7 @@ public final class SpellChecker {
         synchronized (matches) {
             final String inputText = textArea.getText();
 
-            if (turnOffSpellChecking || StringUtils.isBlank(inputText)) {
+            if (langTool == null || turnOffSpellChecking || StringUtils.isBlank(inputText)) {
                 matches.clear();
                 return;
             }

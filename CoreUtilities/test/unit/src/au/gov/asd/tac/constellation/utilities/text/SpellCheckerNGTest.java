@@ -20,14 +20,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.input.MouseEvent;
-import org.apache.commons.lang3.StringUtils;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertTrue;
@@ -84,10 +80,7 @@ public class SpellCheckerNGTest {
 
         final SpellChecker instance = spy(new SpellChecker(textArea));
 
-        try (final MockedStatic<StringUtils> stringUtils = Mockito.mockStatic(StringUtils.class, Mockito.CALLS_REAL_METHODS)) {
-            instance.checkSpelling();
-            stringUtils.verify(() -> StringUtils.isBlank(text), times(1));
-        }
+        instance.checkSpelling();
 
         assertTrue(instance.getMatches().isEmpty());
         verify(instance, never()).findDifferences(anyString(), any(), any(), any(), any(), any());
