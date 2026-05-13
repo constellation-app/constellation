@@ -1534,7 +1534,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             if (attributes[attribute].getAttributeType().equals(attributeType)) {
                 return attribute;
             }
-
             throw new IllegalArgumentException("Attempt to create a " + elementType + " attribute with a duplicate label: " + label);
         }
 
