@@ -132,7 +132,7 @@ public class MergeTransactionsPluginNGTest {
     public void testGetDescription() {
         MergeTransactionsPlugin instance = new MergeTransactionsPlugin();
         String expResult = """
-               Merge groups of transactions (of the same type"
+               Merge groups of transactions (of the same type
                and activity) between two nodes together.""";
         String result = instance.getDescription();
         assertEquals(result, expResult);
