@@ -148,7 +148,7 @@ public class MapViewTileRenderer extends PApplet {
             return;
         }
 
-        map.zoomAndPanTo(parent.getMapState().getZoomOrDefault(), location == null ? parent.getMapState().getCenterOrDefault() : location
+        map.zoomAndPanTo(parent.getMapState().getZoomLevel(), location == null ? parent.getMapState().getCenter() : location
         );
     }
 
@@ -335,10 +335,7 @@ public class MapViewTileRenderer extends PApplet {
     public void setup() {
         assert !SwingUtilities.isEventDispatchThread();
         final MapViewState state = parent.getMapState();
-        if (!state.isValid()) {
-            return;
-        }
-        currentProvider = state.getProviderOrDefault();
+        currentProvider = state.getProvider();
 
         markerFactory = new ConstellationMarkerFactory();
         markerFactory.setDefaultColor(MarkerUtilities.DEFAULT_COLOR);

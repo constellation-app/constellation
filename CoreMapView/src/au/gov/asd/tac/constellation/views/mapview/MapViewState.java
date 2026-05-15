@@ -25,17 +25,18 @@ public final class MapViewState {
     private MapProvider provider;
     private Location center;
     private int zoomLevel = -1;
-    private boolean valid = false;
 
     public MapViewState(final MapProvider defaultProvider) {
         this.defaultProvider = defaultProvider;
+        this.provider = defaultProvider;
+        this.center = DEFAULT_LOCATION;
+        this.zoomLevel = DEFAULT_ZOOM;
     }
 
     public void update(final MapProvider provider, final Location center, final int zoomLevel) {
-        this.provider = provider;
-        this.center = center;
-        this.zoomLevel = zoomLevel;
-        this.valid = true;
+        this.provider = provider != null ? provider : defaultProvider;
+        this.center = center != null ? center : DEFAULT_LOCATION;
+        this.zoomLevel = zoomLevel >= 0 ? zoomLevel : DEFAULT_ZOOM;
     }
 
     public MapProvider getProvider() {
@@ -50,19 +51,4 @@ public final class MapViewState {
         return zoomLevel;
     }
 
-    public Location getCenterOrDefault() {
-        return center != null ? center : DEFAULT_LOCATION;
-    }
-
-    public int getZoomOrDefault() {
-        return zoomLevel >= 0 ? zoomLevel : DEFAULT_ZOOM;
-    }
-
-    public MapProvider getProviderOrDefault() {
-        return provider != null ? provider : defaultProvider;
-    }
-
-    public boolean isValid() {
-        return valid;
-    }
 }

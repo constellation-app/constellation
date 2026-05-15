@@ -526,7 +526,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             glComponent = renderer.init();
             scrollPane.setViewportView(glComponent);
 
-            MapProvider provider = getMapState().getProviderOrDefault();
+            MapProvider provider = getMapState().getProvider();
             mapProviderMenu.setSelectedItem(provider);
             mapProviderMenu.setText(provider.getName());
             markerVisibilityComboBox.setSelectedItems(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI);
@@ -545,11 +545,6 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        updateMapState(
-                mapState.getProviderOrDefault(),
-                mapState.getCenterOrDefault(),
-                mapState.getZoomOrDefault()
-        );
         rebuildRenderer();
     }
 
