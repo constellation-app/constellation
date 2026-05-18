@@ -110,8 +110,10 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
     @Override
     public String getDescription() {
         return """
-           Extract words from text and add them to the graph if words are found in the specified content attribute of all transactions.
-           The source node will be linked to the word by a transaction of type Referenced. """;
+           Extract words from text and add them to the graph if words are
+           found in the specified content attribute of all transactions.
+           The source node will be linked to the word by a transaction
+           of type Referenced. """;
     }
 
     @Override

@@ -72,11 +72,12 @@ public class ExtractTypesFromTextPluginNGTest {
     @Test
     public void testGetDescription() {
         ExtractTypesFromTextPlugin instance = new ExtractTypesFromTextPlugin();
-        String expResult = 
-                """
-                All schema types that matches the regular expressions found in the text are added to the graph. New nodes are added with the following attributes:
-                * Seed = True
-                """;
+        String expResult = """
+           All schema types that matches the regular expressions found in the
+           text are added to the graph. New nodes are added with the following
+           attributes:
+           * Seed = True
+           """;
         String result = instance.getDescription();
         assertEquals(result, expResult);
     }
