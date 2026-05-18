@@ -49,9 +49,9 @@
                 <package>com.fasterxml.jackson.core.exc</package>
                 <package>com.fasterxml.jackson.core.filter</package>
                 <package>com.fasterxml.jackson.core.format</package>
-                <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0</package>
-                <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0.bte</package>
-                <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0.chr</package>
+                <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_21_3</package>
+                <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_21_3.bte</package>
+                <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_21_3.chr</package>
                 <package>com.fasterxml.jackson.core.io</package>
                 <package>com.fasterxml.jackson.core.io.schubfach</package>
                 <package>com.fasterxml.jackson.core.json</package>
@@ -616,6 +616,7 @@
                 <package>net.bytebuddy.description.field</package>
                 <package>net.bytebuddy.description.method</package>
                 <package>net.bytebuddy.description.modifier</package>
+                <package>net.bytebuddy.description.module</package>
                 <package>net.bytebuddy.description.type</package>
                 <package>net.bytebuddy.dynamic</package>
                 <package>net.bytebuddy.dynamic.loading</package>
@@ -668,15 +669,13 @@
                 <package>nl.jqno.equalsverifier.internal.checkers</package>
                 <package>nl.jqno.equalsverifier.internal.checkers.fieldchecks</package>
                 <package>nl.jqno.equalsverifier.internal.exceptions</package>
-                <package>nl.jqno.equalsverifier.internal.instantiation</package>
-                <package>nl.jqno.equalsverifier.internal.instantiation.prefab</package>
-                <package>nl.jqno.equalsverifier.internal.instantiation.vintage</package>
-                <package>nl.jqno.equalsverifier.internal.instantiation.vintage.factories</package>
-                <package>nl.jqno.equalsverifier.internal.instantiation.vintage.reflection</package>
+                <package>nl.jqno.equalsverifier.internal.instantiators</package>
                 <package>nl.jqno.equalsverifier.internal.reflection</package>
                 <package>nl.jqno.equalsverifier.internal.reflection.annotations</package>
                 <package>nl.jqno.equalsverifier.internal.reflection.kotlin</package>
                 <package>nl.jqno.equalsverifier.internal.util</package>
+                <package>nl.jqno.equalsverifier.internal.valueproviders</package>
+                <package>nl.jqno.equalsverifier.internal.valueproviders.prefab</package>
                 <package>nl.jqno.equalsverifier.internal.versionspecific</package>
                 <package>opennlp.tools.chunker</package>
                 <package>opennlp.tools.cmdline</package>
@@ -1074,6 +1073,7 @@
                 <package>org.apache.poi.xdgf.usermodel.shape.exceptions</package>
                 <package>org.apache.poi.xdgf.util</package>
                 <package>org.apache.poi.xdgf.xml</package>
+                <package>org.apache.poi.xslf</package>
                 <package>org.apache.poi.xslf.draw</package>
                 <package>org.apache.poi.xslf.draw.geom</package>
                 <package>org.apache.poi.xslf.extractor</package>
@@ -1090,6 +1090,7 @@
                 <package>org.apache.poi.xssf.usermodel.extensions</package>
                 <package>org.apache.poi.xssf.usermodel.helpers</package>
                 <package>org.apache.poi.xssf.util</package>
+                <package>org.apache.poi.xwpf</package>
                 <package>org.apache.poi.xwpf.extractor</package>
                 <package>org.apache.poi.xwpf.model</package>
                 <package>org.apache.poi.xwpf.usermodel</package>
@@ -1179,7 +1180,6 @@
                 <package>org.commonmark.internal</package>
                 <package>org.commonmark.internal.inline</package>
                 <package>org.commonmark.internal.renderer</package>
-                <package>org.commonmark.internal.renderer.text</package>
                 <package>org.commonmark.internal.util</package>
                 <package>org.commonmark.node</package>
                 <package>org.commonmark.parser</package>
@@ -1414,6 +1414,7 @@
                 <package>org.eclipse.emf.ecore.xml.type.internal</package>
                 <package>org.eclipse.emf.ecore.xml.type.util</package>
                 <package>org.eclipse.jetty.ee10.servlet</package>
+                <package>org.eclipse.jetty.ee10.servlet.internal</package>
                 <package>org.eclipse.jetty.ee10.servlet.jmx</package>
                 <package>org.eclipse.jetty.ee10.servlet.listener</package>
                 <package>org.eclipse.jetty.ee10.servlet.security</package>
@@ -2657,32 +2658,32 @@
                 <binary-origin>release/modules/ext/asm-util-7.3.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/assertj-core-3.27.6.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/assertj-core-3.27.6.jar</binary-origin>
+                <runtime-relative-path>ext/assertj-core-3.27.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/assertj-core-3.27.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/byte-buddy-1.17.7.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/byte-buddy-1.17.7.jar</binary-origin>
+                <runtime-relative-path>ext/byte-buddy-1.18.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/byte-buddy-1.18.5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/byte-buddy-agent-1.17.7.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/byte-buddy-agent-1.17.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/commonmark-0.27.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commonmark-0.27.0.jar</binary-origin>
+                <runtime-relative-path>ext/commonmark-0.28.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commonmark-0.28.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/commons-codec-1.19.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commons-codec-1.19.0.jar</binary-origin>
+                <runtime-relative-path>ext/commons-codec-1.20.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-codec-1.20.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-collections4-4.5.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-collections4-4.5.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/commons-compress-1.27.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commons-compress-1.27.1.jar</binary-origin>
+                <runtime-relative-path>ext/commons-compress-1.28.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-compress-1.28.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-csv-1.14.1.jar</runtime-relative-path>
@@ -2693,16 +2694,16 @@
                 <binary-origin>release/modules/ext/commons-dbcp-1.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/commons-io-2.20.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commons-io-2.20.0.jar</binary-origin>
+                <runtime-relative-path>ext/commons-io-2.21.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-io-2.21.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-jxpath-1.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-jxpath-1.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/commons-lang3-3.19.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commons-lang3-3.19.0.jar</binary-origin>
+                <runtime-relative-path>ext/commons-lang3-3.20.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-lang3-3.20.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-logging-1.3.4.jar</runtime-relative-path>
@@ -2717,12 +2718,12 @@
                 <binary-origin>release/modules/ext/commons-pool-1.5.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/commons-text-1.14.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commons-text-1.14.0.jar</binary-origin>
+                <runtime-relative-path>ext/commons-text-1.15.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-text-1.15.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/controlsfx-11.2.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/controlsfx-11.2.2.jar</binary-origin>
+                <runtime-relative-path>ext/controlsfx-11.2.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/controlsfx-11.2.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/core.jar</runtime-relative-path>
@@ -2741,48 +2742,48 @@
                 <binary-origin>release/modules/ext/eclipse-collections-api-13.0.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-cdense-0.44.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-cdense-0.44.0.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-cdense-0.45.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-cdense-0.45.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-core-0.44.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-core-0.44.0.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-core-0.45.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-core-0.45.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-ddense-0.44.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-ddense-0.44.0.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-ddense-0.45.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-ddense-0.45.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-dsparse-0.44.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-dsparse-0.44.0.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-dsparse-0.45.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-dsparse-0.45.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-fdense-0.44.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-fdense-0.44.0.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-fdense-0.45.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-fdense-0.45.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-fsparse-0.44.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-fsparse-0.44.0.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-fsparse-0.45.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-fsparse-0.45.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-simple-0.44.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-simple-0.44.0.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-simple-0.45.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-simple-0.45.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/ejml-zdense-0.44.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ejml-zdense-0.44.0.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-zdense-0.45.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ejml-zdense-0.45.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/english-pos-dict-0.6.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/english-pos-dict-0.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/equalsverifier-4.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/equalsverifier-4.2.jar</binary-origin>
+                <runtime-relative-path>ext/equalsverifier-4.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/equalsverifier-4.5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/error_prone_annotations-2.41.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/error_prone_annotations-2.41.0.jar</binary-origin>
+                <runtime-relative-path>ext/error_prone_annotations-2.47.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/error_prone_annotations-2.47.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/failureaccess-1.0.3.jar</runtime-relative-path>
@@ -2877,8 +2878,8 @@
                 <binary-origin>release/modules/ext/gt-xsd-kml-32.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/guava-33.5.0-jre.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/guava-33.5.0-jre.jar</binary-origin>
+                <runtime-relative-path>ext/guava-33.6.0-jre.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/guava-33.6.0-jre.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/hamcrest-2.1.jar</runtime-relative-path>
@@ -2905,16 +2906,16 @@
                 <binary-origin>release/modules/ext/j2objc-annotations-3.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-annotations-2.20.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-annotations-2.20.jar</binary-origin>
+                <runtime-relative-path>ext/jackson-annotations-2.21.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-annotations-2.21.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-core-2.20.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-core-2.20.0.jar</binary-origin>
+                <runtime-relative-path>ext/jackson-core-2.21.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-core-2.21.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-databind-2.20.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-databind-2.20.0.jar</binary-origin>
+                <runtime-relative-path>ext/jackson-databind-2.21.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-databind-2.21.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jakarta.activation-1.2.2.jar</runtime-relative-path>
@@ -2973,32 +2974,32 @@
                 <binary-origin>release/modules/ext/jaxb-runtime-4.0.5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-ee10-servlet-12.1.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-ee10-servlet-12.1.3.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-ee10-servlet-12.1.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-ee10-servlet-12.1.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-http-12.1.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-http-12.1.3.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-http-12.1.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-http-12.1.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-io-12.1.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-io-12.1.3.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-io-12.1.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-io-12.1.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-security-12.1.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-security-12.1.3.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-security-12.1.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-security-12.1.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-server-12.1.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-server-12.1.3.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-server-12.1.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-server-12.1.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-session-12.1.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-session-12.1.3.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-session-12.1.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-session-12.1.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-util-12.1.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-util-12.1.3.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-util-12.1.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-util-12.1.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jgridshift-core-1.3.jar</runtime-relative-path>
@@ -3061,12 +3062,12 @@
                 <binary-origin>release/modules/ext/jython-standalone-2.7.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/language-en-6.7.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/language-en-6.7.jar</binary-origin>
+                <runtime-relative-path>ext/language-en-6.8.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/language-en-6.8.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/languagetool-core-6.7.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/languagetool-core-6.7.jar</binary-origin>
+                <runtime-relative-path>ext/languagetool-core-6.8.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/languagetool-core-6.8.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar</runtime-relative-path>
@@ -3081,8 +3082,8 @@
                 <binary-origin>release/modules/ext/log4j-api-2.24.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/mockito-core-5.20.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/mockito-core-5.20.0.jar</binary-origin>
+                <runtime-relative-path>ext/mockito-core-5.21.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/mockito-core-5.21.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/morfologik-fsa-2.1.9.jar</runtime-relative-path>
@@ -3125,8 +3126,8 @@
                 <binary-origin>release/modules/ext/newt.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/objenesis-3.4.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/objenesis-3.4.jar</binary-origin>
+                <runtime-relative-path>ext/objenesis-3.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/objenesis-3.5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/openjfx-monocle-21.0.2.jar</runtime-relative-path>
@@ -3189,16 +3190,16 @@
                 <binary-origin>release/modules/ext/picocontainer-1.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/poi-5.4.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/poi-5.4.1.jar</binary-origin>
+                <runtime-relative-path>ext/poi-5.5.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/poi-5.5.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/poi-ooxml-5.4.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/poi-ooxml-5.4.1.jar</binary-origin>
+                <runtime-relative-path>ext/poi-ooxml-5.5.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/poi-ooxml-5.5.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/poi-ooxml-lite-5.4.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/poi-ooxml-lite-5.4.1.jar</binary-origin>
+                <runtime-relative-path>ext/poi-ooxml-lite-5.5.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/poi-ooxml-lite-5.5.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/proto-google-common-protos-2.59.2.jar</runtime-relative-path>
@@ -3209,12 +3210,12 @@
                 <binary-origin>release/modules/ext/reactfx-2.0-M5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/richtextfx-0.11.6.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/richtextfx-0.11.6.jar</binary-origin>
+                <runtime-relative-path>ext/richtextfx-0.11.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/richtextfx-0.11.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/rsyntaxtextarea-3.6.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/rsyntaxtextarea-3.6.0.jar</binary-origin>
+                <runtime-relative-path>ext/rsyntaxtextarea-3.6.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/rsyntaxtextarea-3.6.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/segment-2.0.3.jar</runtime-relative-path>
