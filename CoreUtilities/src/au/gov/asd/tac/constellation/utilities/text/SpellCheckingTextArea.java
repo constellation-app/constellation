@@ -209,9 +209,6 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      */
     public void clearStyles() {
         this.setStyle(0, this.getText().length(), CLEAR_STYLE);
-//        final StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
-//        spansBuilder.add(Collections.emptyList(), getText().length());
-//        //this.setStyleSpans(0, spansBuilder.create());
     }
 
     public void clearStyles(final int from) {

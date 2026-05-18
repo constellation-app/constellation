@@ -351,7 +351,6 @@ public final class SpellChecker {
         spans.add(currentPair);
 
         for (final IntIntPair span : spans) {
-            //for (final IntIntPair span : diffSpans) {
             final int spanStart = span.getOne();
             final int spanEnd = span.getTwo();
 
