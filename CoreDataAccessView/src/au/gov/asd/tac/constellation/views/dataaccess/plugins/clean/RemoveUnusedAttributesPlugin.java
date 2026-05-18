@@ -59,7 +59,7 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
         return """
                Removes all (non-key) node and transaction attributes
                on the graph that are not being used (i.e. contain no
-                values anywhere on the graph).""";
+               values anywhere on the graph).""";
     }
 
     @Override
