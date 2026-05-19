@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.utilities.text;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import javax.swing.Timer;
+import java.time.Duration;
 import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
@@ -42,8 +44,8 @@ import org.fxmisc.richtext.util.UndoUtils;
 import org.openide.util.NbPreferences;
 
 /**
- * SpellCheckingTextArea is an InlineCssTextArea from the RichTextFX library
- * with added methods for highlighting spelling errors and some grammar errors.
+ * SpellCheckingTextArea is an InlineCssTextArea from the RichTextFX library with added methods for highlighting
+ * spelling errors and some grammar errors.
  *
  * @author Auriga2
  */
@@ -52,16 +54,23 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private final SpellChecker spellChecker = new SpellChecker(this);
     private final Insets insets = new Insets(4, 8, 4, 8);
-    public static final double EXTRA_HEIGHT = 3;    
+    public static final double EXTRA_HEIGHT = 3;
 
-    private static final String UNDERLINE_AND_HIGHLIGHT_STYLE = "-rtfx-background-color:derive(yellow,-30%);"
+    protected static final String UNDERLINE_AND_HIGHLIGHT_STYLE = "-rtfx-background-color:derive(yellow,-30%);"
             + "-rtfx-underline-color: red; "
             + "-rtfx-underline-dash-array: 2 2;"
             + "-rtfx-underline-width: 2.0;"
             + "-fx-fill: black;";
 
-    private static final String CLEAR_STYLE = "-rtfx-background-color: transparent;"
+    protected static final String CLEAR_STYLE = "-rtfx-background-color: transparent;"
             + "-rtfx-underline-color: transparent;";
+
+    private Double scrollValue = null;
+    public static final int SCROLL_CHANGE_TIMER = 200;
+    public static final int KEYBOARD_CHANGE_TIMER = 300;
+
+    private int prevClampedScrollValue = -1; // Prevents infite loop
+    public static final float EPSILON = 0.1F;
 
     public SpellCheckingTextArea(final boolean isSpellCheckEnabled) {
         final boolean enableSpellChecking = PREFERENCES.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT) && isSpellCheckEnabled;
@@ -80,15 +89,83 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             }
         });
 
-        this.setOnKeyReleased((final KeyEvent event) -> {
-            if (spellChecker.canCheckSpelling(this.getText())) {
-                spellChecker.checkSpelling();
-            }
-        });
-
         // Set the right click context menu
         final ContextMenu contextMenu = addRightClickContextMenu(enableSpellChecking);
         this.setContextMenu(contextMenu);
+
+        // May need to refactor exact type of timer, as this is java swing
+        final Timer timer = new Timer(SCROLL_CHANGE_TIMER, e -> handleTimeout());
+        timer.setRepeats(false);
+
+        // Setup speckcheck to run after user stops typing
+        this.multiPlainChanges()
+                .successionEnds(Duration.ofMillis(KEYBOARD_CHANGE_TIMER))
+                .subscribe(change -> spellChecker.checkSpelling());
+
+        // Setup highlighting to run after user stops scrolling
+        estimatedScrollYProperty().addListener((obs, oldVal, newVal) -> {
+            scrollValue = newVal;
+            timer.restart(); // Resets the 200ms countdown on every change
+        });
+    }
+
+    private void handleTimeout() {
+        calculateVisibleIndices(scrollValue.intValue(), (int) getHeight(), (int) getTotalHeightEstimate());
+    }
+
+    public void forceRefreshVisibleText() {
+        calculateVisibleIndices(scrollValue.intValue(), (int) getHeight(), (int) getTotalHeightEstimate(), true);
+    }
+
+    private void calculateVisibleIndices(final int scroll, final int height, final int estHeight) {
+        calculateVisibleIndices(scroll, height, estHeight, false);
+    }
+
+    private void calculateVisibleIndices(final int scroll, final int height, final int estHeight, final boolean force) {
+        // Helps mitigate infinite loop stuff
+        if (estHeight == 0) {
+            return;
+        }
+
+        final int length = getText().length();
+        final int textHeight = Math.max(height, estHeight - height); // seems to be a more accurate text height
+
+        // Calculate what percent of the text box is currently viewable
+        final float percentViewable = (float) height / textHeight;
+
+        if (percentViewable >= 1f) {
+            spellChecker.setVisibleIndices(0, length);
+            return;
+        }
+
+        final float halfVisiblePercent = percentViewable / 2F;
+
+        // Also clamp the scroll value, otherwise reaching the top or bottom will be wrong
+        final int minScroll = Math.round(halfVisiblePercent * textHeight);
+        final int maxScroll = textHeight - Math.round(halfVisiblePercent * textHeight);
+        final int clampedScroll = Math.clamp(scroll, minScroll, maxScroll);
+
+        if (!force && prevClampedScrollValue == clampedScroll) {
+            return;
+        }
+        prevClampedScrollValue = clampedScroll;
+
+        // How far down is the middle of the user's view (e.g 0.5 is half way down)
+        final float viewMidPercent = (float) clampedScroll / textHeight;
+
+        // Calculate what the lower and upper values of the "viewable percent" translate to as text indecies
+        //final int viewMidindex = Math.round(length * viewMidPercent);
+        final float lower = Math.max(0F, viewMidPercent - halfVisiblePercent - EPSILON);
+        final float upper = Math.min(1F, viewMidPercent + halfVisiblePercent + EPSILON);
+
+        final int firstVisibleIndex = Math.round(length * lower);
+        final int lastVisibleIndex = Math.round(length * upper);
+
+        spellChecker.setVisibleIndices(firstVisibleIndex, lastVisibleIndex);
+    }
+
+    protected void handleKeyReleased() {
+        spellChecker.checkSpelling();
     }
 
     public SpellCheckingTextArea(final boolean isSpellCheckEnabled, final String text) {
@@ -102,9 +179,29 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
 
     /**
      * underline and highlight the text from start to end.
+     *
+     * @param start the index to start highlighting from
+     * @param end the index to stop highlighting
      */
     public void highlightText(final int start, final int end) {
+        final String text = getText();
+        if (StringUtils.isEmpty(text) || start > text.length() || end > text.length()) {
+            return;
+        }
         this.setStyle(start, end, UNDERLINE_AND_HIGHLIGHT_STYLE);
+    }
+
+    /**
+     * underline and highlight multiple pieces of text from start to end.
+     *
+     * @param starts array of indexes to start highlighting from
+     * @param ends array of indexes to stop highlighting
+     */
+    public void highlightTextMultiple(final int[] starts, final int[] ends) {
+        createMultiChange(starts.length);
+        for (int i = 0; i < starts.length; i++) {
+            highlightText(starts[i], ends[i]);
+        }
     }
 
     /**
@@ -114,10 +211,13 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         this.setStyle(0, this.getText().length(), CLEAR_STYLE);
     }
 
+    public void clearStyles(final int from) {
+        this.setStyle(from, this.getText().length(), CLEAR_STYLE);
+    }
+
     public boolean isWordUnderCursorHighlighted(final int index) {
         return this.getStyleOfChar(index) != null && this.getStyleOfChar(index).equals(UNDERLINE_AND_HIGHLIGHT_STYLE);
     }
-
 
     public final void setTooltip(final Tooltip tooltip) {
         Tooltip.install(this, tooltip);
@@ -126,7 +226,6 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     public final void setPromptText(final String promptText) {
         //TODO
     }
-
 
     private ContextMenu addRightClickContextMenu(final boolean enableSpellChecking) {
         final ContextMenu contextMenu = new ContextMenu();
@@ -150,9 +249,16 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         // CheckMenuItem to toggle turn On/Off Spell Checking. On by default
         final CheckMenuItem toggleSpellCheckMenuItem = new CheckMenuItem("Turn On Spell Checking");
         toggleSpellCheckMenuItem.setSelected(enableSpellChecking);
+
         toggleSpellCheckMenuItem.setOnAction(event -> {
-            spellChecker.turnOffSpellChecking(!toggleSpellCheckMenuItem.isSelected());
-            spellChecker.checkSpelling();
+            final boolean enabled = toggleSpellCheckMenuItem.isSelected();
+            spellChecker.turnOffSpellChecking(!enabled);
+
+            if (enabled) {
+                spellChecker.checkSpelling();
+            } else {
+                clearStyles();
+            }
         });
 
         // avoid Undo redo of highlighting
@@ -182,7 +288,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             return selectionRange == null || selectionRange.getLength() == 0;
         }, this.selectionProperty());
     }
-    
+
     public void autoComplete(final List<String> suggestions) {
         final Popup popup = new Popup();
         popup.setWidth(this.getWidth());
