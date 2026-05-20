@@ -200,7 +200,7 @@ public final class SpellChecker {
         });
     }
 
-    private void checkSpellingForce() {
+    public void checkSpellingForce() {
         prevParts.clear();
         prevPartsOffsets.clear();
         matches.clear();
@@ -243,15 +243,13 @@ public final class SpellChecker {
                     totalElements += list.size();
                 }
 
-                if (totalElements > 0) {
-                    textArea.forceRefreshVisibleText();
+                textArea.forceRefreshVisibleText();
 
-                    Platform.runLater(() -> {
-                        prevParts = parts;
-                        prevPartsOffsets = partsOffsets;
-                        refreshHighlights();
-                    });
-                }
+                Platform.runLater(() -> {
+                    prevParts = parts;
+                    prevPartsOffsets = partsOffsets;
+                    refreshHighlights();
+                });
 
             } catch (final IllegalAccessException ex) {
                 logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
