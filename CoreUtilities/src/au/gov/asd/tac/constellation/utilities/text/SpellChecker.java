@@ -200,10 +200,14 @@ public final class SpellChecker {
         });
     }
 
-    public void checkSpellingForce() {
+    public void clear() {
         prevParts.clear();
         prevPartsOffsets.clear();
         matches.clear();
+    }
+
+    public void checkSpellingForce() {
+        clear();
         checkSpelling();
     }
 

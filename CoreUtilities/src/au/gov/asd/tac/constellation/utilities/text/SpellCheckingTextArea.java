@@ -257,6 +257,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             if (enabled) {
                 spellChecker.checkSpellingForce();
             } else {
+                spellChecker.clear();
                 clearStyles();
             }
         });
