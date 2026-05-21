@@ -113,7 +113,10 @@ public class MergeNodesPluginNGTest {
 
     @Test
     public void getDescription() {
-        assertEquals(mergeNodesPlugin.getDescription(), "Merge nodes in your graph together based on the defined criteria.");
+        String desc = """
+               Merge nodes in your graph together based on the
+               defined criteria.""";
+        assertEquals(mergeNodesPlugin.getDescription(), desc);
     }
 
     @Test

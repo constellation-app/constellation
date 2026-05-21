@@ -810,11 +810,13 @@ public class AttributeEditorPanel extends BorderPane {
                 final List<String> hiddenAttrList = StringUtilities.splitLabelsWithEscapeCharacters(hiddenAttributes, AttributePreferenceKey.SPLIT_CHAR_SET);
                 final Set<String> hiddenAttrSet = new HashSet<>(hiddenAttrList);
 
-                currentAttributeNames.put(type, new ArrayList<>());
+                final List<String> attributeNames = new ArrayList<>();
+
                 for (final AttributeData data : attributeDataList) {
                     final boolean hidden = hiddenAttrSet.contains(data.getElementType().toString() + data.getAttributeName());
                     final Object[] values = state.getAttributeValues().get(type.getLabel() + data.getAttributeName());
                     final boolean noValue = attributeValuesEmpty(values); // does attribute have a null value
+                    attributeNames.add(data.getAttributeName());
 
                     // If we are NOT showing all attributes and this attribute
                     // is null, don't add it to the list of children, this will
@@ -826,6 +828,7 @@ public class AttributeEditorPanel extends BorderPane {
                         header.getChildren().add(attribute); 
                     }
                 }
+                currentAttributeNames.put(type, attributeNames);
             }
         }
     }
