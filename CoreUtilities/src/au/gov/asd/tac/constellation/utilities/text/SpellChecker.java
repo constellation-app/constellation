@@ -220,7 +220,7 @@ public final class SpellChecker {
             final String inputText = textArea.getText();
 
             if (langTool == null || turnOffSpellChecking || StringUtils.isBlank(inputText)) {
-                matches.clear();
+                clear();
                 return;
             }
 
@@ -234,7 +234,6 @@ public final class SpellChecker {
                 findDifferences(inputText, parts, partsOffsets, diff, diffOffsets, diffSpans);
                 removeDiffsFromMatches(diffSpans);
 
-                int totalElements = 0;
                 for (int i = 0; i < diff.size(); i++) {
                     final String d = diff.get(i);
                     final List<Object> list = (List<Object>) check.invoke(langTool, d);
@@ -243,8 +242,6 @@ public final class SpellChecker {
                         final Match match = createMatch(ruleMatch, diffOffsets.get(i));
                         matches.add(match);
                     }
-
-                    totalElements += list.size();
                 }
 
                 textArea.forceRefreshVisibleText();
