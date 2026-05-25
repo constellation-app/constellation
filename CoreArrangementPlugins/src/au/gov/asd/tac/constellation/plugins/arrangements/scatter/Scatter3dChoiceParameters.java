@@ -34,11 +34,6 @@ public class Scatter3dChoiceParameters {
         return new Scatter3dChoiceParameters();
     }
 
-    @Override
-    public String toString() {
-        return "";
-    }
-
     public void setXDimension(final String xDimension) {
         this.xDimension = xDimension;
     }
@@ -68,15 +63,15 @@ public class Scatter3dChoiceParameters {
     }
 
     public String getXDimension() {
-        return this.xDimension;
+        return xDimension;
     }
 
     public String getYDimension() {
-        return this.yDimension;
+        return yDimension;
     }
 
     public String getZDimension() {
-        return this.zDimension;
+        return zDimension;
     }
 
     public boolean isLogarithmicX() {

@@ -58,31 +58,22 @@ public class Scatter3dArranger implements Arranger {
 
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
-
         // Get/set the x,y,z attributes.
         final int xAttr = VisualConcept.VertexAttribute.X.ensure(wg);
         final int yAttr = VisualConcept.VertexAttribute.Y.ensure(wg);
         final int zAttr = VisualConcept.VertexAttribute.Z.ensure(wg);
 
-        final String xDimension;
-        final String yDimension;
-        final String zDimension;
-        final boolean xLogarithmic;
-        final boolean yLogarithmic;
-        final boolean zLogarithmic;
-        final boolean doNotScale;
-        if (params != null) {
-            xDimension = params.getXDimension();
-            yDimension = params.getYDimension();
-            zDimension = params.getZDimension();
-            xLogarithmic = params.isLogarithmicX();
-            yLogarithmic = params.isLogarithmicY();
-            zLogarithmic = params.isLogarithmicZ();
-            doNotScale = params.isDoNotScale();
-        } else {
+        if (params == null) {
             return;
         }
-
+        final String xDimension = params.getXDimension();
+        final String yDimension = params.getYDimension();
+        final String zDimension = params.getZDimension();
+        final boolean xLogarithmic = params.isLogarithmicX();
+        final boolean yLogarithmic = params.isLogarithmicY();
+        final boolean zLogarithmic = params.isLogarithmicZ();
+        final boolean doNotScale = params.isDoNotScale();
+        
         final int xDimensionAttribute = wg.getAttribute(GraphElementType.VERTEX, xDimension);
         final int yDimensionAttribute = wg.getAttribute(GraphElementType.VERTEX, yDimension);
         final int zDimensionAttribute = wg.getAttribute(GraphElementType.VERTEX, zDimension);

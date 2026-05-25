@@ -15,10 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.proximity;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
@@ -26,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUt
 import java.awt.geom.Point2D;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * main module to arrange a graph using the FR2D algorithm
@@ -34,7 +32,7 @@ import java.util.ArrayList;
  */
 class FR2DArranger implements Arranger {
 
-    public static final int MAX_ITERATIONS = 10;
+    private static final int MAX_ITERATIONS = 10;
     private static final int BORDER = 1;
 
     private double temperature;
@@ -46,8 +44,8 @@ class FR2DArranger implements Arranger {
 
     private GraphWriteMethods graph;
     private int vxCount;
-    private ArrayList<Point2D.Float> points;
-    private ArrayList<Point2D.Float> offsets;
+    private List<Point2D.Float> points;
+    private List<Point2D.Float> offsets;
     private boolean maintainMean;
 
     private final PluginInteraction interaction;
@@ -113,7 +111,7 @@ class FR2DArranger implements Arranger {
         }
     }
 
-    public void layout() throws InterruptedException {
+    private void layout() throws InterruptedException {
         for (int i = 0; i < MAX_ITERATIONS; i++) {
             interaction.setProgress(i + 1, MAX_ITERATIONS, "Arranging...", true);
 
@@ -144,18 +142,9 @@ class FR2DArranger implements Arranger {
         final int xAttr = VisualConcept.VertexAttribute.X.get(graph);
         final int yAttr = VisualConcept.VertexAttribute.Y.get(graph);
         final int zAttr = VisualConcept.VertexAttribute.Z.get(graph);
-        if (VisualConcept.VertexAttribute.X2.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", null, null);
-        }
-        if (VisualConcept.VertexAttribute.Y2.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", null, null);
-        }
-        if (VisualConcept.VertexAttribute.Z2.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", null, null);
-        }
-        final int x2Attr = VisualConcept.VertexAttribute.X2.get(graph);
-        final int y2Attr = VisualConcept.VertexAttribute.Y2.get(graph);
-        final int z2Attr = VisualConcept.VertexAttribute.Z2.get(graph);
+        final int x2Attr = VisualConcept.VertexAttribute.X2.ensure(graph);
+        final int y2Attr = VisualConcept.VertexAttribute.Y2.ensure(graph);
+        final int z2Attr = VisualConcept.VertexAttribute.Z2.ensure(graph);
 
         for (int position = 0; position < vxCount; position++) {
             final int vxId = graph.getVertex(position);

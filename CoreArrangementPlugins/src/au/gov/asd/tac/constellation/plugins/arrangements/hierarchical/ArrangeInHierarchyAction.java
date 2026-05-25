@@ -29,7 +29,6 @@ import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionSta
 import au.gov.asd.tac.constellation.views.namedselection.utilities.SelectNamedSelectionPanel;
 import java.awt.event.ActionEvent;
 import java.util.List;
-import java.util.Set;
 import javax.swing.AbstractAction;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;

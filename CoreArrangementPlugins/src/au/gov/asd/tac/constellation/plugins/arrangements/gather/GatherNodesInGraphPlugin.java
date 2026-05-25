@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.gather;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -54,13 +53,30 @@ public final class GatherNodesInGraphPlugin extends SimpleEditPlugin {
     public static final String GATHERS_PARAMETER_ID = PluginParameter.buildId(GatherNodesInGraphPlugin.class, "gathers");
 
     @Override
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
+
+        final PluginParameter<ObjectParameterValue> xParam = ObjectParameterType.build(XYZ_PARAMETER_ID);
+        xParam.setName("XYZ Position");
+        xParam.setDescription("The x,y,z position to gather around");
+        parameters.addParameter(xParam);
+
+        final PluginParameter<ObjectParameterValue> gathersParam = ObjectParameterType.build(GATHERS_PARAMETER_ID);
+        gathersParam.setName("Gather Vertex Ids");
+        gathersParam.setDescription("A set of vertex ids to gather");
+        parameters.addParameter(gathersParam);
+
+        return parameters;
+    }
+    
+    @Override
     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         final Vector3f xyzp = (Vector3f) parameters.getParameters().get(XYZ_PARAMETER_ID).getObjectValue();
         final BitSet gathers = (BitSet) parameters.getParameters().get(GATHERS_PARAMETER_ID).getObjectValue();
 
-        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        final int xId = VisualConcept.VertexAttribute.X.get(wg);
+        final int yId = VisualConcept.VertexAttribute.Y.get(wg);
+        final int zId = VisualConcept.VertexAttribute.Z.get(wg);
         final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
 
         final int selectedVertexCount = gathers.cardinality();
@@ -143,22 +159,5 @@ public final class GatherNodesInGraphPlugin extends SimpleEditPlugin {
                 }
             }
         }
-    }
-
-    @Override
-    public PluginParameters createParameters() {
-        final PluginParameters parameters = new PluginParameters();
-
-        final PluginParameter<ObjectParameterValue> xParam = ObjectParameterType.build(XYZ_PARAMETER_ID);
-        xParam.setName("XYZ Position");
-        xParam.setDescription("The x,y,z position to gather around");
-        parameters.addParameter(xParam);
-
-        final PluginParameter<ObjectParameterValue> gathersParam = ObjectParameterType.build(GATHERS_PARAMETER_ID);
-        gathersParam.setName("Gather Vertex Ids");
-        gathersParam.setDescription("A set of vertex ids to gather");
-        parameters.addParameter(gathersParam);
-
-        return parameters;
     }
 }

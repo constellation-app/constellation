@@ -843,5 +843,4 @@ public class ComponentSubgraph implements GraphWriteMethods {
     public void setGraphElementMerger(final GraphElementMerger graphElementMerger) {
         this.graphElementMerger = graphElementMerger;
     }
-
 }
