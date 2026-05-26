@@ -22,8 +22,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Scanner;
@@ -32,11 +36,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.openide.util.Lookup;
 import org.openide.windows.OnShowing;
 
 /**
- * Handles operations on the file containing the default floating preferences.
+ * Handles operations on the file the default floating preferences are saved to.
  *
  * @author sol695510
  */
@@ -45,9 +50,9 @@ public class ViewOptionsUtility implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(ViewOptionsUtility.class.getName());
 
-    private static File DFP_FILE;
-    private static final String DFP_FILE_PATH = "/Constellation/constellation/CoreViewFramework/src/au/gov/asd/tac/constellation/views/preferences/resources/dfp.txt";
-    private static final Map<String, Boolean> DFP_MAP = new TreeMap<>();
+    private static String resourceDirectory = "";
+    private static File dfpFile;
+    private static final Map<String, Boolean> dfpFromFile = new TreeMap<>();
 
     // This is the system property that is set to true in order to make the AWT thread run in headless mode for tests, etc.
     private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
@@ -60,6 +65,7 @@ public class ViewOptionsUtility implements Runnable {
         if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
             return;
         }
+
         CompletableFuture.runAsync(this::updateDFPFile, Executors.newSingleThreadExecutor());
     }
 
@@ -71,7 +77,7 @@ public class ViewOptionsUtility implements Runnable {
         final Boolean updateDFP = Boolean.FALSE;
 
         if (updateDFP) {
-            createDFPFile(DFP_FILE_PATH);
+            createDFPFile(getResourceDirectory());
         }
     }
 
@@ -93,16 +99,16 @@ public class ViewOptionsUtility implements Runnable {
             LOGGER.log(Level.SEVERE, "Path to DFP file was invalid: %s".formatted(filePath), ex);
         }
 
-        DFP_FILE = new File(filePath);
+        dfpFile = new File(filePath);
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(DFP_FILE))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dfpFile))) {
             final Map<String, Boolean> DFPFromLookUp = getDFPFromLookUp();
 
             for (final Map.Entry<String, Boolean> entry : DFPFromLookUp.entrySet()) {
                 writer.write(entry.getKey() + ":" + entry.getValue() + "\n");
             }
 
-            DFP_FILE.createNewFile();
+            dfpFile.createNewFile();
 
             LOGGER.log(Level.FINE, "DFP file was created at: {0}", filePath);
         } catch (final IOException ex) {
@@ -120,15 +126,15 @@ public class ViewOptionsUtility implements Runnable {
             throw new IllegalArgumentException("Null file path used for reading of DFP file");
         }
 
-        DFP_FILE = new File(filePath);
+        dfpFile = new File(filePath);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(DFP_FILE))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(dfpFile))) {
             final Scanner sc = new Scanner(reader);
 
             while (sc.hasNextLine()) {
                 final String nextLine = sc.nextLine();
                 final String[] ss = nextLine.split(":");
-                DFP_MAP.put(ss[0].trim(), Boolean.valueOf(ss[1].trim()));
+                dfpFromFile.put(ss[0].trim(), Boolean.valueOf(ss[1].trim()));
             }
 
             LOGGER.log(Level.FINE, "DFP file was read at: {0}", filePath);
@@ -143,27 +149,58 @@ public class ViewOptionsUtility implements Runnable {
      * @return a map of the default floating preferences.
      */
     protected static Map<String, Boolean> getDFPFromLookUp() {
-        final Map<String, Boolean> DFPFromLookUp = new TreeMap<>();
+        final Map<String, Boolean> dfpFromLookUp = new TreeMap<>();
 
-        if (DFPFromLookUp.isEmpty()) {
+        if (dfpFromLookUp.isEmpty()) {
             Lookup.getDefault().lookupAll(AbstractTopComponent.class).forEach(lookup -> {
-                DFPFromLookUp.putAll(lookup.getDefaultFloatingPreference());
+                dfpFromLookUp.putAll(lookup.getDefaultFloatingPreference());
             });
         }
 
-        return Collections.unmodifiableMap(DFPFromLookUp);
+        return Collections.unmodifiableMap(dfpFromLookUp);
     }
 
     /**
-     * Get a map of the default floating preferences from the saved file.
+     * Get a map of the default floating preferences from the file they are saved to.
      *
      * @return a map of the default floating preferences.
      */
     public static Map<String, Boolean> getDFPFromFile() {
-        if (DFP_MAP.isEmpty()) {
-            readDFPFile(DFP_FILE_PATH);
+        if (dfpFromFile.isEmpty()) {
+            readDFPFile(getResourceDirectory());
         }
 
-        return Collections.unmodifiableMap(DFP_MAP);
+        return Collections.unmodifiableMap(dfpFromFile);
+    }
+
+    /**
+     * Get the file path to the file where the default floating preferences are saved to.
+     *
+     * @return the file path to the default floating preferences file.
+     */
+    protected static String getResourceDirectory() {
+        if (resourceDirectory.isBlank()) {
+            try {
+                final String source = ViewOptionsUtility.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+                final URI uri = URI.create(source);
+                final Path path = Paths.get(uri);
+
+                final String sep = File.separator;
+                String[] splitPath = path.toString().split(Pattern.quote(sep));
+
+                // Keep removing the last directory in the path array until the constellation directory is reached.
+                while (!splitPath[splitPath.length - 1].equals("constellation")) {
+                    splitPath = Arrays.copyOfRange(splitPath, 0, splitPath.length - 1);
+                }
+
+                resourceDirectory = String.join(sep, splitPath) + sep + "dfp.txt";
+
+                LOGGER.log(Level.FINE, "DFP file directory was retrieved at: {0}", resourceDirectory);
+            } catch (final IllegalArgumentException ex) {
+                LOGGER.log(Level.SEVERE, "There was a problem retrieving the directory of the DFP file.", ex);
+            }
+        }
+
+        return resourceDirectory;
     }
 }
