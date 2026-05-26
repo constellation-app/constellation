@@ -102,9 +102,9 @@ public class ViewOptionsUtility implements Runnable {
         dfpFile = new File(filePath);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dfpFile))) {
-            final Map<String, Boolean> DFPFromLookUp = getDFPFromLookUp();
+            final Map<String, Boolean> dfpFromLookUp = getDFPFromLookUp();
 
-            for (final Map.Entry<String, Boolean> entry : DFPFromLookUp.entrySet()) {
+            for (final Map.Entry<String, Boolean> entry : dfpFromLookUp.entrySet()) {
                 writer.write(entry.getKey() + ":" + entry.getValue() + "\n");
             }
 
@@ -152,9 +152,7 @@ public class ViewOptionsUtility implements Runnable {
         final Map<String, Boolean> dfpFromLookUp = new TreeMap<>();
 
         if (dfpFromLookUp.isEmpty()) {
-            Lookup.getDefault().lookupAll(AbstractTopComponent.class).forEach(lookup -> {
-                dfpFromLookUp.putAll(lookup.getDefaultFloatingPreference());
-            });
+            Lookup.getDefault().lookupAll(AbstractTopComponent.class).forEach(lookup -> dfpFromLookUp.putAll(lookup.getDefaultFloatingPreference()));
         }
 
         return Collections.unmodifiableMap(dfpFromLookUp);
@@ -189,7 +187,7 @@ public class ViewOptionsUtility implements Runnable {
                 String[] splitPath = path.toString().split(Pattern.quote(sep));
 
                 // Keep removing the last directory in the path array until the constellation directory is reached.
-                while (!splitPath[splitPath.length - 1].equals("constellation")) {
+                while (!"constellation".equals(splitPath[splitPath.length - 1])) {
                     splitPath = Arrays.copyOfRange(splitPath, 0, splitPath.length - 1);
                 }
 
