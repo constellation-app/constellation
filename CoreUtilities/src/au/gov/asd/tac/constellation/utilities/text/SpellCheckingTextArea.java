@@ -66,8 +66,8 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             + "-rtfx-underline-color: transparent;";
 
     private Double scrollValue = null;
-    public static final int SCROLL_CHANGE_TIMER = 200;
-    public static final int KEYBOARD_CHANGE_TIMER = 300;
+    public static final int SCROLL_CHANGE_TIMER = 400;
+    public static final int KEYBOARD_CHANGE_TIMER = 600;
 
     private int prevClampedScrollValue = -1; // Prevents infite loop
     public static final float EPSILON = 0.1F;
