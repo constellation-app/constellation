@@ -254,7 +254,6 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final int vxNormalisedAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "Normalised", null, 0.0F, null);
 
         final int txIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
-        final int txDirectedAttr = VisualConcept.TransactionAttribute.DIRECTED.ensure(graph);
         final int txWidthAttr = VisualConcept.TransactionAttribute.WIDTH.ensure(graph);
         final int txDimmedAttr = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
         final int txVisibilityAttr = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
@@ -370,11 +369,6 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         } else {
             // Do nothing
         }
-
-        //43 special transactions are added later
-        //final int randomTxsCountToAdd = (nTx > 43) ? (nTx - 43) : nTx;
-
-        //////////////
 
         // Do a spherical layout.
         try {
@@ -537,7 +531,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                         }
                         case 4 ->
                             lim5++;
-                        case 5 ->
+                        default ->
                             randomTxsCountToAdd++;
                     }
                 }
