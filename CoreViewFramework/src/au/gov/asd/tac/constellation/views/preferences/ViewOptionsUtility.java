@@ -74,7 +74,7 @@ public class ViewOptionsUtility implements Runnable {
      */
     protected void updateDFPFile() {
         // Change boolean to true to update default floating preferences file, revert back to false after updating.
-        final Boolean updateDFP = Boolean.FALSE;
+        final boolean updateDFP = false;
 
         if (updateDFP) {
             createDFPFile(getResourceDirectory());
