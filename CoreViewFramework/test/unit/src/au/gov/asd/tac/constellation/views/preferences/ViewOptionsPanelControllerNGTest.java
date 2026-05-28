@@ -24,7 +24,10 @@ import org.mockito.MockedConstruction;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
+import org.openide.util.Lookup;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
@@ -54,19 +57,21 @@ public class ViewOptionsPanelControllerNGTest {
      */
     @Test
     public void testUpdate() {
-//        System.out.println("update");
-//        final ViewOptionsPanelController instance = new ViewOptionsPanelController();
-//
-//        try (MockedConstruction<ViewOptionsPanel> mock = mockConstruction(ViewOptionsPanel.class)) {
-//            instance.update();
-//
-//            // Assert that a mock of the panel was constructed.
-//            final List<ViewOptionsPanel> constructed = mock.constructed();
-//            assertEquals(constructed.size(), 1);
-//
-//            // Verify that this method was run on the constructed panel.
-//            verify(constructed.get(constructed.size() - 1), times(1)).fireTableDataChanged();
-//        }
+        System.out.println("update");
+
+        try (MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class)) {
+
+            final ViewOptionsPanelController instance = new ViewOptionsPanelController();
+            instance.update();
+
+            // Assert that a mock of the ViewOptionsPanel was constructed.
+            final List<ViewOptionsPanel> constructedVOP = mockVOP.constructed();
+            assertEquals(constructedVOP.size(), 1);
+
+            // Verify that these methods were run on the constructed mock.
+            verify(constructedVOP.get(0), times(1)).fireTableDataChanged();
+            verify(constructedVOP.get(0), times(1)).createTableModel();
+        }
     }
 
     /**
@@ -74,38 +79,63 @@ public class ViewOptionsPanelControllerNGTest {
      */
     @Test
     public void testApplyChanges() {
-//        System.out.println("applyChanges");
-//        final ViewOptionsPanelController instance = new ViewOptionsPanelController();
-//
-//        // When isChanged() returns true.
-//        try (MockedConstruction<ViewOptionsPanel> mockVFOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
-//            when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
-//            when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllTrue);
-//        })) {
-//
-//            instance.applyChanges();
-//
-//            // Assert that a mock of the panel was constructed.
-//            final List<ViewOptionsPanel> constructedVFOP = mockVFOP.constructed();
-//            assertEquals(constructedVFOP.size(), 1);
-//
-//            // Verify that these methods were run during isChanged().
-//            verify(constructedVFOP.get(constructedVFOP.size() - 1), times(1)).getOptionsFromPrefs();
-//            verify(constructedVFOP.get(constructedVFOP.size() - 1), times(1)).getOptionsFromUI();
-//        }
-//
-//        // When isChanged() returns false.
-//        try (MockedConstruction<ViewOptionsPanel> mockVFOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
-//            when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
-//            when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllFalse);
-//        })) {
-//
-//            instance.applyChanges();
-//
-//            // Assert that a mock of the panel was not constructed.
-//            final List<ViewOptionsPanel> constructedVFOP = mockVFOP.constructed();
-//            assertEquals(constructedVFOP.size(), 0);
-//        }
+        System.out.println("applyChanges");
+
+        // When isChanged() returns true.
+        try (MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
+            when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
+            when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllTrue);
+        }); MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
+
+            final ViewOptionsPanelController instance = new ViewOptionsPanelController();
+            instance.applyChanges();
+
+            // Assert that a mock of the ViewOptionsPanel was constructed.
+            final List<ViewOptionsPanel> constructedVOP = mockVOP.constructed();
+            assertEquals(constructedVOP.size(), 1);
+
+            // Assert that a mock of the PropertyChangeSupport was constructed.
+            final List<PropertyChangeSupport> constructedPCS = mockPCS.constructed();
+            assertEquals(constructedPCS.size(), 1);
+
+            // Verify that this method was run during isValid().
+            verify(constructedPCS.get(0), times(1)).firePropertyChange(OptionsPanelController.PROP_VALID, null, null);
+
+            // Verify that these methods were run during isChanged().
+            verify(constructedVOP.get(0), times(1)).getOptionsFromPrefs();
+            verify(constructedVOP.get(0), times(1)).getOptionsFromUI();
+
+            // Verify that this method was run due to isChanged() returning true.
+            verify(constructedPCS.get(0), times(1)).firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
+        }
+
+        // When isChanged() returns false.
+        try (MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
+            when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
+            when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllFalse);
+        }); MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
+
+            final ViewOptionsPanelController instance = new ViewOptionsPanelController();
+            instance.applyChanges();
+
+            // Assert that a mock of the ViewOptionsPanel was not constructed.
+            final List<ViewOptionsPanel> constructedVOP = mockVOP.constructed();
+            assertEquals(constructedVOP.size(), 1);
+
+            // Assert that a mock of the PropertyChangeSupport was constructed.
+            final List<PropertyChangeSupport> constructedPCS = mockPCS.constructed();
+            assertEquals(constructedPCS.size(), 1);
+
+            // Verify that this method was run during isValid().
+            verify(constructedPCS.get(0), times(1)).firePropertyChange(OptionsPanelController.PROP_VALID, null, null);
+
+            // Verify that these methods were run during isChanged().
+            verify(constructedVOP.get(0), times(1)).getOptionsFromPrefs();
+            verify(constructedVOP.get(0), times(1)).getOptionsFromUI();
+
+            // Verify that this method was not run due to isChanged() returning false.
+            verify(constructedPCS.get(0), times(0)).firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
+        }
     }
 
     /**
@@ -113,47 +143,59 @@ public class ViewOptionsPanelControllerNGTest {
      */
     @Test
     public void testIsChanged() {
-//        System.out.println("isChanged");
-//        final ViewOptionsPanelController instance1 = new ViewOptionsPanelController();
-//        final ViewOptionsPanelController instance2 = new ViewOptionsPanelController();
-//
-//        // When the options from the Preferences and UI differ.
-//        try (MockedConstruction<ViewOptionsPanel> mockVFOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
-//            when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
-//            when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllTrue);
-//        })) {
-//
-//            final boolean result = instance1.isChanged();
-//            final boolean expResult = true;
-//            assertEquals(result, expResult);
-//
-//            // Assert that a mock of the panel was constructed.
-//            final List<ViewOptionsPanel> constructedVFOP = mockVFOP.constructed();
-//            assertEquals(constructedVFOP.size(), 1);
-//
-//            // Verify that these methods were run during isChanged().
-//            verify(constructedVFOP.get(constructedVFOP.size() - 1), times(1)).getOptionsFromPrefs();
-//            verify(constructedVFOP.get(constructedVFOP.size() - 1), times(1)).getOptionsFromUI();
-//        }
-//
-//        // When the options from the Preferences and UI match.
-//        try (MockedConstruction<ViewOptionsPanel> mockVFOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
-//            when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
-//            when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllFalse);
-//        })) {
-//
-//            final boolean result = instance2.isChanged();
-//            final boolean expResult = false;
-//            assertEquals(result, expResult);
-//
-//            // Assert that a mock of the panel was constructed.
-//            final List<ViewOptionsPanel> constructedVFOP = mockVFOP.constructed();
-//            assertEquals(constructedVFOP.size(), 1);
-//
-//            // Verify that these methods were run during isChanged().
-//            verify(constructedVFOP.get(constructedVFOP.size() - 1), times(1)).getOptionsFromPrefs();
-//            verify(constructedVFOP.get(constructedVFOP.size() - 1), times(1)).getOptionsFromUI();
-//        }
+        System.out.println("isChanged");
+
+        // When the options from the NbPreferences and UI differ.
+        try (MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
+            when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
+            when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllTrue);
+        })) {
+
+            final ViewOptionsPanelController instance = new ViewOptionsPanelController();
+            final boolean result = instance.isChanged();
+            final boolean expResult = true;
+            assertEquals(result, expResult);
+
+            // Assert that a mock of the ViewOptionsPanel was constructed.
+            final List<ViewOptionsPanel> constructed = mockVOP.constructed();
+            assertEquals(constructed.size(), 1);
+
+            // Verify that these methods were run during isChanged().
+            verify(constructed.get(0), times(1)).getOptionsFromPrefs();
+            verify(constructed.get(0), times(1)).getOptionsFromUI();
+        }
+
+        // When the options from the NbPreferences and UI match.
+        try (MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
+            when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
+            when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllFalse);
+        })) {
+
+            final ViewOptionsPanelController instance = new ViewOptionsPanelController();
+            final boolean result = instance.isChanged();
+            final boolean expResult = false;
+            assertEquals(result, expResult);
+
+            // Assert that a mock of the ViewOptionsPanel was constructed.
+            final List<ViewOptionsPanel> constructed = mockVOP.constructed();
+            assertEquals(constructed.size(), 1);
+
+            // Verify that these methods were run during isChanged().
+            verify(constructed.get(0), times(1)).getOptionsFromPrefs();
+            verify(constructed.get(0), times(1)).getOptionsFromUI();
+        }
+    }
+
+    /**
+     * Test of getComponent method, of class ViewOptionsPanelController.
+     */
+    @Test
+    public void testGetComponent() {
+        System.out.println("getComponent");
+        final ViewOptionsPanelController instance = new ViewOptionsPanelController();
+
+        final Object result = instance.getComponent(Lookup.EMPTY);
+        assertEquals(result.getClass(), ViewOptionsPanel.class);
     }
 
     /**
@@ -164,52 +206,52 @@ public class ViewOptionsPanelControllerNGTest {
         System.out.println("getHelpCtx");
         final ViewOptionsPanelController instance = new ViewOptionsPanelController();
 
-        final HelpCtx result = instance.getHelpCtx();
-        assertEquals(result.getClass(), HelpCtx.class);
+        final Object result1 = instance.getHelpCtx();
+        assertEquals(result1.getClass(), HelpCtx.class);
+
+        final HelpCtx result2 = instance.getHelpCtx();
+        assertEquals(result2.getHelpID(), "au.gov.asd.tac.constellation.views.preferences");
     }
 
     /**
-     * Test of addPropertyChangeListener and removePropertyChangeListener methods, of class ViewOptionsPanelController.
+     * Test of addPropertyChangeListener of class ViewOptionsPanelController.
      */
     @Test
-    public void testAddRemovePropertyChangeListener() {
-        System.out.println("addRemovePropertyChangeListener");
+    public void testAddPropertyChangeListener() {
+        System.out.println("addPropertyChangeListener");
         final PropertyChangeListener pcl = null;
 
-        // Test adding the Property Change Listener.
         try (MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
+
             final ViewOptionsPanelController instance = new ViewOptionsPanelController();
             instance.addPropertyChangeListener(pcl);
 
-            // Assert that a mock of the PCS was constructed.
-            final List<PropertyChangeSupport> constructedPCS = mockPCS.constructed();
-            assertEquals(constructedPCS.size(), 3);
+            // Assert that a mock of the PropertyChangeSupport was constructed.
+            final List<PropertyChangeSupport> constructed = mockPCS.constructed();
+            assertEquals(constructed.size(), 3); // Why 3 and not 1?
 
-            verify(constructedPCS.get(constructedPCS.size() - 1), times(1)).addPropertyChangeListener(pcl);
-        }
-
-        // Test removing the Property Change Listener.
-        try (MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
-            final ViewOptionsPanelController instance = new ViewOptionsPanelController();
-            instance.removePropertyChangeListener(pcl);
-
-            // Assert that a mock of the PCS was constructed.
-            final List<PropertyChangeSupport> constructedPCS = mockPCS.constructed();
-            assertEquals(constructedPCS.size(), 1);
-
-            verify(constructedPCS.get(constructedPCS.size() - 1), times(1)).removePropertyChangeListener(pcl);
+            verify(constructed.get(2), times(1)).addPropertyChangeListener(pcl);
         }
     }
 
     /**
-     * Test of getPanel method, of class ViewOptionsPanelController.
+     * Test of removePropertyChangeListener methods of class ViewOptionsPanelController.
      */
     @Test
-    public void testGetPanel() {
-//        System.out.println("getPanel");
-//        final ViewOptionsPanelController instance = new ViewOptionsPanelController();
-//
-//        final ViewOptionsPanel result = instance.getPanel();
-//        assertEquals(result.getClass(), ViewOptionsPanel.class);
+    public void testRemovePropertyChangeListener() {
+        System.out.println("removePropertyChangeListener");
+        final PropertyChangeListener pcl = null;
+
+        try (MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
+
+            final ViewOptionsPanelController instance = new ViewOptionsPanelController();
+            instance.removePropertyChangeListener(pcl);
+
+            // Assert that a mock of the PropertyChangeSupport was constructed.
+            final List<PropertyChangeSupport> constructed = mockPCS.constructed();
+            assertEquals(constructed.size(), 1);
+
+            verify(constructed.get(0), times(1)).removePropertyChangeListener(pcl);
+        }
     }
 }

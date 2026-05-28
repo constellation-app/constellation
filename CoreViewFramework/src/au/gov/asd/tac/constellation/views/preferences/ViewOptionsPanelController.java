@@ -43,11 +43,12 @@ public class ViewOptionsPanelController extends OptionsPanelController {
 
     private final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    private static ViewOptionsPanel panel;
+    private ViewOptionsPanel panel;
 
     @Override
     public void update() {
         getPanel().fireTableDataChanged();
+        getPanel().createTableModel();
     }
 
     @Override
@@ -100,7 +101,7 @@ public class ViewOptionsPanelController extends OptionsPanelController {
         pcs.removePropertyChangeListener(pcl);
     }
 
-    public static final ViewOptionsPanel getPanel() {
+    private ViewOptionsPanel getPanel() {
         if (panel == null) {
             panel = new ViewOptionsPanel();
         }

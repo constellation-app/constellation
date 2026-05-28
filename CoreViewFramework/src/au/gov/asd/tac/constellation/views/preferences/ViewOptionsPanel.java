@@ -42,7 +42,7 @@ public class ViewOptionsPanel extends JPanel {
         jLabel.setBorder(new EmptyBorder(0, 0, 10, 0));
     }
 
-    public final void createTableModel() {
+    protected final void createTableModel() {
         tableModel = new DefaultTableModel(new Object[]{"View", "Floating"}, 0) {
             @Override
             public Class getColumnClass(final int column) {

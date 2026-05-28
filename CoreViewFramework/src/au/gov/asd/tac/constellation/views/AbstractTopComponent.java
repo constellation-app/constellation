@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.views;
 
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
-import au.gov.asd.tac.constellation.views.preferences.ViewOptionsUtility;
 import au.gov.asd.tac.constellation.views.preferences.ViewOptionsPanelController;
+import au.gov.asd.tac.constellation.views.preferences.ViewOptionsUtility;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
@@ -94,7 +94,8 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
         pcl = (PropertyChangeEvent evt) -> { // Fires when a view is floated or docked manually via the context menu.
             prefs.putBoolean(this.getName(), wm.isTopComponentFloating(this));
-            ViewOptionsPanelController.getPanel().createTableModel();
+            final ViewOptionsPanelController vopc = new ViewOptionsPanelController();
+            vopc.update();
         };
 
         this.addPropertyChangeListener(pcl);
