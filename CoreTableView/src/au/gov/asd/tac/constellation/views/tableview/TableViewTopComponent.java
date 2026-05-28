@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
@@ -49,6 +50,7 @@ import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * Table View Top Component.
@@ -93,6 +95,8 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     private final Set<AttributeValueMonitor> columnAttributeMonitors;
 
     private TableViewState currentState;
+    
+    private boolean showingFlag;
 
     public TableViewTopComponent() {
         setName(Bundle.CTL_TableViewTopComponent());
@@ -340,6 +344,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     @Override
     protected void componentShowing() {
         super.componentShowing();
+        componentActivated();
         handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
 
@@ -409,6 +414,44 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     protected void handleGraphClosed(final Graph graph) {
         getTablePane().getActiveTableReference().updatePagination(
                 getTablePane().getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(), null, getTablePane());
+    }
+    
+    @Override
+    protected void componentActivated() {
+        setComponentVisible(true);
+        if (!isShowingFlag()) {
+            if (WindowManager.getDefault().isTopComponentFloating(this)) {
+                ConstellationLogger.getDefault().viewInfo(this, "Activated / Floating");
+            } 
+            if (WindowManager.getDefault().isTopComponentMinimized(this)) {
+                ConstellationLogger.getDefault().viewInfo(this, "Activated / Minimised");            
+            }
+            if (!WindowManager.getDefault().isTopComponentMinimized(this) &&
+                !WindowManager.getDefault().isTopComponentFloating(this)) {
+                ConstellationLogger.getDefault().viewInfo(this, "Activated / Docked");
+            }
+            setShowingFlag(true);        
+        }
+    }
+    
+    @Override
+    protected void componentHidden() {
+        setComponentVisible(false);
+        setShowingFlag(false);
+    }
+    
+    /**
+     * @return the showingFlag
+     */
+    protected boolean isShowingFlag() {
+        return showingFlag;
+    }
+
+    /**
+     * @param showingFlag the showingFlag to set
+     */
+    protected void setShowingFlag(final boolean showingFlag) {
+        this.showingFlag = showingFlag;
     }
 
     @Override
