@@ -159,7 +159,6 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                             }
                         }
 
-                        window.setMinimumSize(size);
                         window.setSize(size);
                     }
                 }
