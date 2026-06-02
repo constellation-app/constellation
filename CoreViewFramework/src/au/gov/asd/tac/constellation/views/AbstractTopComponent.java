@@ -118,7 +118,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
                         final Dimension sideSize = new Dimension(
                                 Math.round(mainWidth * 0.3F),
-                                Math.round(mainHeight * 0.9F)
+                                Math.round(mainHeight * (mainWidth > mainHeight ? 0.892F : 0.94F))
                         );
 
                         final Dimension bottomSize = new Dimension(
