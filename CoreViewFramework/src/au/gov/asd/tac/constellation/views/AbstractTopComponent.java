@@ -145,8 +145,13 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                             }
                             case "output", "bottomSlidingSide", "isSliding" -> {
                                 switch (getName()) {
-                                    case "Find and Replace" ->
+                                    case "Find and Replace" -> {
                                         size = new Dimension(600, 350);
+                                        window.setLocation(
+                                                mainX,
+                                                mainY + mainHeight - sideSize.height
+                                        );
+                                    }
                                     default -> {
                                         size = bottomSize;
                                         window.setLocation(
