@@ -39,6 +39,7 @@ limitations under the License.
 
                         <ul class="SuggestionList"></ul>
                     </div>
+                    <div id="noResultsMessage" class="NoResultsMessage">No results found</div>
                     <ul class="ResultsList"></ul>
                 </div>
                 <!-- Body of the page -->
@@ -102,6 +103,7 @@ limitations under the License.
         const clearButton = document.querySelector('.Search button.clear');
         const suggestionList = document.querySelector('.SuggestionList');
         const resultsList = document.querySelector(".ResultsList");
+        const noResultsMessage = document.querySelector('.NoResultsMessage');
         
         const capitalize = (string) => string.replace(/(\b\w)/gi, (char) => char.toUpperCase());
 
@@ -114,6 +116,12 @@ limitations under the License.
   
             const suggestions = (query.length > 1) ? getSuggestions(query) : [];
             renderSuggestions(suggestions);
+            
+            if (query.trim().length > 0){
+                app.classList.add('hasQuery');
+            }else{
+                app.classList.remove('hasQuery');
+            }           
         });
         
         // Clicking on clear button clears search and suggestions
