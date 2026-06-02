@@ -144,7 +144,12 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                                 );
                             }
                             case "output", "bottomSlidingSide", "isSliding" -> {
-                                size = bottomSize;
+                                switch (getName()) {
+                                    case "Find and Replace" ->
+                                        size = new Dimension(600, 350);
+                                    default ->
+                                        size = bottomSize;
+                                }
                                 window.setLocation(
                                         mainX,
                                         mainY + mainHeight - size.height
