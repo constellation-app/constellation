@@ -23,10 +23,24 @@
 #""$INSTALLER_PATH"" /verbose InstallAllUsers=1 PrependPath=1 Include_test=0
 #echo "Finished installation!"
 
-# IMPORTANT: Once python is installed, ensure that the version in pyproject.toml
-#  is updated if constellation_client.py has been updated, the version in
-# constellation_client.py should match. This ensures that any different
-# version will be updated. Check in the new packages.
+## To manually setup/install Jupyter Notebook from a plain Python installation,
+## and to be able to run the Analyst Training scripts, you will need to:
+##   pip install notebook
+##   pip install pandas
+##   pip install Pillow
+##   pip install networkx
+##   pip install matplotlib
+## And you may also need to define an environment variable: JUPYTER_RUNTIME_DIR
+
+###################################################################################
+## IMPORTANT: Once python is installed, you can then build the wheel file.
+## Any change to the constellation_client.py file MUST be accompanied by an increment
+## in the version number. The pyproject.toml file must then be updated and set
+## to the same version number.
+## ---- The versions in the two files MUST match ----
+## This ensures that any updates will be correctly identified and processed.
+## Remove old packages and check-in the newly created packages.
+####################################################################################
 
 # ensure the latest pip is installed
 py -m pip install --upgrade pip
