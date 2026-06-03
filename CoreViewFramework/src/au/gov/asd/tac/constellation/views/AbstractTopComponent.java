@@ -90,19 +90,21 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentOpened() {
-        final WindowManager wm = WindowManager.getDefault();
+        final WindowManager windowManager = WindowManager.getDefault();
 
         pcl = (PropertyChangeEvent evt) -> { // Fires when a view is floated or docked manually via the context menu.
-            prefs.putBoolean(this.getName(), wm.isTopComponentFloating(this));
-            final ViewOptionsPanelController vopc = new ViewOptionsPanelController();
-            vopc.update();
+            prefs.putBoolean(this.getName(), windowManager.isTopComponentFloating(this));
+            final ViewOptionsPanelController controller = new ViewOptionsPanelController();
+            controller.update();
         };
 
         this.addPropertyChangeListener(pcl);
         super.componentOpened();
 
-        if (ViewOptionsUtility.getDFPFromFile().containsKey(this.getName())) {
-            final Boolean isFloating = prefs.getBoolean(this.getName(), ViewOptionsUtility.getDFPFromFile().get(this.getName()));
+        final Map<String, Boolean> prefsFromFile = ViewOptionsUtility.getDFPFromFile();
+
+        if (prefsFromFile.containsKey(this.getName())) {
+            final Boolean isFloating = prefs.getBoolean(this.getName(), prefsFromFile.get(this.getName()));
             WindowManager.getDefault().setTopComponentFloating(this, isFloating);
 
             if (isFloating) {
@@ -110,7 +112,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                 // with the window's parent. Sets the size and location for the floating component if a match is found.
                 for (final Window window : Window.getWindows()) {
                     if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
-                        final Frame mainWindow = wm.getMainWindow();
+                        final Frame mainWindow = windowManager.getMainWindow();
                         final int mainWidth = mainWindow.getWidth();
                         final int mainHeight = mainWindow.getHeight();
                         final int mainX = mainWindow.getX();
@@ -144,7 +146,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                                 );
                             }
                             case "output", "bottomSlidingSide", "isSliding" -> {
-                                switch (getName()) {
+                                switch (this.getName()) {
                                     case "Find and Replace" -> {
                                         size = new Dimension(600, 350);
                                         window.setLocation(
