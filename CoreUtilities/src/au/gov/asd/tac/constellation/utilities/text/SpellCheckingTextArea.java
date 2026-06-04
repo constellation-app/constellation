@@ -208,11 +208,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      * Clear any previous highlighting.
      */
     public void clearStyles() {
-        this.setStyle(0, this.getText().length(), CLEAR_STYLE);
-    }
-
-    public void clearStyles(final int from) {
-        this.setStyle(from, this.getText().length(), CLEAR_STYLE);
+        this.clearStyle(0, getLength());
     }
 
     public boolean isWordUnderCursorHighlighted(final int index) {

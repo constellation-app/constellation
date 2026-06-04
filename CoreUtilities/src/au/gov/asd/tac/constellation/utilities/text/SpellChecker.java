@@ -368,7 +368,7 @@ public final class SpellChecker {
         }
     }
 
-    public void refreshHighlights() {
+    private void refreshHighlights() {
         if (textArea.getText().isEmpty()) {
             return;
         }
