@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
@@ -26,7 +27,10 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.DefaultQualityControlAutoButton;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
 import javafx.application.Platform;
 import javafx.scene.layout.HBox;
 import org.openide.awt.ActionID;
@@ -67,9 +71,17 @@ import org.openide.windows.TopComponent;
     "HINT_DataAccessViewTopComponent=Data Access View"
 })
 public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAccessPane> {
+    
+    private static final String DATA_ACCESS_VIEW_GRAPH_CHANGED_THREAD_NAME = "Data Access View Graph Changed Updater";
 
     private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("DAV-Thread", 1);
     private final DataAccessPane dataAccessPane;
+    
+    private LinkedBlockingQueue<Object> queue = new LinkedBlockingQueue<>();
+    private Thread refreshThread;
+    private final Runnable refreshRunnable;
+    private long latestGraphChangeID = 0;
+    private Graph activeGraph;
 
     /**
      * Create a new data access view.
@@ -96,6 +108,13 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         });
 
         ProxyUtilities.setProxySelector(null);
+        
+        refreshRunnable = () -> {
+            final List<Object> devNull = new ArrayList<>();
+            while (!queue.isEmpty()) {
+                queue.drainTo(devNull);
+            }
+        };
     }
 
     /**
@@ -200,6 +219,28 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
                     autoButton.addQCListener();
                 } else {
                     autoButton.removeQCListener();
+                }
+            }
+        }
+    }
+    
+    @Override
+    protected void handleGraphChange(final GraphChangeEvent event) {
+        if (event == null) { // can be null at this point in time
+            return;
+        }
+        final GraphChangeEvent newEvent = event.getLatest();
+        if (newEvent == null) { // latest event may be null - defensive check
+            return;
+        }
+        if (newEvent.getId() > latestGraphChangeID) {
+            latestGraphChangeID = newEvent.getId();
+            if (activeGraph != null) {
+                queue.add(newEvent);
+                if (refreshThread == null || !refreshThread.isAlive()) {
+                    refreshThread = new Thread(refreshRunnable);
+                    refreshThread.setName(DATA_ACCESS_VIEW_GRAPH_CHANGED_THREAD_NAME);
+                    refreshThread.start();
                 }
             }
         }

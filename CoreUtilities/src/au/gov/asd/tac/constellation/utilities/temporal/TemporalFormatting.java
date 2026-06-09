@@ -104,8 +104,11 @@ public class TemporalFormatting {
 
     /**
      * A UTC date time formatter much like DateTimeFormatter.ISO_INSTANT but
-     * with the guarantee that milliseconds will always appear. The format is
-     * yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+     * with the ability to process milliseconds if present.
+     * Use this formatter when milliseconds are expected in the source data.
+     * Making the milliseconds optional allows for cases where the milliseconds
+     * component may not be present in the source data if it is exactly zero milliseconds.
+     * The format is yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
      */
     public static final DateTimeFormatter UTC_DATE_TIME_WITH_MILLISECONDS_FORMATTER = new DateTimeFormatterBuilder()
             .appendValue(ChronoField.YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
@@ -119,8 +122,10 @@ public class TemporalFormatting {
             .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
             .appendLiteral(SeparatorConstants.COLON)
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
+            .optionalStart()
             .appendLiteral(SeparatorConstants.PERIOD)
             .appendValue(ChronoField.MILLI_OF_SECOND, 3)
+            .optionalEnd()
             .appendLiteral("Z")
             .toFormatter()
             .withZone(ZoneOffset.UTC);
