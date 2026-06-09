@@ -69,7 +69,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     public static final int SCROLL_CHANGE_TIMER = 400;
     public static final int KEYBOARD_CHANGE_TIMER = 600;
 
-    private int prevClampedScrollValue = -1; // Prevents infite loop
+    private int prevClampedScrollValue = -1; // Prevents infinite loop
     public static final float EPSILON = 0.1F;
 
     public SpellCheckingTextArea(final boolean isSpellCheckEnabled) {
