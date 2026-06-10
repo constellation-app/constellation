@@ -128,8 +128,8 @@ public class SpellCheckingTextAreaNGTest {
         assertEquals(instance.getStyleAtPosition(1), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
 
         instance.clearStyles();
-        assertEquals(instance.getStyleAtPosition(0), SpellCheckingTextArea.CLEAR_STYLE);
-        assertEquals(instance.getStyleAtPosition(1), SpellCheckingTextArea.CLEAR_STYLE);
+        assertEquals(instance.getStyleAtPosition(0), "");
+        assertEquals(instance.getStyleAtPosition(1), "");
     }
 
     /**
