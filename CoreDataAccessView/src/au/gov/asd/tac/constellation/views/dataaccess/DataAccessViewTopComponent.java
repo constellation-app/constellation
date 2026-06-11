@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
@@ -30,7 +31,6 @@ import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAu
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.DefaultQualityControlAutoButton;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import javafx.application.Platform;
@@ -247,8 +247,8 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
     }
 
     @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_DataAccessViewTopComponent(), Boolean.FALSE);
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_DataAccessViewTopComponent(), Boolean.FALSE);
     }
 
     @Override

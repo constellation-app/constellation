@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.views.scripting;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.SwingTopComponent;
-import java.util.Map;
 import javax.swing.ScrollPaneConstants;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -97,8 +97,8 @@ public final class ScriptingViewTopComponent extends SwingTopComponent {
     }
 
     @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_ScriptingViewTopComponent(), Boolean.FALSE);
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_ScriptingViewTopComponent(), Boolean.FALSE);
     }
 
     @Override

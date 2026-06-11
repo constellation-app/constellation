@@ -34,12 +34,12 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -502,8 +502,8 @@ public final class PerspectiveBookmarkTopComponent extends AbstractTopComponent 
     }
 
     @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_PerspectiveBookmarkTopComponent(), Boolean.FALSE);
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_PerspectiveBookmarkTopComponent(), Boolean.FALSE);
     }
 
     @Override

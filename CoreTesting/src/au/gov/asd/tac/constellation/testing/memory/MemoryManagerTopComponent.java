@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.testing.memory;
 
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager.ClassStats;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManagerListener;
@@ -161,8 +162,8 @@ public final class MemoryManagerTopComponent extends AbstractTopComponent implem
     }
 
     @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_MemoryManagerTopComponent(), Boolean.FALSE);
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_MemoryManagerTopComponent(), Boolean.FALSE);
     }
 
     @Override

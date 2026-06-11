@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.schemaview;
 
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import java.util.Map;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -91,8 +91,8 @@ public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewP
     }
 
     @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_SchemaViewTopComponent(), Boolean.FALSE);
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_SchemaViewTopComponent(), Boolean.FALSE);
     }
 
     @Override

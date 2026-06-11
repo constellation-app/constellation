@@ -15,13 +15,16 @@
  */
 package au.gov.asd.tac.constellation.views.preferences;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
+import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -101,11 +104,11 @@ public class ViewOptionsUtility implements Runnable {
 
         dfpFile = new File(filePath);
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dfpFile))) {
-            final Map<String, Boolean> dfpFromLookUp = getDFPFromLookUp();
+        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(dfpFile))) {
+            final Map<String, Boolean> dfpFromLookUp = getDFPFromLookup();
 
             for (final Map.Entry<String, Boolean> entry : dfpFromLookUp.entrySet()) {
-                writer.write(entry.getKey() + ":" + entry.getValue() + "\n");
+                writer.write(entry.getKey() + SeparatorConstants.COLON + entry.getValue() + "\n");
             }
 
             dfpFile.createNewFile();
@@ -128,12 +131,12 @@ public class ViewOptionsUtility implements Runnable {
 
         dfpFile = new File(filePath);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(dfpFile))) {
+        try (final BufferedReader reader = new BufferedReader(new FileReader(dfpFile))) {
             final Scanner sc = new Scanner(reader);
 
             while (sc.hasNextLine()) {
                 final String nextLine = sc.nextLine();
-                final String[] ss = nextLine.split(":");
+                final String[] ss = nextLine.split(SeparatorConstants.COLON);
                 dfpFromFile.put(ss[0].trim(), Boolean.valueOf(ss[1].trim()));
             }
 
@@ -148,14 +151,19 @@ public class ViewOptionsUtility implements Runnable {
      *
      * @return a map of the default floating preferences.
      */
-    protected static Map<String, Boolean> getDFPFromLookUp() {
-        final Map<String, Boolean> dfpFromLookUp = new TreeMap<>();
+    protected static Map<String, Boolean> getDFPFromLookup() {
+        final Map<String, Boolean> dfpFromLookup = new TreeMap<>();
 
-        if (dfpFromLookUp.isEmpty()) {
-            Lookup.getDefault().lookupAll(AbstractTopComponent.class).forEach(lookup -> dfpFromLookUp.putAll(lookup.getDefaultFloatingPreference()));
+        try {
+            EventQueue.invokeAndWait(() -> Lookup.getDefault().lookupAll(AbstractTopComponent.class).forEach(lookup -> dfpFromLookup.put(
+                    (String) lookup.getDefaultFloatingInfo().getFirst(),
+                    (Boolean) lookup.getDefaultFloatingInfo().getSecond()
+            )));
+        } catch (InterruptedException | InvocationTargetException ex) {
+            LOGGER.log(Level.SEVERE, "There was a problem retrieving the default floating info.", ex);
         }
 
-        return Collections.unmodifiableMap(dfpFromLookUp);
+        return Collections.unmodifiableMap(dfpFromLookup);
     }
 
     /**

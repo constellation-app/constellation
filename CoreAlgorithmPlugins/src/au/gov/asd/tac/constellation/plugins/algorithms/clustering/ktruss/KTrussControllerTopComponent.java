@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.awt.Component;
 import java.awt.Container;
@@ -40,7 +41,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -1042,8 +1042,8 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
     }
 
     @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_KTrussControllerTopComponent(), Boolean.FALSE);
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_KTrussControllerTopComponent(), Boolean.FALSE);
     }
 
     @Override

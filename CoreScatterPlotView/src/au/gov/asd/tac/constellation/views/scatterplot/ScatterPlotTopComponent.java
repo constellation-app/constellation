@@ -20,13 +20,13 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotConcept;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotStateWriter;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.openide.awt.ActionID;
@@ -233,8 +233,8 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     }
 
     @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_ScatterPlotTopComponent(), Boolean.FALSE);
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_ScatterPlotTopComponent(), Boolean.FALSE);
     }
 
     @Override

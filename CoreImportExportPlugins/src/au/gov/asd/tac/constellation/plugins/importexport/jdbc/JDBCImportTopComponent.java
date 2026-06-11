@@ -18,8 +18,8 @@ package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 import au.gov.asd.tac.constellation.plugins.importexport.ConfigurationPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportTopComponent;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
-import java.util.Map;
 import javafx.application.Platform;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -111,8 +111,8 @@ public final class JDBCImportTopComponent extends ImportTopComponent {
     }
 
     @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_ImportJDBCFileAction(), Boolean.FALSE);
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_ImportJDBCFileAction(), Boolean.FALSE);
     }
 
     @Override

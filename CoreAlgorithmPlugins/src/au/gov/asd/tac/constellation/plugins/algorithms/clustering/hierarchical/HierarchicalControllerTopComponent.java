@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import java.awt.Component;
 import java.awt.Container;
@@ -43,7 +44,6 @@ import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 import javax.swing.ScrollPaneConstants;
@@ -718,8 +718,8 @@ public final class HierarchicalControllerTopComponent extends AbstractTopCompone
     }
 
     @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_HierarchicalControllerTopComponent(), Boolean.FALSE);
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_HierarchicalControllerTopComponent(), Boolean.FALSE);
     }
 
     @Override

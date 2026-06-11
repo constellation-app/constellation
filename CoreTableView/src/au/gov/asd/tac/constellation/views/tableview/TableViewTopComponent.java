@@ -37,7 +37,6 @@ import au.gov.asd.tac.constellation.views.tableview.state.TableViewState;
 import au.gov.asd.tac.constellation.views.tableview.tasks.TriggerDataUpdateTask;
 import au.gov.asd.tac.constellation.views.tableview.tasks.TriggerSelectionUpdateTask;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -95,7 +94,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     private final Set<AttributeValueMonitor> columnAttributeMonitors;
 
     private TableViewState currentState;
-    
+
     private boolean showingFlag;
 
     public TableViewTopComponent() {
@@ -415,31 +414,31 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
         getTablePane().getActiveTableReference().updatePagination(
                 getTablePane().getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(), null, getTablePane());
     }
-    
+
     @Override
     protected void componentActivated() {
         setComponentVisible(true);
         if (!isShowingFlag()) {
             if (WindowManager.getDefault().isTopComponentFloating(this)) {
                 ConstellationLogger.getDefault().viewInfo(this, "Activated / Floating");
-            } 
-            if (WindowManager.getDefault().isTopComponentMinimized(this)) {
-                ConstellationLogger.getDefault().viewInfo(this, "Activated / Minimised");            
             }
-            if (!WindowManager.getDefault().isTopComponentMinimized(this) &&
-                !WindowManager.getDefault().isTopComponentFloating(this)) {
+            if (WindowManager.getDefault().isTopComponentMinimized(this)) {
+                ConstellationLogger.getDefault().viewInfo(this, "Activated / Minimised");
+            }
+            if (!WindowManager.getDefault().isTopComponentMinimized(this)
+                    && !WindowManager.getDefault().isTopComponentFloating(this)) {
                 ConstellationLogger.getDefault().viewInfo(this, "Activated / Docked");
             }
-            setShowingFlag(true);        
+            setShowingFlag(true);
         }
     }
-    
+
     @Override
     protected void componentHidden() {
         setComponentVisible(false);
         setShowingFlag(false);
     }
-    
+
     /**
      * @return the showingFlag
      */
@@ -455,8 +454,8 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     }
 
     @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_TableViewTopComponent(), Boolean.FALSE);
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_TableViewTopComponent(), Boolean.FALSE);
     }
 
     @Override

@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.whatsnew;
 
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.util.Map;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -169,8 +169,8 @@ public final class WhatsNewTopComponent extends JavaFxTopComponent<WhatsNewViewP
     }
 
     @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_TutorialTopComponentTopComponent(), Boolean.FALSE);
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_TutorialTopComponentTopComponent(), Boolean.FALSE);
     }
 
     @Override

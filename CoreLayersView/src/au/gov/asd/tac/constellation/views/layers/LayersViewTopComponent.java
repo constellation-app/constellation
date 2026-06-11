@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
@@ -27,7 +28,6 @@ import au.gov.asd.tac.constellation.views.layers.components.LayersViewPane;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -217,8 +217,8 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     }
 
     @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_LayersViewTopComponent(), Boolean.FALSE);
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_LayersViewTopComponent(), Boolean.FALSE);
     }
 
     @Override

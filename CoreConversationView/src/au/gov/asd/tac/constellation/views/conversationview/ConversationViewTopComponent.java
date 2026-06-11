@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import java.util.Map;
 import java.util.Properties;
 import javafx.application.Platform;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -127,8 +127,8 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     }
 
     @Override
-    public Map<String, Boolean> getDefaultFloatingPreference() {
-        return Map.of(Bundle.CTL_ConversationViewTopComponent(), Boolean.FALSE);
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_ConversationViewTopComponent(), Boolean.FALSE);
     }
 
     @Override

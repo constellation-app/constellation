@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views;
 
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.preferences.ViewOptionsPanelController;
 import au.gov.asd.tac.constellation.views.preferences.ViewOptionsUtility;
 import java.awt.Dimension;
@@ -92,7 +93,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     protected void componentOpened() {
         final WindowManager windowManager = WindowManager.getDefault();
 
-        pcl = (PropertyChangeEvent evt) -> { // Fires when a view is floated or docked manually via the context menu.
+        pcl = (final PropertyChangeEvent evt) -> { // Fires when a view is floated or docked manually via the context menu.
             prefs.putBoolean(this.getName(), windowManager.isTopComponentFloating(this));
             final ViewOptionsPanelController controller = new ViewOptionsPanelController();
             controller.update();
@@ -258,7 +259,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
         return new HelpCtx(getClass().getName());
     }
 
-    public abstract Map<String, Boolean> getDefaultFloatingPreference();
+    public abstract Tuple<String, Boolean> getDefaultFloatingInfo();
 
     protected abstract String getModeName();
 }
