@@ -37,6 +37,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.utilities.geospatial.Geohash;
 import au.gov.asd.tac.constellation.utilities.geospatial.Mgrs;
@@ -47,6 +48,7 @@ import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
@@ -89,11 +91,12 @@ import org.openide.awt.ActionReferences;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
- * The Map View Top Component. This class provides the Map View window and
- * toolbar and handles all interactions with the graph.
+ * The Map View Top Component. This class provides the Map View window and toolbar and handles all interactions with the
+ * graph.
  */
 @TopComponent.Description(
         preferredID = "MapViewTopComponent",
@@ -115,6 +118,7 @@ import org.openide.windows.TopComponent;
     "CTL_MapViewAction=Map View",
     "CTL_MapViewTopComponent=Map View",
     "HINT_MapViewTopComponent=Map View"})
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
     private static final String UPDATE_SELECTION_PLUGIN = "Map View: Update Selection on Graph";
@@ -218,7 +222,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             if (currentGraph != null) {
                 final String zoomAction = (String) event.getSource();
                 switch (zoomAction) {
-                    case ZOOM_ALL -> renderer.zoomToMarkers(markerState);
+                    case ZOOM_ALL ->
+                        renderer.zoomToMarkers(markerState);
                     case ZOOM_SELECTION -> {
                         final MarkerState selectedOnlyState = new MarkerState();
                         selectedOnlyState.setShowSelectedOnly(true);
@@ -422,7 +427,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                     NotifyDisplayer.display("Invalid coordinate data provided, radius should be greater than or equal to 0", NotifyDescriptor.ERROR_MESSAGE);
                     return;
                 }
-                
+
                 final Location coordinateLocation = new Location(latitude, longitude);
                 if (radius > 0) {
                     final float radiusDD = (float) Distance.Haversine.kilometersToDecimalDegrees(radius);
@@ -452,7 +457,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                 final ConstellationPointFeature mgrsFeature = new ConstellationPointFeature(mgrsLocation);
                 marker = renderer.addCustomMarker(mgrsFeature);
             }
-            default -> marker = null;
+            default ->
+                marker = null;
         }
         renderer.zoomToLocation(marker == null ? null : marker.getLocation());
     }
@@ -477,12 +483,15 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             @SuppressWarnings("unchecked") //master will need to be of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> typedMaster = (PluginParameter<SingleChoiceParameterValue>) master;
             switch (SingleChoiceParameterType.getChoice(typedMaster)) {
-                case GEO_TYPE_COORDINATE -> params.get(PARAMETER_LOCATION)
+                case GEO_TYPE_COORDINATE ->
+                    params.get(PARAMETER_LOCATION)
                             .setDescription("Enter a coordinate in decimal degrees (and optionally a radius "
                                     + "in kilometers) with components separated by spaces or commas");
-                case GEO_TYPE_GEOHASH -> params.get(PARAMETER_LOCATION)
+                case GEO_TYPE_GEOHASH ->
+                    params.get(PARAMETER_LOCATION)
                             .setDescription("Enter a base-16 geohash value");
-                case GEO_TYPE_MGRS -> params.get(PARAMETER_LOCATION)
+                case GEO_TYPE_MGRS ->
+                    params.get(PARAMETER_LOCATION)
                             .setDescription("Enter an MGRS value");
                 default -> {
                     // do nothing
@@ -579,9 +588,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     }
 
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
+     * content of this method is always regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -644,7 +652,15 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                 }
             }
         }
-
     }
 
+    @Override
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_MapViewTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
+    }
 }

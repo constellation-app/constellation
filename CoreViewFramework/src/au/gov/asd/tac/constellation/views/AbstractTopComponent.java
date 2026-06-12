@@ -16,7 +16,17 @@
 package au.gov.asd.tac.constellation.views;
 
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.views.preferences.ViewOptionsPanelController;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Window;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Map;
+import java.util.prefs.Preferences;
 import org.openide.util.HelpCtx;
+import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -30,12 +40,12 @@ import org.openide.windows.WindowManager;
 public abstract class AbstractTopComponent<P> extends TopComponent {
 
     protected P content;
-
     private boolean isVisible;
+    private PropertyChangeListener pcl;
+    private final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
 
     /**
-     * Checks if the view will need an update when a graph changes based on if
-     * the view is visible currently.
+     * Checks if the view will need an update when a graph changes based on if the view is visible currently.
      *
      * @return true if the view is visible and needs updating
      */
@@ -48,15 +58,13 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     }
 
     /**
-     * Builds and initialises the content for this top component. You should
-     * call this method in the constructor of your TopComponent implementation
-     * after calling the initComponents() method.
+     * Builds and initialises the content for this top component. You should call this method in the constructor of your
+     * TopComponent implementation after calling the initComponents() method.
      */
     protected abstract void initContent();
 
     /**
-     * This is where you pass in content which will be rendered within the
-     * AbstractTopComponent.
+     * This is where you pass in content which will be rendered within the AbstractTopComponent.
      *
      * @return
      */
@@ -82,7 +90,95 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentOpened() {
+        final WindowManager windowManager = WindowManager.getDefault();
+        final ViewOptionsPanelController controller = new ViewOptionsPanelController();
+
+        pcl = (final PropertyChangeEvent evt) -> { // Fires when a view is floated or docked manually via the context menu.
+            prefs.putBoolean(this.getName(), windowManager.isTopComponentFloating(this));
+            controller.update();
+        };
+
+        this.addPropertyChangeListener(pcl);
         super.componentOpened();
+
+        final Map<String, Boolean> defaultPrefs = controller.getPanel().getDefaultPrefs();
+
+        if (defaultPrefs.containsKey(this.getName())) {
+            final Boolean isFloating = prefs.getBoolean(this.getName(), defaultPrefs.get(this.getName()));
+            WindowManager.getDefault().setTopComponentFloating(this, isFloating);
+
+            if (isFloating) {
+                // This loops through all the current windows and compares this top component's top level ancestor
+                // with the window's parent. Sets the size and location for the floating component if a match is found.
+                for (final Window window : Window.getWindows()) {
+                    if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
+                        final Frame mainWindow = windowManager.getMainWindow();
+                        final int mainWidth = mainWindow.getWidth();
+                        final int mainHeight = mainWindow.getHeight();
+                        final int mainX = mainWindow.getX();
+                        final int mainY = mainWindow.getY();
+
+                        final Dimension sideSize = new Dimension(
+                                Math.round(mainWidth * 0.3F),
+                                Math.round(mainHeight * (mainWidth > mainHeight ? 0.892F : 0.94F))
+                        );
+
+                        final Dimension bottomSize = new Dimension(
+                                mainWidth,
+                                Math.round(mainHeight * 0.3F)
+                        );
+
+                        final Dimension size;
+
+                        switch (getModeName()) {
+                            case "leftSlidingSide", "explorer", "navigator" -> {
+                                size = sideSize;
+                                window.setLocation(
+                                        mainX,
+                                        mainY + mainHeight - size.height
+                                );
+                            }
+                            case "commonpalette", "properties", "rightSlidingSide" -> {
+                                size = sideSize;
+                                window.setLocation(
+                                        mainX + mainWidth - size.width,
+                                        mainY + mainHeight - size.height
+                                );
+                            }
+                            case "output", "bottomSlidingSide", "isSliding" -> {
+                                switch (this.getName()) {
+                                    case "Find and Replace" -> {
+                                        size = new Dimension(600, 350);
+                                        window.setLocation(
+                                                mainX,
+                                                mainY + mainHeight - sideSize.height
+                                        );
+                                    }
+                                    default -> {
+                                        size = bottomSize;
+                                        window.setLocation(
+                                                mainX,
+                                                mainY + mainHeight - size.height
+                                        );
+                                    }
+                                }
+                            }
+                            default -> { // Any other mode, default to opening on the left side.
+                                size = sideSize;
+                                window.setLocation(
+                                        mainX,
+                                        mainY + mainHeight - size.height
+                                );
+                            }
+                        }
+
+                        window.setSize(size);
+                    }
+                }
+
+                this.setRequestFocusEnabled(true);
+            }
+        }
 
         isVisible = true;
         ConstellationLogger.getDefault().viewStarted(this);
@@ -90,6 +186,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentClosed() {
+        this.removePropertyChangeListener(pcl);
         super.componentClosed();
 
         isVisible = false;
@@ -160,4 +257,8 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     public final HelpCtx getHelpCtx() {
         return new HelpCtx(getClass().getName());
     }
+
+    public abstract Tuple<String, Boolean> getDefaultFloatingInfo();
+
+    protected abstract String getModeName();
 }
