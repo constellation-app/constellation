@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.preferences.ViewOptionsPanelController;
-import au.gov.asd.tac.constellation.views.preferences.ViewOptionsUtility;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
@@ -92,20 +91,20 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     protected void componentOpened() {
         final WindowManager windowManager = WindowManager.getDefault();
+        final ViewOptionsPanelController controller = new ViewOptionsPanelController();
 
         pcl = (final PropertyChangeEvent evt) -> { // Fires when a view is floated or docked manually via the context menu.
             prefs.putBoolean(this.getName(), windowManager.isTopComponentFloating(this));
-            final ViewOptionsPanelController controller = new ViewOptionsPanelController();
             controller.update();
         };
 
         this.addPropertyChangeListener(pcl);
         super.componentOpened();
 
-        final Map<String, Boolean> prefsFromFile = ViewOptionsUtility.getDFPFromFile();
+        final Map<String, Boolean> defaultPrefs = controller.getPanel().getDefaultPrefs();
 
-        if (prefsFromFile.containsKey(this.getName())) {
-            final Boolean isFloating = prefs.getBoolean(this.getName(), prefsFromFile.get(this.getName()));
+        if (defaultPrefs.containsKey(this.getName())) {
+            final Boolean isFloating = prefs.getBoolean(this.getName(), defaultPrefs.get(this.getName()));
             WindowManager.getDefault().setTopComponentFloating(this, isFloating);
 
             if (isFloating) {

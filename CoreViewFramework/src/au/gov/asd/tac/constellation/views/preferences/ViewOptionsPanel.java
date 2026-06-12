@@ -22,6 +22,7 @@ import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
 /**
@@ -32,7 +33,7 @@ import org.openide.util.NbPreferences;
 public class ViewOptionsPanel extends JPanel {
 
     private final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
-    private final Map<String, Boolean> defaultPrefs = ViewOptionsUtility.getDFPFromFile();
+    private final Map<String, Boolean> defaultPrefs = new TreeMap<>();
     private DefaultTableModel tableModel;
 
     protected ViewOptionsPanel() {
@@ -55,7 +56,7 @@ public class ViewOptionsPanel extends JPanel {
             }
         };
 
-        final Map<String, Boolean> options = getOptionsFromPrefs().isEmpty() ? defaultPrefs : getOptionsFromPrefs();
+        final Map<String, Boolean> options = getOptionsFromPrefs().isEmpty() ? getDefaultPrefs() : getOptionsFromPrefs();
 
         for (final Map.Entry<String, Boolean> entry : options.entrySet()) {
             tableModel.addRow(new Object[]{entry.getKey(), entry.getValue()});
@@ -92,11 +93,25 @@ public class ViewOptionsPanel extends JPanel {
     protected final Map<String, Boolean> getOptionsFromPrefs() {
         final Map<String, Boolean> optionsFromPrefs = new TreeMap<>();
 
-        for (final Map.Entry<String, Boolean> entry : defaultPrefs.entrySet()) {
+        for (final Map.Entry<String, Boolean> entry : getDefaultPrefs().entrySet()) {
             optionsFromPrefs.put(entry.getKey(), prefs.getBoolean(entry.getKey(), entry.getValue()));
         }
 
         return Collections.unmodifiableMap(optionsFromPrefs);
+    }
+
+    /**
+     * Returns the view preference selections from the defaults defined in each applicable view.
+     *
+     * @return a map containing the view preference selections from the defaults defined in each applicable view.
+     */
+    public final Map<String, Boolean> getDefaultPrefs() {
+
+        if (defaultPrefs.isEmpty()) {
+            Lookup.getDefault().lookupAll(ViewOptionsProvider.class).forEach(lookup -> defaultPrefs.putAll(lookup.getDefaultFloatingPreferences()));
+        }
+
+        return Collections.unmodifiableMap(defaultPrefs);
     }
 
     /**
