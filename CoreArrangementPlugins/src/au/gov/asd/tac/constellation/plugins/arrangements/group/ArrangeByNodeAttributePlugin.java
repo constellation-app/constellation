@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
@@ -60,7 +61,7 @@ public class ArrangeByNodeAttributePlugin extends SimpleEditPlugin {
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<BooleanParameterType.BooleanParameterValue> threeD = BooleanParameterType.build(THREE_D_PARAMETER_ID);
+        final PluginParameter<BooleanParameterValue> threeD = BooleanParameterType.build(THREE_D_PARAMETER_ID);
         threeD.setName("Arrange in 3D");
         threeD.setDescription("If checked, arrangement adjusts z-axis positions of nodes rather than organising into groups in 2D");
         parameters.addParameter(threeD);

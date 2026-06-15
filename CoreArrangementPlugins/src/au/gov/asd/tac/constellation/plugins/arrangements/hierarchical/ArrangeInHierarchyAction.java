@@ -128,9 +128,7 @@ public class ArrangeInHierarchyAction extends AbstractAction {
                         .set(ArrangeInHierarchyPlugin.ROOTS_PARAMETER_ID, rootVxIds)
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInHierarchyAction());
-
             }
         }
-
     }
 }

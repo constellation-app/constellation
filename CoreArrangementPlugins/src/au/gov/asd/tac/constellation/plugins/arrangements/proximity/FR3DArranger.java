@@ -164,32 +164,29 @@ public class FR3DArranger implements Arranger {
         });
     }
 
-    public void layout() throws InterruptedException {
+    private void layout() throws InterruptedException {
         for (int i = 0; i < MAX_ITERATIONS; i++) {
             interaction.setProgress(i + 1, MAX_ITERATIONS, ARRANGING_INTERACTION, true);
 
-            wg.vertexStream().parallel().forEach(vertexId -> repulse(vertexId)
-            );
+            wg.vertexStream().parallel().forEach(vertexId -> repulse(vertexId));
 
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
 
-            wg.linkStream().parallel().forEach(txId -> attract(txId)
-            );
+            wg.linkStream().parallel().forEach(txId -> attract(txId));
 
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
 
-            wg.vertexStream().parallel().forEach(vertexId -> position(vertexId)
-            );
+            wg.vertexStream().parallel().forEach(vertexId -> position(vertexId));
 
             cool(i);
         }
     }
 
-    public void writeBackXYZ() {
+    private void writeBackXYZ() {
         final int xAttr = VisualConcept.VertexAttribute.X.get(wg);
         final int yAttr = VisualConcept.VertexAttribute.Y.get(wg);
         final int zAttr = VisualConcept.VertexAttribute.Z.get(wg);

@@ -138,7 +138,7 @@ class FR2DArranger implements Arranger {
         }
     }
 
-    public void writeBackXYZ() {
+    private void writeBackXYZ() {
         final int xAttr = VisualConcept.VertexAttribute.X.get(graph);
         final int yAttr = VisualConcept.VertexAttribute.Y.get(graph);
         final int zAttr = VisualConcept.VertexAttribute.Z.get(graph);
