@@ -146,21 +146,18 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                                 );
                             }
                             case "output", "bottomSlidingSide", "isSliding" -> {
-                                switch (this.getName()) {
-                                    case "Find and Replace" -> {
-                                        size = new Dimension(600, 350);
-                                        window.setLocation(
-                                                mainX,
-                                                mainY + mainHeight - sideSize.height
-                                        );
-                                    }
-                                    default -> {
-                                        size = bottomSize;
-                                        window.setLocation(
-                                                mainX,
-                                                mainY + mainHeight - size.height
-                                        );
-                                    }
+                                if (this.getName().equals("Find and Replace")) {
+                                    size = new Dimension(600, 350);
+                                    window.setLocation(
+                                            mainX,
+                                            mainY + mainHeight - sideSize.height
+                                    );
+                                } else {
+                                    size = bottomSize;
+                                    window.setLocation(
+                                            mainX,
+                                            mainY + mainHeight - size.height
+                                    );
                                 }
                             }
                             default -> { // Any other mode, default to opening on the left side.
