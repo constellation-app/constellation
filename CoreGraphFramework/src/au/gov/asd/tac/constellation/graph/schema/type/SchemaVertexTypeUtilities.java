@@ -343,13 +343,15 @@ public class SchemaVertexTypeUtilities {
                         boolean isDeficientResult = false;
                         final Comparator comparator = VertexDominanceCalculator.getDefault().getComparator();
                         for (final ExtractedVertexType extractedType : extractedTypes) {
-                            // do compare only if identifiers are the same
-                            if (identifier.equalsIgnoreCase(extractedType.identifier)) {
-                                if (comparator.compare(extractedType.getType(), currentExtractedType.getType()) > 0) {
+                            // do compare only if identifiers are the same or new identifier is a substring of the existing extractedType
+                            if (identifier.equalsIgnoreCase(extractedType.identifier) || 
+                                    (identifier.length() < extractedType.identifier.length() && extractedType.identifier.indexOf(identifier) > -1)) {
+                                // ignore current extracted type if existing extracted type is higher in the list (lower number)
+                                if (comparator.compare(extractedType.getType(), currentExtractedType.getType()) < 0) {
                                     isDeficientResult = true;
                                     break;
-                                } else if (comparator.compare(extractedType.getType(), currentExtractedType.getType()) < 0 ||
-                                        currentExtractedType.compareTo(extractedType) > 0) {
+                                } else if (comparator.compare(extractedType.getType(), currentExtractedType.getType()) > 0 ||
+                                        currentExtractedType.compareTo(extractedType) < 0) {
                                     deficientResults.add(extractedType);
                                 }
                             } 

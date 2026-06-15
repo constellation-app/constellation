@@ -36,7 +36,7 @@ import io
 #            Both files will need to be set to the same updated VERSION number.
 ################################################################################################
 # Last updated 24 Mar 2026
-__version__ = 1.0.1 
+__version__ = '1.0.2' 
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
 #

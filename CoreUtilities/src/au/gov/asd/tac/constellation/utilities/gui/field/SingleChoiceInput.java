@@ -332,9 +332,9 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
                 }
             }
 
-            final ConstellationInputListener<List<C>> cl = (final List<C> newValue) -> {
+            final ConstellationInputListener<C> cl = (final C newValue) -> {
                 if (newValue != null) {
-                    final List<String> stringrep = newValue.stream().map(Object::toString).toList();
+                    final String stringrep = newValue.toString();
                     for (final CheckBox box : boxes) {
                         box.setSelected(stringrep.contains(box.getText())); 
                     }
