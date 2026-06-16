@@ -161,9 +161,7 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
 
     @Override
     public void setValue(final C value) {
-        Platform.runLater(() -> {
-            this.setChoice(value);
-        });
+        Platform.runLater(() -> setChoice(value));
     }
 
     @Override
