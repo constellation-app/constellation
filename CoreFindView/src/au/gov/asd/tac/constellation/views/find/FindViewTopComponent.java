@@ -24,12 +24,16 @@ import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.views.find.components.advanced.AdvancedCriteriaBorderPane;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Point;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * Find View Top Component.
@@ -228,6 +232,17 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
             // functionality for the change criteriapane function
             criteriaPane.setUpdateUI(false);
         }
+    }
+
+    @Override
+    protected Dimension createFloatingSize(final Frame window, final String mode) {
+        return new Dimension(600, 350);
+    }
+
+    @Override
+    protected Point createFloatingLocation(final Frame window, final String mode, final Dimension size) {
+        final Frame mainWindow = WindowManager.getDefault().getMainWindow();
+        return super.createFloatingLocation(mainWindow, "", super.createFloatingSize(mainWindow, ""));
     }
 
     @Override
