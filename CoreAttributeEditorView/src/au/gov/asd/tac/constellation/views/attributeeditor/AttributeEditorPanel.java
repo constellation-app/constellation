@@ -285,7 +285,7 @@ public class AttributeEditorPanel extends BorderPane {
         schemaMenuNode.getChildren().addAll(schemaMenuRect, schemaMenuText);
         schemaMenuRect.setFill(color);
         schemaMenuItem.setOnAction(e -> {
-            final EditOperation editOperation = value -> prefs.put(correspondingPreference, ((ConstellationColor) value).getHtmlColor());
+            final EditOperation editOperation = value -> prefs.put(correspondingPreference, value != null ? ((ConstellationColor) value).getHtmlColor() : "");
             @SuppressWarnings("unchecked") // return type of createEditor will actually be AbstractEditor<ConstellationColor>
             final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(String.format("For %s", itemName), editOperation, ConstellationColor.fromFXColor(color));
             final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
