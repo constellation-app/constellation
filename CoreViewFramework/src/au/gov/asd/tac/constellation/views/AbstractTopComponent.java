@@ -219,18 +219,16 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
         final Dimension size;
 
         switch (mode) {
-            case "output", "bottomSlidingSide", "isSliding" -> { // Bottom opening top components.
+            case "output", "bottomSlidingSide", "isSliding" -> // Bottom opening top components.
                 size = new Dimension(
                         windowWidth,
                         Math.round(windowHeight * 0.3F)
                 );
-            }
-            default -> { // Side opening top components; "leftSlidingSide", "explorer", "navigator", "commonpalette", "properties", "rightSlidingSide", and any other modes by default.
+            default -> // Side opening top components; "leftSlidingSide", "explorer", "navigator", "commonpalette", "properties", "rightSlidingSide", and any other modes by default.
                 size = new Dimension(
                         Math.round(windowWidth * 0.3F),
                         Math.round(windowHeight * (windowWidth > windowHeight ? 0.892F : 0.94F))
                 );
-            }
         }
 
         return size;
@@ -249,12 +247,10 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
         final int locationX;
 
         switch (mode) {
-            case "commonpalette", "properties", "rightSlidingSide" -> { // Right side opening top components.
+            case "commonpalette", "properties", "rightSlidingSide" -> // Right side opening top components.
                 locationX = window.getX() + window.getWidth() - size.width;
-            }
-            default -> { // Left side opening top components; "leftSlidingSide", "explorer", "navigator", "output", "bottomSlidingSide", "isSliding", and any other modes by default.
+            default -> // Left side opening top components; "leftSlidingSide", "explorer", "navigator", "output", "bottomSlidingSide", "isSliding", and any other modes by default.
                 locationX = window.getX();
-            }
         }
 
         return new Point(locationX, window.getY() + window.getHeight() - size.height);
