@@ -114,9 +114,9 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                 for (final Window window : Window.getWindows()) {
                     if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
                         final Frame mainWindow = windowManager.getMainWindow();
-                        final String mode = getModeName();
-                        final Dimension size = createFloatingSize(mainWindow, mode);
-                        final Point location = createFloatingLocation(mainWindow, mode, size);
+                        final String mode = this.getModeName();
+                        final Dimension size = this.createFloatingSize(mainWindow, mode);
+                        final Point location = this.createFloatingLocation(mainWindow, mode, size);
                         window.setSize(size);
                         window.setLocation(location);
                     }
