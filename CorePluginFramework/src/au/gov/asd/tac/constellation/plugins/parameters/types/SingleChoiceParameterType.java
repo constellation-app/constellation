@@ -140,6 +140,9 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
 
             parameterValue.setOptions(options);
             parameter.setProperty(CHOICES, new Object());
+            
+            // TODO: find out why this is needed after the single choice input was updated 
+            parameter.fireChangeEvent(ParameterChange.VALUE);
         }
     }
 
