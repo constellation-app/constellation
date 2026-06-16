@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.preferences.ViewOptionsPanelController;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Point;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -104,8 +105,8 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
         final Map<String, Boolean> defaultPrefs = controller.getPanel().getDefaultPrefs();
 
         if (defaultPrefs.containsKey(this.getName())) {
-            final Boolean isFloating = prefs.getBoolean(this.getName(), defaultPrefs.get(this.getName()));
-            WindowManager.getDefault().setTopComponentFloating(this, isFloating);
+            final boolean isFloating = prefs.getBoolean(this.getName(), defaultPrefs.get(this.getName()));
+            windowManager.setTopComponentFloating(this, isFloating);
 
             if (isFloating) {
                 // This loops through all the current windows and compares this top component's top level ancestor
@@ -113,63 +114,11 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                 for (final Window window : Window.getWindows()) {
                     if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
                         final Frame mainWindow = windowManager.getMainWindow();
-                        final int mainWidth = mainWindow.getWidth();
-                        final int mainHeight = mainWindow.getHeight();
-                        final int mainX = mainWindow.getX();
-                        final int mainY = mainWindow.getY();
-
-                        final Dimension sideSize = new Dimension(
-                                Math.round(mainWidth * 0.3F),
-                                Math.round(mainHeight * (mainWidth > mainHeight ? 0.892F : 0.94F))
-                        );
-
-                        final Dimension bottomSize = new Dimension(
-                                mainWidth,
-                                Math.round(mainHeight * 0.3F)
-                        );
-
-                        final Dimension size;
-
-                        switch (getModeName()) {
-                            case "leftSlidingSide", "explorer", "navigator" -> {
-                                size = sideSize;
-                                window.setLocation(
-                                        mainX,
-                                        mainY + mainHeight - size.height
-                                );
-                            }
-                            case "commonpalette", "properties", "rightSlidingSide" -> {
-                                size = sideSize;
-                                window.setLocation(
-                                        mainX + mainWidth - size.width,
-                                        mainY + mainHeight - size.height
-                                );
-                            }
-                            case "output", "bottomSlidingSide", "isSliding" -> {
-                                if (this.getName().equals("Find and Replace")) {
-                                    size = new Dimension(600, 350);
-                                    window.setLocation(
-                                            mainX,
-                                            mainY + mainHeight - sideSize.height
-                                    );
-                                } else {
-                                    size = bottomSize;
-                                    window.setLocation(
-                                            mainX,
-                                            mainY + mainHeight - size.height
-                                    );
-                                }
-                            }
-                            default -> { // Any other mode, default to opening on the left side.
-                                size = sideSize;
-                                window.setLocation(
-                                        mainX,
-                                        mainY + mainHeight - size.height
-                                );
-                            }
-                        }
-
+                        final String mode = getModeName();
+                        final Dimension size = createFloatingSize(mainWindow, mode);
+                        final Point location = createFloatingLocation(mainWindow, mode, size);
                         window.setSize(size);
+                        window.setLocation(location);
                     }
                 }
 
@@ -253,6 +202,62 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     public final HelpCtx getHelpCtx() {
         return new HelpCtx(getClass().getName());
+    }
+
+    /**
+     * Creates a dimension for the floating top component based on the size of Constellation's window and the mode of
+     * the top component.
+     *
+     * @param window
+     * @param mode
+     * @return a dimension for the floating top component.
+     */
+    protected Dimension createFloatingSize(final Frame window, final String mode) {
+        final int windowWidth = window.getWidth();
+        final int windowHeight = window.getHeight();
+
+        final Dimension size;
+
+        switch (mode) {
+            case "output", "bottomSlidingSide", "isSliding" -> { // Bottom opening top components.
+                size = new Dimension(
+                        windowWidth,
+                        Math.round(windowHeight * 0.3F)
+                );
+            }
+            default -> { // Side opening top components; "leftSlidingSide", "explorer", "navigator", "commonpalette", "properties", "rightSlidingSide", and any other modes by default.
+                size = new Dimension(
+                        Math.round(windowWidth * 0.3F),
+                        Math.round(windowHeight * (windowWidth > windowHeight ? 0.892F : 0.94F))
+                );
+            }
+        }
+
+        return size;
+    }
+
+    /**
+     * Creates a point for the floating top component to open from based on the size of Constellation's window, and the
+     * mode and size of the top component.
+     *
+     * @param window
+     * @param mode
+     * @param size
+     * @return a point for the floating top component to open from.
+     */
+    protected Point createFloatingLocation(final Frame window, final String mode, final Dimension size) {
+        final int locationX;
+
+        switch (mode) {
+            case "commonpalette", "properties", "rightSlidingSide" -> { // Right side opening top components.
+                locationX = window.getX() + window.getWidth() - size.width;
+            }
+            default -> { // Left side opening top components; "leftSlidingSide", "explorer", "navigator", "output", "bottomSlidingSide", "isSliding", and any other modes by default.
+                locationX = window.getX();
+            }
+        }
+
+        return new Point(locationX, window.getY() + window.getHeight() - size.height);
     }
 
     public abstract Tuple<String, Boolean> getDefaultFloatingInfo();
