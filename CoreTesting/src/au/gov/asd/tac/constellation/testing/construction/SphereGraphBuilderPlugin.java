@@ -594,10 +594,9 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                     graph.setIntValue(txIdAttr, txId, txId);
                     graph.setObjectValue(txColorAttr, txId, rgb3);
                 }
-
                 // Loops, directed and undirected.
                 for (int i = 0; i < lim4; i++) {
-                    final ConstellationColor rgb2 = ConstellationColor.getColorValue(0.25F, 1.0F - (float) i / lim2, (float) i / lim2, 1F);
+                    final ConstellationColor rgb = ConstellationColor.getColorValue(0.25F, 1.0F - (float) i / lim4, (float) i / lim4, 1F);
                     final int Vx = vxIds[random.nextInt(vxIds.length)];
                     if (i % 2 == 0) {
                         txId = graph.addTransaction(Vx, Vx, true);
@@ -605,12 +604,11 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                         txId = graph.addTransaction(Vx, Vx, false);
                     }
                     graph.setIntValue(txIdAttr, txId, txId);
-                    graph.setObjectValue(txColorAttr, txId, rgb2);
+                    graph.setObjectValue(txColorAttr, txId, rgb);
                 }
-
                 // Dimmed transactions, directed and undirected.
                 for (int i = 0; i < lim5; i++) {
-                    final ConstellationColor rgb2 = ConstellationColor.getColorValue(0.25F, 1.0F - (float) i / lim2, (float) i / lim2, 1F);
+                    final ConstellationColor rgb = ConstellationColor.getColorValue(0.25F, 1.0F - (float) i / lim5, (float) i / lim5, 1F);
                     final int sourceVx = vxIds[random.nextInt(vxIds.length)];
                     final int destinationVx = vxIds[random.nextInt(vxIds.length)];
                     if (i % 2 == 0) {
@@ -619,15 +617,15 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                         txId = graph.addTransaction(sourceVx, destinationVx, false);
                     }
                     graph.setIntValue(txIdAttr, txId, txId);
-                    graph.setObjectValue(txColorAttr, txId, rgb2);
+                    graph.setObjectValue(txColorAttr, txId, rgb);
                     graph.setBooleanValue(txDimmedAttr, txId, true);
                 }
-
                 // Draw some lines between random nodes, but don't draw multiple lines between the same two nodes.
+                final double nVxRand = (Math.log10(nVx) * 5) + 1;
                 for (int i = 0; i < randomTxsCountToAdd; i++) {
                     // Choose random positions, convert to correct vxIds.
                     // Concentrate most sources to just a few vertices; it looks a bit nicer than plain random.
-                    int fromPosition = vertexCount + (random.nextFloat() < 0.9F ? random.nextInt((int) (Math.log10(nVx) * 5) + 1) : random.nextInt(nVx));
+                    int fromPosition = vertexCount + (random.nextFloat() < 0.9F ? random.nextInt((int) nVxRand) : random.nextInt(nVx));
                     int toPosition;
                     do {
                         toPosition = vertexCount + random.nextInt(nVx);
@@ -649,7 +647,8 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                     graph.setLongValue(txDateTimeAttr, e, d.getTime() - random.nextInt(fourDays));
                     graph.setIntValue(txIdAttr, e, e);
                     graph.setObjectValue(txColorAttr, e, randomColor3(random));
-                    graph.setFloatValue(txVisibilityAttr, e, (float) i / (nTx - 1));
+                    final float visibiltyValue = randomTxsCountToAdd > 1 ? (float) i / (randomTxsCountToAdd - 1) : 1.0F;
+                    graph.setFloatValue(txVisibilityAttr, e, visibiltyValue);
 
                     if (Thread.interrupted()) {
                         throw new InterruptedException();
@@ -674,7 +673,8 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                     graph.setLongValue(txDateTimeAttr, e, d.getTime() - random.nextInt(fourDays));
                     graph.setIntValue(txIdAttr, e, e);
                     graph.setObjectValue(txColorAttr, e, randomColor3(random));
-                    graph.setFloatValue(txVisibilityAttr, e, (float) i / (nTx - 1));
+                    final float visibiltyValue = nTx > 1 ? (float) i / (nTx - 1) : 1.0F;
+                    graph.setFloatValue(txVisibilityAttr, e, visibiltyValue);
 
                     if (Thread.interrupted()) {
                         throw new InterruptedException();
