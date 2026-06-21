@@ -76,7 +76,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         this.setAutoHeight(false);
         this.setWrapText(true);
         this.setPadding(insets);
-        final String css = SpellCheckingTextArea.class.getResource("SpellChecker.css").toExternalForm();//"resources/test.css"
+        final String css = SpellCheckingTextArea.class.getResource("SpellChecker.css").toExternalForm();
         this.getStylesheets().add(css);
 
         this.setOnMouseClicked((final MouseEvent event) -> {
