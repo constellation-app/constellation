@@ -254,7 +254,6 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final int vxNormalisedAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "Normalised", null, 0.0F, null);
 
         final int txIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
-        final int txDirectedAttr = VisualConcept.TransactionAttribute.DIRECTED.ensure(graph);
         final int txWidthAttr = VisualConcept.TransactionAttribute.WIDTH.ensure(graph);
         final int txDimmedAttr = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
         final int txVisibilityAttr = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
@@ -371,71 +370,6 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
             // Do nothing
         }
 
-        if (nVx > 0) {
-            // Create transactions between the nodes.
-            final Date d = new Date();
-            final int fourDays = 4 * 24 * 60 * 60 * 1000;
-            if ("Random vertices".equals(option)) {
-                // Draw some lines between random nodes, but don't draw multiple lines between the same two nodes.
-                for (int i = 0; i < nTx; i++) {
-                    // Choose random positions, convert to correct vxIds.
-                    // Concentrate most sources to just a few vertices; it looks a bit nicer than plain random.
-                    int fromPosition = vertexCount + (random.nextFloat() < 0.9F ? random.nextInt((int) (Math.log10(nVx) * 5) + 1) : random.nextInt(nVx));
-                    int toPosition;
-                    do {
-                        toPosition = vertexCount + random.nextInt(nVx);
-                    } while (toPosition == fromPosition);
-
-                    assert fromPosition != toPosition;
-
-                    int fromVx = graph.getVertex(fromPosition);
-                    int toVx = graph.getVertex(toPosition);
-
-                    // Always draw from the lower numbered vertex to the higher numbered vertex.
-                    if (toVx < fromVx) {
-                        int tmp = fromVx;
-                        fromVx = toVx;
-                        toVx = tmp;
-                    }
-
-                    final int e = graph.addTransaction(fromVx, toVx, true);
-                    graph.setLongValue(txDateTimeAttr, e, d.getTime() - random.nextInt(fourDays));
-                    graph.setIntValue(txIdAttr, e, e);
-                    graph.setObjectValue(txColorAttr, e, randomColor3(random));
-                    graph.setFloatValue(txVisibilityAttr, e, (float) i / (nTx - 1));
-
-                    if (Thread.interrupted()) {
-                        throw new InterruptedException();
-                    }
-                }
-            } else {
-                if ("1 path, random vertices".equals(option)) {
-                    // Shuffle the vertices.
-                    for (int i = nVx - 1; i > 0; i--) {
-                        final int ix = random.nextInt(i);
-                        final int t = vxIds[i];
-                        vxIds[i] = vxIds[ix];
-                        vxIds[ix] = t;
-                    }
-                }
-
-                // Transactions from/to each vertex in ascending order, modulo nVx.
-                for (int i = 0; i < nTx; i++) {
-                    final int fromNode = vxIds[i % nVx];
-                    final int toNode = vxIds[(i + 1) % nVx];
-                    final int e = graph.addTransaction(fromNode, toNode, true);
-                    graph.setLongValue(txDateTimeAttr, e, d.getTime() - random.nextInt(fourDays));
-                    graph.setIntValue(txIdAttr, e, e);
-                    graph.setObjectValue(txColorAttr, e, randomColor3(random));
-                    graph.setFloatValue(txVisibilityAttr, e, (float) i / (nTx - 1));
-
-                    if (Thread.interrupted()) {
-                        throw new InterruptedException();
-                    }
-                }
-            }
-        }
-
         // Do a spherical layout.
         try {
             PluginExecution.withPlugin(ArrangementPluginRegistry.SPHERE).executeNow(graph);
@@ -528,7 +462,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setFloatValue(vxVisibilityAttr, vx3, 1);
         graph.setObjectValue(vxColorAttr, vx3, randomColor3(random));
         graph.setStringValue(vxForegroundIconAttr, vx3, DEFAULT_ICON);
-        graph.setStringValue(vxBackgroundIconAttr, vx2, BACKGROUND_ROUND_CIRCLE);
+        graph.setStringValue(vxBackgroundIconAttr, vx3, BACKGROUND_ROUND_CIRCLE);
         graph.setStringValue(vxCountry1Attr, vx3, countries.get(vx3 % countries.size()));
         graph.setStringValue(vxCountry2Attr, vx3, countries.get((vx3 + 1) % countries.size()));
         graph.setFloatValue(vxNormalisedAttr, vx3, random.nextFloat());
@@ -544,7 +478,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setFloatValue(vxVisibilityAttr, vx4, 1);
         graph.setObjectValue(vxColorAttr, vx4, randomColor3(random));
         graph.setStringValue(vxForegroundIconAttr, vx4, DEFAULT_ICON);
-        graph.setStringValue(vxBackgroundIconAttr, vx2, BACKGROUND_ROUND_CIRCLE);
+        graph.setStringValue(vxBackgroundIconAttr, vx4, BACKGROUND_ROUND_CIRCLE);
         graph.setStringValue(vxCountry1Attr, vx4, countries.get(vx4 % countries.size()));
         graph.setStringValue(vxCountry2Attr, vx4, countries.get((vx4 + 1) % countries.size()));
         graph.setFloatValue(vxNormalisedAttr, vx4, random.nextFloat());
@@ -560,112 +494,194 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setFloatValue(vxVisibilityAttr, vx5, 1);
         graph.setObjectValue(vxColorAttr, vx5, randomColor3(random));
         graph.setStringValue(vxForegroundIconAttr, vx5, DEFAULT_ICON);
-        graph.setStringValue(vxBackgroundIconAttr, vx2, BACKGROUND_ROUND_CIRCLE);
+        graph.setStringValue(vxBackgroundIconAttr, vx5, BACKGROUND_ROUND_CIRCLE);
         graph.setStringValue(vxCountry1Attr, vx5, countries.get(vx5 % countries.size()));
         graph.setStringValue(vxCountry2Attr, vx5, countries.get((vx5 + 1) % countries.size()));
         graph.setFloatValue(vxNormalisedAttr, vx5, random.nextFloat());
         graph.setObjectValue(attrBlaze, vx5, new Blaze(random.nextInt(360), randomColor3(random)));
 
-        // Draw multiple lines with offsets between two fixed nodes.
-        int txId;
+        if (nTx > 0) {
+            // Create transactions between the nodes.
+            final Date d = new Date();
+            final int fourDays = 4 * 24 * 60 * 60 * 1000;
+            if ("Random vertices".equals(option)) {
+                // Draw multiple lines with offsets between two fixed nodes.
 
-        // Too many transactions to draw; different colors.
-        final int lim1 = 16;
-        for (int i = 0; i < lim1; i++) {
-            final ConstellationColor rgb = ConstellationColor.getColorValue((float) i / lim1, 0, 1.0F - (float) i / lim1, 1F);
-            if (i % 2 == 0) {
-                txId = graph.addTransaction(vx0, vx1, true);
+                int lim1 = 0;
+                int lim2 = 0;
+                int lim3 = 0;
+                int lim4 = 0;
+                int lim5 = 0;
+                int randomTxsCountToAdd = 0;
+
+                for (int i = 0; i < nTx; i++) {
+                    switch (random.nextInt(6)) {
+                        case 0 ->
+                            lim1++;
+                        case 1 ->
+                            lim2++;
+                        case 2 ->
+                            lim3++;
+                        case 3 -> {
+                            if (explicitLoops) {
+                                lim4++;
+                            } else {
+                                randomTxsCountToAdd++;
+                            }
+                        }
+                        case 4 ->
+                            lim5++;
+                        default ->
+                            randomTxsCountToAdd++;
+                    }
+                }
+
+                // Draw multiple lines with offsets between two fixed nodes.
+                int txId;
+
+
+                // Different LineStyle.
+                for (int i = 0; i < lim1; i++) {
+                    final ConstellationColor rgb = ConstellationColor.getColorValue((float) i / lim1, 0, 1.0F - (float) i / lim1, 1F);
+
+                    switch (random.nextInt(3)) {
+                        case 0 -> {
+                            txId = graph.addTransaction(vx0, vx1, true);
+                            graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DASHED);
+                        }
+                        case 1 -> {
+                            txId = graph.addTransaction(vx1, vx2, true);
+                            graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DOTTED);
+                        }
+                        default -> {  // Directed diamond.
+                            txId = graph.addTransaction(vx2, vx3, true);
+                            graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DIAMOND);
+                        }
+                    }
+
+                    graph.setIntValue(txIdAttr, txId, txId);
+                    graph.setObjectValue(txColorAttr, txId, rgb);
+                    graph.setFloatValue(txVisibilityAttr, txId, 1);
+                }
+
+                // Different colors.
+                for (int i = 0; i < lim2; i++) {
+                    final ConstellationColor rgb = ConstellationColor.getColorValue(0.25F, 1.0F - (float) i / lim2, (float) i / lim2, 1F);
+                    if (i % 2 == 0) {
+                        txId = graph.addTransaction(vx1, vx2, true);
+                    } else {
+                        txId = graph.addTransaction(vx2, vx1, true);
+                    }
+                    graph.setIntValue(txIdAttr, txId, txId);
+                    graph.setObjectValue(txColorAttr, txId, rgb);
+                    graph.setFloatValue(txVisibilityAttr, txId, (i + 1) / (float) lim2);
+                    graph.setFloatValue(txWidthAttr, txId, 2F);
+                }
+
+                // Same color, directed and undirected.
+                final ConstellationColor rgb3 = ConstellationColor.ORANGE;
+                for (int i = 0; i < lim3; i++) {
+                    if (i == 0) {
+                        txId = graph.addTransaction(vx3, vx4, true);
+                        graph.setFloatValue(txVisibilityAttr, txId, 0.3F);
+                    } else if (i < 4) {
+                        txId = graph.addTransaction(vx3, vx4, false);
+                        graph.setFloatValue(txVisibilityAttr, txId, 0.6F);
+                    } else {
+                        txId = graph.addTransaction(vx4, vx3, true);
+                        graph.setFloatValue(txVisibilityAttr, txId, 0.9F);
+                    }
+                    graph.setIntValue(txIdAttr, txId, txId);
+                    graph.setObjectValue(txColorAttr, txId, rgb3);
+                }
+                // Loops, directed and undirected.
+                for (int i = 0; i < lim4; i++) {
+                    final ConstellationColor rgb = ConstellationColor.getColorValue(0.25F, 1.0F - (float) i / lim4, (float) i / lim4, 1F);
+                    final int Vx = vxIds[random.nextInt(vxIds.length)];
+                    if (i % 2 == 0) {
+                        txId = graph.addTransaction(Vx, Vx, true);
+                    } else {
+                        txId = graph.addTransaction(Vx, Vx, false);
+                    }
+                    graph.setIntValue(txIdAttr, txId, txId);
+                    graph.setObjectValue(txColorAttr, txId, rgb);
+                }
+                // Dimmed transactions, directed and undirected.
+                for (int i = 0; i < lim5; i++) {
+                    final ConstellationColor rgb = ConstellationColor.getColorValue(0.25F, 1.0F - (float) i / lim5, (float) i / lim5, 1F);
+                    final int sourceVx = vxIds[random.nextInt(vxIds.length)];
+                    final int destinationVx = vxIds[random.nextInt(vxIds.length)];
+                    if (i % 2 == 0) {
+                        txId = graph.addTransaction(sourceVx, destinationVx, true);
+                    } else {
+                        txId = graph.addTransaction(sourceVx, destinationVx, false);
+                    }
+                    graph.setIntValue(txIdAttr, txId, txId);
+                    graph.setObjectValue(txColorAttr, txId, rgb);
+                    graph.setBooleanValue(txDimmedAttr, txId, true);
+                }
+                // Draw some lines between random nodes, but don't draw multiple lines between the same two nodes.
+                final double nVxRand = (Math.log10(nVx) * 5) + 1;
+                for (int i = 0; i < randomTxsCountToAdd; i++) {
+                    // Choose random positions, convert to correct vxIds.
+                    // Concentrate most sources to just a few vertices; it looks a bit nicer than plain random.
+                    int fromPosition = vertexCount + (random.nextFloat() < 0.9F ? random.nextInt((int) nVxRand) : random.nextInt(nVx));
+                    int toPosition;
+                    do {
+                        toPosition = vertexCount + random.nextInt(nVx);
+                    } while (toPosition == fromPosition);
+
+                    assert fromPosition != toPosition;
+
+                    int fromVx = graph.getVertex(fromPosition);
+                    int toVx = graph.getVertex(toPosition);
+
+                    // Always draw from the lower numbered vertex to the higher numbered vertex.
+                    if (toVx < fromVx) {
+                        int tmp = fromVx;
+                        fromVx = toVx;
+                        toVx = tmp;
+                    }
+
+                    final int e = graph.addTransaction(fromVx, toVx, true);
+                    graph.setLongValue(txDateTimeAttr, e, d.getTime() - random.nextInt(fourDays));
+                    graph.setIntValue(txIdAttr, e, e);
+                    graph.setObjectValue(txColorAttr, e, randomColor3(random));
+                    final float visibiltyValue = randomTxsCountToAdd > 1 ? (float) i / (randomTxsCountToAdd - 1) : 1.0F;
+                    graph.setFloatValue(txVisibilityAttr, e, visibiltyValue);
+
+                    if (Thread.interrupted()) {
+                        throw new InterruptedException();
+                    }
+                }
             } else {
-                txId = graph.addTransaction(vx1, vx0, true);
+                if ("1 path, random vertices".equals(option)) {
+                    // Shuffle the vertices.
+                    for (int i = nVx - 1; i > 0; i--) {
+                        final int ix = random.nextInt(i);
+                        final int t = vxIds[i];
+                        vxIds[i] = vxIds[ix];
+                        vxIds[ix] = t;
+                    }
+                }
+
+                // Transactions from/to each vertex in ascending order, modulo nVx.
+                for (int i = 0; i < nTx; i++) {
+                    final int fromNode = vxIds[i % nVx];
+                    final int toNode = vxIds[(i + 1) % nVx];
+                    final int e = graph.addTransaction(fromNode, toNode, true);
+                    graph.setLongValue(txDateTimeAttr, e, d.getTime() - random.nextInt(fourDays));
+                    graph.setIntValue(txIdAttr, e, e);
+                    graph.setObjectValue(txColorAttr, e, randomColor3(random));
+                    final float visibiltyValue = nTx > 1 ? (float) i / (nTx - 1) : 1.0F;
+                    graph.setFloatValue(txVisibilityAttr, e, visibiltyValue);
+
+                    if (Thread.interrupted()) {
+                        throw new InterruptedException();
+                    }
+                }
             }
-            graph.setIntValue(txIdAttr, txId, txId);
-            graph.setObjectValue(txColorAttr, txId, rgb);
-            graph.setFloatValue(txVisibilityAttr, txId, 1);
         }
-
-        // Not too many transactions to draw; different colors.
-        final int lim2 = 8;
-        for (int i = 0; i < lim2; i++) {
-            final ConstellationColor rgb = ConstellationColor.getColorValue(0.25F, 1.0F - (float) i / lim2, (float) i / lim2, 1F);
-            if (i % 2 == 0) {
-                txId = graph.addTransaction(vx1, vx2, true);
-            } else {
-                txId = graph.addTransaction(vx2, vx1, true);
-            }
-            graph.setIntValue(txIdAttr, txId, txId);
-            graph.setObjectValue(txColorAttr, txId, rgb);
-            graph.setFloatValue(txVisibilityAttr, txId, (i + 1) / (float) lim2);
-            graph.setFloatValue(txWidthAttr, txId, 2F);
-        }
-
-        // Too many transactions to draw: same color.
-        final int lim3 = 9;
-        final ConstellationColor rgb3 = ConstellationColor.ORANGE;
-        for (int i = 0; i < lim3; i++) {
-            if (i == 0) {
-                txId = graph.addTransaction(vx3, vx4, true);
-                graph.setFloatValue(txVisibilityAttr, txId, 0.3F);
-            } else if (i < 4) {
-                txId = graph.addTransaction(vx3, vx4, false);
-                graph.setFloatValue(txVisibilityAttr, txId, 0.6F);
-            } else {
-                txId = graph.addTransaction(vx4, vx3, true);
-                graph.setFloatValue(txVisibilityAttr, txId, 0.9F);
-            }
-            graph.setIntValue(txIdAttr, txId, txId);
-            graph.setObjectValue(txColorAttr, txId, rgb3);
-        }
-
-        // Undirected transactions.
-        txId = graph.addTransaction(vx4, vx5, false);
-        graph.setIntValue(txIdAttr, txId, txId);
-        graph.setObjectValue(txColorAttr, txId, ConstellationColor.getColorValue(1F, 0F, 1F, 1F));
-        graph.setBooleanValue(txDirectedAttr, txId, false);
-        graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DASHED);
-
-        txId = graph.addTransaction(vx5, vx4, false);
-        graph.setIntValue(txIdAttr, txId, txId);
-        graph.setObjectValue(txColorAttr, txId, ConstellationColor.getColorValue(1F, 1F, 0F, 1F));
-        graph.setBooleanValue(txDirectedAttr, txId, false);
-        graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DOTTED);
-
-        // Directed diamond.
-        txId = graph.addTransaction(vx1, vx5, true);
-        graph.setIntValue(txIdAttr, txId, txId);
-        graph.setObjectValue(txColorAttr, txId, ConstellationColor.PINK);
-        graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DIAMOND);
-
-        // Loops.
-        if (explicitLoops) {
-            txId = graph.addTransaction(vx2, vx2, true);
-            graph.setIntValue(txIdAttr, txId, txId);
-            graph.setObjectValue(txColorAttr, txId, ConstellationColor.PINK);
-
-            txId = graph.addTransaction(vx4, vx4, false);
-            graph.setIntValue(txIdAttr, txId, txId);
-            graph.setBooleanValue(txDirectedAttr, txId, false);
-            graph.setObjectValue(txColorAttr, txId, ConstellationColor.LIGHT_BLUE);
-
-            txId = graph.addTransaction(vx5, vx5, true);
-            graph.setIntValue(txIdAttr, txId, txId);
-            graph.setObjectValue(txColorAttr, txId, ConstellationColor.ORANGE);
-
-            txId = graph.addTransaction(vx5, vx5, false);
-            graph.setIntValue(txIdAttr, txId, txId);
-            graph.setObjectValue(txColorAttr, txId, ConstellationColor.GREEN);
-        }
-
-        // Dimmed transactions.
-        txId = graph.addTransaction(vx0, vx5, true);
-        graph.setObjectValue(txColorAttr, txId, ConstellationColor.RED);
-        graph.setBooleanValue(txDimmedAttr, txId, true);
-        txId = graph.addTransaction(vx0, vx5, false);
-        graph.setObjectValue(txColorAttr, txId, ConstellationColor.GREEN);
-        graph.setBooleanValue(txDirectedAttr, txId, false);
-        graph.setBooleanValue(txDimmedAttr, txId, true);
-        txId = graph.addTransaction(vx5, vx0, true);
-        graph.setObjectValue(txColorAttr, txId, ConstellationColor.BLUE);
-        graph.setBooleanValue(txDimmedAttr, txId, true);
 
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         interaction.setProgress(1, 0, "Completed successfully", true);
