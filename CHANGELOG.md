@@ -2,6 +2,7 @@
 
 ## Changes in June 2026
 -   Removed `ArrangeInScatter3dComponentsPlugin` which was unused.
+-   Updated `AbstractBoundingBox` to be an abstract class to reflect its intended use.
 
 ## Changes in April 2026
 -   Updated `BubbleTreeArranger`, and `HierarchyArranger` constructor to pass `MutableIntList` instead of `Set<Integer>`. Old constructor has been deprecated.

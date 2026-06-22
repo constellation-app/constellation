@@ -365,7 +365,8 @@ public final class CircTreeArranger implements Arranger {
             final VxInfo child = children.iterator().next();
             final float actualChildRadius = fullRadii[child.vxId];
             final float parentLength = (float) Math.sqrt(parentOffsetX * parentOffsetX + parentOffsetY * parentOffsetY);
-            float offsetX = 0;
+            
+            final float offsetX;
             float offsetY = 0;
 
             if (parentLength > 0) {

@@ -58,6 +58,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
     private final int[][] vertexLinks;
     private final int[][] vertexEdges;
     private final int[][] vertexTransactions;
+    
 
     public static SubgraphFactory getSubgraphFactory() {
         return (final GraphWriteMethods wg, final MutableIntSet vertexIDs) -> new InducedSubgraph(wg, vertexIDs);

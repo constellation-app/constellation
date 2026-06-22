@@ -94,12 +94,12 @@ public class OctTree extends AbstractTree {
         int index = -1;
 
         // Object can completely fit within the top/bottom halves.
-        final boolean bottomHalf = wg.getFloatValue(yId, vxId) + wg.getFloatValue(rId, vxId) < box3D.midY;
-        final boolean topHalf = wg.getFloatValue(yId, vxId) - wg.getFloatValue(rId, vxId) > box3D.midY;
+        final boolean bottomHalf = wg.getFloatValue(yId, vxId) + wg.getFloatValue(rId, vxId) < box3D.getMidY();
+        final boolean topHalf = wg.getFloatValue(yId, vxId) - wg.getFloatValue(rId, vxId) > box3D.getMidY();
 
         // Object can completely fit witin the left/right halves.
-        final boolean leftHalf = wg.getFloatValue(xId, vxId) + wg.getFloatValue(rId, vxId) < box3D.midX;
-        final boolean rightHalf = wg.getFloatValue(xId, vxId) - wg.getFloatValue(rId, vxId) > box3D.midX;
+        final boolean leftHalf = wg.getFloatValue(xId, vxId) + wg.getFloatValue(rId, vxId) < box3D.getMidX();
+        final boolean rightHalf = wg.getFloatValue(xId, vxId) - wg.getFloatValue(rId, vxId) > box3D.getMidX();
 
         // Object can completely fit in front/back halves.
         final boolean backHalf = wg.getFloatValue(zId, vxId) + wg.getFloatValue(rId, vxId) < box3D.midZ;

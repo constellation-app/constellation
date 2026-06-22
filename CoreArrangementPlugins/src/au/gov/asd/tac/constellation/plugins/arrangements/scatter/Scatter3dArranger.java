@@ -35,13 +35,6 @@ public class Scatter3dArranger implements Arranger {
     private final Scatter3dChoiceParameters params;
 
     /**
-     * A scatter3d arrangement with default parameters.
-     */
-    public Scatter3dArranger() {
-        this(Scatter3dChoiceParameters.getDefaultParameters());
-    }
-
-    /**
      * Construct new ArrangeInScatter3d instance.
      *
      * @param params Parameters for the arrangement.
@@ -66,13 +59,13 @@ public class Scatter3dArranger implements Arranger {
         if (params == null) {
             return;
         }
-        final String xDimension = params.getXDimension();
-        final String yDimension = params.getYDimension();
-        final String zDimension = params.getZDimension();
-        final boolean xLogarithmic = params.isLogarithmicX();
-        final boolean yLogarithmic = params.isLogarithmicY();
-        final boolean zLogarithmic = params.isLogarithmicZ();
-        final boolean doNotScale = params.isDoNotScale();
+        final String xDimension = params.xDimension();
+        final String yDimension = params.yDimension();
+        final String zDimension = params.zDimension();
+        final boolean xLogarithmic = params.xLogarithmic();
+        final boolean yLogarithmic = params.yLogarithmic();
+        final boolean zLogarithmic = params.zLogarithmic();
+        final boolean doNotScale = params.doNotScale();
         
         final int xDimensionAttribute = wg.getAttribute(GraphElementType.VERTEX, xDimension);
         final int yDimensionAttribute = wg.getAttribute(GraphElementType.VERTEX, yDimension);

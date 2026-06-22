@@ -72,7 +72,6 @@ public class UncollidePlugin extends SimpleEditPlugin {
         final PluginParameter<BooleanParameterValue> set2Param = BooleanParameterType.build(SET_XYZ2_PARAMETER_ID);
         set2Param.setName("Set XYZ 2");
         set2Param.setDescription("If True, set X2, Y2, Z2. The default is False.");
-        set2Param.setBooleanValue(false);
         parameters.addParameter(set2Param);
 
         return parameters;
