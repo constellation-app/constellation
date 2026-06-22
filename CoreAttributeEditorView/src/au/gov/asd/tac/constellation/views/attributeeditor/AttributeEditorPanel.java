@@ -287,7 +287,8 @@ public class AttributeEditorPanel extends BorderPane {
         schemaMenuItem.setOnAction(e -> {
             final EditOperation editOperation = value -> prefs.put(correspondingPreference, value != null ? ((ConstellationColor) value).getHtmlColor() : "");
             @SuppressWarnings("unchecked") // return type of createEditor will actually be AbstractEditor<ConstellationColor>
-            final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(String.format("For %s", itemName), editOperation, ConstellationColor.fromFXColor(color));
+            // for ColorEditorFactory in this case, don't add No Value checkbox, but add default color
+            final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(String.format("For %s", itemName), editOperation, ConstellationColor.fromFXColor(color), ConstellationColor.fromFXColor(color), false);
             final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
             dialog.showDialog();
         });
