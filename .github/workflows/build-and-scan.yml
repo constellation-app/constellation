@@ -28,7 +28,7 @@ jobs:
     steps:
     # Checkout this commit
     - name: Checkout Branch
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         repository: constellation-app/constellation
         path: constellation
@@ -43,7 +43,7 @@ jobs:
       # Cache the ivy dependencies.
     - name: Restore Cache
       id: cache-dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.ivy2/cache
         key: ${{ runner.os }}-ivy-${{ hashFiles('constellation/CoreDependencies/src/ivy.xml') }}
