@@ -182,7 +182,7 @@
 
         if (query.trim().length > 0){
             app.classList.add('hasQuery');
-        }else{
+        } else {
             app.classList.remove('hasQuery');
         }
     });
