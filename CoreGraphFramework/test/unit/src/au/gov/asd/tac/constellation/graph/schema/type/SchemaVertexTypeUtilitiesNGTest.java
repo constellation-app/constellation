@@ -28,6 +28,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -113,6 +114,71 @@ public class SchemaVertexTypeUtilitiesNGTest {
          }            
     }
 
+    @Test
+    public void getTypeOrBuildNewTest() {
+        System.out.println("getTypeOrBuildNew");
+        try (final MockedStatic<SchemaVertexTypeUtilities> mockedSchemaVertexTypeUtilities = mockStatic(SchemaVertexTypeUtilities.class, Mockito.CALLS_REAL_METHODS)) {
+            final SchemaVertexType defaultSchematype = mock(SchemaVertexType.class);
+            final SchemaVertexType schematype1 = mock(SchemaVertexType.class);
+            when(defaultSchematype.getName()).thenReturn("default");
+            when(schematype1.getName()).thenReturn("test_name");
+            mockedSchemaVertexTypeUtilities.when(() -> SchemaVertexTypeUtilities.getDefaultType()).thenReturn(defaultSchematype);
+            mockedSchemaVertexTypeUtilities.when(() -> SchemaVertexTypeUtilities.getType("test_name")).thenReturn(schematype1);
+
+            // returns default
+            SchemaVertexType result = SchemaVertexTypeUtilities.getTypeOrBuildNew("default");
+            assertTrue(result == defaultSchematype);
+
+            // test_name
+            result = SchemaVertexTypeUtilities.getTypeOrBuildNew("test_name");
+            assertTrue(result == schematype1);
+            // it called get Type twice in body of method
+            mockedSchemaVertexTypeUtilities.verify(() -> SchemaVertexTypeUtilities.getType(Mockito.anyString()), times(2));
+        }
+    }
+
+    @Test
+    public void containsTypeTest() {
+        System.out.println("containsType");
+        try (final MockedStatic<SchemaVertexTypeUtilities> mockedSchemaVertexTypeUtilities = mockStatic(SchemaVertexTypeUtilities.class, Mockito.CALLS_REAL_METHODS)) {
+            final SchemaVertexType schematype1 = mock(SchemaVertexType.class);
+            final SchemaVertexType schematype2 = mock(SchemaVertexType.class);
+
+            final List<SchemaVertexType> schemaTypes = new ArrayList<>();
+            schemaTypes.add(schematype1);
+
+            final Collection<SchemaVertexType> schematypesCollection = Collections.unmodifiableCollection(schemaTypes);
+            mockedSchemaVertexTypeUtilities.when(() -> SchemaVertexTypeUtilities.getTypes()).thenReturn(schematypesCollection);
+
+            // returns default
+            assertFalse(SchemaVertexTypeUtilities.containsType(schematype2));
+            assertTrue(SchemaVertexTypeUtilities.containsType(schematype1));
+
+        }
+    }
+    
+    @Test
+    public void containsTypeNameTest() {
+        System.out.println("containsTypeName");
+        try (final MockedStatic<SchemaVertexTypeUtilities> mockedSchemaVertexTypeUtilities = mockStatic(SchemaVertexTypeUtilities.class, Mockito.CALLS_REAL_METHODS)) {
+            final SchemaVertexType schematype1 = mock(SchemaVertexType.class);
+            final SchemaVertexType schematype2 = mock(SchemaVertexType.class);
+            when(schematype1.getName()).thenReturn("schemaType1");
+            when(schematype2.getName()).thenReturn("schemaType2");
+            
+            final List<SchemaVertexType> schemaTypes = new ArrayList<>();
+            schemaTypes.add(schematype1);
+
+            final Collection<SchemaVertexType> schematypesCollection = Collections.unmodifiableCollection(schemaTypes);
+            mockedSchemaVertexTypeUtilities.when(() -> SchemaVertexTypeUtilities.getTypes()).thenReturn(schematypesCollection);
+
+            // returns default
+            assertFalse(SchemaVertexTypeUtilities.containsTypeName("schemaType2"));
+            assertTrue(SchemaVertexTypeUtilities.containsTypeName("schemaType1"));
+
+        }
+    }
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
          // Not currently required
