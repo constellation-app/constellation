@@ -341,7 +341,7 @@ public class SchemaVertexTypeUtilities {
 
         // while there are still matching schema types, process then remove from text    
         while (!(extractedTypesList = getExtractedTypesFromText(schematypes, runningText, extractedTypes)).isEmpty()) {
-            final HashMap<String, ExtractedVertexType> extractedTypesMap = new HashMap();
+            final HashMap<String, ExtractedVertexType> extractedTypesMap = new HashMap<>();
             extractedTypesList.forEach(value -> extractedTypesMap.put(value.getIdentifier(), value));
 
             // identify the longest text and add the matching type to final list
@@ -366,9 +366,8 @@ public class SchemaVertexTypeUtilities {
      * @param extractedTypes List of existing extracted types
      * @return 
      */
-    private static List<ExtractedVertexType> getExtractedTypesFromText(
+    protected static List<ExtractedVertexType> getExtractedTypesFromText(
             final Collection<SchemaVertexType> schematypes, final String text, final List<ExtractedVertexType> extractedTypes) {
-
         schematypes.forEach(schemaVertexType -> {
             final Pattern regex = schemaVertexType.getDetectionRegex();
             if (regex != null && text != null) {
