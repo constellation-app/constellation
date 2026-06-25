@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.CustomMenuItem;
@@ -160,7 +161,11 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
 
     @Override
     public void setValue(final C value) {
-        this.setChoice(value);
+        if (Platform.isFxApplicationThread()) {
+            setChoice(value);
+        } else {
+            Platform.runLater(() -> setChoice(value));            
+        }
     }
 
     @Override

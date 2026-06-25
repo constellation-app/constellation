@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -35,8 +37,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Test class for WordCloudParameterPane 
- * 
+ * Test class for WordCloudParameterPane
+ *
  * @author Delphinus8821
  */
 public class WordCloudParametersPaneNGTest {
@@ -81,15 +83,15 @@ public class WordCloudParametersPaneNGTest {
             controllerStatic.when(WordCloudController::getDefault).thenReturn(controller);
             when(controller.init(topComponent)).thenReturn(controller);
             final WordCloudPane pane = new WordCloudPane(controller);
-            
+
             final List<String> nodeAttributes = new ArrayList<>();
             final List<String> transAttributes = new ArrayList<>();
             nodeAttributes.add(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
             transAttributes.add(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
-            
+
             final WordCloudParametersPane instance = new WordCloudParametersPane(pane);
             instance.updateParameters(nodeAttributes, transAttributes);
-            
+
             assertTrue(instance.getNodeAttributes().contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES));
             assertTrue(instance.getTransAttributes().contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS));
         }
@@ -101,10 +103,17 @@ public class WordCloudParametersPaneNGTest {
     @Test
     public void testValidityChanged() {
         System.out.println("validityChanged");
-        try (final MockedStatic<WordCloudController> controllerStatic = Mockito.mockStatic(WordCloudController.class)) {
+        try (final MockedStatic<WordCloudController> controllerStatic = Mockito.mockStatic(WordCloudController.class); final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
             final WordCloudController controller = spy(WordCloudController.class);
             controllerStatic.when(WordCloudController::getDefault).thenReturn(controller);
             when(controller.init(topComponent)).thenReturn(controller);
+
+            // Makes runLater run immediately
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
+
             final WordCloudPane pane = new WordCloudPane(controller);
             final boolean enabled = false;
             final WordCloudParametersPane instance = new WordCloudParametersPane(pane);
@@ -127,7 +136,7 @@ public class WordCloudParametersPaneNGTest {
             final boolean val = true;
             final WordCloudParametersPane instance = new WordCloudParametersPane(pane);
             instance.setAttributeSelectionEnabled(val);
-            assertTrue(instance.getParams().getParameters().get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID).isEnabled());  
+            assertTrue(instance.getParams().getParameters().get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID).isEnabled());
         }
-    }    
+    }
 }
