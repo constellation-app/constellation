@@ -432,6 +432,7 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
     public void componentOpened() {
         result.addLookupListener(this);
         resultChanged(null);
+        super.componentOpened();
     }
 
     @Override

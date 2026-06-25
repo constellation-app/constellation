@@ -340,6 +340,7 @@ public final class TimelineTopComponent extends AbstractTopComponent implements 
         result.addLookupListener(this);
         // Populate the graph, this ensures that when timeline view is opened after being closed, it will be updated
         populateFromGraphNode(true);
+        super.componentOpened();
     }
 
     public void zoomFromOverview(final ScrollEvent se) {

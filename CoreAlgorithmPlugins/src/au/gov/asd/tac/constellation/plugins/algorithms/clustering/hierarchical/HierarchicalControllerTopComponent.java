@@ -521,6 +521,7 @@ public final class HierarchicalControllerTopComponent extends AbstractTopCompone
     public void componentOpened() {
         result.addLookupListener(this);
         resultChanged(null);
+        super.componentOpened();
     }
 
     @Override
