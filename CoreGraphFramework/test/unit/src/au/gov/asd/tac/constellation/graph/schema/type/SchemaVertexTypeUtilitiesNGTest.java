@@ -26,6 +26,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -85,15 +86,31 @@ public class SchemaVertexTypeUtilitiesNGTest {
              when(mockMatcher.find()).thenReturn(Boolean.TRUE, Boolean.FALSE);
              when(mockMatcher.group()).thenReturn(text);
              
-             final List<ExtractedVertexType> extractedTypes = new ArrayList<>();
              final List<SchemaVertexType> schemaTypes = new ArrayList<>();
              schemaTypes.add(schematype1);
              mockedSchemaVertexTypeUtilities.when(() -> SchemaVertexTypeUtilities.getTypes()).thenReturn(schemaTypes);
                           
-             final Collection<SchemaVertexType> schematypesCollection = Collections.unmodifiableCollection(schemaTypes) ;
              List<ExtractedVertexType> extractedTypesFromText = SchemaVertexTypeUtilities.extractVertexTypes(text);
              assertTrue(extractedTypesFromText.get(0).getType() == schematype1);
          }
+    }
+    
+    @Test
+    public void getTypeNameTest() {
+         System.out.println("getTypeName");
+         try (final MockedStatic<SchemaVertexTypeUtilities> mockedSchemaVertexTypeUtilities = mockStatic(SchemaVertexTypeUtilities.class, Mockito.CALLS_REAL_METHODS)) {
+             final SchemaVertexType schematype1 = mock(SchemaVertexType.class);
+             
+             mockedSchemaVertexTypeUtilities.when(() -> SchemaVertexTypeUtilities.getDefaultType()).thenReturn(schematype1);
+             // no name
+             SchemaVertexType result = SchemaVertexTypeUtilities.getType(null, null);
+             assertTrue(result == schematype1);
+             mockedSchemaVertexTypeUtilities.verify( () -> SchemaVertexTypeUtilities.getDefaultType(), times(1));
+             // some name
+             result = SchemaVertexTypeUtilities.getType("some_text", null);
+             assertTrue(result == schematype1);
+             mockedSchemaVertexTypeUtilities.verify( () -> SchemaVertexTypeUtilities.getDefaultType(), times(2));
+         }            
     }
 
     @BeforeClass
