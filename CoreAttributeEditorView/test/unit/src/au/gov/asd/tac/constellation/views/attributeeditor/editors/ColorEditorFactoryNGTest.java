@@ -82,6 +82,20 @@ public class ColorEditorFactoryNGTest {
     }
     
     /**
+     * Test of createEditor method without No Value checkbox, of class ColorEditorFactory.
+     */
+    @Test
+    public void testCreateEditorWithoutNoValue() {
+        System.out.println("createEditor without No Value");
+        
+        final ColorEditorFactory instance = new ColorEditorFactory();
+        final AbstractEditor<ConstellationColor> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null, false);
+        // could be different abstract editors for the ConstellationColor type but we want to make sure it's the right one
+        assertTrue(result instanceof ColorEditor);
+        assertTrue(result.isNoValueAllowed()==false);
+    }
+    
+    /**
      * Test of updateControlsWithValue method, of class ColorEditor.
      */
     @Test

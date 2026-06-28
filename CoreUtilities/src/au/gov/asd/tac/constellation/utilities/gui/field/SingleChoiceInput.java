@@ -161,7 +161,11 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
 
     @Override
     public void setValue(final C value) {
-        Platform.runLater(() -> setChoice(value));
+        if (Platform.isFxApplicationThread()) {
+            setChoice(value);
+        } else {
+            Platform.runLater(() -> setChoice(value));            
+        }
     }
 
     @Override

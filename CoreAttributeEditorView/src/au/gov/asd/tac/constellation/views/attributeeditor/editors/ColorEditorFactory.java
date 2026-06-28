@@ -46,6 +46,11 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
     public AbstractEditor<ConstellationColor> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationColor> validator, final ConstellationColor defaultValue, final ConstellationColor initialValue) {
         return new ColorEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
+    
+    @Override
+    public AbstractEditor<ConstellationColor> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationColor> validator, final ConstellationColor defaultValue, final ConstellationColor initialValue, final boolean noValueAllowed) {
+        return new ColorEditor(editedItemName, editOperation, validator, defaultValue, initialValue, noValueAllowed);
+    }
 
     @Override
     public String getAttributeType() {
@@ -57,6 +62,10 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
         private ComboBox<ConstellationColor> colorCombo;
         private ColorPicker picker;
 
+        protected ColorEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationColor> validator, final ConstellationColor defaultValue, final ConstellationColor initialValue, final boolean noValueAllowed) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, noValueAllowed);
+        }
+        
         protected ColorEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationColor> validator, final ConstellationColor defaultValue, final ConstellationColor initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }

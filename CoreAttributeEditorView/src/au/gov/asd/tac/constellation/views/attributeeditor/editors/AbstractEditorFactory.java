@@ -47,6 +47,14 @@ public abstract class AbstractEditorFactory<V> {
     public AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final V defaultValue, final V initialValue) {
         return createEditor(editedItemName, editOperation, ValueValidator.getAlwaysSucceedValidator(), defaultValue, initialValue);
     }
+    
+    public AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final V initialValue, final V defaultValue, final boolean noValueAllowed) {
+        return createEditor(editedItemName, editOperation, ValueValidator.getAlwaysSucceedValidator(), defaultValue, initialValue, noValueAllowed);
+    }
+    
+    public AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation,  final ValueValidator<V> validator, final V initialValue, final V defaultValue, final boolean noValueAllowed) {
+        return null; // to be overwritten if intending to use this overloaded method
+    }
 
     public abstract AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<V> validator, final V defaultValue, final V initialValue);
 

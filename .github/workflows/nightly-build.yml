@@ -17,19 +17,19 @@ jobs:
 
     steps:
       - name: Checkout Constellation Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: constellation-app/constellation
           path: constellation
 
       - name: Checkout Constellation Adaptors Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: constellation-app/constellation-adaptors
           path: constellation-adaptors
 
       - name: Checkout Constellation Applications Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: constellation-app/constellation-applications
           path: constellation-applications
@@ -37,7 +37,7 @@ jobs:
       # Cache the ivy dependencies.
       - name: Restore Cache
         id: cache-dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.ivy2/cache
           key: ${{ runner.os }}-ivy-${{ hashFiles('constellation/CoreDependencies/src/ivy.xml') }}
@@ -67,21 +67,21 @@ jobs:
             ./build-zip.sh -a constellation -m "constellation constellation-adaptors"
 
       - name: Upload Linux Build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Linux Nightly Build
           path: constellation-applications/constellation/dist/constellation-linux**
           retention-days: 2
 
       - name: Upload MacOS Build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: MacOSX Nightly Build
           path: constellation-applications/constellation/dist/constellation-macosx**
           retention-days: 2
 
       - name: Upload Windows Build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Windows Nightly Build
           path: constellation-applications/constellation/dist/constellation-win**.zip
