@@ -335,17 +335,17 @@ public class SchemaVertexTypeUtilities {
         // text to process (longest matching extracted type text is removed each iteration)
         String runningText = text;
         // final list of ExtractedVertexType
-        List<ExtractedVertexType> finalExtractedTypesList = new ArrayList<>();
+        final List<ExtractedVertexType> finalExtractedTypesList = new ArrayList<>();
         // map of matching identifiers and ExtractedVertexType
         List<ExtractedVertexType> extractedTypesList;
 
         // while there are still matching schema types, process then remove from text    
         while (!(extractedTypesList = getExtractedTypesFromText(schematypes, runningText, extractedTypes)).isEmpty()) {
-            final HashMap<String, ExtractedVertexType> extractedTypesMap = new HashMap<>();
+            final Map<String, ExtractedVertexType> extractedTypesMap = new HashMap<>();
             extractedTypesList.forEach(value -> extractedTypesMap.put(value.getIdentifier(), value));
 
             // identify the longest text and add the matching type to final list
-            String longest = extractedTypesMap.keySet().stream()
+            final String longest = extractedTypesMap.keySet().stream()
                     .max(Comparator.comparingInt(String::length))
                     .orElse("");
 
