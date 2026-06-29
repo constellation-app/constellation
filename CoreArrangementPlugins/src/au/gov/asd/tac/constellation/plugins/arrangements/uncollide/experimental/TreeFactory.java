@@ -28,13 +28,10 @@ public class TreeFactory {
     }
 
     protected static AbstractTree create(final GraphReadMethods wg, final Dimensions d) {
-        switch (d) {
-            case TWO:
-                return new QuadTree(wg);
-            case THREE:
-                return new OctTree(wg);
-            default:
-                return null;
-        }
+        return switch (d) {
+            case TWO -> new QuadTree(wg);
+            case THREE -> new OctTree(wg);
+            default -> null;
+        };
     }
 }

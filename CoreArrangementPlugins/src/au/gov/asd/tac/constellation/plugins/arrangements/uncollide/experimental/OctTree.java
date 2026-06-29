@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 
@@ -46,7 +45,7 @@ public class OctTree extends AbstractTree {
      */
     protected OctTree(final GraphReadMethods graph) {
         super(graph, Dimensions.THREE);
-        zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        zId = VisualConcept.VertexAttribute.Z.get(wg);
         insertAll();
     }
 
