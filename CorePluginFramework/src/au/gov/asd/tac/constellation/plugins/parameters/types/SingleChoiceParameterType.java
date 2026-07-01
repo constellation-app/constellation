@@ -135,10 +135,18 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         if (optionsChanged(parameter, options)) {
             final SingleChoiceParameterValue parameterValue = parameter.getParameterValue();
 
-            //Clear the existing selection
-            parameter.setObjectValue(null);
+            // Clear the selection if it's not valid for the new options
+            final ParameterValue choice = SingleChoiceParameterType.getChoiceData(parameter);
+            final boolean keepSelection;
+            if (choice instanceof StringParameterValue strChoice && options.contains(strChoice.toString())) {
+                // Keep the existing value
+                keepSelection = true;
+            } else {
+                parameter.setObjectValue(null);
+                keepSelection = false;
+            }
 
-            parameterValue.setOptions(options);
+            parameterValue.setOptions(options, keepSelection);
             parameter.setProperty(CHOICES, new Object());
         }
     }
@@ -352,16 +360,28 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         /**
          * Set the collection of options from a list of Strings.
          *
-         * @param options A list of Strings to set the collection of options
-         * from.
+         * @param options A list of Strings to set the collection of options from.
+         * @param keepChoice determines whether to clear or keep the current choice
          */
-        public void setOptions(final Iterable<String> options) {
+        public void setOptions(final Iterable<String> options, final boolean keepChoice) {
             this.options.clear();
             for (final String option : options) {
                 final StringParameterValue doOption = new StringParameterValue(option);
                 this.options.add(doOption);
             }
-            choice = null;
+            if (!keepChoice) {
+                choice = null;
+            }
+        }
+
+        /**
+         * Set the collection of options from a list of Strings, clearing current selection.
+         *
+         * @param options A list of Strings to set the collection of options
+         * from.
+         */
+        public void setOptions(final Iterable<String> options) {
+            setOptions(options, false);
         }
         
         /**

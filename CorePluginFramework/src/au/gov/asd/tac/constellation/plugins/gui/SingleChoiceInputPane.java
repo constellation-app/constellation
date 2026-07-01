@@ -68,31 +68,32 @@ public class SingleChoiceInputPane extends ParameterInputPane<SingleChoiceParame
         // The listener needs to be assigned and then returned otherwise it doesn't update as intended
         final PluginParameterListener listener = (final PluginParameter<?> parameter, final ParameterChange change) -> {
             final PluginParameter<SingleChoiceParameterValue> scParameterValue = (PluginParameter<SingleChoiceParameterValue>) parameter;
+            final ParameterValue choice = SingleChoiceParameterType.getChoiceData(scParameterValue);
             switch (change) {
                 case VALUE -> {
                     final List<ParameterValue> paramOptions = SingleChoiceParameterType.getOptionsData(scParameterValue);
                     ((SingleChoiceInput) input).setOptions(paramOptions);
 
                     // Only keep the value if its in the new choices
-                    if (paramOptions.stream().anyMatch(paramOptions::contains)) {
-                        setFieldValue(SingleChoiceParameterType.getChoiceData(scParameterValue));
-                    } else {
-                        setFieldValue(null);
-                    }
-                    // Don't change the value if it isn't necessary 
                     final ParameterValue selection = getFieldValue();
-                    if (selection != null && !selection.equals(SingleChoiceParameterType.getChoiceData(scParameterValue))) {
-                        setFieldValue(selection);
+                    if (selection != null && choice != null) {
+                        // Don't change the value if it isn't necessary 
+                        if (!selection.equals(choice)) {                                
+                            setFieldValue(choice);
+                        }
+                    } else {
+                        // Accept current choice value (including null)
+                        setFieldValue(choice);
                     }
                 }
 
                 case PROPERTY -> {
                     // Update the pane if the options have changed 
-                    final List<ParameterValue> paramOptions = (List<ParameterValue>) SingleChoiceParameterType.getChoiceData(scParameterValue);
+                    final List<ParameterValue> paramOptions = SingleChoiceParameterType.getOptionsData(scParameterValue);
                     if (paramOptions != null) {
                         ((SingleChoiceInput) input).setOptions(paramOptions);
-                        if (paramOptions.contains(SingleChoiceParameterType.getChoiceData(scParameterValue))) {
-                            setFieldValue(SingleChoiceParameterType.getChoiceData(scParameterValue));
+                        if (paramOptions.contains(choice)) {
+                            setFieldValue(choice);
                         } else {
                             setFieldValue(null);
                         }
