@@ -191,6 +191,11 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
 
         // Allow the plugin to be interrupted
         if (cancellable && Thread.interrupted()) {
+            if (progress != null) {
+                timer.interrupt();
+                progress.finish();
+                progress = null;
+            }
             throw new InterruptedException();
         }
         // If the plugin is indeterminate...
