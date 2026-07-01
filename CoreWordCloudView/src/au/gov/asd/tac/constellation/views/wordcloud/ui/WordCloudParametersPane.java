@@ -174,14 +174,18 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
             if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
                 attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
             } else {
-                attrParam.setStringValue(EMPTY_STRING);
+                if (!transAttributes.contains(attrParam.getStringValue())) {
+                    attrParam.setStringValue(EMPTY_STRING);
+                }
             }
             SingleChoiceParameterType.setOptions(attrParam, this.transAttributes);
         } else if ("node".equals(elParam.getStringValue())) {
             if (nodeAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES)) {
                 attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
             } else {
-                attrParam.setStringValue(EMPTY_STRING);
+                if (!nodeAttributes.contains(attrParam.getStringValue())) {
+                    attrParam.setStringValue(EMPTY_STRING);
+                }
             }
             SingleChoiceParameterType.setOptions(attrParam, this.nodeAttributes);
         }
