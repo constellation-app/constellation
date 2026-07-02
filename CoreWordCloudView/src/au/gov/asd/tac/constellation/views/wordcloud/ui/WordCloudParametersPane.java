@@ -38,6 +38,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -173,7 +174,9 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         if ("transaction".equals(elParam.getStringValue())) {
             SingleChoiceParameterType.setOptions(attrParam, this.transAttributes);
             if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
-                attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
+                if (StringUtils.isBlank(attrParam.getStringValue()) || (StringUtils.isNotBlank(attrParam.getStringValue()) && !transAttributes.contains(attrParam.getStringValue()))) {
+                    attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
+                }
             } else {
                 if (!transAttributes.contains(attrParam.getStringValue())) {
                     attrParam.setStringValue(EMPTY_STRING);
@@ -182,7 +185,9 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         } else if ("node".equals(elParam.getStringValue())) {
             SingleChoiceParameterType.setOptions(attrParam, this.nodeAttributes);
             if (nodeAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES)) {
-                attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
+                if (StringUtils.isBlank(attrParam.getStringValue()) || (StringUtils.isNotBlank(attrParam.getStringValue()) && !nodeAttributes.contains(attrParam.getStringValue()))) {
+                    attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
+                }
             } else {
                 if (!nodeAttributes.contains(attrParam.getStringValue())) {
                     attrParam.setStringValue(EMPTY_STRING);
