@@ -21,9 +21,11 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupp
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import org.mockito.Mockito;
@@ -33,6 +35,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
+import static org.testng.Assert.fail;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
@@ -104,6 +107,14 @@ public class SingleChoiceInputNGTest {
         options.add(choice);
         instance.setOptions(options);
         instance.setValue(choice);
+        CountDownLatch cdl = new CountDownLatch(1);
+        Platform.runLater(() -> cdl.countDown());
+        try {
+            cdl.await();
+        } catch (final InterruptedException ex) {
+            fail("FAILED set and get on SingleChoiceInput");
+        }
+        
         final Object result = instance.getValue();
         assertEquals(result, choice);
     }
