@@ -40,9 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
  * Gather selected nodes into one place so they can be farmed.
  *
  * @author algol
- *
  * @author alkaid
- *
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("GatherNodesInGraphPlugin=Gather Selected Nodes Plugin")

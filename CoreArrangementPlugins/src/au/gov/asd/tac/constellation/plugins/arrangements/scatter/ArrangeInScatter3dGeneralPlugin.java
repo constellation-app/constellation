@@ -49,10 +49,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author CrucisGamma
  */
 @ServiceProvider(service = Plugin.class)
-@Messages({
-    "ArrangeInScatter3dGeneralPlugin=Arrange in Scatter 3D",
-    "SelectedOnly=Arrange only selected nodes"
-})
+@Messages("ArrangeInScatter3dGeneralPlugin=Arrange in Scatter 3D")
 @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
 

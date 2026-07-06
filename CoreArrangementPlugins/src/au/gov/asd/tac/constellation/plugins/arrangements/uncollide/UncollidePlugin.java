@@ -44,21 +44,7 @@ public class UncollidePlugin extends SimpleEditPlugin {
 
     public static final String DIMENSION_PARAMETER_ID = PluginParameter.buildId(UncollidePlugin.class, "dimension");
     public static final String SET_XYZ2_PARAMETER_ID = PluginParameter.buildId(UncollidePlugin.class, "set_xyz2");
-
-    @Override
-    public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        final int dimensions = parameters.getIntegerValue(DIMENSION_PARAMETER_ID);
-        final boolean set2 = parameters.getBooleanValue(SET_XYZ2_PARAMETER_ID);
-
-        final Arranger arranger = new UncollideArrangement(dimensions, set2);
-        ((UncollideArrangement) arranger).setInteraction(interaction);
-
-        final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(wg, SelectedInclusionGraph.Connections.NONE);
-        arranger.setMaintainMean(!selectedGraph.isArrangingAll());
-        arranger.arrange(selectedGraph.getInclusionGraph());
-        selectedGraph.retrieveCoords();
-    }
-
+    
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
@@ -75,5 +61,19 @@ public class UncollidePlugin extends SimpleEditPlugin {
         parameters.addParameter(set2Param);
 
         return parameters;
+    }
+
+    @Override
+    public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+        final int dimensions = parameters.getIntegerValue(DIMENSION_PARAMETER_ID);
+        final boolean set2 = parameters.getBooleanValue(SET_XYZ2_PARAMETER_ID);
+
+        final Arranger arranger = new UncollideArrangement(dimensions, set2);
+        ((UncollideArrangement) arranger).setInteraction(interaction);
+
+        final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(wg, SelectedInclusionGraph.Connections.NONE);
+        arranger.setMaintainMean(!selectedGraph.isArrangingAll());
+        arranger.arrange(selectedGraph.getInclusionGraph());
+        selectedGraph.retrieveCoords();
     }
 }
