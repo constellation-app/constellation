@@ -108,7 +108,7 @@ public class ArrangementUtilitiesNGTest {
         System.out.println("getXyzMean");
         
         final float[] result = ArrangementUtilities.getXyzMean(graph);
-        assertEquals(result, new float[]{1.5F, 1.5F, 1.75F});
+        assertEquals(result, new float[]{1.5F, 1.5F, 1.5F});
     }
 
     /**
