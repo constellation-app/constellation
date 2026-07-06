@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -251,9 +251,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
 
             @SuppressWarnings("unchecked") //ATTRIBUTE_PARAMETER will always be of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> contentAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID);
-            contentAttribute.suppressEvent(true, new ArrayList<>());
             SingleChoiceParameterType.setOptions(contentAttribute, attributes);
-            contentAttribute.suppressEvent(false, new ArrayList<>());
             if (!attributes.isEmpty() && contentAttribute.getSingleChoice() == null) {
                 final String contentAttributeName = ContentConcept.TransactionAttribute.CONTENT.getName();
                 // set the attribute to the Content attribute if it exists and the first option otherwise
