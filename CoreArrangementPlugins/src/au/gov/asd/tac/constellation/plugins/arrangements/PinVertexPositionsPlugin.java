@@ -45,7 +45,7 @@ public class PinVertexPositionsPlugin extends SimpleEditPlugin {
         final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         final int pinnedAttr = VisualConcept.VertexAttribute.PINNED.ensure(graph);
 
-        // Loop through all vertice. For any selected vertex, set its PINNED
+        // Loop through all vertices. For any selected vertex, set its PINNED
         // value to true, ensuring the vertex is pinned in position.
         if (vxCount > 0) {
             for (int position = 0; position < vxCount; position++) {
