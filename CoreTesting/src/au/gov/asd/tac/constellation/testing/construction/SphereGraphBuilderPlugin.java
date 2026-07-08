@@ -253,11 +253,9 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final int vxDecoratorAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Custom Decorator", null, null, null);
         final int vxNormalisedAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "Normalised", null, 0.0F, null);
 
-        final int txIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
         final int txWidthAttr = VisualConcept.TransactionAttribute.WIDTH.ensure(graph);
         final int txDimmedAttr = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
         final int txVisibilityAttr = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
-        final int txColorAttr = VisualConcept.TransactionAttribute.COLOR.ensure(graph);
         final int txLineStyleAttr = VisualConcept.TransactionAttribute.LINE_STYLE.ensure(graph);
         final int txDateTimeAttr = TemporalConcept.TransactionAttribute.DATETIME.ensure(graph);
 
