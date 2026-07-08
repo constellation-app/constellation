@@ -558,10 +558,8 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                             graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DIAMOND);
                         }
                     }
-
-                    graph.setIntValue(txIdAttr, txId, txId);
-                    graph.setObjectValue(txColorAttr, txId, rgb);
                     graph.setFloatValue(txVisibilityAttr, txId, 1);
+                    completeTransaction(graph, txId, rgb);
                 }
 
                 // Different colors.
@@ -572,10 +570,9 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                     } else {
                         txId = graph.addTransaction(vx2, vx1, true);
                     }
-                    graph.setIntValue(txIdAttr, txId, txId);
-                    graph.setObjectValue(txColorAttr, txId, rgb);
                     graph.setFloatValue(txVisibilityAttr, txId, (i + 1) / (float) lim2);
                     graph.setFloatValue(txWidthAttr, txId, 2F);
+                    completeTransaction(graph, txId, rgb);
                 }
 
                 // Same color, directed and undirected.
@@ -591,8 +588,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                         txId = graph.addTransaction(vx4, vx3, true);
                         graph.setFloatValue(txVisibilityAttr, txId, 0.9F);
                     }
-                    graph.setIntValue(txIdAttr, txId, txId);
-                    graph.setObjectValue(txColorAttr, txId, rgb3);
+                    completeTransaction(graph, txId, rgb3);
                 }
                 // Loops, directed and undirected.
                 for (int i = 0; i < lim4; i++) {
@@ -603,8 +599,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                     } else {
                         txId = graph.addTransaction(Vx, Vx, false);
                     }
-                    graph.setIntValue(txIdAttr, txId, txId);
-                    graph.setObjectValue(txColorAttr, txId, rgb);
+                    completeTransaction(graph, txId, rgb);
                 }
                 // Dimmed transactions, directed and undirected.
                 for (int i = 0; i < lim5; i++) {
@@ -616,9 +611,9 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                     } else {
                         txId = graph.addTransaction(sourceVx, destinationVx, false);
                     }
-                    graph.setIntValue(txIdAttr, txId, txId);
-                    graph.setObjectValue(txColorAttr, txId, rgb);
+
                     graph.setBooleanValue(txDimmedAttr, txId, true);
+                    completeTransaction(graph, txId, rgb);
                 }
                 // Draw some lines between random nodes, but don't draw multiple lines between the same two nodes.
                 final double nVxRand = (Math.log10(nVx) * 5) + 1;
@@ -645,10 +640,9 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
 
                     final int e = graph.addTransaction(fromVx, toVx, true);
                     graph.setLongValue(txDateTimeAttr, e, d.getTime() - random.nextInt(fourDays));
-                    graph.setIntValue(txIdAttr, e, e);
-                    graph.setObjectValue(txColorAttr, e, randomColor3(random));
                     final float visibiltyValue = randomTxsCountToAdd > 1 ? (float) i / (randomTxsCountToAdd - 1) : 1.0F;
                     graph.setFloatValue(txVisibilityAttr, e, visibiltyValue);
+                    completeTransaction(graph, e, randomColor3(random));
 
                     if (Thread.interrupted()) {
                         throw new InterruptedException();
@@ -671,11 +665,10 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                     final int toNode = vxIds[(i + 1) % nVx];
                     final int e = graph.addTransaction(fromNode, toNode, true);
                     graph.setLongValue(txDateTimeAttr, e, d.getTime() - random.nextInt(fourDays));
-                    graph.setIntValue(txIdAttr, e, e);
-                    graph.setObjectValue(txColorAttr, e, randomColor3(random));
                     final float visibiltyValue = nTx > 1 ? (float) i / (nTx - 1) : 1.0F;
                     graph.setFloatValue(txVisibilityAttr, e, visibiltyValue);
 
+                    completeTransaction(graph, e, randomColor3(random));
                     if (Thread.interrupted()) {
                         throw new InterruptedException();
                     }
@@ -685,6 +678,18 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
 
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         interaction.setProgress(1, 0, "Completed successfully", true);
+    }
+
+    private void completeTransaction(final GraphWriteMethods graph, final int txId, final ConstellationColor rgb) {
+        final int txIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
+        final int txColorAttr = VisualConcept.TransactionAttribute.COLOR.ensure(graph);
+
+        graph.setIntValue(txIdAttr, txId, txId);
+        graph.setObjectValue(txColorAttr, txId, rgb);
+
+        if (graph.getSchema() != null) {
+            graph.getSchema().completeTransaction(graph, txId);
+        }
     }
 
     /**
