@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.subgraph;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import java.util.Set;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
 
 /**
  *
  * @author twilight_sparkle
  */
+@FunctionalInterface
 public interface SubgraphFactory {
 
-    public ComponentSubgraph constructSubgraph(final GraphWriteMethods wg, final Set<Integer> includedVertexIDs);
-
+    public ComponentSubgraph constructSubgraph(final GraphWriteMethods wg, final MutableIntSet includedVertexIDs);
 }

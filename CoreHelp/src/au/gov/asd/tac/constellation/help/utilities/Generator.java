@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -64,15 +66,21 @@ public class Generator implements Runnable {
         if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
             return;
         }
-        
+        CompletableFuture.runAsync(this::updateTOCFiles, Executors.newSingleThreadExecutor());
+    }
+    
+    /**
+     * Update the online and offline help TOC files.
+     */
+    protected void updateTOCFiles() {
         // To update the online help TOC file change the boolean to true
         // Must also run adaptors when updating online help so those links aren't removed from the TOC
         // Reset back to false after updating the TOC file 
         final boolean updateOnlineHelp = false;
- 
+
         if (updateOnlineHelp) {
             baseDirectory = getBaseDirectory();
-            
+
             // First: create the TOCFile in the base directory for ONLINE help
             // Create the online root node for application-wide table of contents
             TOCGenerator.createTOCFile(getOnlineHelpTOCDirectory() + TOC_FILE_NAME);

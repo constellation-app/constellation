@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -115,19 +116,19 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
             final PluginParameter<SingleChoiceParameterValue> attrParam = (PluginParameter<SingleChoiceParameterValue>) parameters.get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
             if (change == ParameterChange.VALUE) {
                 if ("transaction".equals(masterParameter.getStringValue())) {
+                    SingleChoiceParameterType.setOptions(attrParam, transAttributes);
                     if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
                         attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
                     } else {
                         attrParam.setStringValue(EMPTY_STRING);
-                    }
-                    SingleChoiceParameterType.setOptions(attrParam, transAttributes);
+                    }                   
                 } else if ("node".equals(masterParameter.getStringValue())) {
+                    SingleChoiceParameterType.setOptions(attrParam, nodeAttributes);
                     if (nodeAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES)) {
                         attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
                     } else {
                         attrParam.setStringValue(EMPTY_STRING);
-                    }
-                    SingleChoiceParameterType.setOptions(attrParam, nodeAttributes);
+                    }                 
                 }
             }
         });
@@ -171,19 +172,27 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         final PluginParameter<SingleChoiceParameterValue> attrParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
 
         if ("transaction".equals(elParam.getStringValue())) {
-            if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
-                attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
-            } else {
-                attrParam.setStringValue(EMPTY_STRING);
-            }
             SingleChoiceParameterType.setOptions(attrParam, this.transAttributes);
-        } else if ("node".equals(elParam.getStringValue())) {
-            if (nodeAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES)) {
-                attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
+            if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
+                if (StringUtils.isBlank(attrParam.getStringValue()) || !transAttributes.contains(attrParam.getStringValue())) {
+                    attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
+                }
             } else {
-                attrParam.setStringValue(EMPTY_STRING);
-            }
+                if (!transAttributes.contains(attrParam.getStringValue())) {
+                    attrParam.setStringValue(EMPTY_STRING);
+                }
+            }            
+        } else if ("node".equals(elParam.getStringValue())) {
             SingleChoiceParameterType.setOptions(attrParam, this.nodeAttributes);
+            if (nodeAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES)) {
+                if (StringUtils.isBlank(attrParam.getStringValue()) || !nodeAttributes.contains(attrParam.getStringValue())) {
+                    attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
+                }
+            } else {
+                if (!nodeAttributes.contains(attrParam.getStringValue())) {
+                    attrParam.setStringValue(EMPTY_STRING);
+                }
+            }            
         }
     }
     

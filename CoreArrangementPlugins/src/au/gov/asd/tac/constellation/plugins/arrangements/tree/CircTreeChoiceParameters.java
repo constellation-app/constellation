@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,23 +24,26 @@ import au.gov.asd.tac.constellation.graph.Graph;
  */
 public class CircTreeChoiceParameters {
 
-    final float scale;
-    final boolean strictCircularLayout;
-
-    final int rootAttrId;
-    final String rootValue;
+    private final float scale;
+    private final boolean strictCircularLayout;
 
     int rootVxId;
 
-    public CircTreeChoiceParameters(final float scale, final boolean strictCircularLayout, final int rootAttrId, final String rootValue) {
+    public CircTreeChoiceParameters(final float scale, final boolean strictCircularLayout) {
         this.scale = scale;
         this.strictCircularLayout = strictCircularLayout;
-        this.rootAttrId = rootAttrId;
-        this.rootValue = rootValue;
         this.rootVxId = Graph.NOT_FOUND;
     }
 
+    public float getScale() {
+        return scale;
+    }
+
+    public boolean isStrictCircularLayout() {
+        return strictCircularLayout;
+    }
+
     public static CircTreeChoiceParameters getDefaultParameters() {
-        return new CircTreeChoiceParameters(1, false, Graph.NOT_FOUND, "");
+        return new CircTreeChoiceParameters(1, false);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -291,7 +291,7 @@ public class DataAccessUtilitiesNGTest {
             DataAccessUtilities.loadDataAccessState(dataAccessPane, graph);
 
             verify(pluginParameter1).setStringValue("parameter1_new_value");
-            verify(pluginParameter2, never()).setStringValue(anyString());
+            verify(pluginParameter2).setStringValue(anyString());
 
             verify(rGraph).release();
         }

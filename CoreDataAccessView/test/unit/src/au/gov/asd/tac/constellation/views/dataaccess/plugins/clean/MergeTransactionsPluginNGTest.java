@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,7 +131,9 @@ public class MergeTransactionsPluginNGTest {
     @Test
     public void testGetDescription() {
         MergeTransactionsPlugin instance = new MergeTransactionsPlugin();
-        String expResult = "Merge transactions in your graph together";
+        String expResult = """
+               Merge groups of transactions (of the same type
+               and activity) between two nodes together.""";
         String result = instance.getDescription();
         assertEquals(result, expResult);
     }

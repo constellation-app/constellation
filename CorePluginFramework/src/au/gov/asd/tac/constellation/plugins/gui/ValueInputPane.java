@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -182,6 +182,8 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                     final String value = recentValuesCombo.getValue();
                     if (value != null) {
                         field.setText(recentValuesCombo.getValue());
+                        Platform.runLater(() -> 
+                            recentValuesCombo.getSelectionModel().clearSelection());
                     }
                 };
                 recentValuesCombo.getSelectionModel().selectedIndexProperty().addListener(recentValueSelectionListener);

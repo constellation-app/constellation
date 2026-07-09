@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ public class BinFormatter implements Comparable<BinFormatter> {
     private static final List<BinFormatter> FORMATTER_LIST = new ArrayList<>();
 
     public static final BinFormatter DEFAULT_BIN_FORMATTER;
+    protected static final String REMOVE_TRAILING_NEWLINE = "[\\n\\r]+$";
 
     static {
         init();

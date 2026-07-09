@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,14 @@ public abstract class AbstractEditorFactory<V> {
 
     public AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final V defaultValue, final V initialValue) {
         return createEditor(editedItemName, editOperation, ValueValidator.getAlwaysSucceedValidator(), defaultValue, initialValue);
+    }
+    
+    public AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final V initialValue, final V defaultValue, final boolean noValueAllowed) {
+        return createEditor(editedItemName, editOperation, ValueValidator.getAlwaysSucceedValidator(), defaultValue, initialValue, noValueAllowed);
+    }
+    
+    public AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation,  final ValueValidator<V> validator, final V initialValue, final V defaultValue, final boolean noValueAllowed) {
+        return null; // to be overwritten if intending to use this overloaded method
     }
 
     public abstract AbstractEditor<V> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<V> validator, final V defaultValue, final V initialValue);

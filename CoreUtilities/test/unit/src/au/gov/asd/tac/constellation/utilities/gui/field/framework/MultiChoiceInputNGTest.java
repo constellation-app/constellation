@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -178,7 +178,7 @@ public class MultiChoiceInputNGTest {
         doNothing().when(multiChoiceInput).executeRightButtonAction();
         
         final RightButtonSupport.RightButton rightButton = multiChoiceInput.getRightButton();
-        Assert.assertNull(rightButton.getValue()); //label default
+        Assert.assertEquals(rightButton.getValue(), "Select"); //label default
         rightButton.show();
         verify(multiChoiceInput, times(1)).executeRightButtonAction();
         verify(multiChoiceInput, times(0)).setMenuShown(false);

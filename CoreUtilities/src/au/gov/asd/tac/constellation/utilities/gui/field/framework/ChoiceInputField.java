@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,8 +46,7 @@ public abstract class ChoiceInputField<C extends Object, O extends Object>
 
     protected ChoiceInputField(final ObservableList<O> options) {
         if (options == null) {
-            throw new InvalidOperationException(
-                    "Attempting to Set Options with null options");
+            throw new InvalidOperationException("Attempting to Set Options with null options");
         }
         this.options.addAll(options);
     }
@@ -64,8 +63,7 @@ public abstract class ChoiceInputField<C extends Object, O extends Object>
         if (options != null) {
             this.options.addAll(options);
         } else {
-            throw new InvalidOperationException(
-                    "Attempting to Set Options with null options");
+            throw new InvalidOperationException("Attempting to Set Options with null options");
         }
     }
 

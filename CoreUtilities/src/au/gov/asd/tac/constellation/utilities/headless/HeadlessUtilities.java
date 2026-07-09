@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ package au.gov.asd.tac.constellation.utilities.headless;
 public class HeadlessUtilities {
 
     private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
-
-    // Empty private constructor for utility class
+    
     private HeadlessUtilities() {
+        throw new IllegalStateException("Utility class");
     }
 
     public static boolean isHeadless() {

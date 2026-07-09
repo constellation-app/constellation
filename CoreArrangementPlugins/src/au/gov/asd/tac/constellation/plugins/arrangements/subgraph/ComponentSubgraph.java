@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.subgraph;
 
 import au.gov.asd.tac.constellation.graph.GraphAttributeMerger;
+import au.gov.asd.tac.constellation.graph.GraphElementMerger;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
@@ -28,8 +29,11 @@ import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Set;
 import java.util.stream.IntStream;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
 
 /**
  * Subgraph write methods for a connected component
@@ -40,7 +44,7 @@ public class ComponentSubgraph implements GraphWriteMethods {
 
     protected final GraphWriteMethods proxy;
 
-    protected final Set<Integer> includedVertexIDs;
+    protected final BitSet includedVertexIDs;
     protected final int[] vertexList;
     protected final int[] vertexPositions;
     protected int[] linkList = null;
@@ -49,14 +53,39 @@ public class ComponentSubgraph implements GraphWriteMethods {
     protected int[] edgePositions = null;
     protected int[] transactionList = null;
     protected int[] transactionPositions = null;
+    private GraphElementMerger graphElementMerger;
 
     public static SubgraphFactory getSubgraphFactory() {
-        return (final GraphWriteMethods wg, final Set<Integer> vertexIDs) -> new ComponentSubgraph(wg, vertexIDs);
+        return (final GraphWriteMethods wg, final MutableIntSet vertexIDs) -> new ComponentSubgraph(wg, vertexIDs);
     }
 
+    public ComponentSubgraph(final GraphWriteMethods proxy, final MutableIntSet includedVertexIDs) {
+        this.proxy = proxy;
+        this.includedVertexIDs = new BitSet();
+        includedVertexIDs.forEach(this.includedVertexIDs::set);
+        vertexList = new int[includedVertexIDs.size()];
+        vertexPositions = new int[proxy.getVertexCapacity()];
+        int pos = 0;
+        final IntIterator iter = includedVertexIDs.intIterator();
+        while (iter.hasNext()) {
+            final int vert = iter.next();
+            vertexPositions[vert] = pos;
+            vertexList[pos++] = vert;
+        }
+    }
+    
+    /**
+     * 
+     * @param proxy
+     * @param includedVertexIDs
+     * @deprecated in favor of new implementation
+     * @see #ComponentSubgraph(au.gov.asd.tac.constellation.graph.GraphWriteMethods, org.eclipse.collections.api.set.primitive.MutableIntSet)
+     */
+    @Deprecated(since = "3.4", forRemoval = true)
     public ComponentSubgraph(final GraphWriteMethods proxy, final Set<Integer> includedVertexIDs) {
         this.proxy = proxy;
-        this.includedVertexIDs = includedVertexIDs;
+        this.includedVertexIDs = new BitSet();
+        includedVertexIDs.stream().forEach(this.includedVertexIDs::set);
         vertexList = new int[includedVertexIDs.size()];
         vertexPositions = new int[proxy.getVertexCapacity()];
         int pos = 0;
@@ -110,22 +139,22 @@ public class ComponentSubgraph implements GraphWriteMethods {
 
     @Override
     public final boolean vertexExists(final int vertex) {
-        return includedVertexIDs.contains(vertex);
+        return includedVertexIDs.get(vertex);
     }
 
     @Override
     public final boolean linkExists(final int link) {
-        return includedVertexIDs.contains(getLinkLowVertex(link)) && includedVertexIDs.contains(getLinkHighVertex(link));
+        return includedVertexIDs.get(getLinkLowVertex(link)) && includedVertexIDs.get(getLinkHighVertex(link));
     }
 
     @Override
     public final boolean edgeExists(final int edge) {
-        return includedVertexIDs.contains(getEdgeSourceVertex(edge)) && includedVertexIDs.contains(getEdgeDestinationVertex(edge));
+        return includedVertexIDs.get(getEdgeSourceVertex(edge)) && includedVertexIDs.get(getEdgeDestinationVertex(edge));
     }
 
     @Override
     public final boolean transactionExists(final int transaction) {
-        return includedVertexIDs.contains(getTransactionSourceVertex(transaction)) && includedVertexIDs.contains(getTransactionDestinationVertex(transaction));
+        return includedVertexIDs.get(getTransactionSourceVertex(transaction)) && includedVertexIDs.get(getTransactionDestinationVertex(transaction));
     }
 
     @Override
@@ -809,4 +838,10 @@ public class ComponentSubgraph implements GraphWriteMethods {
     public Object getAttributeDefaultValue(final int attribute) {
         return proxy.getAttributeDefaultValue(attribute);
     }
+
+    @Override
+    public void setGraphElementMerger(final GraphElementMerger graphElementMerger) {
+        this.graphElementMerger = graphElementMerger;
+    }
+
 }

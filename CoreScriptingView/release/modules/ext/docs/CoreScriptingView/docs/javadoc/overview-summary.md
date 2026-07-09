@@ -61,15 +61,15 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 </thead>
 <tbody>
 <tr class="odd altColor">
-<td class="colFirst"><a href="graph/package-summary.md">au.gov.asd.tac.constellation.views.scripting.graph</a></td>
+<td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/package-summary.md">au.gov.asd.tac.constellation.views.scripting.graph</a></td>
 <td class="colLast"> </td>
 </tr>
 <tr class="even rowColor">
-<td class="colFirst"><a href="graph/iterators/package-summary.md">au.gov.asd.tac.constellation.views.scripting.graph.iterators</a></td>
+<td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/package-summary.md">au.gov.asd.tac.constellation.views.scripting.graph.iterators</a></td>
 <td class="colLast"> </td>
 </tr>
 <tr class="odd altColor">
-<td class="colFirst"><a href="utilities/package-summary.md">au.gov.asd.tac.constellation.views.scripting.utilities</a></td>
+<td class="colFirst"><a href="../ext/docs/CoreScriptingView/docs/javadoc/utilities/package-summary.md">au.gov.asd.tac.constellation.views.scripting.utilities</a></td>
 <td class="colLast"> </td>
 </tr>
 </tbody>

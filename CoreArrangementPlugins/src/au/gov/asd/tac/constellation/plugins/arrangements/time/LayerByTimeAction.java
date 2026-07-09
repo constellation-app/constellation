@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ import org.openide.util.NbBundle.Messages;
 public final class LayerByTimeAction extends AbstractAction {
 
     private final GraphNode context;
-    private final Dimension size = new Dimension(550, 750);
+    private final Dimension size = new Dimension(750, 750);
 
     public LayerByTimeAction(final GraphNode context) {
         this.context = context;

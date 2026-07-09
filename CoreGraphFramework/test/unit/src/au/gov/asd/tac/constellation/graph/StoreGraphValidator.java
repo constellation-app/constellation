@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -388,6 +388,7 @@ public final class StoreGraphValidator implements GraphWriteMethods {
     private final List<Link> linkList = new ArrayList<>();
     private final MutableIntObjectMap<Transaction> transactionMap = new IntObjectHashMap<>();
     private final List<Transaction> transactionList = new ArrayList<>();
+    private GraphElementMerger graphElementMerger;
 
     @Override
     public int addTransaction(final int sourceVertex, final int destinationVertex, final boolean directed) {
@@ -968,5 +969,10 @@ public final class StoreGraphValidator implements GraphWriteMethods {
     @Override
     public IntStream transactionStream() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setGraphElementMerger(final GraphElementMerger graphElementMerger) {
+        this.graphElementMerger = graphElementMerger;
     }
 }

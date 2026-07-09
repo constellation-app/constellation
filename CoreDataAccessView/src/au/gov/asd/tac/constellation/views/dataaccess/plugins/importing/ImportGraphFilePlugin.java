@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,11 @@ public class ImportGraphFilePlugin extends RecordStoreQueryPlugin implements Dat
     
     @Override
     public String getDescription() {
-        return "Import a Graph File";
+        return """
+           Import a Graph File by extracting the network structure and
+           displaying the data (with/without transactions).
+           Currently does not support graphs nested in nodes.
+           Support file types: GML, GraphML and Pajek.""";
     }
 
     @Override

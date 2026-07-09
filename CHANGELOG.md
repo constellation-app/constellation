@@ -1,5 +1,21 @@
 # Constellation Changes
 
+## Changes in April 2026
+-   Updated `BubbleTreeArranger`, and `HierarchyArranger` constructor to pass `MutableIntList` instead of `Set<Integer>`. Old constructor has been deprecated.
+-   Updated `GraphSpectrumEmbedder.spectralEmbedding()` return type to `MutableIntObjectMap`, and `includedVertices` parameter to a `MutableIntSet`
+-   Updated `SubgraphFactory.constructSubgraph() to pass `MutableIntSet` instead of `Set<Integer>`.
+
+## Changes in January 2026
+-   Renamed `Chinese Whispers` to `Label Propagation`.
+-   Added AnalyticSchemav7UpdateProvider for Label Propagation changes.
+-   Removed `AlgorithmicError`, `KTrussDialogPanel`, `FindSubgraphs`, `SP2Traverse`, and `ShortestPaths2Plugin` which were unused.
+-   Removed all classes in `au.gov.asd.tac.constellation.plugins.arrangements.planar` which were unused.
+-   Removed `CircTreeChoicePanel` and `MDSChoicePanel` which were unused.
+-   Removed `ConsolidatedDialog`, `PackagePanel`, and `ReserveLock` which were unused.
+
+## Changes in December 2025
+-   Removed `StyleGenerator` which was unused.
+
 ## Changes in November 2025
 -   Removed `ContentPairwiseSimilarityServices.MutableDouble` which was no longer needed.
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,14 +119,10 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
 
     @Override
     public void updateParameters(final Graph graph, final PluginParameters parameters) {
-
         // Get the list of non-default attributes
-        final ReadableGraph rg = graph.getReadableGraph();
         Map<String, Integer> vertexAttributes = null;
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             vertexAttributes = AttributeUtilities.getVertexAttributes(rg);
-        } finally {
-            rg.release();
         }
 
         if (vertexAttributes != null) {

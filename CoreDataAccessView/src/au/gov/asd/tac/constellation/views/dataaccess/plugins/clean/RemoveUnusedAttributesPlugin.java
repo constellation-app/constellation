@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,10 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
 
     @Override
     public String getDescription() {
-        return "Removes all unused (non-key) atrributes from the graph";
+        return """
+               Removes all (non-key) node and transaction attributes
+               on the graph that are not being used (i.e. contain no
+               values anywhere on the graph).""";
     }
 
     @Override

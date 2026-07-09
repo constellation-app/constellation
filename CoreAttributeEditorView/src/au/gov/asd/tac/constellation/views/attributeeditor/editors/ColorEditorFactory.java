@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,11 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
     public AbstractEditor<ConstellationColor> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationColor> validator, final ConstellationColor defaultValue, final ConstellationColor initialValue) {
         return new ColorEditor(editedItemName, editOperation, validator, defaultValue, initialValue);
     }
+    
+    @Override
+    public AbstractEditor<ConstellationColor> createEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationColor> validator, final ConstellationColor defaultValue, final ConstellationColor initialValue, final boolean noValueAllowed) {
+        return new ColorEditor(editedItemName, editOperation, validator, defaultValue, initialValue, noValueAllowed);
+    }
 
     @Override
     public String getAttributeType() {
@@ -57,6 +62,10 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
         private ComboBox<ConstellationColor> colorCombo;
         private ColorPicker picker;
 
+        protected ColorEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationColor> validator, final ConstellationColor defaultValue, final ConstellationColor initialValue, final boolean noValueAllowed) {
+            super(editedItemName, editOperation, validator, defaultValue, initialValue, noValueAllowed);
+        }
+        
         protected ColorEditor(final String editedItemName, final EditOperation editOperation, final ValueValidator<ConstellationColor> validator, final ConstellationColor defaultValue, final ConstellationColor initialValue) {
             super(editedItemName, editOperation, validator, defaultValue, initialValue, true);
         }

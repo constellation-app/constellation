@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,8 +93,8 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
     }
 
     @Override
-    public String getDescription() {
-        return "Select the top N on your graph using types";
+    public String getDescription() { 
+        return "Select the top N on your graph based on criteria.";
     }
 
     @Override

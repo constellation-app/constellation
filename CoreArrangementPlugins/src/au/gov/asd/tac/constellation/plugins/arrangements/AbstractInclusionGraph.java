@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -265,15 +265,15 @@ public abstract class AbstractInclusionGraph {
             }
         }
 
-        if (connections == Connections.NONE) {
-            // Do nothing, the inclusion graph won't have any transactions.
-        } else if (connections == Connections.TRANSACTIONS) {
-            addTransactionsFromTransactions(wg, storeGraph, vertices);
-        } else if (connections == Connections.EDGES) {
-            addTransactionsFromEdges(wg, storeGraph, vertices);
-        } else {
-            addTransactionsFromLinks(wg, storeGraph, vertices);
+        switch (connections) {
+            case NONE -> {
+                // Do nothing, the inclusion graph won't have any transactions.
+            }
+            case TRANSACTIONS -> addTransactionsFromTransactions(wg, storeGraph, vertices);
+            case EDGES -> addTransactionsFromEdges(wg, storeGraph, vertices);
+            case null, default -> addTransactionsFromLinks(wg, storeGraph, vertices);
         }
+        
 
         this.inclusionGraph = storeGraph;
     }
