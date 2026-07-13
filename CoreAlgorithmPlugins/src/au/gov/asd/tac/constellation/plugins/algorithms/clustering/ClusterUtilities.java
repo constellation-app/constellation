@@ -100,7 +100,7 @@ public class ClusterUtilities {
         setColorRef(wg, wg.getAttributeName(vxColorId), wg.getAttributeName(txColorId));
     }
 
-    public static void setColorRef(final GraphWriteMethods wg, final String vxColorAttrName, final String txColorAttrName) {
+    private static void setColorRef(final GraphWriteMethods wg, final String vxColorAttrName, final String txColorAttrName) {
         final int vxColorRef = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(wg);
         final int txColorRef = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(wg);
 
@@ -109,7 +109,7 @@ public class ClusterUtilities {
     }
 
     /**
-     * Make the graph all explodey based on cluster membership.
+     * Make the graph all explode based on cluster membership.
      * <p>
      * A cluster is identified by the integer attribute "cluster"; all vertices
      * will the same cluster value are in the same cluster.

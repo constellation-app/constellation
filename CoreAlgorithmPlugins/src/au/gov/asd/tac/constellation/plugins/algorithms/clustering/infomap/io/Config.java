@@ -52,7 +52,8 @@ public final class Config {
      */
     public void setOptimizationLevel(final int level) {
         switch (level) {
-            case 0: // full coarse-tune
+            case 0 -> {
+                // full coarse-tune
                 randomizeCoreLoopLimit = false;
                 coreLoopLimit = 0;
                 levelAggregationLimit = 0;
@@ -61,8 +62,9 @@ public final class Config {
                 fastCoarseTunePartition = false;
                 alternateCoarseTuneLevel = true;
                 coarseTuneLevel = 3;
-                break;
-            case 1: // fast coarse-tune
+            }
+            case 1 -> {
+                // fast coarse-tune
                 randomizeCoreLoopLimit = true;
                 coreLoopLimit = 10;
                 levelAggregationLimit = 0;
@@ -71,8 +73,9 @@ public final class Config {
                 fastCoarseTunePartition = true;
                 alternateCoarseTuneLevel = false;
                 coarseTuneLevel = 1;
-                break;
-            case 2: // no tuning
+            }
+            case 2 -> {
+                // no tuning
                 randomizeCoreLoopLimit = true;
                 coreLoopLimit = 10;
                 levelAggregationLimit = 0;
@@ -80,8 +83,9 @@ public final class Config {
                 fastCoarseTunePartition = true;
                 alternateCoarseTuneLevel = false;
                 coarseTuneLevel = 1;
-                break;
-            case 3: // no aggregation nor any tuning
+            }
+            case 3 -> {
+                // no aggregation nor any tuning
                 randomizeCoreLoopLimit = true;
                 coreLoopLimit = 10;
                 levelAggregationLimit = 1;
@@ -89,9 +93,8 @@ public final class Config {
                 fastCoarseTunePartition = true;
                 alternateCoarseTuneLevel = false;
                 coarseTuneLevel = 1;
-                break;
-            default:
-                throw new IllegalArgumentException("Optimization level must be in 0..3");
+            }
+            default -> throw new IllegalArgumentException("Optimization level must be in 0..3");
         }
     }
 

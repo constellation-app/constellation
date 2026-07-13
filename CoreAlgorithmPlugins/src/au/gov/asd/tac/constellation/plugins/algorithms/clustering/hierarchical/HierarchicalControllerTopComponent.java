@@ -40,7 +40,6 @@ import java.awt.Container;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -608,12 +607,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
         final Update update = new Update(state);
         final Future<?> f = PluginExecution.withPlugin(update).interactively(true).executeLater(graph);
-        if (state.isColored() && state.isInteractive()) {
-            final ColorClusters color = new ColorClusters(true);
-            PluginExecution.withPlugin(color).interactively(true).waitingFor(f).executeLater(graph);
-        }
-        if (state.isColored() && !state.isInteractive()) {
-            final ColorClusters color = new ColorClusters(false);
+        if (state.isColored()) {
+            final ColorClusters color = new ColorClusters(state.isInteractive());
             PluginExecution.withPlugin(color).interactively(true).waitingFor(f).executeLater(graph);
         }
     }
@@ -705,7 +700,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     }
 
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
-    public static final class ColorClusters extends SimpleEditPlugin {
+    protected static final class ColorClusters extends SimpleEditPlugin {
 
         private final boolean setColors;
 
@@ -730,7 +725,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     }
 
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
-    public static final class Update extends SimpleEditPlugin {
+    protected static final class Update extends SimpleEditPlugin {
 
         private final HierarchicalState state;
 
@@ -768,14 +763,14 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                     graph.setIntValue(vertexClusterAttribute, vertex, -1);
                     if (state.isInteractive()) {
                         final boolean isDimmed = state.getExcludedElementsState() == ExcludedState.DIMMED;
-                        final float visibiltyValue = state.getExcludedElementsState() == ExcludedState.HIDDEN ? -2.0F : 2.0F;
+                        final float visibiltyValue = state.getExcludedElementsState() == ExcludedState.HIDDEN ? -2F : 2F;
 
                         graph.setBooleanValue(vertexDimmedAttribute, vertex, isDimmed);
                         graph.setFloatValue(vertexVisibilityAttribute, vertex, visibiltyValue);
 
                     } else {
                         graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
-                        graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0F);
+                        graph.setFloatValue(vertexVisibilityAttribute, vertex, 2F);
                     }
                 } else {
                     // when keeping all vertices, do not dim, and show all.
@@ -783,7 +778,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                     while (group.getMergeStep() <= state.getCurrentStep()) {
                         group = group.getParent();
                     }
-                    graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0F);
+                    graph.setFloatValue(vertexVisibilityAttribute, vertex, 2F);
                     graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
                     graph.setObjectValue(vxOverlayColorAttr, vertex, group.getColor());
 
@@ -813,12 +808,12 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                             final int transaction = graph.getLinkTransaction(link, transactionPosition);
                             graph.setObjectValue(txOverlayColorAttr, transaction, highVertexColor);
                             graph.setBooleanValue(transactionDimmedAttribute, transaction, false);
-                            graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0F);
+                            graph.setFloatValue(transactionVisibilityAttribute, transaction, 2F);
                         }
                     } else { // dim or hide transaction depending on state selected.
                         final int transactionCount = graph.getLinkTransactionCount(link);
                         final boolean isDimmed = state.getExcludedElementsState() != ExcludedState.SHOW;
-                        final float visibiltyValue = state.getExcludedElementsState() == ExcludedState.HIDDEN ? -2.0F : 2.0F;
+                        final float visibiltyValue = state.getExcludedElementsState() == ExcludedState.HIDDEN ? -2F : 2F;
 
                         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                             final int transaction = graph.getLinkTransaction(link, transactionPosition);
@@ -833,7 +828,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                         final int transaction = graph.getLinkTransaction(link, transactionPosition);
                         graph.setObjectValue(txOverlayColorAttr, transaction, highVertexColor);
                         graph.setBooleanValue(transactionDimmedAttribute, transaction, false);
-                        graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0F);
+                        graph.setFloatValue(transactionVisibilityAttribute, transaction, 2F);
                     }
                 }
             }
@@ -841,10 +836,10 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     }
 
     /**
-     * Recluster using hierarchical algorithm fast newman
+     * Re-cluster using hierarchical algorithm Fast Newman.
      */
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
-    public static class HierarchicalReclusterPlugin extends SimpleEditPlugin {
+    protected static class HierarchicalReclusterPlugin extends SimpleEditPlugin {
 
         final boolean interactiveButtonSelected;
 
@@ -865,10 +860,10 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     }
 
     /**
-     * Finds the shortest paths between clusters
+     * Finds the shortest paths between clusters.
      */
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
-    public static class HierarchicalShortestPathsPlugin extends SimpleEditPlugin {
+    protected static class HierarchicalShortestPathsPlugin extends SimpleEditPlugin {
 
         final HierarchicalState state;
 

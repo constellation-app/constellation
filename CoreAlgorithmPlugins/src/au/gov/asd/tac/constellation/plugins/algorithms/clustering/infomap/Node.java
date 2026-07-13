@@ -26,10 +26,6 @@ public class Node extends NodeBase {
 
     private FlowBase data;
 
-    public Node() {
-        super();
-    }
-
     public Node(final String name, final FlowBase data) {
         super(name);
         this.data = data.copy();

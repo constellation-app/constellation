@@ -54,17 +54,17 @@ public class FlowNetwork {
         int connIndex = 0;
         for (final Map.Entry<NodePair, Double> entry : connMap.entrySet()) {
             final NodePair ends = entry.getKey();
-            nodeOutDegree[ends.end1]++;
+            nodeOutDegree[ends.end1()]++;
             final double weight = entry.getValue();
-            sumLinkOutWeight[ends.end1] += weight;
+            sumLinkOutWeight[ends.end1()] += weight;
             if (config.isUndirected()) {
-                sumLinkOutWeight[ends.end2] += weight;
+                sumLinkOutWeight[ends.end2()] += weight;
             }
-            nodeFlow[ends.end1] += weight / sumUndirConnWeight;
+            nodeFlow[ends.end1()] += weight / sumUndirConnWeight;
             if (!config.isOutdirdir()) {
-                nodeFlow[ends.end2] += weight / sumUndirConnWeight;
+                nodeFlow[ends.end2()] += weight / sumUndirConnWeight;
             }
-            flowConns[connIndex] = new Connection(ends.end1, ends.end2, weight);
+            flowConns[connIndex] = new Connection(ends.end1(), ends.end2(), weight);
 
             connIndex++;
         }

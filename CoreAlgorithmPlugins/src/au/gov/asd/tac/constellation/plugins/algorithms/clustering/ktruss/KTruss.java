@@ -105,7 +105,6 @@ public class KTruss {
 
         @Override
         public void finalise(final int highestK, final BitSet currentLinksCopy) {
-
             // Record an array of which values of k caused changes in the graph,
             // ie. those values of k for which the graph contained k-1 trusses that were not k-trusses.
             final boolean[] extantKTrusses = new boolean[highestK + 2];

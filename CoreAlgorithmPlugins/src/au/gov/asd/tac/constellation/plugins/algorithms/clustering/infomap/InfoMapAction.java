@@ -62,7 +62,7 @@ public final class InfoMapAction implements ActionListener {
      * Color the clusters and arrange graph after clustering has been performed.
      */
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
-    public static class InfoMapCleanupPlugin extends SimpleEditPlugin {
+    protected static class InfoMapCleanupPlugin extends SimpleEditPlugin {
 
         @Override
         public String getName() {

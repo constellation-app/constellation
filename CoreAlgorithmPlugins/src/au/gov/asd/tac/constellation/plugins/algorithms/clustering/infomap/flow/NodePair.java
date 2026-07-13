@@ -19,15 +19,7 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.flow;
  *
  * @author algol
  */
-public class NodePair implements Comparable<NodePair> {
-
-    public final int end1;
-    public final int end2;
-
-    public NodePair(final int end1, final int end2) {
-        this.end1 = end1;
-        this.end2 = end2;
-    }
+public record NodePair(int end1, int end2) implements Comparable<NodePair> {
 
     @Override
     public int compareTo(final NodePair other) {
@@ -45,23 +37,7 @@ public class NodePair implements Comparable<NodePair> {
         }
         return 0;
     }
-
-    @Override
-    public int hashCode() {
-        return end1 ^ end2;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        final NodePair other = (NodePair) obj;
-
-        return this.end1 == other.end1 && this.end2 == other.end2;
-    }
-
+    
     @Override
     public String toString() {
         return "NodePair{" + "end1=" + end1 + ", end2=" + end2 + '}';

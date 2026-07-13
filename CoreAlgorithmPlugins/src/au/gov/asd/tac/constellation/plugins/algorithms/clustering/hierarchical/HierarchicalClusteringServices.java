@@ -35,6 +35,6 @@ public class HierarchicalClusteringServices {
                 initialLinkIds.add(graph.getVertexLink(vxId, 0));
             }
         }
-        FastNewman.run(graph, interaction, interactiveMode, initialLinkIds, AnalyticConcept.VertexAttribute.WEIGHT.getName());
+        FastNewman.run(graph, interaction, interactiveMode, initialLinkIds, AnalyticConcept.TransactionAttribute.WEIGHT.getName());
     }
 }

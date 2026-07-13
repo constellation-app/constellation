@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util;
 
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-
 /**
  *
  * @author algol
@@ -52,26 +50,5 @@ public class InfoMath {
             randomOrder[i] = randomOrder[i2];
             randomOrder[i2] = t;
         }
-    }
-
-    /**
-     * Format a double like C++ does.
-     *
-     * @param d the double to format.
-     * @param prec the desired precision.
-     * @return a String containing the formatted double.
-     */
-    public static String fd(final double d, final int prec) {
-        final String fmt = "%." + prec + "f";
-        String s = String.format(fmt, d);
-        while (s.endsWith("0")) {
-            s = s.substring(0, s.length() - 1);
-        }
-
-        if (s.endsWith(SeparatorConstants.PERIOD)) {
-            s = s.substring(0, s.length() - 1);
-        }
-
-        return s;
     }
 }

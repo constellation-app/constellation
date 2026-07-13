@@ -60,15 +60,15 @@ public class InfomapUndirected extends InfomapGreedy {
         deltaEnterExitOldModule *= 2;
         deltaEnterExitNewModule *= 2;
 
-        final double delta_exit = plogp(enterFlow + deltaEnterExitOldModule - deltaEnterExitNewModule) - enterFlowLogEnterFlow;
+        final double deltaExit = plogp(enterFlow + deltaEnterExitOldModule - deltaEnterExitNewModule) - enterFlowLogEnterFlow;
 
-        final double delta_exit_log_exit
+        final double deltaExitLogExit
                 = -plogp(moduleFlowData[oldModule].getExitFlow())
                 - plogp(moduleFlowData[newModule].getExitFlow())
                 + plogp(moduleFlowData[oldModule].getExitFlow() - current.getData().getExitFlow() + deltaEnterExitOldModule)
                 + plogp(moduleFlowData[newModule].getExitFlow() + current.getData().getExitFlow() - deltaEnterExitNewModule);
 
-        final double delta_flow_log_flow
+        final double deltaFlowLogFlow
                 = -plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow())
                 - plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow())
                 + plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow()
@@ -76,7 +76,7 @@ public class InfomapUndirected extends InfomapGreedy {
                 + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow()
                         + current.getData().getExitFlow() + current.getData().getFlow() - deltaEnterExitNewModule);
 
-        return delta_exit - 2.0 * delta_exit_log_exit + delta_flow_log_flow;
+        return deltaExit - 2.0 * deltaExitLogExit + deltaFlowLogFlow;
     }
 
     @Override

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * NodeBase
@@ -52,12 +51,8 @@ public class NodeBase {
     protected int childDegree;
     protected boolean childrenChanged;
     protected int numLeafMembers;
-    protected ArrayList<Edge<NodeBase>> inEdges;
-    protected ArrayList<Edge<NodeBase>> outEdges;
-
-    public NodeBase() {
-        this(StringUtils.EMPTY);
-    }
+    protected List<Edge<NodeBase>> inEdges;
+    protected List<Edge<NodeBase>> outEdges;
 
     public NodeBase(final String name) {
         this.id = uid++;
@@ -272,10 +267,7 @@ public class NodeBase {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final NodeBase other = (NodeBase) obj;
@@ -311,7 +303,7 @@ public class NodeBase {
         return String.format("[NodeBase %d:%s index=%d] %s", id, name, index, getNeighbourhood());
     }
 
-    public static class ChildrenIterator implements Iterator<NodeBase> {
+    protected static class ChildrenIterator implements Iterator<NodeBase> {
 
         private NodeBase current;
 

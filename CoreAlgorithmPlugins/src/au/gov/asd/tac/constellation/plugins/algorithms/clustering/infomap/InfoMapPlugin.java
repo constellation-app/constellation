@@ -35,11 +35,11 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -94,7 +94,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     private static final String OPTIMISATION_PARAMETER_ID_NAME = "Optimisation Level";
     private static final String OPTIMISATION_PARAMETER_ID_DEFAULT = "Full coarse-tune";
 
-    private static final Map<String, Integer> OPTIMISATION_LEVELS = new HashMap<>();
+    private static final MutableObjectIntMap<String> OPTIMISATION_LEVELS = new ObjectIntHashMap<>();
 
     static {
         OPTIMISATION_LEVELS.put(OPTIMISATION_PARAMETER_ID_DEFAULT, 0);
@@ -108,7 +108,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     private static final String FAST_HIERARCHICAL_PARAMETER_ID_NAME = "Fast Hierarchical";
     private static final String FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT = "Normal";
 
-    private static final Map<String, Integer> FAST_HIERARCHICAL_LEVELS = new HashMap<>();
+    private static final MutableObjectIntMap<String> FAST_HIERARCHICAL_LEVELS = new ObjectIntHashMap<>();
 
     static {
         FAST_HIERARCHICAL_LEVELS.put(FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT, 0);
@@ -121,30 +121,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     public static final String NUM_TRIALS_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "num_trials");
     private static final String NUM_TRIALS_PARAMETER_ID_NAME = "Number of Trials";
     private static final int NUM_TRIALS_PARAMETER_ID_DEFAULT = 1;
-
-    @Override
-    protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        if (wg.getVertexCount() <= 0) {
-            interaction.notify(PluginNotificationLevel.ERROR, "The graph must have at least one vertex to run clustering on");
-            LOGGER.log(Level.WARNING, "{0} run on Empty Graph", Bundle.InfoMapPlugin());
-            return;
-        }
-
-        final InfoMapContext context = new InfoMapContext(createConfig(parameters), wg);
-
-        context.getInfoMap().run();
-
-        final int clusterAttrId = ClusteringConcept.VertexAttribute.INFOMAP_CLUSTER.ensure(wg);
-        final InfomapBase infomap = context.getInfoMap();
-        final TreeData treeData = infomap.getTreeData();
-        LOGGER.log(Level.INFO, "Vertices {0}", treeData.getNumLeafNodes());
-
-        for (final NodeBase node : treeData.getLeaves()) {
-            final int index = node.getParent().getIndex();
-            wg.setIntValue(clusterAttrId, wg.getVertex(node.getOriginalIndex()), index + 1);
-        }
-    }
-
+    
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
@@ -188,6 +165,29 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         return parameters;
     }
 
+    @Override
+    protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        if (wg.getVertexCount() <= 0) {
+            interaction.notify(PluginNotificationLevel.ERROR, "The graph must have at least one vertex to run clustering on");
+            LOGGER.log(Level.WARNING, "{0} run on Empty Graph", Bundle.InfoMapPlugin());
+            return;
+        }
+
+        final InfoMapContext context = new InfoMapContext(createConfig(parameters), wg);
+
+        context.getInfoMap().run();
+
+        final int clusterAttrId = ClusteringConcept.VertexAttribute.INFOMAP_CLUSTER.ensure(wg);
+        final InfomapBase infomap = context.getInfoMap();
+        final TreeData treeData = infomap.getTreeData();
+        LOGGER.log(Level.INFO, "Vertices {0}", treeData.getNumLeafNodes());
+
+        for (final NodeBase node : treeData.getLeaves()) {
+            final int index = node.getParent().getIndex();
+            wg.setIntValue(clusterAttrId, wg.getVertex(node.getOriginalIndex()), index + 1);
+        }
+    }
+
     protected Config createConfig(final PluginParameters parameters) {
         final Config config = new Config();
 
@@ -204,14 +204,10 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         // Dynamic type
         // Note: DYNAMICS_PARAMETER_UNDIRECTED is unused here because the config will set undirected if no other dynamic is set true
         switch (parameters.getParameters().get(DYNAMICS_PARAMETER_ID).getStringValue()) {
-            case DYNAMICS_PARAMETER_DIRECTED ->
-                config.setDirected(true);
-            case DYNAMICS_PARAMETER_UNDIRECTED_FLOW ->
-                config.setUndirdir(true);
-            case DYNAMICS_PARAMETER_INCLOMING_FLOW ->
-                config.setOutdirdir(true);
-            case DYNAMICS_PARAMETER_DIRECTED_WEIGHT ->
-                config.setRawdir(true);
+            case DYNAMICS_PARAMETER_DIRECTED -> config.setDirected(true);
+            case DYNAMICS_PARAMETER_UNDIRECTED_FLOW -> config.setUndirdir(true);
+            case DYNAMICS_PARAMETER_INCLOMING_FLOW -> config.setOutdirdir(true);
+            case DYNAMICS_PARAMETER_DIRECTED_WEIGHT -> config.setRawdir(true);
         }
 
         config.setOptimizationLevel(OPTIMISATION_LEVELS.get(parameters.getParameters().get(OPTIMISATION_PARAMETER_ID).getStringValue()));

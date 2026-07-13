@@ -445,7 +445,6 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
     @Override
     public void componentClosed() {
-
         // If interactive was enabled when component closed, clear this state so that
         // graph doesn't render with interactive visuals. Also store this fact so that
         // if the component is reopened it can revert to previous state. This is stored in
@@ -567,8 +566,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
             graphNode = node;
             graph = graphNode.getGraph();
-            final ReadableGraph rg = graph.getReadableGraph();
-            try {
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
                 final int stateAttr = ClusteringConcept.MetaAttribute.K_TRUSS_CLUSTERING_STATE.get(rg);
                 state = stateAttr != Graph.NOT_FOUND ? (KTrussState) rg.getObjectValue(stateAttr, 0) : null;
                 // If the nested trusses panel is visible in the new state, show it
@@ -585,8 +583,6 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                     updateInteractiveButton(true);
                     colorNestedTrussesCheckBox.setSelected(false);
                 }
-            } finally {
-                rg.release();
             }
 
             graph.addGraphChangeListener(this);
@@ -607,11 +603,9 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
      */
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
-
         long smc;
         final long mc;
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
 
             // Retrieve the k-truss state attribute, attribute mod counter, and structural mod counter from the graph
             final int stateAttr = ClusteringConcept.MetaAttribute.K_TRUSS_CLUSTERING_STATE.get(rg);
@@ -624,8 +618,6 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                 setGroups(true);
             }
 
-        } finally {
-            rg.release();
         }
 
         // Update the controller state's modcount, and make the recluster button active if the srtuctual mod count does not match the graph.
@@ -671,9 +663,9 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             final Font labelBoldFont = labelFont.deriveFont(Font.BOLD | labelFont.getStyle());
 
             // Bold the labels which have significant values of k
-            final Iterator<?> iter = labelTable.keySet().iterator();
+            final Iterator<Integer> iter = labelTable.keySet().iterator();
             while (iter.hasNext()) {
-                final int key = (Integer) iter.next();
+                final int key = iter.next();
                 if (state.isKTrussExtant(key)) {
                     labelTable.get(key).setFont(labelBoldFont);
                 }
@@ -793,7 +785,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }
 
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
-    public static final class RemoveOverlayColors extends SimpleEditPlugin {
+    protected static final class RemoveOverlayColors extends SimpleEditPlugin {
 
         @Override
         public String getName() {
@@ -814,7 +806,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }
 
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
-    public static final class ColorTrusses extends SimpleEditPlugin {
+    protected static final class ColorTrusses extends SimpleEditPlugin {
 
         private final KTrussState state;
 
@@ -829,7 +821,6 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
             // Retrieve (or if not extant, create) the node and transaction attributes pertaining to k-trusses and selection.
             final int vxKTrussAttr = ClusteringConcept.VertexAttribute.K_TRUSS_CLUSTER.ensure(graph);
             final int txKTrussAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_CLUSTER.ensure(graph);
@@ -864,7 +855,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }
 
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.SELECT})
-    public static final class Select extends SimpleEditPlugin {
+    protected static final class Select extends SimpleEditPlugin {
 
         private final KTrussState state;
 
@@ -879,7 +870,6 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
             // Retrieve (or if not extant, create) the node and transaction attributes pertaining to k-trusses and selection.
             final int vxKTrussAttr = ClusteringConcept.VertexAttribute.K_TRUSS_CLUSTER.ensure(graph);
             final int txKTrussAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_CLUSTER.ensure(graph);
@@ -914,7 +904,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }
 
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
-    public static final class Update extends SimpleEditPlugin {
+    protected static final class Update extends SimpleEditPlugin {
 
         private final KTrussState state;
 
@@ -929,7 +919,6 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
             // Retrieve (or if not extant, create) the node and transaction attributes pertaining to k-trusses, and visibility/dimming.
             final int vxKTrussAttr = ClusteringConcept.VertexAttribute.K_TRUSS_CLUSTER.ensure(graph);
             final int txKTrussAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_CLUSTER.ensure(graph);
@@ -1030,7 +1019,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }
 
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
-    public static class KTrussCalculatePlugin extends SimpleEditPlugin {
+    protected static class KTrussCalculatePlugin extends SimpleEditPlugin {
 
         final boolean isInteractiveButtonSelected;
 
@@ -1050,7 +1039,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
     }
 
-    public void updateInteractiveButton(final boolean disableButton) {
+    private void updateInteractiveButton(final boolean disableButton) {
         if (disableButton) {
             interactiveButton.setText(TOGGLE_DISABLED);
             interactiveButton.setSelected(false);

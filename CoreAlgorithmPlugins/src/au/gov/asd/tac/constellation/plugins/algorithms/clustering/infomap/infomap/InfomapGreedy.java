@@ -78,8 +78,8 @@ public abstract class InfomapGreedy extends InfomapBase {
                     // For undirected links, this automatically adds to both direction (as enterFlow = &exitFlow).
                     final double sourceExitFlow = getNode(edge.getSource()).getData().getExitFlow();
                     final double targetEnterFlow = getNode(edge.getTarget()).getData().getEnterFlow();
-                    getNode(edge.getSource()).getData().setExitFlow(sourceExitFlow + edge.getData().flow);
-                    getNode(edge.getTarget()).getData().setEnterFlow(targetEnterFlow + edge.getData().flow);
+                    getNode(edge.getSource()).getData().setExitFlow(sourceExitFlow + edge.getData().flow());
+                    getNode(edge.getTarget()).getData().setEnterFlow(targetEnterFlow + edge.getData().flow());
                 }
             }
         }
@@ -211,21 +211,21 @@ public abstract class InfomapGreedy extends InfomapBase {
         double deltaEnterExitOldModule = oldModuleDelta.getDeltaEnter() + oldModuleDelta.getDeltaExit();
         double deltaEnterExitNewModule = newModuleDelta.getDeltaEnter() + newModuleDelta.getDeltaExit();
 
-        final double delta_enter = plogp(enterFlow + deltaEnterExitOldModule - deltaEnterExitNewModule) - enterFlowLogEnterFlow;
+        final double deltaEnter = plogp(enterFlow + deltaEnterExitOldModule - deltaEnterExitNewModule) - enterFlowLogEnterFlow;
 
-        final double delta_enter_log_enter
+        final double deltaEnterLogEnter
                 = -plogp(moduleFlowData[oldModule].getEnterFlow())
                 - plogp(moduleFlowData[newModule].getEnterFlow())
                 + plogp(moduleFlowData[oldModule].getEnterFlow() - current.getData().getEnterFlow() + deltaEnterExitOldModule)
                 + plogp(moduleFlowData[newModule].getEnterFlow() + current.getData().getEnterFlow() - deltaEnterExitNewModule);
 
-        final double delta_exit_log_exit
+        final double deltaExitLogExit
                 = -plogp(moduleFlowData[oldModule].getExitFlow())
                 - plogp(moduleFlowData[newModule].getExitFlow())
                 + plogp(moduleFlowData[oldModule].getExitFlow() - current.getData().getExitFlow() + deltaEnterExitOldModule)
                 + plogp(moduleFlowData[newModule].getExitFlow() + current.getData().getExitFlow() - deltaEnterExitNewModule);
 
-        final double delta_flow_log_flow
+        final double deltaFlowLogFlow
                 = -plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow())
                 - plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow())
                 + plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow()
@@ -233,7 +233,7 @@ public abstract class InfomapGreedy extends InfomapBase {
                 + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow()
                         + current.getData().getExitFlow() + current.getData().getFlow() - deltaEnterExitNewModule);
 
-        return delta_enter - delta_enter_log_enter - delta_exit_log_exit + delta_flow_log_flow;
+        return deltaEnter - deltaEnterLogEnter - deltaExitLogExit + deltaFlowLogFlow;
     }
 
     /**
@@ -368,7 +368,7 @@ public abstract class InfomapGreedy extends InfomapBase {
             for (final Edge<NodeBase> edge : node.getOutEdges()) {
                 // If neighbour node is within the same module, add the link to this subnetwork.
                 if (edge.getTarget().getParent() == parentPtr) {
-                    treeData.addEdge(node.getIndex(), edge.getTarget().getIndex(), edge.getData().weight, edge.getData().flow);
+                    treeData.addEdge(node.getIndex(), edge.getTarget().getIndex(), edge.getData().weight(), edge.getData().flow());
                 }
             }
         }
@@ -431,9 +431,9 @@ public abstract class InfomapGreedy extends InfomapBase {
 
                     final int otherModule = edge.getTarget().getIndex();
                     if (otherModule == oldM) {
-                        oldModuleDelta.setDeltaExit(oldModuleDelta.getDeltaExit() + edge.getData().flow);
+                        oldModuleDelta.setDeltaExit(oldModuleDelta.getDeltaExit() + edge.getData().flow());
                     } else if (otherModule == newM) {
-                        newModuleDelta.setDeltaExit(newModuleDelta.getDeltaExit() + edge.getData().flow);
+                        newModuleDelta.setDeltaExit(newModuleDelta.getDeltaExit() + edge.getData().flow());
                     }
                 }
 
@@ -445,9 +445,9 @@ public abstract class InfomapGreedy extends InfomapBase {
 
                     final int otherModule = edge.getSource().getIndex();
                     if (otherModule == oldM) {
-                        oldModuleDelta.setDeltaEnter(oldModuleDelta.getDeltaEnter() + edge.getData().flow);
+                        oldModuleDelta.setDeltaEnter(oldModuleDelta.getDeltaEnter() + edge.getData().flow());
                     } else if (otherModule == newM) {
-                        newModuleDelta.setDeltaEnter(newModuleDelta.getDeltaEnter() + edge.getData().flow);
+                        newModuleDelta.setDeltaEnter(newModuleDelta.getDeltaEnter() + edge.getData().flow());
                     }
                 }
 
@@ -556,11 +556,11 @@ public abstract class InfomapGreedy extends InfomapBase {
 
                     if (redirect[neighbour.getIndex()] >= offset) {
                         moduleDeltaEnterExit[redirect[neighbour.getIndex()] - offset].setDeltaExit(
-                                moduleDeltaEnterExit[redirect[neighbour.getIndex()] - offset].getDeltaExit() + edge.getData().flow);
+                                moduleDeltaEnterExit[redirect[neighbour.getIndex()] - offset].getDeltaExit() + edge.getData().flow());
                     } else {
                         redirect[neighbour.getIndex()] = offset + numModuleLinks;
                         moduleDeltaEnterExit[numModuleLinks].setModule(neighbour.getIndex());
-                        moduleDeltaEnterExit[numModuleLinks].setDeltaExit(edge.getData().flow);
+                        moduleDeltaEnterExit[numModuleLinks].setDeltaExit(edge.getData().flow());
                         moduleDeltaEnterExit[numModuleLinks].setDeltaEnter(0);
                         numModuleLinks++;
                     }
@@ -577,12 +577,12 @@ public abstract class InfomapGreedy extends InfomapBase {
 
                 if (redirect[neighbour.getIndex()] >= offset) {
                     moduleDeltaEnterExit[redirect[neighbour.getIndex()] - offset].setDeltaEnter(
-                            moduleDeltaEnterExit[redirect[neighbour.getIndex()] - offset].getDeltaEnter() + edge.getData().flow);
+                            moduleDeltaEnterExit[redirect[neighbour.getIndex()] - offset].getDeltaEnter() + edge.getData().flow());
                 } else {
                     redirect[neighbour.getIndex()] = offset + numModuleLinks;
                     moduleDeltaEnterExit[numModuleLinks].setModule(neighbour.getIndex());
                     moduleDeltaEnterExit[numModuleLinks].setDeltaExit(0);
-                    moduleDeltaEnterExit[numModuleLinks].setDeltaEnter(edge.getData().flow);
+                    moduleDeltaEnterExit[numModuleLinks].setDeltaEnter(edge.getData().flow());
                     numModuleLinks++;
                 }
             }
@@ -781,9 +781,9 @@ public abstract class InfomapGreedy extends InfomapBase {
                     final Tuple<NodeBase, NodeBase> key = Tuple.create(m1, m2);
                     if (moduleLinks.containsKey(key)) {
                         final double d = moduleLinks.get(key);
-                        moduleLinks.put(key, d + edge.getData().flow);
+                        moduleLinks.put(key, d + edge.getData().flow());
                     } else {
-                        moduleLinks.put(key, edge.getData().flow);
+                        moduleLinks.put(key, edge.getData().flow());
                     }
                 }
             }
@@ -828,10 +828,10 @@ public abstract class InfomapGreedy extends InfomapBase {
         for (final NodeBase node : treeData.getLeaves()) {
             out.printf("%d (%s)\n", node.getOriginalIndex(), getNode(node).getData());
             for (final Edge<NodeBase> edge : node.getOutEdges()) {
-                out.printf("  --> %d (%.9f)\n", edge.getTarget().getOriginalIndex(), edge.getData().flow);
+                out.printf("  --> %d (%.9f)\n", edge.getTarget().getOriginalIndex(), edge.getData().flow());
             }
             for (final Edge<NodeBase> edge : node.getInEdges()) {
-                out.printf("  <-- %d (%.9f)\n", edge.getSource().getOriginalIndex(), edge.getData().flow);
+                out.printf("  <-- %d (%.9f)\n", edge.getSource().getOriginalIndex(), edge.getData().flow());
             }
         }
     }
@@ -887,7 +887,7 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     private void dumpActiveNetwork(final String prefix) {
         for (final NodeBase node : activeNetwork) {
-            LOGGER.log(Level.INFO, prefix + " " + node);
+            LOGGER.log(Level.INFO, () -> prefix + " " + node);
         }
     }
 }

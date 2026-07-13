@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config.ConnectionType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -40,7 +39,7 @@ public class Network {
     private final GraphReadMethods rg;
     private final Iterable<Connection> graphConnections;
 
-    private final TreeMap<NodePair, Double> connectionMap;
+    private final Map<NodePair, Double> connectionMap;
 
     private final int vxNameId;
 
@@ -62,14 +61,17 @@ public class Network {
         sumNodeWeights = rg.getVertexCount();
 
         graphConnections = () -> {
-            if (config.getConnectionType() == ConnectionType.LINKS) {
-                return new LinkIterator(rg);
-            } else if (config.getConnectionType() == ConnectionType.EDGES) {
-                return new EdgeIterator(rg);
-            } else if (config.getConnectionType() == ConnectionType.TRANSACTIONS) {
-                return new TransactionIterator(rg);
-            } else {
-                throw new IllegalStateException(String.format("Unexpected connection type %s", config.getConnectionType()));
+            switch (config.getConnectionType()) {
+                case LINKS -> {
+                    return new LinkIterator(rg);
+                }
+                case EDGES -> {
+                    return new EdgeIterator(rg);
+                }
+                case TRANSACTIONS -> {
+                    return new TransactionIterator(rg);
+                }
+                case null, default -> throw new IllegalStateException(String.format("Unexpected connection type %s", config.getConnectionType()));
             }
         };
     }

@@ -19,18 +19,5 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
  *
  * @author algol
  */
-public class EdgeData {
-
-    public final double weight;
-    public final double flow;
-
-    public EdgeData(final double weight) {
-        this.weight = weight;
-        this.flow = weight;
-    }
-
-    public EdgeData(final double weight, final double flow) {
-        this.weight = weight;
-        this.flow = flow;
-    }
+public record EdgeData(double weight, double flow) {
 }

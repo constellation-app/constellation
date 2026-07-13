@@ -37,8 +37,8 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
-/*
- * Setup and withPlugin a k-truss action
+/**
+ * Setup and withPlugin a k-truss action.
  */
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTrussAction")
 @ActionRegistration(displayName = "#CTL_KTrussAction", iconBase = "au/gov/asd/tac/constellation/plugins/algorithms/clustering/ktruss/ktruss.png", surviveFocusChange = true)

@@ -179,7 +179,7 @@ public abstract class InfomapBase {
         }
     }
 
-    public void runPartition() {
+    protected void runPartition() {
         hierarchicalCodelength = oneLevelCodelength;
         indexCodelength = oneLevelCodelength;
         moduleCodelength = 0;
@@ -677,7 +677,7 @@ public abstract class InfomapBase {
 
         final boolean verbose = (subLevel == 0 && config.getVerbosity() != 0) || (isSuperLevelOnTopLevel() && config.getVerbosity() == 2);
         if (treeData.getFirstLeaf().getParent() != getRoot()) {
-            final String log = String.format("Already partitioned with codelength %d in %d modules.%n", codelength, getNumTopModules());
+            final String log = String.format("Already partitioned with codelength %f in %d modules.%n", codelength, getNumTopModules());
             LOGGER.log(Level.INFO, log);
             return;
         }
@@ -1260,8 +1260,8 @@ public abstract class InfomapBase {
     }
 
     private void printPerLevelCodelength(final StringBuilder buf) {
-        final ArrayList<Double> indexLengths = new ArrayList<>();
-        final ArrayList<Double> leafLengths = new ArrayList<>();
+        final List<Double> indexLengths = new ArrayList<>();
+        final List<Double> leafLengths = new ArrayList<>();
         aggregatePerLevelCodelength(indexLengths, leafLengths);
 
         final int numLevels = leafLengths.size();
@@ -1311,18 +1311,18 @@ public abstract class InfomapBase {
         buf.append(String.format(NINE_FORMAT3, sumCodelengths));
     }
 
-    private void aggregatePerLevelCodelength(final ArrayList<Double> indexLengths,
-            final ArrayList<Double> leafLengths) {
+    private void aggregatePerLevelCodelength(final List<Double> indexLengths,
+            final List<Double> leafLengths) {
         aggregatePerLevelCodelength(indexLengths, leafLengths, 0);
     }
 
-    private void aggregatePerLevelCodelength(final ArrayList<Double> indexLengths,
-            final ArrayList<Double> leafLengths, final int level) {
+    private void aggregatePerLevelCodelength(final List<Double> indexLengths,
+            final List<Double> leafLengths, final int level) {
         aggregatePerLevelCodelength(getRoot(), indexLengths, leafLengths, level);
     }
 
-    private void aggregatePerLevelCodelength(final NodeBase parent, final ArrayList<Double> indexLengths,
-            final ArrayList<Double> leafLengths, final int level) {
+    private void aggregatePerLevelCodelength(final NodeBase parent, final List<Double> indexLengths,
+            final List<Double> leafLengths, final int level) {
         if (indexLengths.size() < level + 1) {
             Resizer.resize(indexLengths, level + 1, 0D);
         }
