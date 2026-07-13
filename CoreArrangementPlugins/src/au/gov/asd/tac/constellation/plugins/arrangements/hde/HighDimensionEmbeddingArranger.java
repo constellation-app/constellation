@@ -49,9 +49,6 @@ public class HighDimensionEmbeddingArranger implements Arranger {
     private double[] mean;
     private int[] distance;
 
-    // Coordinates of each node relative to pivot.
-    private double[][] xMatrix;
-
     private static final boolean PART_ONLY = false;
 
     private final SecureRandom random = new SecureRandom();
@@ -70,7 +67,8 @@ public class HighDimensionEmbeddingArranger implements Arranger {
         distance = new int[vxCapacity];
         final boolean[] pivot = new boolean[vxCapacity];
 
-        xMatrix = new double[M][vxCapacity];
+        // Coordinates of each node relative to pivot.
+        final double[][] xMatrix = new double[M][vxCapacity];
 
         final int vxCount = wg.getVertexCount();
         for (int position = 0; position < vxCount; position++) {
