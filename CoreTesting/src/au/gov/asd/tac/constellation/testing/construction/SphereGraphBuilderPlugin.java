@@ -686,7 +686,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setObjectValue(txColorAttr, txId, rgb);
 
         if (graph.getSchema() != null) {
-            graph.getSchema().completeTransaction(graph, txId);
+            graph.getSchema().newTransaction(graph, txId);
         }
     }
 
