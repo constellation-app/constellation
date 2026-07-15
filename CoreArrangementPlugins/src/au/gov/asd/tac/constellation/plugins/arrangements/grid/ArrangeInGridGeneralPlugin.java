@@ -44,10 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@Messages({
-    "ArrangeInGridGeneralPlugin=Arrange in Grid",
-    "SelectedOnly=Arrange only selected nodes"
-})
+@Messages("ArrangeInGridGeneralPlugin=Arrange in Grid")
 @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class ArrangeInGridGeneralPlugin extends SimpleEditPlugin {
 
@@ -57,30 +54,7 @@ public class ArrangeInGridGeneralPlugin extends SimpleEditPlugin {
     public static final String HORIZONTAL_GAP_PARAMETER_ID = PluginParameter.buildId(ArrangeInGridGeneralPlugin.class, "horizontal_gap");
     public static final String VERTICAL_GAP_PARAMETER_ID = PluginParameter.buildId(ArrangeInGridGeneralPlugin.class, "vertical_gap");
     public static final String OFFSET_ROWS_PARAMETER_ID = PluginParameter.buildId(ArrangeInGridGeneralPlugin.class, "offset_rows");
-
-    @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
-        final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
-        radiusSetter.setRadii();
-
-        final Map<String, PluginParameter<?>> pp = parameters.getParameters();
-        final GridChoiceParameters gridParams = GridChoiceParameters.getDefaultParameters();
-        gridParams.setGridChoice(GridChoice.getValue(pp.get(GRID_CHOICE_PARAMETER_ID).getStringValue()));
-        gridParams.setSizeGain(pp.get(SIZE_GAIN_PARAMETER_ID).getFloatValue());
-        gridParams.setHorizontalGap(pp.get(HORIZONTAL_GAP_PARAMETER_ID).getIntegerValue());
-        gridParams.setVerticalGap(pp.get(VERTICAL_GAP_PARAMETER_ID).getIntegerValue());
-        gridParams.setRowOffsets(pp.get(OFFSET_ROWS_PARAMETER_ID).getBooleanValue());
-
-        final GridArranger arranger = new GridArranger(gridParams);
-        final boolean maintainMean = pp.get(MAINTAIN_MEAN_PARAMETER_ID).getBooleanValue();
-        arranger.setMaintainMean(maintainMean);
-
-        final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(graph, SelectedInclusionGraph.Connections.NONE);
-        arranger.arrange(selectedGraph.getInclusionGraph());
-        selectedGraph.retrieveCoords();
-    }
-
+    
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
@@ -126,5 +100,27 @@ public class ArrangeInGridGeneralPlugin extends SimpleEditPlugin {
         parameters.addParameter(maintainMeanParam);
 
         return parameters;
+    }
+
+    @Override
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+        final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
+        radiusSetter.setRadii();
+
+        final Map<String, PluginParameter<?>> pp = parameters.getParameters();
+        final GridChoiceParameters gridParams = GridChoiceParameters.getDefaultParameters();
+        gridParams.setGridChoice(GridChoice.getValue(pp.get(GRID_CHOICE_PARAMETER_ID).getStringValue()));
+        gridParams.setSizeGain(pp.get(SIZE_GAIN_PARAMETER_ID).getFloatValue());
+        gridParams.setHorizontalGap(pp.get(HORIZONTAL_GAP_PARAMETER_ID).getIntegerValue());
+        gridParams.setVerticalGap(pp.get(VERTICAL_GAP_PARAMETER_ID).getIntegerValue());
+        gridParams.setRowOffsets(pp.get(OFFSET_ROWS_PARAMETER_ID).getBooleanValue());
+
+        final GridArranger arranger = new GridArranger(gridParams);
+        final boolean maintainMean = pp.get(MAINTAIN_MEAN_PARAMETER_ID).getBooleanValue();
+        arranger.setMaintainMean(maintainMean);
+
+        final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(graph, SelectedInclusionGraph.Connections.NONE);
+        arranger.arrange(selectedGraph.getInclusionGraph());
+        selectedGraph.retrieveCoords();
     }
 }

@@ -49,6 +49,18 @@ import org.openide.util.lookup.ServiceProvider;
 public class ArrangeInHierarchyPlugin extends SimpleEditPlugin {
 
     public static final String ROOTS_PARAMETER_ID = PluginParameter.buildId(ArrangeInHierarchyPlugin.class, "roots");
+    
+    @Override
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
+
+        final PluginParameter<ObjectParameterValue> roots = ObjectParameterType.build(ROOTS_PARAMETER_ID);
+        roots.setName("The root nodes");
+        roots.setDescription("A list of the root vertex ids");
+        parameters.addParameter(roots);
+
+        return parameters;
+    }
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
@@ -78,17 +90,5 @@ public class ArrangeInHierarchyPlugin extends SimpleEditPlugin {
             arranger.arrange(selectedGraph.getInclusionGraph());
             selectedGraph.retrieveCoords();
         }
-    }
-
-    @Override
-    public PluginParameters createParameters() {
-        final PluginParameters parameters = new PluginParameters();
-
-        final PluginParameter<ObjectParameterValue> roots = ObjectParameterType.build(ROOTS_PARAMETER_ID);
-        roots.setName("The root nodes");
-        roots.setDescription("A list of the root vertex ids");
-        parameters.addParameter(roots);
-
-        return parameters;
     }
 }

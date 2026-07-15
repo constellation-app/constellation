@@ -54,7 +54,6 @@ public class SpectralArranger implements Arranger {
     // and avoiding over-exapnsion.
     // This method should probably be refactored so that it can be used by the whole arrangement framework.
     public void disperseVertices(final GraphWriteMethods wg) {
-
         final int xAttr = VisualConcept.VertexAttribute.X.get(wg);
         final int yAttr = VisualConcept.VertexAttribute.Y.get(wg);
         final int zAttr = VisualConcept.VertexAttribute.Z.get(wg);
@@ -137,7 +136,6 @@ public class SpectralArranger implements Arranger {
 
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
-
         // Do nothing if the graph has no nodes.
         final int vxCount = wg.getVertexCount();
         if (vxCount == 0) {
