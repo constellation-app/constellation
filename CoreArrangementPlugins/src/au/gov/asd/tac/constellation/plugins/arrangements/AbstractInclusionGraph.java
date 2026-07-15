@@ -167,7 +167,7 @@ public abstract class AbstractInclusionGraph {
         // If every vertex is a candidate to be moved we can just return the
         // current graph.
         inclusionGraphIsOriginalGraph
-                = (incCount == vxCount || incCount == 0) && (pinnedCount == 0);
+                = (incCount == vxCount || incCount == 0) && pinnedCount == 0;
         if (inclusionGraphIsOriginalGraph) {
             // All vertices are (implicitly or explicitly) selected.
             // Pass the graph straight through.

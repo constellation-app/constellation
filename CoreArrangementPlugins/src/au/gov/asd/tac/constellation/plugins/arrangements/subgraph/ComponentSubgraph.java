@@ -53,7 +53,6 @@ public class ComponentSubgraph implements GraphWriteMethods {
     protected int[] edgePositions = null;
     protected int[] transactionList = null;
     protected int[] transactionPositions = null;
-    private GraphElementMerger graphElementMerger;
 
     public static SubgraphFactory getSubgraphFactory() {
         return (final GraphWriteMethods wg, final MutableIntSet vertexIDs) -> new ComponentSubgraph(wg, vertexIDs);
@@ -841,7 +840,6 @@ public class ComponentSubgraph implements GraphWriteMethods {
 
     @Override
     public void setGraphElementMerger(final GraphElementMerger graphElementMerger) {
-        this.graphElementMerger = graphElementMerger;
+        // do nothing - not required for component subgraph
     }
-
 }

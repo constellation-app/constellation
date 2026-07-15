@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.circle;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
@@ -45,15 +44,15 @@ public class CircleArranger implements Arranger {
         final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
 
         // Get required attributes.
-        final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        final int nradiusAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
+        final int xAttr = VisualConcept.VertexAttribute.X.get(wg);
+        final int yAttr = VisualConcept.VertexAttribute.Y.get(wg);
+        final int zAttr = VisualConcept.VertexAttribute.Z.get(wg);
+        final int nradiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
 
         // Use these if they exist.
-        final int x2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X2.getName());
-        final int y2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y2.getName());
-        final int z2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z2.getName());
+        final int x2Attr = VisualConcept.VertexAttribute.X2.get(wg);
+        final int y2Attr = VisualConcept.VertexAttribute.Y2.get(wg);
+        final int z2Attr = VisualConcept.VertexAttribute.Z2.get(wg);
         final boolean xyz2 = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
 
         // Determine the circumference of the circle, given that nodes may have different radii.

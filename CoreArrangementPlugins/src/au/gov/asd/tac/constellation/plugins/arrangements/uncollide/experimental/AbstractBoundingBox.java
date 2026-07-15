@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 
@@ -27,14 +26,14 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
  *
  * @author Nova
  */
-public class AbstractBoundingBox {
+public abstract class AbstractBoundingBox {
 
-    protected final float minX;
-    protected final float minY;
-    protected final float maxX;
-    protected final float maxY;
-    protected final float midX;
-    protected final float midY;
+    private final float minX;
+    private final float minY;
+    private final float maxX;
+    private final float maxY;
+    private final float midX;
+    private final float midY;
 
     /**
      * Generate a 2D bounding box for the graph.
@@ -47,8 +46,8 @@ public class AbstractBoundingBox {
      * @return instance of class BoundingBox2D based on input graph
      */
     protected AbstractBoundingBox(final GraphReadMethods wg) {
-        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
+        final int xId = VisualConcept.VertexAttribute.X.get(wg);
+        final int yId = VisualConcept.VertexAttribute.Y.get(wg);
 
         float minXObserved = wg.getFloatValue(xId, wg.getVertex(0));
         float minYObserved = wg.getFloatValue(yId, wg.getVertex(0));
@@ -97,4 +96,27 @@ public class AbstractBoundingBox {
         this.midY = minY + (maxY - minY) * (float) 0.5;
     }
 
+    protected float getMinX() {
+        return minX;
+    }
+
+    protected float getMinY() {
+        return minY;
+    }
+
+    protected float getMaxX() {
+        return maxX;
+    }
+
+    protected float getMaxY() {
+        return maxY;
+    }
+
+    protected float getMidX() {
+        return midX;
+    }
+
+    protected float getMidY() {
+        return midY;
+    }
 }

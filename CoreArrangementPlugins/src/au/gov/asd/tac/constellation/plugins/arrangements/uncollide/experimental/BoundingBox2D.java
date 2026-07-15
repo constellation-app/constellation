@@ -49,7 +49,7 @@ public class BoundingBox2D extends AbstractBoundingBox {
      * @return BoundingBox2D
      */
     protected BoundingBox2D topLeftQuadrant() {
-        return new BoundingBox2D(minX, midX, midY, maxY);
+        return new BoundingBox2D(getMinX(), getMidX(), getMidY(), getMaxY());
     }
 
     /**
@@ -58,7 +58,7 @@ public class BoundingBox2D extends AbstractBoundingBox {
      * @return BoundingBox2D
      */
     protected BoundingBox2D topRightQuadrant() {
-        return new BoundingBox2D(midX, maxX, midY, maxY);
+        return new BoundingBox2D(getMidX(), getMaxX(), getMidY(), getMaxY());
     }
 
     /**
@@ -67,7 +67,7 @@ public class BoundingBox2D extends AbstractBoundingBox {
      * @return BoundingBox2D
      */
     protected BoundingBox2D bottomLeftQuadrant() {
-        return new BoundingBox2D(minX, midX, minY, midY);
+        return new BoundingBox2D(getMinX(), getMidX(), getMinY(), getMidY());
     }
 
     /**
@@ -76,6 +76,6 @@ public class BoundingBox2D extends AbstractBoundingBox {
      * @return BoundingBox2D
      */
     protected BoundingBox2D bottomRightQuadrant() {
-        return new BoundingBox2D(midX, maxX, minY, midY);
+        return new BoundingBox2D(getMidX(), getMaxX(), getMinY(), getMidY());
     }
 }
