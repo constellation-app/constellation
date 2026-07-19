@@ -185,7 +185,6 @@ public class KTruss {
             links.clear(initialLinkPosition);
 
             while (!linksToHopFrom.isEmpty()) {
-
                 final int linkPosition = linksToHopFrom.pop();
                 final int link = graph.getLink(linkPosition);
                 final int lowVertex = graph.getLinkLowVertex(link);

@@ -27,6 +27,8 @@ import java.util.Map.Entry;
 import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  * Execute the Fast Newman function which clusters the graph hierarchically by
@@ -38,7 +40,26 @@ import java.util.TreeSet;
  */
 public class FastNewman {
     
+    /**
+     * 
+     * @param graph
+     * @param interaction
+     * @param interactive
+     * @param initialLinkIds
+     * @param weightAttribute
+     * @throws InterruptedException
+     * @deprecated in favour of a new implementation.
+     * @see #run(au.gov.asd.tac.constellation.graph.GraphWriteMethods, au.gov.asd.tac.constellation.plugins.PluginInteraction, boolean, org.eclipse.collections.api.set.primitive.MutableIntSet, java.lang.String) 
+     */
+    @Deprecated(since = "3.5", forRemoval = true)
     public static void run(final GraphWriteMethods graph, final PluginInteraction interaction, final boolean interactive, final Set<Integer> initialLinkIds, final String weightAttribute) throws InterruptedException {
+        final MutableIntSet initLinkIds = new IntHashSet();
+        initialLinkIds.forEach(linkId -> initLinkIds.add(linkId));
+        
+        run(graph, interaction, interactive, initLinkIds, weightAttribute);
+    } 
+    
+    public static void run(final GraphWriteMethods graph, final PluginInteraction interaction, final boolean interactive, final MutableIntSet initialLinkIds, final String weightAttribute) throws InterruptedException {
         final int vertexCount = graph.getVertexCount();
         final int linkCount = graph.getLinkCount();
         final int transactionCount = graph.getTransactionCount();
