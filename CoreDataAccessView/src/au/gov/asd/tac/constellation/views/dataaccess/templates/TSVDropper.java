@@ -101,7 +101,8 @@ public class TSVDropper implements GraphDropper {
                         }
 
                         // Open a reader so that we can read the file line by line
-                        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8.name()))) {
+                        try (final InputStreamReader inputReader = new InputStreamReader(in, StandardCharsets.UTF_8.name());
+                                final BufferedReader reader = new BufferedReader(inputReader)) {
                             String[] columnHeaders = null;
 
                             String line = reader.readLine();

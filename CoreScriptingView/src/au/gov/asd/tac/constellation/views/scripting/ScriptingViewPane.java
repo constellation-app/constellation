@@ -153,7 +153,8 @@ public class ScriptingViewPane extends JPanel {
             if (GET_STARTED_FILE == null) {
                 throw new FileNotFoundException("The file could not be located.");
             }
-            try (final BufferedReader reader = new BufferedReader(new FileReader(new File(GET_STARTED_FILE.getPath())))) {
+            try (final FileReader fileReader = new FileReader(new File(GET_STARTED_FILE.getPath()));
+                    final BufferedReader reader = new BufferedReader(fileReader)) {
                 final StringBuilder getStartedText = new StringBuilder();
                 reader.lines().forEach(line -> getStartedText.append(line).append(SeparatorConstants.NEWLINE));
                 scriptEditor.setText(getStartedText.toString());

@@ -53,9 +53,11 @@ public class RecentParameterValuesNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         final File file = new File(this.getClass().getResource("./resources/pluginframework.properties").getFile());
-        final BufferedReader in = new BufferedReader(new FileReader(file));
-        String readLine = in.readLine();
-        recentValues = readLine.replace("recentValues=", "");
+        try (final FileReader fileReader = new FileReader(file);
+                final BufferedReader in = new BufferedReader(fileReader)) {
+            String readLine = in.readLine();
+            recentValues = readLine.replace("recentValues=", "");
+        }
     }
 
     @AfterMethod

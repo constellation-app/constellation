@@ -195,7 +195,8 @@ public class RecordStoreUtilities {
      */
     public static RecordStore fromTsv(final InputStream in) throws IOException {
         final RecordStore recordStore = new GraphRecordStore();
-        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8.name()))) {
+        try (final InputStreamReader inputReader = new InputStreamReader(in, StandardCharsets.UTF_8.name());
+                final BufferedReader reader = new BufferedReader(inputReader)) {
             String line = reader.readLine();
             final String[] headers = parseTsvRow(line);
 

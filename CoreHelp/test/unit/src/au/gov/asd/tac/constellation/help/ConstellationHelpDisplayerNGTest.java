@@ -310,7 +310,8 @@ public class ConstellationHelpDisplayerNGTest {
             }
 
             // assert that output file now has the correct contents
-            try (final BufferedReader reader = new BufferedReader(new FileReader(outputFile))) {
+            try (final FileReader fileReader = new FileReader(outputFile);
+                    final BufferedReader reader = new BufferedReader(fileReader)) {
                 String line;
 
                 int linecount = 0;

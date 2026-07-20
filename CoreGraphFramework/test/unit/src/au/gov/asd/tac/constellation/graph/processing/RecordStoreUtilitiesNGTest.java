@@ -63,11 +63,13 @@ public class RecordStoreUtilitiesNGTest {
         recordStore.set("key", "value");
         RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
 
-        final BufferedReader in = new BufferedReader(new FileReader(file));
-        String line = in.readLine();
-        assertEquals(line, "key");
-        line = in.readLine();
-        assertEquals(line, "value");
+        try (final FileReader reader = new FileReader(file);
+                final BufferedReader in = new BufferedReader(reader)) {
+            String line = in.readLine();
+            assertEquals(line, "key");
+            line = in.readLine();
+            assertEquals(line, "value");
+        }
     }
 
     @Test
@@ -79,11 +81,13 @@ public class RecordStoreUtilitiesNGTest {
         recordStore.set("key2", "value2");
         RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
 
-        final BufferedReader in = new BufferedReader(new FileReader(file));
-        String line = in.readLine();
-        assertEquals(line, "key1,key2");
-        line = in.readLine();
-        assertEquals(line, "value1,value2");
+        try (final FileReader reader = new FileReader(file);
+                final BufferedReader in = new BufferedReader(reader)) {
+            String line = in.readLine();
+            assertEquals(line, "key1,key2");
+            line = in.readLine();
+            assertEquals(line, "value1,value2");
+        }
     }
 
     @Test
