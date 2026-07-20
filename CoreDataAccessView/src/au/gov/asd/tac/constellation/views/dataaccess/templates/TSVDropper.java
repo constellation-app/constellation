@@ -121,6 +121,7 @@ public class TSVDropper implements GraphDropper {
                                 line = reader.readLine();
                             }
                         }
+                        in.close();
                         // If any directories are encountered then don't allow the drop
                     } else {
                         badData = true;

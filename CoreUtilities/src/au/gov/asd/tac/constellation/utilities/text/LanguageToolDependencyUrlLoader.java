@@ -88,7 +88,8 @@ public class LanguageToolDependencyUrlLoader {
 
     private static Set<String> populateLanguagetoolDependenciesListFromFile() {
         final String languagetoolDependenciesListFile = "LanguagetoolDependencies.txt";
-        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(LanguageToolDependencyUrlLoader.class.getResourceAsStream(languagetoolDependenciesListFile), StandardCharsets.UTF_8))) {
+        try (final InputStreamReader inputReader = new InputStreamReader(LanguageToolDependencyUrlLoader.class.getResourceAsStream(languagetoolDependenciesListFile), StandardCharsets.UTF_8);
+                final BufferedReader reader = new BufferedReader(inputReader)) {
             return reader.lines()
                     .filter(line -> (!line.isEmpty() && !line.startsWith("#")))
                     .map(LanguageToolDependencyUrlLoader::extractBaseName)

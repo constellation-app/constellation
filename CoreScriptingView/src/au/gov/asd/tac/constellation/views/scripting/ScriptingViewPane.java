@@ -440,8 +440,9 @@ public class ScriptingViewPane extends JPanel {
         @Override
         protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             try {
-                try (final BufferedReader reader = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(fileChooser.getSelectedFile()), StandardCharsets.UTF_8.name()))) {
+                try (final FileInputStream fileStream = new FileInputStream(fileChooser.getSelectedFile());
+                        final InputStreamReader inputReader = new InputStreamReader(fileStream, StandardCharsets.UTF_8.name());
+                        final BufferedReader reader = new BufferedReader(inputReader)) {
                     final StringBuilder b = new StringBuilder();
                     while (true) {
                         final String s = reader.readLine();

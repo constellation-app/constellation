@@ -164,8 +164,9 @@ public abstract class Response {
      * @throws IOException
      */
     public JsonNode getRootNode(final ObjectMapper mapper, final byte[] bytes) throws IOException {
-        final InputStream in = new ByteArrayInputStream(bytes);
-        return mapper.readTree(in);
+        try (final InputStream in = new ByteArrayInputStream(bytes)) {
+            return mapper.readTree(in);
+        }
     }
 
     public String getLogMessage() {

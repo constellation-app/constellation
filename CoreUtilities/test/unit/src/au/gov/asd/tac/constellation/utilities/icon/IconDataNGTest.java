@@ -56,7 +56,7 @@ public class IconDataNGTest {
 
     private final IconData instanceWithData;
 
-    public IconDataNGTest() {
+    public IconDataNGTest() throws IOException {
         instanceWithData = new IconDataImpl();
         instanceWithData.getData();
     }
@@ -91,9 +91,10 @@ public class IconDataNGTest {
     /**
      * Test of getData method, of class IconData, when size not default and
      * color not null.
+     * @throws java.io.IOException
      */
     @Test
-    public void testGetData() {
+    public void testGetData() throws IOException {
         System.out.println("testGetData");
 
         final IconData instance = spy(new IconDataImpl());
@@ -112,9 +113,10 @@ public class IconDataNGTest {
     /**
      * Test of getData method, of class IconData, when size is default and color
      * not null.
+     * @throws java.io.IOException
      */
     @Test
-    public void testGetData_sizeIsDefault() {
+    public void testGetData_sizeIsDefault() throws IOException {
         System.out.println("testGetData_sizeIsDefault");
 
         final IconData instance = spy(new IconDataImpl());
@@ -133,9 +135,10 @@ public class IconDataNGTest {
     /**
      * Test of getData method, of class IconData, when size not default and
      * color is null.
+     * @throws java.io.IOException
      */
     @Test
-    public void testGetData_colorIsNull() {
+    public void testGetData_colorIsNull() throws IOException {
         System.out.println("testGetData_colorIsNull");
 
         final IconData instance = spy(new IconDataImpl());
@@ -153,9 +156,10 @@ public class IconDataNGTest {
 
     /**
      * Test of getData method, of class IconData, when data is null.
+     * @throws java.io.IOException
      */
     @Test
-    public void testGetData_dataIsNull() {
+    public void testGetData_dataIsNull() throws IOException {
         System.out.println("testGetData_dataIsNull");
 
         final IconData instance = spy(new IconDataImpl());
@@ -175,7 +179,7 @@ public class IconDataNGTest {
      * Test of getData method, of class IconData, when data not null.
      */
     @Test
-    public void testGetData_dataNotNull() {
+    public void testGetData_dataNotNull() throws IOException {
         System.out.println("testGetData_dataNotNull");
 
         final IconData instance = spy(instanceWithData);
@@ -224,9 +228,10 @@ public class IconDataNGTest {
      * Test of createData method, of class IconData, when size is 0, color is
      * null, and image is null since the output returned from ImageIO.read() is
      * null.
+     * @throws java.io.IOException
      */
     @Test
-    public void testCreateData_sizeIs0AndColorIsNull() {
+    public void testCreateData_sizeIs0AndColorIsNull() throws IOException {
         System.out.println("testCreateData_sizeIs0AndColorIsNull");
 
         final IconData instance = new IconDataImpl();
@@ -680,7 +685,7 @@ public class IconDataNGTest {
      * Test of toString method, of class IconData.
      */
     @Test
-    public void testToString() {
+    public void testToString() throws IOException {
         System.out.println("testToString");
 
         // When data is null.

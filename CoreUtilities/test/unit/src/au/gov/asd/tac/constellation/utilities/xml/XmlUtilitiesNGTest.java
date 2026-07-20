@@ -181,10 +181,11 @@ public class XmlUtilitiesNGTest {
 
         String expectedOutput = "<parent>   <child>child_value</child> </parent> ";
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testWriteToString_InputStream_int.xml").getPath();
-        InputStream inputStream = new FileInputStream(new File(testFile));
-        String output = instance.writeToString(inputStream, inputStream.available());
+        try (final InputStream inputStream = new FileInputStream(new File(testFile))) {
+            String output = instance.writeToString(inputStream, inputStream.available());
 
-        assertEquals(removeWhitespacing(output), removeWhitespacing(expectedOutput));
+            assertEquals(removeWhitespacing(output), removeWhitespacing(expectedOutput));
+        }
     }
 
     /**
@@ -271,31 +272,33 @@ public class XmlUtilitiesNGTest {
      * @throws javax.xml.transform.TransformerException
      */
     @Test
-    public void testRead_InputStream_boolean() throws FileNotFoundException, TransformerException {
+    public void testRead_InputStream_boolean() throws FileNotFoundException, TransformerException, IOException {
         System.out.println("testRead_InputStream_boolean");
         XmlUtilities instance = new XmlUtilities();
 
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testRead_InputStream_boolean.xml").getPath();
-        Document document = instance.read(new FileInputStream(new File(testFile)), true);
-
-        NodeList parentNodeList = document.getElementsByTagName("parent");
-        assertNotNull(parentNodeList);
-        Node parent = parentNodeList.item(0);
-        NodeList childNodeList = parent.getChildNodes();
-
-        for (int child = 1; child <= 3; child++) {
-            boolean foundChild = false;
-            String nodeName = "child" + child;
-            for (int i = 0; i < childNodeList.getLength(); i++) {
-                Node childNode = childNodeList.item(i);
-                if (nodeName.equals(childNode.getNodeName()) && childNode.getNodeType() == Node.ELEMENT_NODE) {
-                    String nodeValue = childNode.getFirstChild().getNodeValue();
-                    assertTrue(nodeValue.equals("child" + child + "_value"));
-                    foundChild = true;
-                    break;
+        try (final FileInputStream stream = new FileInputStream(new File(testFile))) {
+            final Document document = instance.read(stream, true);
+            
+            final NodeList parentNodeList = document.getElementsByTagName("parent");
+            assertNotNull(parentNodeList);
+            final Node parent = parentNodeList.item(0);
+            final NodeList childNodeList = parent.getChildNodes();
+            
+            for (int child = 1; child <= 3; child++) {
+                boolean foundChild = false;
+                String nodeName = "child" + child;
+                for (int i = 0; i < childNodeList.getLength(); i++) {
+                    final Node childNode = childNodeList.item(i);
+                    if (nodeName.equals(childNode.getNodeName()) && childNode.getNodeType() == Node.ELEMENT_NODE) {
+                        final String nodeValue = childNode.getFirstChild().getNodeValue();
+                        assertTrue(nodeValue.equals("child" + child + "_value"));
+                        foundChild = true;
+                        break;
+                    }
                 }
+                assertTrue(foundChild, nodeName);
             }
-            assertTrue(foundChild, nodeName);
         }
     }
 

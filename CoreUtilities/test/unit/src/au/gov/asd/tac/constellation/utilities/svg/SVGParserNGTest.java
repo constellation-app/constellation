@@ -71,9 +71,10 @@ public class SVGParserNGTest {
     public void testParse() throws IOException {
         //Ensure loading template file passes
         TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_COMPLIANT;
-        final InputStream inputStream = template.getClass().getResourceAsStream(template.getFileName());
-        SVGData templateSVG = SVGParser.parse(inputStream);
-        SVGTestUtilities.testLoadedData(templateSVG);
+        try (final InputStream inputStream = template.getClass().getResourceAsStream(template.getFileName())) {
+            SVGData templateSVG = SVGParser.parse(inputStream);
+            SVGTestUtilities.testLoadedData(templateSVG);
+        }
     }
     
     /**
@@ -83,9 +84,10 @@ public class SVGParserNGTest {
     @Test(expectedExceptions=IllegalStateException.class)
     public void testParseInvalidFile() throws IOException {
         //Ensure loading template file with invalid lines fails
-        TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_INVALID_JSON;
-        final InputStream inputStream = template.getClass().getResourceAsStream(template.getFileName());
-        SVGParser.parse(inputStream);
+        final TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_INVALID_JSON;
+        try (final InputStream inputStream = template.getClass().getResourceAsStream(template.getFileName())) {
+            SVGParser.parse(inputStream);
+        }
     }
     
     /**
@@ -95,9 +97,10 @@ public class SVGParserNGTest {
     @Test(expectedExceptions=IllegalStateException.class)
     public void testParseMultipleRoots() throws IOException {
         //Ensure loading template file with multiple roots fails
-        TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_INVALID_MULTI_ROOT;
-        final InputStream inputStream = template.getClass().getResourceAsStream(template.getFileName());
-        SVGParser.parse(inputStream);
+        final TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_INVALID_MULTI_ROOT;
+        try (final InputStream inputStream = template.getClass().getResourceAsStream(template.getFileName())) {
+            SVGParser.parse(inputStream);
+        }
     }
 
     /**

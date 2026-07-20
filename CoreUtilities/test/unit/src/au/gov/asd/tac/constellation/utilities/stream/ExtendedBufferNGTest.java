@@ -175,6 +175,8 @@ public class ExtendedBufferNGTest {
             assertEquals(inputStream.read(), bytes[25]);
             assertEquals(buffer.getAvailableSize(), 0);
             assertEquals(inputStream.read(), -1);
+            
+            inputStream.close();
         }
     }
     
@@ -215,6 +217,8 @@ public class ExtendedBufferNGTest {
             for (int i = 0; i < 6; i++) {
                 assertEquals(readBytes[i], 20 + bytes[i]);
             }
+            
+            inputStream.close();
         } 
     }
     
@@ -246,7 +250,7 @@ public class ExtendedBufferNGTest {
         try {
             inputStream.read(inBytes, 11, 1);
             fail("Exception not thrown");
-        } catch (IOException  e) {
+        } catch (final IOException  e) {
             final String test = e.toString();
             assertEquals(test, "java.io.IOException: Destination offset outside of range");
         }
@@ -257,6 +261,7 @@ public class ExtendedBufferNGTest {
         for (int i = 1; i < 10; i++) {
             assertEquals(inBytes[i], bytes[i - 1]);
         }  
+        inputStream.close();
     }
 
     /**
@@ -297,6 +302,8 @@ public class ExtendedBufferNGTest {
             for (int i = 0; i < 4; i++) {
                 assertEquals(bytes[22 + i], result[i]);
             }
+            
+            inputStream.close();
         }
     }
 }

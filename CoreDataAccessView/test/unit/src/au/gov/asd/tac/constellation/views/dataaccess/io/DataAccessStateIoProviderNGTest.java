@@ -59,13 +59,12 @@ public class DataAccessStateIoProviderNGTest {
     @Test
     public void readObject() throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
-        final JsonNode jsonNode = objectMapper.readTree(
-                new FileInputStream(getClass().getResource("resources/dataAccessStateRead.json").getPath())
-        );
-
         final GraphWriteMethods graph = mock(GraphWriteMethods.class);
-
-        dataAccessStateIoProvider.readObject(ATTRIBUTE_ID, ELEMENT_ID, jsonNode, graph, null, null, null, null);
+        
+        try (final FileInputStream inputStream = new FileInputStream(getClass().getResource("resources/dataAccessStateRead.json").getPath())) {
+            final JsonNode jsonNode = objectMapper.readTree(inputStream);
+            dataAccessStateIoProvider.readObject(ATTRIBUTE_ID, ELEMENT_ID, jsonNode, graph, null, null, null, null);
+        }
 
         // Capture the call on the graph setter, pulling out the state
         final ArgumentCaptor<DataAccessState> captor = ArgumentCaptor.forClass(DataAccessState.class);
@@ -163,13 +162,12 @@ public class DataAccessStateIoProviderNGTest {
         jsonGenerator.flush();
 
         final ObjectMapper objectMapper = new ObjectMapper();
-        final JsonNode expected = objectMapper.readTree(
-                new FileInputStream(getClass().getResource("resources/dataAccessStateWrite.json").getPath())
-        );
-
         final JsonNode actual = objectMapper.readTree(new String(output.toByteArray(), StandardCharsets.UTF_8));
-
-        assertEquals(actual, expected);
+        
+        try (final FileInputStream inputStream = new FileInputStream(getClass().getResource("resources/dataAccessStateWrite.json").getPath())) {
+            final JsonNode expected = objectMapper.readTree(inputStream);
+            assertEquals(actual, expected);
+        }
     }
 
     @Test

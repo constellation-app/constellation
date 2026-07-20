@@ -67,16 +67,16 @@ public class DownloadImageUtilitiesNGTest {
             
             connMockedStatic.when(() -> HttpsConnection.withUrl(url)).thenReturn(conn);
 
-            final InputStream stream = this.getClass().getResourceAsStream(TEST_IMAGE);
-            utilsMockedStatic.when(() -> HttpsUtilities.getInputStream(urlConn)).thenReturn(stream);
-            
-            // execute and assert
-            final Image i = DownloadImageUtilities.getImage(url);
-            assertEquals(i.getHeight(), 1D);
-            assertEquals(i.getWidth(), 1D);
-            assertNull(i.getException());
-            assertFalse(i.isError());
-            verify(urlConn).disconnect();
+            try (final InputStream stream = this.getClass().getResourceAsStream(TEST_IMAGE)) {
+                utilsMockedStatic.when(() -> HttpsUtilities.getInputStream(urlConn)).thenReturn(stream);
+                // execute and assert
+                final Image i = DownloadImageUtilities.getImage(url);
+                assertEquals(i.getHeight(), 1D);
+                assertEquals(i.getWidth(), 1D);
+                assertNull(i.getException());
+                assertFalse(i.isError());
+                verify(urlConn).disconnect();
+            }
         }
     }
     

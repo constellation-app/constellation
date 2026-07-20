@@ -186,8 +186,9 @@ public class ConstellationIcon {
      * Build an array of bytes representing this ConstellationIcon's data.
      *
      * @return An array of bytes representing this ConstellationIcon's data.
+     * @throws java.io.IOException
      */
-    public byte[] buildByteArray() {
+    public byte[] buildByteArray() throws IOException {
         return iconData.getData();
     }
 
@@ -246,12 +247,14 @@ public class ConstellationIcon {
         } else {
             // build the icon
             LOGGER.log(Level.FINE, BUILDING_ICON_FORMAT, name);
-            final byte[] data = retrieveIconData(iconData, size, color);
             try {
-                icon = ImageIO.read(new ByteArrayInputStream(data));
+                final byte[] data = retrieveIconData(iconData, size, color);
+                try (final ByteArrayInputStream stream = new ByteArrayInputStream(data)) {
+                    icon = ImageIO.read(stream);
 
-                // cache the icon data
-                BUFFERED_IMAGE_CACHE.put(key, icon);
+                    // cache the icon data
+                    BUFFERED_IMAGE_CACHE.put(key, icon);
+                }
             } catch (final IOException ex) {
                 LOGGER.severe(ex.getLocalizedMessage());
                 icon = null;
@@ -307,17 +310,22 @@ public class ConstellationIcon {
         // build the cache key
         final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
-        final ImageIcon icon;
+        ImageIcon icon;
         if (ICON_CACHE.containsKey(key)) {
             icon = ICON_CACHE.get(key);
         } else {
             // build the icon
             LOGGER.log(Level.FINE, BUILDING_ICON_FORMAT, name);
-            final byte[] data = retrieveIconData(iconData, size, color);
-            icon = new ImageIcon(data);
+            try {
+                final byte[] data = retrieveIconData(iconData, size, color);
+                icon = new ImageIcon(data);
 
-            // cache the icon data
-            ICON_CACHE.put(key, icon);
+                // cache the icon data
+                ICON_CACHE.put(key, icon);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.WARNING, ex.getLocalizedMessage(), ex);
+                icon = null;
+            }
         }
 
         return icon;
@@ -369,17 +377,24 @@ public class ConstellationIcon {
         // build the cache key
         final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
-        final Image image;
+        Image image;
         if (IMAGE_CACHE.containsKey(key)) {
             image = IMAGE_CACHE.get(key);
         } else {
             // build the image
             LOGGER.log(Level.FINE, BUILDING_ICON_FORMAT, name);
-            final byte[] data = retrieveIconData(iconData, size, color);
-            image = new Image(new ByteArrayInputStream(data));
-
-            // cache the icon data
-            IMAGE_CACHE.put(key, image);
+            final byte[] data;
+            try {
+                data = retrieveIconData(iconData, size, color);
+                try (final ByteArrayInputStream stream = new ByteArrayInputStream(data)) {
+                    image = new Image(stream);
+                }
+                // cache the icon data
+                IMAGE_CACHE.put(key, image);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                image = null;
+            }
         }
 
         return image;
@@ -435,12 +450,16 @@ public class ConstellationIcon {
         
         //The icon does not have a svg equivelant so create one by embedding raster data into an SVG image.
         } else {
-            final byte[] rasterData = this.buildByteArray();
-            final byte[] colorisedRasterData = this.applyColorFilter(rasterData, color);
-            final String encodedString = Base64.getEncoder().encodeToString(colorisedRasterData);
-            
             final SVGData rasterImage = new SVGData(SVGTypeConstants.IMAGE, null, null);
-            rasterImage.setAttribute(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE, String.format("data:image/png;base64,%s", encodedString));
+            try {
+                final byte[] rasterData = buildByteArray();
+                final byte[] colorisedRasterData = applyColorFilter(rasterData, color);
+                final String encodedString = Base64.getEncoder().encodeToString(colorisedRasterData);
+
+                rasterImage.setAttribute(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE, String.format("data:image/png;base64,%s", encodedString));
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, "Unable to apply the image data to the the newly-created SVG", ex);
+            }
             new SVGObject(rasterImage).setDimension(size, size);
             return rasterImage;
         }
@@ -480,7 +499,7 @@ public class ConstellationIcon {
      * @param color The color of the icon
      * @return The icon data byte array
      */
-    private byte[] retrieveIconData(final IconData iconData, final int size, final Color color) {
+    private byte[] retrieveIconData(final IconData iconData, final int size, final Color color) throws IOException {
         return iconData.getData(size, color);
     }
     
@@ -494,8 +513,7 @@ public class ConstellationIcon {
      * @return 
      */
     private byte[] applyColorFilter(final byte[] original, final Color color) {
-        final ByteArrayInputStream bais = new ByteArrayInputStream(original);
-        try {
+        try (final ByteArrayInputStream bais = new ByteArrayInputStream(original)) {
             final BufferedImage img = ImageIO.read(bais);
             if (img == null || color == null) {
                 return original;

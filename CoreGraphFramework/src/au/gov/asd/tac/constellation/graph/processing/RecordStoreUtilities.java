@@ -230,7 +230,8 @@ public class RecordStoreUtilities {
     public static RecordStore fromCsv(final InputStream in) throws IOException {
         final RecordStore recordStore = new GraphRecordStore();
 
-        try (final CSVParser csvFileParser = CSVFormat.DEFAULT.parse(new InputStreamReader(in, StandardCharsets.UTF_8.name()))) {
+        try (final InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8.name());
+                final CSVParser csvFileParser = CSVFormat.DEFAULT.parse(reader)) {
             final List<CSVRecord> recs = csvFileParser.getRecords();
             for (int i = 1; i < recs.size(); i++) {
                 recordStore.add();

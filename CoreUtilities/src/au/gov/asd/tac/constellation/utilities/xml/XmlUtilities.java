@@ -173,9 +173,10 @@ public class XmlUtilities {
      * @throws IOException if an error occurs while writing to the stream.
      */
     public String writeToString(final InputStream inputStream, final int length) throws IOException {
-        final BadCharFilterInputStream bcfis = new BadCharFilterInputStream(inputStream);
         final byte[] charBuffer = new byte[length];
-        bcfis.read(charBuffer, 0, length);
+        try (final BadCharFilterInputStream bcfis = new BadCharFilterInputStream(inputStream)) {
+            bcfis.read(charBuffer, 0, length);
+        }
         return new String(charBuffer, StandardCharsets.UTF_8.name());
     }
 

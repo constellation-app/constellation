@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -55,12 +56,13 @@ public class JDBCDriver {
     public static List<String> getDrivers(final File jarFile) {
         final List<String> driverList = new ArrayList<>();
         try {
-
             if (jarFile != null && jarFile.exists() && jarFile.isFile()) {
                 try (final JarFile jf = new JarFile(jarFile)) {
                     final ZipEntry ze = jf.getEntry("META-INF/services/java.sql.Driver");
                     if (ze != null) {
-                        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(jf.getInputStream(ze), StandardCharsets.UTF_8.name()))) {
+                        try (final InputStream inputStream = jf.getInputStream(ze);
+                                final InputStreamReader inputReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8.name());
+                                final BufferedReader reader = new BufferedReader(inputReader)) {
                             while (true) {
                                 final String line = reader.readLine();
                                 if (line == null) {

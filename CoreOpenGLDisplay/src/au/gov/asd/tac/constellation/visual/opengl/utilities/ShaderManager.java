@@ -110,20 +110,22 @@ public class ShaderManager {
      */
     private static Properties loadShaders() throws IOException {
         final Properties shaderMap = new Properties();
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(ShaderManager.class.getResourceAsStream("shaders.txt"), StandardCharsets.UTF_8.name()));
-        String key = null;
-        String value = null;
-        String line;
-        while ((line = reader.readLine()) != null) {
-            if (!line.trim().startsWith("//")) {
-                if (line.trim().endsWith("=")) {
-                    if (key != null) {
-                        shaderMap.setProperty(key, value);
+        try (final InputStreamReader inputReader = new InputStreamReader(ShaderManager.class.getResourceAsStream("shaders.txt"), StandardCharsets.UTF_8.name());
+                final BufferedReader reader = new BufferedReader(inputReader)) {
+            String key = null;
+            String value = null;
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (!line.trim().startsWith("//")) {
+                    if (line.trim().endsWith("=")) {
+                        if (key != null) {
+                            shaderMap.setProperty(key, value);
+                        }
+                        key = line.substring(0, line.length() - 1).trim();
+                        value = "";
+                    } else if (!line.isEmpty()) {
+                        value += line + SeparatorConstants.NEWLINE;
                     }
-                    key = line.substring(0, line.length() - 1).trim();
-                    value = "";
-                } else if (!line.isEmpty()) {
-                    value += line + SeparatorConstants.NEWLINE;
                 }
             }
         }

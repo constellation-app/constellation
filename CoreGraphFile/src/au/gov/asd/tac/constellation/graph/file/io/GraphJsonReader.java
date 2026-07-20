@@ -131,7 +131,6 @@ public final class GraphJsonReader {
                         if (entry.getName().startsWith(DefaultCustomIconProvider.USER_ICON_DIR) && !entry.isDirectory()) {
                             final String iconName = entry.getName().substring(DefaultCustomIconProvider.USER_ICON_DIR.length());
                             // prepare a link to an icon entry in the star/zip file
-                            final InputStream zin = zFile.getInputStream(entry);
                             boolean saveCustomFile = true;
                             final File file = new File(directoryPath + iconName);
                             if (file.exists()) {
@@ -149,7 +148,8 @@ public final class GraphJsonReader {
                             }
                             if (saveCustomFile) {
                                 // copy the icon image from the zip file to the constellation user's icon directory
-                                try (final FileOutputStream os = new FileOutputStream(file)) {
+                                try (final InputStream zin = zFile.getInputStream(entry);
+                                        final FileOutputStream os = new FileOutputStream(file)) {
                                     for (int c = zin.read(); c != -1; c = zin.read()) {
                                         os.write(c);
                                     }
@@ -175,15 +175,13 @@ public final class GraphJsonReader {
                 throw new GraphParseException(msg);
             }
 
-            try {
-                graph = readGraph(in.getInputStream(), in.getAvailableSize(), progress);
+            try (final InputStream inputStream = in.getInputStream()) {
+                graph = readGraph(inputStream, in.getAvailableSize(), progress);
             } catch (final IllegalStateException ex) {
                 throw new GraphParseException(ex.getMessage(), ex);
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
                 throw new GraphParseException(ex.getMessage(), ex);
-            } finally {
-                in.getInputStream().close();
             }
         } finally {
             byteReader = null;

@@ -349,9 +349,8 @@ public class SVGData {
     * @return svgData
     */
     public static final SVGData loadFromTemplate(final SVGFile templateResource) {
-        final InputStream inputStream = templateResource.getClass().getResourceAsStream(templateResource.getFileName());
         SVGData templateSVG = null;
-        try {
+        try (final InputStream inputStream = templateResource.getClass().getResourceAsStream(templateResource.getFileName())) {
             templateSVG = SVGParser.parse(inputStream);
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
