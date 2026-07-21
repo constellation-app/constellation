@@ -104,7 +104,8 @@ public final class GraphJsonReader {
     }
 
     public Graph readGraphZip(final File graphFile, final IoProgress progress) throws IOException, GraphParseException {
-        try (final InputStream in = new BufferedInputStream(new FileInputStream(graphFile))) {
+        try (final FileInputStream stream = new FileInputStream(graphFile);
+                final InputStream in = new BufferedInputStream(stream)) {
             return readGraphZip(graphFile.getPath(), in, progress);
         }
     }

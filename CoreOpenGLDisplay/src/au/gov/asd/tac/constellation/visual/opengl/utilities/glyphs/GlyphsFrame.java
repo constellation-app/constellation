@@ -28,6 +28,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -409,7 +410,8 @@ public class GlyphsFrame extends JFrame {
     }
 
     private static String[] loadText(final String fnam, final boolean raw) throws IOException {
-        try (final InputStreamReader inputReader = new InputStreamReader(GlyphsFrame.class.getResourceAsStream(fnam), StandardCharsets.UTF_8);
+        try (final InputStream stream = GlyphsFrame.class.getResourceAsStream(fnam);
+                final InputStreamReader inputReader = new InputStreamReader(stream, StandardCharsets.UTF_8);
                 final BufferedReader in = new BufferedReader(inputReader)) {
             final List<String> ls = in.lines().filter(line -> raw || (!line.isEmpty() && !line.startsWith("#"))).toList();
             return ls.toArray(new String[ls.size()]);

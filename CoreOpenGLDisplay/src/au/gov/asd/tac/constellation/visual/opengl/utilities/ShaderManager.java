@@ -23,6 +23,7 @@ import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GL3;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -110,7 +111,8 @@ public class ShaderManager {
      */
     private static Properties loadShaders() throws IOException {
         final Properties shaderMap = new Properties();
-        try (final InputStreamReader inputReader = new InputStreamReader(ShaderManager.class.getResourceAsStream("shaders.txt"), StandardCharsets.UTF_8.name());
+        try (final InputStream stream = ShaderManager.class.getResourceAsStream("shaders.txt");
+                final InputStreamReader inputReader = new InputStreamReader(stream, StandardCharsets.UTF_8.name());
                 final BufferedReader reader = new BufferedReader(inputReader)) {
             String key = null;
             String value = null;

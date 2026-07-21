@@ -27,6 +27,7 @@ package au.gov.asd.tac.constellation.utilities.text;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -88,7 +89,8 @@ public class LanguageToolDependencyUrlLoader {
 
     private static Set<String> populateLanguagetoolDependenciesListFromFile() {
         final String languagetoolDependenciesListFile = "LanguagetoolDependencies.txt";
-        try (final InputStreamReader inputReader = new InputStreamReader(LanguageToolDependencyUrlLoader.class.getResourceAsStream(languagetoolDependenciesListFile), StandardCharsets.UTF_8);
+        try (final InputStream stream = LanguageToolDependencyUrlLoader.class.getResourceAsStream(languagetoolDependenciesListFile);
+                final InputStreamReader inputReader = new InputStreamReader(stream, StandardCharsets.UTF_8);
                 final BufferedReader reader = new BufferedReader(inputReader)) {
             return reader.lines()
                     .filter(line -> (!line.isEmpty() && !line.startsWith("#")))

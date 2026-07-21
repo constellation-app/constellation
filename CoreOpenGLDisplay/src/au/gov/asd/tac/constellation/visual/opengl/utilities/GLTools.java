@@ -125,7 +125,8 @@ public final class GLTools {
 
     public static String loadFile(final Class<?> refClass, final String resourceName) throws IOException {
         final StringBuilder buf = new StringBuilder();
-        try (final InputStreamReader inputReader = new InputStreamReader(refClass.getResourceAsStream(resourceName), StandardCharsets.UTF_8.name());
+        try (final InputStream stream = refClass.getResourceAsStream(resourceName);
+                final InputStreamReader inputReader = new InputStreamReader(stream, StandardCharsets.UTF_8.name());
                 final BufferedReader reader = new BufferedReader(inputReader)) {
             String line;
             while ((line = reader.readLine()) != null) {
