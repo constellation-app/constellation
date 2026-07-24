@@ -20,10 +20,15 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Spinner;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.spy;
 import org.testfx.api.FxToolkit;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -40,7 +45,7 @@ public class NumberInputPaneNGTest {
 
     private final String id = "integerParameter";
     private final PluginParameter<IntegerParameterType.IntegerParameterValue> maxMinParam = IntegerParameterType.build(id);
-        
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -63,30 +68,39 @@ public class NumberInputPaneNGTest {
         maxMinParam.setDescription("Test Max Min");
         maxMinParam.setIntegerValue(Integer.MAX_VALUE);
     }
-    
 
     @Test
     public void testNumberInputPane_integermaxmin() {
-        // NumberInputPane defaults the max to Integer.MAX_VALUE and min to Integer.MIN_VALUE
-        final NumberInputPane numberInputPane = spy(new NumberInputPane(maxMinParam));
-        final Node field = numberInputPane.getChildren().get(0);
-        assertTrue(field instanceof Spinner);
-        if (field instanceof Spinner spinner) {
-            final int intValue = Integer.parseInt(spinner.getValueFactory().getValue().toString());
-            assertTrue(intValue == Integer.MAX_VALUE);
-            spinner.decrement();
-            assertTrue(Integer.parseInt(spinner.getValueFactory().getValue().toString()) == Integer.MAX_VALUE - 1);
-            spinner.increment();
-            assertTrue(Integer.parseInt(spinner.getValueFactory().getValue().toString()) == Integer.MAX_VALUE);
-            spinner.increment();
-            // Cannot go above max value, should stay at MAX_VALUE
-            assertTrue(Integer.parseInt(spinner.getValueFactory().getValue().toString()) == Integer.MAX_VALUE);
-            spinner.getValueFactory().setValue(Integer.MIN_VALUE);
-            assertTrue(Integer.parseInt(spinner.getValueFactory().getValue().toString()) == Integer.MIN_VALUE);
-            spinner.decrement();
-            // Cannot go below min, should stay at min
-            assertTrue(Integer.parseInt(spinner.getValueFactory().getValue().toString()) == Integer.MIN_VALUE);
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // Makes runLater run immediately
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
+            
+            // NumberInputPane defaults the max to Integer.MAX_VALUE and min to Integer.MIN_VALUE
+            final NumberInputPane numberInputPane = spy(new NumberInputPane(maxMinParam));
+            final Node field = numberInputPane.getChildren().get(0);
+            assertTrue(field instanceof Spinner);
+            if (field instanceof Spinner spinner) {
+                final int intValue = Integer.parseInt(spinner.getValueFactory().getValue().toString());
+                assertEquals(intValue, Integer.MAX_VALUE);
+                spinner.decrement();
+                assertEquals(Integer.parseInt(spinner.getValueFactory().getValue().toString()), Integer.MAX_VALUE - 1);
+                spinner.increment();
+                assertEquals(Integer.parseInt(spinner.getValueFactory().getValue().toString()), Integer.MAX_VALUE);
+                spinner.increment();
+
+                // Cannot go above max value, should stay at MAX_VALUE
+                assertEquals(Integer.parseInt(spinner.getValueFactory().getValue().toString()), Integer.MAX_VALUE);
+                spinner.getValueFactory().setValue(Integer.MIN_VALUE);
+                assertEquals(Integer.parseInt(spinner.getValueFactory().getValue().toString()), Integer.MIN_VALUE);
+                spinner.decrement();
+
+                // Cannot go below min, should stay at min
+                assertEquals(Integer.parseInt(spinner.getValueFactory().getValue().toString()), Integer.MIN_VALUE);
+            }
         }
-        
     }
+    
 }
