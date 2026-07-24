@@ -125,7 +125,6 @@ public class NumberInputPane<T> extends Pane {
             handleTextPropertyChange(oldValue, newValue);
         });
 
-        // treat parameter value as truth?
         parameter.addListener((pluginParameter, change)
                 -> Platform.runLater(() -> {
                     switch (change) {
@@ -149,6 +148,7 @@ public class NumberInputPane<T> extends Pane {
                     }
                 })
         );
+        
         getChildren().add(field);
     }
 
