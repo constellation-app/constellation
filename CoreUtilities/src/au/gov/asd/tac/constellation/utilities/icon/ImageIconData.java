@@ -38,9 +38,10 @@ public class ImageIconData extends IconData {
 
     @Override
     protected InputStream createRasterInputStream() throws IOException {
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write(image, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
-        return new ByteArrayInputStream(os.toByteArray());
+        try (final ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            ImageIO.write(image, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
+            return new ByteArrayInputStream(os.toByteArray());
+        }
     }
 
     @Override

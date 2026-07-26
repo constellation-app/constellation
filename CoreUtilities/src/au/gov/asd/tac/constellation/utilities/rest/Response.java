@@ -224,9 +224,10 @@ public abstract class Response {
         final ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        mapper.writeValue(out, node);
+        try (final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            mapper.writeValue(out, node);
 
-        return new String(out.toByteArray(), StandardCharsets.UTF_8.name());
+            return new String(out.toByteArray(), StandardCharsets.UTF_8.name());
+        }
     }
 }

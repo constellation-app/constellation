@@ -156,8 +156,7 @@ public class CompositeNodeState {
      * JSON from this state.
      */
     public String convertToString() {
-        try {
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             try (final JsonGenerator jg = new JsonFactory().createGenerator(outputStream)) {
                 jg.writeStartObject();
 

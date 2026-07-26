@@ -227,15 +227,16 @@ public final class Plane {
         jg.writeNumberField("image_width", imageWidth);
         jg.writeNumberField("image_height", imageHeight);
 
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write(image, "png", os);
-        final byte[] bytes = os.toByteArray();
-        try (final ByteArrayInputStream stream = new ByteArrayInputStream(bytes)) {
-            final String reference = byteWriter.write(stream);
-            
-            jg.writeStringField("plane_ref", reference);
+        try (final ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            ImageIO.write(image, "png", os);
+            final byte[] bytes = os.toByteArray();
+            try (final ByteArrayInputStream stream = new ByteArrayInputStream(bytes)) {
+                final String reference = byteWriter.write(stream);
 
-            LOGGER.log(Level.INFO, "{0}", String.format("Write plane '%s', byteLabel '%s', size %d", label, reference, bytes.length));
+                jg.writeStringField("plane_ref", reference);
+
+                LOGGER.log(Level.INFO, "{0}", String.format("Write plane '%s', byteLabel '%s', size %d", label, reference, bytes.length));
+            }
         }
     }
 

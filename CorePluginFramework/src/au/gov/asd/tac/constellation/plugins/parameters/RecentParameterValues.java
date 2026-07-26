@@ -112,23 +112,25 @@ public class RecentParameterValues {
 
     public static void saveToPreferences() {
         synchronized (RECENT_VALUES) {
-            final ByteArrayOutputStream json = new ByteArrayOutputStream();
-            try (final JsonGenerator jg = JsonFactoryUtilities.getJsonFactory().createGenerator(json)) {
-                jg.writeStartObject();
-                for (Entry<String, List<String>> entry : RECENT_VALUES.entrySet()) {
-                    List<String> recentVals = entry.getValue();
-                    if (entry.getKey() != null) {
-                        jg.writeFieldName(entry.getKey());
-                        jg.writeStartArray();
-                        int limit = Math.min(SAVE_LIMIT, recentVals.size());
-                        for (int i = 0; i < limit; i++) {
-                            jg.writeString(recentVals.get(i));
+            try (final ByteArrayOutputStream json = new ByteArrayOutputStream()) {
+                try (final JsonGenerator jg = JsonFactoryUtilities.getJsonFactory().createGenerator(json)) {
+                    jg.writeStartObject();
+                    for (Entry<String, List<String>> entry : RECENT_VALUES.entrySet()) {
+                        List<String> recentVals = entry.getValue();
+                        if (entry.getKey() != null) {
+                            jg.writeFieldName(entry.getKey());
+                            jg.writeStartArray();
+                            int limit = Math.min(SAVE_LIMIT, recentVals.size());
+                            for (int i = 0; i < limit; i++) {
+                                jg.writeString(recentVals.get(i));
+                            }
+                            jg.writeEndArray();
                         }
-                        jg.writeEndArray();
                     }
+                    jg.writeEndObject();
+                    jg.flush();
                 }
-                jg.writeEndObject();
-                jg.flush();
+                
                 PREFERENCES.put(RecentParameterValuesKey.RECENT_VALUES, json.toString(StandardCharsets.UTF_8.name()));
                 try {
                     PREFERENCES.flush();

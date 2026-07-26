@@ -130,18 +130,19 @@ public class IONGTest {
         storeGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "customMergerAttribute", null, null, ConcatenatedSetGraphAttributeMerger.ID);
         storeGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "noMergerAttribute", null, null, null);
         final GraphJsonWriter writer = new GraphJsonWriter();
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writer.writeGraphToStream(storeGraph, out, false, Arrays.asList(GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION, GraphElementType.META));
-        final GraphJsonReader reader = new GraphJsonReader();
-        try (final ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray())) {
-            final Graph graph = reader.readGraph(in, -1, null);
-            try (final ReadableGraph rg = graph.getReadableGraph()) {
-                final int defaultMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "defaultMergerAttribute");
-                assertEquals(rg.getAttributeMerger(defaultMergerAttributeId), GraphAttributeMerger.getDefault());
-                final int customMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "customMergerAttribute");
-                assertEquals(rg.getAttributeMerger(customMergerAttributeId), GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID));
-                final int noMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "noMergerAttribute");
-                assertNull(rg.getAttributeMerger(noMergerAttributeId));
+        try (final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            writer.writeGraphToStream(storeGraph, out, false, Arrays.asList(GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION, GraphElementType.META));
+            final GraphJsonReader reader = new GraphJsonReader();
+            try (final ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray())) {
+                final Graph graph = reader.readGraph(in, -1, null);
+                try (final ReadableGraph rg = graph.getReadableGraph()) {
+                    final int defaultMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "defaultMergerAttribute");
+                    assertEquals(rg.getAttributeMerger(defaultMergerAttributeId), GraphAttributeMerger.getDefault());
+                    final int customMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "customMergerAttribute");
+                    assertEquals(rg.getAttributeMerger(customMergerAttributeId), GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID));
+                    final int noMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "noMergerAttribute");
+                    assertNull(rg.getAttributeMerger(noMergerAttributeId));
+                }
             }
         }
     }

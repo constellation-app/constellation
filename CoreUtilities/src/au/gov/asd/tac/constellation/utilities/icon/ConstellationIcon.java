@@ -533,9 +533,10 @@ public class ConstellationIcon {
                         coloredImage.setRGB(x, y, blend.getRGB());
                     }
                 }
-                final ByteArrayOutputStream os = new ByteArrayOutputStream();
-                ImageIO.write(coloredImage, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
-                return os.toByteArray();
+                try (final ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+                    ImageIO.write(coloredImage, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
+                    return os.toByteArray();
+                }
             }
         } catch (final IOException ex) {
             LOGGER.log(Level.WARNING, ex.getLocalizedMessage());

@@ -112,9 +112,10 @@ public class XmlUtilities {
      * document into XML.
      */
     public byte[] write(final Document document) throws IOException, TransformerException {
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        write(document, outputStream);
-        return outputStream.toByteArray();
+        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            write(document, outputStream);
+            return outputStream.toByteArray();
+        }
     }
 
     /**
@@ -159,9 +160,10 @@ public class XmlUtilities {
      * @throws IOException if an error occurs while writing to the string.
      */
     public String writeToString(final Document document) throws IOException, TransformerException {
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        write(document, outputStream);
-        return new String(outputStream.toByteArray(), StandardCharsets.UTF_8.name());
+        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            write(document, outputStream);
+            return new String(outputStream.toByteArray(), StandardCharsets.UTF_8.name());
+        }
     }
 
     /**

@@ -380,20 +380,21 @@ public class JsonUtilities {
      */
     public static <K, V> String getMapAsString(final TokenStreamFactory factory, final Map<K, V> map) {
         if (MapUtils.isNotEmpty(map)) {
-            final ByteArrayOutputStream json = new ByteArrayOutputStream();
-            try (final JsonGenerator jg = factory.createGenerator(json)) {
-                jg.writeStartObject();
-                for (final Map.Entry<K, V> entry : map.entrySet()) {
-                    final K key = entry.getKey();
-                    final V value = entry.getValue();
-                    if (key != null && value != null) {
-                        jg.writeStringField(key.toString(), value.toString());
+            try (final ByteArrayOutputStream json = new ByteArrayOutputStream()) {
+                try (final JsonGenerator jg = factory.createGenerator(json)) {
+                    jg.writeStartObject();
+                    for (final Map.Entry<K, V> entry : map.entrySet()) {
+                        final K key = entry.getKey();
+                        final V value = entry.getValue();
+                        if (key != null && value != null) {
+                            jg.writeStringField(key.toString(), value.toString());
+                        }
                     }
+                    jg.writeEndObject();
+                    jg.flush();
                 }
-                jg.writeEndObject();
-                jg.flush();
+                
                 return json.toString(StandardCharsets.UTF_8.name());
-
             } catch (final IOException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }

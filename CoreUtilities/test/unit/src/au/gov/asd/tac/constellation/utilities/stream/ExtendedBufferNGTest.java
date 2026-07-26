@@ -76,10 +76,9 @@ public class ExtendedBufferNGTest {
         System.out.println("ExtendedBufferNGTest.testOutputStream");
 
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
-        final OutputStream outputStream = buffer.getOutputStream();
         final byte[] bytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".getBytes();
 
-        try {
+        try (final OutputStream outputStream = buffer.getOutputStream()) {
             outputStream.write(bytes, 0, bytes.length);
             outputStream.write(1);
             outputStream.write(-2147483648); // lowest 8 bits = 00000000 = 0
@@ -87,8 +86,6 @@ public class ExtendedBufferNGTest {
             assertEquals(buffer.getAvailableSize(), 20); // Only completed buffer are available
             outputStream.write(1);
             
-        } finally {
-            outputStream.close();
         }
         
         // Show that entire bytes array has been read into buffer, despite exceeding buffer size
@@ -115,10 +112,9 @@ public class ExtendedBufferNGTest {
         System.out.println("ExtendedBufferNGTest.testOutputStreamRanges");
 
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
-        final OutputStream outputStream = buffer.getOutputStream();
         final byte[] bytes = "ABCDE".getBytes();
         
-        try {
+        try (final OutputStream outputStream = buffer.getOutputStream()) {
             // Check write doesnt permit offset to be outside of source
             // array size
             try {
@@ -132,8 +128,6 @@ public class ExtendedBufferNGTest {
             // Try to write more than exists in source and ensure it handles it by truncating
             // at the ned of the source array. 
             outputStream.write(bytes, 4, 10); 
-        } finally {
-            outputStream.close();
         }
         
         // Confirm only the last character was taken
@@ -152,12 +146,11 @@ public class ExtendedBufferNGTest {
         System.out.println("ExtendedBufferNGTest.testInputStreamReadByte");
         
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
-        final OutputStream outputStream = buffer.getOutputStream();
         final InputStream inputStream = buffer.getInputStream();
         final byte[] bytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".getBytes();
         
         // Populate data to write from inputStream
-        try {
+        try (final OutputStream outputStream = buffer.getOutputStream()) {
             outputStream.write(bytes, 0, bytes.length);
             
             // Ready the initial 20 bytes of content out one byte at a time 
@@ -167,7 +160,6 @@ public class ExtendedBufferNGTest {
             // Confirm last 6 bytes are not yet available.
             assertEquals(buffer.getAvailableSize(), 0);
         } finally {
-            outputStream.close();
             for (int i = 0; i < 5; i++) {
                 assertEquals(inputStream.read(), 20 + bytes[i]);
             }
@@ -189,14 +181,12 @@ public class ExtendedBufferNGTest {
         System.out.println("ExtendedBufferNGTest.testInputStreamReadArray");
         
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
-        final OutputStream outputStream = buffer.getOutputStream();
         final InputStream inputStream = buffer.getInputStream();
         final byte[] bytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".getBytes();
         byte[] readBytes = new byte[30];
         
         // Populate data to write from inputStream
-        try {
-            
+        try (final OutputStream outputStream = buffer.getOutputStream()) {
             // Read first 20 bytes that are 'completed' buffers, reading more would block
             // untill outstream is closed.
             outputStream.write(bytes, 0, bytes.length);
@@ -210,7 +200,6 @@ public class ExtendedBufferNGTest {
             // Close the output stream which triggersd the final 6 bytes to be made available
             // to read
             readBytes = new byte[30];
-            outputStream.close();
             final int result = inputStream.read(readBytes, 0, 20);
             assertEquals(result, 6);
             assertEquals(buffer.getAvailableSize(), 0);
@@ -233,35 +222,28 @@ public class ExtendedBufferNGTest {
         System.out.println("ExtendedBufferNGTest.testInputStreamRanges");
 
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
-        final OutputStream outputStream = buffer.getOutputStream();
-        final InputStream inputStream = buffer.getInputStream();
-        final byte[] bytes = "ABCDEFGHIJ".getBytes();
-        
-        try {
-            outputStream.write(bytes, 0, 10); 
-        } finally {
-            outputStream.close();
+        try (final InputStream inputStream = buffer.getInputStream()) {
+            final byte[] bytes = "ABCDEFGHIJ".getBytes();
+            try (final OutputStream outputStream = buffer.getOutputStream()) {
+                outputStream.write(bytes, 0, 10);
+            } 
+            final byte[] inBytes = new byte[10];
+            // Check write doesnt permit offset to be outside of source
+            // array size
+            try {
+                inputStream.read(inBytes, 11, 1);
+                fail("Exception not thrown");
+            } catch (final IOException  e) {
+                final String test = e.toString();
+                assertEquals(test, "java.io.IOException: Destination offset outside of range");
+            }
+            // Now show truncation of output to fit array
+            inputStream.read(inBytes, 1, 10);
+            assertEquals(inBytes[0], 0);
+            for (int i = 1; i < 10; i++) {
+                assertEquals(inBytes[i], bytes[i - 1]);
+            }
         }
-        
-        final byte[] inBytes = new byte[10];
-
-        // Check write doesnt permit offset to be outside of source
-        // array size
-        try {
-            inputStream.read(inBytes, 11, 1);
-            fail("Exception not thrown");
-        } catch (final IOException  e) {
-            final String test = e.toString();
-            assertEquals(test, "java.io.IOException: Destination offset outside of range");
-        }
-
-        // Now show truncation of output to fit array
-        inputStream.read(inBytes, 1, 10); 
-        assertEquals(inBytes[0], 0);
-        for (int i = 1; i < 10; i++) {
-            assertEquals(inBytes[i], bytes[i - 1]);
-        }  
-        inputStream.close();
     }
 
     /**
@@ -273,13 +255,12 @@ public class ExtendedBufferNGTest {
         System.out.println("ExtendedBufferNGTest.testGetData");
         
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
-        final OutputStream outputStream = buffer.getOutputStream();
         final InputStream inputStream = buffer.getInputStream();
         final byte[] bytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".getBytes();
         final byte[] readBytes = new byte[30];
         
         // Populate data to write from inputStream
-        try {
+        try (final OutputStream outputStream = buffer.getOutputStream()) {
             outputStream.write(bytes, 0, bytes.length);
         
             assertEquals(buffer.getAvailableSize(), 20);
@@ -291,7 +272,6 @@ public class ExtendedBufferNGTest {
                 assertEquals(bytes[i], result[i]);
             }
         } finally {
-            outputStream.close();
             assertEquals(buffer.getAvailableSize(), 6);
 
             inputStream.read(readBytes, 0, 2);
