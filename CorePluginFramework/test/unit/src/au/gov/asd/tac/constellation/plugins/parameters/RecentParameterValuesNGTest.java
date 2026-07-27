@@ -55,7 +55,7 @@ public class RecentParameterValuesNGTest {
         final File file = new File(this.getClass().getResource("./resources/pluginframework.properties").getFile());
         try (final FileReader fileReader = new FileReader(file);
                 final BufferedReader in = new BufferedReader(fileReader)) {
-            String readLine = in.readLine();
+            final String readLine = in.readLine();
             recentValues = readLine.replace("recentValues=", "");
         }
     }

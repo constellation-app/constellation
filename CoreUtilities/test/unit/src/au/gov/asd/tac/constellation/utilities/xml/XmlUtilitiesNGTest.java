@@ -80,7 +80,7 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testNewDocument() {
         System.out.println("testNewDocument");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
         Document expResult = null;
         try {
@@ -88,7 +88,7 @@ public class XmlUtilitiesNGTest {
         } catch (ParserConfigurationException ex) {
             fail("Exception thrown creating sample data");
         }
-        Document result = instance.newDocument();
+        final Document result = instance.newDocument();
         assertTrue(result.isEqualNode(expResult));
     }
 
@@ -103,9 +103,9 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testWrite_Document() throws ParserConfigurationException, IOException, SAXException, TransformerException {
         System.out.println("testWrite_Document");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String expectedStr = XML_HDR + "<parent>\n"
+        final String expectedStr = XML_HDR + "<parent>\n"
                 + "<child1>child1_value</child1>\n"
                 + "<child2>child2_value</child2>\n"
                 + "<child3>child3a_value</child3>\n"
@@ -113,8 +113,8 @@ public class XmlUtilitiesNGTest {
                 + "<child4><child4.1>child4.1</child4.1></child4>\n"
                 + "</parent>\n";
 
-        Document document = getXmlDocument("resources/testWrite_Document.xml", false);
-        String results = new String(instance.write(document));
+        final Document document = getXmlDocument("resources/testWrite_Document.xml", false);
+        final String results = new String(instance.write(document));
 
         assertEquals(removeWhitespacing(results), removeWhitespacing(expectedStr));
     }
@@ -130,17 +130,17 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testWrite_Document_File() throws ParserConfigurationException, IOException, SAXException, TransformerException {
         System.out.println("testWrite_Document_File");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String expectedOutput = XML_HDR + "<parent>\n"
+        final String expectedOutput = XML_HDR + "<parent>\n"
                 + "<child>child_value</child>\n"
                 + "</parent>\n";
 
-        Document document = getXmlDocument("resources/testWrite_Document_File.xml", false);
-        String outputFilename = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + OUTPUT_FILE;
-        File outputFile = new File(outputFilename);
+        final Document document = getXmlDocument("resources/testWrite_Document_File.xml", false);
+        final String outputFilename = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + OUTPUT_FILE;
+        final File outputFile = new File(outputFilename);
         instance.write(document, outputFile);
-        String output = Files.readFile(outputFile);
+        final String output = Files.readFile(outputFile);
 
         assertEquals(removeWhitespacing(output), removeWhitespacing(expectedOutput));
     }
@@ -156,15 +156,15 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testWriteToString_Document() throws ParserConfigurationException, IOException, SAXException, TransformerException {
         System.out.println("testWriteToString_Document");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String expectedOutput = XML_HDR + "<parent>\n"
+        final String expectedOutput = XML_HDR + "<parent>\n"
                 + "<child>child_value</child>\n"
                 + "</parent>\n";
 
         // Read the test file into a Document object
-        Document document = getXmlDocument("resources/testWriteToString_Document.xml", false);
-        String output = instance.writeToString(document);
+        final Document document = getXmlDocument("resources/testWriteToString_Document.xml", false);
+        final String output = instance.writeToString(document);
 
         assertEquals(removeWhitespacing(output), removeWhitespacing(expectedOutput));
     }
@@ -177,12 +177,12 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testWriteToString_InputStream_int() throws IOException {
         System.out.println("testWriteToString_InputStream_int");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String expectedOutput = "<parent>   <child>child_value</child> </parent> ";
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testWriteToString_InputStream_int.xml").getPath();
+        final String expectedOutput = "<parent>   <child>child_value</child> </parent> ";
+        final String testFile = XmlUtilitiesNGTest.class.getResource("resources/testWriteToString_InputStream_int.xml").getPath();
         try (final InputStream inputStream = new FileInputStream(new File(testFile))) {
-            String output = instance.writeToString(inputStream, inputStream.available());
+            final String output = instance.writeToString(inputStream, inputStream.available());
 
             assertEquals(removeWhitespacing(output), removeWhitespacing(expectedOutput));
         }
@@ -197,23 +197,23 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testRead_File() throws FileNotFoundException, TransformerException {
         System.out.println("testRead_File");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testRead_File.xml").getPath();
-        Document document = instance.read(new File(testFile));
+        final String testFile = XmlUtilitiesNGTest.class.getResource("resources/testRead_File.xml").getPath();
+        final Document document = instance.read(new File(testFile));
 
-        NodeList parentNodeList = document.getElementsByTagName("parent");
+        final NodeList parentNodeList = document.getElementsByTagName("parent");
         assertNotNull(parentNodeList);
-        Node parent = parentNodeList.item(0);
-        NodeList childNodeList = parent.getChildNodes();
+        final Node parent = parentNodeList.item(0);
+        final NodeList childNodeList = parent.getChildNodes();
 
         for (int child = 1; child <= 3; child++) {
             boolean foundChild = false;
-            String nodeName = "child" + child;
+            final String nodeName = "child" + child;
             for (int i = 0; i < childNodeList.getLength(); i++) {
-                Node childNode = childNodeList.item(i);
+                final Node childNode = childNodeList.item(i);
                 if (nodeName.equals(childNode.getNodeName()) && childNode.getNodeType() == Node.ELEMENT_NODE) {
-                    String nodeValue = childNode.getFirstChild().getNodeValue();
+                    final String nodeValue = childNode.getFirstChild().getNodeValue();
                     assertTrue(nodeValue.equals("child" + child + "_value"));
                     foundChild = true;
                     break;
@@ -232,9 +232,9 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testRead_String() throws UnsupportedEncodingException, TransformerException {
         System.out.println("testRead_String");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String data = """
+        final String data = """
                       <parent>
                       <child1>child1_value</child1>
                       <child2>child2_value</child2>
@@ -242,20 +242,20 @@ public class XmlUtilitiesNGTest {
                       </parent>
                       """;
 
-        Document document = instance.read(data);
+        final Document document = instance.read(data);
 
-        NodeList parentNodeList = document.getElementsByTagName("parent");
+        final NodeList parentNodeList = document.getElementsByTagName("parent");
         assertNotNull(parentNodeList);
-        Node parent = parentNodeList.item(0);
-        NodeList childNodeList = parent.getChildNodes();
+        final Node parent = parentNodeList.item(0);
+        final NodeList childNodeList = parent.getChildNodes();
 
         for (int child = 1; child <= 3; child++) {
             boolean foundChild = false;
-            String nodeName = "child" + child;
+            final String nodeName = "child" + child;
             for (int i = 0; i < childNodeList.getLength(); i++) {
-                Node childNode = childNodeList.item(i);
+                final Node childNode = childNodeList.item(i);
                 if (nodeName.equals(childNode.getNodeName()) && childNode.getNodeType() == Node.ELEMENT_NODE) {
-                    String nodeValue = childNode.getFirstChild().getNodeValue();
+                    final String nodeValue = childNode.getFirstChild().getNodeValue();
                     assertTrue(nodeValue.equals("child" + child + "_value"));
                     foundChild = true;
                     break;
@@ -274,9 +274,9 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testRead_InputStream_boolean() throws FileNotFoundException, TransformerException, IOException {
         System.out.println("testRead_InputStream_boolean");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testRead_InputStream_boolean.xml").getPath();
+        final String testFile = XmlUtilitiesNGTest.class.getResource("resources/testRead_InputStream_boolean.xml").getPath();
         try (final FileInputStream stream = new FileInputStream(new File(testFile))) {
             final Document document = instance.read(stream, true);
             
@@ -312,12 +312,12 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNode() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNode");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        Document document = getXmlDocument("resources/testGetNode.xml", false);
-        NodeList nodeList = document.getElementsByTagName("parent");
-        Node parent = nodeList.item(0);
-        NodeList children = parent.getChildNodes();
+        final Document document = getXmlDocument("resources/testGetNode.xml", false);
+        final NodeList nodeList = document.getElementsByTagName("parent");
+        final Node parent = nodeList.item(0);
+        final NodeList children = parent.getChildNodes();
 
         // Confirm matching node is found, and is the first match
         Node node = instance.getNode("child3", children);
@@ -350,12 +350,12 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodeNS() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodeNS");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        Document document = getXmlDocument("resources/testGetNodeNS.xml", true);
-        NodeList nodeList = document.getElementsByTagName("c:parent");
-        Node parent = nodeList.item(0);
-        NodeList children = parent.getChildNodes();
+        final Document document = getXmlDocument("resources/testGetNodeNS.xml", true);
+        final NodeList nodeList = document.getElementsByTagName("c:parent");
+        final Node parent = nodeList.item(0);
+        final NodeList children = parent.getChildNodes();
 
         // Confirm matching node is found, and is the first match
         Node node = instance.getNodeNS("http://www.consty.com/star", "child3", children);
@@ -392,12 +392,12 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodes() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodes");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        Document document = getXmlDocument("resources/testGetNodes.xml", false);
-        NodeList nodeList = document.getElementsByTagName("parent");
-        Node parent = nodeList.item(0);
-        NodeList children = parent.getChildNodes();
+        final Document document = getXmlDocument("resources/testGetNodes.xml", false);
+        final NodeList nodeList = document.getElementsByTagName("parent");
+        final Node parent = nodeList.item(0);
+        final NodeList children = parent.getChildNodes();
 
         // Confirm all matching nodes are found
         List<Node> nodes = instance.getNodes("child", children);
@@ -485,12 +485,12 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodeValue_Node() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodeValue_Node");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        Document document = getXmlDocument("resources/testGetNodeValue_Node.xml", false);
-        NodeList nodeList = document.getElementsByTagName("parent");
-        Node parent = nodeList.item(0);
-        NodeList children = parent.getChildNodes();
+        final Document document = getXmlDocument("resources/testGetNodeValue_Node.xml", false);
+        final NodeList nodeList = document.getElementsByTagName("parent");
+        final Node parent = nodeList.item(0);
+        final NodeList children = parent.getChildNodes();
 
         // Check that parent node doesnt contain content
         String result = instance.getNodeValue(parent);
@@ -511,12 +511,12 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodeValue_String_NodeList() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodeValue_String_NodeList");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        Document document = getXmlDocument("resources/testGetNodeValue_String_NodeList.xml", false);
-        NodeList nodeList = document.getElementsByTagName("parent");
-        Node parent = nodeList.item(0);
-        NodeList children = parent.getChildNodes();
+        final Document document = getXmlDocument("resources/testGetNodeValue_String_NodeList.xml", false);
+        final NodeList nodeList = document.getElementsByTagName("parent");
+        final Node parent = nodeList.item(0);
+        final NodeList children = parent.getChildNodes();
 
         // Check that correct first child value is returned
         String result = instance.getNodeValue("child", children);
@@ -545,12 +545,12 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodeValueNS() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodeValueNS");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        Document document = getXmlDocument("resources/testGetNodeValueNS.xml", true);
-        NodeList nodeList = document.getElementsByTagName("c:parent");
-        Node parent = nodeList.item(0);
-        NodeList children = parent.getChildNodes();
+        final Document document = getXmlDocument("resources/testGetNodeValueNS.xml", true);
+        final NodeList nodeList = document.getElementsByTagName("c:parent");
+        final Node parent = nodeList.item(0);
+        final NodeList children = parent.getChildNodes();
 
         // Check that correct first child value is returned
         String result = instance.getNodeValueNS("http://www.consty.com/star", "child", children);
@@ -587,11 +587,11 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodeAttr_String_Node() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodeAttr_String_Node");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        Document document = getXmlDocument("resources/testGetNodeAttr_String_Node.xml", false);
-        NodeList nodeList = document.getElementsByTagName("parent");
-        Node parent = nodeList.item(0);
+        final Document document = getXmlDocument("resources/testGetNodeAttr_String_Node.xml", false);
+        final NodeList nodeList = document.getElementsByTagName("parent");
+        final Node parent = nodeList.item(0);
 
         // Show attribute values are read
         String result = instance.getNodeAttr("attr1", parent);
@@ -616,12 +616,12 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testGetNodeAttr_3args() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodeAttr_3args");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        Document document = getXmlDocument("resources/testGetNodeAttr_3args.xml", true);
-        NodeList nodeList = document.getElementsByTagName("parent");
-        Node parent = nodeList.item(0);
-        NodeList children = parent.getChildNodes();
+        final Document document = getXmlDocument("resources/testGetNodeAttr_3args.xml", true);
+        final NodeList nodeList = document.getElementsByTagName("parent");
+        final Node parent = nodeList.item(0);
+        final NodeList children = parent.getChildNodes();
 
         // Show attribute values are read
         String result = instance.getNodeAttr("child", "attr1", children);
@@ -652,10 +652,10 @@ public class XmlUtilitiesNGTest {
         System.out.println("testGetNodeAttrNS");
         XmlUtilities instance = new XmlUtilities();
 
-        Document document = getXmlDocument("resources/testGetNodeAttrNS.xml", true);
-        NodeList nodeList = document.getElementsByTagName("parent");
-        Node parent = nodeList.item(0);
-        NodeList children = parent.getChildNodes();
+        final Document document = getXmlDocument("resources/testGetNodeAttrNS.xml", true);
+        final NodeList nodeList = document.getElementsByTagName("parent");
+        final Node parent = nodeList.item(0);
+        final NodeList children = parent.getChildNodes();
 
         // Check that correct first child value is returned
         String result = instance.getNodeAttrNS("http://www.consty.com/star", "child", "attr1", children);
@@ -685,12 +685,12 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testMap_String() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testMap_String");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
         // Extract content and validate it is as expected
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String.xml").getPath();
-        URL url = new File(testFile).toURI().toURL();
-        List<Map<String, String>> result = instance.map(url.toString());
+        final String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String.xml").getPath();
+        final URL url = new File(testFile).toURI().toURL();
+        final List<Map<String, String>> result = instance.map(url.toString());
         assertEquals(4, result.size());
         assertEquals(3, result.get(0).size());
         assertEquals(3, result.get(1).size());
@@ -718,10 +718,10 @@ public class XmlUtilitiesNGTest {
     @Test(expectedExceptions = FileNotFoundException.class)
     public void testMap_String_FilenotFound() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testMap_String_FilenotFound");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
-        URL url = new File(testFile).toURI().toURL();
+        final String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
+        final URL url = new File(testFile).toURI().toURL();
         instance.map(url.toString());
     }
 
@@ -736,11 +736,11 @@ public class XmlUtilitiesNGTest {
     @Test(expectedExceptions = TransformerException.class)
     public void testMap_String_TransformerException() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testMap_String_TransformerException");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
         // Execute test
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_TransformerException.xml").getPath();
-        URL url = new File(testFile).toURI().toURL();
+        final String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_TransformerException.xml").getPath();
+        final URL url = new File(testFile).toURI().toURL();
         instance.map(url.toString());
     }
 
@@ -755,11 +755,11 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testMap_String_String() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testMap_String_String");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_String.xml").getPath();
-        URL url = new File(testFile).toURI().toURL();
-        List<Map<String, String>> result = instance.map(url.toString(), "child");
+        final String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_String.xml").getPath();
+        final URL url = new File(testFile).toURI().toURL();
+        final List<Map<String, String>> result = instance.map(url.toString(), "child");
         assertEquals(3, result.size());
         assertEquals(3, result.get(0).size());
         assertEquals(3, result.get(1).size());
@@ -783,10 +783,10 @@ public class XmlUtilitiesNGTest {
     @Test(expectedExceptions = FileNotFoundException.class)
     public void testMap_String_String_FilenotFound() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testMap_String_String_FilenotFound");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
-        URL url = new File("Missing" + testFile).toURI().toURL();
+        final String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
+        final URL url = new File("Missing" + testFile).toURI().toURL();
         instance.map(url.toString(), "child");
     }
 
@@ -801,10 +801,10 @@ public class XmlUtilitiesNGTest {
     @Test(expectedExceptions = TransformerException.class)
     public void testMap_String_String_TransformerException() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testMap_String_String_TransformerException");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_String_TransformerException.xml").getPath();
-        URL url = new File(testFile).toURI().toURL();
+        final String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_String_TransformerException.xml").getPath();
+        final URL url = new File(testFile).toURI().toURL();
         instance.map(url.toString(), "child");
     }
 
@@ -819,11 +819,11 @@ public class XmlUtilitiesNGTest {
     @Test
     public void testTable_String_Boolean() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testTable_String_Boolean");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean.xml").getPath();
-        URL url = new File(testFile).toURI().toURL();
-        String[][] result = instance.table(url.toString(), false);
+        final String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean.xml").getPath();
+        final URL url = new File(testFile).toURI().toURL();
+        final String[][] result = instance.table(url.toString(), false);
         assertEquals(result.length, 3);
         assertEquals(result[0].length, 3);
         assertEquals(result[1].length, 2);
@@ -837,7 +837,7 @@ public class XmlUtilitiesNGTest {
         assertEquals(result[2][1], "hhh");
         assertEquals(result[2][2], "iii");
 
-        String[][] swappedResult = instance.table(url.toString(), true);
+        final String[][] swappedResult = instance.table(url.toString(), true);
         assertEquals(swappedResult.length, 3);
         assertEquals(swappedResult[0].length, 3);
         assertEquals(swappedResult[1].length, 3);
@@ -864,10 +864,10 @@ public class XmlUtilitiesNGTest {
     @Test(expectedExceptions = FileNotFoundException.class)
     public void testTable_String_Boolean_FilenotFound() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testTable_String_Boolean_FilenotFound");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
-        URL url = new File(testFile).toURI().toURL();
+        final String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
+        final URL url = new File(testFile).toURI().toURL();
         instance.table(url.toString(), false);
     }
 
@@ -882,10 +882,10 @@ public class XmlUtilitiesNGTest {
     @Test(expectedExceptions = TransformerException.class)
     public void testTable_String_Boolean_TransformerException() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testTable_String_Boolean_TransformerException");
-        XmlUtilities instance = new XmlUtilities();
+        final XmlUtilities instance = new XmlUtilities();
 
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean_TransformerException.xml").getPath();
-        URL url = new File(testFile).toURI().toURL();
+        final String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean_TransformerException.xml").getPath();
+        final URL url = new File(testFile).toURI().toURL();
         instance.table(url.toString(), false);
     }
 

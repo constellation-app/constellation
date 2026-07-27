@@ -226,7 +226,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
     //        ClipboardUtilities.copyToClipboard(writer.toString());
             PluginExecution.withPlugin(new SimplePlugin("Copy To Clipboard") {
                 @Override
-                protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+                protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
                     ConstellationLoggerHelper.copyPropertyBuilder(this, writer.toString().length(), ConstellationLoggerHelper.SUCCESS);
                 }
             }).executeLater(null);

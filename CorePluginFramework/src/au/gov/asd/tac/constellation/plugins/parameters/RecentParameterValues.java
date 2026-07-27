@@ -115,12 +115,12 @@ public class RecentParameterValues {
             try (final ByteArrayOutputStream json = new ByteArrayOutputStream()) {
                 try (final JsonGenerator jg = JsonFactoryUtilities.getJsonFactory().createGenerator(json)) {
                     jg.writeStartObject();
-                    for (Entry<String, List<String>> entry : RECENT_VALUES.entrySet()) {
-                        List<String> recentVals = entry.getValue();
+                    for (final Entry<String, List<String>> entry : RECENT_VALUES.entrySet()) {
+                        final List<String> recentVals = entry.getValue();
                         if (entry.getKey() != null) {
                             jg.writeFieldName(entry.getKey());
                             jg.writeStartArray();
-                            int limit = Math.min(SAVE_LIMIT, recentVals.size());
+                            final int limit = Math.min(SAVE_LIMIT, recentVals.size());
                             for (int i = 0; i < limit; i++) {
                                 jg.writeString(recentVals.get(i));
                             }

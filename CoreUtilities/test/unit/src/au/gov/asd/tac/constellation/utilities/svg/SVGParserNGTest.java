@@ -70,9 +70,9 @@ public class SVGParserNGTest {
     @Test
     public void testParse() throws IOException {
         //Ensure loading template file passes
-        TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_COMPLIANT;
+        final TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_COMPLIANT;
         try (final InputStream inputStream = template.getClass().getResourceAsStream(template.getFileName())) {
-            SVGData templateSVG = SVGParser.parse(inputStream);
+            final SVGData templateSVG = SVGParser.parse(inputStream);
             SVGTestUtilities.testLoadedData(templateSVG);
         }
     }
@@ -108,7 +108,7 @@ public class SVGParserNGTest {
      */
     @Test
     public void testSanitisePlanText() {
-        List<Integer> knownBadCharacters = new ArrayList<>();
+        final List<Integer> knownBadCharacters = new ArrayList<>();
         knownBadCharacters.add(0); // NUL
         knownBadCharacters.add(12); // FF
         knownBadCharacters.add(34); // "
@@ -118,15 +118,15 @@ public class SVGParserNGTest {
         knownBadCharacters.add(62); // >
         
         for(int i = 0; i < 127; i++){
-            String originalCharacter = Character.toString((char) i);
-            String sanitisedCharacter = SVGParser.sanitisePlanText(originalCharacter);
+            final String originalCharacter = Character.toString((char) i);
+            final String sanitisedCharacter = SVGParser.sanitisePlanText(originalCharacter);
             if (knownBadCharacters.contains(i)) {
                 assertNotEquals(sanitisedCharacter, originalCharacter); 
             } else {
                 assertEquals(sanitisedCharacter, originalCharacter);
             }
         }
-        String fireChineseCharacter = "火";
+        final String fireChineseCharacter = "火";
         assertEquals(SVGParser.sanitisePlanText(fireChineseCharacter), SVGParser.NON_LATIN_CHARACTER_OMMMISION_TEXT);       
     }   
 }
