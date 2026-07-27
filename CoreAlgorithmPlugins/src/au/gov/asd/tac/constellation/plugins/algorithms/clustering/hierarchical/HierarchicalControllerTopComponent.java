@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
-import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
@@ -28,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusterUtilities;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.FastNewman.Group;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.HierarchicalState.ExcludedState;
 import au.gov.asd.tac.constellation.plugins.algorithms.paths.DijkstraServices;
@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ComponentEvent;
@@ -90,7 +91,7 @@ import org.openide.windows.TopComponent;
     "CTL_HierarchicalControllerTopComponent=Hierarchical",
     "HINT_HierarchicalControllerTopComponent=Use this window to view communities of interest in the graph"
 })
-public final class HierarchicalControllerTopComponent extends TopComponent implements LookupListener, GraphChangeListener {
+public final class HierarchicalControllerTopComponent extends SwingTopComponent<NestedHierarchicalDisplayPanel> implements LookupListener {
 
     private static final String INFO_STRING = "%s clusters";
     private static final String TOGGLE_DISABLED = "Toggle Interactive: Disabled";
@@ -153,6 +154,11 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 // Override required for ComponentListener, intentionally left blank
             }
         });
+    }
+    
+    @Override
+    protected NestedHierarchicalDisplayPanel createContent() {
+        return dp;
     }
 
     @Override
@@ -401,7 +407,6 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     }//GEN-LAST:event_excludeSingleVerticesCheckBoxItemStateChanged
 
     private void downButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downButtonActionPerformed
-
         if (state.getCurrentStep() > 0) {
             state.setCurrentStep(state.getCurrentStep() - 1);
             updateSlider();
@@ -514,13 +519,13 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void componentOpened() {
+    protected void handleComponentOpened() {
         result.addLookupListener(this);
         resultChanged(null);
     }
 
     @Override
-    public void componentClosed() {
+    protected void handleComponentClosed() {
         result.removeLookupListener(this);
         if (state != null && state.isInteractive()) {
             updateInteractivity();
@@ -619,10 +624,14 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
      * @param evt The change event.
      */
     @Override
-    public void graphChanged(final GraphChangeEvent evt) {
+    protected void handleGraphChange(final GraphChangeEvent evt) {
+        if (graph == null) {
+            return;
+        }
+        
         long smc;
         final long mc;
-
+        
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             // Retrieve the COI state attribute, attribute mod counter, and structural mod counter from the graph
             final int stateAttr = ClusteringConcept.MetaAttribute.HIERARCHICAL_CLUSTERING_STATE.get(rg);
@@ -715,12 +724,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-            final int vxColorRef = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(graph);
-            final int txColorRef = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(graph);
             final String vxColorAttrName = setColors ? ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOR.getName() : null;
             final String txColorAttrName = setColors ? ClusteringConcept.TransactionAttribute.HIERARCHICAL_COLOR.getName() : null;
-            graph.setStringValue(vxColorRef, 0, vxColorAttrName);
-            graph.setStringValue(txColorRef, 0, txColorAttrName);
+            ClusterUtilities.setColorRef(graph, vxColorAttrName, txColorAttrName);
         }
     }
 

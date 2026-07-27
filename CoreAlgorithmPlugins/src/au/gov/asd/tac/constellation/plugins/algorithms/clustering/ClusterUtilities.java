@@ -100,7 +100,7 @@ public class ClusterUtilities {
         setColorRef(wg, wg.getAttributeName(vxColorId), wg.getAttributeName(txColorId));
     }
 
-    private static void setColorRef(final GraphWriteMethods wg, final String vxColorAttrName, final String txColorAttrName) {
+    public static void setColorRef(final GraphWriteMethods wg, final String vxColorAttrName, final String txColorAttrName) {
         final int vxColorRef = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(wg);
         final int txColorRef = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(wg);
 

@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
-import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -27,10 +26,12 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusterUtilities;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -87,7 +88,7 @@ import org.openide.windows.TopComponent;
     "CTL_KTrussControllerTopComponent=K-Truss",
     "HINT_KTrussControllerTopComponent=K-Truss"
 })
-public final class KTrussControllerTopComponent extends TopComponent implements LookupListener, GraphChangeListener, ComponentListener {
+public final class KTrussControllerTopComponent extends SwingTopComponent<NestedKTrussDisplayPanel> implements LookupListener, ComponentListener {
 
     private static final String TOGGLE_DISABLED = "Toggle Interactive: Disabled";
     private static final String TOGGLE_ENABLED = "Toggle Interactive: Enabled";
@@ -118,6 +119,12 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         nestedPanelIsVisible = false;
         updateInteractiveButton(interactiveButton.getText().equals(TOGGLE_DISABLED));
     }
+    
+    @Override
+    protected NestedKTrussDisplayPanel createContent() {
+        return dp;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -426,7 +433,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void componentOpened() {
+    protected void handleComponentOpened() {
         result.addLookupListener(this);
         resultChanged(null);
     }
@@ -444,7 +451,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }
 
     @Override
-    public void componentClosed() {
+    protected void handleComponentClosed() {
         // If interactive was enabled when component closed, clear this state so that
         // graph doesn't render with interactive visuals. Also store this fact so that
         // if the component is reopened it can revert to previous state. This is stored in
@@ -602,11 +609,15 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
      * @param evt The change event.
      */
     @Override
-    public void graphChanged(final GraphChangeEvent evt) {
+    protected void handleGraphChange(final GraphChangeEvent evt) {
+        if (graph == null) {
+            return;
+        }
+        
         long smc;
         final long mc;
+        
         try (final ReadableGraph rg = graph.getReadableGraph()) {
-
             // Retrieve the k-truss state attribute, attribute mod counter, and structural mod counter from the graph
             final int stateAttr = ClusteringConcept.MetaAttribute.K_TRUSS_CLUSTERING_STATE.get(rg);
             smc = rg.getStructureModificationCounter();
@@ -826,10 +837,8 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             final int txKTrussAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_CLUSTER.ensure(graph);
             final int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.ensure(graph);
             final int txOverlayColorAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_COLOR.ensure(graph);
-            final int vxColorRef = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(graph);
-            final int txColorRef = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(graph);
-            graph.setStringValue(vxColorRef, 0, ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.getName());
-            graph.setStringValue(txColorRef, 0, ClusteringConcept.TransactionAttribute.K_TRUSS_COLOR.getName());
+            ClusterUtilities.setColorRef(graph, ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.getName(), 
+                    ClusteringConcept.TransactionAttribute.K_TRUSS_COLOR.getName());
 
             final ConstellationColor[] colors = ConstellationColor.createPalettePhi(state.getNumUniqueValuesOfK() + 2, 0, 0.5F, 0.95F);
             colors[0] = colors[colors.length - 1];
