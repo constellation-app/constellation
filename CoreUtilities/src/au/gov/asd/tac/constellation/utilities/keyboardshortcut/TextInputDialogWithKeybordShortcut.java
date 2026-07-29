@@ -355,7 +355,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         grid.add(shorcutWarningLabel, 0, 2, 7, 1);
               
         dialogPane.setContent(grid);
-
+        dialogPane.setGraphic(null);
         Platform.runLater(() -> textField.requestFocus());
     }
 }

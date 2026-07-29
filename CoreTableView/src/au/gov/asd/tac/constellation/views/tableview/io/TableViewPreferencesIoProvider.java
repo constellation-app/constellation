@@ -38,6 +38,7 @@ public class TableViewPreferencesIoProvider {
 
     private static final String VERTEX_FILE_PREFIX = "vertex-";
     private static final String TRANSACTION_FILE_PREFIX = "transaction-";
+    private static final String DIALOG_TYPE = "Preference";
 
     /**
      * Private constructor to prevent instantiation.
@@ -78,7 +79,7 @@ public class TableViewPreferencesIoProvider {
         }
 
         JsonIO.saveJsonPreferences(Optional.of(TABLE_VIEW_PREF_DIR), Optional.of(filePrefix),
-                List.of(tablePreferences));
+                List.of(tablePreferences), DIALOG_TYPE);
     }
 
     /**
@@ -98,9 +99,7 @@ public class TableViewPreferencesIoProvider {
                 Optional.of(TABLE_VIEW_PREF_DIR),
                 Optional.of(filePrefix),
                 new TypeReference<List<UserTablePreferences>>() {
-        }
-        );
-
+        }, DIALOG_TYPE);
         return root == null ? new UserTablePreferences() : root.get(0);
     }
 }

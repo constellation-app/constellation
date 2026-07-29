@@ -93,6 +93,7 @@ public class TemplateListDialog {
         final VBox vbox = new VBox(nameList, prompt);
 
         dialog.setResizable(false);
+        dialog.setGraphic(null);
         dialog.setTitle("Import template names");
         dialog.setHeaderText(String.format("Select an import template to %s.", isLoading ? "load" : "save"));
         dialog.getDialogPane().setContent(vbox);

@@ -63,8 +63,8 @@ public class KeyPressLabelDialog extends Dialog<String> {
         this.grid.setAlignment(Pos.CENTER_LEFT);
 
         dialogPane.contentTextProperty().addListener(o -> updateGrid());
-        
-        
+        dialogPane.setGraphic(null);
+
         dialogPane.getStyleClass().add("text-input-dialog");
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 

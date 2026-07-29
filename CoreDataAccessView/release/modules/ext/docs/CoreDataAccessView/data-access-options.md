@@ -4,25 +4,25 @@ All the options can be accessed via the <img src="../ext/docs/CoreDataAccessView
 Button" />
 menu in the top left corner of the Data Access View.
 
-## Saving and loading data access preferences
+## Saving and loading data access templates
 
-Data access preferences can be saved and loaded using the "Save Templates" and
+Data access templates can be saved and loaded using the "Save Templates" and
 "Load Templates" options.
 
 <img src="../ext/docs/CoreDataAccessView/resources/DataAccessSaveLoadTemplate.png" alt="Save and Load Templates
 Button" />
 
-When a preference is saved, you are prompted to name the preference. If
-a preference of that name has already been saved, you will be asked if
+When a template is saved, you are prompted to name the template. If
+a template of that name has already been saved, you will be asked if
 you want to overwrite it. Preferences are saved by default in the
 directory &lt;HOME_DIRECTORY&gt;/.CONSTELLATION/DataAccessView. (The name of the
-file in which the preference is saved is encoded so it doesn't clash
+file in which the template is saved is encoded so it doesn't clash
 with file system limitations.) Files in this directory can be copied and
 deleted using your favourite file management utility. 
 
 Preferences are being saved with assigned keyboard shortcuts. 
 Default keyboard shortcuts are 'Alt 1', 'Alt 2', ... , 'Alt 5'. 
-Users can save preferences with the keyboard shortcut of their choice. 
+Users can save templates with the keyboard shortcut of their choice. 
 
 <img src="../ext/docs/CoreDataAccessView/resources/DataAccessSaveTemplateWithKeyboardShortcut.png" alt="Save Template Button" />
 
@@ -42,9 +42,9 @@ Click on 'OK' button will remove the selected keyboard shortcut from previously 
 
 
 When you select "Load Templates", you will be presented with a list of saved
-preferences. Select one from the list and select OK. The preference will
+templates. Select one from the list and select OK. The template will
 be loaded and will appear exactly as it was when it was saved. You can
-also remove a saved preference from here by selecting one from the list
+also remove a saved template from here by selecting one from the list
 and selecting Remove.
 
 Alternatively, when you press a keyboard shortcut, the mapped template gets loaded.

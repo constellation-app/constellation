@@ -48,6 +48,8 @@ public class TextInputDialogWithKeybordShortcutNGTest {
 
     private final FxRobot robot = new FxRobot();
 
+    private final String dialogType1 = "Type1";
+
     @BeforeClass
     public static void setUpClass() throws Exception {        
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -93,7 +95,7 @@ public class TextInputDialogWithKeybordShortcutNGTest {
         final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileNameTest(ks, preferenceDirectory, Optional.empty()));
+                () -> JsonIODialog.getPreferenceFileNameTest(ks, preferenceDirectory, Optional.empty(), dialogType1));
 
         final Stage dialog = getDialog(robot);
         dialog.setX(0);
