@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.preferences;
 
 import au.gov.asd.tac.constellation.views.AbstractTopComponent;
-import java.awt.EventQueue;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -42,10 +41,13 @@ public class ViewOptionsPreferencesMap extends ViewOptionsProvider {
     public Map<String, Boolean> getDefaultFloatingPreferences() {
 
         if (dfpInfo.isEmpty()) {
-            EventQueue.invokeLater(() -> Lookup.getDefault().lookupAll(AbstractTopComponent.class).forEach(lookup -> dfpInfo.put(
-                    (String) lookup.getDefaultFloatingInfo().getFirst(),
-                    (Boolean) lookup.getDefaultFloatingInfo().getSecond()
-            )));
+            dfpInfo.put("Data Access View", Boolean.FALSE); // Remove when Data Access View lookup issue is fixed.
+            Lookup.getDefault().lookupAll(AbstractTopComponent.class).forEach(
+                    lookup -> dfpInfo.put(
+                            (String) lookup.getDefaultFloatingInfo().getFirst(),
+                            (Boolean) lookup.getDefaultFloatingInfo().getSecond()
+                    )
+            );
         }
 
         return Collections.unmodifiableMap(dfpInfo);

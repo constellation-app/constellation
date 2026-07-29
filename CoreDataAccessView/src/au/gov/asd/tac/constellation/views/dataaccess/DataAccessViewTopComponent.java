@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
-import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
@@ -39,7 +38,6 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -73,7 +71,7 @@ import org.openide.windows.TopComponent;
     "CTL_DataAccessViewTopComponent=Data Access View",
     "HINT_DataAccessViewTopComponent=Data Access View"
 })
-@ServiceProvider(service = AbstractTopComponent.class)
+//@ServiceProvider(service = AbstractTopComponent.class) // Uncomment when Data Access View lookup issue is fixed.
 public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAccessPane> {
 
     private static final String DATA_ACCESS_VIEW_GRAPH_CHANGED_THREAD_NAME = "Data Access View Graph Changed Updater";
