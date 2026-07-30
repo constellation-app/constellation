@@ -102,4 +102,22 @@ public class ZonedDateTimeAttributeDescriptionNGTest {
         final String value = "0000-00-00T00:00:00.000";
         instance.convertFromString(value);
     }
+
+    @Test
+    public void testParseNoMilliseconds() {
+        final ZonedDateTimeAttributeDescription instance = new ZonedDateTimeAttributeDescription();
+        final String value = "2016-11-03T23:16:27Z";
+        final ZonedDateTime expResult = ZonedDateTime.of(2016, 11, 3, 23, 16, 27, 0, ZoneId.of("UTC"));
+        final ZonedDateTime result = instance.convertFromString(value);
+        assertEquals(result, expResult);
+    }
+
+    @Test
+    public void testParseNoMillisecondsWithSpace() {
+        final ZonedDateTimeAttributeDescription instance = new ZonedDateTimeAttributeDescription();
+        final String value = "2016-11-03 23:16:27Z";
+        final ZonedDateTime expResult = ZonedDateTime.of(2016, 11, 3, 23, 16, 27, 0, ZoneId.of("UTC"));
+        final ZonedDateTime result = instance.convertFromString(value);
+        assertEquals(result, expResult);
+    }
 }
