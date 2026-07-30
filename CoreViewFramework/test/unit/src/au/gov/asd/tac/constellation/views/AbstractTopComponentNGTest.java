@@ -55,7 +55,7 @@ public class AbstractTopComponentNGTest {
         // Test for bottom opening floating top components.
         final Dimension actual = instance.createFloatingSize(landscapeWindowMock, "output");
         final Dimension expected = new Dimension(
-                Math.round(landscapeWindowMock.getWidth()),
+                landscapeWindowMock.getWidth(),
                 Math.round(landscapeWindowMock.getHeight() * 0.3F)
         );
 
@@ -124,6 +124,7 @@ public class AbstractTopComponentNGTest {
 
         @Override
         public void initContent() {
+            // Intentionally left blank.
         }
 
         @Override
