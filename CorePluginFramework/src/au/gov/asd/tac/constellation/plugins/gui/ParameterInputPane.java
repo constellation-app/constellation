@@ -70,8 +70,8 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
         this.input.addListener(getFieldChangeListener(parameter));
         parameter.addListener(getPluginParameterListener());
         
-        // Add a validator that uses the parameter validation to validate the value of an input.
-        this.input.addValidator(parameter::validateString);
+        // Add a validator in the child pane thqat requires parameter validation to validate the value of an input if needed.
+        // eg.this.input.addValidator(parameter::validateString);
         
         getChildren().add(input);
     }
