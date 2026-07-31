@@ -57,8 +57,9 @@ public class NotesViewEntry implements PluginReportListener {
 
     public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour, final boolean inMarkdown) {
         this.dateTime = dateTime;
-        this.noteTitle = noteTitle;
-        this.noteContent = noteContent;
+        // Guard against null title/content (e.g. plugin reports with no message) to avoid NPEs when rendering notes.
+        this.noteTitle = noteTitle != null ? noteTitle : "";
+        this.noteContent = noteContent != null ? noteContent : "";
         contentTextFlow = new TextFlow();
       
         tempContent = "";
@@ -127,11 +128,11 @@ public class NotesViewEntry implements PluginReportListener {
     }
 
     public void setNoteTitle(final String noteTitle) {
-        this.noteTitle = noteTitle;
+        this.noteTitle = noteTitle != null ? noteTitle : "";
     }
 
     public void setNoteContent(final String noteContent) {
-        this.noteContent = noteContent;
+        this.noteContent = noteContent != null ? noteContent : "";
     }
 
     public List<String> getTags() {
@@ -143,7 +144,9 @@ public class NotesViewEntry implements PluginReportListener {
     }
 
     public void setNodeColour(final String nodeColour) {
-        this.nodeColour = nodeColour;
+        if (nodeColour != null) {
+            this.nodeColour = nodeColour;
+        }
     }
 
     public void setTags(final List<String> tags) {
@@ -221,7 +224,8 @@ public class NotesViewEntry implements PluginReportListener {
 
     @Override
     public void pluginReportChanged(final PluginReport pluginReport) {
-        this.noteContent = pluginReport.getLastMessage();
+        final String message = pluginReport.getLastMessage();
+        this.noteContent = message != null ? message : "";
     }
 
     @Override

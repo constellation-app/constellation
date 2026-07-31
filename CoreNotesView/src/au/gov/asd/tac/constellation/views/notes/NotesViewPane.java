@@ -843,15 +843,18 @@ public class NotesViewPane extends BorderPane {
                 selectionLabelText = "Note linked to: the graph.";
             } else {
                 selectionLabelText = "Note linked to: ";
-                if (newNote.getNodesSelected().size() == 1) {
-                    selectionLabelText += newNote.getNodesSelected().size() + " node, ";
+                // Null-guard: selection lists can be null for some persisted/user notes.
+                final int nodeCount = newNote.getNodesSelected() != null ? newNote.getNodesSelected().size() : 0;
+                final int transactionCount = newNote.getTransactionsSelected() != null ? newNote.getTransactionsSelected().size() : 0;
+                if (nodeCount == 1) {
+                    selectionLabelText += nodeCount + " node, ";
                 } else {
-                    selectionLabelText += newNote.getNodesSelected().size() + " nodes, ";
+                    selectionLabelText += nodeCount + " nodes, ";
                 }
-                if (newNote.getTransactionsSelected().size() == 1) {
-                    selectionLabelText += newNote.getTransactionsSelected().size() + " transaction. ";
+                if (transactionCount == 1) {
+                    selectionLabelText += transactionCount + " transaction. ";
                 } else {
-                    selectionLabelText += newNote.getTransactionsSelected().size() + " transactions. ";
+                    selectionLabelText += transactionCount + " transactions. ";
                 }
             }
             selectionLabel.setText(selectionLabelText);
@@ -896,13 +899,19 @@ public class NotesViewPane extends BorderPane {
         gap.setMinWidth(10);
         gap2.setMinWidth(10);
 
-        if (newNote.getNodeColour().isBlank()) {
+        if (StringUtils.isBlank(newNote.getNodeColour())) {
             newNote.setNodeColour(USER_COLOR);
         }
 
         HBox.setHgrow(dateTimeLabel, Priority.NEVER);
 
-        final ColorPicker colourPicker = new ColorPicker(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
+        // fromHtmlColor returns null for invalid colours; fall back to the default user colour.
+        ConstellationColor noteColour = ConstellationColor.fromHtmlColor(newNote.getNodeColour());
+        if (noteColour == null) {
+            newNote.setNodeColour(USER_COLOR);
+            noteColour = ConstellationColor.fromHtmlColor(USER_COLOR);
+        }
+        final ColorPicker colourPicker = new ColorPicker(noteColour.getJavaFXColor());
         colourPicker.setMinWidth(100);
         colourPicker.setMaxWidth(100);
         HBox.setHgrow(colourPicker, Priority.NEVER);
@@ -1002,17 +1011,21 @@ public class NotesViewPane extends BorderPane {
                 } else {
                     // Select the specific nodes and/or transactions applied to the note.
                     // Add nodes that are selected to the note.
-                    final int nodesLength = newNote.getNodesSelected().size();
                     final List<Integer> selectedNodes = newNote.getNodesSelected();
-                    for (int i = 0; i < nodesLength; i++) {
-                        elementIdsVx.set(selectedNodes.get(i));
+                    if (selectedNodes != null) {
+                        final int nodesLength = selectedNodes.size();
+                        for (int i = 0; i < nodesLength; i++) {
+                            elementIdsVx.set(selectedNodes.get(i));
+                        }
                     }
 
                     // Add transactions that are selected to the note.
-                    final int transactionsLength = newNote.getTransactionsSelected().size();
                     final List<Integer> selectedTransactions = newNote.getTransactionsSelected();
-                    for (int i = 0; i < transactionsLength; i++) {
-                        elementIdsTx.set(selectedTransactions.get(i));
+                    if (selectedTransactions != null) {
+                        final int transactionsLength = selectedTransactions.size();
+                        for (int i = 0; i < transactionsLength; i++) {
+                            elementIdsTx.set(selectedTransactions.get(i));
+                        }
                     }
                 }
 
@@ -1147,7 +1160,8 @@ public class NotesViewPane extends BorderPane {
             if (noteToEdit.isGraphAttribute()) {
                 noteToEdit.setGraphAttribute(false);
             }
-            final List<Integer> originalNodes = noteToEdit.getNodesSelected();
+            final List<Integer> originalNodes = noteToEdit.getNodesSelected() != null
+                    ? noteToEdit.getNodesSelected() : new ArrayList<>();
             nodesSelected.forEach(node -> {
                 if (!originalNodes.contains(node)) {
                     originalNodes.add(node);
@@ -1160,7 +1174,8 @@ public class NotesViewPane extends BorderPane {
             if (noteToEdit.isGraphAttribute()) {
                 noteToEdit.setGraphAttribute(false);
             }
-            final List<Integer> originalTransactions = noteToEdit.getTransactionsSelected();
+            final List<Integer> originalTransactions = noteToEdit.getTransactionsSelected() != null
+                    ? noteToEdit.getTransactionsSelected() : new ArrayList<>();
             transactionsSelected.forEach(transaction -> {
                 if (!originalTransactions.contains(transaction)) {
                     originalTransactions.add(transaction);
@@ -1176,7 +1191,7 @@ public class NotesViewPane extends BorderPane {
     public void removeFromSelectedElements(final NotesViewEntry noteToEdit) {
         updateSelectedElements();
 
-        if (!nodesSelected.isEmpty()) {
+        if (!nodesSelected.isEmpty() && noteToEdit.getNodesSelected() != null) {
             final List<Integer> originalNodes = noteToEdit.getNodesSelected();
             nodesSelected.forEach(node -> {
                 if (originalNodes.contains(node)) {
@@ -1187,7 +1202,7 @@ public class NotesViewPane extends BorderPane {
             noteToEdit.setNodesSelected(originalNodes);
         }
 
-        if (!transactionsSelected.isEmpty()) {
+        if (!transactionsSelected.isEmpty() && noteToEdit.getTransactionsSelected() != null) {
             final List<Integer> originalTransactions = noteToEdit.getTransactionsSelected();
             transactionsSelected.forEach(transaction -> {
                 if (originalTransactions.contains(transaction)) {
@@ -1198,7 +1213,9 @@ public class NotesViewPane extends BorderPane {
             noteToEdit.setTransactionsSelected(originalTransactions);
         }
 
-        if (noteToEdit.getNodesSelected().isEmpty() && noteToEdit.getTransactionsSelected().isEmpty()) {
+        final List<Integer> nodes = noteToEdit.getNodesSelected();
+        final List<Integer> transactions = noteToEdit.getTransactionsSelected();
+        if ((nodes == null || nodes.isEmpty()) && (transactions == null || transactions.isEmpty())) {
             noteToEdit.setGraphAttribute(true);
         }
     }
