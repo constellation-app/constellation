@@ -148,7 +148,7 @@ public class NumberInputPane<T> extends Pane {
                     }
                 })
         );
-        
+
         getChildren().add(field);
     }
 
@@ -167,6 +167,11 @@ public class NumberInputPane<T> extends Pane {
             Platform.runLater(()
                     -> // Auto-select the numeric portion of the new text, to allow immediate overwriting of the inserted value.
                     field.getEditor().selectRange((repeatedOccurrences % 2 == 1) ? 0 : newValue.length(), field.getEditor().getText().length()));
+            return;
+        }
+
+        if ("-0".equals(newValue)) {
+            field.getEditor().setText("0");
             return;
         }
 
