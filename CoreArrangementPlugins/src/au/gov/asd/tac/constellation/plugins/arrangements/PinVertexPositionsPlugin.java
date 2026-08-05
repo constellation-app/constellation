@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,20 +35,17 @@ import org.openide.util.lookup.ServiceProvider;
  * @author serpens24
  */
 @ServiceProvider(service = Plugin.class)
-@NbBundle.Messages({
-    "PinVertexPositionsPlugin=Pin position of selected vertexes"
-})
+@NbBundle.Messages("PinVertexPositionsPlugin=Pin position of selected vertices")
 @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class PinVertexPositionsPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
         final int vxCount = graph.getVertexCount();
         final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         final int pinnedAttr = VisualConcept.VertexAttribute.PINNED.ensure(graph);
 
-        // Loop through all vertexes. For any selected vertex, set its PINNED
+        // Loop through all vertices. For any selected vertex, set its PINNED
         // value to true, ensuring the vertex is pinned in position.
         if (vxCount > 0) {
             for (int position = 0; position < vxCount; position++) {

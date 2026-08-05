@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,7 +167,7 @@ public abstract class AbstractInclusionGraph {
         // If every vertex is a candidate to be moved we can just return the
         // current graph.
         inclusionGraphIsOriginalGraph
-                = (incCount == vxCount || incCount == 0) && (pinnedCount == 0);
+                = (incCount == vxCount || incCount == 0) && pinnedCount == 0;
         if (inclusionGraphIsOriginalGraph) {
             // All vertices are (implicitly or explicitly) selected.
             // Pass the graph straight through.

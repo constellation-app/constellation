@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.gather;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -51,6 +50,23 @@ public final class GatherNodesPlugin extends SimpleEditPlugin {
 
     public static final String VXID_PARAMETER_ID = PluginParameter.buildId(GatherNodesPlugin.class, "vertex_id");
     public static final String GATHERS_PARAMETER_ID = PluginParameter.buildId(GatherNodesPlugin.class, "gathers");
+    
+    @Override
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
+
+        final PluginParameter<IntegerParameterValue> vxIdParam = IntegerParameterType.build(VXID_PARAMETER_ID);
+        vxIdParam.setName("Vertex Id");
+        vxIdParam.setDescription("The vertex id to gather around");
+        parameters.addParameter(vxIdParam);
+
+        final PluginParameter<ObjectParameterValue> gathersParam = ObjectParameterType.build(GATHERS_PARAMETER_ID);
+        gathersParam.setName("Gather Vertex Ids");
+        gathersParam.setDescription("A set of vertex ids to gather");
+        parameters.addParameter(gathersParam);
+
+        return parameters;
+    }
 
     @Override
     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
@@ -58,9 +74,9 @@ public final class GatherNodesPlugin extends SimpleEditPlugin {
         final BitSet gathers = (BitSet) parameters.getParameters().get(GATHERS_PARAMETER_ID).getObjectValue();
         gathers.set(vxId);
 
-        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        final int xId = VisualConcept.VertexAttribute.X.get(wg);
+        final int yId = VisualConcept.VertexAttribute.Y.get(wg);
+        final int zId = VisualConcept.VertexAttribute.Z.get(wg);
         final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
 
         final int selectedVertexCount = gathers.cardinality();
@@ -108,22 +124,5 @@ public final class GatherNodesPlugin extends SimpleEditPlugin {
                 }
             }
         }
-    }
-
-    @Override
-    public PluginParameters createParameters() {
-        final PluginParameters parameters = new PluginParameters();
-
-        final PluginParameter<IntegerParameterValue> vxIdParam = IntegerParameterType.build(VXID_PARAMETER_ID);
-        vxIdParam.setName("Vertex Id");
-        vxIdParam.setDescription("The vertex id to gather around");
-        parameters.addParameter(vxIdParam);
-
-        final PluginParameter<ObjectParameterValue> gathersParam = ObjectParameterType.build(GATHERS_PARAMETER_ID);
-        gathersParam.setName("Gather Vertex Ids");
-        gathersParam.setDescription("A set of vertex ids to gather");
-        parameters.addParameter(gathersParam);
-
-        return parameters;
     }
 }

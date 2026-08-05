@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ public final class Orb2D {
 
     private float x;
     private float y;
-    public final float r;
+    private final float r;
 
     public Orb2D(final float x, final float y, final float r) {
         this.x = x;
@@ -47,6 +47,10 @@ public final class Orb2D {
         this.y = y;
     }
 
+    public float getR() {
+        return r;
+    }
+    
     @Override
     public String toString() {
         return String.format("[Orb2D {%d} %f,%f %f]", hashCode(), x, y, r);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -203,7 +203,7 @@ public class HierarchicalArranger implements Arranger {
 
     private static boolean calculateAndSortWeights(final GraphReadMethods rg, final List<MutableIntList> vxLevels, final int level, final MutableIntFloatMap weights) {
         boolean reordered = false;
-        final MutableIntList vxLevel = vxLevels.get(level);
+        MutableIntList vxLevel = vxLevels.get(level);
         final MutableIntList vxLevelCopy = new IntArrayList(vxLevel.size()); // avoid ConcurrentModificationException
         vxLevelCopy.addAll(vxLevel);
         final MutableIntList vxParentLevel = vxLevels.get(level - 1);
@@ -226,13 +226,13 @@ public class HierarchicalArranger implements Arranger {
 
             weights.put(vxId, weight);
         }
-        sortLevelByWeight(vxLevel, weights);
+        vxLevel = sortLevelByWeight(vxLevel, weights);
         busyOutermostOrdering(vxLevel);
         return reordered;
     }
 
-    private static void sortLevelByWeight(final MutableIntList vxLevel, final IntFloatMap weights) {
-        vxLevel.sortThis((vxId1, vxId2) -> {
+    private static MutableIntList sortLevelByWeight(final MutableIntList vxLevel, final IntFloatMap weights) {
+        return vxLevel.sortThis((vxId1, vxId2) -> {
             final float weight1 = weights.get(vxId1);
             final float weight2 = weights.get(vxId2);
             return Float.compare(weight1, weight2);
@@ -695,7 +695,7 @@ public class HierarchicalArranger implements Arranger {
         }
     }
 
-    public String getLastMessage() {
+    protected String getLastMessage() {
         return lastMessage;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
@@ -1013,12 +1012,12 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * Procedure for reordering the graph using nodes as layers on the z-axis.
      */
     private void nodesAsLayers(final GraphWriteMethods graph, final int txId, final int layer, final MutableIntSet nodesInLayer) {
-        final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
-        final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
-        final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
-        final int x2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
-        final int y2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
-        final int z2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
+        final int xAttr = VisualConcept.VertexAttribute.X.ensure(graph);
+        final int yAttr = VisualConcept.VertexAttribute.Y.ensure(graph);
+        final int zAttr = VisualConcept.VertexAttribute.Z.ensure(graph);
+        final int x2Attr = VisualConcept.VertexAttribute.X2.ensure(graph);
+        final int y2Attr = VisualConcept.VertexAttribute.Y2.ensure(graph);
+        final int z2Attr = VisualConcept.VertexAttribute.Z2.ensure(graph);
 
         final int sNodeId = graph.getTransactionSourceVertex(txId);
         graph.setFloatValue(x2Attr, sNodeId, graph.getFloatValue(xAttr, sNodeId));
@@ -1081,17 +1080,14 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     /**
      * Procedure for reordering the graph using transactions as layers on the z-axis.
-     *
-     *
-     *
      */
     private void transactionsAsLayers(final GraphWriteMethods graph, final int txId, final float z, final float step, final MutableIntSet nodesInLayer) {
-        final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
-        final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
-        final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
-        final int x2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
-        final int y2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
-        final int z2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
+        final int xAttr = VisualConcept.VertexAttribute.X.ensure(graph);
+        final int yAttr = VisualConcept.VertexAttribute.Y.ensure(graph);
+        final int zAttr = VisualConcept.VertexAttribute.Z.ensure(graph);
+        final int x2Attr = VisualConcept.VertexAttribute.X2.ensure(graph);
+        final int y2Attr = VisualConcept.VertexAttribute.Y2.ensure(graph);
+        final int z2Attr = VisualConcept.VertexAttribute.Z2.ensure(graph);
         final int nodeAttr = graph.getAttribute(GraphElementType.VERTEX, ORIGINAL_ID_LABEL);
 
         final int srcVxId = graph.getTransactionSourceVertex(txId);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
      * @return A BitSet where selected vertex ids in the graph are set.
      */
     private static BitSet selectedVertexBits(final GraphReadMethods graph) {
-        final int selectedAttributeId = graph.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+        final int selectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(graph);
         final int vertexCount = graph.getVertexCount();
         final BitSet vertexBits = new BitSet();
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {

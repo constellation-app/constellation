@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionSta
 import au.gov.asd.tac.constellation.views.namedselection.utilities.SelectNamedSelectionPanel;
 import java.awt.event.ActionEvent;
 import java.util.List;
-import java.util.Set;
 import javax.swing.AbstractAction;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
@@ -129,9 +128,7 @@ public class ArrangeInHierarchyAction extends AbstractAction {
                         .set(ArrangeInHierarchyPlugin.ROOTS_PARAMETER_ID, rootVxIds)
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInHierarchyAction());
-
             }
         }
-
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,12 +93,12 @@ public class BoundingBox3DNGTest {
     public void testConstructor() {
         BoundingBox3D actual = new BoundingBox3D(baseGraph);
 
-        assertEquals(actual.minX, -1.0f);
-        assertEquals(actual.midX, 0.0f);
-        assertEquals(actual.maxX, 1.0f);
-        assertEquals(actual.minY, -1.0f);
-        assertEquals(actual.midY, 0.0f);
-        assertEquals(actual.maxY, 1.0f);
+        assertEquals(actual.getMinX(), -1.0f);
+        assertEquals(actual.getMidX(), 0.0f);
+        assertEquals(actual.getMaxX(), 1.0f);
+        assertEquals(actual.getMinY(), -1.0f);
+        assertEquals(actual.getMidY(), 0.0f);
+        assertEquals(actual.getMaxY(), 1.0f);
         assertEquals(actual.minZ, -1.0f);
         assertEquals(actual.midZ, 0.0f);
         assertEquals(actual.maxZ, 1.0f);
@@ -125,12 +125,12 @@ public class BoundingBox3DNGTest {
         System.out.println("getTopLeftFrontOctant");
         BoundingBox3D base = new BoundingBox3D(baseGraph);
         BoundingBox3D actualResult = base.topLeftFrontOctant();
-        assertEquals(actualResult.minX, -1.0f);
-        assertEquals(actualResult.midX, -0.5f);
-        assertEquals(actualResult.maxX, 0.0f);
-        assertEquals(actualResult.minY, 0.0f);
-        assertEquals(actualResult.midY, 0.5f);
-        assertEquals(actualResult.maxY, 1.0f);
+        assertEquals(actualResult.getMinX(), -1.0f);
+        assertEquals(actualResult.getMidX(), -0.5f);
+        assertEquals(actualResult.getMaxX(), 0.0f);
+        assertEquals(actualResult.getMinY(), 0.0f);
+        assertEquals(actualResult.getMidY(), 0.5f);
+        assertEquals(actualResult.getMaxY(), 1.0f);
         assertEquals(actualResult.minZ, 0.0f);
         assertEquals(actualResult.midZ, 0.5f);
         assertEquals(actualResult.maxZ, 1.0f);
@@ -144,12 +144,12 @@ public class BoundingBox3DNGTest {
         System.out.println("getTopRightFrontOctant");
         BoundingBox3D base = new BoundingBox3D(baseGraph);
         BoundingBox3D actualResult = base.topRightFrontOctant();
-        assertEquals(actualResult.minX, 0.0f);
-        assertEquals(actualResult.midX, 0.5f);
-        assertEquals(actualResult.maxX, 1.0f);
-        assertEquals(actualResult.minY, 0.0f);
-        assertEquals(actualResult.midY, 0.5f);
-        assertEquals(actualResult.maxY, 1.0f);
+        assertEquals(actualResult.getMinX(), 0.0f);
+        assertEquals(actualResult.getMidX(), 0.5f);
+        assertEquals(actualResult.getMaxX(), 1.0f);
+        assertEquals(actualResult.getMinY(), 0.0f);
+        assertEquals(actualResult.getMidY(), 0.5f);
+        assertEquals(actualResult.getMaxY(), 1.0f);
         assertEquals(actualResult.minZ, 0.0f);
         assertEquals(actualResult.midZ, 0.5f);
         assertEquals(actualResult.maxZ, 1.0f);
@@ -163,12 +163,12 @@ public class BoundingBox3DNGTest {
         System.out.println("getBottomLeftFrontOctant");
         BoundingBox3D base = new BoundingBox3D(baseGraph);
         BoundingBox3D actualResult = base.bottomLeftFrontOctant();
-        assertEquals(actualResult.minX, -1.0f);
-        assertEquals(actualResult.midX, -0.5f);
-        assertEquals(actualResult.maxX, 0.0f);
-        assertEquals(actualResult.minY, -1.0f);
-        assertEquals(actualResult.midY, -0.5f);
-        assertEquals(actualResult.maxY, 0.0f);
+        assertEquals(actualResult.getMinX(), -1.0f);
+        assertEquals(actualResult.getMidX(), -0.5f);
+        assertEquals(actualResult.getMaxX(), 0.0f);
+        assertEquals(actualResult.getMinY(), -1.0f);
+        assertEquals(actualResult.getMidY(), -0.5f);
+        assertEquals(actualResult.getMaxY(), 0.0f);
         assertEquals(actualResult.minZ, 0.0f);
         assertEquals(actualResult.midZ, 0.5f);
         assertEquals(actualResult.maxZ, 1.0f);
@@ -182,12 +182,12 @@ public class BoundingBox3DNGTest {
         System.out.println("getBottomRightFrontOctant");
         BoundingBox3D base = new BoundingBox3D(baseGraph);
         BoundingBox3D actualResult = base.bottomRightFrontOctant();
-        assertEquals(actualResult.minX, 0.0f);
-        assertEquals(actualResult.midX, 0.5f);
-        assertEquals(actualResult.maxX, 1.0f);
-        assertEquals(actualResult.minY, -1.0f);
-        assertEquals(actualResult.midY, -0.5f);
-        assertEquals(actualResult.maxY, 0.0f);
+        assertEquals(actualResult.getMinX(), 0.0f);
+        assertEquals(actualResult.getMidX(), 0.5f);
+        assertEquals(actualResult.getMaxX(), 1.0f);
+        assertEquals(actualResult.getMinY(), -1.0f);
+        assertEquals(actualResult.getMidY(), -0.5f);
+        assertEquals(actualResult.getMaxY(), 0.0f);
         assertEquals(actualResult.minZ, 0.0f);
         assertEquals(actualResult.midZ, 0.5f);
         assertEquals(actualResult.maxZ, 1.0f);
@@ -201,12 +201,12 @@ public class BoundingBox3DNGTest {
         System.out.println("getTopLeftBackOctant");
         BoundingBox3D base = new BoundingBox3D(baseGraph);
         BoundingBox3D actualResult = base.topLeftBackOctant();
-        assertEquals(actualResult.minX, -1.0f);
-        assertEquals(actualResult.midX, -0.5f);
-        assertEquals(actualResult.maxX, 0.0f);
-        assertEquals(actualResult.minY, 0.0f);
-        assertEquals(actualResult.midY, 0.5f);
-        assertEquals(actualResult.maxY, 1.0f);
+        assertEquals(actualResult.getMinX(), -1.0f);
+        assertEquals(actualResult.getMidX(), -0.5f);
+        assertEquals(actualResult.getMaxX(), 0.0f);
+        assertEquals(actualResult.getMinY(), 0.0f);
+        assertEquals(actualResult.getMidY(), 0.5f);
+        assertEquals(actualResult.getMaxY(), 1.0f);
         assertEquals(actualResult.minZ, -1.0f);
         assertEquals(actualResult.midZ, -0.5f);
         assertEquals(actualResult.maxZ, 0.0f);
@@ -220,12 +220,12 @@ public class BoundingBox3DNGTest {
         System.out.println("getTopRightBackOctant");
         BoundingBox3D base = new BoundingBox3D(baseGraph);
         BoundingBox3D actualResult = base.topRightBackOctant();
-        assertEquals(actualResult.minX, 0.0f);
-        assertEquals(actualResult.midX, 0.5f);
-        assertEquals(actualResult.maxX, 1.0f);
-        assertEquals(actualResult.minY, 0.0f);
-        assertEquals(actualResult.midY, 0.5f);
-        assertEquals(actualResult.maxY, 1.0f);
+        assertEquals(actualResult.getMinX(), 0.0f);
+        assertEquals(actualResult.getMidX(), 0.5f);
+        assertEquals(actualResult.getMaxX(), 1.0f);
+        assertEquals(actualResult.getMinY(), 0.0f);
+        assertEquals(actualResult.getMidY(), 0.5f);
+        assertEquals(actualResult.getMaxY(), 1.0f);
         assertEquals(actualResult.minZ, -1.0f);
         assertEquals(actualResult.midZ, -0.5f);
         assertEquals(actualResult.maxZ, 0.0f);
@@ -239,12 +239,12 @@ public class BoundingBox3DNGTest {
         System.out.println("getBottomLeftBackOctant");
         BoundingBox3D base = new BoundingBox3D(baseGraph);
         BoundingBox3D actualResult = base.bottomLeftBackOctant();
-        assertEquals(actualResult.minX, -1.0f);
-        assertEquals(actualResult.midX, -0.5f);
-        assertEquals(actualResult.maxX, 0.0f);
-        assertEquals(actualResult.minY, -1.0f);
-        assertEquals(actualResult.midY, -0.5f);
-        assertEquals(actualResult.maxY, 0.0f);
+        assertEquals(actualResult.getMinX(), -1.0f);
+        assertEquals(actualResult.getMidX(), -0.5f);
+        assertEquals(actualResult.getMaxX(), 0.0f);
+        assertEquals(actualResult.getMinY(), -1.0f);
+        assertEquals(actualResult.getMidY(), -0.5f);
+        assertEquals(actualResult.getMaxY(), 0.0f);
         assertEquals(actualResult.minZ, -1.0f);
         assertEquals(actualResult.midZ, -0.5f);
         assertEquals(actualResult.maxZ, 0.0f);
@@ -258,12 +258,12 @@ public class BoundingBox3DNGTest {
         System.out.println("getBottomRightBackOctant");
         BoundingBox3D base = new BoundingBox3D(baseGraph);
         BoundingBox3D actualResult = base.bottomRightBackOctant();
-        assertEquals(actualResult.minX, 0.0f);
-        assertEquals(actualResult.midX, 0.5f);
-        assertEquals(actualResult.maxX, 1.0f);
-        assertEquals(actualResult.minY, -1.0f);
-        assertEquals(actualResult.midY, -0.5f);
-        assertEquals(actualResult.maxY, 0.0f);
+        assertEquals(actualResult.getMinX(), 0.0f);
+        assertEquals(actualResult.getMidX(), 0.5f);
+        assertEquals(actualResult.getMaxX(), 1.0f);
+        assertEquals(actualResult.getMinY(), -1.0f);
+        assertEquals(actualResult.getMidY(), -0.5f);
+        assertEquals(actualResult.getMaxY(), 0.0f);
         assertEquals(actualResult.minZ, -1.0f);
         assertEquals(actualResult.midZ, -0.5f);
         assertEquals(actualResult.maxZ, 0.0f);

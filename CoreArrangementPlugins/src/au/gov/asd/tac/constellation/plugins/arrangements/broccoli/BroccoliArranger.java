@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.broccoli;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
@@ -39,43 +38,31 @@ public final class BroccoliArranger implements Arranger {
     private static final Vector3f ZERO_VECTOR = new Vector3f(0, 0, 0);
 
     private GraphWriteMethods wg;
-    private int vxCount;
-    private boolean noneSelected;
     private int xId;
     private int yId;
     private int zId;
     private int nradiusId;
-    private int selectedId;
-
-    private void set(final GraphWriteMethods wg) {
-        this.wg = wg;
-        vxCount = wg.getVertexCount();
-        selectedId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
-        noneSelected = noneSelected();
-
-        xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        nradiusId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
-    }
-
-    private boolean noneSelected() {
-        for (int position = 0; position < vxCount; position++) {
-            final int vxId = wg.getVertex(position);
-
-            final boolean selected = wg.getBooleanValue(selectedId, vxId);
-            if (selected) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
-        set(wg);
+        this.wg = wg;
+        xId = VisualConcept.VertexAttribute.X.get(wg);
+        yId = VisualConcept.VertexAttribute.Y.get(wg);
+        zId = VisualConcept.VertexAttribute.Z.get(wg);
+        nradiusId = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
 
+        final int selectedId = VisualConcept.VertexAttribute.SELECTED.get(wg);
+        final int vxCount = wg.getVertexCount();
+        boolean noneSelected = true;
+        for (int position = 0; position < vxCount; position++) {
+            final int vxId = wg.getVertex(position);
+            
+            if (wg.getBooleanValue(selectedId, vxId)) {
+                noneSelected = false;
+                break;
+            }
+        }
+        
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
 
@@ -83,11 +70,6 @@ public final class BroccoliArranger implements Arranger {
                 arrangeVertex(vxId);
             }
         }
-    }
-
-    public void arrange(final GraphWriteMethods wg, final int vxId) {
-        set(wg);
-        arrangeVertex(vxId);
     }
 
     /**

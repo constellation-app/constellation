@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import java.util.BitSet;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
@@ -424,15 +423,15 @@ public final class ArrangementUtilities {
      * operation.
      */
     public static void setXYZ2FromXYZ(final GraphWriteMethods wg) {
-        final int x2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X2.getName());
-        final int y2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y2.getName());
-        final int z2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z2.getName());
+        final int x2Attr = VisualConcept.VertexAttribute.X2.get(wg);
+        final int y2Attr = VisualConcept.VertexAttribute.Y2.get(wg);
+        final int z2Attr = VisualConcept.VertexAttribute.Z2.get(wg);
 
         // If x2,y2,z2 attributes do not exist, do not set them.
         if (x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND) {
-            final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-            final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-            final int zAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+            final int xAttr = VisualConcept.VertexAttribute.X.get(wg);
+            final int yAttr = VisualConcept.VertexAttribute.Y.get(wg);
+            final int zAttr = VisualConcept.VertexAttribute.Z.get(wg);
 
             final int vxCount = wg.getVertexCount();
             for (int i = 0; i < vxCount; i++) {

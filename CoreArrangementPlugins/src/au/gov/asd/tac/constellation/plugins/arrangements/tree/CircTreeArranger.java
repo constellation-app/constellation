@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -365,7 +365,8 @@ public final class CircTreeArranger implements Arranger {
             final VxInfo child = children.iterator().next();
             final float actualChildRadius = fullRadii[child.vxId];
             final float parentLength = (float) Math.sqrt(parentOffsetX * parentOffsetX + parentOffsetY * parentOffsetY);
-            float offsetX = 0;
+            
+            final float offsetX;
             float offsetY = 0;
 
             if (parentLength > 0) {

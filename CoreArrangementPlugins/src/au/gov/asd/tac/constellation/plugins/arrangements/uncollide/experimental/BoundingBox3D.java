@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 
@@ -45,14 +44,14 @@ public class BoundingBox3D extends AbstractBoundingBox {
     protected BoundingBox3D(final GraphReadMethods wg) {
         super(wg);
 
-        final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
+        final int zId = VisualConcept.VertexAttribute.Z.get(wg);
 
         float minZObserved = wg.getFloatValue(zId, wg.getVertex(0));
         float maxZObserved = minZObserved;
 
         final int vxCount = wg.getVertexCount();
         if (vxCount == 0) {
-            throw new IllegalArgumentException("Graph must contain atleast one vertex to find BoundingBox");
+            throw new IllegalArgumentException("Graph must contain at least one vertex to find BoundingBox");
         }
 
         for (int position = 1; position < vxCount; position++) {
@@ -86,7 +85,7 @@ public class BoundingBox3D extends AbstractBoundingBox {
      * @return BoundingBox3D
      */
     protected BoundingBox3D topLeftFrontOctant() {
-        return new BoundingBox3D(minX, midX, midY, maxY, midZ, maxZ);
+        return new BoundingBox3D(getMinX(), getMidX(), getMidY(), getMaxY(), midZ, maxZ);
     }
 
     /**
@@ -95,7 +94,7 @@ public class BoundingBox3D extends AbstractBoundingBox {
      * @return BoundingBox3D
      */
     protected BoundingBox3D topRightFrontOctant() {
-        return new BoundingBox3D(midX, maxX, midY, maxY, midZ, maxZ);
+        return new BoundingBox3D(getMidX(), getMaxX(), getMidY(), getMaxY(), midZ, maxZ);
     }
 
     /**
@@ -104,7 +103,7 @@ public class BoundingBox3D extends AbstractBoundingBox {
      * @return BoundingBox3D
      */
     protected BoundingBox3D bottomLeftFrontOctant() {
-        return new BoundingBox3D(minX, midX, minY, midY, midZ, maxZ);
+        return new BoundingBox3D(getMinX(), getMidX(), getMinY(), getMidY(), midZ, maxZ);
     }
 
     /**
@@ -113,7 +112,7 @@ public class BoundingBox3D extends AbstractBoundingBox {
      * @return BoundingBox3D
      */
     protected BoundingBox3D bottomRightFrontOctant() {
-        return new BoundingBox3D(midX, maxX, minY, midY, midZ, maxZ);
+        return new BoundingBox3D(getMidX(), getMaxX(), getMinY(), getMidY(), midZ, maxZ);
     }
 
     /**
@@ -122,7 +121,7 @@ public class BoundingBox3D extends AbstractBoundingBox {
      * @return BoundingBox3D
      */
     protected BoundingBox3D topLeftBackOctant() {
-        return new BoundingBox3D(minX, midX, midY, maxY, minZ, midZ);
+        return new BoundingBox3D(getMinX(), getMidX(), getMidY(), getMaxY(), minZ, midZ);
     }
 
     /**
@@ -131,7 +130,7 @@ public class BoundingBox3D extends AbstractBoundingBox {
      * @return BoundingBox3D
      */
     protected BoundingBox3D topRightBackOctant() {
-        return new BoundingBox3D(midX, maxX, midY, maxY, minZ, midZ);
+        return new BoundingBox3D(getMidX(), getMaxX(), getMidY(), getMaxY(), minZ, midZ);
     }
 
     /**
@@ -140,7 +139,7 @@ public class BoundingBox3D extends AbstractBoundingBox {
      * @return BoundingBox3D
      */
     protected BoundingBox3D bottomLeftBackOctant() {
-        return new BoundingBox3D(minX, midX, minY, midY, minZ, midZ);
+        return new BoundingBox3D(getMinX(), getMidX(), getMinY(), getMidY(), minZ, midZ);
     }
 
     /**
@@ -149,6 +148,6 @@ public class BoundingBox3D extends AbstractBoundingBox {
      * @return BoundingBox3D
      */
     protected BoundingBox3D bottomRightBackOctant() {
-        return new BoundingBox3D(midX, maxX, minY, midY, minZ, midZ);
+        return new BoundingBox3D(getMidX(), getMaxX(), getMinY(), getMidY(), minZ, midZ);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
 
     @Override
     public void arrange(final GraphWriteMethods graph) throws InterruptedException {
-
         final int xAttr = VisualConcept.VertexAttribute.X.get(graph);
         final int yAttr = VisualConcept.VertexAttribute.Y.get(graph);
         final int radiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(graph);

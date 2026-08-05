@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ public enum Dimensions {
     TWO, THREE;
 
     public static List<String> getOptions() {
-        final ArrayList<String> list = new ArrayList<>();
+        final List<String> list = new ArrayList<>();
         for (final Dimensions d : Dimensions.values()) {
             list.add(d.toString());
         }

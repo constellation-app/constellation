@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,10 +49,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author CrucisGamma
  */
 @ServiceProvider(service = Plugin.class)
-@Messages({
-    "ArrangeInScatter3dGeneralPlugin=Arrange in Scatter 3D",
-    "SelectedOnly=Arrange only selected nodes"
-})
+@Messages("ArrangeInScatter3dGeneralPlugin=Arrange in Scatter 3D")
 @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
 
@@ -64,53 +61,45 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
     public static final String SCATTER_3D_Z_LOGARITHMIC = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_logarithmic_z");
     public static final String SCATTER_3D_DO_NOT_SCALE = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_do_not_scale");
 
-    private static final String X_ATTRIBUTE = "X Attribute";
-    private static final String Y_ATTRIBUTE = "Y Attribute";
-    private static final String Z_ATTRIBUTE = "Z Attribute";
-    private static final String X_LOGARITHMIC = "Use Logarithmic Scaling for X";
-    private static final String Y_LOGARITHMIC = "Use Logarithmic Scaling for Y";
-    private static final String Z_LOGARITHMIC = "Use Logarithmic Scaling for Z";
-    private static final String DO_NOT_USE_SCALE = "Do not use final Scaling algorithm";
-
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<SingleChoiceParameterValue> xAttribute = SingleChoiceParameterType.build(SCATTER_3D_X_ATTRIBUTE);
-        xAttribute.setName(X_ATTRIBUTE);
+        xAttribute.setName("X Attribute");
         xAttribute.setDescription("The attribute to use for the x dimension");
         xAttribute.setRequired(true);
         parameters.addParameter(xAttribute);
 
         final PluginParameter<SingleChoiceParameterValue> yAttribute = SingleChoiceParameterType.build(SCATTER_3D_Y_ATTRIBUTE);
-        yAttribute.setName(Y_ATTRIBUTE);
+        yAttribute.setName("Y Attribute");
         yAttribute.setDescription("The attribute to use for the y dimension");
         yAttribute.setRequired(true);
         parameters.addParameter(yAttribute);
 
         final PluginParameter<SingleChoiceParameterValue> zAttribute = SingleChoiceParameterType.build(SCATTER_3D_Z_ATTRIBUTE);
-        zAttribute.setName(Z_ATTRIBUTE);
+        zAttribute.setName("Z Attribute");
         zAttribute.setDescription("The attribute to use for the z dimension");
         zAttribute.setRequired(true);
         parameters.addParameter(zAttribute);
 
         final PluginParameter<BooleanParameterValue> xLogarithmic = BooleanParameterType.build(SCATTER_3D_X_LOGARITHMIC);
-        xLogarithmic.setName(X_LOGARITHMIC);
+        xLogarithmic.setName("Use Logarithmic Scaling for X");
         xLogarithmic.setDescription("Scale the X axis in Logarithmic Scale");
         parameters.addParameter(xLogarithmic);
 
         final PluginParameter<BooleanParameterValue> yLogarithmic = BooleanParameterType.build(SCATTER_3D_Y_LOGARITHMIC);
-        yLogarithmic.setName(Y_LOGARITHMIC);
+        yLogarithmic.setName("Use Logarithmic Scaling for Y");
         yLogarithmic.setDescription("Scale the Y axis in Logarithmic Scale");
         parameters.addParameter(yLogarithmic);
 
         final PluginParameter<BooleanParameterValue> zLogarithmic = BooleanParameterType.build(SCATTER_3D_Z_LOGARITHMIC);
-        zLogarithmic.setName(Z_LOGARITHMIC);
+        zLogarithmic.setName("Use Logarithmic Scaling for Z");
         zLogarithmic.setDescription("Scale the Z axis in Logarithmic Scale");
         parameters.addParameter(zLogarithmic);
 
         final PluginParameter<BooleanParameterValue> doNotScale = BooleanParameterType.build(SCATTER_3D_DO_NOT_SCALE);
-        doNotScale.setName(DO_NOT_USE_SCALE);
+        doNotScale.setName("Do not use final Scaling algorithm");
         doNotScale.setDescription("Don't scale resultant scattergram");
         parameters.addParameter(doNotScale);
 
@@ -147,12 +136,10 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
     
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
         final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
         radiusSetter.setRadii();
 
         final Map<String, PluginParameter<?>> pp = parameters.getParameters();
-        final Scatter3dChoiceParameters scatter3dParams = Scatter3dChoiceParameters.getDefaultParameters();
 
         final String xDimensionName = pp.get(SCATTER_3D_X_ATTRIBUTE).getStringValue();
         final String yDimensionName = pp.get(SCATTER_3D_Y_ATTRIBUTE).getStringValue();
@@ -163,13 +150,9 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
             return;
         }
 
-        scatter3dParams.setXDimension(xDimensionName);
-        scatter3dParams.setYDimension(yDimensionName);
-        scatter3dParams.setZDimension(zDimensionName);
-        scatter3dParams.setLogarithmicX(pp.get(SCATTER_3D_X_LOGARITHMIC).getBooleanValue());
-        scatter3dParams.setLogarithmicY(pp.get(SCATTER_3D_Y_LOGARITHMIC).getBooleanValue());
-        scatter3dParams.setLogarithmicZ(pp.get(SCATTER_3D_Z_LOGARITHMIC).getBooleanValue());
-        scatter3dParams.setDoNotScale(pp.get(SCATTER_3D_DO_NOT_SCALE).getBooleanValue());
+        final Scatter3dChoiceParameters scatter3dParams = new Scatter3dChoiceParameters(xDimensionName, yDimensionName, zDimensionName, 
+                pp.get(SCATTER_3D_X_LOGARITHMIC).getBooleanValue(), pp.get(SCATTER_3D_Y_LOGARITHMIC).getBooleanValue(), 
+                pp.get(SCATTER_3D_Z_LOGARITHMIC).getBooleanValue(), pp.get(SCATTER_3D_DO_NOT_SCALE).getBooleanValue());
 
         final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(graph, SelectedInclusionGraph.Connections.NONE);
         selectedGraph.addAttributeToCopy(new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, xDimensionName)));
