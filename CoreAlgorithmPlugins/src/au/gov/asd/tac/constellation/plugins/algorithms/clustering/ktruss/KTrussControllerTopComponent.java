@@ -46,13 +46,8 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
-import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
-import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
 /**
@@ -88,34 +83,26 @@ import org.openide.windows.TopComponent;
     "CTL_KTrussControllerTopComponent=K-Truss",
     "HINT_KTrussControllerTopComponent=K-Truss"
 })
-public final class KTrussControllerTopComponent extends SwingTopComponent<NestedKTrussDisplayPanel> implements LookupListener, ComponentListener {
+public final class KTrussControllerTopComponent extends SwingTopComponent<NestedKTrussDisplayPanel> implements ComponentListener {
 
     private static final String TOGGLE_DISABLED = "Toggle Interactive: Disabled";
     private static final String TOGGLE_ENABLED = "Toggle Interactive: Enabled";
-
-    private final Lookup.Result<GraphNode> result;
+    
+    private static final int NESTED_TRUSSES_HEIGHT = 500;
+    
     private GraphNode graphNode;
     private Graph graph;
     private KTrussState state;
     private boolean isAdjusting;
     private boolean nestedPanelIsVisible;
-
-    // The panel to display the nesting of the connected components of k-trusses as rectangles.
+    
     private NestedKTrussDisplayPanel dp;
-    // The height to allocate for the NestedKTrussDisplayPanel.
-    private final int nestedTrussesHeight;
-
-    /**
-     * Construct a KTrussControllerTopComponent.
-     */
+    
     public KTrussControllerTopComponent() {
         initComponents();
         setName(Bundle.CTL_KTrussControllerTopComponent());
         setToolTipText(Bundle.HINT_KTrussControllerTopComponent());
-        result = Utilities.actionsGlobalContext().lookupResult(GraphNode.class);
-        result.addLookupListener(this);
         isAdjusting = false;
-        nestedTrussesHeight = 500;
         nestedPanelIsVisible = false;
         updateInteractiveButton(interactiveButton.getText().equals(TOGGLE_DISABLED));
     }
@@ -434,10 +421,33 @@ public final class KTrussControllerTopComponent extends SwingTopComponent<Nested
 
     @Override
     protected void handleComponentOpened() {
-        result.addLookupListener(this);
-        resultChanged(null);
+        revalidateParents(this);
+        setGroups(false);
     }
-
+    
+    @Override
+    protected void handleComponentClosed() {
+        // If interactive was enabled when component closed, clear this state so that
+        // graph doesn't render with interactive visuals. Also store this fact so that
+        // if the component is reopened it can revert to previous state. This is stored in
+        // a variable on this class rather than in state as state is cleared on close.
+        if (state != null) {
+            state.setInteractive(false);
+            updateGraph();
+        }
+        setNode(null);
+    }
+    
+    @Override
+    protected void handleNewGraph(final Graph graph) {
+        if (graph != null) {
+            final GraphNode gnode = GraphNode.getGraphNode(graph);
+            if (gnode != graphNode) {
+                setNode(gnode);
+            }
+        }
+    }
+    
     @Override
     public void setEnabled(final boolean enabled) {
         super.setEnabled(enabled);
@@ -450,26 +460,12 @@ public final class KTrussControllerTopComponent extends SwingTopComponent<Nested
         revalidateParents(this);
     }
 
-    @Override
-    protected void handleComponentClosed() {
-        // If interactive was enabled when component closed, clear this state so that
-        // graph doesn't render with interactive visuals. Also store this fact so that
-        // if the component is reopened it can revert to previous state. This is stored in
-        // a variable on this class rather than in state as state is cleared on close.
-        if (state != null) {
-            state.setInteractive(false);
-            updateGraph();
-        }
-        result.removeLookupListener(this);
-        setNode(null);
-    }
-
     private void hideNestedTrussesPanel() {
         if (!nestedPanelIsVisible) {
             return;
         }
-        Dimension d;
-        final int sizeDifference = nestedTrussesHeight - nestedTrussButton.getHeight();
+        
+        final int sizeDifference = NESTED_TRUSSES_HEIGHT - nestedTrussButton.getHeight();
 
         nestedTrussPane.setSize(200, 0);
         nestedTrussPane.setMinimumSize(new Dimension(nestedTrussPane.getMinimumSize().width, 0));
@@ -479,7 +475,7 @@ public final class KTrussControllerTopComponent extends SwingTopComponent<Nested
 
         // resize this top component
         setSize(getWidth(), getHeight() - sizeDifference);
-        d = getPreferredSize();
+        Dimension d = getPreferredSize();
         d.height -= sizeDifference;
         setPreferredSize(d);
         d = getMinimumSize();
@@ -501,18 +497,18 @@ public final class KTrussControllerTopComponent extends SwingTopComponent<Nested
         if (nestedPanelIsVisible) {
             return;
         }
-        Dimension d;
-        final int sizeDifference = nestedTrussesHeight - nestedTrussButton.getHeight();
+        
+        final int sizeDifference = NESTED_TRUSSES_HEIGHT - nestedTrussButton.getHeight();
 
-        nestedTrussPane.setSize(200, nestedTrussesHeight);
-        nestedTrussPane.setMinimumSize(new Dimension(nestedTrussPane.getMinimumSize().width, nestedTrussesHeight));
-        nestedTrussPane.setPreferredSize(new Dimension(200, nestedTrussesHeight));
+        nestedTrussPane.setSize(200, NESTED_TRUSSES_HEIGHT);
+        nestedTrussPane.setMinimumSize(new Dimension(nestedTrussPane.getMinimumSize().width, NESTED_TRUSSES_HEIGHT));
+        nestedTrussPane.setPreferredSize(new Dimension(200, NESTED_TRUSSES_HEIGHT));
 
         nestedTrussButton.setText("^");
 
         //resize this top component
         setSize(getWidth(), getHeight() + sizeDifference);
-        d = getPreferredSize();
+        Dimension d = getPreferredSize();
         d.height += sizeDifference;
         setPreferredSize(d);
         d = getMinimumSize();
@@ -530,25 +526,12 @@ public final class KTrussControllerTopComponent extends SwingTopComponent<Nested
     }
 
     // Make the entire parent chain of the container revalidate and repaint
-    private static void revalidateParents(Container container) {
+    private void revalidateParents(Container container) {
         while (container != null) {
             container.invalidate();
             container.validate();
             container.repaint();
             container = container.getParent();
-        }
-    }
-
-    @Override
-    public void resultChanged(final LookupEvent lev) {
-        final Node[] nodes = TopComponent.getRegistry().getActivatedNodes();
-        if (nodes != null && nodes.length == 1 && nodes[0] instanceof GraphNode) {
-            final GraphNode gnode = ((GraphNode) nodes[0]);
-            if (gnode != graphNode) {
-                setNode(gnode);
-            }
-        } else {
-            setNode(null);
         }
     }
 
@@ -565,7 +548,6 @@ public final class KTrussControllerTopComponent extends SwingTopComponent<Nested
         }
 
         if (node != null) {
-
             // If the nested trusses panel was visible in the previous state, hide it
             if (state != null && state.isNestedTrussesVisible()) {
                 hideNestedTrussesPanel();
@@ -658,13 +640,8 @@ public final class KTrussControllerTopComponent extends SwingTopComponent<Nested
             stepSlider.setMinimum(2);
             stepSlider.setMaximum(highestK);
             stepSlider.setValue(currentK);
-            if (highestK > 20) {
-                stepSlider.setMajorTickSpacing(5);
-                stepSlider.setMinorTickSpacing(1);
-            } else {
-                stepSlider.setMajorTickSpacing(1);
-                stepSlider.setMinorTickSpacing(1);
-            }
+            stepSlider.setMajorTickSpacing(highestK > 20 ? 5 : 1);
+            stepSlider.setMinorTickSpacing(1);
 
             // Set the labels for the step slider
             final Hashtable<Integer, JComponent> labelTable = stepSlider.createStandardLabels(stepSlider.getMajorTickSpacing(), 2);
@@ -805,14 +782,7 @@ public final class KTrussControllerTopComponent extends SwingTopComponent<Nested
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-            int nodeColorRefAttr = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.get(graph);
-            if (nodeColorRefAttr != Graph.NOT_FOUND) {
-                graph.setStringValue(nodeColorRefAttr, 0, null);
-            }
-            int transColorRefAttr = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.get(graph);
-            if (transColorRefAttr != Graph.NOT_FOUND) {
-                graph.setStringValue(transColorRefAttr, 0, null);
-            }
+            ClusterUtilities.setColorRef(graph, null, null);
         }
     }
 
@@ -1049,12 +1019,7 @@ public final class KTrussControllerTopComponent extends SwingTopComponent<Nested
     }
 
     private void updateInteractiveButton(final boolean disableButton) {
-        if (disableButton) {
-            interactiveButton.setText(TOGGLE_DISABLED);
-            interactiveButton.setSelected(false);
-        } else {
-            interactiveButton.setText(TOGGLE_ENABLED);
-            interactiveButton.setSelected(false);
-        }
+        interactiveButton.setText(disableButton ? TOGGLE_DISABLED : TOGGLE_ENABLED);
+        interactiveButton.setSelected(false);
     }
 }

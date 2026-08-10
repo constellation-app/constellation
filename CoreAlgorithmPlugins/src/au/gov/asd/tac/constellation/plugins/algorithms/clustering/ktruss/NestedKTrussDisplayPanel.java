@@ -86,11 +86,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
 
         // Draw each rectangle.
         for (int i = 0; i < rectangles.length; i++) {
-            if (selectedRectangles.contains(i)) {
-                g2.setColor(Color.red);
-            } else {
-                g2.setColor(Color.blue);
-            }
+            g2.setColor(selectedRectangles.contains(i) ? Color.red : Color.blue);
             g2.fillRect(rectX(i), rectY(i), RECTANGLE_WIDTH, rectHeight(i));
         }
     }

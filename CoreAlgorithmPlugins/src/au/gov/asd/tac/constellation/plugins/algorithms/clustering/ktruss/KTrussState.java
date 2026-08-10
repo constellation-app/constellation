@@ -204,14 +204,8 @@ public class KTrussState {
     }
 
     public boolean isNodeInComponent(final int vxID, final int component) {
-        if (getNodeToComponent().get(vxID) == null) {
-            return false;
-        }
-        if (getNodeToComponent().get(vxID) == component) {
-            return true;
-        } else {
-            return hasComponentParent(getNodeToComponent().get(vxID), component);
-        }
+        final Integer vxComponent = getNodeToComponent().get(vxID);
+        return vxComponent != null && (vxComponent == component || hasComponentParent(vxComponent, component));
     }
 
     private boolean hasComponentParent(final int component, final int parent) {
@@ -221,14 +215,8 @@ public class KTrussState {
     }
 
     public boolean isLinkInComponent(final int lnID, final int component) {
-        if (getLinkToComponent().get(lnID) == null) {
-            return false;
-        }
-        if (getLinkToComponent().get(lnID) == component) {
-            return true;
-        } else {
-            return hasComponentParent(getLinkToComponent().get(lnID), component);
-        }
+        final Integer lnComponent = getLinkToComponent().get(lnID);
+        return lnComponent != null && (lnComponent == component || hasComponentParent(lnComponent, component));
     }
 
     public int getTotalVerts() {
@@ -264,7 +252,7 @@ public class KTrussState {
     }
 
     public boolean hasDisplayOptionToggled() {
-        return (getDisplayOptionToggles() > 0);
+        return getDisplayOptionToggles() > 0;
     }
 
     public boolean isKTrussExtant(final int k) {
@@ -282,7 +270,7 @@ public class KTrussState {
     public void setCurrentK(final int value) {
         // never let the value be set to anything below 3 other than 0.
         // 0 means 'ignore k-trusses'. A 1-truss or 2-truss doesn't make sense.
-        this.currentK = (value < 3) ? 0 : value;
+        currentK = (value < 3) ? 0 : value;
     }
 
     public int getHighestK() {
@@ -298,7 +286,7 @@ public class KTrussState {
     }
 
     public void setExcludedElementsDimmed(final boolean value) {
-        this.excludedElementsDimmed = value;
+        excludedElementsDimmed = value;
     }
 
     /**

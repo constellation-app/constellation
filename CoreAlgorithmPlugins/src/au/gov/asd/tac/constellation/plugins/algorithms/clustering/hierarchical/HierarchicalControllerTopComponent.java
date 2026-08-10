@@ -50,13 +50,8 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
-import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
-import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
 /**
@@ -91,13 +86,12 @@ import org.openide.windows.TopComponent;
     "CTL_HierarchicalControllerTopComponent=Hierarchical",
     "HINT_HierarchicalControllerTopComponent=Use this window to view communities of interest in the graph"
 })
-public final class HierarchicalControllerTopComponent extends SwingTopComponent<NestedHierarchicalDisplayPanel> implements LookupListener {
+public final class HierarchicalControllerTopComponent extends SwingTopComponent<NestedHierarchicalDisplayPanel> {
 
     private static final String INFO_STRING = "%s clusters";
     private static final String TOGGLE_DISABLED = "Toggle Interactive: Disabled";
     private static final String TOGGLE_ENABLED = "Toggle Interactive: Enabled";
-
-    private final Lookup.Result<GraphNode> result;
+    
     private GraphNode graphNode;
     private Graph graph;
     private HierarchicalState state;
@@ -105,23 +99,17 @@ public final class HierarchicalControllerTopComponent extends SwingTopComponent<
     private boolean interactivityPermitted = true;
 
     private NestedHierarchicalDisplayPanel dp = null;
-
-    /**
-     * Construct a HierarchicalControllerTopComponent.
-     */
+    
     public HierarchicalControllerTopComponent() {
         initComponents();
         initNestedDisplay();
         setName(Bundle.CTL_HierarchicalControllerTopComponent());
         setToolTipText(Bundle.HINT_HierarchicalControllerTopComponent());
 
-        this.putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
+        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
 
         isAdjusting = false;
         reclusterLabel.setVisible(false);
-
-        result = Utilities.actionsGlobalContext().lookupResult(GraphNode.class);
-        result.addLookupListener(this);
     }
 
     private void initNestedDisplay() {
@@ -159,19 +147,6 @@ public final class HierarchicalControllerTopComponent extends SwingTopComponent<
     @Override
     protected NestedHierarchicalDisplayPanel createContent() {
         return dp;
-    }
-
-    @Override
-    public void resultChanged(final LookupEvent lev) {
-        final Node[] nodes = TopComponent.getRegistry().getActivatedNodes();
-        if (nodes != null && nodes.length == 1 && nodes[0] instanceof GraphNode) {
-            final GraphNode gnode = ((GraphNode) nodes[0]);
-            if (gnode != graphNode) {
-                setNode(gnode);
-            }
-        } else {
-            setNode(null);
-        }
     }
 
     public void updateSlider() {
@@ -468,16 +443,16 @@ public final class HierarchicalControllerTopComponent extends SwingTopComponent<
             return;
         }
 
-        final boolean wasColored = state.isColored();
-        state.setColored(!state.isColored());
+        final boolean toggledColored = !state.isColored();
+        state.setColored(toggledColored);
 
-        final ColorClusters colorPlugin = new ColorClusters(!wasColored);
+        final ColorClusters colorPlugin = new ColorClusters(toggledColored);
         PluginExecution.withPlugin(colorPlugin).interactively(true).executeLater(graph);
     }
 
     private void updateInteractivity() {
         state.setInteractive(!state.isInteractive());
-        state.setColored(this.colorClustersCheckBox.isSelected());
+        state.setColored(colorClustersCheckBox.isSelected());
         if (!state.isInteractive()) {
             interactiveButton.setText(TOGGLE_DISABLED);
             nestedDiagramScrollPane.setViewportView(null);
@@ -520,29 +495,37 @@ public final class HierarchicalControllerTopComponent extends SwingTopComponent<
 
     @Override
     protected void handleComponentOpened() {
-        result.addLookupListener(this);
-        resultChanged(null);
+        setGroups(false);
     }
 
     @Override
     protected void handleComponentClosed() {
-        result.removeLookupListener(this);
         if (state != null && state.isInteractive()) {
             updateInteractivity();
         }
         setNode(null);
     }
-
-    public void writeProperties(final java.util.Properties p) {
-        //Unused Method
+    
+    @Override
+    protected void handleNewGraph(final Graph graph) {
+        if (graph != null) {
+            final GraphNode gnode = GraphNode.getGraphNode(graph);
+            if (gnode != graphNode) {
+                setNode(gnode);
+            }
+        }
     }
 
-    public void readProperties(final java.util.Properties p) {
-        //Unused Method
+    void writeProperties(final java.util.Properties p) {
+        // Required for @ConvertAsProperties, intentionally left blank
+    }
+
+    void readProperties(final java.util.Properties p) {
+        // Required for @ConvertAsProperties, intentionally left blank
     }
 
     // Make the entire parent chain of the container revalidate and repaint
-    private static void revalidateParents(Container container) {
+    private void revalidateParents(Container container) {
         while (container != null) {
             container.invalidate();
             container.validate();
@@ -599,7 +582,7 @@ public final class HierarchicalControllerTopComponent extends SwingTopComponent<
             if (state != null && doUpdate) {
                 updateGraph();
             }
-            interactiveButton.setText((state != null && state.isInteractive()) ? TOGGLE_ENABLED : TOGGLE_DISABLED);
+            interactiveButton.setText(state != null && state.isInteractive() ? TOGGLE_ENABLED : TOGGLE_DISABLED);
         }
         interactiveButton.setEnabled(state != null);
         interactiveButton.setSelected(false);

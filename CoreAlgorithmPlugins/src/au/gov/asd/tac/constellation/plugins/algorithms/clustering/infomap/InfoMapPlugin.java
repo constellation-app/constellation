@@ -23,6 +23,10 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapBase;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapDirected;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapDirectedUnrecordedTeleportation;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapUndirdir;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapUndirected;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.TreeData;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
@@ -57,7 +61,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
 
     // Connection Type
     public static final String CONNECTION_TYPE_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "connection_type");
-    private static final String CONNECTION_TYPE_PARAMETER_ID_NAME = "Connection Type";
     private static final String CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT = "Links";
     private static final String CONNECTION_TYPE_PARAMETER_ID_DEFAULT = CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT;
 
@@ -73,7 +76,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
 
     // Dynamics
     public static final String DYNAMICS_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "dynamics");
-    private static final String DYNAMICS_PARAMETER_ID_NAME = "Dynamics";
     private static final String DYNAMICS_PARAMETER_UNDIRECTED = "Undirected";
     private static final String DYNAMICS_PARAMETER_DIRECTED = "Directed";
     private static final String DYNAMICS_PARAMETER_UNDIRECTED_FLOW = "Undirected flow, directed codelength";
@@ -91,7 +93,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
 
     // Optimisation Level
     public static final String OPTIMISATION_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "optimisation_level");
-    private static final String OPTIMISATION_PARAMETER_ID_NAME = "Optimisation Level";
     private static final String OPTIMISATION_PARAMETER_ID_DEFAULT = "Full coarse-tune";
 
     private static final MutableObjectIntMap<String> OPTIMISATION_LEVELS = new ObjectIntHashMap<>();
@@ -105,7 +106,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
 
     // Fast Hierarchical
     public static final String FAST_HIERARCHICAL_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "fast_hierarchical");
-    private static final String FAST_HIERARCHICAL_PARAMETER_ID_NAME = "Fast Hierarchical";
     private static final String FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT = "Normal";
 
     private static final MutableObjectIntMap<String> FAST_HIERARCHICAL_LEVELS = new ObjectIntHashMap<>();
@@ -119,44 +119,38 @@ public class InfoMapPlugin extends SimpleEditPlugin {
 
     // Number of Trials
     public static final String NUM_TRIALS_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "num_trials");
-    private static final String NUM_TRIALS_PARAMETER_ID_NAME = "Number of Trials";
     private static final int NUM_TRIALS_PARAMETER_ID_DEFAULT = 1;
     
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
-
-        // Connection type
+        
         final PluginParameter<SingleChoiceParameterValue> connectionParam = SingleChoiceParameterType.build(CONNECTION_TYPE_PARAMETER_ID);
-        connectionParam.setName(CONNECTION_TYPE_PARAMETER_ID_NAME);
+        connectionParam.setName("Connection Type");
         SingleChoiceParameterType.setOptions(connectionParam, CONNECTION_TYPE_PARAM_VALUES);
         SingleChoiceParameterType.setChoice(connectionParam, CONNECTION_TYPE_PARAMETER_ID_DEFAULT);
         parameters.addParameter(connectionParam);
-
-        // Dynamics
+        
         final PluginParameter<SingleChoiceParameterValue> dynamicsParam = SingleChoiceParameterType.build(DYNAMICS_PARAMETER_ID);
-        dynamicsParam.setName(DYNAMICS_PARAMETER_ID_NAME);
+        dynamicsParam.setName("Dynamics");
         SingleChoiceParameterType.setOptions(dynamicsParam, DYNAMICS_PARAM_VALUES);
         SingleChoiceParameterType.setChoice(dynamicsParam, DYNAMICS_PARAMETER_ID_DEFAULT);
         parameters.addParameter(dynamicsParam);
-
-        // Optimisation Level
+        
         final PluginParameter<SingleChoiceParameterValue> optimisationParam = SingleChoiceParameterType.build(OPTIMISATION_PARAMETER_ID);
-        optimisationParam.setName(OPTIMISATION_PARAMETER_ID_NAME);
+        optimisationParam.setName("Optimisation Level");
         SingleChoiceParameterType.setOptions(optimisationParam, new ArrayList<>(OPTIMISATION_LEVELS.keySet()));
         SingleChoiceParameterType.setChoice(optimisationParam, OPTIMISATION_PARAMETER_ID_DEFAULT);
         parameters.addParameter(optimisationParam);
-
-        // Fast Hierarchical
+        
         final PluginParameter<SingleChoiceParameterValue> hierarchicalParam = SingleChoiceParameterType.build(FAST_HIERARCHICAL_PARAMETER_ID);
-        hierarchicalParam.setName(FAST_HIERARCHICAL_PARAMETER_ID_NAME);
+        hierarchicalParam.setName("Fast Hierarchical");
         SingleChoiceParameterType.setOptions(hierarchicalParam, new ArrayList<>(FAST_HIERARCHICAL_LEVELS.keySet()));
         SingleChoiceParameterType.setChoice(hierarchicalParam, FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT);
         parameters.addParameter(hierarchicalParam);
-
-        // Number of trials
+        
         final PluginParameter<IntegerParameterValue> amountParam = IntegerParameterType.build(NUM_TRIALS_PARAMETER_ID);
-        amountParam.setName(NUM_TRIALS_PARAMETER_ID_NAME);
+        amountParam.setName("Number of Trials");
         amountParam.setIntegerValue(NUM_TRIALS_PARAMETER_ID_DEFAULT);
         IntegerParameterType.setMinimum(amountParam, 0);
         IntegerParameterType.setMaximum(amountParam, 10000);
@@ -169,17 +163,25 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         if (wg.getVertexCount() <= 0) {
             interaction.notify(PluginNotificationLevel.ERROR, "The graph must have at least one vertex to run clustering on");
-            LOGGER.log(Level.WARNING, "{0} run on Empty Graph", Bundle.InfoMapPlugin());
             return;
         }
 
-        final InfoMapContext context = new InfoMapContext(createConfig(parameters), wg);
+        final Config config = createConfig(parameters);
+        final InfomapBase infoMap;
+        if (config.isUndirected()) {
+            infoMap = new InfomapUndirected(config, wg);
+        } else if (config.isUndirdir() || config.isOutdirdir() || config.isRawdir()) {
+            infoMap = new InfomapUndirdir(config, wg);
+        } else if (config.isRecordedTeleportation()) {
+            infoMap = new InfomapDirected(config, wg);
+        } else {
+            infoMap = new InfomapDirectedUnrecordedTeleportation(config, wg);
+        }
 
-        context.getInfoMap().run();
+        infoMap.run();
 
         final int clusterAttrId = ClusteringConcept.VertexAttribute.INFOMAP_CLUSTER.ensure(wg);
-        final InfomapBase infomap = context.getInfoMap();
-        final TreeData treeData = infomap.getTreeData();
+        final TreeData treeData = infoMap.getTreeData();
         LOGGER.log(Level.INFO, "Vertices {0}", treeData.getNumLeafNodes());
 
         for (final NodeBase node : treeData.getLeaves()) {

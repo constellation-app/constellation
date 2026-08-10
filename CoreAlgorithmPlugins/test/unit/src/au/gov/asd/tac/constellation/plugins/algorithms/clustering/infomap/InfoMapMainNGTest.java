@@ -21,6 +21,10 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapBase;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapDirected;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapDirectedUnrecordedTeleportation;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapUndirdir;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapUndirected;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.TreeData;
 import au.gov.asd.tac.constellation.utilities.gui.TextIoProgress;
@@ -60,11 +64,19 @@ public class InfoMapMainNGTest {
     }
 
     private static void runInfoMap(final Config config, final GraphReadMethods rg) throws FileNotFoundException {
-        final InfoMapContext context = new InfoMapContext(config, rg);
-        context.getInfoMap().run();
-
-        final InfomapBase infomap = context.getInfoMap();
-        final TreeData treeData = infomap.getTreeData();
+        final InfomapBase infoMap;
+        if (config.isUndirected()) {
+            infoMap = new InfomapUndirected(config, rg);
+        } else if (config.isUndirdir() || config.isOutdirdir() || config.isRawdir()) {
+            infoMap = new InfomapUndirdir(config, rg);
+        } else if (config.isRecordedTeleportation()) {
+            infoMap = new InfomapDirected(config, rg);
+        } else {
+            infoMap = new InfomapDirectedUnrecordedTeleportation(config, rg);
+        }
+        infoMap.run();
+        
+        final TreeData treeData = infoMap.getTreeData();
         System.out.printf("*Vertices %d\n", treeData.getNumLeafNodes());
         for (final NodeBase node : treeData.getLeaves()) {
             final int index = node.getParent().getIndex();

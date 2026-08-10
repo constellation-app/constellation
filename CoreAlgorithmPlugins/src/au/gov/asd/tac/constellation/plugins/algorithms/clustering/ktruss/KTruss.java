@@ -265,7 +265,6 @@ public class KTruss {
 
                 // If the vertex does not have enough surviving links then cull the vertex and all its links
                 if (survivingLinkCount < currentK - 1) {
-
                     vertices.clear(vertexPosition);
                     modified = true;
                     resultHandler.recordVertexCluster(vxID, lastK);
