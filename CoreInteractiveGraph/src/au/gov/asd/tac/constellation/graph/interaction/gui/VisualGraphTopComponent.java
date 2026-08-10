@@ -93,7 +93,6 @@ import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import com.jogamp.opengl.awt.GLCanvas;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -1367,6 +1366,14 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         }
     }
 
+    /**
+     * Creates and opens a new cloned graph of this graph. This method is
+     * invoked by the NetBeans Window System when the user selects the Clone
+     * Window action from the right click context menu on the graph title tab
+     *
+     * @return the TopComponent {@link CloneableTopComponent} instance to be
+     * opened as the clone
+     */
     @Override
     protected CloneableTopComponent createClonedObject() {
         final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
