@@ -21,7 +21,7 @@ RUN apt-get -y update \
     && rm -rf /var/lib/apt/lists/*
 
 ENV SONAR_ZIP_FILENAME="sonar-scanner-cli-8.1.0.6389-linux-x64.zip" \
-    SONAR_FILENAME="sonar-scanner-cli-8.1.0.6389-linux-x64" \
+    SONAR_FILENAME="sonar-scanner-8.1.0.6389-linux-x64" \
     SONAR_DOWNLOAD_DIR="/tmp" \
     SONAR_HOME="/var/opt/sonar-scanner" 
 ENV SONAR_DOWNLOAD_URL="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/${SONAR_ZIP_FILENAME}"
