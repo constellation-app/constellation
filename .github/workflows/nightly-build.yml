@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      RUNNER_IMAGE: constellationapplication/netbeans-runner:21.0.2
+      RUNNER_IMAGE: constellationapplication/netbeans-runner:21.0.3
 
     steps:
       - name: Checkout Constellation Repository
