@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.NumberParameterValu
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -54,6 +55,7 @@ public class NumberInputPane<T> extends Pane {
     private static final int BASE_WIDTH = 35;
     private static final String INVALID_ID = "invalid";
     private static final String INVALID_VALUE = "Invalid value";
+    private static final Pattern DECPART_PATTERN = Pattern.compile("\\d{0,2}");
 
     private final PluginParameter<?> parameter;
     private final Tooltip tooltip;
@@ -121,9 +123,7 @@ public class NumberInputPane<T> extends Pane {
         // For (FXcontrol) number spinners, we want to listen to the text property rather than the value property.
         // Just typing doesn't fire value property change events, and doesn't allow us to change the style
         // when the string doesn't validate.
-        field.getEditor().textProperty().addListener((ov, oldValue, newValue) -> {
-            handleTextPropertyChange(oldValue, newValue);
-        });
+        field.getEditor().textProperty().addListener((ov, oldValue, newValue) -> handleTextPropertyChange(oldValue, newValue));
 
         parameter.addListener((pluginParameter, change)
                 -> Platform.runLater(() -> {
@@ -207,7 +207,7 @@ public class NumberInputPane<T> extends Pane {
     private boolean isNewValueValid(final String intPart, final String decPart, final boolean isIntVal, final int dotPos) {
         // Integers: MAX_VALUE is 10 digits.  Floats: Max 8 digits before the decimal, and 2 digits after.
         return (intPart.matches("[\\-][0-9]{1," + (isIntVal ? "10}" : "8}")) || intPart.matches("[0-9]{1," + (isIntVal ? "10}" : "8}")))
-                && (dotPos == -1 || (decPart.matches("[0-9]{0,2}") && !isIntVal));
+                && (dotPos == -1 || (DECPART_PATTERN.matcher(decPart).matches() && !isIntVal));
     }
 
     private void setParameterBasedOnType(final PluginParameter<?> parameter, final Number min, final Number max) {
