@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.image.Image;
@@ -113,9 +114,10 @@ public class ConstellationIconNGTest {
 
     /**
      * Test of buildByteArray method, of class ConstellationIcon.
+     * @throws java.io.IOException
      */
     @Test
-    public void testBuildByteArray() {
+    public void testBuildByteArray() throws IOException {
         final byte[] expResult = testIcon.getIconData().getData();
         final byte[] result = testIcon.buildByteArray();
         assertEquals(result, expResult);

@@ -90,7 +90,9 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
         
         final Map<String, String> idLabelMap = new HashMap<>();
 
-        try (final BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(input), StandardCharsets.UTF_8))) {
+        try (final FileInputStream stream = new FileInputStream(input);
+                final InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                final BufferedReader in = new BufferedReader(reader)) {
             while ((line = in.readLine()) != null) {
                 if (line.startsWith(VERTEX_HEADER)) {
                     processNodes = true;

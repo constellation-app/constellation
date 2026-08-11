@@ -467,8 +467,9 @@ public class WebServer {
                 return;
             }
             
-            try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
-
+            try (final InputStream stream = p.getInputStream();
+                    final InputStreamReader reader = new InputStreamReader(stream);
+                    final BufferedReader inputBuffer = new BufferedReader(reader)) {
                 // If inputStream available, log output
                 String line;
 
@@ -508,8 +509,9 @@ public class WebServer {
             if (p == null) {
                 return;
             }
-            try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
-                
+            try (final InputStream stream = p.getInputStream();
+                    final InputStreamReader reader = new InputStreamReader(stream);
+                    final BufferedReader inputBuffer = new BufferedReader(reader)) {
                 // If inputStream available, log output
                 String line;
                 
@@ -661,8 +663,9 @@ public class WebServer {
             return null;
         }
 
-        try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
-
+        try (final InputStream stream = p.getInputStream();
+                    final InputStreamReader reader = new InputStreamReader(stream);
+                    final BufferedReader inputBuffer = new BufferedReader(reader)) {
             // If inputStream available, log output
             String allLines = "";
             String currentLine;
