@@ -35,7 +35,7 @@ import org.testng.annotations.Test;
 public class RecordStoreUtilitiesNGTest {
     
     @Test
-    public void testToCsvEmpty() throws FileNotFoundException, IOException {
+    public void testToCsvEmpty() throws IOException {
         final File file = new File("test1.csv");
         final RecordStore recordStore = new GraphRecordStore();
 
@@ -47,7 +47,7 @@ public class RecordStoreUtilitiesNGTest {
     }
 
     @Test
-    public void testToCsvEmptyRow() throws FileNotFoundException, IOException {
+    public void testToCsvEmptyRow() throws IOException {
         final File file = new File("test2.csv");
 
         final RecordStore recordStore = new GraphRecordStore();

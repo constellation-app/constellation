@@ -272,7 +272,7 @@ public class XmlUtilitiesNGTest {
      * @throws javax.xml.transform.TransformerException
      */
     @Test
-    public void testRead_InputStream_boolean() throws FileNotFoundException, TransformerException, IOException {
+    public void testRead_InputStream_boolean() throws TransformerException, IOException {
         System.out.println("testRead_InputStream_boolean");
         final XmlUtilities instance = new XmlUtilities();
 
