@@ -899,13 +899,9 @@ public class NotesViewPane extends BorderPane {
         gap.setMinWidth(10);
         gap2.setMinWidth(10);
 
-        if (StringUtils.isBlank(newNote.getNodeColour())) {
-            newNote.setNodeColour(USER_COLOR);
-        }
-
         HBox.setHgrow(dateTimeLabel, Priority.NEVER);
 
-        // fromHtmlColor returns null for invalid colours; fall back to the default user colour.
+        // fromHtmlColor returns null for blank/invalid colours; fall back to the default user colour.
         ConstellationColor noteColour = ConstellationColor.fromHtmlColor(newNote.getNodeColour());
         if (noteColour == null) {
             newNote.setNodeColour(USER_COLOR);

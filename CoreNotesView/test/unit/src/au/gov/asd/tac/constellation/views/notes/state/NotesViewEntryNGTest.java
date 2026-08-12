@@ -84,7 +84,7 @@ public class NotesViewEntryNGTest {
         assertEquals(entry.getNoteTitle(), "");
         assertEquals(entry.getNoteContent(), "");
         assertFalse(entry.isUserCreated());
-        assertNotNull(entry.getNodeColour());
+        assertEquals(entry.getNodeColour(), "#ffffff");
     }
 
     /**
