@@ -25,9 +25,11 @@ import au.gov.asd.tac.constellation.graph.file.SaveNotification;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
 import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationManager;
 import au.gov.asd.tac.constellation.graph.interaction.framework.GraphVisualManagerFactory;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToClipboardAction;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CutToClipboardAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.PasteFromClipboardAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.composite.ContractAllCompositesAction;
@@ -61,11 +63,13 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
+import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
@@ -89,7 +93,6 @@ import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import com.jogamp.opengl.awt.GLCanvas;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -1361,5 +1364,26 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     ConstellationLoggerHelper.SUCCESS
             );
         }
+    }
+
+    /**
+     * Creates and opens a new cloned graph of this graph. This method is
+     * invoked by the NetBeans Window System when the user selects the Clone
+     * Window action from the right click context menu on the graph title tab
+     *
+     * @return the TopComponent {@link CloneableTopComponent} instance to be
+     * opened as the clone
+     */
+    @Override
+    protected CloneableTopComponent createClonedObject() {
+        final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
+        final PluginParameters copyParams = copyGraphPlugin.createParameters();
+        copyParams.getParameters().get(CopyToNewGraphPlugin.NEW_SCHEMA_NAME_PARAMETER_ID).setStringValue(graphNode.getGraph().getSchema().getFactory().getName());
+        copyParams.getParameters().get(CopyToNewGraphPlugin.COPY_ALL_PARAMETER_ID).setBooleanValue(true);
+        copyParams.getParameters().get(CopyToNewGraphPlugin.COPY_KEYS_PARAMETER_ID).setBooleanValue(true);
+        PluginExecution.withPlugin(copyGraphPlugin).withParameters(copyParams).executeLater(graphNode.getGraph());
+
+        final CloneableTopComponent topComponent = (CloneableTopComponent) graphNode.getTopComponent();
+        return topComponent;
     }
 }

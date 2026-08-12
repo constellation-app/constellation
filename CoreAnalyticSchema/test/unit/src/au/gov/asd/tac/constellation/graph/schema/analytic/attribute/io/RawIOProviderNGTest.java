@@ -126,18 +126,18 @@ public class RawIOProviderNGTest {
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
-            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            instance.writeObject(rawAttribute, vxId, jsonGenerator, graph, null, true);
-            jsonGenerator.close();
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                instance.writeObject(rawAttribute, vxId, jsonGenerator, graph, null, true);
+            }
                         
-            jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            jsonGenerator.writeObjectFieldStart("Raw");
-            jsonGenerator.writeStringField("rawIdentifier", "myIdentifier");
-            jsonGenerator.writeStringField("rawType", "myType");
-            jsonGenerator.writeEndObject();
-            jsonGenerator.close();
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeObjectFieldStart("Raw");
+                jsonGenerator.writeStringField("rawIdentifier", "myIdentifier");
+                jsonGenerator.writeStringField("rawType", "myType");
+                jsonGenerator.writeEndObject();
+            }
             
             assertEquals(actual.toString(), expected.toString());
         }
@@ -157,15 +157,15 @@ public class RawIOProviderNGTest {
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
-            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            instance.writeObject(rawAttribute, vxId, jsonGenerator, graph, null, false);
-            jsonGenerator.close();
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                instance.writeObject(rawAttribute, vxId, jsonGenerator, graph, null, false);
+            }
                         
-            jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            jsonGenerator.writeEndObject();
-            jsonGenerator.close();
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeEndObject();
+            }
             
             assertEquals(actual.toString(), expected.toString());
         }
