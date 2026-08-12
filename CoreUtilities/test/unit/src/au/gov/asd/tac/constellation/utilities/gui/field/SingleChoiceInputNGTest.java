@@ -37,6 +37,7 @@ import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.fail;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -129,7 +130,8 @@ public class SingleChoiceInputNGTest {
         
         // Test empty value
         boolean result = instance.isValidContent();
-        assertTrue(result);
+        // there is no empty option, thus empty string is invalid
+        assertFalse(result);
         
         // Test with a value
         final Object choice = "choice";
