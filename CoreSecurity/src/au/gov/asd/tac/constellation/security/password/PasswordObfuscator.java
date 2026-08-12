@@ -102,27 +102,29 @@ public class PasswordObfuscator {
      */
     @SuppressWarnings("unused")
     public static void main(final String[] args) throws NoSuchAlgorithmException, IOException {
-        final BufferedReader input = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8.name()));
-        LOGGER.log(Level.INFO, "Enter the string to encrypt (enter \"-\" to genernate a key): ");
-        final String password = input.readLine();
-        if (password != null) {
-            if (password.equals(KEYGEN_SYMBOL)) { // Key gen mode
-                final byte[] encodedKey = PasswordUtilities.generateKey();
-                LOGGER.log(Level.INFO, "new byte[] {");
-                int i = 0;
-                for (final byte b : encodedKey) {
-                    LOGGER.log(Level.INFO, "(byte) 0x{0}x", b);
-                    if (i < encodedKey.length - 1) {
-                        LOGGER.log(Level.INFO, ", ");
+        try (final InputStreamReader reader = new InputStreamReader(System.in, StandardCharsets.UTF_8.name());
+                final BufferedReader input = new BufferedReader(reader)) {
+            LOGGER.log(Level.INFO, "Enter the string to encrypt (enter \"-\" to genernate a key): ");
+            final String password = input.readLine();
+            if (password != null) {
+                if (password.equals(KEYGEN_SYMBOL)) { // Key gen mode
+                    final byte[] encodedKey = PasswordUtilities.generateKey();
+                    LOGGER.log(Level.INFO, "new byte[] {");
+                    int i = 0;
+                    for (final byte b : encodedKey) {
+                        LOGGER.log(Level.INFO, "(byte) 0x{0}x", b);
+                        if (i < encodedKey.length - 1) {
+                            LOGGER.log(Level.INFO, ", ");
+                        }
+                        i = i + 1;
+                        if (i % 8 == 0) {
+                            LOGGER.log(Level.INFO, "next byte");
+                        }
                     }
-                    i = i + 1;
-                    if (i % 8 == 0) {
-                        LOGGER.log(Level.INFO, "next byte");
-                    }
+                } else { // Encrypt a password
+                    final ObfuscatedPassword obfuscatedPassword = obfuscate(password);
+                    LOGGER.log(Level.INFO, "The obfuscated password is: {0}", obfuscatedPassword);
                 }
-            } else { // Encrypt a password
-                final ObfuscatedPassword obfuscatedPassword = obfuscate(password);
-                LOGGER.log(Level.INFO, "The obfuscated password is: {0}", obfuscatedPassword);
             }
         }
     }

@@ -209,17 +209,19 @@ public class ExportToExcelFilePluginNGTest {
      * @throws IOException if there is a problem opening the Excel file
      */
     private String generateCsvFromExcelFile(final File file, final String sheetName) throws IOException {
-        final Workbook wb = WorkbookFactory.create(new FileInputStream(file));
-        final Sheet sheet = wb.getSheet(sheetName);
-
         final StringBuilder output = new StringBuilder();
-        for (int i = 0; i <= sheet.getLastRowNum(); i++) {
-            final Row row = sheet.getRow(i);
-            output.append(IntStream.range(0, row.getLastCellNum())
-                    .mapToObj(cellId -> row.getCell(cellId).toString())
-                    .collect(Collectors.joining(","))
-            );
-            output.append("\n");
+        try (final FileInputStream stream = new FileInputStream(file)) {
+            final Workbook wb = WorkbookFactory.create(stream);
+            final Sheet sheet = wb.getSheet(sheetName);
+            
+            for (int i = 0; i <= sheet.getLastRowNum(); i++) {
+                final Row row = sheet.getRow(i);
+                output.append(IntStream.range(0, row.getLastCellNum())
+                        .mapToObj(cellId -> row.getCell(cellId).toString())
+                        .collect(Collectors.joining(","))
+                );
+                output.append("\n");
+            }
         }
 
         return output.toString();

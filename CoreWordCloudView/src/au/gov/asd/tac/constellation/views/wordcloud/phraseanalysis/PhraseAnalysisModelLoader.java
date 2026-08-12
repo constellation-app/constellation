@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -53,16 +54,21 @@ public class PhraseAnalysisModelLoader {
     }
     
     public static void loadMap() throws IOException {
-
         if (isLoaded) {
             return;
         }
 
-        final BufferedReader excludedWordsReader = new BufferedReader(new InputStreamReader(PhraseAnalysisModelLoader.class.getResourceAsStream("ExcludedWords.u8"), StandardCharsets.UTF_8.name()));
-        processLines(excludedWordsReader, excludedWords, false);
+        try (final InputStream stream = PhraseAnalysisModelLoader.class.getResourceAsStream("ExcludedWords.u8");
+                final InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8.name());
+                final BufferedReader excludedWordsReader = new BufferedReader(reader)) {
+            processLines(excludedWordsReader, excludedWords, false);
+        }
 
-        final BufferedReader delimitersReader = new BufferedReader(new InputStreamReader(PhraseAnalysisModelLoader.class.getResourceAsStream("Delimiters.u8"), StandardCharsets.UTF_8.name()));
-        processLines(delimitersReader, delimiters, true);
+        try (final InputStream stream = PhraseAnalysisModelLoader.class.getResourceAsStream("Delimiters.u8");
+                final InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8.name());
+                final BufferedReader delimitersReader = new BufferedReader(reader)) {
+            processLines(delimitersReader, delimiters, true); 
+        }
 
         isLoaded = true;
     }

@@ -209,7 +209,9 @@ public class ContentAnalysisManager {
         }
         final List<String> lines = new ArrayList<>();
 
-        try (final BufferedReader background = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8.name()))) {
+        try (final FileInputStream stream = new FileInputStream(file);
+                final InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8.name());
+                final BufferedReader background = new BufferedReader(reader)) {
             String line = "";
             while (line != null) {
                 lines.add(line);
